@@ -1,0 +1,24 @@
+{
+  "specVersion": 2,
+  "id": "arcblog",
+  "name": "ArcBlog",
+  "did": "did:blocklet:arcblog",
+  "version": "0.2.0",
+  "description": "A DID-native publishing space for readable Markdown posts and images.",
+  "instance": {
+    "required": true,
+    "mount": "/instance"
+  },
+  "scope": "app",
+  "mounts": [
+    {
+      "module": "pages",
+      "target": "/pages"
+    }
+  ],
+  "contentType": "aup",
+  "indexMount": {
+    "module": "pages",
+    "target": "/"
+  }
+}

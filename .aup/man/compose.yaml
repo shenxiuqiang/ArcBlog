@@ -1,0 +1,22 @@
+schemaVersion: 1
+page: compose
+description: >-
+  DID Wallet-gated writing surface for Markdown-first drafting, upload, and
+  publish preflight checks.
+synopsis: >-
+  Connect wallet, edit Markdown draft, run pre-publish checks (required title,
+  slug uniqueness, sanitization), then publish to instance posts.
+examples:
+  - label: Open writer
+    action: click
+    target: arcblog-nav-write
+flows:
+  - Connect the DID Wallet to unlock editor and media upload.
+  - Draft content privately in user DID space.
+  - Enter category/tags plus optional SEO and OG overrides in dedicated metadata blocks.
+  - Validate slug and Markdown safety before publish.
+  - Publish validated post metadata to instance posts.
+refs:
+  actions:
+    - id: arcblog-nav-write
+      event: click

@@ -1,0 +1,8 @@
+{
+  "name": "technology-card",
+  "description": "Technology stack cards with dark variant support",
+  "props": {
+    "items": { "type": "array", "description": "Technology items from data source" },
+    "basePath": { "type": "string", "default": "/en/technology/" }
+  }
+}

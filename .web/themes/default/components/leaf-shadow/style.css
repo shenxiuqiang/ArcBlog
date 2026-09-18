@@ -1,0 +1,140 @@
+.leaf-shadow {
+  pointer-events: none;
+}
+
+.leaf-shadow[data-variant="wash"] {
+  position: relative;
+  display: block;
+}
+
+.leaf-shadow--overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  mix-blend-mode: multiply;
+  opacity: 0.28;
+  transform: translateZ(0);
+}
+
+.leaf-shadow-layer.is-off {
+  visibility: hidden;
+}
+
+html.dark .leaf-shadow--overlay,
+html[data-theme="dark"] .leaf-shadow--overlay,
+html[data-mode="dark"] .leaf-shadow--overlay {
+  mix-blend-mode: screen;
+  opacity: 0.34;
+}
+
+.leaf-shadow--wash {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.18;
+}
+
+.leaf-shadow-canvas,
+.leaf-shadow-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.leaf-shadow-canvas {
+  filter: blur(0.35px);
+  transform: scale(1.02);
+  transform-origin: center;
+}
+
+.leaf-shadow-video {
+  object-fit: cover;
+}
+
+html[data-mode="dark"] .leaf-shadow--overlay.is-video,
+html.dark .leaf-shadow--overlay.is-video,
+html[data-theme="dark"] .leaf-shadow--overlay.is-video {
+  mix-blend-mode: multiply;
+}
+
+.leaf-shadow-hud {
+  pointer-events: auto;
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  top: 5.25rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1px solid var(--color-border, #d7e0dc);
+  border-radius: 1.15rem;
+  background: color-mix(in srgb, var(--color-bg, #fcfdfc) 88%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(22, 59, 52, 0.08);
+  mix-blend-mode: normal;
+}
+
+.leaf-shadow-hud-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+}
+
+.leaf-shadow-hud-btn {
+  appearance: none;
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-dim, #52635d);
+  font-family: var(--font-utility, ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.leaf-shadow-hud-btn.is-on {
+  background: var(--color-text, #111a17);
+  color: var(--color-bg, #fcfdfc);
+}
+
+.leaf-shadow-hud-btn:focus-visible {
+  outline: 2px solid var(--color-accent, #008f7a);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .leaf-shadow-hud {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: max(0.85rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    max-width: calc(100vw - 1.25rem);
+    align-items: center;
+  }
+}
+
+#leaf-fx.landing-page-section,
+#leaf-fx.landing-page-section:nth-child(even) {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leaf-shadow--overlay {
+    opacity: 0.16;
+  }
+  .leaf-shadow-canvas {
+    filter: blur(1.2px);
+  }
+}

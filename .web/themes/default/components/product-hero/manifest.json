@@ -1,0 +1,13 @@
+{
+  "name": "product-hero",
+  "description": "Product landing page hero with gradient background, title, tagline, category badge, and tags",
+  "seoStrategy": "full",
+  "props": {
+    "title": { "type": "string" },
+    "excerpt": { "type": "string", "description": "Product tagline" },
+    "category": { "type": "string" },
+    "tags": { "type": "array" },
+    "coverImage": { "type": "string" },
+    "slug": { "type": "string" }
+  }
+}

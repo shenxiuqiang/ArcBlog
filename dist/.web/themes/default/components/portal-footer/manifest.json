@@ -1,0 +1,12 @@
+{
+  "name": "portal-footer",
+  "description": "5-column footer with links to all content sections",
+  "seoStrategy": "full",
+  "hasScript": false,
+  "props": {
+    "fleetHosts": {
+      "type": "object",
+      "description": "Production-host → local-subdomain map for dev-time cross-fleet link rewriting, e.g. {\"example.com\": \"example\"}. Absent → no rewriting."
+    }
+  }
+}

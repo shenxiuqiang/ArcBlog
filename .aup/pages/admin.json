@@ -1,0 +1,206 @@
+{
+  "id": "arcblog-admin-connection-gate-1",
+  "type": "connection-gate",
+  "children": [
+    {
+      "id": "arcblog-admin-connection-gate-1-card-1",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Your studio"
+      },
+      "children": [
+        {
+          "id": "arcblog-admin-connection-gate-1-card-1-p-1",
+          "type": "text",
+          "props": {
+            "content": "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace."
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-1-action-2",
+          "type": "action",
+          "props": {
+            "label": "New post"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "compose"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-connection-gate-1-card-2",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Lifecycle controls"
+      },
+      "children": [
+        {
+          "id": "arcblog-admin-connection-gate-1-card-2-p-1",
+          "type": "text",
+          "props": {
+            "content": "Supported transitions: draft→published, published→archived, archived→published, and soft delete for draft/archived records."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-connection-gate-1-card-3",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Publishing checklist"
+      },
+      "children": [
+        {
+          "id": "arcblog-admin-connection-gate-1-card-3-p-1",
+          "type": "text",
+          "props": {
+            "content": "Drafts stay in your DID user space. Public feeds list only status=published records after validation and successful publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-connection-gate-1-card-4",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Quick ops"
+      },
+      "children": [
+        {
+          "id": "arcblog-admin-connection-gate-1-card-4-p-1",
+          "type": "text",
+          "props": {
+            "content": "Use one-click queries for published/archived views, or open the full operations runbook for publish/archive/delete commands."
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-4-action-2",
+          "type": "action",
+          "props": {
+            "label": "Query published posts"
+          },
+          "events": {
+            "click": {
+              "exec": "/blocklets/arcblog/.actions/query"
+            }
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-4-action-3",
+          "type": "action",
+          "props": {
+            "label": "Query archived posts"
+          },
+          "events": {
+            "click": {
+              "exec": "/blocklets/arcblog/.actions/query"
+            }
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-4-action-4",
+          "type": "action",
+          "props": {
+            "label": "Open publishing runbook"
+          },
+          "events": {
+            "click": {
+              "navigate": "/docs/publishing-ops.md"
+            }
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-4-action-5",
+          "type": "action",
+          "props": {
+            "label": "Open daily report guide"
+          },
+          "events": {
+            "click": {
+              "navigate": "/docs/publishing-ops.md"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-connection-gate-1-card-5",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Filters"
+      },
+      "children": [
+        {
+          "id": "arcblog-admin-connection-gate-1-card-5-p-1",
+          "type": "text",
+          "props": {
+            "content": "Use lifecycle + category + tag filters to review content segments in Studio. Query helper supports status/category/tag operations."
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-5-input-2",
+          "type": "input",
+          "props": {
+            "content": "statusFilter"
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-5-input-3",
+          "type": "input",
+          "props": {
+            "content": "categoryFilter"
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-5-input-4",
+          "type": "input",
+          "props": {
+            "content": "tagFilter"
+          }
+        },
+        {
+          "id": "arcblog-admin-connection-gate-1-card-5-action-5",
+          "type": "action",
+          "props": {
+            "label": "Open query helper docs"
+          },
+          "events": {
+            "click": {
+              "navigate": "/docs/publishing-ops.md"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-connection-gate-1-afs-list-6",
+      "type": "afs-list"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "name": "site-home",
+  "description": "Premium fleet homepage with full-bleed brand hero, site-specific visuals, motion, and proof sections.",
+  "seoStrategy": "partial",
+  "hasScript": true,
+  "props": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "headline": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "visualKind": {
+      "type": "string"
+    },
+    "support": {
+      "type": "object"
+    },
+    "detail": {
+      "type": "object"
+    },
+    "closing": {
+      "type": "object"
+    }
+  },
+  "childNodes": {
+    "hero": {
+      "mode": "merge"
+    },
+    "visual": {
+      "mode": "merge",
+      "rename": {
+        "kind": "visualKind",
+        "label": "visualLabel",
+        "items": "visualItems"
+      },
+      "childLabelsInto": "visualItems"
+    },
+    "action": {
+      "mode": "collect",
+      "into": "actions",
+      "fields": {
+        "label": ["label", "content", "$id"],
+        "href": ["href", "url"],
+        "target": ["target"]
+      }
+    },
+    "proof": {
+      "mode": "collect",
+      "into": "proof",
+      "fields": {
+        "label": ["label", "title", "$label"],
+        "value": ["value", "text"]
+      },
+      "defaults": {
+        "value": ""
+      }
+    },
+    "support": {
+      "mode": "panel",
+      "into": "support",
+      "items": {
+        "types": ["item"],
+        "pick": ["kicker", "title", "text"],
+        "into": "items"
+      }
+    },
+    "detail": {
+      "mode": "panel",
+      "into": "detail",
+      "items": {
+        "types": ["step", "item"],
+        "pick": ["kicker", "title", "text"],
+        "into": "items"
+      }
+    },
+    "closing": {
+      "mode": "panel",
+      "into": "closing",
+      "items": {
+        "types": ["action"],
+        "fields": {
+          "label": ["label", "content", "$id"],
+          "href": ["href", "url"],
+          "target": ["target"]
+        },
+        "into": "actions"
+      }
+    }
+  }
+}

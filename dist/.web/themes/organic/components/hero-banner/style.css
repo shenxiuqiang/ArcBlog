@@ -1,0 +1,124 @@
+.hero-banner {
+  position: relative;
+  background: var(--color-surface, #f0ede5);
+  overflow: hidden;
+  padding: 7rem 0 6rem;
+  text-align: center;
+  color: var(--color-text, #1a3a1a);
+}
+
+/* Subtle radial gradient overlay */
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(34, 139, 34, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* CSS-only organic dot pattern */
+.hero-bg-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background:
+    repeating-radial-gradient(
+      circle at 25% 25%,
+      rgba(34, 139, 34, 0.04) 0px,
+      rgba(34, 139, 34, 0.04) 2px,
+      transparent 2px,
+      transparent 40px
+    ),
+    repeating-radial-gradient(
+      circle at 75% 60%,
+      rgba(139, 105, 20, 0.03) 0px,
+      rgba(139, 105, 20, 0.03) 1.5px,
+      transparent 1.5px,
+      transparent 55px
+    );
+  pointer-events: none;
+}
+
+.hero-banner .container {
+  max-width: var(--container-max, 1120px);
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Serif title with organic warmth */
+.hero-banner .hero-title {
+  font-family: var(--font-heading, var(--font-serif, "Lora", Georgia, serif));
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 1.5rem;
+  letter-spacing: -0.01em;
+  color: var(--color-text, #1a3a1a);
+}
+
+/* Sans subtitle with generous line-height */
+.hero-banner .hero-subtitle {
+  font-family: var(--font-sans, "Raleway", "Segoe UI", sans-serif);
+  font-size: 1.25rem;
+  line-height: 1.8;
+  max-width: 540px;
+  margin: 0 auto 2.5rem;
+  color: var(--color-dim, #5d6b5d);
+}
+
+.hero-banner .hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Pill-shaped buttons */
+.hero-banner .btn {
+  font-family: var(--font-sans, "Raleway", "Segoe UI", sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 24px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.hero-banner .btn-primary {
+  background: var(--color-accent, #228b22);
+  color: #fff;
+  border: none;
+}
+
+.hero-banner .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 139, 34, 0.15);
+}
+
+.hero-banner .btn-secondary {
+  background: transparent;
+  color: var(--color-text, #1a3a1a);
+  border: 2px solid var(--color-border, #c5d5b5);
+}
+
+.hero-banner .btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 139, 34, 0.1);
+  border-color: var(--color-accent, #228b22);
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 5rem 0 4rem;
+  }
+}

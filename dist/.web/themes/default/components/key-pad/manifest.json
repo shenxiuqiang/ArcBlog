@@ -1,0 +1,12 @@
+{
+  "name": "key-pad",
+  "description": "Corner inverted-T arrow keys. A direction lights when the owner marks it pressable via keyPad.set.",
+  "seoStrategy": "none",
+  "hasScript": true,
+  "props": {
+    "variant": {
+      "type": "string",
+      "description": "boot mounts the pad. Owners call keyPad.set({ up, down, left, right })."
+    }
+  }
+}

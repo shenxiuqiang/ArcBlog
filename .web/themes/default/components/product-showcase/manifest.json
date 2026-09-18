@@ -1,0 +1,9 @@
+{
+  "name": "product-showcase",
+  "description": "Product feature cards with title, description, and action button",
+  "seoStrategy": "full",
+  "hasScript": true,
+  "props": {
+    "items": { "type": "array", "description": "Product items with title, slug, excerpt, tags" }
+  }
+}

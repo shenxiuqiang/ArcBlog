@@ -1,0 +1,668 @@
+/* site-home — calm, professional, with breathing room.
+   Per-site differentiation: accent tokens + visualKind signature.
+   Cohesive series: shared grammar (eyebrow / display headline / supporting paragraph),
+   shared spacing scale, shared button/label system. */
+
+.site-home {
+  --home-display: var(--font-display, "Sora", system-ui, sans-serif);
+  --home-body: var(--font-body, "Inter", system-ui, sans-serif);
+  --home-mono: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  --home-ink: var(--color-text, #0f172a);
+  --home-muted: color-mix(in srgb, var(--color-dim, #6b7280) 88%, var(--color-text, #0f172a));
+  --home-faint: color-mix(in srgb, var(--color-text, #0f172a) 10%, transparent);
+  --home-rule: color-mix(in srgb, var(--color-border, #e5e7eb) 60%, transparent);
+  --home-soft: color-mix(in srgb, var(--color-surface, #fff) 70%, transparent);
+  --home-accent: var(--color-accent, #2563eb);
+  --home-accent-2: var(--color-accent-secondary, var(--home-accent));
+  --home-on-accent: var(--color-on-accent, #fff);
+  --home-shell: calc(min(var(--page-max), 100%) - 2 * var(--page-gutter));
+
+  color: var(--home-ink);
+  background: var(--color-bg, #fff);
+  font-family: var(--home-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ── Layout primitives ───────────────────────────── */
+
+.site-home-shell {
+  width: var(--home-shell);
+  margin: 0 auto;
+}
+
+.site-home-eyebrow,
+.site-home-section-kicker {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--home-accent);
+  font-family: var(--home-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.site-home-eyebrow::before,
+.site-home-section-kicker::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* ── Hero ─────────────────────────────────────────── */
+
+.site-home-hero {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(96px, 14vh, 168px) 0 clamp(96px, 14vh, 168px);
+  overflow: hidden;
+}
+
+.site-home-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -10% -20% auto auto;
+  width: min(960px, 80%);
+  height: min(720px, 80%);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--home-accent) 18%, transparent),
+    transparent 72%
+  );
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.site-home-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: auto -10% -30% -10%;
+  height: 60%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--home-accent-2) 10%, transparent),
+    transparent 70%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.site-home-hero-inner {
+  width: var(--home-shell);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: clamp(48px, 8vw, 112px);
+  align-items: center;
+}
+
+.site-home-copy {
+  max-width: 38rem;
+  animation: site-home-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.site-home h1 {
+  margin: 1.6rem 0 0;
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(3rem, 7.2vw, 6.8rem);
+  font-weight: 380;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+}
+
+.site-home-headline {
+  max-width: 16ch;
+  margin: 1.6rem 0 0;
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  font-weight: 380;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+}
+
+.site-home-description {
+  max-width: 32rem;
+  margin: 1.6rem 0 0;
+  color: var(--home-muted);
+  font-size: clamp(1rem, 1.05vw, 1.075rem);
+  line-height: 1.75;
+}
+
+.site-home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.4rem;
+}
+
+.site-home-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 2.7rem;
+  padding: 0 1.05rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--home-ink);
+  background: transparent;
+  font-family: var(--home-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.site-home-action::after {
+  content: "";
+  width: 0.42rem;
+  height: 0.42rem;
+  border-right: 1.4px solid currentColor;
+  border-top: 1.4px solid currentColor;
+  transform: rotate(45deg) translateX(-1px);
+  opacity: 0.7;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.site-home-action:hover::after {
+  transform: rotate(45deg) translateX(2px);
+  opacity: 1;
+}
+
+.site-home-action.is-primary {
+  color: var(--home-on-accent);
+  background: var(--home-accent);
+  border-color: var(--home-accent);
+}
+
+.site-home-action.is-primary:hover {
+  background: color-mix(in srgb, var(--home-accent) 88%, var(--home-ink));
+  border-color: color-mix(in srgb, var(--home-accent) 88%, var(--home-ink));
+}
+
+.site-home-action.is-secondary {
+  border-color: var(--home-faint);
+  color: var(--home-ink);
+}
+
+.site-home-action.is-secondary:hover {
+  border-color: var(--home-ink);
+  background: color-mix(in srgb, var(--home-ink) 4%, transparent);
+}
+
+/* ── Hero visual: signature shape per site ───────── */
+
+.site-home-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(360px, 42vw, 520px);
+  animation: site-home-rise 0.85s 0.08s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.site-home-figure {
+  position: relative;
+  width: min(100%, 520px);
+  aspect-ratio: 1.05 / 1;
+  border-radius: 22px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--color-surface, #fff) 90%, transparent),
+    color-mix(in srgb, var(--color-bg, #fff) 92%, transparent) 60%
+  );
+  border: 1px solid var(--home-rule);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.site-home-figure::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(
+    140% 100% at 0% 0%,
+    color-mix(in srgb, var(--home-accent) 12%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.site-home-figure-label {
+  position: absolute;
+  z-index: 2;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--home-muted);
+  font-family: var(--home-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.site-home-figure-label::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--home-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--home-accent) 18%, transparent);
+}
+
+.site-home-figure-svg {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Per-kind colour mood (light shifts only — kept calm) */
+.site-home--ecosystem .site-home-figure::before {
+  background:
+    radial-gradient(
+      140% 100% at 0% 0%,
+      color-mix(in srgb, var(--home-accent) 14%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      100% 80% at 100% 100%,
+      color-mix(in srgb, var(--home-accent-2) 10%, transparent),
+      transparent 60%
+    );
+}
+
+.site-home--blocks .site-home-figure {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface, #fff) 90%, transparent),
+    color-mix(in srgb, var(--color-bg, #fff) 92%, transparent) 70%
+  );
+}
+
+.site-home--agents .site-home-figure {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--home-accent) 10%, var(--color-surface, #fff)),
+    color-mix(in srgb, var(--color-bg, #fff) 90%, transparent) 70%
+  );
+}
+
+.site-home--browser .site-home-figure {
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--color-surface, #fff) 92%, transparent),
+    color-mix(in srgb, var(--home-accent-2) 6%, var(--color-bg, #fff)) 100%
+  );
+}
+
+.site-home--wallet .site-home-figure {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--home-accent) 12%, var(--color-surface, #fff)),
+    color-mix(in srgb, var(--color-bg, #fff) 90%, transparent) 70%
+  );
+}
+
+.site-home--spaces .site-home-figure {
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--color-surface, #fff) 92%, transparent),
+    color-mix(in srgb, var(--home-accent) 8%, var(--color-bg, #fff)) 100%
+  );
+}
+
+/* ── Support section: pull quote + proof list ────── */
+
+.site-home-support {
+  width: var(--home-shell);
+  margin: 0 auto;
+  padding: clamp(96px, 14vw, 168px) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.8fr);
+  gap: clamp(56px, 9vw, 120px);
+  align-items: start;
+}
+
+.site-home-section-copy h2,
+.site-home-detail-copy h2,
+.site-home-cta h2 {
+  margin: 1.4rem 0 0;
+  max-width: 18ch;
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 380;
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+}
+
+.site-home-section-copy > p,
+.site-home-detail-copy > p,
+.site-home-cta > div > p {
+  max-width: 38rem;
+  margin: 1.6rem 0 0;
+  color: var(--home-muted);
+  font-size: clamp(1rem, 1.05vw, 1.075rem);
+  line-height: 1.8;
+}
+
+.site-home-proof {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+}
+
+.site-home-proof li {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--home-rule);
+}
+
+.site-home-proof li:first-child {
+  border-top: 1px solid var(--home-rule);
+}
+
+.site-home-proof span {
+  color: var(--home-muted);
+  font-family: var(--home-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.site-home-proof strong {
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  font-weight: 420;
+  line-height: 1.3;
+}
+
+/* ── Detail section: numbered flow + signature mark ── */
+
+.site-home-detail {
+  width: var(--home-shell);
+  margin: 0 auto;
+  padding: clamp(96px, 14vw, 168px) 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.32fr) minmax(0, 1fr);
+  gap: clamp(64px, 10vw, 128px);
+  align-items: start;
+  border-top: 1px solid var(--home-rule);
+}
+
+.site-home-detail-mark {
+  width: clamp(140px, 18vw, 220px);
+  aspect-ratio: 1;
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-top: 0.5rem;
+}
+
+.site-home-detail-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: var(--home-accent);
+}
+
+.site-home-flow {
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+}
+
+.site-home-flow li {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: 1.5rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--home-rule);
+}
+
+.site-home-flow li:first-child {
+  border-top: 1px solid var(--home-rule);
+}
+
+.site-home-flow li > span {
+  align-self: start;
+  padding-top: 0.2rem;
+  color: var(--home-accent);
+  font-family: var(--home-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.site-home-flow li > strong {
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(1.05rem, 1.4vw, 1.32rem);
+  font-weight: 440;
+  letter-spacing: -0.005em;
+  line-height: 1.32;
+}
+
+.site-home-flow li > p {
+  grid-column: 2;
+  margin: 0.5rem 0 0;
+  color: var(--home-muted);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+/* ── Highlights (3-up) ───────────────────────────── */
+
+.site-home-points {
+  width: var(--home-shell);
+  margin: 0 auto;
+  padding: clamp(96px, 14vw, 168px) 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  border-top: 1px solid var(--home-rule);
+}
+
+.site-home-point {
+  padding-top: 1.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--home-accent) 38%, var(--home-rule));
+}
+
+.site-home-point span {
+  color: var(--home-accent);
+  font-family: var(--home-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.site-home-point h3 {
+  margin: 0.85rem 0 0;
+  color: var(--home-ink);
+  font-family: var(--home-display);
+  font-size: clamp(1.18rem, 1.6vw, 1.5rem);
+  font-weight: 460;
+  line-height: 1.24;
+  letter-spacing: -0.005em;
+}
+
+.site-home-point p {
+  margin: 0.95rem 0 0;
+  color: var(--home-muted);
+  line-height: 1.74;
+}
+
+/* ── Closing CTA ─────────────────────────────────── */
+
+.site-home-cta {
+  width: var(--home-shell);
+  margin: 0 auto clamp(80px, 12vw, 144px);
+  padding: clamp(64px, 10vw, 112px) 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(2rem, 6vw, 4rem);
+  align-items: end;
+  border-top: 1px solid var(--home-rule);
+}
+
+.site-home-cta .site-home-actions {
+  margin-top: 0;
+  justify-content: flex-end;
+}
+
+/* ── Reveal animation ────────────────────────────── */
+
+.site-home-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.site-home-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes site-home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ───────────────────────────────────── */
+
+@media (max-width: 1040px) {
+  .site-home-hero-inner,
+  .site-home-support,
+  .site-home-detail,
+  .site-home-cta {
+    grid-template-columns: 1fr;
+  }
+
+  .site-home-cta {
+    align-items: start;
+    gap: 2rem;
+  }
+
+  .site-home-cta .site-home-actions {
+    justify-content: flex-start;
+  }
+
+  .site-home-detail-mark {
+    width: clamp(96px, 22vw, 160px);
+  }
+}
+
+@media (max-width: 720px) {
+  .site-home {
+    font-size: 15.5px;
+  }
+
+  .site-home-hero {
+    padding: clamp(56px, 10vw, 96px) 0 clamp(64px, 12vw, 120px);
+  }
+
+  .site-home h1 {
+    font-size: clamp(2.4rem, 12.5vw, 3.6rem);
+  }
+
+  .site-home-headline {
+    font-size: clamp(1.2rem, 5.5vw, 1.7rem);
+  }
+
+  .site-home-media {
+    min-height: 280px;
+  }
+
+  .site-home-figure {
+    width: min(100%, 440px);
+  }
+
+  .site-home-flow li {
+    grid-template-columns: 2.4rem 1fr;
+    gap: 1rem;
+    padding: 1.2rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-home-copy,
+  .site-home-media,
+  .site-home-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* CJK display tightening — Latin tracking is too negative for square CJK
+   glyphs and makes them touch. Reset to neutral and lift line-height a hair.
+   `font-feature-settings: "palt"` enables proportional alternates so JP
+   punctuation widths feel less hollow. */
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home h1,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-headline,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-section-copy h2,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-detail-copy h2,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-cta h2 {
+  letter-spacing: 0;
+  font-feature-settings: "palt" 1;
+}
+
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home h1 {
+  line-height: 1.08;
+}
+
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-headline {
+  line-height: 1.32;
+  max-width: 22ch;
+}
+
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-description,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-section-copy > p,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-detail-copy > p,
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-cta > div > p {
+  line-height: 1.85;
+  font-feature-settings: "palt" 1;
+}
+
+:where([lang|="zh"], [lang="ja"], [lang="ko"]) .site-home-action {
+  letter-spacing: 0;
+}

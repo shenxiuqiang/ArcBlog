@@ -1,0 +1,137 @@
+/* Mono hero -- huge Instrument Serif heading, green highlights, monospace code block */
+.hero-banner {
+  position: relative;
+  background: var(--color-bg, #f0ede6);
+  overflow: hidden;
+  padding: 6rem 0 5rem;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  color: var(--color-text, #000000);
+}
+
+.hero-banner .container {
+  position: relative;
+  z-index: 2;
+  max-width: var(--container-max, 900px);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.hero-banner .hero-title {
+  font-family: var(--font-heading, "Instrument Serif", serif);
+  font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.05;
+  margin: 0 0 1.5rem;
+  color: var(--color-text, #000000);
+  letter-spacing: -0.02em;
+}
+
+.hero-banner .hero-title .highlight {
+  color: var(--color-accent, #006633);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--color-accent, #006633);
+}
+
+.hero-banner .hero-subtitle {
+  font-family: var(--font-body, "Space Mono", monospace);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  max-width: var(--content-max, 700px);
+  margin: 0 0 2rem;
+  color: var(--color-dim, #666666);
+}
+
+.hero-banner .hero-code {
+  margin: 0 0 2.5rem;
+  max-width: var(--content-max, 700px);
+}
+
+.hero-banner .hero-code pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface, #ffffff);
+  border-left: 3px solid var(--color-accent, #006633);
+  border-radius: 0;
+  overflow-x: auto;
+}
+
+.hero-banner .hero-code code {
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-text, #000000);
+}
+
+.hero-banner .hero-code .prompt {
+  color: var(--color-accent, #006633);
+  font-weight: 700;
+}
+
+.hero-banner .hero-code .output {
+  color: var(--color-dim, #666666);
+}
+
+.hero-banner .hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero-banner .btn {
+  font-family: var(--font-body, "Space Mono", monospace);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.hero-banner .btn-primary {
+  background: transparent;
+  color: var(--color-accent, #006633);
+  border: 1px solid var(--color-accent, #006633);
+}
+
+.hero-banner .btn-primary:hover {
+  background: var(--color-accent, #006633);
+  color: var(--color-bg, #f0ede6);
+}
+
+.hero-banner .btn-secondary {
+  background: transparent;
+  color: var(--color-dim, #666666);
+  border: 1px solid var(--color-border, #dddddd);
+}
+
+.hero-banner .btn-secondary:hover {
+  background: var(--color-text, #000000);
+  color: var(--color-bg, #f0ede6);
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 4rem 0 3rem;
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner .btn {
+    transition: none;
+  }
+}

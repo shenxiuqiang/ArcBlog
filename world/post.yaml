@@ -1,0 +1,25 @@
+kind: Post
+fields:
+  title: string
+  slug: string
+  summary: string
+  body: markdown
+  coverImage: string
+  images: json
+  tags: json
+  category: string
+  status: string # draft | published | archived | deleted
+  authorDid: string
+  authorName: string
+  seoTitle: string
+  seoDescription: string
+  ogTitle: string
+  ogDescription: string
+  ogImage: string
+  published: boolean
+  publishedAt: datetime
+  archivedAt: datetime
+  deletedAt: datetime
+  createdAt: datetime
+  updatedAt: datetime
+  version: number

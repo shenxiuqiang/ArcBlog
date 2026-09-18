@@ -1,0 +1,108 @@
+app "ArcBlog" {
+  default posts
+
+  shell {
+    header {
+      brand "ArcBlog" -> href "/"
+      action "Posts" -> page posts
+      action "Write" -> page compose
+      action "Studio" -> page admin
+      action "About" -> page about
+    }
+    footer "ArcBlog — DID-native writing, Markdown-first publishing."
+  }
+
+  page posts "Latest stories" {
+    card "A calmer place to read." {
+      text "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle."
+      action "Write a post" -> page compose
+    }
+    card "Topics" {
+      action "Technology" -> page posts
+      action "Design" -> page posts
+      action "Life" -> page posts
+    }
+    card "Browse filters" {
+      p "Use category and tag filters to narrow the public feed before opening an article."
+      input "category"
+      input "tag"
+      action "Subscribe via RSS" -> href "/docs/publishing-ops.md"
+    }
+    entity-overview
+  }
+  page compose "Write" {
+    connection-gate {
+      card gap=md content="Publish with your wallet" {
+        p "Sign in with DID Wallet to create a wallet-bound author session. Paste Markdown below; headings, quotes, lists, code, links and images are rendered as a readable article."
+      }
+      card gap=md content="Pre-publish checks" {
+        p "Before publish: title required, slug unique, summary/cover optional, Markdown rendered with sanitization."
+      }
+      card gap=md content="Metadata" {
+        input "category"
+        input "tags"
+      }
+      card gap=md content="SEO & social preview" {
+        p "Optional: set seo title/description and OG title/description/image. Defaults can fall back to post title, summary, and cover image."
+        input "seoTitle"
+        input "seoDescription"
+        input "ogTitle"
+        input "ogDescription"
+        input "ogImage"
+      }
+      post-editor {
+        p "Compose your story in Markdown. Drafts are private in your DID user space; publishing writes validated metadata into /blocklets/arcblog/instance/posts."
+      }
+      card gap=md content=Images {
+        p "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)."
+      }
+      afs-dropzone
+    }
+  }
+  page reader "Read" {
+    card "Article" {
+      text "This surface renders only published post records (status=published). Body remains Markdown at rest and must be sanitized at render time."
+      action "Share this article" -> href "/docs/share-cards.md"
+      action "Back to latest stories" -> page posts
+    }
+  }
+  page admin "Creator Studio" {
+    connection-gate {
+      card gap=md content="Your studio" {
+        p "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace."
+        action "New post" -> page compose
+      }
+      card gap=md content="Lifecycle controls" {
+        p "Supported transitions: draft→published, published→archived, archived→published, and soft delete for draft/archived records."
+      }
+      card gap=md content="Publishing checklist" {
+        p "Drafts stay in your DID user space. Public feeds list only status=published records after validation and successful publish."
+      }
+      card gap=md content="Quick ops" {
+        p "Use one-click queries for published/archived views, or open the full operations runbook for publish/archive/delete commands."
+        action "Query published posts" -> exec "/blocklets/arcblog/.actions/query"
+        action "Query archived posts" -> exec "/blocklets/arcblog/.actions/query"
+        action "Open publishing runbook" -> navigate "/docs/publishing-ops.md"
+        action "Open daily report guide" -> navigate "/docs/publishing-ops.md"
+      }
+      card gap=md content="Filters" {
+        p "Use lifecycle + category + tag filters to review content segments in Studio. Query helper supports status/category/tag operations."
+        input "statusFilter"
+        input "categoryFilter"
+        input "tagFilter"
+        action "Open query helper docs" -> navigate "/docs/publishing-ops.md"
+      }
+      afs-list
+    }
+  }
+  page about "About" {
+    card "About ArcBlog" {
+      text "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space."
+      action "View product summary" -> href "/docs/product-summary.md"
+      action "View operations runbook" -> href "/docs/operations-runbook.md"
+      action "View developer guide" -> href "/docs/developer-guide.md"
+      action "View product roadmap" -> href "/docs/roadmap.md"
+      action "View release checklist" -> href "/docs/release-checklist.md"
+    }
+  }
+}

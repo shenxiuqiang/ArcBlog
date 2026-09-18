@@ -1,0 +1,22 @@
+{
+  "title": "ArcBlog",
+  "defaultPage": "posts",
+  "wrapper": "wrapper.json",
+  "pages": {
+    "posts": {
+      "tree": "pages/posts.json"
+    },
+    "compose": {
+      "tree": "pages/compose.json"
+    },
+    "reader": {
+      "tree": "pages/reader.json"
+    },
+    "admin": {
+      "tree": "pages/admin.json"
+    },
+    "about": {
+      "tree": "pages/about.json"
+    }
+  }
+}

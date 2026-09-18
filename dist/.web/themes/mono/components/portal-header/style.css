@@ -1,0 +1,197 @@
+/* Mono portal header -- brutalist monospace, Instrument Serif accents, crosshair cursor */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap");
+
+/* Crosshair cursor on body via header CSS */
+body {
+  cursor: crosshair;
+}
+
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--color-bg, #f0ede6);
+  border-bottom: 1px solid var(--color-border, #dddddd);
+  padding: 0;
+}
+
+.portal-header.scrolled {
+  /* No shadow -- brutalist is flat */
+}
+
+.portal-header .container {
+  max-width: var(--container-max, 900px);
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+}
+
+.portal-header .logo {
+  font-family: var(--font-body, "Space Mono", monospace);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text, #000000);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.portal-header .logo .dot {
+  color: var(--color-accent, #006633);
+  font-weight: 700;
+}
+
+.portal-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.portal-header .main-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.portal-header .main-nav a {
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-dim, #666666);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.portal-header .main-nav a:hover {
+  color: var(--color-accent, #006633);
+}
+
+/* Header controls */
+.portal-header .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Theme selector */
+.portal-header .theme-selector {
+  position: relative;
+}
+
+.portal-header .theme-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 28px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--color-border, #dddddd);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-dim, #666666);
+  cursor: pointer;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.portal-header .theme-selector-btn:hover {
+  border-color: var(--color-accent, #006633);
+  color: var(--color-accent, #006633);
+}
+
+.portal-header .theme-selector-btn .icon-chevron {
+  font-size: 0.625rem;
+}
+
+.portal-header .theme-selector-btn.open .icon-chevron {
+  transform: rotate(180deg);
+  display: inline-block;
+}
+
+.portal-header .theme-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  min-width: 120px;
+  background: var(--color-bg, #f0ede6);
+  border: 1px solid var(--color-border, #dddddd);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  z-index: 100;
+}
+
+.portal-header .theme-option {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-dim, #666666);
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 0.6875rem;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.portal-header .theme-option:hover {
+  background: var(--color-accent, #006633);
+  color: var(--color-bg, #f0ede6);
+}
+
+.portal-header .theme-option.active {
+  color: var(--color-accent, #006633);
+  font-weight: 700;
+}
+
+.portal-header .theme-option.active::before {
+  content: "> ";
+}
+
+/* Mode toggle */
+.portal-header .mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border, #dddddd);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-dim, #666666);
+  cursor: pointer;
+}
+
+.portal-header .mode-toggle:hover {
+  border-color: var(--color-accent, #006633);
+  color: var(--color-accent, #006633);
+}
+
+/* Show sun by default, moon when dark */
+.portal-header .mode-toggle .icon-moon {
+  display: none;
+}
+
+.portal-header .mode-toggle .icon-sun {
+  display: block;
+}
+
+.portal-header .mode-toggle.is-dark .icon-moon {
+  display: block;
+}
+
+.portal-header .mode-toggle.is-dark .icon-sun {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-header .logo .dot {
+    animation: none;
+  }
+}

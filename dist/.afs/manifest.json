@@ -1,0 +1,870 @@
+{
+  "afs": "1.0",
+  "type": "readonly-tree",
+  "files": [
+    {
+      "path": ".afs/preflight.json",
+      "size": 42,
+      "contentType": "application/json",
+      "sha256": "f23a3b85819c1ea7a512493ea26c771c5cfb3b034dc29112c321ec2fba5258e1"
+    },
+    {
+      "path": ".aup/app.aup",
+      "size": 2238,
+      "contentType": "application/octet-stream",
+      "sha256": "9147fc119af9e97fd8ac3c536db044cf5d244c714182a5203f45acf892d00cf7"
+    },
+    {
+      "path": ".aup/app.json",
+      "size": 378,
+      "contentType": "application/json",
+      "sha256": "3e2b3def93b4523c32f0e80159b6da6059916f5bae43e6b86c2c1ece984d541a"
+    },
+    {
+      "path": ".aup/man/admin.yaml",
+      "size": 949,
+      "contentType": "text/yaml",
+      "sha256": "620082e314fac530b73e1a39b5772ff337a758129f41d8a320878a8c42d20f2a"
+    },
+    {
+      "path": ".aup/man/posts.yaml",
+      "size": 923,
+      "contentType": "text/yaml",
+      "sha256": "750aef8802818cc03dc05de7290b5e567e9425cfb15e5b23a66f7f3e34c38002"
+    },
+    {
+      "path": ".aup/pages/about.json",
+      "size": 858,
+      "contentType": "application/json",
+      "sha256": "634428ad83f6d2095076179d93e1b96e4eab50aad5990f76b54ff29763e801f6"
+    },
+    {
+      "path": ".aup/pages/admin.json",
+      "size": 1617,
+      "contentType": "application/json",
+      "sha256": "4a3b16c646ccf39d766fd1c980b4167968b32c27bdc88bee565a0f56fb947608"
+    },
+    {
+      "path": ".aup/pages/compose.json",
+      "size": 1820,
+      "contentType": "application/json",
+      "sha256": "b60aa615f9cb91f360183211cf30654b17406a514bd9b7239ecb599aaf1c9ce3"
+    },
+    {
+      "path": ".aup/pages/posts.json",
+      "size": 2992,
+      "contentType": "application/json",
+      "sha256": "dcca0a533fd3b57d3cc3880ac1fdd9cc0928827d65c99c2df7da749726fe3c82"
+    },
+    {
+      "path": ".aup/pages/reader.json",
+      "size": 773,
+      "contentType": "application/json",
+      "sha256": "607c2b5f380f7f0ad909d514af50ce8aada3694666bcbfa204396b976d216ef7"
+    },
+    {
+      "path": ".aup/wrapper.json",
+      "size": 3216,
+      "contentType": "application/json",
+      "sha256": "7e06d053cd4906be104574d6abfc26f709545bbf6f7a856fa091cca0f8b3b181"
+    },
+    {
+      "path": ".web/components/arcblog-home/component.dsl",
+      "size": 53,
+      "contentType": "application/octet-stream",
+      "sha256": "e02560cf55a5bc428f937869624d0699940bf180689be65f14472f14a11fbfcb"
+    },
+    {
+      "path": ".web/components/arcblog-home/manifest.json",
+      "size": 117,
+      "contentType": "application/json",
+      "sha256": "c65bc8511e562e55be489e4cb92efd01813bd88018791689c83d4ee6d4bc218a"
+    },
+    {
+      "path": ".web/components/arcblog-home/render.js",
+      "size": 5938,
+      "contentType": "text/javascript",
+      "sha256": "9bcf96e92aa82474c6cf1a0e41be969b9154df43703d2664d3733e00faf2104d"
+    },
+    {
+      "path": ".web/components/arcblog-home/script.js",
+      "size": 835,
+      "contentType": "text/javascript",
+      "sha256": "2ccb8d1b393c36af0ba0d603ad00e127c4cf1b7eeb4f7850649c32aa645e4189"
+    },
+    {
+      "path": ".web/components/arcblog-home/style.css",
+      "size": 10942,
+      "contentType": "text/css",
+      "sha256": "e4378698408bbfb020ee3bc04f215c1fcb5da4f6ddf00379265c11b13b3c40b8"
+    },
+    {
+      "path": ".web/themes/default/components/access-gate/manifest.json",
+      "size": 870,
+      "contentType": "application/json",
+      "sha256": "9b2a60a66afeaa105f5cd259081d36925c9d65200df99544ae999bef338558ee"
+    },
+    {
+      "path": ".web/themes/default/components/access-gate/render.js",
+      "size": 1953,
+      "contentType": "text/javascript",
+      "sha256": "86c113d8e9c638096883c35e17d68e1973f671944e4b440f89f7562be256d692"
+    },
+    {
+      "path": ".web/themes/default/components/access-gate/style.css",
+      "size": 2121,
+      "contentType": "text/css",
+      "sha256": "eb939cc943e858973f08310cd4a91da5efd099f881e74d466fd77570e0b8fa16"
+    },
+    {
+      "path": ".web/themes/default/components/book-reader/manifest.json",
+      "size": 886,
+      "contentType": "application/json",
+      "sha256": "c550dfba88d1bd1002c1c986f3df27611c5d8814ff929da087ab55697ce8b93a"
+    },
+    {
+      "path": ".web/themes/default/components/book-reader/render.js",
+      "size": 809,
+      "contentType": "text/javascript",
+      "sha256": "7de7ad9b774d884fc66bfa818ea075c634352ca1654ded2343c414af1e35fc76"
+    },
+    {
+      "path": ".web/themes/default/components/book-reader/script.js",
+      "size": 39859,
+      "contentType": "text/javascript",
+      "sha256": "711b0bd36e61e89ba0ba662544b6824cf38c40fee29004cce7305d5b24ce1fae"
+    },
+    {
+      "path": ".web/themes/default/components/book-reader/style.css",
+      "size": 14348,
+      "contentType": "text/css",
+      "sha256": "987b4d313a07acf633e15e1e90a4274cd5e2c3295c2dcfc4d2c506bc6b457cfb"
+    },
+    {
+      "path": ".web/themes/default/components/content-card/manifest.json",
+      "size": 1360,
+      "contentType": "application/json",
+      "sha256": "780f10209e5b730ae836bf74637d530895eaf45ed3fb89b584996dc36a919fc0"
+    },
+    {
+      "path": ".web/themes/default/components/content-card/render.js",
+      "size": 10298,
+      "contentType": "text/javascript",
+      "sha256": "76955ebd5475b8392950cc047d0db737407682836d08158f753013d1c27263b1"
+    },
+    {
+      "path": ".web/themes/default/components/content-card/script.js",
+      "size": 246,
+      "contentType": "text/javascript",
+      "sha256": "865dc84aa308f8dfbdc5e94c87c65c29c2e7e23b668aeff8ea67e9a2ec037b26"
+    },
+    {
+      "path": ".web/themes/default/components/content-card/style.css",
+      "size": 11021,
+      "contentType": "text/css",
+      "sha256": "a79341cf615e20b0de110b0d0d7ceecd76a36614c4888459ba84a792113f0152"
+    },
+    {
+      "path": ".web/themes/default/components/detail-content/manifest.json",
+      "size": 209,
+      "contentType": "application/json",
+      "sha256": "58016c0f7e6349d3af91581c14a574134a48cce782e25254139f722812adfc1e"
+    },
+    {
+      "path": ".web/themes/default/components/detail-content/render.js",
+      "size": 561,
+      "contentType": "text/javascript",
+      "sha256": "dcacac4236f570ad8f24c13261ffce6fe3578f5361a6381fe107e85153f00731"
+    },
+    {
+      "path": ".web/themes/default/components/detail-content/style.css",
+      "size": 12283,
+      "contentType": "text/css",
+      "sha256": "51969e3fa1f346e306e39f6c1c446495dc05f5c8ae821f29b0775044c40fe5b6"
+    },
+    {
+      "path": ".web/themes/default/components/detail-sidebar/manifest.json",
+      "size": 132,
+      "contentType": "application/json",
+      "sha256": "6a01f8f543b901316ccae089af74111d6914c1a8cffd472c2465e263c2d75fd8"
+    },
+    {
+      "path": ".web/themes/default/components/detail-sidebar/render.js",
+      "size": 273,
+      "contentType": "text/javascript",
+      "sha256": "64cd617983e5b56e7cfe2b616e325433f40435da63e584ed1e28923504672b81"
+    },
+    {
+      "path": ".web/themes/default/components/detail-sidebar/style.css",
+      "size": 1226,
+      "contentType": "text/css",
+      "sha256": "c017e45e5f4c803c744b22c51d35e2cb0fa46cff2a807351736d369009042a62"
+    },
+    {
+      "path": ".web/themes/default/components/event-card/manifest.json",
+      "size": 461,
+      "contentType": "application/json",
+      "sha256": "cbb253c639916a5ceab41c0725e298256b80a6516aa0494a0c4588382e8bea86"
+    },
+    {
+      "path": ".web/themes/default/components/event-card/render.js",
+      "size": 5676,
+      "contentType": "text/javascript",
+      "sha256": "74c49c56b3a03794d5708050d6e38a4e88b4c2fed8fdca1cbf4852478e534ae6"
+    },
+    {
+      "path": ".web/themes/default/components/event-card/style.css",
+      "size": 5263,
+      "contentType": "text/css",
+      "sha256": "4de8e6d07bdd30cb148ab72b9f59eee9a45a86f6669a0b86efc7226076161078"
+    },
+    {
+      "path": ".web/themes/default/components/event-hero/manifest.json",
+      "size": 857,
+      "contentType": "application/json",
+      "sha256": "746a6b97009c8096a0a06e3b357f33df807c5b263ef761251651ceabde0631c1"
+    },
+    {
+      "path": ".web/themes/default/components/event-hero/render.js",
+      "size": 5467,
+      "contentType": "text/javascript",
+      "sha256": "e13109aed6aa43467bb525a81ad3807fd94a1e0997d9ab63b69f97e451e38b25"
+    },
+    {
+      "path": ".web/themes/default/components/event-hero/style.css",
+      "size": 6353,
+      "contentType": "text/css",
+      "sha256": "8b5bef41512531306c3f902e167f03bd0b348ddede328ebf337d265fbd66aa2b"
+    },
+    {
+      "path": ".web/themes/default/components/globe/manifest.json",
+      "size": 1675,
+      "contentType": "application/json",
+      "sha256": "818a32e9ea8662d79a1881a224b2b71ed2397a386b38f006e0d80d18bbf6e249"
+    },
+    {
+      "path": ".web/themes/default/components/globe/render.d.ts",
+      "size": 195,
+      "contentType": "video/mp2t",
+      "sha256": "d4b5ee3061711836e888d0420c045f397d1fb2ecc7df5dd0ef65c10253e0c54a"
+    },
+    {
+      "path": ".web/themes/default/components/globe/render.js",
+      "size": 2614,
+      "contentType": "text/javascript",
+      "sha256": "14911e85f70faaf092e2355c2ffe8cf76d51db27fcd90f6cd855bde9bac83521"
+    },
+    {
+      "path": ".web/themes/default/components/globe/script.js",
+      "size": 26609,
+      "contentType": "text/javascript",
+      "sha256": "ecda7ae95d464c5ac2ba8602cbcb881c5356e868c3a00423e3f624167cc8ed3d"
+    },
+    {
+      "path": ".web/themes/default/components/globe/style.css",
+      "size": 3433,
+      "contentType": "text/css",
+      "sha256": "8f4a3c5d392e8c701c953f8676fd0cf44901d81d4bd55b23649eaef08a450f57"
+    },
+    {
+      "path": ".web/themes/default/components/hero-banner/manifest.json",
+      "size": 802,
+      "contentType": "application/json",
+      "sha256": "ff474faba9ab2eacc79529fb0b2754ef27b11323a853b31db0e7424c2e533a83"
+    },
+    {
+      "path": ".web/themes/default/components/hero-banner/render.js",
+      "size": 2949,
+      "contentType": "text/javascript",
+      "sha256": "c54f81f10ef1b388f76229b80b2edfa160b55d3206b63b7f949836c1eefc7993"
+    },
+    {
+      "path": ".web/themes/default/components/hero-banner/script.js",
+      "size": 29182,
+      "contentType": "text/javascript",
+      "sha256": "0422a3ca6112dc3cb1e36794e2ed79c2a3da63316bb825c820ffb2ac6b6039d1"
+    },
+    {
+      "path": ".web/themes/default/components/hero-banner/style.css",
+      "size": 2373,
+      "contentType": "text/css",
+      "sha256": "cf37dd50765de0d9ecadcb5e7de3954f656c34ae319cb524bca1e82a5346e1e4"
+    },
+    {
+      "path": ".web/themes/default/components/key-pad/manifest.json",
+      "size": 349,
+      "contentType": "application/json",
+      "sha256": "c48e8c8f4efa648b89a3c054f7efa0f7f665e7c8a67be16bd3d53227132df96c"
+    },
+    {
+      "path": ".web/themes/default/components/key-pad/render.js",
+      "size": 91,
+      "contentType": "text/javascript",
+      "sha256": "dc3442416e771f0b1384b3aab96e087c244b3bf733a92e8909d7c1f8ddddfb35"
+    },
+    {
+      "path": ".web/themes/default/components/key-pad/script.js",
+      "size": 2082,
+      "contentType": "text/javascript",
+      "sha256": "e664a8af62545bf096f36798c340a6e7856bf03e03b15d6a45158cba235651a4"
+    },
+    {
+      "path": ".web/themes/default/components/key-pad/style.css",
+      "size": 2105,
+      "contentType": "text/css",
+      "sha256": "f0b1a4714180237f4e2e1ba3fd6f4875d58afa08c9a551bf7e1aac86c73f4ea5"
+    },
+    {
+      "path": ".web/themes/default/components/leaf-shadow/manifest.json",
+      "size": 823,
+      "contentType": "application/json",
+      "sha256": "aab408b123e13743daf8f761904b569643d878be2e360feef6570573ac7998ab"
+    },
+    {
+      "path": ".web/themes/default/components/leaf-shadow/render.d.ts",
+      "size": 195,
+      "contentType": "video/mp2t",
+      "sha256": "d4b5ee3061711836e888d0420c045f397d1fb2ecc7df5dd0ef65c10253e0c54a"
+    },
+    {
+      "path": ".web/themes/default/components/leaf-shadow/render.js",
+      "size": 1934,
+      "contentType": "text/javascript",
+      "sha256": "4404017f14e51a3daee311b7f40520ddc075ba19f4a401f135e3e09815a4b038"
+    },
+    {
+      "path": ".web/themes/default/components/leaf-shadow/script.js",
+      "size": 12040,
+      "contentType": "text/javascript",
+      "sha256": "445bf5c5458ea97e15715a715f8335b3ed8f18917bded32e7f05f555bf23f03c"
+    },
+    {
+      "path": ".web/themes/default/components/leaf-shadow/style.css",
+      "size": 2771,
+      "contentType": "text/css",
+      "sha256": "008106687205d2e47420138ffdbe4d2d89cfd1cab129555d630e30d139961901"
+    },
+    {
+      "path": ".web/themes/default/components/news-ticker/manifest.json",
+      "size": 239,
+      "contentType": "application/json",
+      "sha256": "84d0cfeac6a25fc18055126b2263394d57bd05865178cd1dde70ca6815ffd6a7"
+    },
+    {
+      "path": ".web/themes/default/components/news-ticker/render.js",
+      "size": 824,
+      "contentType": "text/javascript",
+      "sha256": "ee0157892ced376ed35d8dc8b9b5bb053d61602d3c06bb87dc1d8f9afbf487e5"
+    },
+    {
+      "path": ".web/themes/default/components/news-ticker/script.js",
+      "size": 747,
+      "contentType": "text/javascript",
+      "sha256": "815af423139f2921e4261f21ff1dc1e0d1814ec2792da61a16d98edff26d5dfc"
+    },
+    {
+      "path": ".web/themes/default/components/news-ticker/style.css",
+      "size": 1174,
+      "contentType": "text/css",
+      "sha256": "b42959e8cd7b5637be2f6bd7855b2106d62eaa34025ea91be514dc704cc973fa"
+    },
+    {
+      "path": ".web/themes/default/components/page-sections/manifest.json",
+      "size": 135,
+      "contentType": "application/json",
+      "sha256": "54fd2fb3b8ef03c33c0552681c1c05155567045a2ecf2cdd8ff98d9bd358c549"
+    },
+    {
+      "path": ".web/themes/default/components/page-sections/render.js",
+      "size": 540,
+      "contentType": "text/javascript",
+      "sha256": "8fb4a0e0cd64c6fc09ea6bbe0af63329432d0653fe3d8d1a86048b1e085b56da"
+    },
+    {
+      "path": ".web/themes/default/components/page-sections/style.css",
+      "size": 2651,
+      "contentType": "text/css",
+      "sha256": "99d984d13a7a77be339bb319f44911d4bf8d4dcd39075b63b806c0f5982616df"
+    },
+    {
+      "path": ".web/themes/default/components/page-stack/manifest.json",
+      "size": 114,
+      "contentType": "application/json",
+      "sha256": "5a4dd3849c90062a115afab402444012abfa244c56f254c7e89bf4093d03e364"
+    },
+    {
+      "path": ".web/themes/default/components/page-stack/render.js",
+      "size": 130,
+      "contentType": "text/javascript",
+      "sha256": "7aa58e5f45fc2cbef48a9c63a24d77366452e4eb30ae13e908406a4528d2820b"
+    },
+    {
+      "path": ".web/themes/default/components/page-stack/style.css",
+      "size": 0,
+      "contentType": "text/css",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".web/themes/default/components/platform-stack/manifest.json",
+      "size": 743,
+      "contentType": "application/json",
+      "sha256": "620ef27ef9d97b43b76f41bf714dec5bd5d4a18724aa026cd0cd1aece0bdbe29"
+    },
+    {
+      "path": ".web/themes/default/components/platform-stack/render.js",
+      "size": 2603,
+      "contentType": "text/javascript",
+      "sha256": "ab97ad14b35ef69c2000e78234cd0c5d163acdf9a2a1f1920bf785999721e517"
+    },
+    {
+      "path": ".web/themes/default/components/platform-stack/style.css",
+      "size": 2809,
+      "contentType": "text/css",
+      "sha256": "9bd8e713958572da2de252b2d6d0a9422fb721483ef4280f98f0bccc2e40d4bb"
+    },
+    {
+      "path": ".web/themes/default/components/portal-footer/manifest.json",
+      "size": 382,
+      "contentType": "application/json",
+      "sha256": "cea024491d9443845abfdbeb85f8612d476347990a379e183ea0fb348acfd1f3"
+    },
+    {
+      "path": ".web/themes/default/components/portal-footer/render.js",
+      "size": 3336,
+      "contentType": "text/javascript",
+      "sha256": "94bc94c8d94205d261efd06abae44683f581ff0b646f6182374480b61ad37466"
+    },
+    {
+      "path": ".web/themes/default/components/portal-footer/style.css",
+      "size": 2839,
+      "contentType": "text/css",
+      "sha256": "fc2dca4718ef655d193cba5b03e4b9686c613a424756f0766a3009932048001c"
+    },
+    {
+      "path": ".web/themes/default/components/portal-header/manifest.json",
+      "size": 466,
+      "contentType": "application/json",
+      "sha256": "cd0639902258d1b0ddfac3b308707eb4216e423dc0e7c44c88d9aded3d691ac6"
+    },
+    {
+      "path": ".web/themes/default/components/portal-header/render.js",
+      "size": 6945,
+      "contentType": "text/javascript",
+      "sha256": "df062588aa1f7e43d5050093bf33fe8f0073d62841598c8ce5cd55dae10d8c47"
+    },
+    {
+      "path": ".web/themes/default/components/portal-header/script.js",
+      "size": 6342,
+      "contentType": "text/javascript",
+      "sha256": "8c2bddd52166e1736d3510fd00a7a07985c620a8f9900d13a996627fffc44eec"
+    },
+    {
+      "path": ".web/themes/default/components/portal-header/style.css",
+      "size": 16431,
+      "contentType": "text/css",
+      "sha256": "90224254b4ddfedc9ee7d69bea8cea53ef45269561dcd3692207508c61a9d786"
+    },
+    {
+      "path": ".web/themes/default/components/post-hero/manifest.json",
+      "size": 1268,
+      "contentType": "application/json",
+      "sha256": "1c69901eeec938fb627e7654f0ccff86953f3215bdf95d53e9b04de104eaa227"
+    },
+    {
+      "path": ".web/themes/default/components/post-hero/render.js",
+      "size": 8443,
+      "contentType": "text/javascript",
+      "sha256": "f8ca715c6924eea97f3548973bbf7ae04df005e8e4a072a8ba09b3e0fd098462"
+    },
+    {
+      "path": ".web/themes/default/components/post-hero/style.css",
+      "size": 7413,
+      "contentType": "text/css",
+      "sha256": "ac1feb220fc4a4d014babb3ab95d4ba3406a2495470d7290d5f33d1c55cffaec"
+    },
+    {
+      "path": ".web/themes/default/components/product-frame-gallery/manifest.json",
+      "size": 579,
+      "contentType": "application/json",
+      "sha256": "7232a21c581bf0e103cd4c2d2601ebede01c59e1870a600cc66bef4ba777137d"
+    },
+    {
+      "path": ".web/themes/default/components/product-frame-gallery/render.js",
+      "size": 5249,
+      "contentType": "text/javascript",
+      "sha256": "4b40fe5a288e12207cb55e76d496670633409fe4120dd9a598558ebc6ac1b386"
+    },
+    {
+      "path": ".web/themes/default/components/product-frame/manifest.json",
+      "size": 1382,
+      "contentType": "application/json",
+      "sha256": "8ccca501d5dd30c9aeaafb154d20266c63d44fa945b416db63341ae48a547501"
+    },
+    {
+      "path": ".web/themes/default/components/product-frame/render.js",
+      "size": 4341,
+      "contentType": "text/javascript",
+      "sha256": "e92590878e4ac155925aeb139fdea6119eec5b119a602800904f56c245a57387"
+    },
+    {
+      "path": ".web/themes/default/components/product-hero/manifest.json",
+      "size": 435,
+      "contentType": "application/json",
+      "sha256": "f94ef0d9cacd80a7f621ff8633ca23a67d7ff40aab5b7b35129e78d433bd05f4"
+    },
+    {
+      "path": ".web/themes/default/components/product-hero/render.js",
+      "size": 1773,
+      "contentType": "text/javascript",
+      "sha256": "ac5639cedd2e58f53af14c331f9b000e98b0f5a8b5cfa142b90616cc97b76977"
+    },
+    {
+      "path": ".web/themes/default/components/product-hero/style.css",
+      "size": 2204,
+      "contentType": "text/css",
+      "sha256": "d61a39e372ccb6986dae3fd5e78d980f807c62b23fc25fb7147c6c082d0d63ea"
+    },
+    {
+      "path": ".web/themes/default/components/product-showcase/manifest.json",
+      "size": 279,
+      "contentType": "application/json",
+      "sha256": "1bd0dbd08b8782ca0de17f4e21365f88e68ce1574c4f0c2fa12327f327e73797"
+    },
+    {
+      "path": ".web/themes/default/components/product-showcase/render.js",
+      "size": 1388,
+      "contentType": "text/javascript",
+      "sha256": "76d4c30d309e331e70ae87015bac7e2840a907b0220930d019298ffaf5d32d05"
+    },
+    {
+      "path": ".web/themes/default/components/product-showcase/script.js",
+      "size": 246,
+      "contentType": "text/javascript",
+      "sha256": "b9d4bd0c64284636704c002e6198b3304add11b0f8d5b0f5b23ef701ed360e39"
+    },
+    {
+      "path": ".web/themes/default/components/product-showcase/style.css",
+      "size": 2543,
+      "contentType": "text/css",
+      "sha256": "2db357e2b9010f976c43d07d2ba7f3792e094f73a3255550f1329fa855c25e4d"
+    },
+    {
+      "path": ".web/themes/default/components/related-content/manifest.json",
+      "size": 256,
+      "contentType": "application/json",
+      "sha256": "fc4631729e05f27551695c62d5843b9e91af6bc6e75143dfbbf508c357bb8e6a"
+    },
+    {
+      "path": ".web/themes/default/components/related-content/render.js",
+      "size": 1198,
+      "contentType": "text/javascript",
+      "sha256": "27a09c64640ed44ef4fcd8483e0e1e1fce9bc09c490d36df179dcdce743a73a1"
+    },
+    {
+      "path": ".web/themes/default/components/related-content/style.css",
+      "size": 1493,
+      "contentType": "text/css",
+      "sha256": "01210662d059dae467d544a520f967601756f38570b25151dcfc9899841aed2d"
+    },
+    {
+      "path": ".web/themes/default/components/site-home/manifest.json",
+      "size": 2012,
+      "contentType": "application/json",
+      "sha256": "606a4ac578e3bfe7fb3dfa97ff810e5a6a9c6e9899c2f1975434ec0b98c1ca45"
+    },
+    {
+      "path": ".web/themes/default/components/site-home/render.js",
+      "size": 19204,
+      "contentType": "text/javascript",
+      "sha256": "36dde929b12fb7eac05efdb864f991d47af3b573ee7242d082c1a79e64b33700"
+    },
+    {
+      "path": ".web/themes/default/components/site-home/script.js",
+      "size": 1851,
+      "contentType": "text/javascript",
+      "sha256": "7af4aec88a2ceb28f4201103045d1a7c0a344661d5fc7584bf3b14c105ba6788"
+    },
+    {
+      "path": ".web/themes/default/components/site-home/style.css",
+      "size": 16032,
+      "contentType": "text/css",
+      "sha256": "11dc0f09304f502a10b528754eec5b97c6cfdb7dc1265622ab1c38551d263b61"
+    },
+    {
+      "path": ".web/themes/default/components/tag-list/manifest.json",
+      "size": 322,
+      "contentType": "application/json",
+      "sha256": "104f58d582cf2f67904a1eae93fe55f802f962d493f6d61fb131c6690c60ae6e"
+    },
+    {
+      "path": ".web/themes/default/components/tag-list/render.js",
+      "size": 1185,
+      "contentType": "text/javascript",
+      "sha256": "d1075b5edda78739390648bc79c9c9423d38b65b3fe1eb5daac19fda14a09eb8"
+    },
+    {
+      "path": ".web/themes/default/components/tag-list/style.css",
+      "size": 735,
+      "contentType": "text/css",
+      "sha256": "7131f0870d65f3ebc50e541b5ca7aeb93765488a1c24dbf07000887b1c73fc70"
+    },
+    {
+      "path": ".web/themes/default/components/tech-hero/manifest.json",
+      "size": 390,
+      "contentType": "application/json",
+      "sha256": "7373d340d0503011933dfef457ae8ed8be1234ea1773a5d3ba0e6b5cbab3786f"
+    },
+    {
+      "path": ".web/themes/default/components/tech-hero/render.js",
+      "size": 1216,
+      "contentType": "text/javascript",
+      "sha256": "371fc50efb56d27baf11854ab713bf82e7bf4052d30d56e67a2613e518ed4181"
+    },
+    {
+      "path": ".web/themes/default/components/tech-hero/style.css",
+      "size": 2505,
+      "contentType": "text/css",
+      "sha256": "d1b1d4d6e6dc2051276b1c1a8f73f76f73722b0fca9b8d9c17371e804c5ded3a"
+    },
+    {
+      "path": ".web/themes/default/components/technology-card/manifest.json",
+      "size": 272,
+      "contentType": "application/json",
+      "sha256": "64f77b3545b06c6c492d37bab8bc34a80acf0898614962cea2899969c6e2469d"
+    },
+    {
+      "path": ".web/themes/default/components/technology-card/render.js",
+      "size": 696,
+      "contentType": "text/javascript",
+      "sha256": "cb33145bdd7fdc26f676ccb3b8355d8af7a1025a0fc52746ba5fca4e8af3fe6c"
+    },
+    {
+      "path": ".web/themes/default/components/technology-card/style.css",
+      "size": 1131,
+      "contentType": "text/css",
+      "sha256": "0634cf10a8a3220c2c360259ff183a0530f083929372c602054e70daa5224e5c"
+    },
+    {
+      "path": ".web/themes/default/enhancements/media-lightbox/script.js",
+      "size": 3175,
+      "contentType": "text/javascript",
+      "sha256": "526172941b852bc19130df27c8d529c267357f1b265dcfe700e68b31beb0abbc"
+    },
+    {
+      "path": ".web/themes/default/enhancements/media-lightbox/style.css",
+      "size": 2821,
+      "contentType": "text/css",
+      "sha256": "28b21f1b8cc1970531519d7324888478e985f877802f4c1e916d89bbdaf1f28d"
+    },
+    {
+      "path": ".web/themes/default/enhancements/product-frames/style.css",
+      "size": 9383,
+      "contentType": "text/css",
+      "sha256": "23e36c6cc553c96c547bbc13d169d26fda285eafe71563d369b25643e12d346e"
+    },
+    {
+      "path": ".web/themes/default/image-transform.json",
+      "size": 215,
+      "contentType": "application/json",
+      "sha256": "676c8d866aa97c0707cb2bc6fa6820dd9444761c34808565350de8d2c54de006"
+    },
+    {
+      "path": ".web/themes/default/template/footer",
+      "size": 13,
+      "contentType": "application/octet-stream",
+      "sha256": "1fda7235ae86a4af5c7213b3e04e1511d14d42d0a4766d7957e4e29264fe2739"
+    },
+    {
+      "path": ".web/themes/default/template/header",
+      "size": 13,
+      "contentType": "application/octet-stream",
+      "sha256": "d484f9fd4fe040d5090e003d5c612e0dafb702eaf531709f339e7fd86c8da60d"
+    },
+    {
+      "path": ".web/themes/default/template/layout",
+      "size": 7,
+      "contentType": "application/octet-stream",
+      "sha256": "37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f"
+    },
+    {
+      "path": ".web/themes/default/THEME.md",
+      "size": 4380,
+      "contentType": "text/markdown",
+      "sha256": "41bd632e26ae3cbb4c9941c460b3064e90500566b045742ea2e8def69b2fb432"
+    },
+    {
+      "path": ".web/themes/default/tokens.json",
+      "size": 623,
+      "contentType": "application/json",
+      "sha256": "f20250823f86370ca65a3173f4a000f027ed25301d5cc36046d2b68bd9818c5e"
+    },
+    {
+      "path": ".web/themes/editorial/THEME.md",
+      "size": 1154,
+      "contentType": "text/markdown",
+      "sha256": "263c1e034064db281167bf3c774a80633ebc8b8e86d22a34436a25b0c9b199f5"
+    },
+    {
+      "path": ".web/themes/editorial/tokens.json",
+      "size": 553,
+      "contentType": "application/json",
+      "sha256": "2963bb82d8de2bb61d178f682ed1c0475f68d0ceac0a413b02f19c65d6f590f2"
+    },
+    {
+      "path": ".web/themes/mono/components/content-card/style.css",
+      "size": 3095,
+      "contentType": "text/css",
+      "sha256": "9f8dacc2eac2377fd84f6c67a52b86e7ab1bfdbf20e33bf183510f0aa0f68449"
+    },
+    {
+      "path": ".web/themes/mono/components/hero-banner/render.js",
+      "size": 1250,
+      "contentType": "text/javascript",
+      "sha256": "5aa4876a59772c1fc279f4718ab448683b0b6e432f137d22d16d36859a44a1c9"
+    },
+    {
+      "path": ".web/themes/mono/components/hero-banner/style.css",
+      "size": 3047,
+      "contentType": "text/css",
+      "sha256": "a36f9270bd3d6155ef5ac2adc6df657d0a3c7bb4a826302784c68ee49b906073"
+    },
+    {
+      "path": ".web/themes/mono/components/portal-header/manifest.json",
+      "size": 22,
+      "contentType": "application/json",
+      "sha256": "c45862f50bd1a90b12e31f08d6eb3348d51b682c3c15e3aefd9200bd22bf2f69"
+    },
+    {
+      "path": ".web/themes/mono/components/portal-header/render.js",
+      "size": 2351,
+      "contentType": "text/javascript",
+      "sha256": "02fc0795e02be1aff29b7baacc54a497d20af925f66f9d5419d3dd8e04747b3e"
+    },
+    {
+      "path": ".web/themes/mono/components/portal-header/script.js",
+      "size": 3668,
+      "contentType": "text/javascript",
+      "sha256": "7442341befc902e7508ceaf4d5fb0308ff2730ea646edcf9a19d6bc8b81862f1"
+    },
+    {
+      "path": ".web/themes/mono/components/portal-header/style.css",
+      "size": 4220,
+      "contentType": "text/css",
+      "sha256": "cbb038eeac58b66e28001023aa72585f878bccfefcb4b3ab1438ff0dcaba48ba"
+    },
+    {
+      "path": ".web/themes/mono/components/product-showcase/style.css",
+      "size": 3179,
+      "contentType": "text/css",
+      "sha256": "0c1df39d10f7f8cd1fb90f3a67c74bdedc95b0c7689aceb40c1a7cc8e51f611f"
+    },
+    {
+      "path": ".web/themes/mono/THEME.md",
+      "size": 1760,
+      "contentType": "text/markdown",
+      "sha256": "3661d1a96581e3731196d83f198a6745da702c75d0fc304c9e7b30180785b9c1"
+    },
+    {
+      "path": ".web/themes/mono/tokens.json",
+      "size": 582,
+      "contentType": "application/json",
+      "sha256": "b69e2e1e169997363a8a69ccbb1d723d0a1cc30645448bcfd7e25fb0264bd4d9"
+    },
+    {
+      "path": ".web/themes/organic/components/content-card/style.css",
+      "size": 3864,
+      "contentType": "text/css",
+      "sha256": "b6c4db3195053edc8c487ecffc6493a05dd09294976861526aa9ee72e0c50818"
+    },
+    {
+      "path": ".web/themes/organic/components/hero-banner/render.js",
+      "size": 605,
+      "contentType": "text/javascript",
+      "sha256": "38e1c21e1d52da88c4a94aa1689d2f152a2ce1aeb71c06cad7b6b37fd7fb1508"
+    },
+    {
+      "path": ".web/themes/organic/components/hero-banner/style.css",
+      "size": 2810,
+      "contentType": "text/css",
+      "sha256": "b45cdc9672a94d9313c22e4d8fe8465c8e0535ed98f8408710c65b64de3b6741"
+    },
+    {
+      "path": ".web/themes/organic/components/portal-header/manifest.json",
+      "size": 466,
+      "contentType": "application/json",
+      "sha256": "cd0639902258d1b0ddfac3b308707eb4216e423dc0e7c44c88d9aded3d691ac6"
+    },
+    {
+      "path": ".web/themes/organic/components/portal-header/render.js",
+      "size": 3078,
+      "contentType": "text/javascript",
+      "sha256": "74fe5e0d13536938da9aa2e4064778250e396ea03ae79a744f07677229d7c7af"
+    },
+    {
+      "path": ".web/themes/organic/components/portal-header/script.js",
+      "size": 3668,
+      "contentType": "text/javascript",
+      "sha256": "7442341befc902e7508ceaf4d5fb0308ff2730ea646edcf9a19d6bc8b81862f1"
+    },
+    {
+      "path": ".web/themes/organic/components/portal-header/style.css",
+      "size": 4656,
+      "contentType": "text/css",
+      "sha256": "d7cd215a97ae4f481b6f3c008021c32503c17b6df38c4b9a2d0f58a37cbdad15"
+    },
+    {
+      "path": ".web/themes/organic/components/product-showcase/style.css",
+      "size": 2956,
+      "contentType": "text/css",
+      "sha256": "b73ac9a60660ae9ffa8faab0bdb71aa58b0fb89c9f702b8d325b00ea08bb0bde"
+    },
+    {
+      "path": ".web/themes/organic/THEME.md",
+      "size": 1864,
+      "contentType": "text/markdown",
+      "sha256": "6ae2f380d03390ef0a436fbc93fe8b89f84132e6dd3668cfd82f67778730648b"
+    },
+    {
+      "path": ".web/themes/organic/tokens.json",
+      "size": 607,
+      "contentType": "application/json",
+      "sha256": "93a2bdb15618a10d8f81fb30368f7245c55da46523e05ff9e8a471d31e534b65"
+    },
+    {
+      "path": "blocklet.yaml",
+      "size": 167,
+      "contentType": "text/yaml",
+      "sha256": "ab49b7578e74dd423025da76656feccd5028b054abbb3708f50a846485669b19"
+    },
+    {
+      "path": "docs/persistence.md",
+      "size": 2625,
+      "contentType": "text/markdown",
+      "sha256": "fe52d31453f02558fcdf66ca193625e73168d52c371047f5d11ec918f0882b33"
+    },
+    {
+      "path": "pages/index/layout.aup",
+      "size": 92,
+      "contentType": "application/octet-stream",
+      "sha256": "99db73e5808d333e90e288cbe964aeebd65dd2777b17d7b7ae09b6123cf21a32"
+    },
+    {
+      "path": "pages/index/seo/description",
+      "size": 100,
+      "contentType": "application/octet-stream",
+      "sha256": "1601b035c0b772c0322448ceaf2e6e7b9d349b36a6e77a68c4920f99f2aafe1a"
+    },
+    {
+      "path": "pages/index/seo/title",
+      "size": 35,
+      "contentType": "application/octet-stream",
+      "sha256": "2729f25b21442d6f2693784d3078a2085e6bc0cd03e2a5ed8a127f2012ddc46a"
+    },
+    {
+      "path": "world/post.yaml",
+      "size": 242,
+      "contentType": "text/yaml",
+      "sha256": "c9dcf37f509ce733d0e61d6560951614c18242d293b0e06d1b2592d33d8e5ff8"
+    }
+  ]
+}

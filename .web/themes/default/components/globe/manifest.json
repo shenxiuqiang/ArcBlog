@@ -1,0 +1,39 @@
+{
+  "name": "globe",
+  "description": "Minimal COBE WebGL globe. Vanilla canvas, reusable as figure, scene, or backdrop.",
+  "seoStrategy": "none",
+  "hasScript": true,
+  "props": {
+    "variant": {
+      "type": "string",
+      "description": "figure (inline), scene (large stage), or backdrop (behind other content)."
+    },
+    "size": {
+      "type": "number",
+      "description": "CSS pixel size of the canvas square. Defaults: figure 360, scene 560, backdrop 720."
+    },
+    "theme": { "type": "string", "description": "auto (follow site mode), light, or dark." },
+    "rotate": { "type": "string", "description": "Auto-rotate. Default true." },
+    "speed": { "type": "number", "description": "Rotation increment per frame. Default 0.0025." },
+    "theta": { "type": "number", "description": "Vertical tilt in radians. Default 0.22." },
+    "scale": { "type": "number", "description": "Globe scale. Default 1." },
+    "samples": { "type": "number", "description": "Land-dot density. Default 16000." },
+    "drag": {
+      "type": "string",
+      "description": "Pointer-drag to rotate. Default true for figure, false for backdrop."
+    },
+    "effect": {
+      "type": "string",
+      "description": "Named look: builders, users, ai, chain, or a custom id. Live-updatable via site-globe:effect."
+    },
+    "preset": { "type": "string", "description": "Optional marker preset: cities." },
+    "markers": {
+      "type": "array",
+      "description": "[{ lat, lon, size? }]. size is relative to globe radius."
+    },
+    "arcs": {
+      "type": "array",
+      "description": "[{ from: [lat, lon], to: [lat, lon] }] or { fromLat, fromLon, toLat, toLon }."
+    }
+  }
+}

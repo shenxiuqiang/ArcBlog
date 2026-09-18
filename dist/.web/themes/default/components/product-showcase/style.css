@@ -1,0 +1,120 @@
+.product-showcase {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 5rem var(--page-gutter);
+}
+
+.product-card {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--color-border, #e8e8e8);
+  border-radius: 0;
+  padding: 2rem 2rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+  transition: none;
+  position: relative;
+}
+
+.product-icon {
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface, #fafafa);
+  border: 1px solid var(--color-border, #e8e8e8);
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+
+.product-card .product-title {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.625rem;
+  line-height: 1.3;
+}
+
+.product-card .product-title a {
+  color: var(--color-text, #171717);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.product-card .product-title a:hover {
+  color: var(--color-dim, #737373);
+}
+
+.product-card .product-desc {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem;
+  color: var(--color-dim, #737373);
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
+  flex-grow: 1;
+}
+
+.product-card .showcase-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.product-card .tag {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-dim, #737373);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.product-card .tag + .tag::before {
+  content: "\00b7";
+  margin-right: 0.375rem;
+}
+
+.product-card .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text, #171717);
+  text-decoration: none;
+  align-self: flex-start;
+  transition: color 0.2s;
+  border: none;
+  background: none;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.product-card .btn-outline:hover {
+  color: var(--color-dim, #737373);
+}
+
+@media (max-width: 768px) {
+  .product-showcase {
+    grid-template-columns: 1fr;
+    padding: 3rem 2rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .product-showcase {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

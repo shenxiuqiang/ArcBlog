@@ -1,0 +1,419 @@
+.detail-content-layout {
+  --detail-content-top: clamp(2.5rem, 5vw, 4.5rem);
+
+  width: min(100%, var(--page-max, 1280px));
+  margin: 0 auto;
+}
+
+.detail-content-layout--has-toc {
+  --detail-main-max: 820px;
+  --detail-prose-max: var(--content-max, 640px);
+  --detail-wide-max: 820px;
+  --detail-sidebar-min: 220px;
+  --detail-sidebar-max: 260px;
+  --detail-layout-gap: clamp(2.5rem, 5vw, 5rem);
+  --detail-main-available: min(
+    var(--detail-main-max),
+    calc(
+      min(100vw, var(--page-max, 1280px)) -
+      var(--page-gutter, 2rem) -
+      var(--page-gutter, 2rem) -
+      var(--detail-sidebar-max) -
+      var(--detail-layout-gap)
+    )
+  );
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, var(--detail-main-max))
+    minmax(var(--detail-sidebar-min), var(--detail-sidebar-max));
+  justify-content: center;
+  gap: var(--detail-layout-gap);
+  padding: 0 var(--page-gutter, 2rem);
+}
+
+.detail-content-sidebar {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  padding-top: var(--detail-content-top);
+}
+
+/* `after-content` (arc#2677's first real consumer: the comment-thread
+   component that mounts here when a site turns commenting on) — default box
+   matches `.detail-content-area` below exactly: same width/margin/padding,
+   so with no sidebar (plain block layout, no grid) its left/right edges land
+   on the article's own edges instead of stretching full-bleed. This is also
+   the correct rule for the HAS-TOC layout once it collapses to a single flex
+   column below 1101px (see the `max-width: 1100px` block further down) — the
+   `min-width: 1101px` override right after this claims the desktop grid case
+   instead. This stylesheet ships on EVERY article page whether commenting is
+   on or off, so it must never spell out that component's name literally. */
+.detail-content-after {
+  width: min(100%, var(--content-max, 820px));
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-inline: 2rem;
+}
+
+.detail-content-area {
+  width: min(100%, var(--content-max, 820px));
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--detail-content-top) 2rem;
+  color: var(--color-text, #171717);
+}
+
+/* Markdown content arrives through the shared section renderer as
+   `.container > .aup-view`. The page component already owns the outer gutter,
+   so retaining the generic container gutter here creates a second inset and
+   disconnects the article's reading edge from the Hero. */
+.detail-content-area > .container {
+  width: 100%;
+  max-width: none;
+  padding-inline: 0;
+}
+
+.detail-content-area > .container > .aup-view {
+  width: min(100%, var(--detail-prose-max, var(--content-max, 640px)));
+}
+
+.detail-content-area .aup-markdown-table-wrap {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.6rem 0;
+  border-radius: var(--radius-lg, 8px);
+}
+
+/* Article bodies share the Markdown table primitive; force cell reflow so long
+   code / URLs wrap inside the reading column (arcblock-site#361). */
+.detail-content-area .aup-markdown-table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  table-layout: auto;
+}
+
+.detail-content-area .aup-markdown-table th,
+.detail-content-area .aup-markdown-table td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.detail-content-area .aup-markdown-table code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.detail-content-area::before {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 0.16rem;
+  margin-bottom: 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent, #1e6fd9),
+    var(--color-accent-secondary, var(--color-accent, #1e6fd9))
+  );
+}
+
+.detail-content-area .aup-text {
+  max-width: 100%;
+  margin: 0 0 1rem;
+  overflow-wrap: anywhere;
+}
+
+.detail-content-area p.aup-text {
+  color: color-mix(in srgb, var(--color-text, #171717) 82%, var(--color-dim, #737373));
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.0625rem;
+  line-height: 1.62;
+}
+
+.detail-content-area h2.aup-text,
+.detail-content-area h3.aup-text,
+.detail-content-area h4.aup-text {
+  scroll-margin-top: 96px;
+  color: var(--color-text, #171717);
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.detail-content-area h2.aup-text {
+  position: relative;
+  margin-top: 2.75rem;
+  margin-bottom: 0.9rem;
+  padding-left: 1rem;
+  font-size: clamp(1.65rem, 2.2vw, 2rem);
+  font-weight: 760;
+}
+
+.detail-content-area h2.aup-text::before,
+.detail-content-area h3.aup-text::before {
+  position: absolute;
+  top: 0.08em;
+  bottom: 0.08em;
+  left: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--color-accent, #1e6fd9);
+  content: "";
+}
+
+.detail-content-area h3.aup-text {
+  position: relative;
+  margin-top: 2rem;
+  padding-left: 0.85rem;
+  font-size: clamp(1.25rem, 1.8vw, 1.45rem);
+  font-weight: 720;
+}
+
+.detail-content-area a {
+  color: var(--color-accent, #1e6fd9);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+.detail-content-area strong {
+  color: var(--color-text, #171717);
+  font-weight: 760;
+}
+
+.detail-content-area code {
+  padding: 0.12rem 0.32rem;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 78%, transparent);
+  border-radius: 5px;
+  color: var(--color-accent, #1e6fd9);
+  background: color-mix(in srgb, var(--color-accent, #1e6fd9) 8%, transparent);
+  font-size: 0.9em;
+}
+
+/* arc#2392: fenced code blocks get a toolbar (language label + copy button)
+   wrapping the <pre> — inline code above is untouched. */
+.detail-content-area .aup-code-block {
+  margin: 1.5rem 0;
+}
+
+.detail-content-area pre.aup-text {
+  margin: 0;
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 78%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--color-text, #171717) 8%, var(--color-surface, #fafafa));
+}
+
+.detail-content-area .aup-code-toolbar + pre.aup-text {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.detail-content-area pre.aup-text code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.detail-content-area .aup-code-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 78%, transparent);
+  border-bottom: 0;
+  border-top-left-radius: var(--radius-lg, 8px);
+  border-top-right-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--color-text, #171717) 5%, var(--color-surface, #fafafa));
+}
+
+.detail-content-area .aup-code-lang {
+  color: color-mix(in srgb, var(--color-text, #171717) 55%, transparent);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.detail-content-area .aup-code-copy-btn {
+  margin-left: auto;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 78%, transparent);
+  border-radius: 6px;
+  background: var(--color-surface, #fafafa);
+  color: color-mix(in srgb, var(--color-text, #171717) 55%, transparent);
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.detail-content-area .aup-code-copy-btn:hover {
+  color: var(--color-text, #171717);
+  border-color: var(--color-accent, #1e6fd9);
+}
+
+.detail-content-area .aup-code-copy-btn:focus-visible {
+  outline: 2px solid var(--color-accent, #1e6fd9);
+  outline-offset: 2px;
+}
+
+.detail-content-area .aup-code-copy-btn.is-success {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.detail-content-area .aup-code-copy-btn.is-error {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.detail-content-area blockquote.aup-text {
+  margin: 1.7rem 0;
+  padding: 1.1rem 1.25rem;
+  border-left: 4px solid var(--color-accent, #1e6fd9);
+  border-radius: 0 var(--radius-lg, 8px) var(--radius-lg, 8px) 0;
+  background: color-mix(in srgb, var(--color-accent, #1e6fd9) 9%, transparent);
+  color: var(--color-text, #171717);
+}
+
+.detail-content-area .aup-text[data-format="html"] ul,
+.detail-content-area .aup-text[data-format="html"] ol {
+  margin: 1rem 0 1.4rem;
+  padding-left: 1.4rem;
+}
+
+.detail-content-area .aup-text[data-format="html"] li {
+  margin: 0.45rem 0;
+  line-height: 1.62;
+}
+
+.detail-content-area .aup-media {
+  margin: 2rem 0;
+}
+
+.detail-content-area .aup-media img {
+  width: 100%;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 78%, transparent);
+}
+
+/* Inline markdown images/videos render inside `.aup-text` (format:"html"), not
+   `.aup-media`, so the rule above doesn't reach them. Without a cap they render
+   at their intrinsic width (e.g. a 1600px webp overflows the ~640px reading
+   column ~3x) — same for a raw <video> embed (arc#2301). Constrain to the
+   column; don't upscale smaller media. */
+.detail-content-area .aup-text img,
+.detail-content-area .aup-text video {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg, 8px);
+}
+
+html[data-tone="technical"] .detail-content-area {
+  --content-max: 880px;
+}
+
+html[data-tone="technical"] .detail-content-area::before {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-accent, #1e6fd9) 0 0.7rem,
+    var(--color-accent-secondary, var(--color-accent, #1e6fd9)) 0.7rem 1.4rem
+  );
+}
+
+html[data-tone="product"] .detail-content-area h2.aup-text {
+  --color-accent: var(--color-accent-secondary, #1e6fd9);
+}
+
+@media (min-width: 1101px) {
+  .detail-content-layout--has-toc .detail-content-area {
+    width: 100%;
+    margin: 0;
+    padding-inline: 0;
+
+    /* The shared lightbox enhancement defaults to a page-wide breakout. When a
+       desktop TOC occupies the second track, expose the first track's actual
+       available width so media cannot paint over the navigation. */
+    --media-breakout-max: var(--detail-main-available);
+  }
+
+  /* Prose keeps a stable reading measure while technical material can use the
+     whole main track. Tables retain local scrolling for intrinsically wider
+     data, and neither tier enters the TOC track. */
+  .detail-content-layout--has-toc .detail-content-area
+    :where(.aup-markdown-table-wrap, .aup-code-block) {
+    width: min(var(--detail-wide-max), var(--detail-main-available));
+    max-width: none;
+    align-self: flex-start;
+  }
+
+  /* arc#2677: share the SAME grid column as `.detail-content-area` (a second
+     row in the main track, below the article) instead of re-deriving its
+     left/right edges — the grid's own `justify-content`/gap math is the only
+     source of truth for where that column actually sits, and duplicating it
+     here would drift the moment either changes. `.detail-content-after`'s
+     base rule (width/margin/padding, above) is for the no-sidebar case only;
+     here it steps aside so the grid placement wins. */
+  .detail-content-layout--has-toc .detail-content-after {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-content-area {
+    padding: 2rem 1.15rem 2.5rem;
+  }
+
+  .detail-content-after {
+    padding-inline: 1.15rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .detail-content-layout--has-toc {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .detail-content-sidebar {
+    order: 0;
+    width: min(100% - 2.3rem, var(--content-max, 820px));
+    margin: clamp(1rem, 3vw, 2rem) auto 0;
+    padding: 0;
+  }
+
+  .detail-content-area {
+    order: 1;
+  }
+
+  /* Collapsed has-toc stacks sidebar/content/after-content as a flex column
+     — an explicit order is needed so after-content lands below the article
+     body, not between the (order: 0) sidebar and (order: 1) content by
+     DOM-order tie-break (it has no order of its own otherwise, and DOM order
+     places it right after the sidebar). The base `.detail-content-after`
+     width/margin/padding rule already applies here unchanged (this query is
+     narrower than the `min-width: 1101px` grid override above, so that one
+     never fires at these widths). */
+  .detail-content-after {
+    order: 2;
+  }
+}

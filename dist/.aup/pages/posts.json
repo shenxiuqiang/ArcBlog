@@ -1,0 +1,183 @@
+{
+  "id": "arcblog-posts",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    },
+    "size": {
+      "maxWidth": "lg"
+    }
+  },
+  "children": [
+    {
+      "id": "arcblog-posts-card-a-calmer-place-to-read",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-posts-title-a-calmer-place-to-read",
+          "type": "text",
+          "props": {
+            "content": "A calmer place to read.",
+            "level": 2
+          }
+        },
+        {
+          "id": "arcblog-posts-text",
+          "type": "text",
+          "props": {
+            "content": "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle."
+          }
+        },
+        {
+          "id": "arcblog-posts-action-write-a-post",
+          "type": "action",
+          "props": {
+            "label": "Write a post",
+            "variant": "secondary",
+            "href": "/app?page=compose"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "compose"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-posts-card-topics",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-posts-title-topics",
+          "type": "text",
+          "props": {
+            "content": "Topics",
+            "level": 2
+          }
+        },
+        {
+          "id": "arcblog-posts-action-technology",
+          "type": "action",
+          "props": {
+            "label": "Technology",
+            "variant": "secondary",
+            "href": "/app?page=posts"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "posts"
+              }
+            }
+          }
+        },
+        {
+          "id": "arcblog-posts-action-design",
+          "type": "action",
+          "props": {
+            "label": "Design",
+            "variant": "secondary",
+            "href": "/app?page=posts"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "posts"
+              }
+            }
+          }
+        },
+        {
+          "id": "arcblog-posts-action-life",
+          "type": "action",
+          "props": {
+            "label": "Life",
+            "variant": "secondary",
+            "href": "/app?page=posts"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "posts"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-posts-card-browse-filters",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-posts-title-browse-filters",
+          "type": "text",
+          "props": {
+            "content": "Browse filters",
+            "level": 2
+          }
+        },
+        {
+          "id": "arcblog-posts-card-browse-filters-p-1",
+          "type": "text",
+          "props": {
+            "content": "Use category and tag filters to narrow the public feed before opening an article."
+          }
+        },
+        {
+          "id": "arcblog-posts-card-browse-filters-input-2",
+          "type": "input",
+          "props": {
+            "content": "category"
+          }
+        },
+        {
+          "id": "arcblog-posts-card-browse-filters-input-3",
+          "type": "input",
+          "props": {
+            "content": "tag"
+          }
+        },
+        {
+          "id": "arcblog-posts-action-subscribe-via-rss",
+          "type": "action",
+          "props": {
+            "label": "Subscribe via RSS",
+            "variant": "secondary",
+            "href": "/docs/publishing-ops.md"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-posts-entity-overview-4",
+      "type": "entity-overview"
+    }
+  ]
+}

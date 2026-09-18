@@ -1,0 +1,315 @@
+.event-hero {
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text, #171717);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+}
+
+.event-hero-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.event-hero-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.06;
+}
+
+.event-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 4rem var(--page-gutter) 5rem;
+}
+
+.event-breadcrumb {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--color-dim, #737373);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.event-breadcrumb a {
+  color: var(--color-dim, #737373);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.event-breadcrumb a:hover {
+  color: var(--color-text, #171717);
+}
+
+/* Layout: date block + body side by side */
+.event-hero-layout {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+/* Calendar-style date block */
+.event-hero-date {
+  flex-shrink: 0;
+  width: 100px;
+  text-align: center;
+  background: var(--color-surface, #fafafa);
+  border: 1px solid var(--color-border, #e8e8e8);
+  border-radius: 2px;
+  padding: 1rem 0.75rem;
+}
+
+.event-hero-date .date-month {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-dim, #737373);
+  margin-bottom: 0.125rem;
+}
+
+.event-hero-date .date-day {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text, #171717);
+}
+
+.event-hero-date .date-dayname {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-dim, #737373);
+  margin-top: 0.25rem;
+}
+
+.event-hero-date .date-range {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-dim, #737373);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border, #e8e8e8);
+}
+
+/* Body */
+.event-hero-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Badges row */
+.event-hero-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.event-status {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2px;
+}
+
+.event-status.status-upcoming {
+  background: var(--color-surface, #fafafa);
+  color: var(--color-text, #171717);
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+.event-status.status-live {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.event-status.status-past {
+  background: var(--color-surface, #fafafa);
+  color: var(--color-dim, #737373);
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+.event-format-badge {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2px;
+  background: var(--color-surface, #fafafa);
+  color: var(--color-dim, #737373);
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+/* Title */
+.event-hero-title {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+  max-width: 640px;
+  color: var(--color-text, #171717);
+}
+
+.event-hero-excerpt {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-dim, #737373);
+  margin: 0 0 1.25rem;
+  max-width: 560px;
+}
+
+/* Detail row */
+.event-hero-details {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.event-hero-location,
+.event-hero-time {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem;
+  color: var(--color-dim, #737373);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Tags */
+.event-hero-tags {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.event-hero-tags .tag {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-dim, #737373);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* CTA button */
+.event-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 2px;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background: var(--color-accent);
+  color: var(--color-bg, #fff);
+  border: 2px solid var(--color-accent);
+  box-shadow: none;
+}
+
+.event-cta:hover {
+  opacity: 0.9;
+}
+
+.event-cta .cta-divider {
+  opacity: 0.5;
+}
+
+.event-cta .event-hero-price {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.event-cta-past {
+  background: transparent;
+  color: var(--color-dim, #737373);
+  box-shadow: none;
+  cursor: default;
+  border: 2px solid var(--color-border, #e8e8e8);
+}
+
+.event-cta-past:hover {
+  transform: none;
+  box-shadow: none;
+  background: transparent;
+  border-color: var(--color-border, #e8e8e8);
+}
+
+.event-cta-live {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: none;
+}
+
+.event-cta-live:hover {
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .event-hero-layout {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .event-hero-date {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .event-hero-date .date-month {
+    margin-bottom: 0;
+  }
+
+  .event-hero-date .date-day {
+    font-size: 1.75rem;
+  }
+
+  .event-hero-date .date-dayname {
+    margin-top: 0;
+  }
+
+  .event-hero-date .date-range {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    border-left: 1px solid var(--color-border, #e8e8e8);
+    padding-left: 1rem;
+  }
+
+  .event-hero-title {
+    font-size: 1.75rem;
+  }
+}

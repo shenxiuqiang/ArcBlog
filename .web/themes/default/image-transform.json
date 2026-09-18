@@ -1,0 +1,12 @@
+{
+  "sizes": "(min-width: 820px) 640px, 100vw",
+  "hero": {
+    "width": 854,
+    "height": 534,
+    "fit": "cover"
+  },
+  "card": {
+    "widths": "480,768,1152",
+    "sizes": "(min-width: 721px) 360px, 92vw"
+  }
+}

@@ -1,0 +1,132 @@
+.portal-footer {
+  background: var(--color-bg, #fff);
+  border-top: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 50%, transparent);
+  padding: clamp(4rem, 9vw, 7rem) 0 2.25rem;
+  margin-top: 0;
+  position: relative;
+}
+
+.portal-footer .container {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+  position: relative;
+  z-index: 1;
+}
+
+.portal-footer .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: clamp(2.5rem, 6vw, 6rem);
+  margin-bottom: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+.portal-footer .footer-col {
+  min-width: 0;
+}
+
+.portal-footer .footer-col h4 {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-dim, #6b7280);
+  margin: 0 0 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.portal-footer .footer-col h4::before {
+  content: "";
+  width: 1.2rem;
+  height: 1px;
+  background: var(--color-accent, #2563eb);
+  opacity: 0.7;
+}
+
+.portal-footer .footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.portal-footer .footer-col li {
+  margin: 0;
+}
+
+.portal-footer .footer-col a {
+  font-family: var(--font-body, "Inter", sans-serif);
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.1rem 0;
+  font-size: 0.94rem;
+  font-weight: 440;
+  color: var(--color-text, #0f172a);
+  text-decoration: none;
+  letter-spacing: -0.005em;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+
+.portal-footer .footer-col a:hover {
+  color: var(--color-accent, #2563eb);
+  transform: translateX(2px);
+}
+
+.portal-footer .footer-col a span {
+  color: var(--color-dim, #6b7280);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+}
+
+.portal-footer .footer-bottom {
+  padding-top: 1.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 55%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.portal-footer .footer-bottom p {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--color-dim, #6b7280);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .portal-footer {
+    padding-top: 3.5rem;
+  }
+
+  .portal-footer .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .portal-footer .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .portal-footer .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

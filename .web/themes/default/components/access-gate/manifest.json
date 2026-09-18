@@ -1,0 +1,33 @@
+{
+  "name": "access-gate",
+  "description": "Preview or membership gate in the article body slot. Title stays in the page hero; this is the stop, not a second page.",
+  "seoStrategy": "none",
+  "props": {
+    "kind": {
+      "type": "string",
+      "description": "preview-shell or promo-shell"
+    },
+    "requiredRole": {
+      "type": "string",
+      "description": "Role the caller is missing"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "Declared excerpt only. Never body."
+    },
+    "loginHref": {
+      "type": "string",
+      "description": "Sign-in URL that returns to this page"
+    },
+    "signInLabel": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "signedIn": {
+      "type": "boolean",
+      "description": "When true, omit the Sign in button — the caller already has a session"
+    }
+  }
+}

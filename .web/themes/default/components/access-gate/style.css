@@ -1,0 +1,99 @@
+.access-continue {
+  max-width: var(--content-max, 44rem);
+}
+
+.access-teaser {
+  position: relative;
+  margin: 0 0 1.75rem;
+}
+
+.access-teaser-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5.5rem;
+  pointer-events: none;
+  background: linear-gradient(transparent, var(--color-bg, #fcfdfc));
+}
+
+.access-gate {
+  max-width: var(--content-max, 44rem);
+  margin: 0 0 4rem;
+  padding: 0 0 0.25rem;
+  color: var(--color-text, #111a17);
+}
+
+.access-gate-rule {
+  width: 2.5rem;
+  height: 3px;
+  margin: 0 0 1.5rem;
+  background: var(--color-accent, #008f7a);
+}
+
+.access-gate-excerpt {
+  margin: 0 0 1.25rem;
+  max-width: 38rem;
+  color: var(--color-text, #111a17);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.access-gate-message {
+  margin: 0 0 1.5rem;
+  max-width: 32rem;
+  color: var(--color-dim, #52635d);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.access-gate-action {
+  margin: 0;
+}
+
+.access-gate a.access-gate-signin {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.15rem;
+  border-radius: var(--radius-lg, 6px);
+  background: var(--color-accent, #008f7a);
+  color: var(--color-on-accent, #fff);
+  -webkit-text-fill-color: var(--color-on-accent, #fff);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.access-gate a.access-gate-signin:hover,
+.access-gate a.access-gate-signin:focus-visible {
+  filter: brightness(1.06);
+  color: var(--color-on-accent, #fff);
+  -webkit-text-fill-color: var(--color-on-accent, #fff);
+}
+
+.access-gate a.access-gate-signin:focus-visible {
+  outline: 2px solid var(--color-accent, #008f7a);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .access-gate a.access-gate-signin:hover,
+  .access-gate a.access-gate-signin:focus-visible {
+    filter: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .access-gate {
+    margin-bottom: 2.5rem;
+  }
+
+  .access-gate-excerpt {
+    font-size: 1rem;
+  }
+}

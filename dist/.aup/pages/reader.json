@@ -1,0 +1,67 @@
+{
+  "id": "arcblog-reader",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    },
+    "size": {
+      "maxWidth": "lg"
+    }
+  },
+  "children": [
+    {
+      "id": "arcblog-reader-card-article",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-reader-title-article",
+          "type": "text",
+          "props": {
+            "content": "Article",
+            "level": 2
+          }
+        },
+        {
+          "id": "arcblog-reader-text",
+          "type": "text",
+          "props": {
+            "content": "This surface renders only published post records (status=published). Body remains Markdown at rest and must be sanitized at render time."
+          }
+        },
+        {
+          "id": "arcblog-reader-action-share-this-article",
+          "type": "action",
+          "props": {
+            "label": "Share this article",
+            "variant": "secondary",
+            "href": "/docs/share-cards.md"
+          }
+        },
+        {
+          "id": "arcblog-reader-action-back-to-latest-stories",
+          "type": "action",
+          "props": {
+            "label": "Back to latest stories",
+            "variant": "secondary",
+            "href": "/app?page=posts"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "posts"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

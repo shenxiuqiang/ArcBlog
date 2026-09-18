@@ -1,0 +1,207 @@
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(250, 247, 242, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border, #c5d5b5);
+  padding: 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.portal-header.scrolled {
+  box-shadow: 0 2px 16px rgba(26, 58, 26, 0.06);
+}
+
+.portal-header .container {
+  max-width: var(--container-max, 1120px);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+
+/* Serif logo with organic warmth */
+.portal-header .logo {
+  font-family: var(--font-serif, "Lora", Georgia, serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--color-accent, #228b22);
+  text-decoration: none;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.portal-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.portal-header .main-nav {
+  display: flex;
+  gap: 1.75rem;
+}
+
+/* Clean sans-serif nav links */
+.portal-header .main-nav a {
+  font-family: var(--font-sans, "Raleway", "Segoe UI", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-dim, #5d6b5d);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.portal-header .main-nav a:hover {
+  color: var(--color-accent, #228b22);
+}
+
+/* Leaf-like dot that appears centered below on hover */
+.portal-header .main-nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent, #228b22);
+  transition: transform 0.3s ease;
+}
+
+.portal-header .main-nav a:hover::after {
+  transform: translateX(-50%) scale(1);
+}
+
+/* Header controls: theme selector + mode toggle */
+.portal-header .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Theme selector dropdown — pill shape */
+.portal-header .theme-selector {
+  position: relative;
+}
+
+.portal-header .theme-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 32px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border, #c5d5b5);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-dim, #5d6b5d);
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease;
+  font-family: var(--font-sans, "Raleway", "Segoe UI", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.portal-header .theme-selector-btn:hover {
+  color: var(--color-accent, #228b22);
+  border-color: var(--color-accent, #228b22);
+}
+
+.portal-header .theme-selector-btn .icon-chevron {
+  transition: transform 0.2s ease;
+}
+
+.portal-header .theme-selector-btn.open .icon-chevron {
+  transform: rotate(180deg);
+}
+
+.portal-header .theme-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 130px;
+  background: var(--color-bg, #faf7f2);
+  border: 1px solid var(--color-border, #c5d5b5);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  z-index: 100;
+}
+
+.portal-header .theme-option {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-dim, #5d6b5d);
+  font-family: var(--font-sans, "Raleway", "Segoe UI", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: left;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.portal-header .theme-option:hover {
+  background: var(--color-surface, #f0ede5);
+  color: var(--color-text, #1a3a1a);
+}
+
+.portal-header .theme-option.active {
+  color: var(--color-accent, #228b22);
+  font-weight: 600;
+}
+
+.portal-header .theme-option.active::before {
+  content: "\2713\00a0";
+}
+
+/* Mode toggle (light/dark) — circle shape */
+.portal-header .mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border, #c5d5b5);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-dim, #5d6b5d);
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.portal-header .mode-toggle:hover {
+  color: var(--color-accent, #228b22);
+  border-color: var(--color-accent, #228b22);
+}
+
+/* Show sun by default, moon when dark */
+.portal-header .mode-toggle .icon-moon {
+  display: none;
+}
+.portal-header .mode-toggle .icon-sun {
+  display: block;
+}
+.portal-header .mode-toggle.is-dark .icon-moon {
+  display: block;
+}
+.portal-header .mode-toggle.is-dark .icon-sun {
+  display: none;
+}

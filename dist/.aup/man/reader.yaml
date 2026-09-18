@@ -1,0 +1,20 @@
+schemaVersion: 1
+page: reader
+description: >-
+  Public article reading surface. It must render only status=published Post
+  records and apply Markdown sanitization before display.
+synopsis: >-
+  Open a published post, verify lifecycle state, and render Markdown safely for
+  readers.
+flows:
+  - Load the published post record by slug.
+  - Enforce status=published before rendering.
+  - Sanitize Markdown output and render readable article content.
+  - Use share-card metadata for social preview actions.
+  - Navigate back to the public feed.
+refs:
+  actions:
+    - id: arcblog-reader-action-share-this-article
+      event: click
+    - id: arcblog-reader-action-back-to-latest-stories
+      event: click

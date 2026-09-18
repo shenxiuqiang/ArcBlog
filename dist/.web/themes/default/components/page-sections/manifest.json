@@ -1,0 +1,4 @@
+{
+  "name": "page-sections",
+  "description": "Layout component — wraps each slot in a <section> with optional header and variant"
+}

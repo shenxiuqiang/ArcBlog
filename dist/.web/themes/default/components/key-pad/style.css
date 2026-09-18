@@ -1,0 +1,113 @@
+.key-pad {
+  position: fixed;
+  right: var(--page-gutter, 24px);
+  bottom: 1.4rem;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 2rem 2rem 2rem;
+  grid-template-rows: 2rem 2rem;
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  gap: 0.22rem;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease;
+}
+
+.key-pad.is-live {
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.key-pad button {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  color: var(--color-dim);
+  font-family: var(--font-utility, ui-monospace, monospace);
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: 0.28;
+  pointer-events: none;
+  cursor: default;
+}
+
+.key-pad button[data-dir="up"] {
+  grid-area: up;
+}
+
+.key-pad button[data-dir="left"] {
+  grid-area: left;
+}
+
+.key-pad button[data-dir="right"] {
+  grid-area: right;
+}
+
+.key-pad button[data-dir="down"] {
+  grid-area: down;
+}
+
+.key-pad button.is-on {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.key-pad button.is-on:hover,
+.key-pad button.is-on:focus-visible {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg));
+  outline: none;
+}
+
+.key-pad button.is-pulse {
+  animation: key-pad-pulse 0.28s ease;
+}
+
+@keyframes key-pad-pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 700px) {
+  .key-pad {
+    right: 0.7rem;
+    bottom: 0.9rem;
+    gap: 0.18rem;
+    grid-template-columns: 1.85rem 1.85rem 1.85rem;
+    grid-template-rows: 1.85rem 1.85rem;
+  }
+
+  .key-pad button {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .key-pad,
+  .key-pad button.is-pulse {
+    animation: none;
+    transition: none;
+  }
+}

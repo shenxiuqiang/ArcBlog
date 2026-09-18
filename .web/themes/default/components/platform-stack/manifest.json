@@ -1,0 +1,24 @@
+{
+  "name": "platform-stack",
+  "description": "Layered technology-stack diagram with optional highlight for the current product/technology. Layers are site content, declared via props.",
+  "seoStrategy": "full",
+  "props": {
+    "highlight": {
+      "type": "string",
+      "description": "Item name to highlight (matched case-insensitively against layer items)"
+    },
+    "highlightLayer": {
+      "type": "string",
+      "description": "Layer id to scope highlighting to"
+    },
+    "compact": {
+      "type": "boolean",
+      "description": "Compact mode for sidebar usage"
+    },
+    "layers": {
+      "type": "array",
+      "required": true,
+      "description": "Stack layers, top to bottom: [{id, label, items:[string]}]"
+    }
+  }
+}

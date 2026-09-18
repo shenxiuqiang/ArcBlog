@@ -1,0 +1,276 @@
+.post-hero {
+  position: relative;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-accent, #1e6fd9) 16%, transparent),
+      transparent 38%
+    ),
+    linear-gradient(
+      315deg,
+      color-mix(in srgb, var(--color-accent-secondary, #14b8a6) 16%, transparent),
+      transparent 42%
+    ),
+    var(--color-bg);
+  color: var(--color-text, #171717);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+}
+
+.post-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      color-mix(in srgb, var(--color-border, #e8e8e8) 36%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-border, #e8e8e8) 32%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.post-hero-inner {
+  position: relative;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(2.75rem, 5vw, 4.75rem) var(--page-gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 6rem);
+}
+
+/* arc#2920: without a cover image the hero drops to a single, narrower
+   column, but it must stay pinned to the same left edge as the has-cover
+   two-column layout — `justify-content: center` here centered that column
+   inside `.post-hero-inner` instead, floating the title toward the page
+   middle. `start` (the grid default) keeps the narrower column left-aligned. */
+.post-hero--no-cover .post-hero-inner {
+  grid-template-columns: minmax(0, 920px);
+  justify-content: start;
+  padding-block: clamp(2.5rem, 4.5vw, 4rem);
+}
+
+.post-hero-content {
+  min-width: 0;
+}
+
+.post-hero-media {
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e8e8e8) 80%, transparent);
+  border-radius: clamp(10px, 1.5vw, 18px);
+  background: var(--color-surface, #fafafa);
+  box-shadow: 0 22px 60px color-mix(in srgb, var(--color-text, #171717) 14%, transparent);
+}
+
+.post-hero-cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Long titles compete less with the background grid decoration, so the
+   title stays the clear read. */
+.post-hero--long::before,
+.post-hero--xlong::before {
+  opacity: 0.14;
+}
+
+.post-breadcrumb {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--color-dim, #737373);
+  letter-spacing: 0;
+}
+
+.post-breadcrumb a {
+  color: var(--color-dim, #737373);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.post-breadcrumb a:hover {
+  color: var(--color-text, #171717);
+}
+
+/* arc#3416 — the optional "what this belongs to" line. Same layer as the
+   .post-breadcrumb above it (sans stack, dim, no background/border/padding of
+   its own) so it reads as part of a header that was always there. A separate
+   band above the hero was tried first on a live site and rejected on sight: it
+   made series articles look unlike every other article. */
+.post-hero-eyebrow {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-dim, #737373);
+  margin: 0 0 0.85rem;
+}
+
+.post-hero-eyebrow a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.post-hero-eyebrow a:hover {
+  color: var(--color-text, #171717);
+}
+
+/* With an eyebrow present the two dim lines are ONE stack, so the breadcrumb's
+   1rem gap (tuned for sitting directly on the title) collapses. Without :has()
+   support the gap just stays wide — never a broken layout. */
+.post-breadcrumb:has(+ .post-hero-eyebrow) {
+  margin-bottom: 0.3rem;
+}
+
+.post-hero-title {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  /* Responsive clamp: min/max bound the short-title look at both ends of the
+     viewport range; --long/--xlong below ramp the same clamp down further
+     for long titles instead of keeping one size for every length. */
+  font-size: clamp(2.4rem, 5vw, 4.65rem);
+  font-weight: 780;
+  line-height: 1.01;
+  letter-spacing: 0;
+  margin: 0 0 1rem;
+  max-width: 18ch;
+  color: var(--color-text, #171717);
+  /* Balances line lengths on the last line for both Latin and CJK titles,
+     which is also what avoids a short/orphan tail line for Chinese titles —
+     one mechanism serves both acceptance criteria. Unsupported browsers just
+     keep normal wrapping (progressive enhancement, no fallback needed). */
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.post-hero-title--long {
+  font-size: clamp(2rem, 3.6vw, 3.25rem);
+  line-height: 1.08;
+  /* Long/xlong titles need the full container width, not the 980px reading
+     measure tuned for short titles — otherwise a long title wraps to more
+     lines than its font-size alone would need. */
+  max-width: 100%;
+}
+
+.post-hero-title--xlong {
+  font-size: clamp(1.65rem, 2.55vw, 2.35rem);
+  line-height: 1.14;
+  max-width: 100%;
+}
+
+.post-hero-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem;
+  color: var(--color-dim, #737373);
+  flex-wrap: wrap;
+}
+
+.post-hero-author {
+  font-weight: 600;
+  color: var(--color-text, #171717);
+}
+
+.post-hero-tags {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.post-hero-tags .tag {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text, #171717);
+  background: color-mix(in srgb, var(--color-accent, #1e6fd9) 10%, transparent);
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  letter-spacing: 0;
+}
+
+html[data-tone="technical"] .post-hero {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent, #1e6fd9) 20%, transparent),
+      transparent 52%
+    ),
+    color-mix(in srgb, var(--color-bg, #fff) 88%, #000);
+}
+
+html[data-tone="technical"] .post-hero::before {
+  background:
+    linear-gradient(
+      color-mix(in srgb, var(--color-accent, #1e6fd9) 18%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent, #1e6fd9) 18%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 24px 24px;
+}
+
+html[data-tone="product"] .post-hero {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-accent-secondary, #14b8a6) 20%, transparent),
+      transparent 44%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent, #1e6fd9) 12%, transparent),
+      transparent 60%
+    ),
+    var(--color-bg);
+}
+
+@media (max-width: 768px) {
+  .post-hero-inner,
+  .post-hero--no-cover .post-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.75rem 1.15rem 2.25rem;
+  }
+
+  .post-hero-media {
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    box-shadow: 0 14px 36px color-mix(in srgb, var(--color-text, #171717) 12%, transparent);
+  }
+
+  .post-hero-title {
+    font-size: clamp(2.1rem, 10.5vw, 3.1rem);
+    max-width: none;
+  }
+
+  .post-hero-title--long {
+    font-size: clamp(1.75rem, 8.5vw, 2.35rem);
+  }
+
+  .post-hero-title--xlong {
+    font-size: clamp(1.5rem, 7.1vw, 1.95rem);
+  }
+
+  .post-breadcrumb {
+    flex-wrap: wrap;
+  }
+}

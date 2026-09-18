@@ -1,0 +1,110 @@
+.hero-banner {
+  position: relative;
+  background: var(--color-bg);
+  overflow: hidden;
+  padding: 6rem 0 5rem;
+  text-align: center;
+  color: var(--color-text, #171717);
+}
+
+/* TypeBlock noise — fills entire hero as background layer */
+/* TypeBlock adds .tb class to the element and sets position:relative internally,
+   so we use !important to keep it absolutely positioned */
+.hero-tb {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-tb.tb {
+  --tb-bg: transparent;
+  --tb-text: var(--color-border);
+  --tb-text-dim: var(--color-border);
+  background: transparent;
+  position: absolute;
+  inset: 0;
+}
+.hero-tb .tb-grid {
+  padding: 0;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-banner .container {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-banner .hero-title {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+  letter-spacing: -0.02em;
+  color: var(--color-text, #171717);
+}
+
+.hero-banner .hero-subtitle {
+  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-size: 1.25rem;
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+  color: var(--color-dim, #737373);
+}
+
+.hero-banner .hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-banner .btn {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 1.75rem;
+  border-radius: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.hero-banner .btn-primary {
+  background: var(--color-accent);
+  color: var(--color-bg, #fff);
+  border: 2px solid var(--color-accent);
+}
+
+.hero-banner .btn-primary:hover {
+  opacity: 0.9;
+}
+
+.hero-banner .btn-secondary {
+  background: transparent;
+  color: var(--color-text, #171717);
+  border: 2px solid var(--color-border, #e8e8e8);
+}
+
+.hero-banner .btn-secondary:hover {
+  background: var(--color-surface, #fafafa);
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 4rem 0 3rem;
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "id": "arcblog-compose-connection-gate-1",
+  "type": "connection-gate",
+  "children": [
+    {
+      "id": "arcblog-compose-connection-gate-1-card-1",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Publish with your wallet"
+      },
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-card-1-p-1",
+          "type": "text",
+          "props": {
+            "content": "Sign in with DID Wallet to create a wallet-bound author session. Paste Markdown below; headings, quotes, lists, code, links and images are rendered as a readable article."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-card-2",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Pre-publish checks"
+      },
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-card-2-p-1",
+          "type": "text",
+          "props": {
+            "content": "Before publish: title required, slug unique, summary/cover optional, Markdown rendered with sanitization."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-card-3",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Metadata"
+      },
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-card-3-input-1",
+          "type": "input",
+          "props": {
+            "content": "category"
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-3-input-2",
+          "type": "input",
+          "props": {
+            "content": "tags"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-card-4",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "SEO & social preview"
+      },
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-p-1",
+          "type": "text",
+          "props": {
+            "content": "Optional: set seo title/description and OG title/description/image. Defaults can fall back to post title, summary, and cover image."
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-input-2",
+          "type": "input",
+          "props": {
+            "content": "seoTitle"
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-input-3",
+          "type": "input",
+          "props": {
+            "content": "seoDescription"
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-input-4",
+          "type": "input",
+          "props": {
+            "content": "ogTitle"
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-input-5",
+          "type": "input",
+          "props": {
+            "content": "ogDescription"
+          }
+        },
+        {
+          "id": "arcblog-compose-connection-gate-1-card-4-input-6",
+          "type": "input",
+          "props": {
+            "content": "ogImage"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-post-editor-5",
+      "type": "post-editor",
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-post-editor-5-p-1",
+          "type": "text",
+          "props": {
+            "content": "Compose your story in Markdown. Drafts are private in your DID user space; publishing writes validated metadata into /blocklets/arcblog/instance/posts."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-card-6",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        },
+        "content": "Images"
+      },
+      "children": [
+        {
+          "id": "arcblog-compose-connection-gate-1-card-6-p-1",
+          "type": "text",
+          "props": {
+            "content": "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)."
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-compose-connection-gate-1-afs-dropzone-7",
+      "type": "afs-dropzone"
+    }
+  ]
+}

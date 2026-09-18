@@ -1,0 +1,585 @@
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: color-mix(in srgb, var(--color-bg, #fff) 82%, transparent);
+  border-bottom: 1px solid transparent;
+  padding: 0;
+  backdrop-filter: blur(20px) saturate(1.1);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.portal-header.scrolled {
+  background: color-mix(in srgb, var(--color-bg, #fff) 92%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--color-border, #e5e7eb) 50%, transparent);
+}
+
+.portal-header .container {
+  /* The header rides the shared content column (document-css --page-max /
+     --page-gutter). Because it centers in the viewport on the SAME column as
+     each section's content, brand/actions align with the body at every width
+     with no reserve hack and no separate --header-content-max token. The
+     .portal-header element keeps its full-bleed sticky background; only this
+     container is bounded. */
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 76px;
+  gap: 1.5rem;
+  transition:
+    min-height 0.2s ease,
+    padding-block 0.2s ease;
+}
+
+/* Scroll-compact sticky state (arc#2390): toggled by script.js past a small
+   scroll offset so the header doesn't permanently occupy its full height
+   while reading long content. Desktop already fits one row, so this is a
+   subtle height trim there; on mobile — where the compact layout below still
+   spends real vertical space on a single row — it matters more. */
+.portal-header.scrolled .container {
+  min-height: 60px;
+}
+
+/* Header grammar: left group holds logo + main nav; right group holds
+   language picker, mode toggle, and a reserved user-menu slot. */
+.portal-header .header-left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 2.6rem);
+}
+
+.portal-header .logo {
+  min-width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display, "Sora", system-ui, sans-serif);
+  font-weight: 460;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--color-text, #0f172a);
+  text-decoration: none;
+}
+
+.portal-header .logo .logo-mark {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent, #2563eb),
+    var(--color-accent-secondary, var(--color-accent, #2563eb))
+  );
+}
+
+/* When the site provides an inline SVG logo, hide the textual site name —
+   the SVG is the brand mark — and size the SVG to header height. */
+.portal-header .logo .logo-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+.portal-header .logo img.logo-svg,
+.portal-header .logo .logo-svg svg {
+  height: 1.65rem;
+  width: auto;
+  display: block;
+  /* The wordmark uses currentColor so it follows light/dark mode; the
+     branded gradient mark inside the SVG keeps its own colors. */
+  color: var(--color-text, #0f172a);
+}
+
+.portal-header.has-logo-svg .logo {
+  gap: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.portal-header .main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.portal-header .main-nav a {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-dim, #6b7280);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.portal-header .main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-accent, #2563eb);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.portal-header .main-nav a:hover {
+  color: var(--color-text, #0f172a);
+}
+
+.portal-header .main-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+/* Header controls: optional CTA + locale picker + mode toggle + user slot. */
+.portal-header .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+/* Primary CTA (nav item with variant:"cta") — a filled accent pill sized to
+   the 32px control row so it reads as the header's main action rather than a
+   stray label. Marketing sites opt in per nav item; default nav links are
+   unaffected. */
+.portal-header .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 0.95rem;
+  margin-right: 0.25rem;
+  border-radius: 999px;
+  background: var(--color-accent, #2563eb);
+  color: var(--accent-fg, #fff);
+  font-family: var(--font-body, "Inter", system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.portal-header .nav-cta:hover {
+  background: color-mix(in srgb, var(--color-accent, #2563eb) 88%, #000);
+  transform: translateY(-1px);
+}
+
+.portal-header .user-slot:empty {
+  display: none;
+}
+
+.portal-header .user-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-left: 0;
+}
+
+/* Align the runtime-rendered header-actions strip (.web/template/header-actions
+   → .aup-app-header-action buttons, e.g. the anonymous Login trigger) with the
+   portal control pills above: same 32px round pill, transparent fill, dim
+   stroke/glyph, and accent hover. Only presentation — markup stays owned by
+   the shared SSR renderer. */
+.portal-header .user-slot .aup-app-header-action {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 60%, transparent);
+  color: var(--color-dim, #6b7280);
+}
+
+.portal-header .user-slot .aup-app-header-action:hover {
+  color: var(--color-text, #0f172a);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-accent, #2563eb) 40%, var(--color-border, #e5e7eb));
+}
+
+.portal-header .user-slot .aup-app-header-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Post-hydration authenticated state: keep the avatar trigger on the same
+   32px control row. */
+.portal-header .user-slot .aup-app-header-user-menu-trigger {
+  height: 32px;
+  box-sizing: border-box;
+}
+
+/* Mobile section-nav menu toggle (arc#2390) — hidden above the compact
+   breakpoint (desktop keeps the inline nav; this button doesn't exist there
+   visually), sized/shown by the compact-layout media query below. */
+.portal-header-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 60%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-dim, #6b7280);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.portal-header-menu-toggle:hover {
+  color: var(--color-text, #0f172a);
+  border-color: color-mix(in srgb, var(--color-accent, #2563eb) 40%, var(--color-border, #e5e7eb));
+}
+
+.portal-header-menu-toggle .icon-menu-close {
+  display: none;
+}
+
+.portal-header.nav-open .portal-header-menu-toggle .icon-menu-open {
+  display: none;
+}
+
+.portal-header.nav-open .portal-header-menu-toggle .icon-menu-close {
+  display: block;
+}
+
+/* Click-outside-to-close backdrop for the mobile nav drawer. Sits below the
+   sticky header (same stacking context) and above page content. */
+.portal-header-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  background: color-mix(in srgb, #000 32%, transparent);
+  border: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.portal-header-backdrop[hidden] {
+  display: none;
+}
+
+.portal-header .locale-picker {
+  position: relative;
+}
+
+.portal-header .locale-picker-btn,
+.portal-header .mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding: 0 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 60%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-dim, #6b7280);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Both are icon-only square pills (the locale picker is now a globe-only
+   trigger aligned with the AUP app-header locale-switcher). */
+.portal-header .locale-picker-btn,
+.portal-header .mode-toggle {
+  width: 32px;
+  padding: 0;
+}
+
+.portal-header .locale-picker-btn:hover,
+.portal-header .mode-toggle:hover {
+  color: var(--color-text, #0f172a);
+  border-color: color-mix(in srgb, var(--color-accent, #2563eb) 40%, var(--color-border, #e5e7eb));
+}
+
+.portal-header .locale-picker-btn .icon-globe {
+  transition: transform 0.2s;
+}
+
+.portal-header .locale-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 152px;
+  background: color-mix(in srgb, var(--color-bg, #fff) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 70%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 22px 48px color-mix(in srgb, var(--color-text, #0f172a) 12%, transparent);
+  padding: 6px;
+  z-index: 100;
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-header .locale-dropdown[hidden] {
+  display: none;
+}
+
+.portal-header .locale-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-dim, #6b7280);
+  font-family: var(--font-body, "Inter", system-ui, sans-serif);
+  font-size: 0.86rem;
+  font-weight: 460;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.portal-header .locale-option:hover {
+  background: color-mix(in srgb, var(--color-accent, #2563eb) 6%, transparent);
+  color: var(--color-text, #0f172a);
+}
+
+.portal-header .locale-option.active {
+  color: var(--color-accent, #2563eb);
+  font-weight: 540;
+}
+
+.portal-header .locale-option.active::before {
+  content: "•";
+  color: var(--color-accent, #2563eb);
+  font-weight: 700;
+}
+
+/* Show sun by default, moon when dark */
+.portal-header .mode-toggle .icon-moon {
+  display: none;
+}
+.portal-header .mode-toggle .icon-sun {
+  display: block;
+}
+.portal-header .mode-toggle.is-dark .icon-moon {
+  display: block;
+}
+.portal-header .mode-toggle.is-dark .icon-sun {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .portal-header .container {
+    min-height: auto;
+    /* Horizontal gutter stays var(--page-gutter) (shared column); only add
+       vertical breathing room now that the row can wrap. */
+    padding-block: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* Only let the left group grow when it actually holds a nav (which needs the
+     room / scrolls). A logo-only left group must stay its natural width, or it
+     expands to fill the row and pushes the controls onto a second line — the
+     stray line-break on minimal headers like aside. */
+  .portal-header .container:has(.main-nav a) .header-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 1.25rem;
+  }
+
+  .portal-header .header-controls {
+    flex-shrink: 0;
+  }
+
+  .portal-header .main-nav {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 1rem;
+  }
+
+  .portal-header .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .portal-header .main-nav a {
+    white-space: nowrap;
+  }
+}
+
+/* Compact mobile layout (arc#2390) — replaces the old behavior of stacking
+   logo / section-nav / controls into three permanent rows (the actual bug
+   reported: a sticky header eating a third of a 390×844 viewport). Brand +
+   every essential action (nav entry point, language, theme, account) now
+   stay on ONE row; the section nav moves into an expandable panel that
+   overlays the page instead of pushing it down. Breakpoint matches the
+   shared primitives-css.ts mobile cutoff (640px) for consistency across the
+   fleet's header surfaces. */
+@media (max-width: 640px) {
+  .portal-header .container {
+    flex-wrap: nowrap;
+    min-height: 56px;
+    padding-block: 0.4rem;
+    gap: 0.5rem;
+    /* .main-nav becomes an absolutely-positioned drawer below; .portal-header
+       (position: sticky) is its containing block, so this only needs to stay
+       a normal (non-positioned) flex row — no layout shift when the drawer
+       opens/closes. */
+  }
+
+  /* The scrolled state's height floor is bounded below by the 44px touch
+     targets themselves (criterion: every control stays >=44x44 in every
+     state, scrolled included — so icons/pills never shrink here). The
+     available lever is vertical padding: trimming it still yields a real,
+     visible compaction (~58px -> ~49px) without an accessibility trade-off. */
+  .portal-header.scrolled .container {
+    min-height: 48px;
+    padding-block: 0.15rem;
+  }
+
+  /* Matches (and overrides) the 860px block's `:has(.main-nav a) .header-left`
+     rule at equal specificity + later source order — the nav no longer shares
+     this row at all (it's an absolutely-positioned drawer, see .main-nav
+     below), so the left group is just [logo, menu-toggle] and must stay
+     content-sized instead of growing to fill the row. */
+  .portal-header .container:has(.main-nav a) .header-left,
+  .portal-header .header-left {
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  /* The nav no longer shares the row (it moved into the drawer below), so the
+     left group is just the logo — never let it grow/shrink oddly. */
+  .portal-header .logo {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .portal-header .header-controls {
+    flex-shrink: 0;
+    gap: 0.25rem;
+  }
+
+  .portal-header .nav-cta {
+    padding: 0 0.65rem;
+    margin-right: 0;
+    height: 44px;
+  }
+
+  /* Section-nav drawer: taken out of the row entirely and overlaid full-width
+     below the header. Hidden (zero height, non-interactive) until
+     .portal-header.nav-open is set by script.js's menu-toggle handler. */
+  .portal-header .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-width: none;
+    max-height: 0;
+    overflow: hidden;
+    overflow-x: visible;
+    visibility: hidden;
+    opacity: 0;
+    background: var(--color-bg, #fff);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 60%, transparent);
+    box-shadow: 0 16px 32px color-mix(in srgb, var(--color-text, #0f172a) 10%, transparent);
+    padding: 0 var(--page-gutter);
+    transition:
+      max-height 0.25s ease,
+      opacity 0.2s ease,
+      visibility 0.25s;
+  }
+
+  .portal-header.nav-open .main-nav {
+    /* Bounded rather than unlimited, so a site with a long section list
+       scrolls internally instead of pushing content below the viewport. */
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .portal-header .main-nav a {
+    white-space: normal;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.7rem 0;
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 40%, transparent);
+  }
+
+  .portal-header .main-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .portal-header .main-nav a::after {
+    display: none;
+  }
+
+  .portal-header-menu-toggle {
+    display: inline-flex;
+  }
+
+  /* Touch targets: every icon/control button must be at least 44×44 CSS px
+     on touch-sized viewports (WCAG 2.5.5 / Apple & Material HIG), even though
+     the desktop control row uses a tighter 32px pill. */
+  .portal-header-menu-toggle,
+  .portal-header .locale-picker-btn,
+  .portal-header .mode-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .portal-header .user-slot .aup-app-header-action,
+  .portal-header .user-slot .aup-app-header-user-menu-trigger {
+    width: 44px;
+    height: 44px;
+  }
+}

@@ -1,0 +1,34 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "admin".
+schemaVersion: 1
+page: admin
+description: >-
+  Wallet-gated Creator Studio for managing draft/published/archived lifecycle,
+  plus media stored in the caller's DID Space.
+synopsis: >-
+  Connect a DID Wallet, inspect your content list, and apply lifecycle actions
+  (publish, archive, republish, soft delete) without exposing private records.
+examples:
+  - label: Create a post
+    action: click
+    target: arcblog-admin-connection-gate-1-card-1-action-2
+flows:
+  - Connect the DID Wallet to establish the author session.
+  - Review draft/published/archived records in the AFS-backed content list.
+  - Run quick query actions for `status=published` and `status=archived`.
+  - Enter filter values for status/category/tag to segment operational views.
+  - Apply lifecycle transitions with optimistic concurrency protection.
+  - Open the Markdown editor to create or update a post.
+refs:
+  actions:
+    - id: arcblog-admin-connection-gate-1-card-1-action-2
+      event: click
+    - id: arcblog-admin-connection-gate-1-card-4-action-2
+      event: click
+    - id: arcblog-admin-connection-gate-1-card-4-action-3
+      event: click
+    - id: arcblog-admin-connection-gate-1-card-4-action-4
+      event: click
+    - id: arcblog-admin-connection-gate-1-card-4-action-5
+      event: click

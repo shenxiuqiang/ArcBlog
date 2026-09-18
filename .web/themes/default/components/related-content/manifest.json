@@ -1,0 +1,9 @@
+{
+  "name": "related-content",
+  "description": "Related content section showing cross-linked items",
+  "seoStrategy": "full",
+  "hasScript": false,
+  "props": {
+    "items": { "type": "array", "description": "Related items with type, slug, title" }
+  }
+}

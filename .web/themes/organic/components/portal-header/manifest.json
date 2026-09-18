@@ -1,0 +1,20 @@
+{
+  "name": "portal-header",
+  "description": "Mega-nav header with links to all 5 content sections",
+  "seoStrategy": "full",
+  "hasScript": true,
+  "props": {
+    "siteName": { "type": "string" },
+    "nav": {
+      "type": "array",
+      "description": "Top-level navigation sections",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "href": { "type": "string" }
+        }
+      }
+    }
+  }
+}

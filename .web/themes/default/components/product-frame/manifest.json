@@ -1,0 +1,45 @@
+{
+  "name": "product-frame",
+  "description": "CSS-only device, browser, or terminal shell for a verified product screenshot or command transcript",
+  "seoStrategy": "none",
+  "enhancements": ["product-frames"],
+  "props": {
+    "kind": {
+      "type": "string",
+      "required": true,
+      "description": "terminal, iphone, android, ipad, desktop, or browser"
+    },
+    "orientation": {
+      "type": "string",
+      "description": "portrait or landscape; device-appropriate default when omitted"
+    },
+    "src": {
+      "type": "string",
+      "description": "Verified screenshot URL or site-relative path; required for screen-based kinds"
+    },
+    "alt": {
+      "type": "string",
+      "description": "Accurate description of the visible screenshot or neutral fixture"
+    },
+    "caption": {
+      "type": "string",
+      "description": "Optional visible caption"
+    },
+    "command": {
+      "type": "string",
+      "description": "Verified terminal command; used only with kind=terminal"
+    },
+    "output": {
+      "type": "string",
+      "description": "Verified terminal output; used only with kind=terminal"
+    },
+    "size": {
+      "type": "string",
+      "description": "compact, default, or wide"
+    },
+    "placeholder": {
+      "type": "string",
+      "description": "Reserved for neutral development fixtures; never use as product evidence"
+    }
+  }
+}

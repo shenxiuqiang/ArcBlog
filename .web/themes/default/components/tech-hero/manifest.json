@@ -1,0 +1,12 @@
+{
+  "name": "tech-hero",
+  "description": "Technology page hero with blueprint aesthetic, title, description, and category badge",
+  "seoStrategy": "full",
+  "props": {
+    "title": { "type": "string" },
+    "excerpt": { "type": "string", "description": "Technology one-liner" },
+    "category": { "type": "string" },
+    "tags": { "type": "array" },
+    "slug": { "type": "string" }
+  }
+}

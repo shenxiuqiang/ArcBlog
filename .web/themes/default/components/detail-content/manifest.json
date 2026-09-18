@@ -1,0 +1,7 @@
+{
+  "name": "detail-content",
+  "description": "Detail page layout with centered content and optional reading navigation",
+  "seoStrategy": "full",
+  "hasScript": false,
+  "enhancements": ["media-lightbox"]
+}

@@ -1,0 +1,142 @@
+.platform-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Each layer is a table-like row */
+.ps-layer {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid var(--color-border, #e8e8e8);
+  border-bottom: none;
+  transition: none;
+}
+
+.ps-layer:last-child {
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+}
+
+/* Remove colored border-left stripes — all layers use same style */
+.ps-layer--applications,
+.ps-layer--framework,
+.ps-layer--platform,
+.ps-layer--identity,
+.ps-layer--infrastructure {
+  background: transparent;
+  border-left: 1px solid var(--color-border, #e8e8e8);
+}
+
+/* Top layer gets subtle background */
+.ps-layer:first-child {
+  background: var(--color-surface, #fafafa);
+}
+
+/* Highlighted layer — just bolder, no transform/shadow */
+.ps-layer--highlighted {
+  box-shadow: none;
+  transform: none;
+  z-index: auto;
+  font-weight: 600;
+}
+
+.ps-label {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-dim, #737373);
+  min-width: 120px;
+  flex-shrink: 0;
+  padding: 0.875rem 1rem;
+  border-right: 1px solid var(--color-border, #e8e8e8);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+.ps-items {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  padding: 0.875rem 1rem;
+  align-items: center;
+}
+
+.ps-item {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--color-text, #171717);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  transition: none;
+}
+
+.ps-item + .ps-item::before {
+  content: "\00b7";
+  margin: 0 0.5rem;
+  color: var(--color-dim, #737373);
+}
+
+/* Active/highlighted item */
+.ps-item--active {
+  background: var(--color-accent, #1e6fd9);
+  color: #fff;
+  border-color: var(--color-accent, #1e6fd9);
+  box-shadow: none;
+  font-weight: 600;
+  padding: 0.2rem 0.625rem;
+  border-radius: 2px;
+}
+
+.ps-item--active + .ps-item::before,
+.ps-item + .ps-item--active::before {
+  content: none;
+}
+
+/* Compact mode for sidebar */
+.platform-stack--compact {
+  max-width: none;
+}
+
+.platform-stack--compact .ps-layer {
+  padding: 0;
+}
+
+.platform-stack--compact .ps-label {
+  font-size: 0.5625rem;
+  min-width: 80px;
+  padding: 0.5rem 0.75rem;
+}
+
+.platform-stack--compact .ps-items {
+  padding: 0.5rem 0.75rem;
+}
+
+.platform-stack--compact .ps-item {
+  font-size: 0.6875rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ps-layer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ps-label {
+    min-width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border, #e8e8e8);
+  }
+}

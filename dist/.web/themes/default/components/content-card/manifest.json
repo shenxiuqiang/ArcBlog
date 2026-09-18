@@ -1,0 +1,48 @@
+{
+  "name": "content-card",
+  "description": "Generic content card for blog posts, news, and events",
+  "seoStrategy": "full",
+  "hasScript": true,
+  "props": {
+    "title": {
+      "type": "string",
+      "description": "Optional listing heading"
+    },
+    "headingLevel": {
+      "type": "number",
+      "description": "Heading level for title, defaults to 2"
+    },
+    "itemHeadingLevel": {
+      "type": "number",
+      "description": "Heading level for item titles, defaults to 3"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional listing description"
+    },
+    "eyebrow": {
+      "type": "string",
+      "description": "Optional short label above title"
+    },
+    "items": {
+      "type": "array",
+      "description": "Content items with title, slug, date, excerpt, tags"
+    },
+    "basePath": {
+      "type": "string",
+      "description": "URL prefix for links, e.g. /en/blog/"
+    },
+    "variant": {
+      "type": "string",
+      "description": "Optional visual variant class suffix"
+    },
+    "readMoreHref": {
+      "type": "string",
+      "description": "Link to full listing page"
+    },
+    "emptyText": {
+      "type": "string",
+      "description": "Empty-state line when there are no items. Empty string renders nothing — use when another surface fills this list (e.g. the search page)."
+    }
+  }
+}

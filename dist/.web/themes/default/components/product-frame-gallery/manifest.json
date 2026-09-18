@@ -1,0 +1,21 @@
+{
+  "name": "product-frame-gallery",
+  "description": "Responsive gallery for one or more CSS-only product evidence frames",
+  "seoStrategy": "none",
+  "enhancements": ["product-frames"],
+  "props": {
+    "items": {
+      "type": "array",
+      "required": true,
+      "description": "Ordered frame objects using product-frame props; kinds may repeat"
+    },
+    "layout": {
+      "type": "string",
+      "description": "single, pair, showcase, or mixed"
+    },
+    "label": {
+      "type": "string",
+      "description": "Accessible label for this evidence gallery"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+.tech-hero {
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text, #171717);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+}
+
+/* Blueprint grid background — subtle monochrome version */
+.tech-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%);
+}
+
+.tech-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 4rem var(--page-gutter) 5rem;
+}
+
+.tech-breadcrumb {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--color-dim, #737373);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tech-breadcrumb a {
+  color: var(--color-dim, #737373);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.tech-breadcrumb a:hover {
+  color: var(--color-text, #171717);
+}
+
+.tech-badge {
+  display: inline-block;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-dim, #737373);
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 1rem;
+}
+
+.tech-hero-title {
+  font-family: var(--font-heading, var(--font-serif, "Newsreader", Georgia, serif));
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  max-width: 640px;
+  color: var(--color-text, #171717);
+}
+
+.tech-hero-desc {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-dim, #737373);
+  margin: 0 0 1.5rem;
+  max-width: 540px;
+}
+
+.tech-hero-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tech-hero-tags .tag {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-dim, #737373);
+  background: var(--color-surface, #fafafa);
+  border: 1px solid var(--color-border, #e8e8e8);
+  padding: 0.25rem 0.75rem;
+  border-radius: 2px;
+}
+
+@media (max-width: 640px) {
+  .tech-hero-title {
+    font-size: 1.75rem;
+  }
+}

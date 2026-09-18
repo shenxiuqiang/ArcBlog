@@ -1,0 +1,86 @@
+{
+  "id": "arcblog-about",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    },
+    "size": {
+      "maxWidth": "lg"
+    }
+  },
+  "children": [
+    {
+      "id": "arcblog-about-card-about-arcblog",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-about-title-about-arcblog",
+          "type": "text",
+          "props": {
+            "content": "About ArcBlog",
+            "level": 2
+          }
+        },
+        {
+          "id": "arcblog-about-text",
+          "type": "text",
+          "props": {
+            "content": "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space."
+          }
+        },
+        {
+          "id": "arcblog-about-action-view-product-summary",
+          "type": "action",
+          "props": {
+            "label": "View product summary",
+            "variant": "secondary",
+            "href": "/docs/product-summary.md"
+          }
+        },
+        {
+          "id": "arcblog-about-action-view-operations-runbook",
+          "type": "action",
+          "props": {
+            "label": "View operations runbook",
+            "variant": "secondary",
+            "href": "/docs/operations-runbook.md"
+          }
+        },
+        {
+          "id": "arcblog-about-action-view-developer-guide",
+          "type": "action",
+          "props": {
+            "label": "View developer guide",
+            "variant": "secondary",
+            "href": "/docs/developer-guide.md"
+          }
+        },
+        {
+          "id": "arcblog-about-action-view-product-roadmap",
+          "type": "action",
+          "props": {
+            "label": "View product roadmap",
+            "variant": "secondary",
+            "href": "/docs/roadmap.md"
+          }
+        },
+        {
+          "id": "arcblog-about-action-view-release-checklist",
+          "type": "action",
+          "props": {
+            "label": "View release checklist",
+            "variant": "secondary",
+            "href": "/docs/release-checklist.md"
+          }
+        }
+      ]
+    }
+  ]
+}

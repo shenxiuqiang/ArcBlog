@@ -1,0 +1,12 @@
+{
+  "name": "tag-list",
+  "description": "Tag cloud / tag listing with linked pills",
+  "seoStrategy": "full",
+  "hasScript": false,
+  "props": {
+    "tags": {
+      "type": "array",
+      "description": "Array of {name, href} tag objects (href resolved server-side), or plain strings for an unclickable pill"
+    }
+  }
+}

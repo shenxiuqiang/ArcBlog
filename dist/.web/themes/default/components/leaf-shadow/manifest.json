@@ -1,0 +1,23 @@
+{
+  "name": "leaf-shadow",
+  "description": "Moving canopy-light overlay. Video gobo or procedural WebGL, mix-blend-multiply.",
+  "seoStrategy": "none",
+  "hasScript": true,
+  "props": {
+    "variant": {
+      "type": "string",
+      "description": "overlay (fixed full-page) or wash (section-local)."
+    },
+    "intensity": { "type": "number", "description": "Opacity 0–1. Default 0.28." },
+    "speed": { "type": "number", "description": "Drift speed. Default 1." },
+    "angle": { "type": "number", "description": "Light shear, 0–1. Default 0.35." },
+    "controls": {
+      "type": "boolean",
+      "description": "Lab HUD: toggle and intensity. Default false."
+    },
+    "src": {
+      "type": "string",
+      "description": "Looping gobo video URL. When set, used instead of the procedural shader."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "hero-banner",
+  "description": "Homepage hero section with title, subtitle, and CTAs",
+  "seoStrategy": "full",
+  "hasScript": true,
+  "props": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "primaryAction": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "secondaryAction": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "description": "TypeBlock noise-layer keywords (site content). Empty/absent → no noise layer."
+    }
+  }
+}

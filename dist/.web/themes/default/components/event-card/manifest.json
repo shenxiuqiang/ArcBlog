@@ -1,0 +1,12 @@
+{
+  "name": "event-card",
+  "description": "Event list with calendar date blocks, status indicators, location/format badges, grouped by upcoming/past",
+  "seoStrategy": "full",
+  "props": {
+    "items": {
+      "type": "array",
+      "description": "Event items with title, slug, date, endDate, time, location, format, status, excerpt, tags, coverImage"
+    },
+    "basePath": { "type": "string", "description": "URL prefix for links, e.g. /en/events/" }
+  }
+}

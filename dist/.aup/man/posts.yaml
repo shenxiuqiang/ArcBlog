@@ -1,0 +1,28 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "posts".
+schemaVersion: 1
+page: posts
+description: >-
+  Public ArcBlog reading surface. It lists only publishable records from the
+  post lifecycle (status=published), with DID-attributed authorship.
+synopsis: >-
+  Browse the published article feed and narrow Technology, Design, or Life
+  stories from the topic navigation.
+examples:
+  - label: Start writing
+    action: click
+    target: arcblog-posts-action-write-a-post
+flows:
+  - Browse posts and open an article detail.
+  - Select a topic from the primary or secondary category navigation.
+  - Enter category/tag filter values to narrow the public feed.
+  - Public feed excludes draft/archived/deleted records.
+  - Use RSS subscription entry for feed discovery.
+  - Choose Write a post to enter the DID Wallet-gated editor.
+refs:
+  actions:
+    - id: arcblog-posts-action-write-a-post
+      event: click
+    - id: arcblog-posts-action-subscribe-via-rss
+      event: click

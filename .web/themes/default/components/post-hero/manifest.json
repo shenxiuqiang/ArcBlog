@@ -1,0 +1,34 @@
+{
+  "name": "post-hero",
+  "description": "Blog post header with cover image, breadcrumb, title, author, date, and tags",
+  "props": {
+    "title": { "type": "string" },
+    "date": { "type": "string" },
+    "author": { "type": "string" },
+    "readingTime": { "type": "string" },
+    "tags": { "type": "array" },
+    "coverImage": { "type": "string" },
+    "coverWidth": {
+      "type": "number",
+      "description": "Intrinsic cover width in CSS pixels; omitted when unknown"
+    },
+    "coverHeight": {
+      "type": "number",
+      "description": "Intrinsic cover height in CSS pixels; omitted when unknown"
+    },
+    "coverAlt": {
+      "type": "string",
+      "description": "Independent cover description; empty keeps a repeated-title cover decorative"
+    },
+    "slug": { "type": "string" },
+    "contentType": { "type": "string", "default": "blog" },
+    "eyebrow": {
+      "type": "string",
+      "description": "Optional line between breadcrumb and title naming what this record belongs to (e.g. \"Series · Web as a system capability\"); omitted or empty renders nothing"
+    },
+    "eyebrowHref": {
+      "type": "string",
+      "description": "Optional link target for eyebrow, e.g. the series or collection root; ignored without eyebrow"
+    }
+  }
+}
