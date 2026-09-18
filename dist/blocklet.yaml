@@ -2,5 +2,5 @@ specVersion: 2
 id: arcblog
 name: ArcBlog
 did: did:blocklet:arcblog
-version: 0.2.0
+version: 0.3.0
 description: "A DID-native publishing space for readable Markdown posts and images."
