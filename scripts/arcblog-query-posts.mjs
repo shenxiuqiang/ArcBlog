@@ -38,22 +38,80 @@ function arcAfs(args, instance) {
   }
 }
 
-function queryByAction({ status, limit, instance }) {
+// Post records are split by visibility: /instance/app/arcblog/posts holds
+// published records (guest-readable via networkRead); /instance/app/arcblog/drafts
+// holds draft/archived/deleted records (private). Both are reachable from the
+// CLI only through the blocklet's own AFS actions. `arc afs exec` reports
+// errors as text on stdout with exit code 0 — detect them.
+const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
+const PUBLIC_DIR = '/instance/app/arcblog/posts';
+const PRIVATE_DIR = '/instance/app/arcblog/drafts';
+
+function blockletExec(action, args, instance) {
+  const full = ['afs', 'exec', `${BLOCKLET_ACTIONS}/${action}`, '--args', JSON.stringify(args), '--json'];
+  if (instance) full.push('-i', instance);
+  const text = (execFileSync('arc', full, { encoding: 'utf8' }) || '').trim();
+  let parsed;
+  try {
+    parsed = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(text || 'arc exec failed');
+  }
+  if (parsed && parsed.success === false) {
+    const err = new Error(parsed.error?.message || 'arc exec failed');
+    if (parsed.error?.code) err.code = parsed.error.code;
+    throw err;
+  }
+  return parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
+}
+
+function toRecord(parsed, path, dir) {
+  return {
+    path: path || '',
+    dir: dir || '',
+    slug: parsed.slug || '',
+    title: parsed.title || '',
+    status: parsed.status || '',
+    category: parsed.category || '',
+    tags: Array.isArray(parsed.tags) ? parsed.tags : [],
+    publishedAt: parsed.publishedAt || '',
+    updatedAt: parsed.updatedAt || '',
+    authorDid: parsed.authorDid || '',
+  };
+}
+
+function queryByAction({ dir, status, limit, instance, category, tag }) {
   const where = status ? { status } : {};
-  return arcAfs(
-    [
-      'exec',
-      '/blocklets/arcblog/.actions/query',
-      '--args',
-      JSON.stringify({
-        path: '/blocklets/arcblog/instance/posts',
+  let data;
+  try {
+    data = blockletExec(
+      'query',
+      {
+        path: dir,
         where,
         orderBy: [['mtime', 'desc']],
         limit,
-      }),
-    ],
-    instance
-  );
+      },
+      instance
+    );
+  } catch (err) {
+    if (/not found/i.test(err.message)) return { total: 0, records: [] };
+    throw err;
+  }
+  const entries = Array.isArray(data) ? data : data?.entries || [];
+  const records = [];
+  for (const entry of entries) {
+    let parsed = {};
+    try {
+      parsed = JSON.parse(entry?.content || '{}');
+    } catch {
+      continue;
+    }
+    // The query action only filters by `where`; apply category/tag client-side.
+    if (!matchesFilters(parsed, null, category, tag)) continue;
+    records.push(toRecord(parsed, entry?.path, dir === PUBLIC_DIR ? 'posts' : 'drafts'));
+  }
+  return { total: records.length, records };
 }
 
 function matchesFilters(parsed, status, category, tag) {
@@ -66,9 +124,15 @@ function matchesFilters(parsed, status, category, tag) {
   return true;
 }
 
-function queryByListing({ status, limit, instance, category, tag }) {
-  const listed = arcAfs(['ls', '/blocklets/arcblog/instance/posts'], instance);
-  const entries = (listed?.entries || []).slice(0, limit);
+function queryByListing({ dir, status, limit, instance, category, tag }) {
+  let listed;
+  try {
+    listed = blockletExec('list', { path: dir }, instance);
+  } catch (err) {
+    if (/not found/i.test(err.message)) return { mode: 'ls-read-fallback', total: 0, records: [] };
+    throw err;
+  }
+  const entries = (Array.isArray(listed) ? listed : listed?.entries || []).slice(0, limit);
 
   const records = [];
   for (const entry of entries) {
@@ -76,20 +140,10 @@ function queryByListing({ status, limit, instance, category, tag }) {
     if (!path || !path.endsWith('.json')) continue;
 
     try {
-      const raw = arcAfs(['read', '--path', path], instance);
-      const parsed = JSON.parse(raw?.data?.content || '{}');
+      const raw = blockletExec('read', { path }, instance);
+      const parsed = JSON.parse(raw?.content || raw?.data?.content || '{}');
       if (!matchesFilters(parsed, status, category, tag)) continue;
-      records.push({
-        path,
-        slug: parsed.slug || '',
-        title: parsed.title || '',
-        status: parsed.status || '',
-        category: parsed.category || '',
-        tags: Array.isArray(parsed.tags) ? parsed.tags : [],
-        publishedAt: parsed.publishedAt || '',
-        updatedAt: parsed.updatedAt || '',
-        authorDid: parsed.authorDid || '',
-      });
+      records.push(toRecord(parsed, path, dir === PUBLIC_DIR ? 'posts' : 'drafts'));
     } catch {
       // Skip unreadable/corrupt records for operational query
     }
@@ -102,6 +156,15 @@ function queryByListing({ status, limit, instance, category, tag }) {
   };
 }
 
+// published records live in the public directory; everything else lives in
+// the private one. No status argument queries both and tags each record with
+// its origin directory.
+function dirsForStatus(status) {
+  if (status === 'published') return [PUBLIC_DIR];
+  if (status) return [PRIVATE_DIR];
+  return [PUBLIC_DIR, PRIVATE_DIR];
+}
+
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   const [status] = opts._;
@@ -109,21 +172,27 @@ function main() {
   const instance = optString(opts.instance);
   const category = optString(opts.category);
   const tag = optString(opts.tag);
+  const dirs = dirsForStatus(status);
 
   try {
     let result;
-    try {
-      result = queryByAction({ status, limit, instance });
-      result = { mode: 'query-action', result };
-    } catch (err) {
-      result = {
-        mode: 'ls-read-fallback',
-        fallbackReason: err.message,
-        result: queryByListing({ status, limit, instance, category, tag }),
-      };
+    let mode = 'query-action';
+    let fallbackReason;
+    const records = [];
+    for (const dir of dirs) {
+      let data;
+      try {
+        data = queryByAction({ dir, status, limit, instance, category, tag });
+      } catch (err) {
+        mode = 'ls-read-fallback';
+        fallbackReason = err.message;
+        data = queryByListing({ dir, status, limit, instance, category, tag });
+      }
+      records.push(...data.records);
     }
+    result = { total: Math.min(records.length, limit), records: records.slice(0, limit) };
 
-    console.log(JSON.stringify({ ok: true, status: status || 'all', ...result }, null, 2));
+    console.log(JSON.stringify({ ok: true, status: status || 'all', mode, ...(fallbackReason ? { fallbackReason } : {}), result }, null, 2));
   } catch (err) {
     console.error(JSON.stringify({ ok: false, error: err.message }, null, 2));
     process.exit(1);

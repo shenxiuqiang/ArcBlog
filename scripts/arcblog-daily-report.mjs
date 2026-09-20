@@ -38,6 +38,29 @@ function arcAfs(args, instance) {
   }
 }
 
+// Post records live in the shared instance space (/instance/app/arcblog/posts),
+// reachable from the CLI only through the blocklet's own AFS actions. `arc afs
+// exec` reports errors as text on stdout with exit code 0 — detect them.
+const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
+
+function blockletExec(action, args, instance) {
+  const full = ['afs', 'exec', `${BLOCKLET_ACTIONS}/${action}`, '--args', JSON.stringify(args), '--json'];
+  if (instance) full.push('-i', instance);
+  const text = (execFileSync('arc', full, { encoding: 'utf8' }) || '').trim();
+  let parsed;
+  try {
+    parsed = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(text || 'arc exec failed');
+  }
+  if (parsed && parsed.success === false) {
+    const err = new Error(parsed.error?.message || 'arc exec failed');
+    if (parsed.error?.code) err.code = parsed.error.code;
+    throw err;
+  }
+  return parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
+}
+
 function summarizePosts(posts) {
   const byStatus = {};
   const byCategory = {};
@@ -65,16 +88,22 @@ function summarizePosts(posts) {
 }
 
 function listPosts({ limit, instance }) {
-  const listed = arcAfs(['ls', '/blocklets/arcblog/instance/posts'], instance);
-  const entries = (listed?.entries || [])
+  let listed;
+  try {
+    listed = blockletExec('list', { path: '/instance/app/arcblog/posts' }, instance);
+  } catch (err) {
+    if (/not found/i.test(err.message)) return [];
+    throw err;
+  }
+  const entries = (Array.isArray(listed) ? listed : listed?.entries || [])
     .filter((entry) => entry?.path?.endsWith('.json') && !entry.path.endsWith('.audit.jsonl'))
     .slice(0, limit);
 
   const posts = [];
   for (const entry of entries) {
     try {
-      const raw = arcAfs(['read', '--path', entry.path], instance);
-      const parsed = JSON.parse(raw?.data?.content || '{}');
+      const raw = blockletExec('read', { path: entry.path }, instance);
+      const parsed = JSON.parse(raw?.content || raw?.data?.content || '{}');
       posts.push(parsed);
     } catch {
       // skip unreadable/corrupt records

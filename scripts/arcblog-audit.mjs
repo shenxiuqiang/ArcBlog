@@ -56,7 +56,7 @@ function commandLog(opts) {
 
   const now = nowIso();
   const safeSlug = slug || 'unknown';
-  const path = `/blocklets/arcblog/instance/posts/${safeSlug}.audit.jsonl`;
+  const path = `/blocklets/arcblog/instance/audits/${safeSlug}.audit.jsonl`;
   const line = JSON.stringify({
     ts: now,
     action,
@@ -73,7 +73,7 @@ function commandRead(opts) {
   const instance = optString(opts.instance);
   const slug = optString(opts.slug).trim();
   ensure(slug, 'slug is required');
-  const path = `/blocklets/arcblog/instance/posts/${slug}.audit.jsonl`;
+  const path = `/blocklets/arcblog/instance/audits/${slug}.audit.jsonl`;
   try {
     const raw = arcAfs(['read', '--path', path], instance);
     const content = raw?.data?.content || '';

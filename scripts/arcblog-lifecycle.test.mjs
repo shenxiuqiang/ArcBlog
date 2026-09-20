@@ -61,3 +61,40 @@ test('archive requires slug', () => {
   const out = json(res.stderr);
   assert.equal(out.code, 'VALIDATION');
 });
+
+test('lifecycle moves records between drafts/ and posts/', () => {
+  const slug = `lifecycle-test-${Date.now()}`;
+  const draftPath = `/instance/app/arcblog/drafts/${slug}.json`;
+  const publicPath = `/instance/app/arcblog/posts/${slug}.json`;
+  try {
+    const draft = run(['draft', '--title', slug, '--author-did', 'did:key:zTest', '--body', 'draft body']);
+    assert.equal(draft.status, 0, draft.stderr);
+    assert.equal(json(draft.stdout).path, draftPath);
+
+    // Slug-only publish moves the draft into the public directory.
+    const publish = run(['publish', '--slug', slug]);
+    assert.equal(publish.status, 0, publish.stderr);
+    assert.equal(json(publish.stdout).path, publicPath);
+
+    const archive = run(['archive', '--slug', slug]);
+    assert.equal(archive.status, 0, archive.stderr);
+    assert.equal(json(archive.stdout).path, draftPath);
+
+    const republish = run(['republish', '--slug', slug]);
+    assert.equal(republish.status, 0, republish.stderr);
+    assert.equal(json(republish.stdout).path, publicPath);
+
+    // Published records cannot be deleted directly.
+    const delPublished = run(['delete', '--slug', slug]);
+    assert.equal(delPublished.status, 1);
+    assert.equal(json(delPublished.stderr).code, 'INVALID_TRANSITION');
+
+    run(['archive', '--slug', slug]);
+    const del = run(['delete', '--slug', slug]);
+    assert.equal(del.status, 0, del.stderr);
+    assert.equal(json(del.stdout).path, draftPath);
+  } finally {
+    run(['archive', '--slug', slug]);
+    run(['delete', '--slug', slug]);
+  }
+});
