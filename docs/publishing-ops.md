@@ -1,6 +1,6 @@
 # ArcBlog Publishing Operations (Iteration 1)
 
-This runbook provides executable lifecycle operations using AFS + `arc` CLI while UI action hooks are being finalized.
+This runbook provides executable lifecycle operations using AFS + `arc` CLI. The compose UI covers day-to-day drafting/publishing; the CLI remains the operational fallback (and the only path that sets `authorDid`/normalized `tags`).
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Compose UI now includes metadata blocks for:
 - `seoTitle`, `seoDescription`
 - `ogTitle`, `ogDescription`, `ogImage`
 
-### 2) Save draft (private user space)
+### 2) Save draft (private instance directory)
 
 ```bash
 node scripts/arcblog-lifecycle.mjs draft \
@@ -46,12 +46,25 @@ node scripts/arcblog-lifecycle.mjs draft \
 ```
 
 Writes to:
-- `/blocklets/arcblog/users/<did>/drafts/<slug>.json`
-
-If your current runtime context cannot write to `users/<did>`, the script returns:
-- `code=USER_SPACE_UNAVAILABLE`
+- `/instance/app/arcblog/drafts/<slug>.json` (private — no guest networkRead; admins read it via the studio and the `/preview/<slug>` binding)
 
 ### 3) Publish post (instance posts)
+
+The compose UI is the primary authoring path: a self-contained form (no
+post-editor widget) whose "存草稿 / 发布" buttons write ArcBlog-shaped records
+directly — drafts to `/instance/app/arcblog/drafts/<slug>.json`, publishes to
+`/instance/app/arcblog/posts/<slug>.json` (immediately public). UI-created
+records carry empty `authorDid`/`authorName` (the exec-args channel cannot see
+`$session`) and a raw-string `tags` field; use the CLI when authorship or
+normalized tags matter.
+
+CLI equivalent — publish an existing draft/archived record by moving it into the public directory:
+
+```bash
+node scripts/arcblog-lifecycle.mjs publish --slug my-first-post
+```
+
+Or publish content directly (immediately public, same semantics as the compose UI):
 
 ```bash
 node scripts/arcblog-lifecycle.mjs publish \
@@ -62,7 +75,8 @@ node scripts/arcblog-lifecycle.mjs publish \
 ```
 
 Writes to:
-- `/blocklets/arcblog/instance/posts/<slug>.json`
+- `/instance/app/arcblog/posts/<slug>.json` (public, guest-readable via `networkRead`)
+- When a draft with the same slug exists in `drafts/`, it is used as the base and removed afterwards.
 
 If slug exists, use optimistic overwrite:
 
@@ -82,17 +96,18 @@ node scripts/arcblog-lifecycle.mjs republish --slug my-first-post
 node scripts/arcblog-lifecycle.mjs delete --slug my-first-post
 ```
 
-State transitions enforced:
-- `published -> archived`
-- `archived -> published`
-- `draft|archived -> deleted`
+State transitions enforced (records move between directories):
+- `published -> archived` (posts/ → drafts/)
+- `archived -> published` (republish; drafts/ → posts/)
+- `draft|archived -> deleted` (soft delete in place, stays in drafts/)
 
 ### 5) Query posts by lifecycle status
 
 ```bash
-node scripts/arcblog-query-posts.mjs published
-node scripts/arcblog-query-posts.mjs archived
-node scripts/arcblog-query-posts.mjs deleted
+node scripts/arcblog-query-posts.mjs            # both directories, each record tagged with dir: posts|drafts
+node scripts/arcblog-query-posts.mjs published  # public directory only
+node scripts/arcblog-query-posts.mjs archived   # private directory only
+node scripts/arcblog-query-posts.mjs deleted    # private directory only
 node scripts/arcblog-query-posts.mjs --limit 50
 ```
 
