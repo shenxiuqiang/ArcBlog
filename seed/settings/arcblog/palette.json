@@ -1,0 +1,8 @@
+{
+  "label": "Palette",
+  "description": "Color palette of the reading surface. Organization-wide; admin only.",
+  "value": "natural",
+  "scope": "instance",
+  "type": "select",
+  "options": ["neutral", "natural", "warm", "vivid", "electric"]
+}

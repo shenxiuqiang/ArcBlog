@@ -8,13 +8,18 @@ description: >-
   post lifecycle (status=published), with DID-attributed authorship.
 synopsis: >-
   Browse the published article feed and narrow Technology, Design, or Life
-  stories from the topic navigation.
+  stories from the topic navigation. Feed rows are a custom `role=item`
+  template (clickMode=none); each row links to `/posts/<slug>` — the pretty
+  URL bound to the reader page via `sites.bindings` in blocklet.yaml.
 examples:
   - label: Start writing
     action: click
-    target: arcblog-posts-action-write-a-post
+    target: arcblog-posts-view-1-card-1-row-3-action-1
+  - label: Subscribe via RSS
+    action: click
+    target: arcblog-posts-view-1-card-1-row-3-action-2
 flows:
-  - Browse posts and open an article detail.
+  - Browse posts and open an article detail via the row link (`/posts/<slug>`).
   - Select a topic from the primary or secondary category navigation.
   - Enter category/tag filter values to narrow the public feed.
   - Public feed excludes draft/archived/deleted records.
@@ -22,7 +27,7 @@ flows:
   - Choose Write a post to enter the DID Wallet-gated editor.
 refs:
   actions:
-    - id: arcblog-posts-action-write-a-post
+    - id: arcblog-posts-view-1-card-1-row-3-action-1
       event: click
-    - id: arcblog-posts-action-subscribe-via-rss
+    - id: arcblog-posts-view-1-card-1-row-3-action-2
       event: click

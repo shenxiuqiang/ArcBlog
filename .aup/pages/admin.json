@@ -1,206 +1,384 @@
 {
-  "id": "arcblog-admin-connection-gate-1",
-  "type": "connection-gate",
+  "id": "arcblog-admin-view-1",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    }
+  },
   "children": [
     {
-      "id": "arcblog-admin-connection-gate-1-card-1",
+      "id": "arcblog-admin-view-1-card-1",
       "type": "view",
       "props": {
         "mode": "card",
         "layout": {
           "gap": "md"
-        },
-        "content": "Your studio"
+        }
       },
+      "visible": "!$session.authenticated",
       "children": [
         {
-          "id": "arcblog-admin-connection-gate-1-card-1-p-1",
+          "id": "arcblog-admin-view-1-card-1-h2-1",
           "type": "text",
           "props": {
-            "content": "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace."
+            "level": 2,
+            "content": "$t(admin.gate-title)"
           }
         },
         {
-          "id": "arcblog-admin-connection-gate-1-card-1-action-2",
+          "id": "arcblog-admin-view-1-card-1-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(admin.gate-desc)",
+            "intent": "info"
+          }
+        },
+        {
+          "id": "arcblog-admin-view-1-card-1-action-3",
           "type": "action",
           "props": {
-            "label": "New post"
+            "variant": "primary",
+            "label": "$t(admin.login)"
           },
           "events": {
             "click": {
-              "target": "_root",
-              "set": {
-                "page": "compose"
+              "navigate": "/.well-known/service/login"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-admin-view-1-view-2",
+      "type": "view",
+      "props": {
+        "layout": {
+          "gap": "lg"
+        }
+      },
+      "visible": "$session.authenticated",
+      "children": [
+        {
+          "id": "arcblog-admin-view-1-view-2-card-1",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-admin-view-1-view-2-card-1-h2-1",
+              "type": "text",
+              "props": {
+                "level": 2,
+                "content": "$t(admin.studio)"
+              }
+            },
+            {
+              "id": "arcblog-admin-view-1-view-2-card-1-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(admin.studio-desc)",
+                "intent": "muted"
+              }
+            },
+            {
+              "id": "arcblog-admin-view-1-view-2-card-1-action-3",
+              "type": "action",
+              "props": {
+                "variant": "primary",
+                "label": "$t(admin.new-post)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "compose"
+                  }
+                }
               }
             }
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-admin-connection-gate-1-card-2",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
+          ]
         },
-        "content": "Lifecycle controls"
-      },
-      "children": [
         {
-          "id": "arcblog-admin-connection-gate-1-card-2-p-1",
+          "id": "arcblog-admin-view-1-view-2-card-2",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-admin-view-1-view-2-card-2-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(admin.lifecycle)"
+              }
+            },
+            {
+              "id": "arcblog-admin-view-1-view-2-card-2-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(admin.lifecycle-desc)",
+                "intent": "muted"
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-admin-view-1-view-2-row-3",
+          "type": "view",
+          "props": {
+            "layout": {
+              "direction": "row",
+              "gap": "sm"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-admin-view-1-view-2-row-3-action-1",
+              "type": "action",
+              "props": {
+                "variant": "secondary",
+                "size": "sm",
+                "label": "$t(admin.appearance)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "settings"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-admin-view-1-view-2-h2-4",
           "type": "text",
           "props": {
-            "content": "Supported transitions: draft→published, published→archived, archived→published, and soft delete for draft/archived records."
+            "level": 2,
+            "content": "$t(admin.content)"
           }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-admin-connection-gate-1-card-3",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
         },
-        "content": "Publishing checklist"
-      },
-      "children": [
         {
-          "id": "arcblog-admin-connection-gate-1-card-3-p-1",
+          "id": "arcblog-admin-view-1-view-2-h3-5",
           "type": "text",
           "props": {
-            "content": "Drafts stay in your DID user space. Public feeds list only status=published records after validation and successful publish."
+            "level": 3,
+            "content": "$t(admin.group-published)"
           }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-admin-connection-gate-1-card-4",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
         },
-        "content": "Quick ops"
-      },
-      "children": [
         {
-          "id": "arcblog-admin-connection-gate-1-card-4-p-1",
+          "id": "studio-published",
+          "type": "afs-list",
+          "props": {
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "emptyText": "$t(admin.content-empty)",
+            "clickMode": "none"
+          },
+          "src": "/instance/app/arcblog/posts",
+          "children": [
+            {
+              "id": "studioRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "crossAlign": "start"
+                },
+                "role": "item",
+                "style": {
+                  "padding": "var(--space-block) 0",
+                  "borderBottom": "1px solid var(--color-border)"
+                }
+              },
+              "children": [
+                {
+                  "id": "studioLink",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "gap": "xs"
+                    },
+                    "href": "/posts/${entry.content.slug}",
+                    "size": {
+                      "flex": 1
+                    },
+                    "style": {
+                      "display": "block",
+                      "textDecoration": "none",
+                      "color": "inherit",
+                      "cursor": "pointer",
+                      "minWidth": 0
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "studiolink-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.title}"
+                      }
+                    },
+                    {
+                      "id": "studiolink-row-2",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "direction": "row",
+                          "gap": "xs",
+                          "crossAlign": "center"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "studiolink-row-2-p-1",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.status}",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "studiolink-row-2-p-2",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.category}",
+                            "scale": "sm",
+                            "intent": "muted",
+                            "style": {
+                              "textTransform": "capitalize"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "arcblog-admin-view-1-view-2-h3-7",
           "type": "text",
           "props": {
-            "content": "Use one-click queries for published/archived views, or open the full operations runbook for publish/archive/delete commands."
+            "level": 3,
+            "content": "$t(admin.group-drafts)"
           }
         },
         {
-          "id": "arcblog-admin-connection-gate-1-card-4-action-2",
-          "type": "action",
+          "id": "studio-drafts",
+          "type": "afs-list",
           "props": {
-            "label": "Query published posts"
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "emptyText": "$t(admin.content-empty)",
+            "clickMode": "none"
           },
-          "events": {
-            "click": {
-              "exec": "/blocklets/arcblog/.actions/query"
+          "src": "/instance/app/arcblog/drafts",
+          "children": [
+            {
+              "id": "draftRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "crossAlign": "start"
+                },
+                "role": "item",
+                "style": {
+                  "padding": "var(--space-block) 0",
+                  "borderBottom": "1px solid var(--color-border)"
+                }
+              },
+              "children": [
+                {
+                  "id": "draftLink",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "gap": "xs"
+                    },
+                    "href": "/preview/${entry.content.slug}",
+                    "size": {
+                      "flex": 1
+                    },
+                    "style": {
+                      "display": "block",
+                      "textDecoration": "none",
+                      "color": "inherit",
+                      "cursor": "pointer",
+                      "minWidth": 0
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "draftlink-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.title}"
+                      }
+                    },
+                    {
+                      "id": "draftlink-row-2",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "direction": "row",
+                          "gap": "xs",
+                          "crossAlign": "center"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "draftlink-row-2-p-1",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.status}",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "draftlink-row-2-p-2",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.category}",
+                            "scale": "sm",
+                            "intent": "muted",
+                            "style": {
+                              "textTransform": "capitalize"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-4-action-3",
-          "type": "action",
-          "props": {
-            "label": "Query archived posts"
-          },
-          "events": {
-            "click": {
-              "exec": "/blocklets/arcblog/.actions/query"
-            }
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-4-action-4",
-          "type": "action",
-          "props": {
-            "label": "Open publishing runbook"
-          },
-          "events": {
-            "click": {
-              "navigate": "/docs/publishing-ops.md"
-            }
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-4-action-5",
-          "type": "action",
-          "props": {
-            "label": "Open daily report guide"
-          },
-          "events": {
-            "click": {
-              "navigate": "/docs/publishing-ops.md"
-            }
-          }
+          ]
         }
       ]
-    },
-    {
-      "id": "arcblog-admin-connection-gate-1-card-5",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
-        },
-        "content": "Filters"
-      },
-      "children": [
-        {
-          "id": "arcblog-admin-connection-gate-1-card-5-p-1",
-          "type": "text",
-          "props": {
-            "content": "Use lifecycle + category + tag filters to review content segments in Studio. Query helper supports status/category/tag operations."
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-5-input-2",
-          "type": "input",
-          "props": {
-            "content": "statusFilter"
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-5-input-3",
-          "type": "input",
-          "props": {
-            "content": "categoryFilter"
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-5-input-4",
-          "type": "input",
-          "props": {
-            "content": "tagFilter"
-          }
-        },
-        {
-          "id": "arcblog-admin-connection-gate-1-card-5-action-5",
-          "type": "action",
-          "props": {
-            "label": "Open query helper docs"
-          },
-          "events": {
-            "click": {
-              "navigate": "/docs/publishing-ops.md"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-admin-connection-gate-1-afs-list-6",
-      "type": "afs-list"
     }
   ]
 }

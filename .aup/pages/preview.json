@@ -1,5 +1,5 @@
 {
-  "id": "arcblog-reader-view-1",
+  "id": "arcblog-preview-view-1",
   "type": "view",
   "props": {
     "layout": {
@@ -7,11 +7,11 @@
     }
   },
   "propBind": {
-    "post": "/instance/app/arcblog/posts/$params.slug.json"
+    "post": "/instance/app/arcblog/drafts/$params.slug.json"
   },
   "children": [
     {
-      "id": "arcblog-reader-view-1-row-1",
+      "id": "arcblog-preview-view-1-row-1",
       "type": "view",
       "props": {
         "layout": {
@@ -21,30 +21,25 @@
       },
       "children": [
         {
-          "id": "reader-back",
-          "type": "view",
+          "id": "preview-back",
+          "type": "action",
           "props": {
-            "href": "/posts",
-            "style": {
-              "cursor": "pointer",
-              "color": "var(--color-dim)"
-            }
+            "variant": "ghost",
+            "label": "$t(preview.back)"
           },
-          "children": [
-            {
-              "id": "reader-back-p-1",
-              "type": "text",
-              "props": {
-                "content": "$t(reader.back)",
-                "scale": "sm"
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "admin"
               }
             }
-          ]
+          }
         }
       ]
     },
     {
-      "id": "arcblog-reader-view-1-card-2",
+      "id": "arcblog-preview-view-1-card-2",
       "type": "view",
       "props": {
         "mode": "card",
@@ -55,25 +50,25 @@
       "visible": "!$state.post",
       "children": [
         {
-          "id": "arcblog-reader-view-1-card-2-h2-1",
+          "id": "arcblog-preview-view-1-card-2-h2-1",
           "type": "text",
           "props": {
             "level": 2,
-            "content": "$t(reader.title)"
+            "content": "$t(preview.title)"
           }
         },
         {
-          "id": "arcblog-reader-view-1-card-2-p-2",
+          "id": "arcblog-preview-view-1-card-2-p-2",
           "type": "text",
           "props": {
-            "content": "$t(reader.not-found)",
+            "content": "$t(preview.not-found)",
             "intent": "muted"
           }
         }
       ]
     },
     {
-      "id": "reader-article",
+      "id": "preview-article",
       "type": "view",
       "props": {
         "layout": {
@@ -83,7 +78,27 @@
       "visible": "$state.post",
       "children": [
         {
-          "id": "reader-title",
+          "id": "preview-article-card-1",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "sm"
+            }
+          },
+          "children": [
+            {
+              "id": "preview-article-card-1-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(preview.notice)",
+                "intent": "info"
+              }
+            }
+          ]
+        },
+        {
+          "id": "preview-title",
           "type": "text",
           "props": {
             "level": 1,
@@ -92,7 +107,7 @@
           }
         },
         {
-          "id": "reader-article-row-2",
+          "id": "preview-article-row-3",
           "type": "view",
           "props": {
             "layout": {
@@ -103,7 +118,16 @@
           },
           "children": [
             {
-              "id": "reader-article-row-2-p-1",
+              "id": "preview-article-row-3-p-1",
+              "type": "text",
+              "props": {
+                "content": "${state.post.status}",
+                "scale": "sm",
+                "intent": "muted"
+              }
+            },
+            {
+              "id": "preview-article-row-3-p-2",
               "type": "text",
               "props": {
                 "content": "${state.post.authorName}",
@@ -112,28 +136,7 @@
               }
             },
             {
-              "id": "reader-article-row-2-view-2",
-              "type": "view",
-              "props": {
-                "style": {
-                  "fontSize": "var(--type-small)",
-                  "color": "var(--color-dim)"
-                }
-              },
-              "children": [
-                {
-                  "id": "reader-article-row-2-view-2-time-1",
-                  "type": "time",
-                  "props": {
-                    "mode": "display",
-                    "value": "${state.post.publishedAt}",
-                    "timeMode": "relative"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "reader-article-row-2-p-3",
+              "id": "preview-article-row-3-p-3",
               "type": "text",
               "props": {
                 "content": "${state.post.category}",
@@ -147,7 +150,7 @@
           ]
         },
         {
-          "id": "reader-body",
+          "id": "preview-body",
           "type": "text",
           "props": {
             "format": "markdown",

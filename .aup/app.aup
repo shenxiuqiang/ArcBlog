@@ -1,108 +1,282 @@
 app "ArcBlog" {
   default posts
+  tone editorial
+  palette natural
+  locales [en, zh]
+  wrapper "wrapper.json"
 
-  shell {
-    header {
-      brand "ArcBlog" -> href "/"
-      action "Posts" -> page posts
-      action "Write" -> page compose
-      action "Studio" -> page admin
-      action "About" -> page about
+  page settings "Appearance" {
+    i18n {
+      title { en "Appearance" zh "外观" }
+      desc { en "Theme, tone and palette for this site. Admins set the defaults; signed-in users can personalize their own theme." zh "本站的主题、风格与配色。管理员设置默认值；登录用户可以个性化自己的主题。" }
     }
-    footer "ArcBlog — DID-native writing, Markdown-first publishing."
+    view gap=lg {
+      h1 :title level=1
+      p :desc intent=muted
+      auto-surface appearance-settings "Appearance" from "/instance/settings/arcblog"
+    }
   }
 
   page posts "Latest stories" {
-    card "A calmer place to read." {
-      text "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle."
-      action "Write a post" -> page compose
+    i18n {
+      hero-title { en "A calmer place to read." zh "一个安静阅读的地方。" }
+      hero-desc { en "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle." zh "公共 feed 只展示已发布的文章。每篇文章都带有 DID 署名，并遵循 草稿 → 发布 → 归档 的生命周期。" }
+      hero-cta { en "Write a post" zh "开始写作" }
+      topics { en "Topics" zh "专题" }
+      tech { en "Technology" zh "技术" }
+      design { en "Design" zh "设计" }
+      life { en "Life" zh "生活" }
+      feed { en "Latest published" zh "最新发布" }
+      feed-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+      rss { en "Subscribe via RSS" zh "订阅 RSS" }
     }
-    card "Topics" {
-      action "Technology" -> page posts
-      action "Design" -> page posts
-      action "Life" -> page posts
+    view gap=lg {
+      card gap=md {
+        h1 :hero-title level=1 scale=display
+        p :hero-desc intent=info
+        row gap=sm {
+          action -> page compose variant=primary label=:hero-cta
+          action -> navigate "/rss.xml" variant=ghost label=:rss
+        }
+      }
+      card gap=md {
+        h3 :topics level=3
+        row gap=sm {
+          action -> page posts variant=secondary size=sm label=:tech
+          action -> page posts variant=secondary size=sm label=:design
+          action -> page posts variant=secondary size=sm label=:life
+        }
+      }
+      h2 :feed level=2
+      afs-list published-feed layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none filter={field: "content.status", match: published} from "/instance/app/arcblog/posts" {
+        row postRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
+          view postLink gap=xs href="/posts/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+            h3 "${entry.content.title}"
+            p "${entry.content.summary}" intent=muted
+            row gap=xs cross=center {
+              p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                time mode=display value="${entry.content.publishedAt}" timeMode=relative
+              }
+            }
+          }
+        }
+      }
     }
-    card "Browse filters" {
-      p "Use category and tag filters to narrow the public feed before opening an article."
-      input "category"
-      input "tag"
-      action "Subscribe via RSS" -> href "/docs/publishing-ops.md"
-    }
-    entity-overview
   }
+
   page compose "Write" {
-    connection-gate {
-      card gap=md content="Publish with your wallet" {
-        p "Sign in with DID Wallet to create a wallet-bound author session. Paste Markdown below; headings, quotes, lists, code, links and images are rendered as a readable article."
+    i18n {
+      gate-title { en "Publish with your wallet" zh "用钱包发布" }
+      gate-desc { en "Sign in with DID Wallet to create a wallet-bound author session. Drafts stay private in your DID user space." zh "使用 DID Wallet 登录，创建与钱包绑定的作者会话。草稿私密地保存在你的 DID 用户空间中。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      checks { en "Pre-publish checks" zh "发布前检查" }
+      checks-desc { en "Title and slug are required. Publishing is immediately public; drafts stay private until published. Saving an existing slug overwrites that record." zh "标题和 slug 必填。发布即公开；草稿在发布前保持私有。相同 slug 会覆盖已有记录。" }
+      meta { en "Metadata" zh "元数据" }
+      f-title { en "Title" zh "标题" }
+      f-slug { en "Slug" zh "Slug" }
+      slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
+      f-summary { en "Summary" zh "摘要" }
+      f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+      category { en "Category" zh "分类" }
+      tags { en "Tags" zh "标签" }
+      save-draft { en "Save draft" zh "存草稿" }
+      publish-now { en "Publish" zh "发布" }
+      draft-saved { en "Draft saved — preview it from the studio." zh "草稿已保存——可在工作室预览。" }
+      published-ok { en "Published." zh "已发布。" }
+      seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
+      seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
+      images { en "Images" zh "图片" }
+      images-desc { en "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在你的 DID 用户空间下；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+    }
+    view gap=lg {
+      card gap=md visible="!$session.authenticated" {
+        h2 :gate-title level=2
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login" variant=primary label=:login
       }
-      card gap=md content="Pre-publish checks" {
-        p "Before publish: title required, slug unique, summary/cover optional, Markdown rendered with sanitization."
+      view gap=lg visible=$session.authenticated {
+        card gap=md {
+          h3 :checks level=3
+          p :checks-desc intent=muted
+        }
+        card gap=md {
+          h3 :meta level=3
+          input type=text label=:f-title name=title required=true state={value: ""}
+          input type=text label=:f-slug name=slug required=true state={value: ""}
+          p :slug-hint intent=muted scale=caption
+          input type=select label=:category name=category options=[technology, design, life] state={value: technology}
+          input type=text label=:tags name=tags state={value: ""}
+          input type=text label=:f-summary name=summary state={value: ""}
+        }
+        card gap=md {
+          h3 :seo level=3
+          p :seo-desc intent=muted
+          input type=text label="SEO Title" name=seoTitle state={value: ""}
+          input type=text label="SEO Description" name=seoDescription state={value: ""}
+          input type=text label="OG Title" name=ogTitle state={value: ""}
+          input type=text label="OG Description" name=ogDescription state={value: ""}
+          input type=text label="OG Image" name=ogImage state={value: ""}
+        }
+        card gap=md {
+          input type=textarea label=:f-body name=body required=true state={value: ""}
+        }
+        row gap=sm {
+          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "", authorName: "", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "", authorName: "", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+        }
+        card gap=md {
+          h3 :images level=3
+          p :images-desc intent=muted
+        }
+        afs-dropzone
       }
-      card gap=md content="Metadata" {
-        input "category"
-        input "tags"
-      }
-      card gap=md content="SEO & social preview" {
-        p "Optional: set seo title/description and OG title/description/image. Defaults can fall back to post title, summary, and cover image."
-        input "seoTitle"
-        input "seoDescription"
-        input "ogTitle"
-        input "ogDescription"
-        input "ogImage"
-      }
-      post-editor {
-        p "Compose your story in Markdown. Drafts are private in your DID user space; publishing writes validated metadata into /blocklets/arcblog/instance/posts."
-      }
-      card gap=md content=Images {
-        p "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)."
-      }
-      afs-dropzone
     }
   }
+
   page reader "Read" {
-    card "Article" {
-      text "This surface renders only published post records (status=published). Body remains Markdown at rest and must be sanitized at render time."
-      action "Share this article" -> href "/docs/share-cards.md"
-      action "Back to latest stories" -> page posts
+    i18n {
+      title { en "Article" zh "文章" }
+      desc { en "This surface renders only published post records (status=published). Body remains Markdown at rest and is sanitized at render time." zh "此页面只渲染已发布的文章（status=published）。正文以 Markdown 存储，渲染时经过消毒。" }
+      not-found { en "Post not found." zh "文章不存在。" }
+      back { en "Back to latest stories" zh "返回最新文章" }
+    }
+    view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
+      row gap=sm {
+        view reader-back href="/posts" style={cursor: "pointer", color: "var(--color-dim)"} {
+          p :back scale=sm
+        }
+      }
+      card gap=md visible="!$state.post" {
+        h2 :title level=2
+        p :not-found intent=muted
+      }
+      view reader-article gap=md visible="$state.post" {
+        h1 reader-title "${state.post.title}" level=1 scale=display
+        row gap=xs cross=center {
+          p "${state.post.authorName}" scale=sm intent=muted
+          view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+            time mode=display value="${state.post.publishedAt}" timeMode=relative
+          }
+          p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
+        }
+        text reader-body format=markdown content="${state.post.body}"
+      }
     }
   }
+
   page admin "Creator Studio" {
-    connection-gate {
-      card gap=md content="Your studio" {
-        p "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace."
-        action "New post" -> page compose
+    i18n {
+      gate-title { en "Creator Studio" zh "创作者工作室" }
+      gate-desc { en "Sign in with DID Wallet to manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "使用 DID Wallet 登录，在一个与钱包绑定的工作区中管理草稿、已发布文章、归档文章和已上传的媒体。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      studio { en "Your studio" zh "你的工作室" }
+      studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
+      new-post { en "New post" zh "新建文章" }
+      lifecycle { en "Lifecycle controls" zh "生命周期控制" }
+      lifecycle-desc { en "Supported transitions: draft→published, published→archived, archived→published, and soft delete for draft/archived records." zh "支持的流转：草稿→发布，发布→归档，归档→重新发布，以及对草稿/归档记录的软删除。" }
+      content { en "Your content" zh "你的内容" }
+      content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
+      group-published { en "Published" zh "已发布" }
+      group-drafts { en "Drafts & archived" zh "草稿与归档" }
+      appearance { en "Appearance settings" zh "外观设置" }
+    }
+    view gap=lg {
+      card gap=md visible="!$session.authenticated" {
+        h2 :gate-title level=2
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login" variant=primary label=:login
       }
-      card gap=md content="Lifecycle controls" {
-        p "Supported transitions: draft→published, published→archived, archived→published, and soft delete for draft/archived records."
+      view gap=lg visible=$session.authenticated {
+        card gap=md {
+          h2 :studio level=2
+          p :studio-desc intent=muted
+          action -> page compose variant=primary label=:new-post
+        }
+        card gap=md {
+          h3 :lifecycle level=3
+          p :lifecycle-desc intent=muted
+        }
+        row gap=sm {
+          action -> page settings variant=secondary size=sm label=:appearance
+        }
+        h2 :content level=2
+        h3 :group-published level=3
+        afs-list studio-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=none from "/instance/app/arcblog/posts" {
+          row studioRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
+            view studioLink gap=xs href="/posts/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+              h3 "${entry.content.title}"
+              row gap=xs cross=center {
+                p "${entry.content.status}" scale=sm intent=muted
+                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              }
+            }
+          }
+        }
+        h3 :group-drafts level=3
+        afs-list studio-drafts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=none from "/instance/app/arcblog/drafts" {
+          row draftRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
+            view draftLink gap=xs href="/preview/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+              h3 "${entry.content.title}"
+              row gap=xs cross=center {
+                p "${entry.content.status}" scale=sm intent=muted
+                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              }
+            }
+          }
+        }
       }
-      card gap=md content="Publishing checklist" {
-        p "Drafts stay in your DID user space. Public feeds list only status=published records after validation and successful publish."
-      }
-      card gap=md content="Quick ops" {
-        p "Use one-click queries for published/archived views, or open the full operations runbook for publish/archive/delete commands."
-        action "Query published posts" -> exec "/blocklets/arcblog/.actions/query"
-        action "Query archived posts" -> exec "/blocklets/arcblog/.actions/query"
-        action "Open publishing runbook" -> navigate "/docs/publishing-ops.md"
-        action "Open daily report guide" -> navigate "/docs/publishing-ops.md"
-      }
-      card gap=md content="Filters" {
-        p "Use lifecycle + category + tag filters to review content segments in Studio. Query helper supports status/category/tag operations."
-        input "statusFilter"
-        input "categoryFilter"
-        input "tagFilter"
-        action "Open query helper docs" -> navigate "/docs/publishing-ops.md"
-      }
-      afs-list
     }
   }
+
+  page preview "Draft preview" {
+    i18n {
+      title { en "Preview" zh "预览" }
+      notice { en "Draft preview — this record is not public." zh "草稿预览 — 该记录未公开。" }
+      not-found { en "Preview not found." zh "预览不存在。" }
+      back { en "Back to studio" zh "返回工作室" }
+    }
+    view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
+      row gap=sm {
+        action preview-back -> page admin variant=ghost label=:back
+      }
+      card gap=md visible="!$state.post" {
+        h2 :title level=2
+        p :not-found intent=muted
+      }
+      view preview-article gap=md visible="$state.post" {
+        card gap=sm {
+          p :notice intent=info
+        }
+        h1 preview-title "${state.post.title}" level=1 scale=display
+        row gap=xs cross=center {
+          p "${state.post.status}" scale=sm intent=muted
+          p "${state.post.authorName}" scale=sm intent=muted
+          p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
+        }
+        text preview-body format=markdown content="${state.post.body}"
+      }
+    }
+  }
+
   page about "About" {
-    card "About ArcBlog" {
-      text "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space."
-      action "View product summary" -> href "/docs/product-summary.md"
-      action "View operations runbook" -> href "/docs/operations-runbook.md"
-      action "View developer guide" -> href "/docs/developer-guide.md"
-      action "View product roadmap" -> href "/docs/roadmap.md"
-      action "View release checklist" -> href "/docs/release-checklist.md"
+    i18n {
+      title { en "About ArcBlog" zh "关于 ArcBlog" }
+      desc { en "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space." zh "ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。" }
+      lifecycle { en "Lifecycle" zh "生命周期" }
+      lifecycle-desc { en "Posts follow a draft → published → archived lifecycle with optimistic concurrency and a full audit trail. Soft deletes keep records recoverable." zh "文章遵循 草稿 → 发布 → 归档 的生命周期，带乐观并发控制和完整审计日志。软删除保证记录可恢复。" }
+      rss { en "Subscribe via RSS" zh "订阅 RSS" }
+    }
+    view gap=lg {
+      card gap=md {
+        h2 :title level=2
+        p :desc
+      }
+      card gap=md {
+        h3 :lifecycle level=3
+        p :lifecycle-desc intent=muted
+      }
+      action -> navigate "/rss.xml" variant=secondary label=:rss
     }
   }
 }

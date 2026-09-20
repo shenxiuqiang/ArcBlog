@@ -1,22 +1,31 @@
 schemaVersion: 1
 page: compose
 description: >-
-  DID Wallet-gated writing surface for Markdown-first drafting, upload, and
-  publish preflight checks.
+  DID Wallet-gated writing surface: a self-contained form (no post-editor
+  widget) that writes ArcBlog-shaped records directly — drafts to the private
+  `/instance/app/arcblog/drafts/`, publishes to the guest-readable
+  `/instance/app/arcblog/posts/`.
 synopsis: >-
-  Connect wallet, edit Markdown draft, run pre-publish checks (required title,
-  slug uniqueness, sanitization), then publish to instance posts.
+  Connect wallet, fill title/slug/metadata/Markdown body, then either save a
+  private draft or publish immediately. Both submit buttons exec
+  `/.actions/write` with the collected inputs (`${args.*}`) and session
+  identity (`$session.did` / `$session.displayName`).
 examples:
-  - label: Open writer
+  - label: Save draft
     action: click
-    target: arcblog-nav-write
+    target: save-draft
+  - label: Publish
+    action: click
+    target: publish-now
 flows:
-  - Connect the DID Wallet to unlock editor and media upload.
-  - Draft content privately in user DID space.
-  - Enter category/tags plus optional SEO and OG overrides in dedicated metadata blocks.
-  - Validate slug and Markdown safety before publish.
-  - Publish validated post metadata to instance posts.
+  - Connect the DID Wallet to unlock the editor and media upload.
+  - Enter title, slug, category/tags/summary plus optional SEO and OG overrides.
+  - Save draft writes the record to the private drafts directory (preview at /preview/<slug>).
+  - Publish writes the record to the public posts directory (readable at /posts/<slug>).
+  - Same-slug saves overwrite the existing record (no ifMatch guard in the UI form).
 refs:
   actions:
-    - id: arcblog-nav-write
+    - id: save-draft
+      event: click
+    - id: publish-now
       event: click

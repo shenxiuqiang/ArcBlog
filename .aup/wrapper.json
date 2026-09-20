@@ -1,131 +1,92 @@
 {
-  "id": "arcblog-wrapper",
+  "id": "wrapper-view-1",
   "type": "view",
-  "props": {
-    "layout": {
-      "gap": "lg"
-    },
-    "variant": "scaffold-service-frame"
-  },
   "children": [
     {
-      "id": "arcblog-shell-header",
-      "type": "view",
+      "id": "site-header",
+      "type": "app-header",
       "props": {
-        "layout": {
-          "direction": "row",
-          "gap": "md",
-          "crossAlign": "center",
-          "wrap": true
+        "variant": "compact",
+        "brand": {
+          "title": "ArcBlog",
+          "src": "posts"
         },
-        "variant": "scaffold-service-header"
-      },
-      "children": [
-        {
-          "id": "arcblog-brand",
-          "type": "action",
-          "props": {
-            "label": "ArcBlog",
-            "variant": "ghost",
-            "href": "/"
-          }
-        },
-        {
-          "id": "arcblog-shell-nav",
-          "type": "view",
-          "props": {
-            "layout": {
-              "direction": "row",
-              "gap": "xs",
-              "crossAlign": "center",
-              "wrap": true
-            },
-            "variant": "scaffold-service-nav"
-          },
-          "children": [
+        "nav": {
+          "items": [
             {
-              "id": "arcblog-nav-posts",
-              "type": "action",
-              "props": {
-                "label": "Posts",
-                "variant": "ghost",
-                "href": "/app?page=posts"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "posts"
-                  }
-                }
-              }
+              "id": "posts",
+              "label": "$t(wrapper.nav-posts)",
+              "src": "posts"
             },
             {
-              "id": "arcblog-nav-write",
-              "type": "action",
-              "props": {
-                "label": "Write",
-                "variant": "ghost",
-                "href": "/app?page=compose"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "compose"
-                  }
-                }
-              }
+              "id": "admin",
+              "label": "$t(wrapper.nav-studio)",
+              "src": "admin",
+              "visible": "$session.authenticated"
             },
             {
-              "id": "arcblog-nav-studio",
-              "type": "action",
-              "props": {
-                "label": "Studio",
-                "variant": "ghost",
-                "href": "/app?page=admin"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "admin"
-                  }
-                }
-              }
-            },
-            {
-              "id": "arcblog-nav-about",
-              "type": "action",
-              "props": {
-                "label": "About",
-                "variant": "ghost",
-                "href": "/app?page=about"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "about"
-                  }
-                }
-              }
+              "id": "about",
+              "label": "$t(wrapper.nav-about)",
+              "src": "about"
             }
           ]
+        },
+        "actions": [
+          {
+            "kind": "theme-toggle",
+            "icon": "sun",
+            "ariaLabel": "$t(wrapper.theme-label)"
+          },
+          {
+            "kind": "locale-switcher",
+            "locales": [
+              "en",
+              "zh"
+            ],
+            "labels": {
+              "en": "EN",
+              "zh": "中文"
+            }
+          },
+          {
+            "kind": "user-menu"
+          }
+        ]
+      },
+      "events": {
+        "nav-click": {
+          "target": "_root",
+          "set": {
+            "page": "$args.src"
+          }
         }
-      ]
+      }
     },
     {
       "$ref": "content"
     },
     {
-      "id": "arcblog-shell-footer",
-      "type": "text",
+      "id": "theme-bridge-frame",
+      "type": "frame",
       "props": {
-        "content": "ArcBlog — DID-native writing, Markdown-first publishing.",
-        "scale": "caption",
-        "intent": "muted",
-        "variant": "scaffold-service-footer"
+        "src": "/p/en/theme-bridge/",
+        "bridge": true,
+        "overlay": true,
+        "loading": "eager"
+      }
+    },
+    {
+      "id": "wrapper-view-1-app-footer-4",
+      "type": "app-footer",
+      "props": {
+        "brand": {
+          "title": "ArcBlog",
+          "tagline": "$t(wrapper.tagline)",
+          "href": "/"
+        },
+        "bottomBar": {
+          "copyright": "© 2026 ArcBlog"
+        }
       }
     }
   ]

@@ -1,165 +1,438 @@
 {
-  "id": "arcblog-compose-connection-gate-1",
-  "type": "connection-gate",
+  "id": "arcblog-compose-view-1",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    }
+  },
   "children": [
     {
-      "id": "arcblog-compose-connection-gate-1-card-1",
+      "id": "arcblog-compose-view-1-card-1",
       "type": "view",
       "props": {
         "mode": "card",
         "layout": {
           "gap": "md"
-        },
-        "content": "Publish with your wallet"
+        }
       },
+      "visible": "!$session.authenticated",
       "children": [
         {
-          "id": "arcblog-compose-connection-gate-1-card-1-p-1",
+          "id": "arcblog-compose-view-1-card-1-h2-1",
           "type": "text",
           "props": {
-            "content": "Sign in with DID Wallet to create a wallet-bound author session. Paste Markdown below; headings, quotes, lists, code, links and images are rendered as a readable article."
+            "level": 2,
+            "content": "$t(compose.gate-title)"
+          }
+        },
+        {
+          "id": "arcblog-compose-view-1-card-1-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(compose.gate-desc)",
+            "intent": "info"
+          }
+        },
+        {
+          "id": "arcblog-compose-view-1-card-1-action-3",
+          "type": "action",
+          "props": {
+            "variant": "primary",
+            "label": "$t(compose.login)"
+          },
+          "events": {
+            "click": {
+              "navigate": "/.well-known/service/login"
+            }
           }
         }
       ]
     },
     {
-      "id": "arcblog-compose-connection-gate-1-card-2",
+      "id": "arcblog-compose-view-1-view-2",
       "type": "view",
       "props": {
-        "mode": "card",
         "layout": {
-          "gap": "md"
-        },
-        "content": "Pre-publish checks"
+          "gap": "lg"
+        }
       },
+      "visible": "$session.authenticated",
       "children": [
         {
-          "id": "arcblog-compose-connection-gate-1-card-2-p-1",
-          "type": "text",
+          "id": "arcblog-compose-view-1-view-2-card-1",
+          "type": "view",
           "props": {
-            "content": "Before publish: title required, slug unique, summary/cover optional, Markdown rendered with sanitization."
-          }
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-compose-view-1-view-2-card-1-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(compose.checks)"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-1-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(compose.checks-desc)",
+                "intent": "muted"
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-card-2",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(compose.meta)"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-2",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "$t(compose.f-title)",
+                "name": "title",
+                "required": true
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-3",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "$t(compose.f-slug)",
+                "name": "slug",
+                "required": true
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-p-4",
+              "type": "text",
+              "props": {
+                "content": "$t(compose.slug-hint)",
+                "intent": "muted",
+                "scale": "caption"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-5",
+              "type": "input",
+              "props": {
+                "type": "select",
+                "label": "$t(compose.category)",
+                "name": "category",
+                "options": [
+                  "technology",
+                  "design",
+                  "life"
+                ]
+              },
+              "state": {
+                "value": "technology"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-6",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "$t(compose.tags)",
+                "name": "tags"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-7",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "$t(compose.f-summary)",
+                "name": "summary"
+              },
+              "state": {
+                "value": ""
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-card-3",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(compose.seo)"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(compose.seo-desc)",
+                "intent": "muted"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-input-3",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "SEO Title",
+                "name": "seoTitle"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-input-4",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "SEO Description",
+                "name": "seoDescription"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-input-5",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "OG Title",
+                "name": "ogTitle"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-input-6",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "OG Description",
+                "name": "ogDescription"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-3-input-7",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "OG Image",
+                "name": "ogImage"
+              },
+              "state": {
+                "value": ""
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-card-4",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-compose-view-1-view-2-card-4-input-1",
+              "type": "input",
+              "props": {
+                "type": "textarea",
+                "label": "$t(compose.f-body)",
+                "name": "body",
+                "required": true
+              },
+              "state": {
+                "value": ""
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-row-5",
+          "type": "view",
+          "props": {
+            "layout": {
+              "direction": "row",
+              "gap": "sm"
+            }
+          },
+          "children": [
+            {
+              "id": "save-draft",
+              "type": "action",
+              "props": {
+                "variant": "secondary",
+                "label": "$t(compose.save-draft)",
+                "onSuccessToast": {
+                  "intent": "success",
+                  "message": "$t(compose.draft-saved)",
+                  "duration": 3000
+                }
+              },
+              "events": {
+                "click": {
+                  "exec": "/.actions/write",
+                  "args": {
+                    "path": "/instance/app/arcblog/drafts/${args.slug}.json",
+                    "content": {
+                      "title": "${args.title}",
+                      "slug": "${args.slug}",
+                      "summary": "${args.summary}",
+                      "body": "${args.body}",
+                      "coverImage": "",
+                      "images": [],
+                      "tags": "${args.tags}",
+                      "category": "${args.category}",
+                      "seoTitle": "${args.seoTitle}",
+                      "seoDescription": "${args.seoDescription}",
+                      "ogTitle": "${args.ogTitle}",
+                      "ogDescription": "${args.ogDescription}",
+                      "ogImage": "${args.ogImage}",
+                      "status": "draft",
+                      "authorDid": "",
+                      "authorName": "",
+                      "published": false,
+                      "publishedAt": "",
+                      "archivedAt": "",
+                      "deletedAt": "",
+                      "createdAt": "${generate.timeiso}",
+                      "updatedAt": "${generate.timeiso}",
+                      "version": 1
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "publish-now",
+              "type": "action",
+              "props": {
+                "variant": "primary",
+                "label": "$t(compose.publish-now)",
+                "onSuccessToast": {
+                  "intent": "success",
+                  "message": "$t(compose.published-ok)",
+                  "duration": 3000
+                }
+              },
+              "events": {
+                "click": {
+                  "exec": "/.actions/write",
+                  "args": {
+                    "path": "/instance/app/arcblog/posts/${args.slug}.json",
+                    "content": {
+                      "title": "${args.title}",
+                      "slug": "${args.slug}",
+                      "summary": "${args.summary}",
+                      "body": "${args.body}",
+                      "coverImage": "",
+                      "images": [],
+                      "tags": "${args.tags}",
+                      "category": "${args.category}",
+                      "seoTitle": "${args.seoTitle}",
+                      "seoDescription": "${args.seoDescription}",
+                      "ogTitle": "${args.ogTitle}",
+                      "ogDescription": "${args.ogDescription}",
+                      "ogImage": "${args.ogImage}",
+                      "status": "published",
+                      "authorDid": "",
+                      "authorName": "",
+                      "published": true,
+                      "publishedAt": "${generate.timeiso}",
+                      "archivedAt": "",
+                      "deletedAt": "",
+                      "createdAt": "${generate.timeiso}",
+                      "updatedAt": "${generate.timeiso}",
+                      "version": 1
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-card-6",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "md"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-compose-view-1-view-2-card-6-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(compose.images)"
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-6-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(compose.images-desc)",
+                "intent": "muted"
+              }
+            }
+          ]
+        },
+        {
+          "id": "arcblog-compose-view-1-view-2-afs-dropzone-7",
+          "type": "afs-dropzone"
         }
       ]
-    },
-    {
-      "id": "arcblog-compose-connection-gate-1-card-3",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
-        },
-        "content": "Metadata"
-      },
-      "children": [
-        {
-          "id": "arcblog-compose-connection-gate-1-card-3-input-1",
-          "type": "input",
-          "props": {
-            "content": "category"
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-3-input-2",
-          "type": "input",
-          "props": {
-            "content": "tags"
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-compose-connection-gate-1-card-4",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
-        },
-        "content": "SEO & social preview"
-      },
-      "children": [
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-p-1",
-          "type": "text",
-          "props": {
-            "content": "Optional: set seo title/description and OG title/description/image. Defaults can fall back to post title, summary, and cover image."
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-input-2",
-          "type": "input",
-          "props": {
-            "content": "seoTitle"
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-input-3",
-          "type": "input",
-          "props": {
-            "content": "seoDescription"
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-input-4",
-          "type": "input",
-          "props": {
-            "content": "ogTitle"
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-input-5",
-          "type": "input",
-          "props": {
-            "content": "ogDescription"
-          }
-        },
-        {
-          "id": "arcblog-compose-connection-gate-1-card-4-input-6",
-          "type": "input",
-          "props": {
-            "content": "ogImage"
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-compose-connection-gate-1-post-editor-5",
-      "type": "post-editor",
-      "children": [
-        {
-          "id": "arcblog-compose-connection-gate-1-post-editor-5-p-1",
-          "type": "text",
-          "props": {
-            "content": "Compose your story in Markdown. Drafts are private in your DID user space; publishing writes validated metadata into /blocklets/arcblog/instance/posts."
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-compose-connection-gate-1-card-6",
-      "type": "view",
-      "props": {
-        "mode": "card",
-        "layout": {
-          "gap": "md"
-        },
-        "content": "Images"
-      },
-      "children": [
-        {
-          "id": "arcblog-compose-connection-gate-1-card-6-p-1",
-          "type": "text",
-          "props": {
-            "content": "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)."
-          }
-        }
-      ]
-    },
-    {
-      "id": "arcblog-compose-connection-gate-1-afs-dropzone-7",
-      "type": "afs-dropzone"
     }
   ]
 }
