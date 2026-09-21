@@ -40,7 +40,7 @@ networkRead:
   - path: /instance/app/arcblog/heroes
     role: guest
 
-# Collection declarations authorize member writes from the UI (the compose
+# Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
 # writes from network clients are denied otherwise. copy: none keeps records
 # single-file in the instance space (no per-user mirrors).
@@ -48,15 +48,15 @@ replicated:
   posts:
     canonical: instance/app/arcblog/posts/*
     copy: none
-    minRole: member
+    minRole: admin
     readRole: guest
   drafts:
     canonical: instance/app/arcblog/drafts/*
     copy: none
-    minRole: member
+    minRole: admin
     readRole: admin
   heroes:
     canonical: instance/app/arcblog/heroes/*
     copy: none
-    minRole: member
+    minRole: admin
     readRole: guest
