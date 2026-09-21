@@ -98,6 +98,7 @@ app "ArcBlog" {
       seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
       images { en "Images" zh "图片" }
       images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+      editing { en "Editing" zh "编辑中" }
     }
     view gap=lg {
       card gap=md visible="!$session.authenticated" {
@@ -142,6 +143,85 @@ app "ArcBlog" {
           p :images-desc intent=muted
         }
         afs-dropzone
+      }
+    }
+  }
+
+  page compose-edit "Edit post" {
+    i18n {
+      title { en "Edit post" zh "编辑文章" }
+      not-found { en "Draft not found." zh "草稿不存在。" }
+      back { en "Back to studio" zh "返回工作室" }
+      gate-title { en "Publish with your wallet" zh "用钱包发布" }
+      gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      meta { en "Metadata" zh "元数据" }
+      f-title { en "Title" zh "标题" }
+      f-slug { en "Slug" zh "Slug" }
+      slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
+      f-summary { en "Summary" zh "摘要" }
+      f-cover { en "Cover image URL" zh "封面图 URL" }
+      cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
+      f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+      category { en "Category" zh "分类" }
+      tags { en "Tags" zh "标签" }
+      save-draft { en "Save draft" zh "存草稿" }
+      publish-now { en "Publish" zh "发布" }
+      seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
+      seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
+      images { en "Images" zh "图片" }
+      images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+    }
+    view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
+      card gap=md visible="!$session.authenticated" {
+        h2 :gate-title level=2
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login" variant=primary label=:login
+      }
+      view gap=lg visible=$session.authenticated {
+        card gap=md visible="!$state.post.title" {
+          h2 :title level=2
+          p :not-found intent=muted
+          action -> page admin variant=ghost label=:back
+        }
+        view gap=lg visible="$state.post.title" {
+          card gap=md {
+            h3 "$t(compose.editing)" level=3
+            p "${state.post.slug}" intent=muted scale=caption
+          }
+          card gap=md {
+            h3 :meta level=3
+            input type=text label=:f-title name=title required=true state={value: "${state.post.title}"}
+            input type=text label=:f-slug name=slug required=true state={value: "${state.post.slug}"}
+            p :slug-hint intent=muted scale=caption
+            input type=select label=:category name=category options=[technology, design, life] state={value: "${state.post.category}"}
+            input type=text label=:tags name=tags state={value: "${state.post.tags}"}
+            input type=text label=:f-summary name=summary state={value: "${state.post.summary}"}
+            input type=text label=:f-cover name=coverImage state={value: "${state.post.coverImage}"}
+            p :cover-hint intent=muted scale=caption
+          }
+          card gap=md {
+            h3 :seo level=3
+            p :seo-desc intent=muted
+            input type=text label="SEO Title" name=seoTitle state={value: "${state.post.seoTitle}"}
+            input type=text label="SEO Description" name=seoDescription state={value: "${state.post.seoDescription}"}
+            input type=text label="OG Title" name=ogTitle state={value: "${state.post.ogTitle}"}
+            input type=text label="OG Description" name=ogDescription state={value: "${state.post.ogDescription}"}
+            input type=text label="OG Image" name=ogImage state={value: "${state.post.ogImage}"}
+          }
+          card gap=md {
+            input type=textarea label=:f-body name=body required=true state={value: "${state.post.body}"}
+          }
+          row gap=sm {
+            action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "$session.did", authorName: "$session.displayName", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+            action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "$session.did", authorName: "$session.displayName", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+          }
+          card gap=md {
+            h3 :images level=3
+            p :images-desc intent=muted
+          }
+          afs-dropzone
+        }
       }
     }
   }
@@ -194,6 +274,7 @@ app "ArcBlog" {
       content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
       group-published { en "Published" zh "已发布" }
       group-drafts { en "Drafts & archived" zh "草稿与归档" }
+      edit { en "Edit" zh "编辑" }
       appearance { en "Appearance settings" zh "外观设置" }
       hero-admin { en "Hero management" zh "Hero 管理" }
       hero-admin-desc { en "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending." zh "Hero 显示为首页轮播。每条记录需要标题、图片 URL 和跳转链接；sort 按升序决定播放顺序。" }
@@ -260,6 +341,9 @@ app "ArcBlog" {
                 p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
               }
             }
+            view draftEdit href="/edit/${entry.content.slug}" style={display: block, cursor: pointer, color: "var(--color-dim)"} {
+              p :edit scale=sm
+            }
           }
         }
         h2 :hero-admin level=2
@@ -316,10 +400,14 @@ app "ArcBlog" {
       notice { en "Draft preview — this record is not public." zh "草稿预览 — 该记录未公开。" }
       not-found { en "Preview not found." zh "预览不存在。" }
       back { en "Back to studio" zh "返回工作室" }
+      edit { en "Edit" zh "编辑" }
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
         action preview-back -> page admin variant=ghost label=:back
+        view preview-edit href="/edit/${state.post.slug}" visible="$state.post" style={cursor: "pointer", color: "var(--color-dim)"} {
+          p :edit scale=sm
+        }
       }
       card gap=md visible="!$state.post" {
         h2 :title level=2

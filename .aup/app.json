@@ -18,6 +18,9 @@
     "compose": {
       "tree": "pages/compose.json"
     },
+    "compose-edit": {
+      "tree": "pages/compose-edit.json"
+    },
     "reader": {
       "tree": "pages/reader.json"
     },

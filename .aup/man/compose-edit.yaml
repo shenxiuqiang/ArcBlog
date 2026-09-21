@@ -1,0 +1,34 @@
+schemaVersion: 1
+page: compose-edit
+description: >-
+  DID Wallet-gated editing surface bound to /edit/{slug}: loads an existing
+  record from the private `/instance/app/arcblog/drafts/` directory via the
+  sites binding (`$params.slug` → propBind → `${state.post.*}`), pre-fills the
+  compose-shaped form, and writes back preserving the original createdAt and
+  version.
+synopsis: >-
+  Open /edit/<slug> from the studio drafts list or the draft preview page.
+  The form initial values come from the bound record (`${state.post.*}`); the
+  save button overwrites the draft in place (createdAt and version preserved,
+  updatedAt bumped), and the publish button writes the record to the
+  guest-readable `/instance/app/arcblog/posts/` directory.
+examples:
+  - label: Save draft
+    action: click
+    target: save-draft
+  - label: Publish
+    action: click
+    target: publish-now
+flows:
+  - Connect the DID Wallet to unlock the editor (admin-gated writes).
+  - The record at `/instance/app/arcblog/drafts/<slug>.json` is bound server-side and pre-fills every field.
+  - If the record is missing (or the slug is unknown), a not-found card with a back link renders instead of the form.
+  - Save draft overwrites the draft record keeping createdAt and version, bumping updatedAt.
+  - Publish writes the record to the public posts directory with status=published and a fresh publishedAt.
+  - No optimistic concurrency on the UI path — version is preserved as-is.
+refs:
+  actions:
+    - id: save-draft
+      event: click
+    - id: publish-now
+      event: click

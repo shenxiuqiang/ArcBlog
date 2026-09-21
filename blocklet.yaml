@@ -24,6 +24,10 @@ sites:
         path: "/preview/{slug}"
         afs: "/instance/app/arcblog/drafts/{slug}.json"
         page: preview
+      - id: draft-edit
+        path: "/edit/{slug}"
+        afs: "/instance/app/arcblog/drafts/{slug}.json"
+        page: compose-edit
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).

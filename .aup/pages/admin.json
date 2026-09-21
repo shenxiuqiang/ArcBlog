@@ -373,6 +373,28 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "draftEdit",
+                  "type": "view",
+                  "props": {
+                    "href": "/edit/${entry.content.slug}",
+                    "style": {
+                      "display": "block",
+                      "cursor": "pointer",
+                      "color": "var(--color-dim)"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "draftedit-p-1",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(admin.edit)",
+                        "scale": "sm"
+                      }
+                    }
+                  ]
                 }
               ]
             }

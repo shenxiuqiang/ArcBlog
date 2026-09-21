@@ -35,6 +35,28 @@
               }
             }
           }
+        },
+        {
+          "id": "preview-edit",
+          "type": "view",
+          "props": {
+            "href": "/edit/${state.post.slug}",
+            "style": {
+              "cursor": "pointer",
+              "color": "var(--color-dim)"
+            }
+          },
+          "visible": "$state.post",
+          "children": [
+            {
+              "id": "preview-edit-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(preview.edit)",
+                "scale": "sm"
+              }
+            }
+          ]
         }
       ]
     },
