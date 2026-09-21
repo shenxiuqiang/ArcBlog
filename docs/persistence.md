@@ -11,6 +11,7 @@ Arc exposes the following scoped paths for this Blocklet:
 - `/blocklets/arcblog/instance/members` — read-only DID Connect membership projection.
 - `/instance/app/arcblog/posts/<slug>.json` — published post records only, guest-readable via the `networkRead` declaration in `blocklet.yaml` so the public feed renders without a session.
 - `/instance/app/arcblog/drafts/<slug>.json` — draft, archived, and soft-deleted records; private (`networkRead` grant limited to `role: admin` for the studio). Anonymous reads are denied.
+- `/instance/app/arcblog/heroes/<id>.json` — homepage carousel records `{title, description, image, url, sort, createdAt}`; guest-readable (rendered without a session), writable by members (replicated collection, `minRole: member`). Managed from the studio's Hero section.
 - `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 

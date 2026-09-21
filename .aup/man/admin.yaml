@@ -18,6 +18,7 @@ flows:
   - Review published records (public directory) in the "Published" group.
   - Review draft/archived records (private directory) in the "Drafts & archived" group.
   - Open a published row to read it at `/posts/<slug>`, a draft row to preview it at `/preview/<slug>`.
+  - Manage homepage heroes: delete from the hero grid, add manually via the form, or quick-add a published post.
   - Run quick query actions for `status=published` and `status=archived`.
   - Enter filter values for status/category/tag to segment operational views.
   - Apply lifecycle transitions with optimistic concurrency protection.
@@ -29,4 +30,8 @@ refs:
     - id: arcblog-admin-view-1-view-2-card-1-action-3
       event: click
     - id: arcblog-admin-view-1-view-2-row-3-action-1
+      event: click
+    - id: hero-delete
+      event: click
+    - id: hero-add
       event: click

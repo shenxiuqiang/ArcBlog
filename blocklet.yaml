@@ -2,7 +2,7 @@ specVersion: 2
 id: arcblog
 name: ArcBlog
 did: did:blocklet:arcblog
-version: 0.3.6
+version: 0.3.7
 description: "A DID-native publishing space for readable Markdown posts and images."
 
 # Pretty URLs for the reader page: /posts/<slug> resolves the post record and
@@ -37,6 +37,8 @@ networkRead:
     role: guest
   - path: /instance/app/arcblog/drafts
     role: admin
+  - path: /instance/app/arcblog/heroes
+    role: guest
 
 # Collection declarations authorize member writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -53,3 +55,8 @@ replicated:
     copy: none
     minRole: member
     readRole: admin
+  heroes:
+    canonical: instance/app/arcblog/heroes/*
+    copy: none
+    minRole: member
+    readRole: guest

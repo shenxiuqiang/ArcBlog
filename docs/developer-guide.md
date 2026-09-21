@@ -31,6 +31,32 @@ Allowed transitions:
 - `tags` normalized lowercase underscore tokens, max 10
 - `coverImage` / `ogImage` must be http(s)
 
+### Hero carousel
+
+The homepage (posts page) opens with a hero carousel over
+`/instance/app/arcblog/heroes/<id>.json` records (`{title, description, image,
+url, sort, createdAt}`, sorted ascending by `content.sort`):
+
+- The carousel is an `afs-list layout=slideshow` with a custom `role=item`
+  template: a `view heroSlideLink href="${entry.content.url}"` (client-side
+  `${entry.*}` substitution — list select events cannot navigate: select-event
+  exec merges the entry payload over args, so `path` always resolves to the
+  entry itself, and `navigate` on select is inert). Slide styling uses the
+  safe-style allowlist: `background` shorthand is allowed but
+  `backgroundImage`/`position` are dropped, so the slide is a flex column with
+  `justifyContent: flex-end` and `background: <fallback-color> url(...) center
+  / cover no-repeat`.
+- Empty directory: the `empty`/`error` events set `heroesEmpty` state on the
+  wrapper view, whose `visible="!$state.heroesEmpty"` collapses the section —
+  no broken UI on a fresh install.
+- Studio "Hero 管理" (admin page): grid list with per-card delete
+  (action prop `path="${entry.path}"` — entry substitution works in props and
+  flows into the exec payload, like discuss-kit's postCollect), a manual add
+  form (compose-style `exec "/.actions/write"` with `${args.*}`), and a
+  quick-add list where selecting a published post stages it into hidden inputs
+  (`events={select: [{target: qa-*, set: {state: {value: $args.item.*}}}]}`) for
+  a confirm button to write.
+
 ### Theme bridge (settings-driven data-tone/data-palette/data-mode)
 
 The interactive app's whole-page theme is driven by the settings cascade, not
