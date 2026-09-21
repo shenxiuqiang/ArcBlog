@@ -76,7 +76,7 @@ app "ArcBlog" {
   page compose "Write" {
     i18n {
       gate-title { en "Publish with your wallet" zh "用钱包发布" }
-      gate-desc { en "Sign in with DID Wallet to create a wallet-bound author session. Drafts stay private in your DID user space." zh "使用 DID Wallet 登录，创建与钱包绑定的作者会话。草稿私密地保存在你的 DID 用户空间中。" }
+      gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
       login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
       checks { en "Pre-publish checks" zh "发布前检查" }
       checks-desc { en "Title and slug are required. Publishing is immediately public; drafts stay private until published. Saving an existing slug overwrites that record." zh "标题和 slug 必填。发布即公开；草稿在发布前保持私有。相同 slug 会覆盖已有记录。" }
@@ -97,7 +97,7 @@ app "ArcBlog" {
       seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
       seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
       images { en "Images" zh "图片" }
-      images-desc { en "Drop a cover or inline image here. Media is stored below your DID user space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在你的 DID 用户空间下；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+      images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
     }
     view gap=lg {
       card gap=md visible="!$session.authenticated" {
@@ -134,8 +134,8 @@ app "ArcBlog" {
           input type=textarea label=:f-body name=body required=true state={value: ""}
         }
         row gap=sm {
-          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "", authorName: "", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
-          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "", authorName: "", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "$session.did", authorName: "$session.displayName", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "$session.did", authorName: "$session.displayName", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
         }
         card gap=md {
           h3 :images level=3
