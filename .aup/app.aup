@@ -187,7 +187,7 @@ app "ArcBlog" {
         }
         view gap=lg visible="$state.post" {
           card gap=md {
-            h3 "$t(compose.editing)" level=3
+            h3 "$t(compose-edit.editing)" level=3
             p "${state.post.slug}" intent=muted scale=caption
           }
           card gap=md {

@@ -132,7 +132,7 @@
                   "type": "text",
                   "props": {
                     "level": 3,
-                    "content": "$t(compose.editing)"
+                    "content": "$t(compose-edit.editing)"
                   }
                 },
                 {

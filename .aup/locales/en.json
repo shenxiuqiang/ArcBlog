@@ -27,7 +27,6 @@
   "compose.seo": "SEO & social preview",
   "compose.seo-desc": "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image.",
   "compose.tags": "Tags",
-  "compose.editing": "Editing",
   "admin.edit": "Edit",
   "preview.edit": "Edit",
   "posts.design": "Design",

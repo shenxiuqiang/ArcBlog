@@ -27,7 +27,6 @@
   "compose.seo": "SEO 与社交分享预览",
   "compose.seo-desc": "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。",
   "compose.tags": "标签",
-  "compose.editing": "编辑中",
   "admin.edit": "编辑",
   "preview.edit": "编辑",
   "posts.design": "设计",
