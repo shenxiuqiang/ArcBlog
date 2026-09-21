@@ -33,7 +33,7 @@ app "ArcBlog" {
     }
     view gap=lg {
       view hero-wrap visible="!$state.heroesEmpty" {
-        afs-list hero-carousel layout=slideshow itemStyle=hero subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-empty sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} events={empty: [{target: hero-wrap, set: {state: {heroesEmpty: true}}}], error: [{target: hero-wrap, set: {state: {heroesEmpty: true}}}]} from "/instance/app/arcblog/heroes" {
+        afs-list hero-carousel layout=slideshow itemStyle=hero subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-empty sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} events={empty: [{target: hero-wrap, set: {state: {heroesEmpty: true}}}, {target: hero-default, set: {state: {heroesEmpty: true}}}], error: [{target: hero-wrap, set: {state: {heroesEmpty: true}}}, {target: hero-default, set: {state: {heroesEmpty: true}}}]} from "/instance/app/arcblog/heroes" {
           row heroSlide role=item style={width: "100%", height: "100%"} {
             view heroSlideLink href="${entry.content.url}" style={display: "flex", flexDirection: "column", justifyContent: "flex-end", width: "100%", minHeight: "300px", borderRadius: "var(--radius-lg, 12px)", overflow: "hidden", background: "var(--color-border) url(${entry.content.image}) center / cover no-repeat", textDecoration: "none"} {
               view gap=xs style={padding: "var(--space-block, 24px)", background: "linear-gradient(transparent, rgba(0,0,0,0.72))"} {
@@ -44,7 +44,7 @@ app "ArcBlog" {
           }
         }
       }
-      card gap=md {
+      card hero-default gap=md visible="$state.heroesEmpty" {
         h1 :hero-title level=1 scale=display
         p :hero-desc intent=info
         row gap=sm {
@@ -54,7 +54,7 @@ app "ArcBlog" {
       }
       h2 :feed level=2
       afs-list published-feed layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none filter={field: "content.status", match: published} serverFilters=[{key: category, control: chips, urlParam: category, options: [{value: "", label: :tf-all}, {value: technology, label: :tf-tech}, {value: design, label: :tf-design}, {value: life, label: :tf-life}], push: {field: "category", op: eq}}] from "/instance/app/arcblog/posts" {
-        row postRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
+        row postRow cross=center gap=md role=item style={padding: "var(--space-block, 24px)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 24px)"} {
           view postLink gap=xs href="/posts/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
             h3 "${entry.content.title}"
             p "${entry.content.summary}" intent=muted
@@ -64,6 +64,9 @@ app "ArcBlog" {
                 time mode=display value="${entry.content.publishedAt}" timeMode=relative
               }
             }
+          }
+          view postCover href="/posts/${entry.content.slug}" style={display: block, width: "168px", height: "112px", flexShrink: 0, borderRadius: "var(--radius-lg, 12px)", background: "url(${entry.content.coverImage}) center / cover no-repeat, linear-gradient(135deg, var(--color-border), var(--color-dim))"} {
+            text content=" "
           }
         }
       }
@@ -82,6 +85,8 @@ app "ArcBlog" {
       f-slug { en "Slug" zh "Slug" }
       slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
       f-summary { en "Summary" zh "摘要" }
+      f-cover { en "Cover image URL" zh "封面图 URL" }
+      cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
       f-body { en "Body (Markdown)" zh "正文（Markdown）" }
       category { en "Category" zh "分类" }
       tags { en "Tags" zh "标签" }
@@ -113,6 +118,8 @@ app "ArcBlog" {
           input type=select label=:category name=category options=[technology, design, life] state={value: technology}
           input type=text label=:tags name=tags state={value: ""}
           input type=text label=:f-summary name=summary state={value: ""}
+          input type=text label=:f-cover name=coverImage state={value: ""}
+          p :cover-hint intent=muted scale=caption
         }
         card gap=md {
           h3 :seo level=3
@@ -127,8 +134,8 @@ app "ArcBlog" {
           input type=textarea label=:f-body name=body required=true state={value: ""}
         }
         row gap=sm {
-          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "", authorName: "", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
-          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "", authorName: "", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "", authorName: "", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "", authorName: "", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
         }
         card gap=md {
           h3 :images level=3
@@ -157,6 +164,9 @@ app "ArcBlog" {
         p :not-found intent=muted
       }
       view reader-article gap=md visible="$state.post" {
+        view reader-cover visible="$state.post.coverImage" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
+          text content=" "
+        }
         h1 reader-title "${state.post.title}" level=1 scale=display
         row gap=xs cross=center {
           p "${state.post.authorName}" scale=sm intent=muted
@@ -318,6 +328,9 @@ app "ArcBlog" {
       view preview-article gap=md visible="$state.post" {
         card gap=sm {
           p :notice intent=info
+        }
+        view preview-cover visible="$state.post.coverImage" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
+          text content=" "
         }
         h1 preview-title "${state.post.title}" level=1 scale=display
         row gap=xs cross=center {
