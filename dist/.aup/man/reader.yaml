@@ -1,11 +1,27 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "reader".
 schemaVersion: 1
 page: reader
 description: >-
   Public article reading surface. It must render only status=published Post
   records and apply Markdown sanitization before display.
 synopsis: >-
-  Open a published post, verify lifecycle state, and render Markdown safely for
-  readers.
+  Open a published post at the pretty URL `/posts/<slug>` (sites.bindings
+  "post-reader" in blocklet.yaml maps the URL to
+  `/instance/app/arcblog/posts/<slug>.json`). The root view binds the whole
+  record server-side via `propBind` with `$params.slug` (no-braces channel);
+  the template reads parsed fields through `${state.post.*}` (client-side
+  channel) — same two-channel split as discuss-kit's detail page. Title,
+  byline (author · relative time · category) and the Markdown body
+  (`format=markdown`, sanitized) render from that state; a missing record
+  shows the not-found card instead.
+examples:
+  - label: Back to latest stories
+    description: >-
+      `reader-back` is a view rendered as a plain link (`href="/posts"`, the
+      posts-list binding) — not an AUP action — so it is intentionally absent
+      from `refs.actions` (same situation as discuss-kit's detail-back).
 flows:
   - Load the published post record by slug.
   - Enforce status=published before rendering.
@@ -13,8 +29,4 @@ flows:
   - Use share-card metadata for social preview actions.
   - Navigate back to the public feed.
 refs:
-  actions:
-    - id: arcblog-reader-action-share-this-article
-      event: click
-    - id: arcblog-reader-action-back-to-latest-stories
-      event: click
+  actions: []

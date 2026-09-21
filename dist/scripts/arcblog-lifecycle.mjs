@@ -65,20 +65,69 @@ function arcAfs(args, instance) {
   }
 }
 
+// Post records live in the shared instance space, split by visibility:
+//   /instance/app/arcblog/posts   — published only, guest-readable (networkRead)
+//   /instance/app/arcblog/drafts  — draft + archived + soft-deleted, private
+// That space is only reachable through the blocklet's own AFS actions
+// (per-session overlay); plain `arc afs read/write/ls` from the CLI runs in
+// the root scope and cannot see it. `arc afs exec` reports errors in the
+// stdout JSON envelope with exit code 0 — detect them explicitly.
+const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
+const PUBLIC_DIR = '/instance/app/arcblog/posts';
+const PRIVATE_DIR = '/instance/app/arcblog/drafts';
+
+function publicPath(slug) {
+  return `${PUBLIC_DIR}/${slug}.json`;
+}
+
+function privatePath(slug) {
+  return `${PRIVATE_DIR}/${slug}.json`;
+}
+
+function isPublicPath(path) {
+  return String(path || '').startsWith('/instance/');
+}
+
+function blockletExec(action, args, instance) {
+  const full = ['afs', 'exec', `${BLOCKLET_ACTIONS}/${action}`, '--args', JSON.stringify(args), '--json'];
+  if (instance) full.push('-i', instance);
+  const text = (execFileSync('arc', full, { encoding: 'utf8' }) || '').trim();
+  let parsed;
+  try {
+    parsed = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(text || 'arc exec failed');
+  }
+  if (parsed && parsed.success === false) {
+    const err = new Error(parsed.error?.message || 'arc exec failed');
+    if (parsed.error?.code) err.code = parsed.error.code;
+    throw err;
+  }
+  return parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
+}
+
 function arcRead(path, instance) {
   try {
+    if (isPublicPath(path)) {
+      const raw = blockletExec('read', { path }, instance);
+      return { data: { content: raw?.content, meta: raw?.meta } };
+    }
     return arcAfs(['read', '--path', path], instance);
   } catch (err) {
-    if (/No data found for path/i.test(err.message)) return null;
+    if (/No data found for path|Path not found/i.test(err.message)) return null;
     throw err;
   }
 }
 
 function arcStat(path, instance) {
   try {
+    if (isPublicPath(path)) {
+      const raw = blockletExec('read', { path }, instance);
+      return { data: { meta: raw?.meta } };
+    }
     return arcAfs(['stat', '--path', path], instance);
   } catch (err) {
-    if (/No data found for path/i.test(err.message)) return null;
+    if (/No data found for path|Path not found/i.test(err.message)) return null;
     throw err;
   }
 }
@@ -95,9 +144,43 @@ function auditEvent({ action, slug, actor, detail, instance }) {
 }
 
 function arcWrite(path, content, instance, ifMatch) {
+  if (isPublicPath(path)) {
+    const args = { path, content };
+    if (ifMatch) args.ifMatch = ifMatch;
+    return blockletExec('write', args, instance);
+  }
   const args = ['write', '--path', path, '--mode', 'replace', '--content', content];
   if (ifMatch) args.push('--if-match', ifMatch);
   return arcAfs(args, instance);
+}
+
+function arcDelete(path, instance) {
+  return blockletExec('delete', { path }, instance);
+}
+
+// Move between the public and private directories: read source (with its
+// optimistic-concurrency token), write destination, then delete the source.
+function moveRecord({ from, to, instance, toStatus }) {
+  const existing = getStoredPost(from, instance);
+  if (!existing) fail('NOT_FOUND', `post not found: ${from}`);
+
+  const prev = existing.post;
+  const now = nowIso();
+  const next = buildPost({
+    ...prev,
+    status: toStatus,
+    published: toStatus === 'published',
+    publishedAt: toStatus === 'published' ? prev.publishedAt || now : prev.publishedAt,
+    archivedAt: toStatus === 'archived' ? now : '',
+    deletedAt: toStatus === 'deleted' ? now : '',
+    updatedAt: now,
+    version: Number(prev.version || 0) + 1,
+  });
+
+  const dest = getStoredPost(to, instance);
+  arcWrite(to, JSON.stringify(next, null, 2), instance, dest?.ifMatch || undefined);
+  arcDelete(from, instance);
+  return { next, prev };
 }
 
 function optString(value) {
@@ -218,6 +301,24 @@ function commandPublish(opts) {
   const title = optString(opts.title).trim();
   const body = readBody(opts);
   const slug = slugify(optString(opts.slug) || title);
+
+  ensure(slug, 'slug is required');
+
+  // Slug-only publish: move an existing draft/archived record from the
+  // private drafts/ directory into the public posts/ directory.
+  if (!title && !body) {
+    const src = privatePath(slug);
+    const existing = getStoredPost(src, instance);
+    if (!existing) fail('NOT_FOUND', `post not found in drafts: ${slug}`);
+    if (!['draft', 'archived'].includes(existing.post.status)) {
+      fail('INVALID_TRANSITION', `cannot transition ${existing.post.status} -> published`);
+    }
+    const { next } = moveRecord({ from: src, to: publicPath(slug), instance, toStatus: 'published' });
+    auditEvent({ action: 'publish', slug, actor: next.authorDid || 'unknown', detail: `version=${next.version}`, instance });
+    console.log(JSON.stringify({ ok: true, action: 'publish', path: publicPath(slug), slug, status: next.status }, null, 2));
+    return;
+  }
+
   const category = validateCategory(opts.category);
   const coverImage = validateCoverImage(opts['cover-image']);
   const tags = normalizeTags(optString(opts.tags));
@@ -228,17 +329,20 @@ function commandPublish(opts) {
   const ogImage = validateCoverImage(opts['og-image']);
 
   ensure(title, 'title is required');
-  ensure(slug, 'slug is required');
 
   const markdownIssues = validateMarkdown(body);
   ensure(markdownIssues.length === 0, markdownIssues.join('; '));
 
-  const path = `/blocklets/arcblog/instance/posts/${slug}.json`;
-  const existing = getStoredPost(path, instance);
+  // Content-driven publish writes straight into the public directory (UI
+  // publish semantics: publishing is immediately public). Content bases on
+  // the private draft when one exists, else on the public record.
+  const path = publicPath(slug);
+  const draftExisting = getStoredPost(privatePath(slug), instance);
+  const publicExisting = getStoredPost(path, instance);
   const update = Boolean(opts.update);
-  if (existing && !update) fail('CONFLICT', `slug already exists: ${slug}; use --update to overwrite`);
+  if (publicExisting && !update && !draftExisting) fail('CONFLICT', `slug already exists: ${slug}; use --update to overwrite`);
 
-  const prev = existing?.post || {};
+  const prev = draftExisting?.post || publicExisting?.post || {};
   const now = nowIso();
   const next = buildPost({
     ...prev,
@@ -268,13 +372,10 @@ function commandPublish(opts) {
 
   ensure(next.authorDid, 'author-did is required');
 
-  arcWrite(path, JSON.stringify(next, null, 2), instance, existing?.ifMatch || undefined);
+  arcWrite(path, JSON.stringify(next, null, 2), instance, publicExisting?.ifMatch || undefined);
+  if (draftExisting) arcDelete(privatePath(slug), instance);
   auditEvent({ action: 'publish', slug, actor: next.authorDid, detail: `version=${next.version}`, instance });
   console.log(JSON.stringify({ ok: true, action: 'publish', path, slug, status: next.status }, null, 2));
-}
-
-function draftPath(authorDid, slug) {
-  return `/blocklets/arcblog/users/${authorDid}/drafts/${slug}.json`;
 }
 
 function commandDraft(opts) {
@@ -298,7 +399,7 @@ function commandDraft(opts) {
   const markdownIssues = validateMarkdown(body);
   ensure(markdownIssues.length === 0, markdownIssues.join('; '));
 
-  const path = draftPath(authorDid, slug);
+  const path = privatePath(slug);
   const existing = getStoredPost(path, instance);
   const prev = existing?.post || {};
   const now = nowIso();
@@ -330,29 +431,49 @@ function commandDraft(opts) {
   console.log(JSON.stringify({ ok: true, action: 'draft', path, slug, status: next.status }, null, 2));
 }
 
-function mutateStatus({ slug, instance, to, allowedFrom }) {
-  const path = `/blocklets/arcblog/instance/posts/${slug}.json`;
+function commandArchive({ slug, instance }) {
+  const from = publicPath(slug);
+  const existing = getStoredPost(from, instance);
+  if (!existing) fail('NOT_FOUND', `post not found: ${slug}`);
+  if (existing.post.status !== 'published') fail('INVALID_TRANSITION', `cannot transition ${existing.post.status} -> archived`);
+  const { next, prev } = moveRecord({ from, to: privatePath(slug), instance, toStatus: 'archived' });
+  auditEvent({ action: 'archived', slug, actor: prev.authorDid || 'unknown', detail: `version=${next.version}`, instance });
+  console.log(JSON.stringify({ ok: true, action: 'archived', path: privatePath(slug), slug, status: next.status }, null, 2));
+}
+
+function commandRepublish({ slug, instance }) {
+  const from = privatePath(slug);
+  const existing = getStoredPost(from, instance);
+  if (!existing) fail('NOT_FOUND', `post not found in drafts: ${slug}`);
+  if (existing.post.status !== 'archived') fail('INVALID_TRANSITION', `cannot transition ${existing.post.status} -> published`);
+  const { next, prev } = moveRecord({ from, to: publicPath(slug), instance, toStatus: 'published' });
+  auditEvent({ action: 'published', slug, actor: prev.authorDid || 'unknown', detail: `version=${next.version}`, instance });
+  console.log(JSON.stringify({ ok: true, action: 'published', path: publicPath(slug), slug, status: next.status }, null, 2));
+}
+
+// Soft delete stays in place: draft/archived records live in the private
+// directory, so deleted records never become guest-readable.
+function commandDelete({ slug, instance }) {
+  const path = getStoredPost(privatePath(slug), instance) ? privatePath(slug) : publicPath(slug);
   const existing = getStoredPost(path, instance);
   if (!existing) fail('NOT_FOUND', `post not found: ${slug}`);
 
   const prev = existing.post;
-  if (!allowedFrom.includes(prev.status)) fail('INVALID_TRANSITION', `cannot transition ${prev.status} -> ${to}`);
+  if (!['draft', 'archived'].includes(prev.status)) fail('INVALID_TRANSITION', `cannot transition ${prev.status} -> deleted`);
 
   const now = nowIso();
   const next = buildPost({
     ...prev,
-    status: to,
-    published: to === 'published',
-    publishedAt: to === 'published' ? (prev.publishedAt || now) : prev.publishedAt,
-    archivedAt: to === 'archived' ? now : '',
-    deletedAt: to === 'deleted' ? now : '',
+    status: 'deleted',
+    published: false,
+    deletedAt: now,
     updatedAt: now,
     version: Number(prev.version || 0) + 1,
   });
 
   arcWrite(path, JSON.stringify(next, null, 2), instance, existing?.ifMatch || undefined);
-  auditEvent({ action: to, slug, actor: prev.authorDid || 'unknown', detail: `version=${next.version}`, instance });
-  console.log(JSON.stringify({ ok: true, action: to, path, slug, status: next.status }, null, 2));
+  auditEvent({ action: 'deleted', slug, actor: prev.authorDid || 'unknown', detail: `version=${next.version}`, instance });
+  console.log(JSON.stringify({ ok: true, action: 'deleted', path, slug, status: next.status }, null, 2));
 }
 
 function help() {
@@ -361,11 +482,16 @@ function help() {
 Usage:
   node scripts/arcblog-lifecycle.mjs validate --title "..." --body-file ./post.md
   node scripts/arcblog-lifecycle.mjs draft --title "..." --author-did did:key:... --body-file ./post.md
+  node scripts/arcblog-lifecycle.mjs publish --slug my-post            # move drafts/ -> posts/
   node scripts/arcblog-lifecycle.mjs publish --title "..." --author-did did:key:... --body-file ./post.md
   node scripts/arcblog-lifecycle.mjs publish --slug my-post --update --author-did did:key:... --body-file ./post.md
-  node scripts/arcblog-lifecycle.mjs archive --slug my-post
-  node scripts/arcblog-lifecycle.mjs republish --slug my-post
+  node scripts/arcblog-lifecycle.mjs archive --slug my-post            # move posts/ -> drafts/
+  node scripts/arcblog-lifecycle.mjs republish --slug my-post          # move drafts/ -> posts/
   node scripts/arcblog-lifecycle.mjs delete --slug my-post
+
+Storage:
+  /instance/app/arcblog/posts   published only — guest-readable (networkRead)
+  /instance/app/arcblog/drafts  draft + archived + soft-deleted — private
 
 Options:
   --instance <name>     Arc instance name (optional)
@@ -402,27 +528,27 @@ Options:
     if (cmd === 'archive') {
       const slug = slugify(optString(args.slug));
       ensure(slug, 'slug is required');
-      return mutateStatus({ slug, instance: optString(args.instance), to: 'archived', allowedFrom: ['published'] });
+      return commandArchive({ slug, instance: optString(args.instance) });
     }
 
     if (cmd === 'republish') {
       const slug = slugify(optString(args.slug));
       ensure(slug, 'slug is required');
-      return mutateStatus({ slug, instance: optString(args.instance), to: 'published', allowedFrom: ['archived'] });
+      return commandRepublish({ slug, instance: optString(args.instance) });
     }
 
     if (cmd === 'delete') {
       const slug = slugify(optString(args.slug));
       ensure(slug, 'slug is required');
-      return mutateStatus({ slug, instance: optString(args.instance), to: 'deleted', allowedFrom: ['draft', 'archived'] });
+      return commandDelete({ slug, instance: optString(args.instance) });
     }
 
     throw new Error(`unknown command: ${cmd}`);
   } catch (err) {
     const message = err?.message || 'unknown error';
     let code = err?.code || 'RUNTIME_ERROR';
-    if (/No data found for path/i.test(message)) code = 'NOT_FOUND';
-    if (/Provider 'users-arcblog' does not support write/i.test(message)) code = 'USER_SPACE_UNAVAILABLE';
+    if (/No data found for path|Path not found/i.test(message)) code = 'NOT_FOUND';
+    if (/Write conflict/i.test(message)) code = 'CONFLICT';
     console.error(JSON.stringify({ ok: false, code, error: message }, null, 2));
     process.exit(1);
   }

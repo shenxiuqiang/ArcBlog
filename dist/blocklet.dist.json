@@ -3,8 +3,36 @@
   "id": "arcblog",
   "name": "ArcBlog",
   "did": "did:blocklet:arcblog",
-  "version": "0.3.0",
+  "version": "0.3.7",
   "description": "A DID-native publishing space for readable Markdown posts and images.",
+  "requirements": {
+    "probes": [
+      {
+        "path": "/instance/app/arcblog/posts",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/drafts",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/heroes",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/p/en/theme-bridge",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      }
+    ]
+  },
   "instance": {
     "required": true,
     "mount": "/instance"

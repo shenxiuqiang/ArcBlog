@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://arcblog.localhost</loc>
+  </url>
+  <url>
+    <loc>https://arcblog.localhost/en/search/</loc>
+  </url>
+  <url>
+    <loc>https://arcblog.localhost/en/theme-bridge/</loc>
+  </url>
+  <url>
+    <loc>https://arcblog.localhost/zh/search/</loc>
+  </url>
+  <url>
+    <loc>https://arcblog.localhost/zh/theme-bridge/</loc>
+  </url>
+</urlset>

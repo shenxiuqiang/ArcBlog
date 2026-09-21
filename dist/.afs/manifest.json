@@ -10,15 +10,27 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 4728,
+      "size": 24960,
       "contentType": "application/octet-stream",
-      "sha256": "6af3876ba9b0c88e79843939954245993f16ab94f6cc802d548e46fbc169dd90"
+      "sha256": "d2763a3443babfcced9670c9258f8244ef824d750770bb776f46bcc73837f1ca"
     },
     {
       "path": ".aup/app.json",
-      "size": 378,
+      "size": 584,
       "contentType": "application/json",
-      "sha256": "3e2b3def93b4523c32f0e80159b6da6059916f5bae43e6b86c2c1ece984d541a"
+      "sha256": "570f31ec5f44aa80628ce318e5ca62fc64cfdb359ad18c43f9fba2a8c39d8300"
+    },
+    {
+      "path": ".aup/locales/en.json",
+      "size": 5791,
+      "contentType": "application/json",
+      "sha256": "26e50211c8ce466030f184e592f11d1ce239eb4d136f4d9a1cdd970132b519c0"
+    },
+    {
+      "path": ".aup/locales/zh.json",
+      "size": 5694,
+      "contentType": "application/json",
+      "sha256": "0782de434319ab738f1d62fd6d2b80712a694074783dfaa72f3e0ce29d84976f"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -28,69 +40,147 @@
     },
     {
       "path": ".aup/man/admin.yaml",
-      "size": 1510,
+      "size": 1714,
       "contentType": "text/yaml",
-      "sha256": "bf4854260a7625b7d84e15eab0a501551bb793f6b5b00e5b6f79d58014e33615"
+      "sha256": "42d939cd246fbbb9f6afb359b18247c4b756a5242ea497bdcbad049455b6b085"
     },
     {
       "path": ".aup/man/compose.yaml",
-      "size": 768,
+      "size": 1355,
       "contentType": "text/yaml",
-      "sha256": "6c3a44c74a412e4c06291b297a16ceb9e685c02e165f7849c80b574b510d6dd0"
+      "sha256": "8da0cab4a2947395c9ddc717a0113bf6e8867df7f9f8f77f003120d2cdc81c34"
     },
     {
       "path": ".aup/man/posts.yaml",
-      "size": 1148,
+      "size": 1945,
       "contentType": "text/yaml",
-      "sha256": "8a31b8b774fa2f285f22863b952220a82d1d7cb5d7902530eacbd35f97cefe1f"
+      "sha256": "c541be17f09c53f61cbbb00c5ef2eda7b96fd9dc2b9b306fef18f2a497eb94fd"
+    },
+    {
+      "path": ".aup/man/preview.yaml",
+      "size": 1039,
+      "contentType": "text/yaml",
+      "sha256": "01e71699ce1f04d27cd140fba998b98f4f48f13d7a0241b24c6dfe27f062dd33"
     },
     {
       "path": ".aup/man/reader.yaml",
-      "size": 703,
+      "size": 1601,
       "contentType": "text/yaml",
-      "sha256": "1c04e3e83596afc01214e87d35d302a348886359d189a5412da68770b5cbdcfc"
+      "sha256": "946cebc833f909fa28867f868c95955481d9c68be1df97870740cce9f707dfd3"
     },
     {
       "path": ".aup/pages/about.json",
-      "size": 2220,
+      "size": 1587,
       "contentType": "application/json",
-      "sha256": "1258dd1ced0b6eb5134aef5272ac49be2b0ed3c70c1e1fb7d45c6865d1bbecc2"
+      "sha256": "d4a2c9a1c583c056f3b134b6b1f92d72a0afb7e5d95435c5fb74ae64687db403"
     },
     {
       "path": ".aup/pages/admin.json",
-      "size": 5430,
+      "size": 25604,
       "contentType": "application/json",
-      "sha256": "749eac7e4bbc573fb4c03de0a31798ee0dc59efd0d7899a41eae2caaddb9d793"
+      "sha256": "817937a6ad0da4860e6d94ba9ca04ed8235ceda0ebc9ece7b6505cf3737542e3"
     },
     {
       "path": ".aup/pages/compose.json",
-      "size": 4460,
+      "size": 13501,
       "contentType": "application/json",
-      "sha256": "81a29bbd10174b714419db66e7ac4c41b9345070190f6e399b06058ca1b7ccab"
+      "sha256": "0dfdf44f6cdc88da9c0609fc213361daa7ba53785fb5638c93f86ba8b87252ed"
     },
     {
       "path": ".aup/pages/posts.json",
-      "size": 4294,
+      "size": 11910,
       "contentType": "application/json",
-      "sha256": "1f9f585bf5385b34d6d1730fce854013ee02a10f2950fd99a3e209b735d3bb5f"
+      "sha256": "72fd0035ff495545ec49ee44377cfdffa4666034caa9a7d07d089f03e99d99fd"
+    },
+    {
+      "path": ".aup/pages/preview.json",
+      "size": 4327,
+      "contentType": "application/json",
+      "sha256": "0760db7c940f6703254e95b5c23d736531c101af92fd9e5e91da18d409e1394b"
     },
     {
       "path": ".aup/pages/reader.json",
-      "size": 1549,
+      "size": 4367,
       "contentType": "application/json",
-      "sha256": "aadeb31d3c701e3156138b35e5beb8dd61a12565377e000d0a788ee65b7a256b"
+      "sha256": "57282af841e0eea6e37e59fdbccd5699c7f72a9e0ad994485ca7c2ad400601ad"
+    },
+    {
+      "path": ".aup/pages/settings.json",
+      "size": 643,
+      "contentType": "application/json",
+      "sha256": "b7199dd635b6f21959cdcad8a6366ac108893af1bf828d256211cba1813b5891"
+    },
+    {
+      "path": ".aup/wrapper.aup",
+      "size": 1070,
+      "contentType": "application/octet-stream",
+      "sha256": "187e46f5279d094d0a8ce921dc1b39a3fd277f716f7f0cba8c333914f7dcc434"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 3216,
+      "size": 2019,
       "contentType": "application/json",
-      "sha256": "7e06d053cd4906be104574d6abfc26f709545bbf6f7a856fa091cca0f8b3b181"
+      "sha256": "8074277822749d5f89cdea8eabe28197d405d9bf49f46d24d5013d778a7666e2"
     },
     {
       "path": ".gitignore",
       "size": 250,
       "contentType": "application/octet-stream",
       "sha256": "bffb8918bd8f4104c60d8109cbaca1f768cf0b123f05cc2f2a954dcdac29bee5"
+    },
+    {
+      "path": ".route/root",
+      "size": 45,
+      "contentType": "application/octet-stream",
+      "sha256": "fd2211f414e3147c82d03ccbd445de4bf783098c73eefb1a7f7302243cb56979"
+    },
+    {
+      "path": ".route/web",
+      "size": 61,
+      "contentType": "application/octet-stream",
+      "sha256": "188a179bcbc1e24404ec2eeafa290d395c4202a527d1f38ebdf20c1914d3bdcd"
+    },
+    {
+      "path": ".web-cache/.access.json",
+      "size": 25,
+      "contentType": "application/json",
+      "sha256": "3f7034bff5388fdf875a592b7853ecddf4c53ffd41ac447aa07a38a705a32884"
+    },
+    {
+      "path": ".web-cache/.artifacts.json",
+      "size": 865,
+      "contentType": "application/json",
+      "sha256": "26f3c17c72c1cea4e14b045e83c95d875b1cc8eead338ed6a904195d5c21c700"
+    },
+    {
+      "path": ".web-cache/llms-full.txt",
+      "size": 37,
+      "contentType": "text/plain",
+      "sha256": "3c04f4b1be527033d6558085a7b406467c0adb5bbf565c04becd6ac2b6f7387c"
+    },
+    {
+      "path": ".web-cache/llms.txt",
+      "size": 540,
+      "contentType": "text/plain",
+      "sha256": "ebb020dc6a54843850fe8d378de11a2636fcc59a79d84a049c2ad333612e4ffa"
+    },
+    {
+      "path": ".web-cache/robots.txt",
+      "size": 71,
+      "contentType": "text/plain",
+      "sha256": "d1afca21fd2202ce03887236f5e7ea99161a73198ef02f5e6daa4e580bb44399"
+    },
+    {
+      "path": ".web-cache/sitemap-pages.xml",
+      "size": 455,
+      "contentType": "text/xml",
+      "sha256": "f58ffb6431f4f0b4e8530237b98aacc12aafcbb960eeee1b06e2bca609209e2a"
+    },
+    {
+      "path": ".web-cache/sitemap.xml",
+      "size": 205,
+      "contentType": "text/xml",
+      "sha256": "c73f165db06431a2c8d39210d6469e31955f938683db3c78ccdc9ea7ba2f646a"
     },
     {
       "path": ".web/components/arcblog-home/component.dsl",
@@ -121,6 +211,36 @@
       "size": 11701,
       "contentType": "text/css",
       "sha256": "21cb5e40f242a6f29d0dc45876b564313588fceeac37dc10df5940edda2e55cc"
+    },
+    {
+      "path": ".web/components/theme-bridge/component.dsl",
+      "size": 152,
+      "contentType": "application/octet-stream",
+      "sha256": "c3735d3e5c2bbf1ddbdc08c1f1bab7f9709587149037e9bd88fec455492e970e"
+    },
+    {
+      "path": ".web/components/theme-bridge/manifest.json",
+      "size": 199,
+      "contentType": "application/json",
+      "sha256": "ad008787ed7e56dcf6f350f4451db6c84e7a7cdca1ca1e817e5eae3ab1c76819"
+    },
+    {
+      "path": ".web/components/theme-bridge/render.js",
+      "size": 511,
+      "contentType": "text/javascript",
+      "sha256": "ee520788e639139ed6208e3d8e7842969670793900397a639ce511f0d033c519"
+    },
+    {
+      "path": ".web/components/theme-bridge/script.js",
+      "size": 7767,
+      "contentType": "text/javascript",
+      "sha256": "78e4d8d7ebd927c8779ace72671c4cdd6b51a9ad615a3fdb25a393fc363cb342"
+    },
+    {
+      "path": ".web/components/theme-bridge/style.css",
+      "size": 35,
+      "contentType": "text/css",
+      "sha256": "7565499421c5ed227a737614b5478a921e20095f07f0d609239473413dc69592"
     },
     {
       "path": ".web/themes/default/components/access-gate/manifest.json",
@@ -856,15 +976,21 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 167,
+      "size": 1974,
       "contentType": "text/yaml",
-      "sha256": "76735d579a7b5b62af56e355cde9a96f9b18e9898c59eb2d4002906c02cf0d05"
+      "sha256": "e045a53d12cee74bbd661676fd045c7714f7cbe0cbd1ebff6557dcb69af82686"
+    },
+    {
+      "path": "CLAUDE.md",
+      "size": 6043,
+      "contentType": "text/markdown",
+      "sha256": "1b1077699f1600492e0b4cceb9d5e94ac80ab2add35b7a61147cb1924f9eff95"
     },
     {
       "path": "docs/developer-guide.md",
-      "size": 1801,
+      "size": 9156,
       "contentType": "text/markdown",
-      "sha256": "aaa3d6f1ee16794dc28a8f3a653ba02dfc5cd40548ad873841591f15c52c4057"
+      "sha256": "c2d51593b8c93bf0a148047ac6ca5890e3d96f0e554c3833fd84d5292b63ae6a"
     },
     {
       "path": "docs/error-codes.md",
@@ -880,9 +1006,9 @@
     },
     {
       "path": "docs/persistence.md",
-      "size": 3221,
+      "size": 4168,
       "contentType": "text/markdown",
-      "sha256": "bcd47bd270dd5ddd752b805d33ae72b10feb129a80d348a7900b313c2780294e"
+      "sha256": "ac374e6d186cd3e1797c21bd6dcb785eb083cc9bc7bfd86c3f743eb4c6e0c25d"
     },
     {
       "path": "docs/product-summary.md",
@@ -892,15 +1018,15 @@
     },
     {
       "path": "docs/publishing-ops.md",
-      "size": 4701,
+      "size": 6009,
       "contentType": "text/markdown",
-      "sha256": "da21c2ca9ec96bf2fd22be066b424d7d3969414cb83b8170d4fc7ea311e0c5b2"
+      "sha256": "28518c2d149aaa00eecb782dc98cf72c379c99bb0e5186949202950e407e937b"
     },
     {
       "path": "docs/release-checklist.md",
-      "size": 2795,
+      "size": 2789,
       "contentType": "text/markdown",
-      "sha256": "22b4b8ad8629a30b93387ce1d3aca817ee49ba333d1b8d966e96292fa02c8c9d"
+      "sha256": "c2d425c249b6f1ca30944b2b6357ce48a9f306b76e5744274f89216c5ccd59a0"
     },
     {
       "path": "docs/release-notes-v0.3.0.md",
@@ -919,6 +1045,30 @@
       "size": 1272,
       "contentType": "text/markdown",
       "sha256": "2e2ba1d889f0f1eb6b16cb2ffe6921362fcc3f1565ace11df71577884f6d1cfc"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-21-arcblog-p0-p1-hardening.md",
+      "size": 30727,
+      "contentType": "text/markdown",
+      "sha256": "ccf8ab156bd1697dd0fe71c04067ac0581359cf6d13a8fc49eb527e502342ce7"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-21-arcblog-hardening-design.md",
+      "size": 8827,
+      "contentType": "text/markdown",
+      "sha256": "6156c4de60c50d9012a6e5097a986fa79e9fdcbb1fdf6a6558de524b3260eac9"
+    },
+    {
+      "path": "logs/combined.log",
+      "size": 277,
+      "contentType": "text/plain",
+      "sha256": "c6ff0ba4e69c8ad4f2a8e0e55b34ecf53deda949054046c4d0c7b5722bdd1d81"
+    },
+    {
+      "path": "logs/error.log",
+      "size": 0,
+      "contentType": "text/plain",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "package.json",
@@ -945,6 +1095,24 @@
       "sha256": "2729f25b21442d6f2693784d3078a2085e6bc0cd03e2a5ed8a127f2012ddc46a"
     },
     {
+      "path": "pages/theme-bridge/layout.aup",
+      "size": 54,
+      "contentType": "application/octet-stream",
+      "sha256": "0fb2f6857b81f43285b3886f9cf372a47f298c0894bf4ae30e0ae540c44d3492"
+    },
+    {
+      "path": "pages/theme-bridge/seo/description",
+      "size": 115,
+      "contentType": "application/octet-stream",
+      "sha256": "1bd010c3a5d1e2485d91a7dc7e7e8eddab07118e134f9c77fe1c6d577ee89b4b"
+    },
+    {
+      "path": "pages/theme-bridge/seo/title",
+      "size": 21,
+      "contentType": "application/octet-stream",
+      "sha256": "a31dd5727b0a555ebfb2483fc487ce862a644edc8eefc08f78125041fb43829f"
+    },
+    {
       "path": "README.md",
       "size": 1284,
       "contentType": "text/markdown",
@@ -952,9 +1120,9 @@
     },
     {
       "path": "scripts/arcblog-audit.mjs",
-      "size": 3373,
+      "size": 3375,
       "contentType": "text/javascript",
-      "sha256": "6c644b1251183fc6be8faac29ae8c21f5afc7fde55bd2a45d0f22f2b97e80e5a"
+      "sha256": "c562aaf0708ed2052da60082eb929c42d2de9863ff179cbd21e7fc5203f8a16b"
     },
     {
       "path": "scripts/arcblog-audit.test.mjs",
@@ -964,9 +1132,9 @@
     },
     {
       "path": "scripts/arcblog-daily-report.mjs",
-      "size": 2683,
+      "size": 3837,
       "contentType": "text/javascript",
-      "sha256": "93c2c8e80e3479014d72a9b94174eaac2abc2d6e560ca8b63e6b0781fb45619d"
+      "sha256": "5a8b906e933abc292fc41fa2c75670ded5785582295cf8a63b92c3b044b1c164"
     },
     {
       "path": "scripts/arcblog-daily-report.test.mjs",
@@ -976,39 +1144,57 @@
     },
     {
       "path": "scripts/arcblog-lifecycle.mjs",
-      "size": 14931,
+      "size": 20721,
       "contentType": "text/javascript",
-      "sha256": "7bd52e8596e97be01bbb4179da3ea4e18d47f1bf9c00a31d8c8f9c3cf97a4c55"
+      "sha256": "49c855b2a10270a806672da56b5a78c2b9c3614b755473bc67aefc9ced3b601d"
     },
     {
       "path": "scripts/arcblog-lifecycle.test.mjs",
-      "size": 2029,
+      "size": 3573,
       "contentType": "text/javascript",
-      "sha256": "0b059e5c77a425ef102d12be5577f2472af1a29e040bed0123f9c933ab65f7b5"
+      "sha256": "fc8f287db180fa130a572e0e67efcc7099637af51ceaf90a14e34cae1c20937b"
     },
     {
       "path": "scripts/arcblog-query-posts.mjs",
-      "size": 3657,
+      "size": 6392,
       "contentType": "text/javascript",
-      "sha256": "f050093f3ece2711e0581a6bdfc5c01067f7dd1e2953910815605ba72cef246d"
+      "sha256": "24b525aa61538aa281347b5ecf05800c301a669e20d70c53a51578f0edd42fe3"
     },
     {
       "path": "scripts/arcblog-query-posts.test.mjs",
-      "size": 1872,
+      "size": 2515,
       "contentType": "text/javascript",
-      "sha256": "a5f03fb77488314ecb1ee6e899e40102d3db4bc91d02d17d0c945ea8427863b4"
+      "sha256": "799aff1c9e961211e9fcb9df13434ab218cf7e638567e5e85590d896515596a7"
     },
     {
       "path": "scripts/arcblog-rss.mjs",
-      "size": 4003,
+      "size": 5157,
       "contentType": "text/javascript",
-      "sha256": "5853c83f4e66e830e4e3e5f2f8bcc219528b8d6bd0826e582a309708a6cc3650"
+      "sha256": "1a9775b396fcce32cfd8a3e79210b3fa4d5475ec998cf01b5d897a5daba2eba6"
     },
     {
       "path": "scripts/arcblog-rss.test.mjs",
       "size": 1211,
       "contentType": "text/javascript",
       "sha256": "50fa174480ae949ff67a5ebbaff9f576fd6ebc9f60d0a53c2e895693e81b6a1b"
+    },
+    {
+      "path": "seed/settings/arcblog/palette.json",
+      "size": 245,
+      "contentType": "application/json",
+      "sha256": "77fa4c7fc804f78b7d7712bda36d03bd156645309699d70d92a25e6fc2a462f7"
+    },
+    {
+      "path": "seed/settings/arcblog/theme.json",
+      "size": 225,
+      "contentType": "application/json",
+      "sha256": "8bdf5b0fc5843d0c93f1cbab85441337c13299fd098a5934ccbb8e7c6b369c0a"
+    },
+    {
+      "path": "seed/settings/arcblog/tone.json",
+      "size": 229,
+      "contentType": "application/json",
+      "sha256": "5e8f37dac155d5cf960daeb6411b86e51b7a16b67bf1eee2d91f223fb6095287"
     },
     {
       "path": "skills-lock.json",

@@ -1,0 +1,5 @@
+site: arcblog
+path: /p
+source: .
+handler: web
+access: public

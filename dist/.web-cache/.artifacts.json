@@ -1,0 +1,32 @@
+{
+  "/sitemap.xml": {
+    "bytes": 205,
+    "etag": "\"c73f165db06431a2c8d39210d6469e31955f938683db3c78ccdc9ea7ba2f646a\"",
+    "rawPublished": true,
+    "variants": {}
+  },
+  "/sitemap-pages.xml": {
+    "bytes": 455,
+    "etag": "\"f58ffb6431f4f0b4e8530237b98aacc12aafcbb960eeee1b06e2bca609209e2a\"",
+    "rawPublished": true,
+    "variants": {}
+  },
+  "/robots.txt": {
+    "bytes": 71,
+    "etag": "\"d1afca21fd2202ce03887236f5e7ea99161a73198ef02f5e6daa4e580bb44399\"",
+    "rawPublished": true,
+    "variants": {}
+  },
+  "/llms.txt": {
+    "bytes": 540,
+    "etag": "\"ebb020dc6a54843850fe8d378de11a2636fcc59a79d84a049c2ad333612e4ffa\"",
+    "rawPublished": true,
+    "variants": {}
+  },
+  "/llms-full.txt": {
+    "bytes": 37,
+    "etag": "\"3c04f4b1be527033d6558085a7b406467c0adb5bbf565c04becd6ac2b6f7387c\"",
+    "rawPublished": true,
+    "variants": {}
+  }
+}

@@ -1,0 +1,14 @@
+# arcblog.localhost
+
+## For agents
+
+- MCP (Streamable HTTP): https://arcblog.localhost/mcp
+- Server card: https://arcblog.localhost/.well-known/mcp.json
+- AFS over HTTP (JSON-RPC): POST https://arcblog.localhost/api/afs/rpc
+- Generic AFS public read; writes require DID-Connect auth
+
+Locales: en, zh (base: en). A locale listed on an item below is a real translation; any other locale serves the base-language text as fallback.
+
+Full-text version (all collections, never truncated): https://arcblog.localhost/llms-full.txt
+
+(no content yet)

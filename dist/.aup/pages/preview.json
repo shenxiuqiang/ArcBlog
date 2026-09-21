@@ -1,0 +1,184 @@
+{
+  "id": "arcblog-preview-view-1",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    }
+  },
+  "propBind": {
+    "post": "/instance/app/arcblog/drafts/$params.slug.json"
+  },
+  "children": [
+    {
+      "id": "arcblog-preview-view-1-row-1",
+      "type": "view",
+      "props": {
+        "layout": {
+          "direction": "row",
+          "gap": "sm"
+        }
+      },
+      "children": [
+        {
+          "id": "preview-back",
+          "type": "action",
+          "props": {
+            "variant": "ghost",
+            "label": "$t(preview.back)"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "admin"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-preview-view-1-card-2",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "visible": "!$state.post",
+      "children": [
+        {
+          "id": "arcblog-preview-view-1-card-2-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(preview.title)"
+          }
+        },
+        {
+          "id": "arcblog-preview-view-1-card-2-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(preview.not-found)",
+            "intent": "muted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "preview-article",
+      "type": "view",
+      "props": {
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "visible": "$state.post",
+      "children": [
+        {
+          "id": "preview-article-card-1",
+          "type": "view",
+          "props": {
+            "mode": "card",
+            "layout": {
+              "gap": "sm"
+            }
+          },
+          "children": [
+            {
+              "id": "preview-article-card-1-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(preview.notice)",
+                "intent": "info"
+              }
+            }
+          ]
+        },
+        {
+          "id": "preview-cover",
+          "type": "view",
+          "props": {
+            "style": {
+              "minHeight": "280px",
+              "borderRadius": "var(--radius-lg, 12px)",
+              "background": "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"
+            }
+          },
+          "visible": "$state.post.coverImage",
+          "children": [
+            {
+              "id": "preview-cover-text-1",
+              "type": "text",
+              "props": {
+                "content": " "
+              }
+            }
+          ]
+        },
+        {
+          "id": "preview-title",
+          "type": "text",
+          "props": {
+            "level": 1,
+            "content": "${state.post.title}",
+            "scale": "display"
+          }
+        },
+        {
+          "id": "preview-article-row-4",
+          "type": "view",
+          "props": {
+            "layout": {
+              "direction": "row",
+              "gap": "xs",
+              "crossAlign": "center"
+            }
+          },
+          "children": [
+            {
+              "id": "preview-article-row-4-p-1",
+              "type": "text",
+              "props": {
+                "content": "${state.post.status}",
+                "scale": "sm",
+                "intent": "muted"
+              }
+            },
+            {
+              "id": "preview-article-row-4-p-2",
+              "type": "text",
+              "props": {
+                "content": "${state.post.authorName}",
+                "scale": "sm",
+                "intent": "muted"
+              }
+            },
+            {
+              "id": "preview-article-row-4-p-3",
+              "type": "text",
+              "props": {
+                "content": "${state.post.category}",
+                "scale": "sm",
+                "intent": "muted",
+                "style": {
+                  "textTransform": "capitalize"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "preview-body",
+          "type": "text",
+          "props": {
+            "format": "markdown",
+            "content": "${state.post.body}"
+          }
+        }
+      ]
+    }
+  ]
+}

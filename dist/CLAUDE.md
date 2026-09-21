@@ -1,0 +1,68 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What ArcBlog is
+
+ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the Arc/AUP stack — not a conventional Node app. There is no `npm install`, no bundler, no dev server: the app is authored in AUP DSL (`.aup/*.aup`, `.aup/man/*.yaml`, `.aup/pages/*.json`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
+
+## Commands
+
+```bash
+arc dsl validate --json   # validate all AUP DSL — must pass (primary quality gate)
+npm test                  # run all script tests (node:test, scripts/*.test.mjs)
+node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file
+
+# Content operations (via scripts/, which wrap the `arc` CLI):
+node scripts/arcblog-lifecycle.mjs publish --title "..." --author-did did:key:z... --body-file post.md --category technology --tags "a,b"
+node scripts/arcblog-query-posts.mjs published --category technology [--tag x]
+node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com"
+node scripts/arcblog-audit.mjs ...
+node scripts/arcblog-daily-report.mjs ...
+# add `--instance <name>` to target a named Arc instance
+```
+
+## Quality gates
+
+Both must pass before committing: `arc dsl validate --json` and `npm test`.
+
+## Repository layout
+
+- `blocklet.yaml` — blocklet metadata, **URL bindings** (`sites[].bindings` map pretty URLs like `/posts/{slug}` to AUP pages + AFS records), `scope: app`, `networkRead` permissions, and `replicated` collections that authorize member writes from page sessions.
+- `.aup/` — the app itself: `app.aup` (app shell + page definitions with inline i18n en/zh), `man/*.yaml` (management docs), `pages/*.json`, `wrapper.json/.aup` (app chrome), `locales/`.
+- `world/post.yaml` — the `Post` record schema (status lifecycle fields, SEO/OG fields).
+- `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
+- `.web/` — public web-surface components (`theme-bridge/`, `arcblog-home/`) and themes.
+- `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
+- `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.
+- `seed/settings/arcblog/` — default settings records (tone/palette/theme).
+- `dist/` — synchronized build artifacts; update alongside source changes.
+
+## Content model and storage split (the core architectural idea)
+
+There is one Post schema, but **two AFS directories enforce the draft boundary** (the AUP expression language only supports `||`/`&&`/`!` over `$session.*`/`$state.*` — no comparisons — so visibility rules alone can't gate on `status`):
+
+- `/instance/app/arcblog/posts/` — **published only**, guest-readable via `networkRead`. One `<slug>.json` per post.
+- `/instance/app/arcblog/drafts/` — draft + archived + soft-deleted, **admin-only** reads. `/preview/{slug}` binds here; anonymous visitors get not-found.
+- `/instance/app/arcblog/heroes/` — homepage carousel records `{title, description, image, url, sort, createdAt}`, guest-readable, sorted ascending by `content.sort`.
+- `/instance/settings/arcblog/` — appearance settings (`tone`, `palette`, `theme`) driving the theme bridge.
+
+Lifecycle transitions: `draft → published → archived → published`, plus `draft|archived → deleted` (soft). Validation: required `title`/`slug`/`author-did`; category whitelist `technology|design|life`; tags are lowercase underscore tokens, max 10; `coverImage`/`ogImage` must be http(s). Note that records created **from the UI compose form** have empty `authorDid`/`authorName` and store `tags` as a raw string (args templates can't split arrays); the CLI normalizes both — use the CLI when authorship matters.
+
+## AUP runtime conventions (non-obvious, learned the hard way)
+
+- **Writes from pages** go through `exec "/.actions/write"` with `${args.*}` templates; they're authorized by the `replicated` collections in `blocklet.yaml` (`minRole: member`, `copy: none` keeps records single-file). Plain base-path network writes are denied.
+- **Entry substitution** (`${entry.content.*}`) works in `afs-list` item templates and even in action props (e.g. `path="${entry.path}"`), but list *select events* can't navigate: the select-event exec merges the entry payload over args, so `navigate` on select is inert — use `view href="..."` links instead.
+- **Reader/preview pages** pull the record server-side with `propBind={post: ".../$params.slug.json"}` (`$params.slug`, no braces) and read fields client-side as `${state.post.*}` — the two-channel split.
+- **Safe-style allowlist**: the `background` shorthand is allowed but `backgroundImage`/`backgroundPosition` are dropped — layered backgrounds must be written as `background: <color> url(...) center / cover no-repeat`.
+- **Theme bridge**: whole-page theme (`data-tone`/`data-palette`/`data-mode` on host `<html>`) is driven at runtime by an invisible overlay iframe (`frame theme-bridge-frame src="/p/en/theme-bridge/"`, `bridge=true overlay=true`) that reads settings via `parent.window.afs`, watches with a MutationObserver (the AUP runtime resets attributes on navigation), and is keyed per iframe window (`parent.__arcblogThemeBridge === window`) since navigation recreates the iframe. The compiled `tone`/`palette` in `app.aup` is only a fallback.
+
+## Documentation map (docs/ is authoritative)
+
+- `developer-guide.md` — architecture deep-dive (read first for anything non-trivial)
+- `operations-runbook.md`, `publishing-ops.md` — operator workflows and CLI examples
+- `error-codes.md` — structured failure codes
+- `share-cards.md` — OG/SEO usage
+- `release-checklist.md` — release gates
+- `persistence.md` — storage model details
+- `product-summary.md`, `roadmap.md`, `release-notes-v0.3.0.md`

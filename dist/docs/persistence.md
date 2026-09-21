@@ -4,16 +4,18 @@ ArcBlog uses the Blocklet-scoped DID Spaces mounted by Arc. It does not use brow
 
 ## Identity and session
 
-The `connection-gate` enclosing the writer is the DID Connect session boundary. A writer must approve the DID Wallet connection before the editor or media drop zone becomes available. The active DID is the sole server-side author identity; clients must never submit or override `authorDid`.
+The compose/admin pages gate on the AUP `$session` context: unauthenticated visitors see a sign-in card (`/.well-known/service/login`), while the editor and media drop zone render only when `$session.authenticated` is true. The active DID is the sole server-side author identity; clients must never submit or override `authorDid`.
 
 Arc exposes the following scoped paths for this Blocklet:
 
 - `/blocklets/arcblog/instance/members` — read-only DID Connect membership projection.
-- `/blocklets/arcblog/instance/posts/<slug>.json` — instance-level post records (`draft|published|archived|deleted` lifecycle).
-- `/blocklets/arcblog/users/<did>/drafts/<slug>.json` — private, per-wallet drafts.
+- `/instance/app/arcblog/posts/<slug>.json` — published post records only, guest-readable via the `networkRead` declaration in `blocklet.yaml` so the public feed renders without a session.
+- `/instance/app/arcblog/drafts/<slug>.json` — draft, archived, and soft-deleted records; private (`networkRead` grant limited to `role: admin` for the studio). Anonymous reads are denied.
+- `/instance/app/arcblog/heroes/<id>.json` — homepage carousel records `{title, description, image, url, sort, createdAt}`; guest-readable (rendered without a session), writable by members (replicated collection, `minRole: member`). Managed from the studio's Hero section.
+- `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 
-The runtime resolves `/blocklets/arcblog/instance` and `/blocklets/arcblog/users/<did>` to DID Space storage. They are durable per instance/user scopes, unlike the session subtree.
+The runtime resolves `/instance/app/arcblog`, `/blocklets/arcblog/instance` and `/blocklets/arcblog/users/<did>` to DID Space storage. They are durable per instance/user scopes, unlike the session subtree.
 
 For a production node, set `AFS_DID_SPACE_SCOPE_SECRET` before starting Arc. The local runtime correctly warned that the secret is currently unset, which leaves scope directory names de-identification-disabled. Do not set `AFS_DID_SPACE_REQUIRE_DEID=true` until the scope secret has been configured.
 
@@ -23,19 +25,19 @@ For a production node, set `AFS_DID_SPACE_SCOPE_SECRET` before starting Arc. The
 2. The server derives `authorDid` and author profile from that session; it ignores client-provided author fields.
 3. The post document uses the fields declared in `world/post.yaml`; `body` remains Markdown at rest and must be sanitized at render time.
 3.1 Metadata operability fields (`category`, `tags`, `seoTitle`, `seoDescription`, `ogTitle`, `ogDescription`, `ogImage`) are stored alongside content records.
-4. Slug must be normalized and unique per instance path (`/instance/posts/<slug>.json`). Publish/create must fail fast on conflict.
+4. Slug must be normalized and unique per instance path (`/instance/app/arcblog/posts/<slug>.json`). Publish/create must fail fast on conflict.
 5. Edits use AFS `ifMatch` optimistic concurrency tokens to prevent silent overwrites.
-6. Drafts and uploads are written to the caller's user space first. Publishing copies validated metadata into the instance `posts` collection.
-7. Lifecycle state transitions are explicit:
-   - `draft -> published`
-   - `published -> archived`
-   - `archived -> published` (republish)
-   - `draft|archived -> deleted` (soft delete)
-8. Readers list only records where `status: "published"` and `published: true`; authors may edit only records whose `authorDid` equals their active DID.
+6. Drafts are written to the private instance directory (`/instance/app/arcblog/drafts/`). Publishing moves the record into the public `posts` directory; archiving moves it back.
+7. Lifecycle state transitions are explicit (and move the record file between directories):
+   - `draft -> published` (drafts/ → posts/)
+   - `published -> archived` (posts/ → drafts/)
+   - `archived -> published` (republish; drafts/ → posts/)
+   - `draft|archived -> deleted` (soft delete in place, stays private)
+8. Readers list only records where `status: "published"` and `published: true`; authors may edit only records whose `authorDid` equals their active DID. The `/preview/<slug>` binding renders records from the private directory for signed-in operators; anonymous visitors always get not-found there.
 
 ## AFS calls
 
-The authenticated Blocklet runtime calls its AFS endpoint with `{ "method": "write" | "read" | "list" | "exec", "params": { ... } }`. For example, a publish operation writes JSON to `/blocklets/arcblog/instance/posts/<slug>.json`; listing uses the instance path with a `status=published` (and/or `published=true`) predicate through the standard query action.
+The authenticated Blocklet runtime calls its AFS endpoint with `{ "method": "write" | "read" | "list" | "exec", "params": { ... } }`. For example, a publish operation writes JSON to `/instance/app/arcblog/posts/<slug>.json`; listing uses the instance path with a `status=published` (and/or `published=true`) predicate through the standard query action.
 
 The AFS action contract is discoverable at runtime:
 

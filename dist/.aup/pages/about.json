@@ -1,17 +1,14 @@
 {
-  "id": "arcblog-about",
+  "id": "arcblog-about-view-1",
   "type": "view",
   "props": {
     "layout": {
       "gap": "lg"
-    },
-    "size": {
-      "maxWidth": "lg"
     }
   },
   "children": [
     {
-      "id": "arcblog-about-card-about-arcblog",
+      "id": "arcblog-about-view-1-card-1",
       "type": "view",
       "props": {
         "mode": "card",
@@ -21,66 +18,62 @@
       },
       "children": [
         {
-          "id": "arcblog-about-title-about-arcblog",
+          "id": "arcblog-about-view-1-card-1-h2-1",
           "type": "text",
           "props": {
-            "content": "About ArcBlog",
-            "level": 2
+            "level": 2,
+            "content": "$t(about.title)"
           }
         },
         {
-          "id": "arcblog-about-text",
+          "id": "arcblog-about-view-1-card-1-p-2",
           "type": "text",
           "props": {
-            "content": "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space."
-          }
-        },
-        {
-          "id": "arcblog-about-action-view-product-summary",
-          "type": "action",
-          "props": {
-            "label": "View product summary",
-            "variant": "secondary",
-            "href": "/docs/product-summary.md"
-          }
-        },
-        {
-          "id": "arcblog-about-action-view-operations-runbook",
-          "type": "action",
-          "props": {
-            "label": "View operations runbook",
-            "variant": "secondary",
-            "href": "/docs/operations-runbook.md"
-          }
-        },
-        {
-          "id": "arcblog-about-action-view-developer-guide",
-          "type": "action",
-          "props": {
-            "label": "View developer guide",
-            "variant": "secondary",
-            "href": "/docs/developer-guide.md"
-          }
-        },
-        {
-          "id": "arcblog-about-action-view-product-roadmap",
-          "type": "action",
-          "props": {
-            "label": "View product roadmap",
-            "variant": "secondary",
-            "href": "/docs/roadmap.md"
-          }
-        },
-        {
-          "id": "arcblog-about-action-view-release-checklist",
-          "type": "action",
-          "props": {
-            "label": "View release checklist",
-            "variant": "secondary",
-            "href": "/docs/release-checklist.md"
+            "content": "$t(about.desc)"
           }
         }
       ]
+    },
+    {
+      "id": "arcblog-about-view-1-card-2",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-about-view-1-card-2-h3-1",
+          "type": "text",
+          "props": {
+            "level": 3,
+            "content": "$t(about.lifecycle)"
+          }
+        },
+        {
+          "id": "arcblog-about-view-1-card-2-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(about.lifecycle-desc)",
+            "intent": "muted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-about-view-1-action-3",
+      "type": "action",
+      "props": {
+        "variant": "secondary",
+        "label": "$t(about.rss)"
+      },
+      "events": {
+        "click": {
+          "navigate": "/rss.xml"
+        }
+      }
     }
   ]
 }

@@ -12,23 +12,26 @@ synopsis: >-
 examples:
   - label: Create a post
     action: click
-    target: arcblog-admin-connection-gate-1-card-1-action-2
+    target: arcblog-admin-view-1-view-2-card-1-action-3
 flows:
   - Connect the DID Wallet to establish the author session.
-  - Review draft/published/archived records in the AFS-backed content list.
+  - Review published records (public directory) in the "Published" group.
+  - Review draft/archived records (private directory) in the "Drafts & archived" group.
+  - Open a published row to read it at `/posts/<slug>`, a draft row to preview it at `/preview/<slug>`.
+  - Manage homepage heroes: delete from the hero grid, add manually via the form, or quick-add a published post.
   - Run quick query actions for `status=published` and `status=archived`.
   - Enter filter values for status/category/tag to segment operational views.
   - Apply lifecycle transitions with optimistic concurrency protection.
   - Open the Markdown editor to create or update a post.
 refs:
   actions:
-    - id: arcblog-admin-connection-gate-1-card-1-action-2
+    - id: arcblog-admin-view-1-card-1-action-3
       event: click
-    - id: arcblog-admin-connection-gate-1-card-4-action-2
+    - id: arcblog-admin-view-1-view-2-card-1-action-3
       event: click
-    - id: arcblog-admin-connection-gate-1-card-4-action-3
+    - id: arcblog-admin-view-1-view-2-row-3-action-1
       event: click
-    - id: arcblog-admin-connection-gate-1-card-4-action-4
+    - id: hero-delete
       event: click
-    - id: arcblog-admin-connection-gate-1-card-4-action-5
+    - id: hero-add
       event: click

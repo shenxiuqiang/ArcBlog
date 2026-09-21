@@ -1,8 +1,17 @@
 {
   "title": "ArcBlog",
   "defaultPage": "posts",
+  "tone": "editorial",
+  "palette": "natural",
   "wrapper": "wrapper.json",
+  "locales": [
+    "en",
+    "zh"
+  ],
   "pages": {
+    "settings": {
+      "tree": "pages/settings.json"
+    },
     "posts": {
       "tree": "pages/posts.json"
     },
@@ -14,6 +23,9 @@
     },
     "admin": {
       "tree": "pages/admin.json"
+    },
+    "preview": {
+      "tree": "pages/preview.json"
     },
     "about": {
       "tree": "pages/about.json"

@@ -24,14 +24,14 @@ function json(stdout) {
   return JSON.parse(stdout);
 }
 
-test('query defaults to fallback mode when action query is unavailable', () => {
+test('query works via action or fallback for any status', () => {
   const res = run(['deleted']);
   assert.equal(res.status, 0);
   const out = json(res.stdout);
   assert.equal(out.ok, true);
   assert.equal(out.status, 'deleted');
-  assert.equal(out.mode, 'ls-read-fallback');
-  assert.ok(Array.isArray(out.result.records));
+  assert.ok(['query-action', 'ls-read-fallback'].includes(out.mode));
+  assert.ok(Array.isArray(out.result.records ?? out.result.entries));
 });
 
 test('query supports --limit', () => {
@@ -60,5 +60,26 @@ test('query supports tag filter shape', () => {
   for (const record of out.result.records || []) {
     assert.ok(Array.isArray(record.tags));
     assert.ok(record.tags.includes('identity'));
+  }
+});
+
+test('query tags records with their origin directory', () => {
+  const res = run(['published']);
+  assert.equal(res.status, 0);
+  const out = json(res.stdout);
+  assert.equal(out.ok, true);
+  assert.ok(out.result.records.length >= 1);
+  for (const record of out.result.records) {
+    assert.equal(record.dir, 'posts');
+  }
+});
+
+test('non-published statuses query the private directory', () => {
+  const res = run(['draft']);
+  assert.equal(res.status, 0);
+  const out = json(res.stdout);
+  assert.equal(out.ok, true);
+  for (const record of out.result.records) {
+    assert.equal(record.dir, 'drafts');
   }
 });

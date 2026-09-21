@@ -2,7 +2,7 @@
 
 ## Content lifecycle
 - [ ] Draft creation stores in `/blocklets/arcblog/users/<did>/drafts`
-- [ ] Publish writes to `/blocklets/arcblog/instance/posts/<slug>.json`
+- [ ] Publish writes to `/instance/app/arcblog/posts/<slug>.json`
 - [ ] Archive transition updates `status=archived`
 - [ ] Soft delete sets `status=deleted` and `deletedAt`
 

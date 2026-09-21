@@ -1,0 +1,25 @@
+# Man page for the preview page (draft/archived reader).
+schemaVersion: 1
+page: preview
+description: >-
+  Private preview surface for draft and archived records. Reached via the
+  `draft-preview` binding (blocklet.yaml): `/preview/<slug>` binds
+  `/instance/app/arcblog/drafts/<slug>.json`. The drafts directory has no
+  networkRead grant, so anonymous sessions always land on the not-found card.
+synopsis: >-
+  Open a draft or archived record from the studio's "Drafts & archived" group,
+  review the rendered Markdown body, then return to the studio. Records here
+  are private; publishing moves them to the public posts directory.
+examples:
+  - label: Back to studio
+    action: click
+    target: preview-back
+flows:
+  - Load the draft/archived record by slug from the private directory.
+  - Render title, status/author/category byline, and sanitized Markdown body.
+  - Missing or inaccessible records show the not-found card.
+  - Navigate back to the studio (SPA page admin).
+refs:
+  actions:
+    - id: preview-back
+      event: click

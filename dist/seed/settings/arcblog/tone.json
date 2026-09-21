@@ -1,0 +1,8 @@
+{
+  "label": "Tone",
+  "description": "Design tone of the reading surface. Organization-wide; admin only.",
+  "value": "editorial",
+  "scope": "instance",
+  "type": "select",
+  "options": ["clean", "editorial", "mono", "bold"]
+}
