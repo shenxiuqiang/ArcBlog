@@ -61,6 +61,8 @@
   "compose.f-slug": "Slug",
   "compose.slug-hint": "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>.",
   "compose.f-summary": "Summary",
+  "compose.f-cover": "Cover image URL",
+  "compose.cover-hint": "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here.",
   "compose.f-body": "Body (Markdown)",
   "compose.save-draft": "Save draft",
   "compose.publish-now": "Publish",

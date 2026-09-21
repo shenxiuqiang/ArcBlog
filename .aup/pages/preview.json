@@ -98,6 +98,27 @@
           ]
         },
         {
+          "id": "preview-cover",
+          "type": "view",
+          "props": {
+            "style": {
+              "minHeight": "280px",
+              "borderRadius": "var(--radius-lg, 12px)",
+              "background": "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"
+            }
+          },
+          "visible": "$state.post.coverImage",
+          "children": [
+            {
+              "id": "preview-cover-text-1",
+              "type": "text",
+              "props": {
+                "content": " "
+              }
+            }
+          ]
+        },
+        {
           "id": "preview-title",
           "type": "text",
           "props": {
@@ -107,7 +128,7 @@
           }
         },
         {
-          "id": "preview-article-row-3",
+          "id": "preview-article-row-4",
           "type": "view",
           "props": {
             "layout": {
@@ -118,7 +139,7 @@
           },
           "children": [
             {
-              "id": "preview-article-row-3-p-1",
+              "id": "preview-article-row-4-p-1",
               "type": "text",
               "props": {
                 "content": "${state.post.status}",
@@ -127,7 +148,7 @@
               }
             },
             {
-              "id": "preview-article-row-3-p-2",
+              "id": "preview-article-row-4-p-2",
               "type": "text",
               "props": {
                 "content": "${state.post.authorName}",
@@ -136,7 +157,7 @@
               }
             },
             {
-              "id": "preview-article-row-3-p-3",
+              "id": "preview-article-row-4-p-3",
               "type": "text",
               "props": {
                 "content": "${state.post.category}",

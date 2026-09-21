@@ -8,26 +8,31 @@ description: >-
   post lifecycle (status=published), with DID-attributed authorship.
 synopsis: >-
   Browse the published article feed and narrow Technology, Design, or Life
-  stories from the topic navigation. Feed rows are a custom `role=item`
-  template (clickMode=none); each row links to `/posts/<slug>` — the pretty
-  URL bound to the reader page via `sites.bindings` in blocklet.yaml.
+  stories from the topic navigation. Exactly one banner renders at the top:
+  the hero carousel when hero records exist, otherwise the default hero card
+  (`hero-default`, the "A calmer place to read." title card). Feed items are
+  custom `role=item` image cards (clickMode=none): a text link to
+  `/posts/<slug>` — the pretty URL bound to the reader page via
+  `sites.bindings` in blocklet.yaml — plus a cover thumbnail fed by
+  `content.coverImage` with a gradient placeholder when no cover is set.
 examples:
   - label: Start writing
     action: click
-    target: arcblog-posts-view-1-card-2-row-3-action-1
+    target: hero-default-row-3-action-1
   - label: Subscribe via RSS
     action: click
-    target: arcblog-posts-view-1-card-2-row-3-action-2
+    target: hero-default-row-3-action-2
 flows:
   - Browse the hero carousel (slideshow over /instance/app/arcblog/heroes; selecting a slide navigates to its linked URL).
-  - Browse posts and open an article detail via the row link (`/posts/<slug>`).
+  - When no hero records exist, the default hero card shows instead of the carousel — never both.
+  - Browse posts and open an article detail via the card link or its cover thumbnail (`/posts/<slug>`).
   - Filter the feed by category with the filter chips; the selection syncs to `?category=` (serverFilters urlParam).
   - Public feed excludes draft/archived/deleted records.
   - Use RSS subscription entry for feed discovery.
   - Choose Write a post to enter the DID Wallet-gated editor.
 refs:
   actions:
-    - id: arcblog-posts-view-1-card-2-row-3-action-1
+    - id: hero-default-row-3-action-1
       event: click
-    - id: arcblog-posts-view-1-card-2-row-3-action-2
+    - id: hero-default-row-3-action-2
       event: click

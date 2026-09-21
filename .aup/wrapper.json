@@ -11,26 +11,6 @@
           "title": "ArcBlog",
           "src": "posts"
         },
-        "nav": {
-          "items": [
-            {
-              "id": "posts",
-              "label": "$t(wrapper.nav-posts)",
-              "src": "posts"
-            },
-            {
-              "id": "admin",
-              "label": "$t(wrapper.nav-studio)",
-              "src": "admin",
-              "visible": "$session.authenticated"
-            },
-            {
-              "id": "about",
-              "label": "$t(wrapper.nav-about)",
-              "src": "about"
-            }
-          ]
-        },
         "actions": [
           {
             "kind": "theme-toggle",
@@ -49,15 +29,23 @@
             }
           },
           {
-            "kind": "user-menu"
+            "kind": "user-menu",
+            "items": [
+              {
+                "id": "studio",
+                "label": "$t(wrapper.nav-studio)",
+                "icon": "settings",
+                "exec": "admin"
+              }
+            ]
           }
         ]
       },
       "events": {
-        "nav-click": {
+        "user-menu-item": {
           "target": "_root",
           "set": {
-            "page": "$args.src"
+            "page": "$args.exec"
           }
         }
       }
@@ -84,6 +72,21 @@
           "tagline": "$t(wrapper.tagline)",
           "href": "/"
         },
+        "columns": [
+          {
+            "links": [
+              {
+                "label": "$t(wrapper.nav-about)",
+                "href": "/?page=about"
+              },
+              {
+                "label": "RSS",
+                "href": "/rss.xml",
+                "external": true
+              }
+            ]
+          }
+        ],
         "bottomBar": {
           "copyright": "© 2026 ArcBlog"
         }

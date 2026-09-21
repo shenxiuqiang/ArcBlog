@@ -42,11 +42,27 @@
                     "heroesEmpty": true
                   }
                 }
+              },
+              {
+                "target": "hero-default",
+                "set": {
+                  "state": {
+                    "heroesEmpty": true
+                  }
+                }
               }
             ],
             "error": [
               {
                 "target": "hero-wrap",
+                "set": {
+                  "state": {
+                    "heroesEmpty": true
+                  }
+                }
+              },
+              {
+                "target": "hero-default",
                 "set": {
                   "state": {
                     "heroesEmpty": true
@@ -136,7 +152,7 @@
       ]
     },
     {
-      "id": "arcblog-posts-view-1-card-2",
+      "id": "hero-default",
       "type": "view",
       "props": {
         "mode": "card",
@@ -144,9 +160,10 @@
           "gap": "md"
         }
       },
+      "visible": "$state.heroesEmpty",
       "children": [
         {
-          "id": "arcblog-posts-view-1-card-2-h1-1",
+          "id": "hero-default-h1-1",
           "type": "text",
           "props": {
             "level": 1,
@@ -155,7 +172,7 @@
           }
         },
         {
-          "id": "arcblog-posts-view-1-card-2-p-2",
+          "id": "hero-default-p-2",
           "type": "text",
           "props": {
             "content": "$t(posts.hero-desc)",
@@ -163,7 +180,7 @@
           }
         },
         {
-          "id": "arcblog-posts-view-1-card-2-row-3",
+          "id": "hero-default-row-3",
           "type": "view",
           "props": {
             "layout": {
@@ -173,7 +190,7 @@
           },
           "children": [
             {
-              "id": "arcblog-posts-view-1-card-2-row-3-action-1",
+              "id": "hero-default-row-3-action-1",
               "type": "action",
               "props": {
                 "variant": "primary",
@@ -189,7 +206,7 @@
               }
             },
             {
-              "id": "arcblog-posts-view-1-card-2-row-3-action-2",
+              "id": "hero-default-row-3-action-2",
               "type": "action",
               "props": {
                 "variant": "ghost",
@@ -266,12 +283,15 @@
           "props": {
             "layout": {
               "direction": "row",
-              "crossAlign": "start"
+              "crossAlign": "center",
+              "gap": "md"
             },
             "role": "item",
             "style": {
-              "padding": "var(--space-block) 0",
-              "borderBottom": "1px solid var(--color-border)"
+              "padding": "var(--space-block, 24px)",
+              "border": "1px solid var(--color-border)",
+              "borderRadius": "var(--radius-lg, 12px)",
+              "marginBottom": "var(--space-block, 24px)"
             }
           },
           "children": [
@@ -356,6 +376,30 @@
                       ]
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "id": "postCover",
+              "type": "view",
+              "props": {
+                "href": "/posts/${entry.content.slug}",
+                "style": {
+                  "display": "block",
+                  "width": "168px",
+                  "height": "112px",
+                  "flexShrink": 0,
+                  "borderRadius": "var(--radius-lg, 12px)",
+                  "background": "url(${entry.content.coverImage}) center / cover no-repeat, linear-gradient(135deg, var(--color-border), var(--color-dim))"
+                }
+              },
+              "children": [
+                {
+                  "id": "postcover-text-1",
+                  "type": "text",
+                  "props": {
+                    "content": " "
+                  }
                 }
               ]
             }

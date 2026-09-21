@@ -61,6 +61,8 @@
   "compose.f-slug": "Slug",
   "compose.slug-hint": "小写字母、数字和连字符；用于 URL /posts/<slug>。",
   "compose.f-summary": "摘要",
+  "compose.f-cover": "封面图 URL",
+  "compose.cover-hint": "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。",
   "compose.f-body": "正文（Markdown）",
   "compose.save-draft": "存草稿",
   "compose.publish-now": "发布",

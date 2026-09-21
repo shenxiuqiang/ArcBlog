@@ -19,7 +19,8 @@ examples:
     target: publish-now
 flows:
   - Connect the DID Wallet to unlock the editor and media upload.
-  - Enter title, slug, category/tags/summary plus optional SEO and OG overrides.
+  - Enter title, slug, category/tags/summary, an optional cover image URL, plus optional SEO and OG overrides.
+  - The cover image feeds the story-list card thumbnail and the reader/preview banner.
   - Save draft writes the record to the private drafts directory (preview at /preview/<slug>).
   - Publish writes the record to the public posts directory (readable at /posts/<slug>).
   - Same-slug saves overwrite the existing record (no ifMatch guard in the UI form).

@@ -180,6 +180,27 @@
               "state": {
                 "value": ""
               }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-input-8",
+              "type": "input",
+              "props": {
+                "type": "text",
+                "label": "$t(compose.f-cover)",
+                "name": "coverImage"
+              },
+              "state": {
+                "value": ""
+              }
+            },
+            {
+              "id": "arcblog-compose-view-1-view-2-card-2-p-9",
+              "type": "text",
+              "props": {
+                "content": "$t(compose.cover-hint)",
+                "intent": "muted",
+                "scale": "caption"
+              }
             }
           ]
         },
@@ -328,7 +349,7 @@
                       "slug": "${args.slug}",
                       "summary": "${args.summary}",
                       "body": "${args.body}",
-                      "coverImage": "",
+                      "coverImage": "${args.coverImage}",
                       "images": [],
                       "tags": "${args.tags}",
                       "category": "${args.category}",
@@ -374,7 +395,7 @@
                       "slug": "${args.slug}",
                       "summary": "${args.summary}",
                       "body": "${args.body}",
-                      "coverImage": "",
+                      "coverImage": "${args.coverImage}",
                       "images": [],
                       "tags": "${args.tags}",
                       "category": "${args.category}",
