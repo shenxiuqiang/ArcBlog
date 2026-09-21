@@ -119,5 +119,7 @@
   "compose-edit.seo": "SEO 与社交分享预览",
   "compose-edit.seo-desc": "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。",
   "compose-edit.images": "图片",
-  "compose-edit.images-desc": "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。"
+  "compose-edit.images-desc": "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。",
+  "compose-edit.editing": "编辑中",
+  "compose-edit.publish-hint": "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。"
 }

@@ -98,7 +98,6 @@ app "ArcBlog" {
       seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
       images { en "Images" zh "图片" }
       images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
-      editing { en "Editing" zh "编辑中" }
     }
     view gap=lg {
       card gap=md visible="!$session.authenticated" {
@@ -171,6 +170,8 @@ app "ArcBlog" {
       seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
       images { en "Images" zh "图片" }
       images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+      editing { en "Editing" zh "编辑中" }
+      publish-hint { en "Published. The draft copy is still in studio drafts — delete it there when done." zh "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。" }
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       card gap=md visible="!$session.authenticated" {
@@ -179,12 +180,12 @@ app "ArcBlog" {
         action -> navigate "/.well-known/service/login" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
-        card gap=md visible="!$state.post.title" {
+        card gap=md visible="!$state.post" {
           h2 :title level=2
           p :not-found intent=muted
           action -> page admin variant=ghost label=:back
         }
-        view gap=lg visible="$state.post.title" {
+        view gap=lg visible="$state.post" {
           card gap=md {
             h3 "$t(compose.editing)" level=3
             p "${state.post.slug}" intent=muted scale=caption
@@ -213,8 +214,8 @@ app "ArcBlog" {
             input type=textarea label=:f-body name=body required=true state={value: "${state.post.body}"}
           }
           row gap=sm {
-            action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "$session.did", authorName: "$session.displayName", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
-            action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "$session.did", authorName: "$session.displayName", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+            action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+            action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose-edit.publish-hint)", duration: 3000}
           }
           card gap=md {
             h3 :images level=3

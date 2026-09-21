@@ -71,7 +71,7 @@
               "gap": "md"
             }
           },
-          "visible": "!$state.post.title",
+          "visible": "!$state.post",
           "children": [
             {
               "id": "arcblog-compose-edit-view-1-view-2-card-1-h2-1",
@@ -115,7 +115,7 @@
               "gap": "lg"
             }
           },
-          "visible": "$state.post.title",
+          "visible": "$state.post",
           "children": [
             {
               "id": "arcblog-compose-edit-view-1-view-2-view-2-card-1",
@@ -418,8 +418,8 @@
                           "ogDescription": "${args.ogDescription}",
                           "ogImage": "${args.ogImage}",
                           "status": "draft",
-                          "authorDid": "$session.did",
-                          "authorName": "$session.displayName",
+                          "authorDid": "${state.post.authorDid}",
+                          "authorName": "${state.post.authorName}",
                           "published": false,
                           "publishedAt": "",
                           "archivedAt": "",
@@ -440,7 +440,7 @@
                     "label": "$t(compose-edit.publish-now)",
                     "onSuccessToast": {
                       "intent": "success",
-                      "message": "$t(compose.published-ok)",
+                      "message": "$t(compose-edit.publish-hint)",
                       "duration": 3000
                     }
                   },
@@ -464,8 +464,8 @@
                           "ogDescription": "${args.ogDescription}",
                           "ogImage": "${args.ogImage}",
                           "status": "published",
-                          "authorDid": "$session.did",
-                          "authorName": "$session.displayName",
+                          "authorDid": "${state.post.authorDid}",
+                          "authorName": "${state.post.authorName}",
                           "published": true,
                           "publishedAt": "${generate.timeiso}",
                           "archivedAt": "",

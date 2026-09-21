@@ -119,5 +119,7 @@
   "compose-edit.seo": "SEO & social preview",
   "compose-edit.seo-desc": "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image.",
   "compose-edit.images": "Images",
-  "compose-edit.images-desc": "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)."
+  "compose-edit.images-desc": "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL).",
+  "compose-edit.editing": "Editing",
+  "compose-edit.publish-hint": "Published. The draft copy is still in studio drafts — delete it there when done."
 }
