@@ -123,7 +123,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I2c** ✅ | Phase 2 | Node identity 资源：`world/node-identity.yaml` + `arcblog-node.mjs identity init\|show\|check`（DID 默认取 profile / blocklet.yaml） | validate + test + check + build（56 测试） |
 | I3 | Phase 3 | **按 S3 修正**：Web Device 无 AFS 通道 → 动态公开面在 MVP-1 保留 AUP；清理虚构落地页；把"逐条静态 SEO"排入 POST-MVP（内容站点烘焙） | 决策文档 + validate + test |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
-| I4b | Phase 4 | Admin 对齐 spec §15：补 Network / Economy / Agent 卡片，收口 Settings 与 Editor | 同上 |
+| **I4b** ✅ | Phase 4 | Dashboard 补齐 spec §16 卡片：**Roles & verification**（读 `config/roles.json`，含 transform 取嵌套字段）、Economy / Agent 明确显示"未启用（MVP-3/4）"；man 页同步 | validate + test + check + build（221 文件） |
 | **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | **I6a** ✅ | Phase 5 | Identity 契约固化：`scripts/arcblog-doctor.mjs`（资源目录 / node profile+identity / categories / 作者归属报告）；修正 3 处"UI 记录 authorDid 为空"的过时文档（compose 实际写 `$session.did`，但运行期插值未验证） | validate + test + check + build（65 测试） |

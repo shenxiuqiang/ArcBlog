@@ -164,5 +164,13 @@
   "author.auth": "Auth method",
   "author.roles": "Roles",
   "author.stories": "Stories",
-  "author.stories-empty": "No published stories yet."
+  "author.stories-empty": "No published stories yet.",
+  "dashboard.network": "Roles & verification",
+  "dashboard.network-desc": "Role asset configuration is external (spec §9), and a role grants no capability until it is verified — studio/hub capabilities stay withheld while verification is off.",
+  "dashboard.roles-empty": "No role configuration yet. Run: node scripts/arcblog-roles.mjs init",
+  "dashboard.verification": "Chain verification",
+  "dashboard.econ": "Economy",
+  "dashboard.econ-desc": "Not enabled yet — planned for MVP-3 (tips, paid reading, settlement).",
+  "dashboard.agent": "Agent",
+  "dashboard.agent-desc": "No agents declared yet — planned for MVP-4 (ARC Agent Access / MCP tools)."
 }

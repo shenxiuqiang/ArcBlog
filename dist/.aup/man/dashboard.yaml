@@ -1,15 +1,20 @@
 schemaVersion: 1
 page: dashboard
 description: >-
-  Operator dashboard for this ArcBlog instance: node identity and roles from the
-  node profile resource, the category taxonomy, recent published stories, and
-  quick links into the write and studio surfaces.
+  Operator dashboard for this ArcBlog instance: node identity, roles and
+  capabilities from the node profile and the externalized role configuration,
+  the category taxonomy, recent published stories, and quick links into the write
+  and studio surfaces. Economy and Agent surfaces are shown as explicitly
+  not-yet-enabled rather than omitted.
 synopsis: >-
-  Show what this instance is (DID, roles, capabilities) and what it currently
-  holds (published stories, categories), then route the operator into the right
-  surface from one place.
+  Show what this instance is (DID, roles, capabilities, verification switch) and
+  what it currently holds (published stories, categories), then route the
+  operator into the right surface from one place.
 flows:
   - Read the node profile written by scripts/arcblog-node.mjs.
+  - Read the externalized role configuration and whether chain verification is on
+    (scripts/arcblog-roles.mjs); capabilities stay withheld while it is off.
   - Review the category taxonomy written by scripts/arcblog-category.mjs.
   - Open recent published stories.
+  - See that Economy (MVP-3) and Agent (MVP-4) are not enabled yet.
   - Jump to write, studio or appearance settings.

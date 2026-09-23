@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 45172,
+      "size": 47171,
       "contentType": "application/octet-stream",
-      "sha256": "aa89b9ad263794f41beb47e8b1f40dacd7983108019cc86331840cd3f0faf6ed"
+      "sha256": "fc7e56480718de3b208a00e33df180d0d9fcd815de80bcacd23b0029d57f085d"
     },
     {
       "path": ".aup/app.json",
@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 9971,
+      "size": 10635,
       "contentType": "application/json",
-      "sha256": "c9ea9862d6a4f38d43458f6de8576fe2c5b68f62b731ed03dff27b0017be31eb"
+      "sha256": "681cfad93f24100c542b96bd3833c57c854545cf76f9145685c6cbf7808a9b79"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 9852,
+      "size": 10483,
       "contentType": "application/json",
-      "sha256": "1253f62da3c59f95fe3a7edbc2ae8643b7e58738769d75ad1d66cf9929abeea4"
+      "sha256": "c12c63fc9f2a26ad21be7c70d5a4a826a5cd1e29c9a37a8a170f05fa8091426b"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -64,9 +64,9 @@
     },
     {
       "path": ".aup/man/dashboard.yaml",
-      "size": 684,
+      "size": 1069,
       "contentType": "text/yaml",
-      "sha256": "2b76e53aa4a1b7cfc075affcaba6d75d52388b4eb6446634393931a53a8264f4"
+      "sha256": "25f4e27f7a97627a90c340260faa9645a9699538f358ca4fe8c1a4fa7065101c"
     },
     {
       "path": ".aup/man/posts.yaml",
@@ -118,9 +118,9 @@
     },
     {
       "path": ".aup/pages/dashboard.json",
-      "size": 10016,
+      "size": 14077,
       "contentType": "application/json",
-      "sha256": "e28c0b2987246640cc7145a3a2673b12c162848610647a7a1380ace9775cd32b"
+      "sha256": "aab7ec2c63c598a0c8853f67001273ebcd7943414459e737b9286bde92182b55"
     },
     {
       "path": ".aup/pages/posts.json",
@@ -1012,9 +1012,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 12981,
+      "size": 13132,
       "contentType": "text/markdown",
-      "sha256": "28122e5dce5cb23a083c74f39ab39437fcaf4e3f5880e19371bd6f9da5a1c6df"
+      "sha256": "c8e460f1ad0ac48673edbfbec48aba0e3f917c48d48a3374c16c3137c4aa77bc"
     },
     {
       "path": "docs/error-codes.md",

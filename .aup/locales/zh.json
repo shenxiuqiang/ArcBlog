@@ -164,5 +164,13 @@
   "author.auth": "认证方式",
   "author.roles": "角色",
   "author.stories": "文章",
-  "author.stories-empty": "还没有已发布的文章。"
+  "author.stories-empty": "还没有已发布的文章。",
+  "dashboard.network": "角色与验证",
+  "dashboard.network-desc": "角色资产配置是外部化的（spec §9）；角色只有通过验证才授予能力——验证关闭时 studio/hub 能力一律不授予。",
+  "dashboard.roles-empty": "还没有角色配置。运行：node scripts/arcblog-roles.mjs init",
+  "dashboard.verification": "链上验证",
+  "dashboard.econ": "经济",
+  "dashboard.econ-desc": "尚未启用——规划在 MVP-3（打赏、付费阅读、结算）。",
+  "dashboard.agent": "Agent",
+  "dashboard.agent-desc": "尚未声明 Agent——规划在 MVP-4（ARC Agent Access / MCP 工具）。"
 }

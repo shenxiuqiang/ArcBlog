@@ -38,6 +38,12 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/config",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/p/en/theme-bridge",
         "op": "list",
         "required": true,

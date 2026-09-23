@@ -306,11 +306,164 @@
           "type": "text",
           "props": {
             "level": 2,
+            "content": "$t(dashboard.network)"
+          }
+        },
+        {
+          "id": "arcblog-dashboard-view-1-card-5-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(dashboard.network-desc)",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "dash-roles",
+          "type": "afs-list",
+          "props": {
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "clickMode": "none",
+            "emptyText": "$t(dashboard.roles-empty)",
+            "transform": {
+              "verification": "content.chainVerification",
+              "studioAddress": "content.studio.collectionAddress",
+              "hubAddress": "content.hub.collectionAddress"
+            }
+          },
+          "src": "/instance/app/arcblog/config",
+          "children": [
+            {
+              "id": "dashRolesRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "gap": "xs"
+                },
+                "role": "item"
+              },
+              "children": [
+                {
+                  "id": "dashrolesrow-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(dashboard.verification)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "dashrolesrow-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.verification}",
+                    "scale": "sm"
+                  }
+                },
+                {
+                  "id": "dashrolesrow-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.studioAddress}",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "dashrolesrow-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.hubAddress}",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arcblog-dashboard-view-1-card-6",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-dashboard-view-1-card-6-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(dashboard.econ)"
+          }
+        },
+        {
+          "id": "arcblog-dashboard-view-1-card-6-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(dashboard.econ-desc)",
+            "intent": "muted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-dashboard-view-1-card-7",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-dashboard-view-1-card-7-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(dashboard.agent)"
+          }
+        },
+        {
+          "id": "arcblog-dashboard-view-1-card-7-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(dashboard.agent-desc)",
+            "intent": "muted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-dashboard-view-1-card-8",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-dashboard-view-1-card-8-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
             "content": "$t(dashboard.quick)"
           }
         },
         {
-          "id": "arcblog-dashboard-view-1-card-5-row-2",
+          "id": "arcblog-dashboard-view-1-card-8-row-2",
           "type": "view",
           "props": {
             "layout": {
@@ -320,7 +473,7 @@
           },
           "children": [
             {
-              "id": "arcblog-dashboard-view-1-card-5-row-2-action-1",
+              "id": "arcblog-dashboard-view-1-card-8-row-2-action-1",
               "type": "action",
               "props": {
                 "variant": "primary",
@@ -336,7 +489,7 @@
               }
             },
             {
-              "id": "arcblog-dashboard-view-1-card-5-row-2-action-2",
+              "id": "arcblog-dashboard-view-1-card-8-row-2-action-2",
               "type": "action",
               "props": {
                 "variant": "secondary",
@@ -352,7 +505,7 @@
               }
             },
             {
-              "id": "arcblog-dashboard-view-1-card-5-row-2-action-3",
+              "id": "arcblog-dashboard-view-1-card-8-row-2-action-3",
               "type": "action",
               "props": {
                 "variant": "ghost",
