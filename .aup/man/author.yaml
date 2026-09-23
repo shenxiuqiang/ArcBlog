@@ -1,0 +1,12 @@
+schemaVersion: 1
+page: author
+description: >-
+  Public author surface: the node's DID-bound author identity (from the node
+  profile and identity resources) plus that author's published stories.
+synopsis: >-
+  Answer "who publishes here" without a session, and give readers a way into the
+  archive of published work.
+flows:
+  - Read the node profile (name, description, DID, roles).
+  - Read the node identity record (DID, auth method).
+  - Browse the author's published stories.

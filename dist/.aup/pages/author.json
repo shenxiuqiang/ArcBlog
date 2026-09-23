@@ -1,0 +1,174 @@
+{
+  "id": "arcblog-author-view-1",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    }
+  },
+  "propBind": {
+    "profile": "/instance/app/arcblog/node/profile.json",
+    "identity": "/instance/app/arcblog/node/identity.json"
+  },
+  "children": [
+    {
+      "id": "arcblog-author-view-1-card-1",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-author-view-1-card-1-h1-1",
+          "type": "text",
+          "props": {
+            "level": 1,
+            "content": "${state.profile.name}"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-2",
+          "type": "text",
+          "props": {
+            "content": "${state.profile.description}",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-3",
+          "type": "text",
+          "props": {
+            "content": "$t(author.did)",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-4",
+          "type": "text",
+          "props": {
+            "content": "${state.profile.did}",
+            "scale": "sm"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-5",
+          "type": "text",
+          "props": {
+            "content": "$t(author.auth)",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-6",
+          "type": "text",
+          "props": {
+            "content": "${state.identity.authMethod}",
+            "scale": "sm"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-7",
+          "type": "text",
+          "props": {
+            "content": "$t(author.roles)",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-author-view-1-card-1-p-8",
+          "type": "text",
+          "props": {
+            "content": "${state.profile.roles}",
+            "scale": "sm"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-author-view-1-card-2",
+      "type": "view",
+      "props": {
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
+      },
+      "children": [
+        {
+          "id": "arcblog-author-view-1-card-2-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(author.stories)"
+          }
+        },
+        {
+          "id": "author-posts",
+          "type": "afs-list",
+          "props": {
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "clickMode": "none",
+            "emptyText": "$t(author.stories-empty)"
+          },
+          "src": "/instance/app/arcblog/posts",
+          "children": [
+            {
+              "id": "authorPostRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "gap": "xs"
+                },
+                "role": "item"
+              },
+              "children": [
+                {
+                  "id": "authorPostLink",
+                  "type": "view",
+                  "props": {
+                    "href": "/posts/${entry.content.slug}",
+                    "style": {
+                      "display": "block",
+                      "textDecoration": "none",
+                      "color": "inherit"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "authorpostlink-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.title}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "authorpostrow-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.summary}",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

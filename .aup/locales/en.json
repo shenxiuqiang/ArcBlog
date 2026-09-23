@@ -157,5 +157,12 @@
   "dashboard.quick": "Quick actions",
   "dashboard.q-write": "Write a post",
   "dashboard.q-studio": "Creator Studio",
-  "dashboard.q-settings": "Appearance"
+  "dashboard.q-settings": "Appearance",
+  "author.title": "Author",
+  "author.desc": "Who publishes here: this node's DID-bound author identity.",
+  "author.did": "DID",
+  "author.auth": "Auth method",
+  "author.roles": "Roles",
+  "author.stories": "Stories",
+  "author.stories-empty": "No published stories yet."
 }

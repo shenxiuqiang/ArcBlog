@@ -157,5 +157,12 @@
   "dashboard.quick": "快捷操作",
   "dashboard.q-write": "写文章",
   "dashboard.q-studio": "创作者工作室",
-  "dashboard.q-settings": "外观"
+  "dashboard.q-settings": "外观",
+  "author.title": "作者",
+  "author.desc": "谁在这里发布：与本节点 DID 绑定的作者身份。",
+  "author.did": "DID",
+  "author.auth": "认证方式",
+  "author.roles": "角色",
+  "author.stories": "文章",
+  "author.stories-empty": "还没有已发布的文章。"
 }

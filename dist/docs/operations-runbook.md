@@ -103,10 +103,17 @@ node scripts/arcblog-rss.mjs \
   --limit 20
 ```
 
-Persist artifact:
+Publish the feed with the site (the platform cannot emit XML at request time, so
+the feed is a **deploy-time snapshot**):
 ```bash
-node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > dist/rss.xml
+arc blocklet build
+node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > dist/.web-cache/rss.xml
+arc blocklet instance deploy . --domain <domain>
 ```
+It is then served at **`/p/rss.xml`** (web route). `/rss.xml` on the app root is
+*not* the feed — the AUP handler returns the app shell for every path (see
+`arc-contracts.md` §3.4). Rebuilding wipes `dist/.web-cache/rss.xml`, so always
+generate after `build` and before `deploy`.
 
 ## Incident response quick checks
 

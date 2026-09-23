@@ -214,7 +214,7 @@
               },
               "events": {
                 "click": {
-                  "navigate": "/rss.xml"
+                  "navigate": "/p/rss.xml"
                 }
               }
             }

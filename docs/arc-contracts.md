@@ -189,6 +189,28 @@ CMS actions；核验后已 `undeclare` + 删除。
 展示硬编码假文章，链接还指向不存在的 `/app?page=...`，且与 `/` 的真实 AUP feed 重复。
 `pages/theme-bridge/` 保留（主题桥依赖它）。
 
+### 3.4 静态文件挂在 web 路由下，不在 `/`
+
+实测（已部署实例）：
+
+| 路径 | 结果 |
+|---|---|
+| `/rss.xml`、`/robots.txt`、`/sitemap.xml`、`/atom.xml` | **全部 200 但返回 4,462 字节的 AUP 壳（`text/html`）**——`handler: aup` 的 `.route/root` 吞掉了 `/` 下所有路径 |
+| `/p/robots.txt` | 200 **`text/plain`**，内容是平台生成的 robots.txt |
+| `/p/sitemap.xml` | 200 **`application/xml`**，内容是 sitemap index |
+| `/p/en/theme-bridge/` | 200 SSR 页面（36,865 字节） |
+| `/en/` | 200 但仍是 AUP 壳（页面里的 canonical `/en/` 不可当作可达路径） |
+
+**结论**：构建产物里的站点静态文件（`.web-cache/*`）**只在 web 路由 `/p/` 下可达**。
+因此：
+
+- 站内所有 RSS 链接已从 `/rss.xml` 改到 **`/p/rss.xml`**（原先指向 `/rss.xml` 是死链）。
+- 平台没有请求期 XML 输出能力，feed 只能是**部署期静态快照**：先 `arc blocklet build`，
+  再把 `scripts/arcblog-rss.mjs` 的输出写进 `dist/.web-cache/rss.xml`，最后部署。
+  重新 build 会清掉该文件，所以顺序不能反（见 operations-runbook 的 RSS 步骤）。
+- robots.txt / sitemap.xml 同理——它们只在 `/p/` 下生效，这是平台的现状而非本项目缺陷。
+
+
 
 
 

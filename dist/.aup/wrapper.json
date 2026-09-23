@@ -86,8 +86,12 @@
                 "href": "/?page=about"
               },
               {
+                "label": "$t(wrapper.nav-author)",
+                "href": "/?page=author"
+              },
+              {
                 "label": "RSS",
-                "href": "/rss.xml",
+                "href": "/p/rss.xml",
                 "external": true
               }
             ]

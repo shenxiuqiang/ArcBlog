@@ -49,7 +49,7 @@ app "ArcBlog" {
         p :hero-desc intent=info
         row gap=sm {
           action -> page compose variant=primary label=:hero-cta
-          action -> navigate "/rss.xml" variant=ghost label=:rss
+          action -> navigate "/p/rss.xml" variant=ghost label=:rss
         }
       }
       h2 :feed level=2
@@ -480,7 +480,7 @@ app "ArcBlog" {
         h3 :lifecycle level=3
         p :lifecycle-desc intent=muted
       }
-      action -> navigate "/rss.xml" variant=secondary label=:rss
+      action -> navigate "/p/rss.xml" variant=secondary label=:rss
     }
   }
 
@@ -546,6 +546,41 @@ app "ArcBlog" {
           action -> page compose variant=primary label=:q-write
           action -> page admin variant=secondary label=:q-studio
           action -> page settings variant=ghost label=:q-settings
+        }
+      }
+    }
+  }
+
+  page author "Author" {
+    i18n {
+      title { en "Author" zh "作者" }
+      desc { en "Who publishes here: this node's DID-bound author identity." zh "谁在这里发布：与本节点 DID 绑定的作者身份。" }
+      did { en "DID" zh "DID" }
+      auth { en "Auth method" zh "认证方式" }
+      roles { en "Roles" zh "角色" }
+      stories { en "Stories" zh "文章" }
+      stories-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+    }
+    view gap=lg propBind={profile: "/instance/app/arcblog/node/profile.json", identity: "/instance/app/arcblog/node/identity.json"} {
+      card gap=md {
+        h1 "${state.profile.name}" level=1
+        p "${state.profile.description}" intent=muted
+        p :did scale=sm intent=muted
+        p "${state.profile.did}" scale=sm
+        p :auth scale=sm intent=muted
+        p "${state.identity.authMethod}" scale=sm
+        p :roles scale=sm intent=muted
+        p "${state.profile.roles}" scale=sm
+      }
+      card gap=md {
+        h2 :stories level=2
+        afs-list author-posts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:stories-empty from "/instance/app/arcblog/posts" {
+          row authorPostRow role=item gap=xs {
+            view authorPostLink href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
+              h3 "${entry.content.title}"
+            }
+            p "${entry.content.summary}" scale=sm intent=muted
+          }
         }
       }
     }

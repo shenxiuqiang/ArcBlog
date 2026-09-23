@@ -3,6 +3,7 @@ page wrapper {
     nav-studio { en "Studio" zh "工作室" }
     nav-dashboard { en "Dashboard" zh "仪表盘" }
     nav-about { en "About" zh "关于" }
+    nav-author { en "Author" zh "作者" }
     theme-label { en "Toggle theme" zh "切换主题" }
     tagline { en "DID-native writing, Markdown-first publishing." zh "DID 原生写作，Markdown 优先发布。" }
   }
@@ -10,6 +11,6 @@ page wrapper {
     app-header site-header variant=compact brand={title: ArcBlog, src: posts} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: dashboard, label: "$t(wrapper.nav-dashboard)", icon: "grid", exec: "dashboard"}, {id: studio, label: "$t(wrapper.nav-studio)", icon: "settings", exec: "admin"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}}
     slot content
     frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
-    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "RSS", href: "/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 }

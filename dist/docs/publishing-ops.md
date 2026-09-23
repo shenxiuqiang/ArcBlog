@@ -172,7 +172,7 @@ node scripts/arcblog-rss.mjs \
 If you want a persistent feed artifact, redirect stdout:
 
 ```bash
-node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > dist/rss.xml
+node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > dist/.web-cache/rss.xml
 ```
 
 Notes:

@@ -35,6 +35,9 @@
     },
     "dashboard": {
       "tree": "pages/dashboard.json"
+    },
+    "author": {
+      "tree": "pages/author.json"
     }
   }
 }

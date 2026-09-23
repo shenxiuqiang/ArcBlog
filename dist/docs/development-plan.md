@@ -105,8 +105,8 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | Blog: Tags / Categories | ⚠️ tags 数组、category 是白名单字符串 | category 无独立资源 |
 | Blog: Media | ⚠️ 仅上传路径说明 | 无 media 索引记录 |
 | Blog: Theme | ✅ tone/palette/theme + theme-bridge | 与 `/web/.library/themes` 未打通 |
-| Public: Home / Article / Author | ⚠️ 由 AUP 页承担 | 未用 Web Device；缺 Author / Archive |
-| Public: RSS | ⚠️ 脚本产出 `dist/rss.xml` | 未绑定站点路由 |
+| Public: Home / Article / Author | ⚠️ 由 AUP 页承担；**Author 页已补** | Web Device 无 AFS 通道（S3）→ 动态面保留 AUP；缺 Archive |
+| Public: RSS | ⚠️ 脚本产出 feed；链接已修正为 `/p/rss.xml` | 平台无请求期 XML 输出 → feed 是**部署期静态快照**（build 后生成再部署） |
 | Admin: Dashboard / Editor / Settings | ⚠️ 有 editor / settings | 缺 spec §16 的 Dashboard（roles / network / agent 卡） |
 
 ## 5. 增量计划
@@ -124,6 +124,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | I3 | Phase 3 | **按 S3 修正**：Web Device 无 AFS 通道 → 动态公开面在 MVP-1 保留 AUP；清理虚构落地页；把"逐条静态 SEO"排入 POST-MVP（内容站点烘焙） | 决策文档 + validate + test |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
 | I4b | Phase 4 | Admin 对齐 spec §15：补 Network / Economy / Agent 卡片，收口 Settings 与 Editor | 同上 |
+| **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | I6 | Phase 5 | Identity / DID Space 契约固化（作者身份、会话投影、space 校验、de-identification 开关说明） | 同上 |
 | I7 | Phase 6–7 | Studio / Hub 角色：capability engine + Role 配置外置（NFT/Stake 校验接口占位，不接链上行） | 同上 |
