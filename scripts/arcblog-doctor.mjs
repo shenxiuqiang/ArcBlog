@@ -19,6 +19,8 @@ import {
   checkResources,
   checkSpaceApp,
   checkSpaceLayout,
+  checkTestRecords,
+  isTestRecordId,
   summarize,
 } from './lib/doctor.mjs';
 
@@ -83,6 +85,25 @@ Exit code: 1 when an "error" check fails; 0 otherwise (warnings are reported).
 `);
 }
 
+/**
+ * Count test residue per directory. Only the entry ids are touched (one list call
+ * per directory) — reading every record would make the doctor O(n) round trips.
+ */
+function testCounts(instance) {
+  const dirs = {
+    ledger: `${INSTANCE_ROOT}/economy/ledger`,
+    orders: `${INSTANCE_ROOT}/economy/orders`,
+    products: `${INSTANCE_ROOT}/economy/products`,
+    drafts: `${INSTANCE_ROOT}/drafts`,
+    media: `${INSTANCE_ROOT}/media`,
+  };
+  const counts = {};
+  for (const [label, dir] of Object.entries(dirs)) {
+    counts[label] = list(dir, instance).filter((entry) => isTestRecordId(entry?.id)).length;
+  }
+  return counts;
+}
+
 (function main() {
   const args = parseArgs(process.argv.slice(2));
   const [cmd] = args._;
@@ -105,6 +126,7 @@ Exit code: 1 when an "error" check fails; 0 otherwise (warnings are reported).
       checkSpaceLayout(spaceCheck),
       checkSpaceApp(spaceList, blockletIdentifiers()),
       checkDeidentification(spaceStderr),
+      checkTestRecords(testCounts(instance)),
     ];
     const verdict = summarize(checks);
     console.log(

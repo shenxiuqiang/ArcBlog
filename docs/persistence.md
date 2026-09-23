@@ -32,6 +32,14 @@ The runtime resolves `/instance/app/arcblog`, `/blocklets/arcblog/instance` and 
 
 For a production node, set `AFS_DID_SPACE_SCOPE_SECRET` before starting Arc. The local runtime correctly warned that the secret is currently unset, which leaves scope directory names de-identification-disabled. Do not set `AFS_DID_SPACE_REQUIRE_DEID=true` until the scope secret has been configured.
 
+## Ledger access cost
+
+Ledger entry ids are **deterministic** (`<orderId>:<type>`, spec §91), so
+`ledger list --order <id>` reads at most three records instead of scanning the
+directory. An unscoped listing is paged (`--limit`, default 20; `--all` overrides)
+because every record costs one CLI round trip and the append-only ledger (spec §92)
+only grows.
+
 ## Write rules
 
 1. Any draft/publish/archive/delete operation requires an active DID Connect session.

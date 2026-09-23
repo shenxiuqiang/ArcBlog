@@ -308,3 +308,38 @@ test('live purchase of content grants reading rights to the buyer only', () => {
   assert.equal(denied.status, 0, denied.stderr);
   assert.equal(json(denied.stdout).allowed, false);
 });
+
+test('live: ledger lookup is by deterministic id, and the whole-ledger listing is bounded', () => {
+  const stamp = Date.now();
+  const orderId = `ledger-order-${stamp}`;
+  const product = `ledger-product-${stamp}`;
+
+  assert.equal(run(['product', 'add', '--id', product, '--creator-did', 'did:key:zLedger', '--price-amount', '4.000000']).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', product, '--buyer-did', 'did:key:zBuyer']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+  assert.equal(run(['settle', '--order', orderId]).status, 0);
+
+  // ids are `<orderId>:<type>` (spec §91), so the lookup reads only that order's files
+  const scoped = run(['ledger', 'list', '--order', orderId]);
+  assert.equal(scoped.status, 0, scoped.stderr);
+  const scopedRows = json(scoped.stdout);
+  assert.equal(scopedRows.count, 2); // creator_share + protocol_fee (hub share withheld)
+  assert.equal(scopedRows.orderId, orderId);
+  assert.equal(scopedRows.total, '4');
+  for (const entry of scopedRows.entries) assert.equal(entry.orderId, orderId);
+
+  // an order with no entries is empty, not an error
+  const missing = run(['ledger', 'list', '--order', `nothing-${stamp}`]);
+  assert.equal(missing.status, 0, missing.stderr);
+  assert.equal(json(missing.stdout).count, 0);
+  assert.equal(json(missing.stdout).total, '0');
+
+  // the unbounded listing is paged and says so
+  const paged = run(['ledger', 'list', '--limit', '1']);
+  assert.equal(paged.status, 0, paged.stderr);
+  const page = json(paged.stdout);
+  assert.equal(page.count, 1);
+  assert.ok(page.totalCount >= 1);
+  assert.equal(page.truncated, page.totalCount > 1);
+  if (page.truncated) assert.match(page.hint, /newest entries/);
+});

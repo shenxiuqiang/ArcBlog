@@ -318,10 +318,66 @@ function commandSettle(opts, instance) {
   );
 }
 
+// Ledger entry ids are deterministic (spec §91): `<orderId>:<type>`. That makes
+// per-order reads O(1) instead of "list the directory and read every record",
+// which matters because the ledger is append-only and grows forever (spec §92).
+const LEDGER_TYPES = ['creator_share', 'hub_share', 'protocol_fee'];
+
+function ledgerEntriesForOrder(orderId, instance) {
+  const out = [];
+  for (const type of LEDGER_TYPES) {
+    const record = readJson(`${LEDGER_DIR}/${orderId}:${type}.json`, instance);
+    if (record?.value) out.push(record.value);
+  }
+  return out;
+}
+
 function commandLedgerList(opts, instance) {
   const orderId = optString(opts.order).trim();
-  const entries = recordsIn(LEDGER_DIR, instance).filter((entry) => !orderId || entry.orderId === orderId);
-  console.log(JSON.stringify({ ok: true, path: LEDGER_DIR, count: entries.length, total: sumLedger(entries), entries }, null, 2));
+
+  // One order: read only the (at most) three entries it can have.
+  if (orderId) {
+    const entries = ledgerEntriesForOrder(orderId, instance);
+    console.log(
+      JSON.stringify(
+        { ok: true, path: LEDGER_DIR, orderId, count: entries.length, total: sumLedger(entries), entries },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+
+  // Whole ledger: bound the output by default. Reading every record is O(n) I/O
+  // and the append-only ledger never shrinks, so an unbounded dump is not usable
+  // once a node has real traffic.
+  const all = opts.all === true || opts.all === 'true';
+  // Each entry costs one CLI round trip, so the default page stays small.
+  const limit = all ? 0 : Math.max(0, Number(opts.limit ?? 20) || 0);
+  const ids = list(LEDGER_DIR, instance)
+    .map((entry) => String(entry?.id ?? '').replace(/\.json$/, ''))
+    .filter(Boolean)
+    .sort();
+  const shown = limit > 0 ? ids.slice(-limit) : ids;
+  const entries = shown
+    .map((id) => readJson(`${LEDGER_DIR}/${id}.json`, instance)?.value)
+    .filter(Boolean);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        path: LEDGER_DIR,
+        count: entries.length,
+        totalCount: ids.length,
+        truncated: entries.length < ids.length,
+        total: sumLedger(entries),
+        hint: entries.length < ids.length ? 'showing the newest entries; use --limit <n> or --all' : '',
+        entries,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 function help() {
@@ -339,7 +395,7 @@ Usage:
   node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
   node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
   node scripts/arcblog-economy.mjs settle --order <id>
-  node scripts/arcblog-economy.mjs ledger list [--order <id>]
+  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--limit <n>|--all] [--limit <n>|--all]
   node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
   node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]
 

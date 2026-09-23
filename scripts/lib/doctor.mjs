@@ -102,6 +102,43 @@ export function checkAuthorship(records) {
   );
 }
 
+// --- dev/test residue --------------------------------------------------------
+
+/**
+ * Ids that the (non-hermetic) live test suite leaves behind. The suite writes to
+ * the default instance, so a development machine accumulates records; the ledger
+ * is append-only (spec §92) and never shrinks, which is worth surfacing before it
+ * becomes an operational surprise.
+ */
+export const TEST_RECORD_PREFIXES = [
+  'spike-',
+  'attr-',
+  'unattr-',
+  'econ-test-',
+  'agent-',
+  'probe-',
+  'cmsprobe',
+  'ledger-order-',
+  'ledger-product-',
+];
+
+/** Does an AFS entry id look like test residue? */
+export function isTestRecordId(id) {
+  const value = String(id ?? '');
+  return TEST_RECORD_PREFIXES.some((prefix) => value.startsWith(prefix));
+}
+
+/** Report the volume of test residue without reading record bodies. */
+export function checkTestRecords(counts = {}) {
+  const total = Object.values(counts).reduce((sum, n) => sum + (Number(n) || 0), 0);
+  if (!total) return result('test-records', 'warn', true, 'no test records found');
+  const detail = Object.entries(counts)
+    .filter(([, n]) => Number(n) > 0)
+    .map(([dir, n]) => `${dir} ${n}`)
+    .join(', ');
+  return result('test-records', 'warn', false, `${total} test records (${detail}) — clean up after live test runs`);
+}
+
 /** Fold check results into an exit-code decision. */
 export function summarize(checks) {
   const failed = checks.filter((check) => !check.ok && check.severity === 'error').map((check) => check.id);

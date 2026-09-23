@@ -219,6 +219,29 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Development instance hygiene
+
+The live test suite is non-hermetic: it writes to the default instance and the
+ledger is append-only (spec §92), so a development machine accumulates records
+forever. `doctor` reports the volume as a warning, and this command removes it:
+
+```bash
+node scripts/arcblog-clean.mjs            # dry run: list what would go
+node scripts/arcblog-clean.mjs --confirm  # delete it
+node scripts/arcblog-clean.mjs --dir economy/ledger
+```
+
+Only ids carrying a known test prefix are touched, and `posts/` / `heroes/` are
+never scanned — published content is not residue. Without `--confirm` nothing is
+deleted.
+
+### Ledger access cost
+
+Ledger entry ids are deterministic (`<orderId>:<type>`, spec §91), so
+`ledger list --order <id>` reads at most three records instead of scanning the
+directory. An unscoped `ledger list` is paged (`--limit`, default 20; `--all` to
+override) because every record costs one CLI round trip and the ledger only grows.
+
 ## Node network layer (spec §68–§74, §109–§113)
 
 ```bash

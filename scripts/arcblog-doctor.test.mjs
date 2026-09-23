@@ -178,6 +178,8 @@ test('doctor reports a healthy instance on the live default instance', () => {
       'space-layout',
       'space-app',
       'de-identification',
+      // dev instances accumulate live-test residue (see arcblog-clean.mjs)
+      'test-records',
     ],
   );
   assert.equal(report.checks.find((c) => c.id === 'node-profile').ok, true);

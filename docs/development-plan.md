@@ -135,6 +135,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I8c** ✅ | Phase 8 | Hub attribution：Ed25519 签名 Discovery Context（零依赖 `node:crypto`）+ `trust`/`verify --store` + **结算只对已验证归因支付 hub 分成**（spec §30/§33）；私钥只落本地 0600，不入 AFS | validate + test + check + build（111 测试） |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading → 已由 I8a/I8b/I8c 交付 ✅ | — |
 | **I9a** ✅ | Phase 9（MVP-4） | Agent Access：`agents/arcblog-agent/` 平台原生声明（path+ops+maxDepth，只读）+ `scripts/arcblog-agent.mjs` 策略审计（只读、隐私路径不外露、深度/预算有界、`settle_payment`/`change_wallet`/`change_role` 默认关闭）+ spec §130 工具目录 | validate + test + check + build（123 测试，`agents: 1`） |
+| **I10** ✅ | Hardening | 账本按确定性 id 定点读取（`--order` 由 O(n) 目录扫描 → 3 次读，18s→1.1s）、未限定查询分页（`--limit` 默认 20 / `--all`）、`doctor` 报告测试残留量、`arcblog-clean.mjs` 安全清理（默认 dry-run，永不触碰 posts/heroes） | validate + test + check + build（146 测试） |
 | **I9b** ✅ | Phase 9 | Agent 工具面：read 工具绑定真实 AFS 资源并可执行（6 个）、写工具经**限时授权**后委派给运维 CLI（4 个）、closed 工具（买家隐私 + spec §130 默认关闭）永不执行；`check` 增加「声明 vs 工具目录」漂移检测；`authorize` 拒绝 `agent.admin` | validate + test + check + build（141 测试） |
 
 MVP-2（spec §135）落在 I7；MVP-3 落在 I8；MVP-4 落在 I9；spec §138 的 V2 功能不进入本计划。
