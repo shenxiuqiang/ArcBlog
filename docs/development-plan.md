@@ -121,7 +121,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I2a** ✅ | Phase 2 | Category 资源：`world/category.yaml` + `scripts/arcblog-category.mjs` + `blocklet.yaml` 声明，并接入 lifecycle 校验（资源为空时回退内置白名单） | validate + test + check + build（40 测试） |
 | **I2b** ✅ | Phase 2 | Media 资源：`world/media.yaml` + `scripts/arcblog-media.mjs`（add/list/show/remove）+ 声明（admin-only 读）；抽出 `lib/util.mjs` 共享 slug | validate + test + check + build（51 测试） |
 | **I2c** ✅ | Phase 2 | Node identity 资源：`world/node-identity.yaml` + `arcblog-node.mjs identity init\|show\|check`（DID 默认取 profile / blocklet.yaml） | validate + test + check + build（56 测试） |
-| I3 | Phase 3 | **按 S3 修正**：Web Device 无 AFS 通道 → 动态公开面在 MVP-1 保留 AUP；清理虚构落地页；把"逐条静态 SEO"排入 POST-MVP（内容站点烘焙） | 决策文档 + validate + test |
+| I3 | Phase 3 | **按 S3/S4 修正**：Web Device 无 AFS 通道，content-site 烘焙路径又不可达（§8 证据）→ 动态公开面保留 AUP；「逐条静态 SEO」改记为**平台受限**而非 POST-MVP | 决策文档 + 证据（§3.3/§3.4/§8） |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
 | **I4b** ✅ | Phase 4 | Dashboard 补齐 spec §16 卡片：**Roles & verification**（读 `config/roles.json`，含 transform 取嵌套字段）、Economy / Agent 明确显示"未启用（MVP-3/4）"；man 页同步 | validate + test + check + build（221 文件） |
 | **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
@@ -170,6 +170,7 @@ MVP-2（spec §135）落在 I7；MVP-3 落在 I8；MVP-4 落在 I9；spec §138 
 
 | 风险 | 触发信号 | 降级 |
 |---|---|---|
+| S4（**已定案**）：content-site 烘焙能否提供静态 SEO | `cms-write`/`cms-publish` 均报 `SITE_NOT_FOUND` | **不可达**：content space 是 daemon 闭网数据面（§8）→ 公开面继续 AUP，SEO 记为平台受限 |
 | S1（**已定案**）：Web Device 能否绑定 AFS 记录做动态文章页 | — | **不能**：页面预渲染静态，`layout.json` 只有组件+props。改走发布期投影（`cms-write` 风格写入站点树 + `render-all`） |
 | 会话投影无法从裸 shell 观测 `/instance` | `arc afs explain /instance/...` → `unknown` | 能力核验改在 blocklet 运行期（`arc blocklet run` / 页面内 `exec`）执行，结论记录到 `arc-contracts.md` |
 | 目录化内容对象（spec §19）与现有扁平 `<slug>.json` 冲突 | 迁移成本 > 收益 | 保留扁平记录为存储形态，用 `world` schema + 导出脚本提供「内容对象」视图 |

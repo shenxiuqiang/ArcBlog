@@ -334,3 +334,31 @@ spec §68 要求 `GET /.well-known/arcblog`、`/api/profile`、`/api/posts`、`/
 这些资源正是运行时已有的 Agent Access（`/mcp`、AFS RPC、`/p/llms.txt`）能暴露的东西，符合
 spec §101/§103「Web API → ArcBlog Service → AFS Resource」的方向。Discovery 文档保留 `endpoints`
 字段以兼容 spec §69 的协议形状，默认留空，并用 `transport: ["afs","mcp"]` 声明真实可达通道。
+
+## 8. 内容站点（CMS）边界：静态 SEO 烘焙路径不可达
+
+spec §126 要求逐条静态 HTML + OpenGraph + Canonical + Sitemap。平台确实有 Content Site 机制，
+但实测**无法从 CLI/AFS 面创建或发布**：
+
+| 探测 | 结果 |
+|---|---|
+| `cms-write --args '{}'` | 参数校验暴露必需字段：`site` / `path` / `content` |
+| `cms-publish --args '{}'` | 必需字段：`site` |
+| `create-site` 后 `get-dashboard` | `{"total":1,"byStatus":{"serving":1}}` —— 它是**站点**，但不是 content site |
+| `cms-write --args '{"site":"cmsprobe",...}'` | `SITE_NOT_FOUND: No content site "cmsprobe"` |
+| 给该站点加 `content/hello.md` 后再试 | 仍 `SITE_NOT_FOUND`；`/web/content-sites` 始终为空 |
+| `create-site` 多传 `content:{}` | 被静默忽略（schema 宽松，未因此变成 content site） |
+| `/dev/web` 与 `/web` 同面；`/dev/web/content-sites` 同样为空 | — |
+
+根因见 `arc afs explain /dev/web/sites-registry`：
+
+> site configuration, **content-space data**, and deploy state live under `/dev/web`'s other,
+> **network-closed mounts**
+
+**结论**：content space 是 daemon 内部（Arc CMS 编辑器）的闭网数据面，**没有对外动作**可创建它。
+因此 ArcBlog 无法用 `cms-write` + `cms-publish` 把 AFS 记录烘焙成静态 SEO 页面——这条路
+在当前平台版本对 blocklet 运营者**不可达**，不是本项目未实现。
+
+**处置**：Phase 3 的「逐条静态 SEO」由 POST-MVP 改记为**平台受限**；公开面继续使用 AUP（动态 SPA）。
+`/p/robots.txt`、`/p/sitemap.xml` 由平台生成，且只在 `/p/` 下可达（§3.4）。
+探测用的临时站点已 `undeclare` + 删除，`/work` 与 `/web/sites` 均已清空。

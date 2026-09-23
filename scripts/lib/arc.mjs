@@ -10,7 +10,10 @@
 // - `arc afs exec` reports failures inside the stdout JSON envelope
 //   (`{success:false,error:{code,message}}`) while still exiting 0.
 
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import { closeSync, openSync, readFileSync, unlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 export const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
 export const INSTANCE_ROOT = '/instance/app/arcblog';
@@ -77,21 +80,80 @@ export function isInstancePath(path) {
   return String(path ?? '').startsWith('/instance/');
 }
 
-function run(argv, instance) {
+function argVector(argv, instance) {
   const full = [...argv];
   if (instance) full.push('-i', instance);
+  return full;
+}
+
+/**
+ * Run `arc` with stdout redirected to a temp file.
+ *
+ * The CLI reshapes/truncates stdout when it is a pipe: a directory listing that
+ * is a bare array in the file view arrives as a `{success,data}` envelope and
+ * can fall foul of the 64KB pipe buffer (see docs/arc-contracts.md 4.1). Writing
+ * to a file sidesteps both, so this is the fallback whenever a piped payload
+ * will not parse.
+ */
+function runToFile(argv, instance) {
+  const file = join(tmpdir(), `arcblog-arc-${process.pid}-${Date.now()}-${Math.floor(Math.random() * 1e6)}.json`);
+  const fd = openSync(file, 'w');
+  let res;
   try {
-    return execFileSync('arc', full, { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
-  } catch (err) {
-    const msg = (err.stderr || err.stdout || err.message || '').toString().trim();
-    fail('RUNTIME_ERROR', msg || 'arc command failed');
+    res = spawnSync('arc', argVector(argv, instance), { stdio: ['ignore', fd, 'pipe'], encoding: 'utf8' });
+  } finally {
+    closeSync(fd);
   }
+  let stdout = '';
+  try {
+    stdout = readFileSync(file, 'utf8');
+  } finally {
+    try {
+      unlinkSync(file);
+    } catch {
+      /* best effort */
+    }
+  }
+  return { status: res.status ?? 1, stdout, stderr: res.stderr ?? '' };
+}
+
+function parsePayload(text) {
+  const trimmed = String(text ?? '').trim();
+  if (!trimmed) return { kind: 'empty' };
+  try {
+    return { kind: 'value', value: JSON.parse(trimmed) };
+  } catch {
+    return { kind: 'invalid' };
+  }
+}
+
+function short(text, limit = 300) {
+  const value = String(text ?? '').trim();
+  return value.length > limit ? `${value.slice(0, limit)}…` : value;
+}
+
+/**
+ * Unwrap an action response.
+ * A bare array is the CLI's list view; the object form is its `{success,data}`
+ * envelope.
+ */
+function unwrapAction(value, action) {
+  if (Array.isArray(value)) return value;
+  if (value && value.success === false) {
+    fail(value.error?.code || 'RUNTIME_ERROR', short(value.error?.message) || `arc exec ${action} failed`);
+  }
+  return value && typeof value === 'object' && 'data' in value ? value.data : value;
 }
 
 /** `arc afs <args> --json` -> parsed JSON (root-scope operations). */
 export function afsJson(args, instance) {
-  const stdout = run(['afs', ...args, '--json'], instance);
-  return stdout ? JSON.parse(stdout) : {};
+  const argv = ['afs', ...args, '--json'];
+  const captured = runToFile(argv, instance);
+  const parsed = parsePayload(captured.stdout);
+  if (parsed.kind === 'value') return parsed.value;
+  // Some subcommands answer with plain text ("OK /path") — keep them working.
+  if (captured.status === 0) return { raw: String(captured.stdout ?? '').trim() };
+  fail('RUNTIME_ERROR', short(captured.stderr) || `arc ${args.join(' ')} failed`);
 }
 
 /**
@@ -152,21 +214,25 @@ export function parseJsonLoose(text) {
  * Fails with the provider's own error code when the action reports failure.
  */
 export function exec(action, args, instance) {
-  const stdout = run(
-    ['afs', 'exec', `${BLOCKLET_ACTIONS}/${action}`, '--args', JSON.stringify(args ?? {}), '--json'],
-    instance,
-  );
-  const text = (stdout || '').trim();
-  let parsed;
-  try {
-    parsed = text ? JSON.parse(text) : {};
-  } catch {
-    fail('RUNTIME_ERROR', text || 'arc exec failed');
+  const argv = ['afs', 'exec', `${BLOCKLET_ACTIONS}/${action}`, '--args', JSON.stringify(args ?? {}), '--json'];
+  // Single execution, stdout captured through a file.
+  //
+  // Never retry here: actions like delete/write are not repeatable, and a retry
+  // turns a successful delete into a bogus "path not found". The file capture
+  // exists because the CLI reshapes and can truncate *piped* stdout (it answers
+  // a directory listing with an envelope in the pipe view and a bare array in the
+  // file view — see docs/arc-contracts.md §4.1).
+  const captured = runToFile(argv, instance);
+  const parsed = parsePayload(captured.stdout);
+
+  if (parsed.kind === 'empty') {
+    if (captured.status !== 0) fail('RUNTIME_ERROR', short(captured.stderr) || `arc exec ${action} failed`);
+    return {};
   }
-  if (parsed && parsed.success === false) {
-    fail(parsed.error?.code || 'RUNTIME_ERROR', parsed.error?.message || 'arc exec failed');
+  if (parsed.kind === 'invalid') {
+    fail('RUNTIME_ERROR', `unparseable response from .actions/${action} (${String(captured.stdout ?? '').length} bytes)`);
   }
-  return parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
+  return unwrapAction(parsed.value, action);
 }
 
 const NOT_FOUND = /No data found for path|Path not found|ENOENT/i;

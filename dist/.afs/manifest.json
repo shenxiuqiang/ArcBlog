@@ -1012,9 +1012,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 17823,
+      "size": 19570,
       "contentType": "text/markdown",
-      "sha256": "a1cea3583e1589363bc02df4026f282cb71cb2ae97201b39d1c14f5791d2c17b"
+      "sha256": "27a41d2ebfa8be90b8a5bf1c074222a87b7ca9b9435a880257e77429c5dc7baa"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1030,9 +1030,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 15002,
+      "size": 15278,
       "contentType": "text/markdown",
-      "sha256": "e121d6c254421f257ff8d3ea003b8c9e011356bcd8cdace46b827f57808bbd1b"
+      "sha256": "e22ad417ac53411befab069494a6b6a9f325e5a56a6db2a074a57e5dabef1d24"
     },
     {
       "path": "docs/error-codes.md",
@@ -1294,9 +1294,9 @@
     },
     {
       "path": "scripts/lib/arc.mjs",
-      "size": 8802,
+      "size": 11323,
       "contentType": "text/javascript",
-      "sha256": "78311035173462a71e989f91e31a022ed2afbe95f14582bf1868074133c82a6a"
+      "sha256": "4eff29e3b4e437f7aef9ac1e4bdc3332141485fd324298c12fbc23045d753244"
     },
     {
       "path": "scripts/lib/attribution.mjs",
