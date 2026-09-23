@@ -268,9 +268,9 @@
     },
     {
       "path": ".web/components/hero-carousel/style.css",
-      "size": 8330,
+      "size": 8405,
       "contentType": "text/css",
-      "sha256": "57439c17c3e247346936e513b88696ec643e6aa689d6f691712a22873197e90d"
+      "sha256": "6c4c45c34cd2f17134d1a5d489fee59dda26d391d82abcbc2b2778bdc41eb04e"
     },
     {
       "path": ".web/components/hero-carousel/vendor/photo-story.js",

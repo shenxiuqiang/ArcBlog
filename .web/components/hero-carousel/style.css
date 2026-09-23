@@ -243,8 +243,9 @@ body {
   transform: scale(1.28);
 }
 
+/* The engine draws this at 2px; scoped here so it reads as a hairline. */
 .hero-carousel .ps-progress {
-  height: 2px;
+  height: 1px;
   border-radius: 0;
   background: rgba(255, 255, 255, 0.9);
   opacity: 0.85;
