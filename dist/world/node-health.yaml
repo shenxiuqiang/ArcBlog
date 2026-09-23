@@ -1,0 +1,8 @@
+kind: NodeHealth
+fields:
+  status: string # ok | degraded | down (spec §110)
+  version: string
+  roles: json
+  capabilities: json
+  did: string
+  checkedAt: datetime

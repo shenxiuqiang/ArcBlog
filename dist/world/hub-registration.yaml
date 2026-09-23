@@ -1,0 +1,9 @@
+kind: HubRegistration
+fields:
+  id: string
+  hubDid: string
+  endpoint: string
+  status: string # registered | active | error (spec §70)
+  registeredAt: datetime
+  updatedAt: datetime
+  sync: json # { status, lastSync, lastVersion, lastHash, lastError } (spec §112)

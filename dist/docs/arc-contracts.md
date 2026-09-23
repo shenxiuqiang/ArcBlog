@@ -312,3 +312,25 @@ Passed blocklet check (basic)
   agents: 0
   settings files: 0
 ```
+
+## 7. HTTP 端点能力边界（决定网络层形态）
+
+spec §68 要求 `GET /.well-known/arcblog`、`/api/profile`、`/api/posts`、`/api/health`。
+实测（已部署实例）：
+
+| 路径 | 结果 |
+|---|---|
+| `/.well-known/arcblog`、`/api/health`、`/api/profile`、`/api/posts`、`/llms.txt` | **200，但全都是同一个 4,462 字节 AUP 壳（`text/html`）**——`handler: aup` 的 `.route/root` 吞掉 `/` 下所有路径 |
+| `/p/llms.txt` | 200 **`text/plain`**，平台生成的 540 字节 llms.txt |
+| `/p/robots.txt`、`/p/sitemap.xml` | 真实静态文件（见 §3.4） |
+
+**结论**：root 级别无法挂自定义 HTTP 端点——没有 `mounts`、没有 Node server，AUP 捕获全部路径。
+因此网络层（spec §68–§74）以 **AFS 资源**形态发布，而不是自造 REST：
+
+- `/instance/app/arcblog/node/discovery.json` —— Discovery Document（spec §69）
+- `/instance/app/arcblog/node/health.json` —— Node Health（spec §110）
+- `/instance/app/arcblog/hub/registrations/<didHash>.json` —— Hub 注册 + 同步状态（spec §70/§71/§112）
+
+这些资源正是运行时已有的 Agent Access（`/mcp`、AFS RPC、`/p/llms.txt`）能暴露的东西，符合
+spec §101/§103「Web API → ArcBlog Service → AFS Resource」的方向。Discovery 文档保留 `endpoints`
+字段以兼容 spec §69 的协议形状，默认留空，并用 `transport: ["afs","mcp"]` 声明真实可达通道。

@@ -1000,21 +1000,21 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 5580,
+      "size": 5922,
       "contentType": "text/yaml",
-      "sha256": "6cff0293ab2df84fc1b86274facd2ccb2a47789b03295791eab92b88fd625189"
+      "sha256": "9207802a7c5efae5a0c1f4428d212dad066393d6a0a7c0f64efde013ada6fd4c"
     },
     {
       "path": "CLAUDE.md",
-      "size": 10482,
+      "size": 11180,
       "contentType": "text/markdown",
-      "sha256": "e963a02c8ad8398866c4387b3109de00450e8b245a459e94ed80944d7ad931d5"
+      "sha256": "3403599ce739c8039fb86098c4c5a8b18a2fd4861508f41cacdc1ad2440e1f12"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 16373,
+      "size": 17823,
       "contentType": "text/markdown",
-      "sha256": "7b740fc8494ae401579bd3555fd3bc50fe6bab3bc317eab76a292c8e5b4b1dd6"
+      "sha256": "a1cea3583e1589363bc02df4026f282cb71cb2ae97201b39d1c14f5791d2c17b"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1024,15 +1024,15 @@
     },
     {
       "path": "docs/developer-guide.md",
-      "size": 11192,
+      "size": 11424,
       "contentType": "text/markdown",
-      "sha256": "d9b82e481b4b4dcf56c4ac6a1b5c940f2b961af345e3812e85b0500f124ef7e7"
+      "sha256": "64933f005e434f9368a37cb62de221bf297d3dbcd9fcb7005ea83fd0a5288db1"
     },
     {
       "path": "docs/development-plan.md",
-      "size": 14629,
+      "size": 14764,
       "contentType": "text/markdown",
-      "sha256": "2e7d0c64a7d0965f2ee8b3a118dbda7932a01e4f603a383b2263c35adecf5ea2"
+      "sha256": "4601deb681480e3bc92dab5a716f88b73b39cef856f4a3f369497bc0932543b3"
     },
     {
       "path": "docs/error-codes.md",
@@ -1042,9 +1042,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 9454,
+      "size": 10401,
       "contentType": "text/markdown",
-      "sha256": "6810ed150abbeb6c867e37e33cd0e8278e26a0ece67b2436a50aadbf80347cc6"
+      "sha256": "8f392fbd432c1255f2505e5ca12de5ceb8bfaa43c57406c34948537e0adc0121"
     },
     {
       "path": "docs/persistence.md",
@@ -1227,6 +1227,18 @@
       "sha256": "e635f329f029e2c82feac32a391a502d27be1583d8da94e27906f6c1a2356f1d"
     },
     {
+      "path": "scripts/arcblog-network.mjs",
+      "size": 7856,
+      "contentType": "text/javascript",
+      "sha256": "bb7732062471ecb86685d308d461b2d26f8ab108b979b69f47898369b8a30c07"
+    },
+    {
+      "path": "scripts/arcblog-network.test.mjs",
+      "size": 7838,
+      "contentType": "text/javascript",
+      "sha256": "8d41a4600a0dbdd89ae4ee022c1d3da273dc7d092ca13c8f9e239622e30db886"
+    },
+    {
       "path": "scripts/arcblog-node.mjs",
       "size": 9033,
       "contentType": "text/javascript",
@@ -1323,6 +1335,12 @@
       "sha256": "264a5945b8d29839b3ae708ca12934ef9f3de25684f1af70da2f13df1f0aeec9"
     },
     {
+      "path": "scripts/lib/network.mjs",
+      "size": 8946,
+      "contentType": "text/javascript",
+      "sha256": "949c3e5ddcf93be3fb82c4ebd829309500342e139318e78d4d61d320746953cd"
+    },
+    {
       "path": "scripts/lib/node-profile.mjs",
       "size": 7904,
       "contentType": "text/javascript",
@@ -1383,6 +1401,18 @@
       "sha256": "a1ee5b8d8978e02fc2922f9cd97521e9a7c02432c82ced97d34aac14715ee65b"
     },
     {
+      "path": "world/discovery-document.yaml",
+      "size": 393,
+      "contentType": "text/yaml",
+      "sha256": "a99691153075954d9584ded1c7a9db6eaa660129ba839e4ee3b4e61d392f984d"
+    },
+    {
+      "path": "world/hub-registration.yaml",
+      "size": 268,
+      "contentType": "text/yaml",
+      "sha256": "bf4e90ef15cca4201de00b0a7eae7d5abfaab5ac09235fd8066aaf9286498bdf"
+    },
+    {
       "path": "world/ledger-entry.yaml",
       "size": 299,
       "contentType": "text/yaml",
@@ -1393,6 +1423,12 @@
       "size": 211,
       "contentType": "text/yaml",
       "sha256": "c9eaaad86f3fe5b6b96e0bd23bdeadb2da193edaf7fb200d59bbf759e4b2c6cc"
+    },
+    {
+      "path": "world/node-health.yaml",
+      "size": 167,
+      "contentType": "text/yaml",
+      "sha256": "f8f6223ecd925ad34130f74fe8f18b78e744d791b7f604b6160fcdc498e923bf"
     },
     {
       "path": "world/node-identity.yaml",

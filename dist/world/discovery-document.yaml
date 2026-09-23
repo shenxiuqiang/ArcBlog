@@ -1,0 +1,12 @@
+kind: DiscoveryDocument
+fields:
+  protocol: string # "arcblog"
+  version: string # protocol version (spec §69)
+  node: json # { did, name, endpoint }
+  roles: json
+  capabilities: json
+  endpoints: json # HTTP endpoints (empty: the platform cannot serve them)
+  transport: json # ["afs", "mcp"]
+  afs: json # the AFS paths that actually work
+  generatedAt: datetime
+  blockletVersion: string

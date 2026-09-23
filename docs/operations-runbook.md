@@ -195,6 +195,24 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Node network layer (spec §68–§74, §109–§113)
+
+```bash
+node scripts/arcblog-network.mjs discovery publish [--base-url https://blog.example.com] [--update]
+node scripts/arcblog-network.mjs discovery show
+node scripts/arcblog-network.mjs health [--publish]
+node scripts/arcblog-network.mjs hub register --hub-did did:key:zHub --endpoint https://hub.example
+node scripts/arcblog-network.mjs hub list
+node scripts/arcblog-network.mjs hub sync --hub-did did:key:zHub --version 7 --hash deadbeef
+node scripts/arcblog-network.mjs hub remove --hub-did did:key:zHub
+```
+
+These are **AFS resources**, not a REST API: the platform cannot serve
+`/.well-known/arcblog` or `/api/*` (the AUP handler answers every root path with the
+app shell — see `arc-contracts.md` §7). Discovery/health live under `node/`, hub
+registrations under `hub/registrations/`; a failed `hub sync --status error` keeps the
+last known-good version instead of erasing it.
+
 ## Growth operations
 ### Generate RSS
 ```bash
