@@ -117,8 +117,9 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I0** ✅ | Phase 0 | 核验 ARC 契约，产出 `arc-contracts.md` | 文档 + 命令证据（`63d1a17`） |
 | **I1** ✅ | Phase 2 起 | `scripts/lib/arc.mjs` 适配层 + `world/node.yaml` + Node Profile 资源（init/show/set/check） | validate + test + check + build（`63d1a17`，18→30 测试） |
 | **I2a** ✅ | Phase 2 | Category 资源：`world/category.yaml` + `scripts/arcblog-category.mjs` + `blocklet.yaml` 声明，并接入 lifecycle 校验（资源为空时回退内置白名单） | validate + test + check + build（40 测试） |
-| I2b | Phase 2 | 资源补全：media / content pages / node identity；capabilities 已由 node profile 承载，不再单列资源 | 同上 |
-| I3 | Phase 3 | 公开面 Web Device（S1 已定案）：AFS 记录为源 → **发布期投影**到站点树（`pages/<slug>/layout.json` + `render-all`）；Home / Author / Archive / RSS + 主题库组件 | 同上 + `check-links` 绿 |
+| **I2b** ✅ | Phase 2 | Media 资源：`world/media.yaml` + `scripts/arcblog-media.mjs`（add/list/show/remove）+ 声明（admin-only 读）；抽出 `lib/util.mjs` 共享 slug | validate + test + check + build（51 测试） |
+| I2c | Phase 2 | 资源补全：content pages / node identity；capabilities 已由 node profile 承载，不再单列资源 | 同上 |
+| I3 | Phase 3 | 公开面 Web Device（S1+S2 已定案）：`pages/*` 出服务端壳，动态内容由组件脚本经 `window.afs`（read/tryRead/subscribe）**客户端水合**；Home / Archive / Author / Article + RSS；文章深链保留 `sites[].bindings` 兜底 | 同上 + 页面 HTTP 200 且脚本读得到记录 | |
 | I4 | Phase 4 | Admin 对齐 spec §15/§16：Dashboard（Node/Identity/Roles/Content/Network/Agent 卡）、Settings、Editor | 同上 |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | I6 | Phase 5 | Identity / DID Space 契约固化（作者身份、会话投影、space 校验、de-identification 开关说明） | 同上 |

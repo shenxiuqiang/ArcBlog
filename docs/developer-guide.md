@@ -154,8 +154,9 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/arcblog-daily-report.mjs` — aggregate operations summary
 - `scripts/arcblog-node.mjs` — node profile (roles/capabilities) at `/instance/app/arcblog/node/profile.json`
 - `scripts/arcblog-category.mjs` — category taxonomy (seed/list/add/show/remove)
+- `scripts/arcblog-media.mjs` — media/upload index (add/list/show/remove)
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
-- `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs` — pure domain logic (unit-tested without a daemon)
+- `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 
 ## Testing
 

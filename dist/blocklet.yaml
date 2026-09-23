@@ -49,6 +49,9 @@ networkRead:
   # spec §12 /content/categories: public taxonomy used by the reader filters.
   - path: /instance/app/arcblog/categories
     role: guest
+  # spec §12 /content/media: upload index; admin-only (it exposes upload paths).
+  - path: /instance/app/arcblog/media
+    role: admin
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -83,3 +86,9 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
+  # spec §12: /arcblog/content/media — upload index (admin-only reads).
+  media:
+    canonical: instance/app/arcblog/media/*
+    copy: none
+    minRole: admin
+    readRole: admin

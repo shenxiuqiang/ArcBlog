@@ -1,0 +1,13 @@
+kind: Media
+fields:
+  id: string
+  title: string
+  alt: string
+  path: string
+  mimeType: string
+  size: number
+  width: number
+  height: number
+  uploaderDid: string
+  createdAt: datetime
+  updatedAt: datetime

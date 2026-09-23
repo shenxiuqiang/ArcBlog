@@ -6,6 +6,9 @@
 // been seeded yet (so existing content keeps validating).
 
 import { INSTANCE_ROOT, fail, list, nowIso, optString, readJson, writeJson, remove, ensure } from './arc.mjs';
+import { slugify } from './util.mjs';
+
+export { slugify };
 
 /** Built-in categories, matching the historic lifecycle whitelist. */
 export const DEFAULT_CATEGORIES = ['technology', 'design', 'life'];
@@ -14,17 +17,6 @@ export const CATEGORY_DIR = `${INSTANCE_ROOT}/categories`;
 
 export function categoryPath(slug) {
   return `${CATEGORY_DIR}/${slug}.json`;
-}
-
-/** Normalize a category slug to lowercase hyphen tokens. */
-export function slugify(input) {
-  return String(input ?? '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
 }
 
 /** Build a category record; `existing` carries createdAt forward. */

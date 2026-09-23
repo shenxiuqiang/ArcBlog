@@ -139,6 +139,34 @@ CMS actions；核验后已 `undeclare` + 删除。
 **对 spec §17/§18 的影响**：公开站点无法靠请求期动态绑定实现，只能靠**发布期投影**
 （publish 时把已发布记录渲染进站点树再 `render-all`）。I3 按此设计。
 
+### 3.2 S2 spike：Web Device 页面在请求期能拿到 AFS 数据吗？
+
+做法：读已部署 arcblog 的实际响应（`curl http://arcblog.localhost:4939/p/en/theme-bridge/`
+→ **200，36,865 字节**），并核验预渲染产物。
+
+结论：
+
+1. **页面是请求期渲染的服务端壳**：`.web-cache/.prerender-manifest.json` 里所有 URL 的
+   `out` 都是 `null`（预渲染没产出 HTML），构建会警告页面走 request-time
+   `SiteServer.init()`。即“有 SSR 壳，但没有静态 HTML 产物”。
+2. **AFS 数据是客户端读取的**：响应 HTML 内联脚本里出现 `afs.read(...)`、
+   `afs.tryRead(...)`、`afs.subscribe({...})`。主题组件自身只做展示
+   （`content-card/script.js` 仅做入场动画），内容经 props/slots 传入。
+   没有证据表明 `render(ctx)` 能在服务端拿 AFS。
+3. **`.route/web` 站点路由只在 blocklet 被部署为实例后生效**：在 `/tmp` 用最小配方
+   加了 `.route/web` 后 `arc blocklet run` 仍对 `/p/en/` 返回 404，而已部署的
+   arcblog 同样路径返回 200。
+
+**对 I3 的影响（架构定案）**：
+
+- 公开面可以放在 Web Device（spec §127 成立），但**动态内容必须客户端水合**——
+  沿用仓库已验证的模式（`parent.window.afs` + `read/tryRead/subscribe`）。
+- **SEO 代价**：动态列表/正文只能做到“壳可被索引”（spec §126 的完整元数据承诺受限）。
+  真正逐条静态 HTML + per-route SEO 校验只有内容站点路径
+  （`cms-write` + `cms-publish`，见 §3.1）能提供；作为已知限制记录，不在 MVP-1 兑现。
+- AFS 记录仍是唯一真源；AUP 继续承担管理与预览/编辑页。
+
+
 
 ## 4. DID Space（持久数据面）
 

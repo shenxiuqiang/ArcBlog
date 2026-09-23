@@ -988,9 +988,9 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 2822,
+      "size": 3140,
       "contentType": "text/yaml",
-      "sha256": "85ba86c3face7254a6a6f8d8733bf9e4dbafb240cacf174a4f79a7f4ccfcda47"
+      "sha256": "406ac89478a88c89037e156be9235244f9b2fab86298ae21889427eeed08c5fd"
     },
     {
       "path": "CLAUDE.md",
@@ -1000,9 +1000,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 9018,
+      "size": 10726,
       "contentType": "text/markdown",
-      "sha256": "931edd5d683da84bcfaba3cc0d88529e640872f83899773f8daef194e3ecd779"
+      "sha256": "41282eadbcf784852fc641f7d6cfe5e5152c54a9873dd97121762b703eb91280"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1012,15 +1012,15 @@
     },
     {
       "path": "docs/developer-guide.md",
-      "size": 9763,
+      "size": 9888,
       "contentType": "text/markdown",
-      "sha256": "dcef7242039d799ecc90cdf16045269964affc483880690f1155456102c0ae86"
+      "sha256": "ebc088daffef35e5038b779b2a434117f3687cab64f20cd9c0a3d920ec4f38fa"
     },
     {
       "path": "docs/development-plan.md",
-      "size": 11014,
+      "size": 11323,
       "contentType": "text/markdown",
-      "sha256": "43316aba5d4302e7d8eb8e4f18dfe58125ae1f2557dfb0a0fdca095cb875fdcb"
+      "sha256": "2dd028c789b9c84ff292b05aecf1d5df81dee20c87bbdad7b97e28b358a433f7"
     },
     {
       "path": "docs/error-codes.md",
@@ -1030,15 +1030,15 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 2613,
+      "size": 3083,
       "contentType": "text/markdown",
-      "sha256": "387b97109db6cbaf23426a86a2785fa930629fbc32790fb59a60c08cb5501467"
+      "sha256": "20e5020417bf9268180c9511cc708ea663b1b7fa6035ae328be9449c63698f2e"
     },
     {
       "path": "docs/persistence.md",
-      "size": 4848,
+      "size": 5132,
       "contentType": "text/markdown",
-      "sha256": "04193c49636b892a2226b95b4d7a2386b76fe92cadb14391e3ba6c4a05af8f95"
+      "sha256": "1cef7d81b7ce17055b04d63df39961916a787eb181543722d61042f1851b2e1b"
     },
     {
       "path": "docs/publishing-ops.md",
@@ -1173,6 +1173,18 @@
       "sha256": "fc8f287db180fa130a572e0e67efcc7099637af51ceaf90a14e34cae1c20937b"
     },
     {
+      "path": "scripts/arcblog-media.mjs",
+      "size": 3733,
+      "contentType": "text/javascript",
+      "sha256": "99731d6b876312c631dd62851a592b36ac744f388fd48947638846954ad4431b"
+    },
+    {
+      "path": "scripts/arcblog-media.test.mjs",
+      "size": 4520,
+      "contentType": "text/javascript",
+      "sha256": "e635f329f029e2c82feac32a391a502d27be1583d8da94e27906f6c1a2356f1d"
+    },
+    {
       "path": "scripts/arcblog-node.mjs",
       "size": 6543,
       "contentType": "text/javascript",
@@ -1216,15 +1228,27 @@
     },
     {
       "path": "scripts/lib/categories.mjs",
-      "size": 4988,
+      "size": 4777,
       "contentType": "text/javascript",
-      "sha256": "80e994bff2f6dedbbdae5261946bc8c83c8cdedd49ba00f2f453b18b50a5735e"
+      "sha256": "5c42051137bd00493bc7b4332467ccb2900ebb4707a3cbd535400bee83d39008"
+    },
+    {
+      "path": "scripts/lib/media.mjs",
+      "size": 4401,
+      "contentType": "text/javascript",
+      "sha256": "264a5945b8d29839b3ae708ca12934ef9f3de25684f1af70da2f13df1f0aeec9"
     },
     {
       "path": "scripts/lib/node-profile.mjs",
       "size": 6271,
       "contentType": "text/javascript",
       "sha256": "0ed615128756b9f91b054eea4eaf92f1a4abc086df83d6e51a5f15a1e118f0c7"
+    },
+    {
+      "path": "scripts/lib/util.mjs",
+      "size": 602,
+      "contentType": "text/javascript",
+      "sha256": "73f81dfc47040ab09996f7dacaaa62ea18eaecc1b4c6cd3a87d88fd6bd389ed5"
     },
     {
       "path": "seed/settings/arcblog/palette.json",
@@ -1255,6 +1279,12 @@
       "size": 134,
       "contentType": "text/yaml",
       "sha256": "c2b3695ba97c6a70010e8b57daa213c9110967089b7751642937fa40a77c7c5b"
+    },
+    {
+      "path": "world/media.yaml",
+      "size": 211,
+      "contentType": "text/yaml",
+      "sha256": "c9eaaad86f3fe5b6b96e0bd23bdeadb2da193edaf7fb200d59bbf759e4b2c6cc"
     },
     {
       "path": "world/node.yaml",

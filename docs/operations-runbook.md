@@ -53,7 +53,7 @@ node scripts/arcblog-query-posts.mjs published --tag identity
 node scripts/arcblog-audit.mjs read --slug post-title
 ```
 
-## Taxonomy and node profile
+## Taxonomy, media and node profile
 
 ### Categories
 ```bash
@@ -72,6 +72,17 @@ node scripts/arcblog-node.mjs show
 node scripts/arcblog-node.mjs set --roles studio   # capabilities re-derive from the role
 node scripts/arcblog-node.mjs check
 ```
+
+### Media index
+```bash
+node scripts/arcblog-media.mjs add --path /blocklets/arcblog/users/<did>/media/cover.png \
+  --title "Cover" --alt "Cover art" --mime image/png --width 1200 --height 630
+node scripts/arcblog-media.mjs list
+node scripts/arcblog-media.mjs show --id cover
+node scripts/arcblog-media.mjs remove --id cover
+```
+The id defaults to the file basename (`cover.png` → `cover`). Records index the
+binary; removing a record never deletes the file.
 
 ## Growth operations
 
