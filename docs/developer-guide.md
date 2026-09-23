@@ -138,12 +138,14 @@ always use the ArcBlog single-file `<slug>.json` schema. The cover image URL
 input feeds `content.coverImage` (previously hardcoded `""`), which the
 story-list cards and the reader/preview banners render. Writes from page
 sessions are authorized by the `replicated`
-collections declared in `blocklet.yaml` (`minRole: member`; plain base-path
-writes from network clients are denied otherwise). Author identity
-(`authorDid`/`authorName`) is empty for UI-created records: exec args are
-substituted server-side where `$session.*` is not available, and the generic
-client props walker only handles `$state.*`/`$location.*` — use the CLI to set
-authorship. Note `tags` from the form is stored as a raw string (args
+collections declared in `blocklet.yaml` (`minRole: admin`; plain base-path
+writes from network clients are denied otherwise). Author identity: the compose
+form writes `authorDid: "$session.did"` / `authorName: "$session.displayName"`
+into the record, and compose-edit preserves the stored values. Whether `$session.*`
+is actually interpolated inside `exec` args is **not runtime-verified** (it needs
+a browser + wallet walkthrough), so treat UI authorship as best-effort — the CLI
+always sets it explicitly, and `scripts/arcblog-doctor.mjs` reports records whose
+`authorDid` is empty. Note `tags` from the form is stored as a raw string (args
 templates can't split arrays); the CLI normalizes to arrays.
 
 ## Scripts
@@ -155,6 +157,7 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/arcblog-node.mjs` — node profile (roles/capabilities) at `/instance/app/arcblog/node/profile.json`
 - `scripts/arcblog-category.mjs` — category taxonomy (seed/list/add/show/remove)
 - `scripts/arcblog-media.mjs` — media/upload index (add/list/show/remove)
+- `scripts/arcblog-doctor.mjs` — instance contract check (resources, node profile/identity, categories, author attribution)
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
 - `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 

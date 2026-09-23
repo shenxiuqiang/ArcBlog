@@ -53,10 +53,12 @@ Writes to:
 The compose UI is the primary authoring path: a self-contained form (no
 post-editor widget) whose "存草稿 / 发布" buttons write ArcBlog-shaped records
 directly — drafts to `/instance/app/arcblog/drafts/<slug>.json`, publishes to
-`/instance/app/arcblog/posts/<slug>.json` (immediately public). UI-created
-records carry empty `authorDid`/`authorName` (the exec-args channel cannot see
-`$session`) and a raw-string `tags` field; use the CLI when authorship or
-normalized tags matter.
+`/instance/app/arcblog/posts/<slug>.json` (immediately public). The form writes
+`authorDid: "$session.did"` / `authorName: "$session.displayName"` into the record
+best-effort — whether `$session.*` interpolates inside `exec` args is not
+runtime-verified — and stores `tags` as a raw string. The CLI always sets
+authorship and normalizes tags; `node scripts/arcblog-doctor.mjs` reports records
+with an empty `authorDid`.
 
 CLI equivalent — publish an existing draft/archived record by moving it into the public directory:
 

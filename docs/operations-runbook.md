@@ -21,6 +21,15 @@ Expected: all tests passing
 node scripts/arcblog-daily-report.mjs --limit 100
 ```
 
+### 4) Instance contract check
+```bash
+node scripts/arcblog-doctor.mjs
+```
+Expected: `ok: true` (exit 0). It checks the spec §12 resource directories, the
+node profile and identity records, the category taxonomy, and reports records
+whose `authorDid` is empty as a warning (see CLAUDE.md / developer-guide for why
+UI-created records can lack attribution).
+
 ## Content operations
 
 ### Publish
