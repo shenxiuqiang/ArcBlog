@@ -212,5 +212,18 @@
   "operations.agent-grants-empty": "没有授权——Agent 写工具保持拒绝。",
   "operations.agent-expires": "到期",
   "operations.agent-closed": "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。",
-  "operations.mutations": "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。"
+  "operations.mutations": "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。",
+  "admin.cat-title": "分类",
+  "admin.cat-desc": "发布校验器与公开信息流使用的分类法。",
+  "admin.cat-empty": "还没有分类。",
+  "admin.cat-f-slug": "标识（slug）",
+  "admin.cat-slug-hint": "小写字母、数字与连字符，例如 technology。",
+  "admin.cat-f-name": "名称",
+  "admin.cat-f-desc": "描述",
+  "admin.cat-add": "添加分类",
+  "admin.cat-added": "分类已保存。",
+  "admin.cat-remove": "删除",
+  "admin.cat-remove-title": "删除该分类？",
+  "admin.cat-remove-msg": "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。",
+  "admin.cat-removed": "分类已删除。"
 }

@@ -212,5 +212,18 @@
   "operations.agent-grants-empty": "No grant — agent write tools stay refused.",
   "operations.agent-expires": "Expires",
   "operations.agent-closed": "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface.",
-  "operations.mutations": "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session."
+  "operations.mutations": "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session.",
+  "admin.cat-title": "Categories",
+  "admin.cat-desc": "Taxonomy used by the publish validator and the public feed.",
+  "admin.cat-empty": "No categories yet.",
+  "admin.cat-f-slug": "Slug",
+  "admin.cat-slug-hint": "Lowercase letters, digits and hyphens, e.g. technology.",
+  "admin.cat-f-name": "Name",
+  "admin.cat-f-desc": "Description",
+  "admin.cat-add": "Add category",
+  "admin.cat-added": "Category saved.",
+  "admin.cat-remove": "Remove",
+  "admin.cat-remove-title": "Remove this category?",
+  "admin.cat-remove-msg": "Existing posts keep their category text, but the publish validator will reject it afterwards.",
+  "admin.cat-removed": "Category removed."
 }

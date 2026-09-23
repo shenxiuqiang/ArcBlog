@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 56366,
+      "size": 59204,
       "contentType": "application/octet-stream",
-      "sha256": "e279556c2a1733e6a1ca1ae44249192eea365d05fdf692da7b24fcf4619252a9"
+      "sha256": "a53c6eb44e88a5f6d11a710122a385a28bf963eea33b237623fe6a990f9421d7"
     },
     {
       "path": ".aup/app.json",
@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 13334,
+      "size": 14003,
       "contentType": "application/json",
-      "sha256": "603c52a717822d675ce634fa6bfa723c7a853eff973ba73cb4f354c22c656eaa"
+      "sha256": "447f353cadb19bca157a725d7e062f5e17904ee54f2920e79deb8f5be1a4219f"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 13174,
+      "size": 13836,
       "contentType": "application/json",
-      "sha256": "39c4367f25b5d0200fb21aba8c5b7f117aa90cef1fb568cc0255886284f38cda"
+      "sha256": "f55dec23e32199b30ec91ce0af4c15c1dc5486e3f5deb4a8c3e417e7cf6224ee"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -100,9 +100,9 @@
     },
     {
       "path": ".aup/pages/admin.json",
-      "size": 34727,
+      "size": 41702,
       "contentType": "application/json",
-      "sha256": "a979e0530c46e839e7685734d71ed6fb874443a37435b14383af0f3e7079821d"
+      "sha256": "e5f1d21e0dc2fa17c1d7e2bb9575a19f785e7d852af96076f98e00f431c4c793"
     },
     {
       "path": ".aup/pages/author.json",
@@ -1018,15 +1018,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 12318,
+      "size": 12361,
       "contentType": "text/markdown",
-      "sha256": "d817531be33dabc158adf87d12106f000a079ba661593343e96fa5a9ec2a31b6"
+      "sha256": "c3a216818e685357ea010749ac9e378966f7261ea1cba0c520988fc02c700ff9"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 21251,
+      "size": 22975,
       "contentType": "text/markdown",
-      "sha256": "a065d647b27005744be1f0dff925eb634dbd8d963f414185650fb90ae2ce8edd"
+      "sha256": "949c792da362529bc2e4e3895475aed057f4e2356212339bb4849d0fd9694a35"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1042,9 +1042,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 18346,
+      "size": 19114,
       "contentType": "text/markdown",
-      "sha256": "c5152e62a4d35100574027f9c5c7b3af6f2d32dfc215efd7e8878fdef4dd914e"
+      "sha256": "4f6a720365f1122c065bf121a7ecfc88c6c2a23e5364f226180b52c27e435270"
     },
     {
       "path": "docs/error-codes.md",
@@ -1054,9 +1054,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 14175,
+      "size": 15346,
       "contentType": "text/markdown",
-      "sha256": "a16814cbb1b204278ac2e48ece9f9d734b005b03c327aa5e95faa35b5d258e52"
+      "sha256": "4dc982114f99aebbe3e6676fddaff1e497489faf4c74b75ca2a3f5e0d02cad41"
     },
     {
       "path": "docs/persistence.md",

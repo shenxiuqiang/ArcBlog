@@ -393,3 +393,26 @@ spec Phase 2 要求确认「list / read / write / search / exec 哪些真正由 
 `lib/arc.mjs` 的 `query` / `queryRecords` / `whereEq` / `whereContains` / `whereAll` 封装了它；
 `arcblog-query-posts.mjs`（category/tag 过滤）与 agent 的 `search_posts` 已改为服务端过滤。
 只有自由文本匹配仍需客户端处理，因为 `text` 不受支持。
+
+## 10. 页面写操作的契约（`/.actions/write`）
+
+页面会话写记录走 `exec "/.actions/write"`，由 `blocklet.yaml` 的 `replicated` 集合授权。实测的参数契约：
+
+| 参数 | 必填 | 说明 |
+|---|---|---|
+| `path` | ✅ | 目标 AFS 路径 |
+| `content` | 否 | 写入内容（`replace`/`append`/`prepend`/`create`/`update`/`tree-merge` 需要；`tree-toggle` 等计算模式忽略） |
+| `mode` | 否 | `replace`（默认）\|`append`\|`prepend`\|`patch`\|`create`\|`update`\|`tree-merge`\|`tree-toggle`\|`tree-increment`\|`tree-list-add`\|`tree-list-remove`\|`tree-list-replace` |
+| `field` / `value` / `oldValue` | 否 | 供 `tree-*` 模式定位字段与成员 |
+| `ifMatch` | 否 | 乐观并发令牌（来自 `stat`/`read`），不匹配返回 `CONFLICT_ERROR` |
+| `dedupBy` / `dedupKey` | 否 | provider 级写入去重；设置后 `path` 视为集合目录，真实路径在 `data.path` 返回 |
+
+删除单条记录用 `exec "/.actions/delete" path="…"`（Studio 的取消发布与分类删除即此路径）。
+
+**授权边界**（`replicated`，均为 `minRole: admin`）：`categories`、`config`、`economy-policy`、
+`economy-products`、`hub-registrations` 可写；`economy-orders`/`settlements`/`ledger`/`attributions`/
+`access-grants`/`config-agent-grants` 连读都是 admin-only（含买家与读者身份）。
+
+**仍未验证的部分（诚实边界）**：`${args.*}` / `$session.*` / `${generate.timeiso}` 在 **浏览器运行期**
+的插值行为无法在本环境验证（AUP 页面是客户端渲染的 SPA）。因此凡是新增的页面写表单，都严格复用
+compose/compose-edit/admin 已在用的同一套 `action -> exec` 形态，而不是发明新写法。

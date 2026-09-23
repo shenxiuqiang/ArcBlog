@@ -219,6 +219,26 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## What is editable where
+
+| Surface | UI | CLI |
+|---|---|---|
+| Posts (draft / publish / archive / unpublish) | ✅ Creator Studio + Write/Edit | ✅ `arcblog-lifecycle.mjs` |
+| Heroes (homepage carousel) | ✅ Creator Studio | — |
+| Categories (taxonomy) | ✅ Creator Studio | ✅ `arcblog-category.mjs` |
+| Appearance (tone / palette / theme) | ✅ Appearance | — |
+| Media index | read-only list | ✅ `arcblog-media.mjs add` (upload) |
+| Roles / capabilities | read-only (Dashboard) | ✅ `arcblog-roles.mjs` |
+| Network (discovery / health / Hubs) | read-only (Operations) | ✅ `arcblog-network.mjs` |
+| Economy (policy / products / grants / orders) | read-only (Operations) | ✅ `arcblog-economy.mjs` |
+| Agent grants | read-only (Operations) | ✅ `arcblog-agent.mjs authorize` |
+
+Value-bearing mutations (settlement, wallets, roles, payments) are deliberately CLI-only:
+they need a DID session and a human decision, the same reasoning that keeps
+`settle_payment` / `change_wallet` / `change_role` default-closed for agents
+(spec §61/§130). The category form writes the slug **as typed** — use lowercase
+hyphenated slugs (the CLI slugifies for you).
+
 ## Operations console (AUP)
 
 The admin UI (`?page=operations`, also in the user menu and the dashboard's quick

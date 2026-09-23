@@ -26,13 +26,13 @@
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/node",
+        "path": "/instance/app/arcblog/categories",
         "op": "list",
         "required": true,
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/categories",
+        "path": "/instance/app/arcblog/node",
         "op": "list",
         "required": true,
         "source": "aup:src"

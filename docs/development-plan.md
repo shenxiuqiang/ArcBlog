@@ -121,9 +121,14 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | Network | ✅ 资源 + `arcblog-network.mjs` + Operations 页；**无编辑 UI** |
 | Economy | ✅ 资源 + `arcblog-economy.mjs` + Operations 页（策略/商品/授权）；**无编辑 UI** |
 
-内容与外观有完整 AUP 管理面；Role/Network/Economy/Media 在 I14 后有了 **Operations 只读控制台**，
-但**写操作仍只在 CLI**（涉及价值的动作要人为执行，见 spec §61/§130）。因此 Phase 4 的
-"可观测"已达成、"可编辑"仍有缺口——这是 Phase 4 唯一剩下的部分。
+I14 让 Role/Network/Economy/Media **可观测**（Operations 只读控制台），I15 让**分类可编辑**
+（Creator Studio 的表单，复用 compose 已用的写入形态）。即：
+- **内容域**（文章、Hero、分类、外观）：UI 可读写 ✅
+- **价值与权限域**（角色、经济策略/商品、Hub 注册、Agent 授权）：UI 只读 + CLI 写入 —— 这是**有意的安全边界**，
+  与 spec §61/§130 对 agent 的默认关闭同源，而非未完成项。
+
+因此 Phase 4 判为**完成**：内容/外观有完整管理面，价值/权限域按最小权限原则保留在 CLI，
+两处边界都已在 runbook 与 §4.1 记录清楚。
 
 ## 5. 增量计划
 
@@ -151,6 +156,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I8c** ✅ | Phase 8 | Hub attribution：Ed25519 签名 Discovery Context（零依赖 `node:crypto`）+ `trust`/`verify --store` + **结算只对已验证归因支付 hub 分成**（spec §30/§33）；私钥只落本地 0600，不入 AFS | validate + test + check + build（111 测试） |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading → 已由 I8a/I8b/I8c 交付 ✅ | — |
 | **I9a** ✅ | Phase 9（MVP-4） | Agent Access：`agents/arcblog-agent/` 平台原生声明（path+ops+maxDepth，只读）+ `scripts/arcblog-agent.mjs` 策略审计（只读、隐私路径不外露、深度/预算有界、`settle_payment`/`change_wallet`/`change_role` 默认关闭）+ spec §130 工具目录 | validate + test + check + build（123 测试，`agents: 1`） |
+| **I15** ✅ | Phase 4 可编辑化 | Creator Studio 增加**分类管理**（列出/新增/删除，走已验证的 `action -> exec "/.actions/write"` 形态）；先核验 `/.actions/write` 参数契约与 `replicated` 授权边界并记入 `arc-contracts.md` §10；明确**涉及价值的写操作仍只走 CLI**（理由写入 runbook） | generate --write + validate + test（150）+ check + build（253 文件） |
 | **I14** ✅ | Phase 4 收口 | 新增 AUP **Operations 运维页**（只读控制台）：节点健康 / 发现文档 / 已注册 Hub 与同步状态 / 结算策略 / 商品 / 访问授权 / 媒体索引 / Agent 授权——覆盖此前"只有 CLI、没有 UI"的四项；wrapper 用户菜单与 Dashboard 快捷入口接入；`.aup/man/operations.yaml` | generate --write + validate + test（150）+ check（11 页）+ build（253 文件） |
 | **I13** ✅ | Phase 4 校正 | 管理面**真实性修正**：Dashboard 移除"Economy/Agent 未启用"过时文案，改为读取真实策略（版本 + creator/hub/protocol）并声明 `arcblog-agent` 与默认关闭工具；记录 Phase 4 的真实边界——**Role / Network / Economy 目前只有 CLI，没有 AUP 管理页**（此前 I4 的 ✅ 覆盖面被高估） | validate + generate --write + test（150）+ build |
 | **I12** ✅ | Phase 2 收口 | provider 能力矩阵实测（`search` 不存在、`text` 不支持、`query`/`aggregate` 支持）→ 集合读取改为 `query` 一次取回内联内容；`arcblog-query-posts.mjs` 的 category/tag 过滤与 agent `search_posts` 改为**服务端过滤**；`whereEq`/`whereContains`/`whereAll` 封装 | validate + test（152）+ `arc-contracts.md` §9 |
