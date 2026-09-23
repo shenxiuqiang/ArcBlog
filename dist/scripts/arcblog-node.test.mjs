@@ -6,11 +6,13 @@ import { fileURLToPath } from 'node:url';
 
 import {
   BASE_CAPABILITIES,
+  buildNodeIdentity,
   buildNodeProfile,
   capabilitiesForRoles,
   normalizeCapabilities,
   normalizeRoles,
   parseManifest,
+  validateNodeIdentity,
   validateNodeProfile,
 } from './lib/node-profile.mjs';
 
@@ -182,4 +184,55 @@ test('node profile set --roles re-derives capabilities, then restores', () => {
   const restored = run(['init', '--update']);
   assert.equal(restored.status, 0, restored.stderr);
   assert.deepEqual(json(restored.stdout).profile.roles, ['basic']);
+});
+
+// --- node identity (spec §12 /arcblog/node/identity) ------------------------
+
+test('buildNodeIdentity defaults authMethod and preserves createdAt', () => {
+  const now = '2026-09-23T00:00:00.000Z';
+  const identity = buildNodeIdentity(
+    { did: 'did:blocklet:x' },
+    { now, existing: { createdAt: '2020-01-01T00:00:00.000Z' } },
+  );
+  assert.equal(identity.authMethod, 'blocklet');
+  assert.equal(identity.updatedAt, now);
+  assert.equal(identity.createdAt, '2020-01-01T00:00:00.000Z');
+});
+
+test('validateNodeIdentity rejects a bad did and an unknown auth method', () => {
+  assert.equal(validateNodeIdentity({ did: 'did:blocklet:x', authMethod: 'blocklet' }).ok, true);
+  const badDid = validateNodeIdentity({ did: 'x', authMethod: 'blocklet' });
+  assert.ok(badDid.issues.some((issue) => /did must start/.test(issue)));
+  const badAuth = validateNodeIdentity({ did: 'did:x', authMethod: 'magic' });
+  assert.ok(badAuth.issues.some((issue) => /authMethod must be one of/.test(issue)));
+});
+
+test('identity without a subcommand fails with VALIDATION', () => {
+  const res = run(['identity']);
+  assert.equal(res.status, 1);
+  assert.equal(json(res.stderr).code, 'VALIDATION');
+  assert.match(json(res.stderr).error, /unknown identity command/);
+});
+
+test('identity init --auth-method rejects an unknown method', () => {
+  const res = run(['identity', 'init', '--auth-method', 'magic', '--update']);
+  assert.equal(res.status, 1);
+  assert.match(json(res.stderr).error, /authMethod must be one of/);
+});
+
+test('node identity init/show/check roundtrip on the live instance', () => {
+  const init = run(['identity', 'init', '--update']);
+  assert.equal(init.status, 0, init.stderr);
+  const created = json(init.stdout);
+  assert.equal(created.identity.did, 'did:blocklet:arcblog');
+  assert.equal(created.identity.authMethod, 'blocklet');
+  assert.equal(created.identity.blockletDid, 'did:blocklet:arcblog');
+
+  const show = run(['identity', 'show']);
+  assert.equal(show.status, 0, show.stderr);
+  assert.equal(json(show.stdout).identity.did, created.identity.did);
+
+  const check = run(['identity', 'check']);
+  assert.equal(check.status, 0, check.stderr);
+  assert.equal(json(check.stdout).ok, true);
 });

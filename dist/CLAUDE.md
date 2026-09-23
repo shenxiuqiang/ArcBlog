@@ -35,9 +35,9 @@ Both must pass before committing: `arc dsl validate --json` and `npm test`.
 
 - `blocklet.yaml` — blocklet metadata, **URL bindings** (`sites[].bindings` map pretty URLs like `/posts/{slug}` to AUP pages + AFS records), `scope: app`, `networkRead` permissions, and `replicated` collections that authorize member writes from page sessions.
 - `.aup/` — the app itself: `app.aup` (app shell + page definitions with inline i18n en/zh), `man/*.yaml` (management docs), `pages/*.json`, `wrapper.json/.aup` (app chrome), `locales/`.
-- `world/post.yaml` — the `Post` record schema (status lifecycle fields, SEO/OG fields).
+- `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
-- `.web/` — public web-surface components (`theme-bridge/`, `arcblog-home/`) and themes.
+- `.web/` — public web-surface components (`theme-bridge/`) and themes.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
 - `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.
 - `seed/settings/arcblog/` — default settings records (tone/palette/theme).
@@ -50,6 +50,9 @@ There is one Post schema, but **two AFS directories enforce the draft boundary**
 - `/instance/app/arcblog/posts/` — **published only**, guest-readable via `networkRead`. One `<slug>.json` per post.
 - `/instance/app/arcblog/drafts/` — draft + archived + soft-deleted, **admin-only** reads. `/preview/{slug}` binds here; anonymous visitors get not-found.
 - `/instance/app/arcblog/heroes/` — homepage carousel records `{title, description, image, url, sort, createdAt}`, guest-readable, sorted ascending by `content.sort`.
+- `/instance/app/arcblog/node/{profile,identity}.json` — public node metadata (name, DID, roles, capabilities) and how the identity was established; guest-readable, admin-writable. Managed by `scripts/arcblog-node.mjs` (`init`/`show`/`set`/`check`, plus `identity init|show|check`).
+- `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy; guest-readable, admin-writable, and read by the lifecycle validator (falls back to `technology|design|life` while empty). Managed by `scripts/arcblog-category.mjs`.
+- `/instance/app/arcblog/media/<id>.json` — upload index; **admin-only** reads (it exposes upload paths). Managed by `scripts/arcblog-media.mjs`.
 - `/instance/settings/arcblog/` — appearance settings (`tone`, `palette`, `theme`) driving the theme bridge.
 
 Lifecycle transitions: `draft → published → archived → published`, plus `draft|archived → deleted` (soft). Validation: required `title`/`slug`/`author-did`; category whitelist `technology|design|life`; tags are lowercase underscore tokens, max 10; `coverImage`/`ogImage` must be http(s). Note that records created **from the UI compose form** have empty `authorDid`/`authorName` and store `tags` as a raw string (args templates can't split arrays); the CLI normalizes both — use the CLI when authorship matters.

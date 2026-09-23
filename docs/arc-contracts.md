@@ -166,6 +166,30 @@ CMS actions；核验后已 `undeclare` + 删除。
   （`cms-write` + `cms-publish`，见 §3.1）能提供；作为已知限制记录，不在 MVP-1 兑现。
 - AFS 记录仍是唯一真源；AUP 继续承担管理与预览/编辑页。
 
+### 3.3 S3 核验：Web Device 页面根本没有 AFS 通道
+
+在 S2 基础上继续核验已部署实例的公开首页（`curl http://arcblog.localhost:4939/p/en/`
+→ 200，49,202 字节）：
+
+| 观察 | 证据 |
+|---|---|
+| 页面**不启动 AUP runtime** | 全部外链脚本只有 `/aup-ssr.5i721p.js`（4,462 字节，只有 site bindings 数据，`tryRead` 出现 0 次）与一个失效的 `/aup-inspect-bridge.*.js`；没有任何 runtime bundle |
+| 页面**没有 `window.afs`** | HTML 中 `afs` 仅出现 2 次（bindings JSON），无客户端 bootstrap |
+| 主题桥只靠 AUP 上下文 | `theme-bridge/script.js` 从 `window.parent.window.afs` 取客户端；作为独立页面打开时 `host()` 返回 null、脚本空转。它能工作是因为 `wrapper.aup` 把它作为 `frame` 挂在 **AUP 应用内**，那里 `window.afs` 存在 |
+| 页面 canonical 是 `/en/` | `<link rel="canonical" href=".../en/">`，说明站点自身的 URL 不是 `/p/en/` |
+
+**结论（决定性）**：Web Device 页面既没有服务端 AFS（§3.2），也没有客户端 AFS（本节）。
+**AFS 访问是 AUP 应用上下文的专属能力。**
+
+因此 spec §17/§127 的"公开面 = Web Device"在当前平台版本下只能满足**静态页**：
+动态博客列表/文章在 MVP-1 必须留在 AUP（`/` 的 posts/reader 页），或者走"内容烘焙成静态页"
+的内容站点流程（`cms-write` + `cms-publish`，POST-MVP）。
+
+**处置**：删除只有虚构内容的 `.web/components/arcblog-home/` 与 `pages/index/`——它在公开 URL 上
+展示硬编码假文章，链接还指向不存在的 `/app?page=...`，且与 `/` 的真实 AUP feed 重复。
+`pages/theme-bridge/` 保留（主题桥依赖它）。
+
+
 
 
 ## 4. DID Space（持久数据面）

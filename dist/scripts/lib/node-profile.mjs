@@ -27,6 +27,13 @@ function str(value) {
   return String(value).trim();
 }
 
+function localNow() {
+  return new Date().toISOString();
+}
+
+/** How this node's identity was established (mirrors `arc did init` modes). */
+export const NODE_AUTH_METHODS = ['developer', 'provider', 'blocklet', 'did-connect'];
+
 /** Normalize + validate a role list. Throws `VALIDATION` on an unknown role. */
 export function normalizeRoles(value) {
   const list = Array.isArray(value)
@@ -129,6 +136,38 @@ export function buildNodeProfile(input = {}, { now = new Date().toISOString(), e
     createdAt: str(existing?.createdAt ?? input.createdAt ?? now),
     updatedAt: now,
   };
+}
+
+/** Validate a Node Profile. Returns `{ok, issues, warnings}` (never throws). */
+/**
+ * Build a Node Identity record (spec §12 `/arcblog/node/identity`).
+ * Records who this node is and how the identity was established; `existing`
+ * carries createdAt forward.
+ */
+export function buildNodeIdentity(input = {}, { now = localNow(), existing = null } = {}) {
+  return {
+    did: str(input.did ?? existing?.did),
+    authMethod: str(input.authMethod ?? existing?.authMethod ?? 'blocklet').toLowerCase(),
+    caller: str(input.caller ?? existing?.caller),
+    blockletDid: str(input.blockletDid ?? existing?.blockletDid),
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  };
+}
+
+/** Validate a Node Identity record. Returns `{ok, issues}` (never throws). */
+export function validateNodeIdentity(identity) {
+  if (!identity || typeof identity !== 'object' || Array.isArray(identity)) {
+    return { ok: false, issues: ['identity must be an object'] };
+  }
+  const issues = [];
+  if (!str(identity.did)) issues.push('did is required');
+  else if (!/^did:/.test(str(identity.did))) issues.push('did must start with "did:"');
+  if (!str(identity.authMethod)) issues.push('authMethod is required');
+  else if (!NODE_AUTH_METHODS.includes(str(identity.authMethod))) {
+    issues.push(`authMethod must be one of: ${NODE_AUTH_METHODS.join(', ')}`);
+  }
+  return { ok: issues.length === 0, issues };
 }
 
 /** Validate a Node Profile. Returns `{ok, issues, warnings}` (never throws). */

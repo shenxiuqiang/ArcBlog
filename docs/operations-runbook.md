@@ -73,6 +73,14 @@ node scripts/arcblog-node.mjs set --roles studio   # capabilities re-derive from
 node scripts/arcblog-node.mjs check
 ```
 
+### Node identity
+```bash
+node scripts/arcblog-node.mjs identity init --auth-method blocklet   # DID defaults to the profile's
+node scripts/arcblog-node.mjs identity show
+node scripts/arcblog-node.mjs identity check
+```
+`authMethod` is one of `developer | provider | blocklet | did-connect`.
+
 ### Media index
 ```bash
 node scripts/arcblog-media.mjs add --path /blocklets/arcblog/users/<did>/media/cover.png \

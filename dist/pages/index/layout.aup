@@ -1,5 +1,0 @@
-page index {
-  web-page page {
-    section blog-home slot=main component=arcblog-home
-  }
-}

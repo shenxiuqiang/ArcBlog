@@ -45,16 +45,18 @@ Provider 合同决定」。实测可用且被 `replicated` 授权的唯一可写
 > 位置不变式继续沿用：`posts/` 只放 `status=published`，`drafts/` 放 draft/archived/deleted，
 > 因为 AUP 表达式无比较运算（`developer-guide.md`）。
 
-### D3｜双面分离：公开面 = Web Device，管理面 = AUP
+### D3｜双面分离：管理面 = AUP（已定）；公开面受平台限制（S1+S2+S3 定案）
 
-spec §127/§128 要求 Public → Web Device、Admin → AUP。现状是公开文章页由 AUP 页
-（`posts` / `reader` / `preview`）承担，**与 spec 不符**，Phase 3 迁移。
+spec §127/§128 要求 Public → Web Device、Admin → AUP。核验后的真实情况：
 
-**S1 spike 已定案（见 `arc-contracts.md` §3.1）**：Web Device 页面是预渲染静态页，
-**不支持**按 slug 动态绑定 AFS 记录；动态记录绑定只存在于 `sites[].bindings` → AUP 页。
-因此 Phase 3 采用**发布期投影**：AFS 记录仍是唯一源，发布时把已发布记录渲染进站点树
-（`pages/<slug>/layout.json`）再 `render-all`。这样公开面归 Web Device、管理面归 AUP，
-同时不必把内容真源搬进站点树。
+- Web Device 页面**没有 AFS 通道**：服务端只渲染静态 props（S1），页面也不启动 AUP runtime、
+  没有 `window.afs`（S3）。AFS 访问是 **AUP 应用上下文的专属能力**。
+- 按 slug 动态绑定 AFS 记录只存在于 `sites[].bindings` → AUP 页。
+
+**结论**：MVP-1 的动态公开面（列表 / 文章 / 归档 / RSS）**保留在 AUP**；Web Device 只承担
+静态页（theme-bridge）。要真正兑现"公开面 = Web Device + 逐条静态 SEO"，唯一路径是平台的
+内容站点烘焙流程（`cms-write` + `cms-publish` 出不可变静态快照），列为 **POST-MVP**。
+已删除只有虚构内容的 `.web/components/arcblog-home/` 与 `pages/index/`（见 `arc-contracts.md` §3.3）。
 
 ### D4｜身份
 
@@ -118,8 +120,8 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I1** ✅ | Phase 2 起 | `scripts/lib/arc.mjs` 适配层 + `world/node.yaml` + Node Profile 资源（init/show/set/check） | validate + test + check + build（`63d1a17`，18→30 测试） |
 | **I2a** ✅ | Phase 2 | Category 资源：`world/category.yaml` + `scripts/arcblog-category.mjs` + `blocklet.yaml` 声明，并接入 lifecycle 校验（资源为空时回退内置白名单） | validate + test + check + build（40 测试） |
 | **I2b** ✅ | Phase 2 | Media 资源：`world/media.yaml` + `scripts/arcblog-media.mjs`（add/list/show/remove）+ 声明（admin-only 读）；抽出 `lib/util.mjs` 共享 slug | validate + test + check + build（51 测试） |
-| I2c | Phase 2 | 资源补全：content pages / node identity；capabilities 已由 node profile 承载，不再单列资源 | 同上 |
-| I3 | Phase 3 | 公开面 Web Device（S1+S2 已定案）：`pages/*` 出服务端壳，动态内容由组件脚本经 `window.afs`（read/tryRead/subscribe）**客户端水合**；Home / Archive / Author / Article + RSS；文章深链保留 `sites[].bindings` 兜底 | 同上 + 页面 HTTP 200 且脚本读得到记录 | |
+| **I2c** ✅ | Phase 2 | Node identity 资源：`world/node-identity.yaml` + `arcblog-node.mjs identity init\|show\|check`（DID 默认取 profile / blocklet.yaml） | validate + test + check + build（56 测试） |
+| I3 | Phase 3 | **按 S3 修正**：Web Device 无 AFS 通道 → 动态公开面在 MVP-1 保留 AUP；清理虚构落地页；把"逐条静态 SEO"排入 POST-MVP（内容站点烘焙） | 决策文档 + validate + test |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
 | I4b | Phase 4 | Admin 对齐 spec §15：补 Network / Economy / Agent 卡片，收口 Settings 与 Editor | 同上 |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |

@@ -23,10 +23,13 @@ import {
   writeJson,
 } from './lib/arc.mjs';
 import {
+  NODE_AUTH_METHODS,
   NODE_ROLES,
+  buildNodeIdentity,
   buildNodeProfile,
   capabilitiesForRoles,
   parseManifest,
+  validateNodeIdentity,
   validateNodeProfile,
 } from './lib/node-profile.mjs';
 
@@ -34,6 +37,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
 export const NODE_DIR = `${INSTANCE_ROOT}/node`;
 export const NODE_PROFILE_PATH = `${NODE_DIR}/profile.json`;
+export const NODE_IDENTITY_PATH = `${NODE_DIR}/identity.json`;
 
 function readManifestMeta() {
   try {
@@ -142,6 +146,46 @@ function commandDir(opts, instance) {
   console.log(JSON.stringify({ ok: true, path: NODE_DIR, count: entries.length, entries }, null, 2));
 }
 
+// spec §12 `/arcblog/node/identity` — who this node is and how the identity was
+// established. The DID defaults to the node profile's, then blocklet.yaml's.
+function commandIdentityInit(opts, instance) {
+  const existing = readJson(NODE_IDENTITY_PATH, instance);
+  if (existing && !opts.update) {
+    fail('CONFLICT', `${NODE_IDENTITY_PATH} already exists (use --update to overwrite)`);
+  }
+  const meta = readManifestMeta();
+  const profile = readJson(NODE_PROFILE_PATH, instance);
+  const identity = buildNodeIdentity(
+    {
+      did: optString(opts.did) || profile?.value?.did || meta.did,
+      authMethod: opts['auth-method'] !== undefined ? optString(opts['auth-method']) : undefined,
+      caller: opts.caller !== undefined ? optString(opts.caller) : undefined,
+      blockletDid: meta.did,
+    },
+    { existing: existing ? { createdAt: existing.value.createdAt } : null },
+  );
+  const check = validateNodeIdentity(identity);
+  if (!check.ok) fail('VALIDATION', check.issues.join('; '));
+  writeJson(NODE_IDENTITY_PATH, identity, instance, existing?.ifMatch ?? undefined);
+  console.log(
+    JSON.stringify({ ok: true, action: existing ? 'identity-update' : 'identity-init', path: NODE_IDENTITY_PATH, identity }, null, 2),
+  );
+}
+
+function commandIdentityShow(opts, instance) {
+  const record = readJson(NODE_IDENTITY_PATH, instance);
+  if (!record) fail('NOT_FOUND', `node identity not found: ${NODE_IDENTITY_PATH}`);
+  console.log(JSON.stringify({ ok: true, path: NODE_IDENTITY_PATH, identity: record.value }, null, 2));
+}
+
+function commandIdentityCheck(opts, instance) {
+  const record = readJson(NODE_IDENTITY_PATH, instance);
+  if (!record) fail('NOT_FOUND', `node identity not found: ${NODE_IDENTITY_PATH} (run: identity init)`);
+  const result = validateNodeIdentity(record.value);
+  console.log(JSON.stringify({ ok: result.ok, path: NODE_IDENTITY_PATH, issues: result.issues }, null, 2));
+  if (!result.ok) process.exit(1);
+}
+
 function help() {
   console.log(`ArcBlog node profile (spec §12 /arcblog/node/profile)
 
@@ -154,6 +198,11 @@ Usage:
   node scripts/arcblog-node.mjs check
   node scripts/arcblog-node.mjs dir
 
+  node scripts/arcblog-node.mjs identity init [--did <did>] [--auth-method <method>]
+                                              [--caller <did>] [--update]
+  node scripts/arcblog-node.mjs identity show
+  node scripts/arcblog-node.mjs identity check
+
 Options:
   --instance <name>   target a named ARC instance (default: default instance)
   --json              always on: every command prints JSON
@@ -161,12 +210,14 @@ Options:
 init re-derives the profile from blocklet.yaml (roles default to "basic") and
 keeps only createdAt; use --update to reset an existing profile, and the set
 command for incremental edits. Roles: ${NODE_ROLES.join(' | ')}
+identity init records who this node is; --did defaults to the node profile's
+DID, then blocklet.yaml's. Auth methods: ${NODE_AUTH_METHODS.join(' | ')}
 `);
 }
 
 (function main() {
   const args = parseArgs(process.argv.slice(2));
-  const [cmd] = args._;
+  const [cmd, sub] = args._;
   const instance = resolveInstance(args);
   try {
     if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') return help();
@@ -175,6 +226,12 @@ command for incremental edits. Roles: ${NODE_ROLES.join(' | ')}
     if (cmd === 'set') return commandSet(args, instance);
     if (cmd === 'check') return commandCheck(args, instance);
     if (cmd === 'dir' || cmd === 'list') return commandDir(args, instance);
+    if (cmd === 'identity') {
+      if (sub === 'init') return commandIdentityInit(args, instance);
+      if (sub === 'show') return commandIdentityShow(args, instance);
+      if (sub === 'check') return commandIdentityCheck(args, instance);
+      fail('VALIDATION', `unknown identity command: ${sub ?? '(none)'} (use init|show|check)`);
+    }
     fail('VALIDATION', `unknown command: ${cmd}`);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
