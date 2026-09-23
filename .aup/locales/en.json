@@ -143,5 +143,19 @@
   "compose-edit.images": "Images",
   "compose-edit.images-desc": "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL).",
   "compose-edit.editing": "Editing",
-  "compose-edit.publish-hint": "Published. The draft copy is still in studio drafts — delete it there when done."
+  "compose-edit.publish-hint": "Published. The draft copy is still in studio drafts — delete it there when done.",
+  "dashboard.title": "Dashboard",
+  "dashboard.desc": "Node identity, roles, taxonomy and recent activity for this ArcBlog instance.",
+  "dashboard.node": "Node",
+  "dashboard.node-empty": "No node profile yet. Run: node scripts/arcblog-node.mjs init",
+  "dashboard.roles-label": "Roles",
+  "dashboard.capabilities-label": "Capabilities",
+  "dashboard.content": "Recent published",
+  "dashboard.content-empty": "No published stories yet.",
+  "dashboard.categories": "Categories",
+  "dashboard.categories-empty": "No categories yet. Run: node scripts/arcblog-category.mjs seed",
+  "dashboard.quick": "Quick actions",
+  "dashboard.q-write": "Write a post",
+  "dashboard.q-studio": "Creator Studio",
+  "dashboard.q-settings": "Appearance"
 }

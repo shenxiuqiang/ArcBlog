@@ -32,6 +32,9 @@
     },
     "about": {
       "tree": "pages/about.json"
+    },
+    "dashboard": {
+      "tree": "pages/dashboard.json"
     }
   }
 }

@@ -1,0 +1,15 @@
+schemaVersion: 1
+page: dashboard
+description: >-
+  Operator dashboard for this ArcBlog instance: node identity and roles from the
+  node profile resource, the category taxonomy, recent published stories, and
+  quick links into the write and studio surfaces.
+synopsis: >-
+  Show what this instance is (DID, roles, capabilities) and what it currently
+  holds (published stories, categories), then route the operator into the right
+  surface from one place.
+flows:
+  - Read the node profile written by scripts/arcblog-node.mjs.
+  - Review the category taxonomy written by scripts/arcblog-category.mjs.
+  - Open recent published stories.
+  - Jump to write, studio or appearance settings.

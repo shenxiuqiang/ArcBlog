@@ -120,7 +120,8 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I2b** ✅ | Phase 2 | Media 资源：`world/media.yaml` + `scripts/arcblog-media.mjs`（add/list/show/remove）+ 声明（admin-only 读）；抽出 `lib/util.mjs` 共享 slug | validate + test + check + build（51 测试） |
 | I2c | Phase 2 | 资源补全：content pages / node identity；capabilities 已由 node profile 承载，不再单列资源 | 同上 |
 | I3 | Phase 3 | 公开面 Web Device（S1+S2 已定案）：`pages/*` 出服务端壳，动态内容由组件脚本经 `window.afs`（read/tryRead/subscribe）**客户端水合**；Home / Archive / Author / Article + RSS；文章深链保留 `sites[].bindings` 兜底 | 同上 + 页面 HTTP 200 且脚本读得到记录 | |
-| I4 | Phase 4 | Admin 对齐 spec §15/§16：Dashboard（Node/Identity/Roles/Content/Network/Agent 卡）、Settings、Editor | 同上 |
+| **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
+| I4b | Phase 4 | Admin 对齐 spec §15：补 Network / Economy / Agent 卡片，收口 Settings 与 Editor | 同上 |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | I6 | Phase 5 | Identity / DID Space 契约固化（作者身份、会话投影、space 校验、de-identification 开关说明） | 同上 |
 | I7 | Phase 6–7 | Studio / Hub 角色：capability engine + Role 配置外置（NFT/Stake 校验接口占位，不接链上行） | 同上 |

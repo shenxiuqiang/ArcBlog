@@ -12,6 +12,8 @@ ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the A
 
 ```bash
 arc dsl validate --json   # validate all AUP DSL — must pass (primary quality gate)
+arc dsl generate --write  # regenerate app.json / pages/*.json / wrapper.json / locales from .aup sources
+                          # (generate defaults to DRY-RUN — without --write nothing is written)
 npm test                  # run all script tests (node:test, scripts/*.test.mjs)
 arc blocklet build        # regenerate dist/ from source (run after .aup changes, before committing)
 node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file

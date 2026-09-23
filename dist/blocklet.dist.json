@@ -26,6 +26,18 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/node",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/categories",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/p/en/theme-bridge",
         "op": "list",
         "required": true,

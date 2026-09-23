@@ -143,5 +143,19 @@
   "compose-edit.images": "图片",
   "compose-edit.images-desc": "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。",
   "compose-edit.editing": "编辑中",
-  "compose-edit.publish-hint": "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。"
+  "compose-edit.publish-hint": "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。",
+  "dashboard.title": "仪表盘",
+  "dashboard.desc": "本 ArcBlog 实例的节点身份、角色、分类与近期动态。",
+  "dashboard.node": "节点",
+  "dashboard.node-empty": "还没有节点档案。运行：node scripts/arcblog-node.mjs init",
+  "dashboard.roles-label": "角色",
+  "dashboard.capabilities-label": "能力",
+  "dashboard.content": "最近发布",
+  "dashboard.content-empty": "还没有已发布的文章。",
+  "dashboard.categories": "分类",
+  "dashboard.categories-empty": "还没有分类。运行：node scripts/arcblog-category.mjs seed",
+  "dashboard.quick": "快捷操作",
+  "dashboard.q-write": "写文章",
+  "dashboard.q-studio": "创作者工作室",
+  "dashboard.q-settings": "外观"
 }

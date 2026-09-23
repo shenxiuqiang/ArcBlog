@@ -32,6 +32,12 @@
             "kind": "user-menu",
             "items": [
               {
+                "id": "dashboard",
+                "label": "$t(wrapper.nav-dashboard)",
+                "icon": "grid",
+                "exec": "dashboard"
+              },
+              {
                 "id": "studio",
                 "label": "$t(wrapper.nav-studio)",
                 "icon": "settings",

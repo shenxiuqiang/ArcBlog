@@ -483,4 +483,71 @@ app "ArcBlog" {
       action -> navigate "/rss.xml" variant=secondary label=:rss
     }
   }
+
+  page dashboard "Dashboard" {
+    i18n {
+      title { en "Dashboard" zh "仪表盘" }
+      desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
+      node { en "Node" zh "节点" }
+      node-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+      roles-label { en "Roles" zh "角色" }
+      capabilities-label { en "Capabilities" zh "能力" }
+      content { en "Recent published" zh "最近发布" }
+      content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+      categories { en "Categories" zh "分类" }
+      categories-empty { en "No categories yet. Run: node scripts/arcblog-category.mjs seed" zh "还没有分类。运行：node scripts/arcblog-category.mjs seed" }
+      quick { en "Quick actions" zh "快捷操作" }
+      q-write { en "Write a post" zh "写文章" }
+      q-studio { en "Creator Studio" zh "创作者工作室" }
+      q-settings { en "Appearance" zh "外观" }
+    }
+    view gap=lg {
+      card gap=md {
+        h1 :title level=1
+        p :desc intent=muted
+      }
+      card gap=md {
+        h2 :node level=2
+        afs-list dash-node layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:node-empty from "/instance/app/arcblog/node" {
+          row dashNodeRow role=item gap=xs {
+            h3 "${entry.content.name}"
+            p "${entry.content.did}" scale=sm intent=muted
+            p "${entry.content.version}" scale=sm intent=muted
+            p :roles-label scale=sm intent=muted
+            p "${entry.content.roles}" scale=sm
+            p :capabilities-label scale=sm intent=muted
+            p "${entry.content.capabilities}" scale=sm
+          }
+        }
+      }
+      card gap=md {
+        h2 :content level=2
+        afs-list dash-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none pageSize=5 emptyText=:content-empty from "/instance/app/arcblog/posts" {
+          row dashPostRow role=item gap=xs {
+            view dashPostLink href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
+              h3 "${entry.content.title}"
+            }
+            p "${entry.content.category}" scale=sm intent=muted
+          }
+        }
+      }
+      card gap=md {
+        h2 :categories level=2
+        afs-list dash-categories layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:categories-empty from "/instance/app/arcblog/categories" {
+          row dashCategoryRow role=item gap=xs {
+            h3 "${entry.content.name}"
+            p "${entry.content.slug}" scale=sm intent=muted
+          }
+        }
+      }
+      card gap=md {
+        h2 :quick level=2
+        row gap=sm {
+          action -> page compose variant=primary label=:q-write
+          action -> page admin variant=secondary label=:q-studio
+          action -> page settings variant=ghost label=:q-settings
+        }
+      }
+    }
+  }
 }
