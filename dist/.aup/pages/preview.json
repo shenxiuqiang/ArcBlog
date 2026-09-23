@@ -35,6 +35,28 @@
               }
             }
           }
+        },
+        {
+          "id": "preview-edit",
+          "type": "view",
+          "props": {
+            "href": "/edit/${state.post.slug}",
+            "style": {
+              "cursor": "pointer",
+              "color": "var(--color-dim)"
+            }
+          },
+          "visible": "$state.post",
+          "children": [
+            {
+              "id": "preview-edit-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(preview.edit)",
+                "scale": "sm"
+              }
+            }
+          ]
         }
       ]
     },
@@ -78,7 +100,115 @@
       "visible": "$state.post",
       "children": [
         {
-          "id": "preview-article-card-1",
+          "id": "preview-article-row-1",
+          "type": "view",
+          "props": {
+            "layout": {
+              "direction": "row",
+              "gap": "sm"
+            }
+          },
+          "children": [
+            {
+              "id": "preview-publish",
+              "type": "action",
+              "props": {
+                "variant": "primary",
+                "label": "$t(preview.preview-publish)",
+                "onSuccessToast": {
+                  "intent": "success",
+                  "message": "$t(preview.published-hint)",
+                  "duration": 3000
+                }
+              },
+              "events": {
+                "click": {
+                  "exec": "/.actions/write",
+                  "args": {
+                    "path": "/instance/app/arcblog/posts/${state.post.slug}.json",
+                    "content": {
+                      "title": "${state.post.title}",
+                      "slug": "${state.post.slug}",
+                      "summary": "${state.post.summary}",
+                      "body": "${state.post.body}",
+                      "coverImage": "${state.post.coverImage}",
+                      "images": [],
+                      "tags": "${state.post.tags}",
+                      "category": "${state.post.category}",
+                      "seoTitle": "${state.post.seoTitle}",
+                      "seoDescription": "${state.post.seoDescription}",
+                      "ogTitle": "${state.post.ogTitle}",
+                      "ogDescription": "${state.post.ogDescription}",
+                      "ogImage": "${state.post.ogImage}",
+                      "status": "published",
+                      "authorDid": "${state.post.authorDid}",
+                      "authorName": "${state.post.authorName}",
+                      "published": true,
+                      "publishedAt": "${generate.timeiso}",
+                      "archivedAt": "",
+                      "deletedAt": "",
+                      "createdAt": "${state.post.createdAt}",
+                      "updatedAt": "${generate.timeiso}",
+                      "version": 1
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "preview-delete",
+              "type": "action",
+              "props": {
+                "variant": "destructive",
+                "label": "$t(preview.preview-delete)",
+                "confirm": {
+                  "title": "$t(preview.preview-delete-title)",
+                  "message": "$t(preview.preview-delete-msg)"
+                },
+                "onSuccessToast": {
+                  "intent": "success",
+                  "message": "$t(preview.deleted-ok)",
+                  "duration": 3000
+                }
+              },
+              "events": {
+                "click": {
+                  "exec": "/.actions/write",
+                  "args": {
+                    "path": "/instance/app/arcblog/drafts/${state.post.slug}.json",
+                    "content": {
+                      "title": "${state.post.title}",
+                      "slug": "${state.post.slug}",
+                      "summary": "${state.post.summary}",
+                      "body": "${state.post.body}",
+                      "coverImage": "${state.post.coverImage}",
+                      "images": [],
+                      "tags": "${state.post.tags}",
+                      "category": "${state.post.category}",
+                      "seoTitle": "${state.post.seoTitle}",
+                      "seoDescription": "${state.post.seoDescription}",
+                      "ogTitle": "${state.post.ogTitle}",
+                      "ogDescription": "${state.post.ogDescription}",
+                      "ogImage": "${state.post.ogImage}",
+                      "status": "deleted",
+                      "authorDid": "${state.post.authorDid}",
+                      "authorName": "${state.post.authorName}",
+                      "published": false,
+                      "publishedAt": "${state.post.publishedAt}",
+                      "archivedAt": "${state.post.archivedAt}",
+                      "deletedAt": "${generate.timeiso}",
+                      "createdAt": "${state.post.createdAt}",
+                      "updatedAt": "${generate.timeiso}",
+                      "version": 1
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "preview-article-card-2",
           "type": "view",
           "props": {
             "mode": "card",
@@ -88,7 +218,7 @@
           },
           "children": [
             {
-              "id": "preview-article-card-1-p-1",
+              "id": "preview-article-card-2-p-1",
               "type": "text",
               "props": {
                 "content": "$t(preview.notice)",
@@ -128,7 +258,7 @@
           }
         },
         {
-          "id": "preview-article-row-4",
+          "id": "preview-article-row-5",
           "type": "view",
           "props": {
             "layout": {
@@ -139,7 +269,7 @@
           },
           "children": [
             {
-              "id": "preview-article-row-4-p-1",
+              "id": "preview-article-row-5-p-1",
               "type": "text",
               "props": {
                 "content": "${state.post.status}",
@@ -148,7 +278,7 @@
               }
             },
             {
-              "id": "preview-article-row-4-p-2",
+              "id": "preview-article-row-5-p-2",
               "type": "text",
               "props": {
                 "content": "${state.post.authorName}",
@@ -157,7 +287,7 @@
               }
             },
             {
-              "id": "preview-article-row-4-p-3",
+              "id": "preview-article-row-5-p-3",
               "type": "text",
               "props": {
                 "content": "${state.post.category}",

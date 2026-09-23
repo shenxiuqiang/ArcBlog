@@ -168,10 +168,12 @@ Current suite covers:
 
 ## Documentation map
 
-- `docs/product-summary.md` — what ArcBlog is
+- `docs/ArcBlog-product-technical-spec.md` — **authoritative V2.0 product &
+  technical spec**; when this guide disagrees with it, the spec wins
+- `docs/README.md` — documentation index
 - `docs/operations-runbook.md` — operator workflows
 - `docs/publishing-ops.md` — detailed publish/query/audit/rss commands
 - `docs/error-codes.md` — structured failure codes
 - `docs/share-cards.md` — OG/SEO usage
-- `docs/release-checklist.md` — release gates
-- `docs/roadmap.md` — iteration history and plans
+- `docs/persistence.md` — storage and identity contract
+- `docs/release-notes-v0.3.0.md` — release history

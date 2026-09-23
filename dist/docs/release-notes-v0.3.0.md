@@ -40,6 +40,10 @@ This release productizes ArcBlog into a more mature publishing Blocklet with lif
 - `docs/roadmap.md`
 - `README.md`
 
+> `product-summary.md`, `release-checklist.md` and `roadmap.md` were later removed
+> in the 2026-09-23 docs cleanup because they conflicted with the V2.0
+> product/technical spec — see `docs/README.md`.
+
 ### Testing
 - Node test suite for lifecycle/query/audit/rss/daily-report helpers
 - `npm test` entrypoint

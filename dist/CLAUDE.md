@@ -6,11 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the Arc/AUP stack — not a conventional Node app. There is no `npm install`, no bundler, no dev server: the app is authored in AUP DSL (`.aup/*.aup`, `.aup/man/*.yaml`, `.aup/pages/*.json`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
 
+> This file describes **today's implementation**. The authoritative product & technical direction (V2.0: content-network nodes with Studio/Hub roles, economy, Agent Access) is `docs/ArcBlog-product-technical-spec.md`; the current codebase implements the early blog-phase subset of it.
+
 ## Commands
 
 ```bash
 arc dsl validate --json   # validate all AUP DSL — must pass (primary quality gate)
 npm test                  # run all script tests (node:test, scripts/*.test.mjs)
+arc blocklet build        # regenerate dist/ from source (run after .aup changes, before committing)
 node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file
 
 # Content operations (via scripts/, which wrap the `arc` CLI):
@@ -59,10 +62,11 @@ Lifecycle transitions: `draft → published → archived → published`, plus `d
 
 ## Documentation map (docs/ is authoritative)
 
+- `ArcBlog-product-technical-spec.md` — **authoritative V2.0 product & technical spec**; when any other doc disagrees with it, the spec wins
+- `README.md` — documentation index
 - `developer-guide.md` — architecture deep-dive (read first for anything non-trivial)
 - `operations-runbook.md`, `publishing-ops.md` — operator workflows and CLI examples
 - `error-codes.md` — structured failure codes
 - `share-cards.md` — OG/SEO usage
-- `release-checklist.md` — release gates
 - `persistence.md` — storage model details
-- `product-summary.md`, `roadmap.md`, `release-notes-v0.3.0.md`
+- `release-notes-v0.3.0.md` — historical release record
