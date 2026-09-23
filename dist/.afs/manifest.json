@@ -982,15 +982,15 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 4973,
+      "size": 5580,
       "contentType": "text/yaml",
-      "sha256": "22ee185d98079e326088726c7a7531040029b424cbb2189ece431f244ee72178"
+      "sha256": "6cff0293ab2df84fc1b86274facd2ccb2a47789b03295791eab92b88fd625189"
     },
     {
       "path": "CLAUDE.md",
-      "size": 9904,
+      "size": 10183,
       "contentType": "text/markdown",
-      "sha256": "0d93845b09b4aba333aeebac24c716133b0f779f135126ec0feef25587187c3e"
+      "sha256": "0271cee87ed572ba71bb1fe3eda1ed5fa7cadff206cda9bd6ee9024e8954ab7d"
     },
     {
       "path": "docs/arc-contracts.md",
@@ -1006,15 +1006,15 @@
     },
     {
       "path": "docs/developer-guide.md",
-      "size": 10729,
+      "size": 10958,
       "contentType": "text/markdown",
-      "sha256": "347520356627f06c4c81bb027dadc08daad8706715cc9639bba66abbe01bfc18"
+      "sha256": "baed47f5652ad4a027d2b1fddcd0a166b3d7fd350e00a6e4950bb77728d8922b"
     },
     {
       "path": "docs/development-plan.md",
-      "size": 14001,
+      "size": 14169,
       "contentType": "text/markdown",
-      "sha256": "1fdef5025c3b89b6ed10816c2688bc149bef40b9cae2d3a9d03965cee45320ab"
+      "sha256": "7539ff20f0f0d06c203ef73d19ecf9ff1eaf439c8b93638939ac543026f496e8"
     },
     {
       "path": "docs/error-codes.md",
@@ -1024,15 +1024,15 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 7016,
+      "size": 8338,
       "contentType": "text/markdown",
-      "sha256": "ceb80fc71bfe7681abb018047c679bb9609c647a99e23805fb617a8cefa281b7"
+      "sha256": "250adbf3c55234e63db3bb2cf2c2c45979d4954bb108424b101e7d2e570dafd1"
     },
     {
       "path": "docs/persistence.md",
-      "size": 7760,
+      "size": 8336,
       "contentType": "text/markdown",
-      "sha256": "f60b595d31d7d0cee60b3a7d1108b8e441ed432cfbf62f1749061a1db966cb5b"
+      "sha256": "2d5954c472793579b7f5bd5a39e9589dfb25589180543c21e2f1b1f848ed0d0d"
     },
     {
       "path": "docs/publishing-ops.md",
@@ -1101,6 +1101,18 @@
       "sha256": "251642782677c4b25d2663aa7b97c879c0c47beadd9604ca586b0524287b0c7c"
     },
     {
+      "path": "scripts/arcblog-attribution.mjs",
+      "size": 6639,
+      "contentType": "text/javascript",
+      "sha256": "c466e977a388fd8cdcf28e8aa8c9f288ba9343847df0952347120cfd844d8343"
+    },
+    {
+      "path": "scripts/arcblog-attribution.test.mjs",
+      "size": 9819,
+      "contentType": "text/javascript",
+      "sha256": "dd25954f906433efd25ac8e859815248085c59294bc5bf7dd0dfe99c0c7c1ea2"
+    },
+    {
       "path": "scripts/arcblog-audit.mjs",
       "size": 3375,
       "contentType": "text/javascript",
@@ -1150,15 +1162,15 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 17010,
+      "size": 17872,
       "contentType": "text/javascript",
-      "sha256": "0ce95d02f485b90974cc049030778d82a8a28b73745addc0dd41b664c3a023a6"
+      "sha256": "6aeb91dcdf790b828c40ec51dd50e7083e1193810d7b56a4f7bde6fc06f8c9b3"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 14356,
+      "size": 15542,
       "contentType": "text/javascript",
-      "sha256": "38800aaa539c980c15edc517eedbc96a0796b1e30be3e6871ec8d55d993f8f71"
+      "sha256": "5818d40c13699832d0e16b1bcd2b52d7f439a8dcaf0ec76852f2bd129160bd8a"
     },
     {
       "path": "scripts/arcblog-lifecycle.mjs",
@@ -1239,6 +1251,12 @@
       "sha256": "78311035173462a71e989f91e31a022ed2afbe95f14582bf1868074133c82a6a"
     },
     {
+      "path": "scripts/lib/attribution.mjs",
+      "size": 9047,
+      "contentType": "text/javascript",
+      "sha256": "e55cd1f93301632b2d0862fe091601f0749865d5de2aec5531d42307405ceda5"
+    },
+    {
       "path": "scripts/lib/categories.mjs",
       "size": 4777,
       "contentType": "text/javascript",
@@ -1252,9 +1270,9 @@
     },
     {
       "path": "scripts/lib/economy.mjs",
-      "size": 12564,
+      "size": 13123,
       "contentType": "text/javascript",
-      "sha256": "d8f95c16e1e03be9af92983ec0b969812441903cbc960726b1063e5d2570d591"
+      "sha256": "95ea4ba7d188cf308522a76cd557288625c2e1ad464fab94026e39eccf2d4b21"
     },
     {
       "path": "scripts/lib/manifest.mjs",
@@ -1323,6 +1341,12 @@
       "sha256": "c2b3695ba97c6a70010e8b57daa213c9110967089b7751642937fa40a77c7c5b"
     },
     {
+      "path": "world/discovery-context.yaml",
+      "size": 346,
+      "contentType": "text/yaml",
+      "sha256": "a1ee5b8d8978e02fc2922f9cd97521e9a7c02432c82ced97d34aac14715ee65b"
+    },
+    {
       "path": "world/ledger-entry.yaml",
       "size": 299,
       "contentType": "text/yaml",
@@ -1348,9 +1372,9 @@
     },
     {
       "path": "world/order.yaml",
-      "size": 412,
+      "size": 490,
       "contentType": "text/yaml",
-      "sha256": "0453b911dadd88cb81a77e2279ac064caa35cbf88cff9e7476a7c008e798cbad"
+      "sha256": "4b50ea809de2ae11a4f7fa0240c56b401712d9a063e48c9b2cee4b68e38be9ac"
     },
     {
       "path": "world/post.yaml",
@@ -1378,9 +1402,15 @@
     },
     {
       "path": "world/settlement.yaml",
-      "size": 353,
+      "size": 483,
       "contentType": "text/yaml",
-      "sha256": "fb466edca765db5e02fdd07dcc92cc53d0bc4c56398a1622a14836f584c34b8b"
+      "sha256": "598ca0a31cda10b19cf5f8f84222b0520a6201822be190259f6bbd9f533b3e36"
+    },
+    {
+      "path": "world/trusted-hub.yaml",
+      "size": 169,
+      "contentType": "text/yaml",
+      "sha256": "f8c0cca0e99c683608e7d1ad03c9be4871ea106821b1610c62234c574231f3f0"
     }
   ]
 }

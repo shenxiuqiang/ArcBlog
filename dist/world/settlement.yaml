@@ -2,6 +2,9 @@ kind: Settlement
 fields:
   orderId: string
   orderKind: string # purchase | tip
+  contentId: string
+  hubShareWithheld: boolean # true when the hub DID had no verified proof (spec §30)
+  attributionId: string
   creatorDid: string
   hubDid: string
   asset: string

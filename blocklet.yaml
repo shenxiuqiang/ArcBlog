@@ -70,6 +70,12 @@ networkRead:
     role: admin
   - path: /instance/app/arcblog/economy/access-grants
     role: admin
+  # Attribution proofs are evidence for settlement (admin-only); trusted Hub
+  # public keys are public by definition.
+  - path: /instance/app/arcblog/economy/attributions
+    role: admin
+  - path: /instance/app/arcblog/config/trusted-hubs
+    role: guest
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -148,3 +154,14 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
+  # spec §30–§33: discovery proofs and the Hub keys needed to verify them.
+  economy-attributions:
+    canonical: instance/app/arcblog/economy/attributions/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  config-trusted-hubs:
+    canonical: instance/app/arcblog/config/trusted-hubs/*
+    copy: none
+    minRole: admin
+    readRole: guest

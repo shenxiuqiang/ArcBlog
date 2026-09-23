@@ -162,6 +162,8 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/lib/roles.mjs` — pure role/capability engine (fail-closed: a role grants nothing until verified)
 - `scripts/arcblog-economy.mjs` — economy: versioned split policy, products, orders, settlement and the append-only ledger (spec §29/§41–§43/§89–§92)
 - `scripts/lib/economy.mjs` — pure money/split logic in integer minor units (splits always sum back exactly)
+- `scripts/arcblog-attribution.mjs` — Hub discovery proofs: Ed25519 keygen/sign/verify/trust (spec §30–§33)
+- `scripts/lib/attribution.mjs` — canonical payload, sign/verify, trusted-hub store, verified-attribution lookup
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
 - `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 

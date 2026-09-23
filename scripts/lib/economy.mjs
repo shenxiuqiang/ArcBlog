@@ -152,6 +152,7 @@ export function buildOrder(input = {}, { now = new Date().toISOString(), existin
     creatorDid: str(input.creatorDid ?? existing?.creatorDid),
     hubDid: str(input.hubDid ?? existing?.hubDid),
     productId: str(input.productId ?? existing?.productId),
+    contentId: str(input.contentId ?? existing?.contentId),
     amount: str(input.amount ?? existing?.amount ?? '0'),
     asset: str(input.asset ?? existing?.asset) || 'USDC',
     status: str(input.status ?? existing?.status) || 'pending',
@@ -191,27 +192,36 @@ export function validateOrder(order) {
  * Build a Settlement record (spec §43) from a paid order + a policy version.
  * Refuses orders that are not paid — payment and settlement are separate phases
  * (spec §89) and ArcBlog never settles on an unverified payment.
+ *
+ * `attributed` is the caller's verdict on the Hub's discovery proof (spec
+ * §30/§33). It defaults to **false**: a Hub DID alone is not evidence, so an
+ * unattributed hub share is folded into the creator's amount instead of being
+ * paid out or lost.
  */
-export function buildSettlement(order, policy, { now = new Date().toISOString() } = {}) {
+export function buildSettlement(order, policy, { now = new Date().toISOString(), attributed = false, attributionId = '' } = {}) {
   if (str(order?.status) !== 'paid') {
     const err = new Error(`VALIDATION: order ${order?.id ?? '?'} is ${order?.status ?? 'unknown'}, not paid (spec §89)`);
     err.code = 'INVALID_TRANSITION';
     throw err;
   }
   const split = splitAmount(order.amount, policy);
-  // No Hub attribution (spec §34: a reader who arrived directly has no hub).
-  // The hub share must not evaporate — it goes to the creator, which keeps the
-  // ledger summing to the order amount.
+  // A hub share is only payable when something verifiable proved the discovery
+  // (§30). Otherwise — and with no Hub at all (§34) — it goes to the creator, so
+  // the ledger keeps accounting for the full amount.
   const hasHub = Boolean(str(order.hubDid));
-  const creatorAmount = hasHub
+  const hubPayable = hasHub && Boolean(attributed);
+  const creatorAmount = hubPayable
     ? split.creator
     : fromMinor(toMinor(split.creator) + toMinor(split.hub));
-  const hubAmount = hasHub ? split.hub : '0';
+  const hubAmount = hubPayable ? split.hub : '0';
   return {
     orderId: order.id,
     orderKind: str(order.kind) || 'purchase',
+    contentId: str(order.contentId),
     creatorDid: order.creatorDid,
     hubDid: order.hubDid,
+    hubShareWithheld: hasHub && !hubPayable,
+    attributionId: str(attributionId),
     asset: order.asset,
     amount: order.amount,
     creatorAmount,

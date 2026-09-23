@@ -96,7 +96,8 @@ test('buildSettlement refuses an order that is not paid (spec §89)', () => {
 
 test('ledgerEntriesFor is deterministic, skips empty shares and sums to the amount', () => {
   const order = buildOrder({ id: 'o2', creatorDid: 'did:key:zA', hubDid: 'did:key:zH', productId: 'p1', amount: '10', asset: 'USDC', status: 'paid' });
-  const entries = ledgerEntriesFor(buildSettlement(order, policy()));
+  // attributed: true — an unattributed hub share is withheld (spec §30)
+  const entries = ledgerEntriesFor(buildSettlement(order, policy(), { attributed: true }));
   assert.deepEqual(entries.map((e) => e.id), ['o2:creator_share', 'o2:hub_share', 'o2:protocol_fee']);
   assert.equal(sumLedger(entries), '10');
 
@@ -153,7 +154,10 @@ test('live economy roundtrip: product → order → pay → settle → ledger co
   assert.equal(settled.status, 0, settled.stderr);
   const receipt = json(settled.stdout);
   assert.equal(receipt.settlement.status, 'settled');
-  assert.equal(receipt.ledgerEntriesAppended, 3);
+  // The order names a hub but has no verified attribution, so the hub share is
+  // withheld and folded into the creator (spec §30): creator_share + protocol_fee.
+  assert.equal(receipt.ledgerEntriesAppended, 2);
+  assert.equal(receipt.settlement.hubShareWithheld, true);
   const { creatorAmount, hubAmount, protocolAmount, amount } = receipt.settlement;
   assert.equal(String(Number(creatorAmount) + Number(hubAmount) + Number(protocolAmount)), String(Number(amount)));
 
@@ -165,7 +169,7 @@ test('live economy roundtrip: product → order → pay → settle → ledger co
   const ledger = run(['ledger', 'list', '--order', orderId]);
   assert.equal(ledger.status, 0, ledger.stderr);
   const rows = json(ledger.stdout);
-  assert.equal(rows.count, 3);
+  assert.equal(rows.count, 2);
   assert.equal(rows.total, amount);
 });
 
@@ -238,10 +242,26 @@ test('without Hub attribution the hub share goes to the creator (spec §34)', ()
   // the ledger must still account for the whole amount
   assert.equal(sumLedger(ledgerEntriesFor(settlement)), '5');
 
-  const withHub = buildSettlement({ ...noHub, hubDid: 'did:key:zHub' }, policy());
+  const withHub = buildSettlement({ ...noHub, hubDid: 'did:key:zHub' }, policy(), { attributed: true });
   assert.equal(withHub.hubAmount, '0.75');
   assert.equal(withHub.creatorAmount, '4');
+  assert.equal(withHub.hubShareWithheld, false);
   assert.equal(sumLedger(ledgerEntriesFor(withHub)), '5');
+});
+
+test('a hub DID without a verified proof is not paid (spec §30/§33)', () => {
+  const order = buildOrder({ id: 'o11', kind: 'purchase', productId: 'p1', creatorDid: 'd', hubDid: 'did:key:zHub', amount: '5', status: 'paid' });
+  // default: attributed = false — a DID alone is not evidence
+  const withheld = buildSettlement(order, policy(), { attributionId: '' });
+  assert.equal(withheld.hubAmount, '0');
+  assert.equal(withheld.hubShareWithheld, true);
+  assert.equal(withheld.creatorAmount, '4.75');
+  assert.equal(sumLedger(ledgerEntriesFor(withheld)), '5');
+
+  const paid = buildSettlement(order, policy(), { attributed: true, attributionId: 'a1' });
+  assert.equal(paid.hubAmount, '0.75');
+  assert.equal(paid.attributionId, 'a1');
+  assert.equal(paid.hubShareWithheld, false);
 });
 
 test('live tip settles without granting access', () => {

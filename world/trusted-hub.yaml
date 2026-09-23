@@ -1,0 +1,7 @@
+kind: TrustedHub
+fields:
+  hubDid: string
+  publicKey: string # PEM public key; private keys never enter AFS
+  label: string
+  createdAt: datetime
+  updatedAt: datetime

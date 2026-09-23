@@ -14,6 +14,7 @@
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { INSTANCE_ROOT, list, nowIso } from './lib/arc.mjs';
+import { findVerifiedAttribution } from './lib/attribution.mjs';
 import {
   buildAccessGrant,
   buildOrder,
@@ -140,6 +141,7 @@ function commandOrderCreate(opts, instance) {
     creatorDid: opts['creator-did'] || product.value.creatorDid,
     hubDid: opts['hub-did'],
     productId,
+    contentId: product.value.contentId,
     amount: opts.amount || product.value.priceAmount,
     asset: opts.asset || product.value.priceAsset,
     status: 'pending',
@@ -224,6 +226,7 @@ function commandTipCreate(opts, instance) {
     buyerDid: opts['buyer-did'],
     creatorDid,
     hubDid: opts['hub-did'],
+    contentId: opts['content-id'],
     amount,
     asset: opts.asset,
     status: 'pending',
@@ -268,7 +271,23 @@ function commandSettle(opts, instance) {
   }
 
   const orderRecord = requireRecord(ORDERS_DIR, orderId, instance, 'order');
-  const settlement = buildSettlement(orderRecord.value, policyRecord.value);
+  const order = orderRecord.value;
+
+  // A hub share requires a *verified* discovery proof (spec §30/§33). Without
+  // one the hub share folds into the creator's amount rather than being paid out
+  // on an unverifiable claim.
+  const product = order.productId
+    ? readJson(`${PRODUCTS_DIR}/${order.productId}.json`, instance)?.value ?? null
+    : null;
+  const contentId = order.contentId || product?.contentId || '';
+  const attribution = order.hubDid
+    ? findVerifiedAttribution(instance, { contentId, hubDid: order.hubDid })
+    : null;
+
+  const settlement = buildSettlement(order, policyRecord.value, {
+    attributed: Boolean(attribution),
+    attributionId: attribution?.id ?? '',
+  });
   const entries = ledgerEntriesFor(settlement);
 
   // Ledger first with deterministic ids: a retry cannot double-post (spec §92).
@@ -280,12 +299,19 @@ function commandSettle(opts, instance) {
   }
   writeJson(`${SETTLEMENTS_DIR}/${orderId}.json`, settlement, instance, undefined);
 
-  const order = { ...orderRecord.value, settlementVersion: settlement.policyVersion, settledAt: nowIso(), updatedAt: nowIso() };
-  writeJson(`${ORDERS_DIR}/${orderId}.json`, order, instance, orderRecord.ifMatch ?? undefined);
+  const settledOrder = { ...order, settlementVersion: settlement.policyVersion, settledAt: nowIso(), updatedAt: nowIso() };
+  writeJson(`${ORDERS_DIR}/${orderId}.json`, settledOrder, instance, orderRecord.ifMatch ?? undefined);
 
   console.log(
     JSON.stringify(
-      { ok: true, action: 'settle', settlement, ledgerEntriesAppended: appended, ledgerTotal: sumLedger(entries) },
+      {
+        ok: true,
+        action: 'settle',
+        settlement,
+        hubAttribution: attribution?.id ?? null,
+        ledgerEntriesAppended: appended,
+        ledgerTotal: sumLedger(entries),
+      },
       null,
       2,
     ),

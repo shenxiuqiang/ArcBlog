@@ -6,6 +6,7 @@ fields:
   creatorDid: string
   hubDid: string
   productId: string
+  contentId: string # carried from the product; used for attribution matching
   amount: string
   asset: string
   status: string # pending | paid | failed | refunded (spec §42)

@@ -1,0 +1,12 @@
+kind: DiscoveryContext
+fields:
+  id: string
+  hubDid: string
+  studioDid: string
+  contentId: string
+  issuedAt: datetime
+  expiresAt: datetime
+  signature: string # Ed25519 over the canonical payload (spec §32/§33)
+  verified: boolean # only a verified attribution justifies a hub share (spec §30)
+  createdAt: datetime
+  updatedAt: datetime

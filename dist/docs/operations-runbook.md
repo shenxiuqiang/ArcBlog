@@ -147,6 +147,30 @@ Rules the commands enforce:
 - **Tips vs paid reading** (spec §36): a `tip` order has no product and never
   grants access; paying a `purchase` whose product has a `contentId` writes an
   Access Grant (spec §37/§88), checked with `access check --content … --reader …`.
+- **Hub shares need proof** (spec §30/§33): if an order names a hub but no
+  *verified* attribution exists for that content + hub DID, the hub share is
+  withheld and folded into the creator (`hubShareWithheld: true`). A hub DID on
+  its own is a claim, not evidence.
+
+## Hub attribution (spec §30–§33)
+
+```bash
+node scripts/arcblog-attribution.mjs keygen --out ./hub-private.pem   # mode 0600, never in AFS
+node scripts/arcblog-attribution.mjs sign --key ./hub-private.pem \
+  --hub-did did:key:zHub --studio-did did:blocklet:arcblog --content-id my-article --out ./ctx.json
+node scripts/arcblog-attribution.mjs trust --hub-did did:key:zHub --pubkey ./hub-public.pem
+node scripts/arcblog-attribution.mjs verify --context ./ctx.json --store
+node scripts/arcblog-attribution.mjs attributions --content my-article
+```
+
+- `verify` without `--pubkey` checks the signature against the key **already
+  trusted** for that `hubDid`; a hub that is not trusted fails even with a valid
+  signature (`hub is not trusted`).
+- `--pubkey` is the first-contact path only; it does not record trust.
+- Tampering with any signed field (`contentId`, `hubDid`, `studioDid`, `issuedAt`,
+  `expiresAt`) invalidates the proof; expired proofs are rejected after the
+  signature check.
+- Ed25519 comes from `node:crypto` — no dependencies.
 
 ## Growth operations
 ### Generate RSS
