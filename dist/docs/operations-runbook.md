@@ -219,6 +219,29 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Filtered lists and the query index
+
+`afs-list` `filter` / `serverFilters` push a `where` clause down to
+`/.actions/query`, and that query only sees **indexed** records. Editing a record
+(`publish --update`) leaves its index entry stale, so the record silently
+disappears from every filtered list — while still rendering fine in unfiltered
+ones. A freshly created path is indexed; re-creating an existing path is not
+and the index only covers **small** records at all — a post with a ~2.5 KB body is
+not indexed while a ~800 byte one is, so ordinary posts never show up in
+provider-query results (`arc/arcblog-query-posts.mjs` included). See
+`arc-contracts.md` §15 for the measurements.
+
+The app therefore avoids the pushdown where it is not essential:
+
+- the home feed and the studio quick-add list rely on the **directory boundary**
+  (`posts/` holds published records, `drafts/` is private) instead of a status filter;
+- the operations page reads its single discovery/policy records with `propBind`;
+- the home category chips were removed, because a filter that silently drops
+  posts is worse than no filter.
+
+If you add a filtered list, verify it against a record that was **edited**
+(not just created) before trusting it.
+
 ## Home hero carousel
 
 The home hero is a **custom Web Device component** embedded with `frame`, not the

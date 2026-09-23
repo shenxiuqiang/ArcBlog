@@ -232,5 +232,6 @@
   "dashboard.login": "Sign in with DID Wallet",
   "operations.gate-title": "Operations",
   "operations.gate-desc": "Sign in with DID Wallet to view node health, Hubs, economy and agent state.",
-  "operations.login": "Sign in with DID Wallet"
+  "operations.login": "Sign in with DID Wallet",
+  "posts.read-story": "Read story →"
 }

@@ -92,7 +92,7 @@
               "background": "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"
             }
           },
-          "visible": "$state.post.coverImage",
+          "visible": "${state.post.coverImage}",
           "children": [
             {
               "id": "reader-cover-text-1",

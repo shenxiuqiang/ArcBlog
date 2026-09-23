@@ -43,19 +43,20 @@ app "ArcBlog" {
     view gap=lg {
       frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel"
       h2 :feed level=2
-      afs-list published-feed layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none filter={field: "content.status", match: published} serverFilters=[{key: category, control: chips, urlParam: category, options: [{value: "", label: :tf-all}, {value: technology, label: :tf-tech}, {value: design, label: :tf-design}, {value: life, label: :tf-life}], push: {field: "category", op: eq}}] from "/instance/app/arcblog/posts" {
-        row postRow cross=center gap=md role=item style={padding: "var(--space-block, 24px)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 24px)"} {
-          view postLink gap=xs href="/posts/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
-            h3 "${entry.content.title}"
-            p "${entry.content.summary}" intent=muted
+  afs-list published-feed layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none from "/instance/app/arcblog/posts" {
+        row postRow cross=center gap=lg role=item style={padding: "var(--space-block, 28px)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)"} {
+          view postLink gap=sm href="/posts/${entry.content.slug}" size={flex: 1} style={display: "block", textDecoration: "none", color: "inherit", cursor: "pointer", minWidth: 0} {
+            h3 "${entry.content.title}" scale=lg style={margin: "0", lineHeight: "1.3"}
             row gap=xs cross=center {
               p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              p "·" scale=sm intent=muted
               view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
                 time mode=display value="${entry.content.publishedAt}" timeMode=relative
               }
             }
+            p "${entry.content.summary}" intent=muted scale=sm style={margin: "0"}
           }
-          view postCover href="/posts/${entry.content.slug}" style={display: block, width: "168px", height: "112px", flexShrink: 0, borderRadius: "var(--radius-lg, 12px)", background: "url(${entry.content.coverImage}) center / cover no-repeat, linear-gradient(135deg, var(--color-border), var(--color-dim))"} {
+          view postCover visible="${entry.content.coverImage}" href="/posts/${entry.content.slug}" style={display: block, flexGrow: 0, flexShrink: 0, flexBasis: "200px", width: "200px", height: "132px", borderRadius: "var(--radius-lg, 12px)", background: "url(${entry.content.coverImage}) center / cover no-repeat"} {
             text content=" "
           }
         }
@@ -235,7 +236,7 @@ app "ArcBlog" {
         p :not-found intent=muted
       }
       view reader-article gap=md visible="$state.post" {
-        view reader-cover visible="$state.post.coverImage" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
+        view reader-cover visible="${state.post.coverImage}" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
           text content=" "
         }
         h1 reader-title "${state.post.title}" level=1 scale=display
@@ -396,7 +397,7 @@ app "ArcBlog" {
         afs-dropzone
         h3 :hero-quickadd-title level=3
         p :hero-quickadd-hint intent=muted scale=caption
-        afs-list hero-quickadd-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true filter={field: "content.status", match: published} events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} from "/instance/app/arcblog/posts" {
+        afs-list hero-quickadd-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} from "/instance/app/arcblog/posts" {
           row heroPostRow cross=center role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
             view gap=xs size={flex: 1} style={minWidth: 0} {
               h3 "${entry.content.title}"
@@ -689,18 +690,16 @@ app "ArcBlog" {
         p :health-checked scale=sm intent=muted
         time mode=display value="${state.health.checkedAt}" timeMode=relative
       }
-      card gap=md {
+      card gap=md propBind={discovery: "/instance/app/arcblog/node/discovery.json"} {
         h2 :discovery level=2
-          afs-list ops-discovery layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:discovery-empty filter={field: "content.protocol", match: arcblog} from "/instance/app/arcblog/node" {
-            row opsDiscoveryRow role=item gap=xs {
-              p :discovery-protocol scale=sm intent=muted
-              p "${entry.content.protocol}" scale=sm
-              p :discovery-transport scale=sm intent=muted
-              p "${entry.content.transport}" scale=sm
-              p :discovery-generated scale=sm intent=muted
-              time mode=display value="${entry.content.generatedAt}" timeMode=relative
-            }
-          }
+        row opsDiscoveryRow gap=xs {
+          p :discovery-protocol scale=sm intent=muted
+          p "${state.discovery.protocol}" scale=sm
+          p :discovery-transport scale=sm intent=muted
+          p "${state.discovery.transport}" scale=sm
+          p :discovery-generated scale=sm intent=muted
+          time mode=display value="${state.discovery.generatedAt}" timeMode=relative
+        }
         p :discovery-empty scale=sm intent=muted
       }
       card gap=md {
@@ -718,16 +717,14 @@ app "ArcBlog" {
           }
         p :hubs-empty scale=sm intent=muted
       }
-      card gap=md {
+      card gap=md propBind={policy: "/instance/app/arcblog/economy/policies/active.json"} {
         h2 :policy level=2
-          afs-list ops-policy layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:policy-empty filter={field: "content.version", match: v1} from "/instance/app/arcblog/economy/policies" {
-            row opsPolicyRow role=item gap=xs {
-              p :policy-split scale=sm intent=muted
-              p "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}" scale=sm
-              p :policy-adapter scale=sm intent=muted
-              p "${entry.content.paymentAdapter}" scale=sm
-            }
-          }
+        row opsPolicyRow gap=xs {
+          p :policy-split scale=sm intent=muted
+          p "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}" scale=sm
+          p :policy-adapter scale=sm intent=muted
+          p "${state.policy.paymentAdapter}" scale=sm
+        }
         p :policy-empty scale=sm intent=muted
       }
       card gap=md {

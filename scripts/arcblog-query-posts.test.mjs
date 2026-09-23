@@ -1,6 +1,8 @@
-import test from 'node:test';
+import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,6 +25,54 @@ function run(args, env = {}) {
 function json(stdout) {
   return JSON.parse(stdout);
 }
+
+// The provider query index only covers SMALL records: measured on this platform, a
+// published post with an ~800 byte body is found by `where`, while one with a
+// ~2.5 KB body is not (`docs/arc-contracts.md` §15). These tests therefore publish
+// their own tiny fixture instead of depending on whatever content the instance
+// happens to hold — the assertion they protect is the pushdown path, not the demo
+// data.
+const FIXTURE = {
+  slug: 'query-fixture',
+  title: 'Query Fixture',
+  category: 'technology',
+  tag: 'identity',
+  author: 'did:key:zQueryFixture',
+};
+
+before(() => {
+  const bodyFile = join(tmpdir(), 'arcblog-query-fixture.md');
+  writeFileSync(bodyFile, '# Query Fixture\n\nFixture record for provider-query tests.\n');
+  execFileSync(
+    process.execPath,
+    [
+      join(repoRoot, 'scripts', 'arcblog-lifecycle.mjs'),
+      'publish',
+      '--title', FIXTURE.title,
+      '--slug', FIXTURE.slug,
+      '--author-did', FIXTURE.author,
+      '--body-file', bodyFile,
+      '--category', FIXTURE.category,
+      '--tags', FIXTURE.tag,
+      '--summary', 'Fixture record for provider-query tests.',
+      '--update',
+    ],
+    { cwd: repoRoot, stdio: 'ignore' },
+  );
+});
+
+after(() => {
+  // published -> deleted is not a legal transition; archive first. Cleanup must
+  // never fail the suite, and `npm test` sweeps any leftover draft record.
+  const lifecycle = join(repoRoot, 'scripts', 'arcblog-lifecycle.mjs');
+  for (const step of ['archive', 'delete']) {
+    try {
+      execFileSync(process.execPath, [lifecycle, step, '--slug', FIXTURE.slug], { cwd: repoRoot, stdio: 'ignore' });
+    } catch {
+      /* the cleaner (`scripts/run-tests.mjs`) removes whatever is left */
+    }
+  }
+});
 
 test('query works via action or fallback for any status', () => {
   const res = run(['deleted']);
@@ -125,10 +175,18 @@ test('query helpers build typed predicates and decode inline content', async () 
   // queryRecords normalises both
   const projected = arc.queryRecords('/instance/app/arcblog/posts', { select: ['slug'] });
   const plain = arc.queryRecords('/instance/app/arcblog/posts');
-  assert.deepEqual(
-    projected.map((record) => record.slug).sort(),
-    plain.map((record) => record.slug).sort(),
-  );
-  assert.ok(plain.length >= 1);
-  for (const record of plain) assert.ok(record.title);
+  // The projected read goes through the provider query (indexed records only),
+  // while the unprojected one may fall back to a directory listing — and the
+  // index only covers small records (`docs/arc-contracts.md` §15). So assert the
+  // relationship that must hold, not set equality.
+  // A record whose content was not inlined (a large body is not indexed, §15)
+  // legitimately has no decodable fields, so only compare what decoded.
+  const slugsOf = (records) => records.map((record) => record.slug).filter(Boolean).sort();
+  const projectedSlugs = slugsOf(projected);
+  const plainSlugs = slugsOf(plain);
+  assert.ok(projectedSlugs.includes(FIXTURE.slug), `index must cover the fixture, got ${projectedSlugs}`);
+  for (const slug of projectedSlugs) assert.ok(plainSlugs.includes(slug), `${slug} missing from the listing`);
+  const fixtureRecord = plain.find((record) => record.slug === FIXTURE.slug);
+  assert.ok(fixtureRecord, 'the fixture must appear in the listing');
+  assert.ok(fixtureRecord.title, 'inline content must decode into an object');
 });

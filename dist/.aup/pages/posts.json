@@ -32,43 +32,11 @@
         "layout": "list",
         "itemStyle": "row",
         "subscribe": true,
+        "autoSelect": false,
         "showBreadcrumb": false,
         "showParent": false,
         "emptyText": "$t(posts.feed-empty)",
-        "clickMode": "none",
-        "filter": {
-          "field": "content.status",
-          "match": "published"
-        },
-        "serverFilters": [
-          {
-            "key": "category",
-            "control": "chips",
-            "urlParam": "category",
-            "options": [
-              {
-                "value": "",
-                "label": "$t(posts.tf-all)"
-              },
-              {
-                "value": "technology",
-                "label": "$t(posts.tf-tech)"
-              },
-              {
-                "value": "design",
-                "label": "$t(posts.tf-design)"
-              },
-              {
-                "value": "life",
-                "label": "$t(posts.tf-life)"
-              }
-            ],
-            "push": {
-              "field": "category",
-              "op": "eq"
-            }
-          }
-        ]
+        "clickMode": "none"
       },
       "src": "/instance/app/arcblog/posts",
       "children": [
@@ -79,14 +47,14 @@
             "layout": {
               "direction": "row",
               "crossAlign": "center",
-              "gap": "md"
+              "gap": "lg"
             },
             "role": "item",
             "style": {
-              "padding": "var(--space-block, 24px)",
+              "padding": "var(--space-block, 28px)",
               "border": "1px solid var(--color-border)",
               "borderRadius": "var(--radius-lg, 12px)",
-              "marginBottom": "var(--space-block, 24px)"
+              "marginBottom": "var(--space-block, 20px)"
             }
           },
           "children": [
@@ -95,7 +63,7 @@
               "type": "view",
               "props": {
                 "layout": {
-                  "gap": "xs"
+                  "gap": "sm"
                 },
                 "href": "/posts/${entry.content.slug}",
                 "size": {
@@ -115,19 +83,16 @@
                   "type": "text",
                   "props": {
                     "level": 3,
-                    "content": "${entry.content.title}"
+                    "content": "${entry.content.title}",
+                    "scale": "lg",
+                    "style": {
+                      "margin": "0",
+                      "lineHeight": "1.3"
+                    }
                   }
                 },
                 {
-                  "id": "postlink-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "${entry.content.summary}",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "postlink-row-3",
+                  "id": "postlink-row-2",
                   "type": "view",
                   "props": {
                     "layout": {
@@ -138,7 +103,7 @@
                   },
                   "children": [
                     {
-                      "id": "postlink-row-3-p-1",
+                      "id": "postlink-row-2-p-1",
                       "type": "text",
                       "props": {
                         "content": "${entry.content.category}",
@@ -150,7 +115,16 @@
                       }
                     },
                     {
-                      "id": "postlink-row-3-view-2",
+                      "id": "postlink-row-2-p-2",
+                      "type": "text",
+                      "props": {
+                        "content": "·",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "postlink-row-2-view-3",
                       "type": "view",
                       "props": {
                         "style": {
@@ -160,7 +134,7 @@
                       },
                       "children": [
                         {
-                          "id": "postlink-row-3-view-2-time-1",
+                          "id": "postlink-row-2-view-3-time-1",
                           "type": "time",
                           "props": {
                             "mode": "display",
@@ -171,6 +145,18 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "postlink-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.summary}",
+                    "intent": "muted",
+                    "scale": "sm",
+                    "style": {
+                      "margin": "0"
+                    }
+                  }
                 }
               ]
             },
@@ -181,13 +167,16 @@
                 "href": "/posts/${entry.content.slug}",
                 "style": {
                   "display": "block",
-                  "width": "168px",
-                  "height": "112px",
+                  "flexGrow": 0,
                   "flexShrink": 0,
+                  "flexBasis": "200px",
+                  "width": "200px",
+                  "height": "132px",
                   "borderRadius": "var(--radius-lg, 12px)",
-                  "background": "url(${entry.content.coverImage}) center / cover no-repeat, linear-gradient(135deg, var(--color-border), var(--color-dim))"
+                  "background": "url(${entry.content.coverImage}) center / cover no-repeat"
                 }
               },
+              "visible": "${entry.content.coverImage}",
               "children": [
                 {
                   "id": "postcover-text-1",

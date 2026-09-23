@@ -538,3 +538,57 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 `manifest.json`（`hasScript: true`）、`render.js`（`export function render(ctx)` → `{html}`，
 `ctx` 提供 `props`/`escapeHtml`）、`script.js`、`style.css`；页面在 `pages/<name>/layout.aup` 里
 写 `<name> slot=main`，随后用 `frame src="/p/en/<name>/"` 嵌入 AUP 页面。
+
+## 15. 列表筛选、查询索引与异步 `visible`（首页/正文页实测）
+
+### 15.1 `filter` / `serverFilters` 会下推成服务端查询
+
+`afs-list` 的 `filter={field: "content.status", match: published}` 与分类 chips 都会编译成
+`where` 下推，运行时会调用 `/.actions/query`（捕获到的真实负载：
+`{"path":"/instance/app/arcblog/posts","skipTotal":true,"where":{"eq":"technology","field":"category"}}`）。
+字段本身可查（`category`/`slug`/`title`/`summary`/`status` 实测都能匹配），**但查询只覆盖索引里的记录**：
+
+| 记录 | 来源 | `where` 能否查到 |
+|---|---|---|
+| `probe-post.json` | CLI 新建（新路径） | ✅ |
+| `index-probe.json` | CLI 新建（新路径） | ✅ |
+| `hello-arcblog.json` | 既有记录（被 `publish --update` 改写过） | ❌ 删除+重建、改内容、`/modules/index` 的 `index`/`reindex`/`cleanup` 都无效 |
+
+另一条更硬的边界：**索引只覆盖"小"记录**。受控实验（同一目录、同一 CLI 写入）：
+
+| 记录正文体积 | `where` 能否命中 |
+|---|---|
+| ~50 B（`probe-a`/`probe-b`） | ✅ |
+| 789 B（`probe-k`） | ✅ |
+| 2.5 KB（`probe-mid`） | ❌ |
+| 4.9 KB（示例文章正文 3.7 KB markdown） | ❌ |
+
+所以带正常正文的文章**不会**出现在 provider 查询结果里（同一目录下不带 `where` 的查询/回退列表仍能看到它们）。
+这直接影响 `scripts/arcblog-query-posts.mjs`（走 provider 查询）与任何 `filter`/chips。
+因此 `scripts/arcblog-query-posts.test.mjs` 现在自带一条**小正文 fixture** 来验证下推路径，
+不再依赖实例里恰好存在的可查询数据。
+
+结论：**编辑既有记录会让它的索引条目变 stale（不再被 `where` 命中），只有新路径才会重新入索引**。
+`/modules/index/.actions/verify` 显示 480 条中 477 条是 stale；`cleanup` 清掉它们也不恢复被改写记录的可见性。
+因此任何依赖 `filter` 的列表（首页 feed、工作室快速添加、operations 的 discovery/policy、
+以及分类 chips）都会**静默丢记录**。
+
+采用的修法（都不依赖索引）：
+- 首页 feed 与工作室快速添加：**去掉 `filter`**，改由目录边界保证语义（`posts/` 只放已发布，`drafts/` 私有）。
+- operations 的 discovery / policy：改为 **`propBind` 单记录读取**（`node/discovery.json`、`economy/policies/active.json`）。
+- 分类 chips 暂时移除：下推查询会漏掉索引失效的记录，宁可没有筛选也不要静默少文章。
+
+### 15.2 异步 `propBind` 数据上的 `visible` 必须用插值形式
+
+正文页封面原本写 `visible="$state.post.coverImage"`：记录异步到达后**元素始终不出现**
+（DOM 里根本没有 `reader-cover`），而同一层的 `visible="$state.post"` 却能正常翻转。
+改为插值形式 `visible="${state.post.coverImage}"` 后立即渲染（1136×280）。
+规则：**异步数据上的 `visible` 用 `${state.x.y}`，不要用 `$state.x.y`。**
+
+### 15.3 其他
+
+- `arc afs ls/read/write` 在根作用域看不到 `/instance/...`；读 instance 路径要用
+  `arc afs exec /blocklets/arcblog/.actions/{list,read,write,delete}`。
+- `afs-list` 的 row 会给直接子元素加 `flex: 1 1 0%`，只看 `flexShrink: 0` 挡不住拉伸：
+  固定尺寸的封面要同时写 `flexGrow: 0` + `flexBasis`。
+- `autoSelect=false` 可避免列表首项被标记为选中（否则第一张卡片会带选中底色）。

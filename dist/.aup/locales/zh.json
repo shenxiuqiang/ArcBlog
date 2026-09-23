@@ -232,5 +232,6 @@
   "dashboard.login": "使用 DID Wallet 登录",
   "operations.gate-title": "运维",
   "operations.gate-desc": "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。",
-  "operations.login": "使用 DID Wallet 登录"
+  "operations.login": "使用 DID Wallet 登录",
+  "posts.read-story": "阅读全文 →"
 }

@@ -857,11 +857,7 @@
             "emptyText": "$t(admin.content-empty)",
             "clickMode": "select",
             "autoSelect": false,
-            "selectAlwaysFires": true,
-            "filter": {
-              "field": "content.status",
-              "match": "published"
-            }
+            "selectAlwaysFires": true
           },
           "src": "/instance/app/arcblog/posts",
           "events": {
