@@ -111,15 +111,26 @@ export function checkAuthorship(records) {
  * becomes an operational surprise.
  */
 export const TEST_RECORD_PREFIXES = [
+  // Unambiguous ids only. A bare `attr-` or `agent-` would also match plausible
+  // production ids (attribution ids are derived from a content slug), so every
+  // entry here carries the distinctive token the test suite actually uses.
   'spike-',
-  'attr-',
   'unattr-',
   'econ-test-',
-  'agent-',
   'probe-',
   'cmsprobe',
   'ledger-order-',
   'ledger-product-',
+  'attr-ok-',
+  'attr-other-',
+  'attr-product-',
+  'attr-live-',
+  'attr-paid-',
+  'attr-order-',
+  'attr-prod-',
+  'attr-content-',
+  'agent-surface-',
+  'agent-draft',
 ];
 
 /** Does an AFS entry id look like test residue? */

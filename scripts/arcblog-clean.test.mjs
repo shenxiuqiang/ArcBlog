@@ -4,6 +4,8 @@ import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { readFileSync } from 'node:fs';
+
 import { CLEAN_DIRS, findTestRecords } from './arcblog-clean.mjs';
 import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
 
@@ -61,4 +63,22 @@ test('live: the dry run reports residue and deletes nothing', () => {
   assert.equal(report.removed, 0);
   assert.ok(report.found >= found.length, `${report.found} < ${found.length}`);
   assert.match(report.hint, /--confirm/);
+});
+
+test('the residue matcher cannot swallow plausible production ids', () => {
+  // A bare `attr-` or `agent-` prefix would also match real ids: attribution ids
+  // are derived from a content slug, so `attr-<slug>-<hash>` is a legal id.
+  assert.ok(!TEST_RECORD_PREFIXES.includes('attr-'));
+  assert.ok(!TEST_RECORD_PREFIXES.includes('agent-'));
+  assert.equal(isTestRecordId('agent-handbook:creator_share.json'), false);
+  assert.equal(isTestRecordId('attr-migration-guide-9f3a1c.json'), false);
+  // …while the tokens the suite actually uses are still recognised
+  assert.equal(isTestRecordId('attr-ok-1790162244441:creator_share.json'), true);
+  assert.equal(isTestRecordId('agent-surface-draft-1790164.json'), true);
+});
+
+test('the quality gate cleans residue after a passing run', () => {
+  const pkg = JSON.parse(readFileSync(join(repoRoot, 'package.json'), 'utf8'));
+  assert.match(pkg.scripts.test, /run-tests\.mjs/);
+  assert.match(readFileSync(join(repoRoot, 'scripts', 'run-tests.mjs'), 'utf8'), /only happens after a \*passing\* run/);
 });

@@ -231,9 +231,15 @@ node scripts/arcblog-clean.mjs --confirm  # delete it
 node scripts/arcblog-clean.mjs --dir economy/ledger
 ```
 
-Only ids carrying a known test prefix are touched, and `posts/` / `heroes/` are
-never scanned — published content is not residue. Without `--confirm` nothing is
-deleted.
+Only ids carrying a **distinctive** test token are touched, and `posts/` /
+`heroes/` are never scanned — published content is not residue. The matcher
+deliberately avoids bare `attr-` / `agent-` prefixes, which could match a real
+attribution id derived from a content slug. Without `--confirm` nothing is deleted.
+
+`npm test` runs this sweep automatically after a **passing** run, so the instance
+stops growing: a development machine had 805 accumulated records before that was
+wired up. A failing run keeps its residue so the records can be inspected, and
+`ARCBLOG_NO_CLEAN=1` disables the sweep.
 
 ### Ledger access cost
 

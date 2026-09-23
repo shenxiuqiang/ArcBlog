@@ -12,6 +12,9 @@
 //
 // Deleting is destructive, so it is opt-in: without --confirm nothing is removed.
 
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { INSTANCE_ROOT, fail, list, optString, parseArgs, remove, resolveInstance } from './lib/arc.mjs';
 import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
 
@@ -60,8 +63,8 @@ ${CLEAN_DIRS.map((dir) => `  ${INSTANCE_ROOT}/${dir}`).join('\n')}
 `);
 }
 
-(function main() {
-  const args = parseArgs(process.argv.slice(2));
+export function main(argv = process.argv.slice(2)) {
+  const args = parseArgs(argv);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {
@@ -105,4 +108,9 @@ ${CLEAN_DIRS.map((dir) => `  ${INSTANCE_ROOT}/${dir}`).join('\n')}
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
     process.exit(1);
   }
-})();
+}
+
+// Only run when invoked directly — the test suite imports the helpers above.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}
