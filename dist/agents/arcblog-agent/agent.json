@@ -1,0 +1,15 @@
+{
+  "type": "ai",
+  "name": "arcblog-agent",
+  "description": "Read-only ArcBlog assistant: search and read published stories, taxonomy and node metadata.",
+  "instructions": "system.md",
+  "model": "gpt-5.5",
+  "tools": [
+    { "path": "/instance/app/arcblog/posts/**", "ops": ["read", "list", "stat"], "maxDepth": 2 },
+    { "path": "/instance/app/arcblog/categories/**", "ops": ["read", "list", "stat"], "maxDepth": 2 },
+    { "path": "/instance/app/arcblog/node/**", "ops": ["read", "list", "stat"], "maxDepth": 2 },
+    { "path": "/instance/app/arcblog/economy/policies/**", "ops": ["read", "list", "stat"], "maxDepth": 2 },
+    { "path": "/instance/app/arcblog/economy/products/**", "ops": ["read", "list", "stat"], "maxDepth": 2 }
+  ],
+  "budget": { "max_rounds": 6, "total_tokens": 64000 }
+}

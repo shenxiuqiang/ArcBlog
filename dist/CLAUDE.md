@@ -30,6 +30,7 @@ node scripts/arcblog-media.mjs list          # upload index
 node scripts/arcblog-roles.mjs status        # RoleStatus + withheld capabilities (spec §9-11)
 node scripts/arcblog-economy.mjs policy show # versioned split policy (spec §29)
 node scripts/arcblog-attribution.mjs trusted    # hub public keys (spec §30-33)
+node scripts/arcblog-agent.mjs check         # agent policy: read-only, default-closed tools (spec §59-62)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
 # add `--instance <name>` to target a named Arc instance
 ```
@@ -46,6 +47,7 @@ Both must pass before committing: `arc dsl validate --json` and `npm test`.
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
+- `agents/` — Agent Access declarations (`<name>/agent.dsl`, `agent.json`, `system.md`); the runtime provides `/mcp`, AFS RPC and `llms.txt`, ArcBlog only declares and audits (spec §129).
 - `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.
 - `seed/settings/arcblog/` — default settings records (tone/palette/theme).
 - `dist/` — synchronized build artifacts; update alongside source changes.

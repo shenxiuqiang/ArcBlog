@@ -58,6 +58,10 @@
   "scope": "app",
   "mounts": [
     {
+      "module": "agents/arcblog-agent",
+      "target": "/agents/arcblog-agent"
+    },
+    {
       "module": "pages",
       "target": "/pages"
     }

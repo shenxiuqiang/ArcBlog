@@ -133,8 +133,9 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I8a** ✅ | Phase 8（MVP-3） | Economy 基础：版本化分成策略 + Product/Order/Settlement/Ledger 资源 + 整数最小单位的分成计算（**永远守恒**）+ 支付与结算分离（未支付订单拒绝结算）+ 支付适配器缺省 `none`（fail closed）+ 账本确定性 id（重放不重复记账） | validate + test + check + build（92 测试） |
 | **I8b** ✅ | Phase 8 | Tip 与付费阅读：`order.kind = purchase\|tip`（tip 无 product，spec §36）+ Access Grant（spec §37，支付后授予、`expiresAt: null` 为永久）+ `access check\|list`；**无 Hub 归因时 hub 分成归创作者**（spec §34，测试抓出的守恒缺陷） | validate + test + check + build（99 测试） |
 | **I8c** ✅ | Phase 8 | Hub attribution：Ed25519 签名 Discovery Context（零依赖 `node:crypto`）+ `trust`/`verify --store` + **结算只对已验证归因支付 hub 分成**（spec §30/§33）；私钥只落本地 0600，不入 AFS | validate + test + check + build（111 测试） |
-| I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading | 同上 |
-| I9 | Phase 9（MVP-4） | Agent：`agents/` 声明 + MCP 工具面 + 权限分级 | 同上 |
+| I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading → 已由 I8a/I8b/I8c 交付 ✅ | — |
+| **I9a** ✅ | Phase 9（MVP-4） | Agent Access：`agents/arcblog-agent/` 平台原生声明（path+ops+maxDepth，只读）+ `scripts/arcblog-agent.mjs` 策略审计（只读、隐私路径不外露、深度/预算有界、`settle_payment`/`change_wallet`/`change_role` 默认关闭）+ spec §130 工具目录 | validate + test + check + build（123 测试，`agents: 1`） |
+| I9b | Phase 9 | Agent 工具面深化：把 read 工具映射到具体 AFS 路径/查询，为写工具加显式人工授权流程 | 同上 |
 
 MVP-2（spec §135）落在 I7；MVP-3 落在 I8；MVP-4 落在 I9；spec §138 的 V2 功能不进入本计划。
 

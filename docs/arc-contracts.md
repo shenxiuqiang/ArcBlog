@@ -271,8 +271,26 @@ arc did issue    arc did verify    arc did info    arc did list    arc did issue
 
 - 运行时已有：`/dev/ai/{agent,catalog,models,policies,score-weights,sessions,usage}`。
 - `arc mcp` 把 AFS 暴露为 stdio MCP server；`/.knowledge` 是给 agent 的自描述层。
-- 包内 `agents/<name>/{agent.dsl,agent.json,system.md}` 是官方配方支持的 agent 声明位置。
-- `arc blocklet check .` 会报告 agent 数量（当前 ArcBlog 为 `agents: 0`）。
+- 包内 `agents/<name>/{agent.dsl,agent.json,system.md}` 是官方配方支持的 agent 声明位置
+  （用 `arc blocklet create --recipe agent` 生成，实测契约如下）：
+
+```text
+agent "arcblog-agent" {
+  type ai
+  description "..."
+  instructions "system.md"      # 相对 agent 目录
+  model "gpt-5.5"
+  tool "<AFS path glob>" ops read,list,stat maxDepth <n>   # 可多行
+  budget maxRounds 6 totalTokens 64000
+}
+```
+
+即：**agent 的权限面是「路径 + 操作 + 深度」**，不是自造的 capability 名字。
+这与 spec §61 的默认最小权限一致——只给 `read,list,stat` 就是只读 agent。
+`arc blocklet check .` 会统计 agent 数量（ArcBlog 现在为 `agents: 1`）。
+`scripts/arcblog-agent.mjs check` 在此之上强制 spec 的策略：只读、不触碰
+drafts/orders/settlements/ledger/grants、深度有界、预算有界。
+
 
 ## 7. 质量门与常用命令（实测可用）
 

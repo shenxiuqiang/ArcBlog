@@ -172,6 +172,29 @@ node scripts/arcblog-attribution.mjs attributions --content my-article
   signature check.
 - Ed25519 comes from `node:crypto` — no dependencies.
 
+## Agent Access (spec §59–§62, §129–§130)
+
+```bash
+node scripts/arcblog-agent.mjs show      # declared agents and their AFS tool scopes
+node scripts/arcblog-agent.mjs check     # enforce the agent policy (exit 1 on violation)
+node scripts/arcblog-agent.mjs tools     # tool catalogue + capabilities
+node scripts/arcblog-agent.mjs tools --tool settle_payment
+```
+
+The agent lives in `agents/arcblog-agent/` and is declared with the platform's own
+contract (`path` + `ops` + `maxDepth`). The surface itself — `/mcp`, AFS RPC,
+`llms.txt` — comes from ARC Runtime; ArcBlog only declares and audits.
+
+Policy enforced by `check`:
+
+- **read-only** ops only (`read`, `list`, `stat`, `search`) — spec §61;
+- **never exposed**: `drafts/`, `economy/orders`, `economy/settlements`,
+  `economy/ledger`, `economy/attributions`, `economy/access-grants`,
+  `config/trusted-hubs` (they name buyers/readers);
+- every tool scope is **depth-bounded** and no wildcard over `/`;
+- **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
+  never run without explicit human authorization — spec §130.
+
 ## Growth operations
 ### Generate RSS
 ```bash

@@ -164,6 +164,8 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/lib/economy.mjs` — pure money/split logic in integer minor units (splits always sum back exactly)
 - `scripts/arcblog-attribution.mjs` — Hub discovery proofs: Ed25519 keygen/sign/verify/trust (spec §30–§33)
 - `scripts/lib/attribution.mjs` — canonical payload, sign/verify, trusted-hub store, verified-attribution lookup
+- `scripts/arcblog-agent.mjs` — Agent Access audit: show declared agents, enforce the agent policy, list tools (spec §59–§62/§129–§130)
+- `scripts/lib/agents.mjs` — pure agent policy checks + the spec §130 tool catalogue
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
 - `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 
