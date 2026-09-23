@@ -142,11 +142,12 @@ I14 让 Role/Network/Economy/Media **可观测**（Operations 只读控制台）
 | **I2a** ✅ | Phase 2 | Category 资源：`world/category.yaml` + `scripts/arcblog-category.mjs` + `blocklet.yaml` 声明，并接入 lifecycle 校验（资源为空时回退内置白名单） | validate + test + check + build（40 测试） |
 | **I2b** ✅ | Phase 2 | Media 资源：`world/media.yaml` + `scripts/arcblog-media.mjs`（add/list/show/remove）+ 声明（admin-only 读）；抽出 `lib/util.mjs` 共享 slug | validate + test + check + build（51 测试） |
 | **I2c** ✅ | Phase 2 | Node identity 资源：`world/node-identity.yaml` + `arcblog-node.mjs identity init\|show\|check`（DID 默认取 profile / blocklet.yaml） | validate + test + check + build（56 测试） |
-| I3 | Phase 3 | **按 S3/S4 修正**：Web Device 无 AFS 通道，content-site 烘焙路径又不可达（§8 证据）→ 动态公开面保留 AUP；「逐条静态 SEO」改记为**平台受限**而非 POST-MVP | 决策文档 + 证据（§3.3/§3.4/§8） |
+| **I3** ✅ | Phase 3 | **按 S3/S4 修正**：Web Device 无 AFS 通道，content-site 烘焙路径又不可达（§8 证据）→ 动态公开面保留 AUP；「逐条静态 SEO」改记为**平台受限**而非 POST-MVP | 决策文档 + 证据（§3.3/§3.4/§8） |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
 | **I4b** ✅ | Phase 4 | Dashboard 补齐 spec §16 卡片：**Roles & verification**（读 `config/roles.json`，含 transform 取嵌套字段）、Economy / Agent 先显示"未启用（MVP-3/4）"（**该文案在 I13 被修正**：MVP-3/4 已实现，Dashboard 一度在说谎）；man 页同步 | validate + test + check + build（221 文件） |
 | **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
-| I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
+| **I5** ✅ | Phase 1 收口 | `arc blocklet check` + `build` 每轮纳入门禁；`dist/` 与源码同步提交（每轮 rebuild，当前 253 文件） | 每轮 check + build |
+| **I5-pending** | Phase 1 验收 | `arc blocklet run`（spec Phase 1 验收项之一）**未执行**：它会把当前源码投放到 daemon 上、改变线上所见，等价于部署。需要使用者授权（同 `arc blocklet instance deploy`） | 待授权 |
 | **I6a** ✅ | Phase 5 | Identity 契约固化：`scripts/arcblog-doctor.mjs`（资源目录 / node profile+identity / categories / 作者归属报告）；修正 3 处"UI 记录 authorDid 为空"的过时文档（compose 实际写 `$session.did`，但运行期插值未验证） | validate + test + check + build（65 测试） |
 | **I6b** ✅ | Phase 5 | DID Space 契约固化：doctor 增加 `space-layout`（按退出码，因管道 64KB 截断）/ `space-app` / `de-identification`；抽出 `lib/manifest.mjs` 共享 manifest 读取；记录本机索引漂移 | validate + test + check + build（68 测试） |
 | **I7a** ✅ | Phase 6–7（MVP-2 起） | Role Engine：`config/roles.json` 外部化配置（spec §9，含 env 回退）+ RoleStatus（spec §10）+ Role→Capability 能力引擎（spec §11，**fail closed**）；`scripts/arcblog-roles.mjs` init/show/status/capabilities/check | validate + test + check + build（81 测试） |
