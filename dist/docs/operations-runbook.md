@@ -219,6 +219,34 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Home hero carousel
+
+The home hero is a **custom Web Device component** embedded with `frame`, not the
+platform's list component — `afs-list layout=slideshow` has no autoplay at all
+(its 33 props were enumerated; none is a timer).
+
+| Piece | Path |
+|---|---|
+| Page | `pages/hero-carousel/layout.aup` |
+| Component | `.web/components/hero-carousel/` (`render.js`, `script.js`, `style.css`, `init.js`) |
+| Vendored engine | `.web/components/hero-carousel/vendor/photo-story.js` — ARC's `photo-story` widget (autoplay + Ken Burns + dots/progress) |
+| Generated file | `.web/components/hero-carousel/script.js` = vendored engine + `init.js` |
+
+```bash
+node scripts/arcblog-hero-carousel.mjs            # regenerate script.js
+node scripts/arcblog-hero-carousel.mjs --check     # verify (also asserted by tests)
+node --test scripts/arcblog-hero-carousel.test.mjs
+```
+
+Slides come from the `heroes` AFS records (read with
+`tryList(path, { includeContent: true })` — plain `tryList` returns metadata only),
+so the Creator Studio keeps managing the carousel. With no hero records the
+carousel falls back to a branded slide instead of collapsing. The component mirrors
+the host's `data-tone`/`data-palette`/`data-mode`, honours
+`prefers-reduced-motion` by dropping to manual slideshow, and needs
+`arc blocklet build` + `arc service restart` to go live (component scripts are
+inlined into the SSR page at serve time).
+
 ## Permission matrix test
 
 `scripts/arcblog-permissions.test.mjs` asserts the guest contract from a

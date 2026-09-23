@@ -1,0 +1,284 @@
+/* Hero carousel — styling for the home-page frame.
+ *
+ * The vendored photo-story engine injects its own <style> into <head> at init,
+ * i.e. AFTER this sheet, so equal-specificity rules would lose. Everything below
+ * is therefore scoped under `.hero-carousel` (0,2,0 beats the engine's 0,1,0).
+ *
+ * Design intent: the hero should read as a calm editorial cover — one photo, one
+ * idea, generous type — with the engine's cinematic drift kept but its controls
+ * reduced to quiet marks.
+ */
+
+html,
+body {
+  height: 100%;
+}
+
+.hero-carousel {
+  /* The SSR shell hides the wrapped app chrome with `visibility`; re-enable it
+     for our own subtree so only the carousel is visible inside the frame. */
+  visibility: visible;
+  height: 100%;
+  width: 100%;
+}
+
+.hero-carousel__skeleton {
+  height: 100%;
+  border-radius: var(--radius-xl, 22px);
+  background: linear-gradient(100deg, rgba(0, 0, 0, 0.06) 20%, rgba(0, 0, 0, 0.12) 40%, rgba(0, 0, 0, 0.06) 60%);
+  background-size: 220% 100%;
+  animation: hero-skeleton 1.6s ease-in-out infinite;
+}
+
+@keyframes hero-skeleton {
+  from { background-position: 120% 0; }
+  to { background-position: -60% 0; }
+}
+
+/* ── The engine's container ─────────────────────────────────────────────── */
+
+.hero-carousel.photo-story {
+  height: 100%;
+  border-radius: var(--radius-xl, 22px);
+  overflow: hidden;
+  background: #0b0d0f;
+  box-shadow:
+    0 1px 2px rgba(16, 18, 20, 0.06),
+    0 18px 40px -18px rgba(16, 18, 20, 0.45);
+  isolation: isolate;
+}
+
+/* ── Slides ─────────────────────────────────────────────────────────────── */
+
+/* The engine sizes covers at 100vh; inside a fixed-height frame they must fill
+   the frame instead. */
+.hero-carousel .ps-cover,
+.hero-carousel .ps-block {
+  height: 100%;
+  min-height: 0;
+}
+
+.hero-carousel .ps-cover > img {
+  height: 100%;
+  min-height: 0;
+}
+
+/* A single, restrained scrim: enough contrast for type, no grey wash. */
+.hero-carousel .ps-cover--overlay::after {
+  background: linear-gradient(
+    to top,
+    rgba(6, 8, 10, 0.82) 0%,
+    rgba(6, 8, 10, 0.5) 38%,
+    rgba(6, 8, 10, 0.18) 68%,
+    rgba(6, 8, 10, 0.1) 100%
+  );
+}
+
+.hero-carousel .ps-cover > div {
+  padding: clamp(28px, 4.5vw, 64px);
+  padding-right: clamp(96px, 12vw, 150px);
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0;
+  max-width: min(46rem, 78%);
+}
+
+.hero-carousel .ps-cover--overlay > div {
+  align-items: flex-start;
+  text-align: left;
+  max-width: min(46rem, 82%);
+}
+
+/* The engine writes inline `align-items:center; justify-content:center` onto the
+   active slide, so the editorial bottom-left anchor needs !important to win. */
+.hero-carousel .ps-cover {
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+}
+
+/* A hero with no cover image should still look composed, not like a black hole. */
+.hero-carousel .hero-carousel__slide--plain {
+  background:
+    radial-gradient(115% 135% at 6% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 52%),
+    radial-gradient(82% 120% at 104% 106%, color-mix(in oklab, var(--color-accent, #5b9bf0) 55%, transparent) 0%, rgba(0, 0, 0, 0) 62%),
+    linear-gradient(140deg, #0e1418 0%, #1a2127 52%, #2a2119 100%);
+}
+
+/* A hairline weave keeps an image-less slide from reading as an empty box. */
+.hero-carousel .hero-carousel__slide--plain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.05) 0 1px,
+    rgba(255, 255, 255, 0) 1px 16px
+  );
+}
+
+.hero-carousel .hero-carousel__slide--plain::after {
+  background: linear-gradient(to top, rgba(6, 8, 10, 0.55) 0%, rgba(6, 8, 10, 0.12) 45%, rgba(6, 8, 10, 0) 100%);
+}
+
+/* ── Type ───────────────────────────────────────────────────────────────── */
+
+.hero-carousel .ps-cover .author {
+  order: -1;
+  margin: 0 0 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.66;
+}
+
+.hero-carousel .ps-cover h1 {
+  margin: 0 0 12px;
+  font-size: clamp(1.9rem, 4vw, 3.35rem);
+  line-height: 1.07;
+  letter-spacing: -0.022em;
+  font-weight: 650;
+  text-wrap: balance;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.35);
+}
+
+.hero-carousel .ps-cover .subtitle {
+  margin: 0 0 22px;
+  max-width: 34rem;
+  font-size: clamp(0.98rem, 1.5vw, 1.16rem);
+  line-height: 1.58;
+  opacity: 0.8;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.32);
+}
+
+/* ── Call to action ─────────────────────────────────────────────────────── */
+
+.hero-carousel__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.62em 1.15em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.hero-carousel__cta::after {
+  content: "→";
+  font-size: 0.95em;
+  opacity: 0.75;
+  transition: transform 180ms ease;
+}
+
+.hero-carousel__cta:hover,
+.hero-carousel__cta:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.hero-carousel__cta:hover::after {
+  transform: translateX(3px);
+}
+
+.hero-carousel__cta:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+/* ── Controls: quiet marks, not furniture ───────────────────────────────── */
+
+.hero-carousel .ps-nav {
+  left: auto;
+  right: clamp(18px, 2.6vw, 30px);
+  bottom: clamp(18px, 2.6vw, 30px);
+  transform: none;
+  gap: 9px;
+}
+
+.hero-carousel .ps-nav__arrow {
+  width: 34px;
+  height: 34px;
+  font-size: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(12, 14, 16, 0.34);
+  color: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 200ms ease, background 180ms ease;
+}
+
+.hero-carousel:hover .ps-nav__arrow,
+.hero-carousel:focus-within .ps-nav__arrow {
+  opacity: 1;
+}
+
+.hero-carousel .ps-nav__arrow:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.hero-carousel .ps-nav__dot {
+  width: 7px;
+  height: 7px;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.42);
+  background: transparent;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.hero-carousel .ps-nav__dot--active {
+  background: #fff;
+  border-color: #fff;
+  transform: scale(1.28);
+}
+
+.hero-carousel .ps-progress {
+  height: 2px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0.85;
+}
+
+/* The engine's pause badge is noise at hero scale. */
+.hero-carousel .ps-pause {
+  opacity: 0;
+}
+
+/* ── Accessibility ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel__skeleton { animation: none; }
+  .hero-carousel .ps-slide--kb img { animation: none !important; }
+  .hero-carousel__cta,
+  .hero-carousel .ps-nav__arrow,
+  .hero-carousel .ps-nav__dot { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .hero-carousel .ps-cover > div,
+  .hero-carousel .ps-cover--overlay > div {
+    max-width: 100%;
+  }
+  .hero-carousel .ps-cover .subtitle {
+    font-size: 0.92rem;
+  }
+}
+
+/* Very short frames (small screens with the 16/7 hero band): keep the kicker,
+   title and CTA, drop the supporting sentence rather than squeezing it. */
+@media (max-height: 260px) {
+  .hero-carousel .ps-cover .subtitle { display: none; }
+  .hero-carousel .ps-cover h1 { font-size: clamp(1.25rem, 4.4vw, 1.8rem); margin-bottom: 8px; }
+  .hero-carousel .ps-cover .author { margin-bottom: 8px; }
+}

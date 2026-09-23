@@ -517,3 +517,24 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 - **菜单**：定义在 `wrapper.aup`（`app-header actions=[{kind: user-menu, items: […]}]`）。官方示例的菜单项只有
   `{id,label,src,href}`，**没有角色字段**；未登录时平台用登录按钮替代整个 user-menu。要按权限显示自定义菜单，
   只能用 `view visible=…` 包一层自定义导航。
+
+## 14. Web Device 组件与 `frame` 实测（首页 hero 轮播）
+
+首页原本用 `afs-list layout=slideshow` —— 该布局**没有自动播放**（我把它的 33 个 prop 全枚举过，
+无任何计时属性）。改走"自定义组件 + `frame`"路线后，实测出这些事实：
+
+| 事实 | 证据 |
+|---|---|
+| 组件的 `script.js` 会被**内联进 SSR 页面** | `/p/en/theme-bridge/` 的 HTML 里含 7,767 字符内联脚本；hero-carousel 的内联 32,766 字符 |
+| 根相对静态资源会被 AUP 吞掉，**不能用** | `/assets/js/*`、`/aup-ssr.<hash>.js` 均返回 AUP 外壳 HTML；`/p/CLAUDE.md` 404 |
+| 页面目录下的文件**不会**当静态资源提供 | 把 `photo-story.js` 放进 `pages/hero-carousel/` 后请求 `/p/en/hero-carousel/photo-story.js` 返回页面 HTML |
+| `frame` **没有 `style` 属性** | 其 props 为 `src/bridge/overlay/loading/size/fallback/autoHeight*/aspectRatio/allow/sandbox/transparent/title/variant`；我传的 `style` 被安全样式白名单丢弃，iframe 保持默认 200px |
+| `frame` 的 `autoHeight` **未生效** | 子文档 `body.scrollHeight=900`，父级 iframe 仍为 200px；改用 `aspectRatio="16 / 7"` 后正常（1134→496px） |
+| `window.afs.tryList(path)` **只返回元数据** | 条目无 `content` 字段；需 `tryList(path, { includeContent: true })` 才带内容（`includeContent` 在运行时里出现 13 次） |
+| 引擎在 slideshow/autoplay 模式把**内联样式**写到活动幻灯片 | `style.alignItems="center"; style.justifyContent="center"` —— 要改排版必须 `!important` |
+| `prefers-reduced-motion: reduce` 会影响体验 | 自动化 Chromium 报告 reduce；组件据此退化为手动轮播（`mode=slideshow`），实测 `reducedMotion: false` 时为 `autoplay` 且 `advanced: true` |
+
+组件契约（`.web/components/<name>/`）：`component.dsl`（`script` 关键字声明客户端脚本）、
+`manifest.json`（`hasScript: true`）、`render.js`（`export function render(ctx)` → `{html}`，
+`ctx` 提供 `props`/`escapeHtml`）、`script.js`、`style.css`；页面在 `pages/<name>/layout.aup` 里
+写 `<name> slot=main`，随后用 `frame src="/p/en/<name>/"` 嵌入 AUP 页面。

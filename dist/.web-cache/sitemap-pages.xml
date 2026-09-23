@@ -4,10 +4,16 @@
     <loc>https://arcblog.localhost</loc>
   </url>
   <url>
+    <loc>https://arcblog.localhost/en/hero-carousel/</loc>
+  </url>
+  <url>
     <loc>https://arcblog.localhost/en/search/</loc>
   </url>
   <url>
     <loc>https://arcblog.localhost/en/theme-bridge/</loc>
+  </url>
+  <url>
+    <loc>https://arcblog.localhost/zh/hero-carousel/</loc>
   </url>
   <url>
     <loc>https://arcblog.localhost/zh/search/</loc>

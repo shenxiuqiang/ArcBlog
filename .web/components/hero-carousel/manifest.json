@@ -1,0 +1,7 @@
+{
+  "name": "hero-carousel",
+  "description": "Autoplay hero carousel for the home page, driven by the heroes AFS records",
+  "seoStrategy": "partial",
+  "hasScript": true,
+  "props": {}
+}

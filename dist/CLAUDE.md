@@ -53,6 +53,7 @@ Both must pass before committing: `arc dsl validate --json` and `npm test`.
 - `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`, `role-config`, `settlement-policy`, `product`, `order`, `settlement`, `ledger-entry`, `access-grant`, `discovery-context`, `trusted-hub`, `discovery-document`, `node-health`, `hub-registration`, `agent-grant`).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
+- `.web/components/hero-carousel/` — the home hero carousel (custom Web Device component). `script.js` is **generated** = vendored ARC `photo-story` engine + `init.js`; regenerate with `scripts/arcblog-hero-carousel.mjs`. Component `script.js`/`style.css` are inlined into the SSR page, so a root-relative asset URL cannot be used (the AUP handler swallows it) — see `arc-contracts.md` §14.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
 - `agents/` — Agent Access declarations (`<name>/agent.dsl`, `agent.json`, `system.md`); the runtime provides `/mcp`, AFS RPC and `llms.txt`, ArcBlog only declares and audits (spec §129).
 - `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.

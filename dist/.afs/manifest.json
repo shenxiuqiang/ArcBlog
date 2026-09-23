@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 63092,
+      "size": 61291,
       "contentType": "application/octet-stream",
-      "sha256": "e7e2fe5c9ae0f6c2c011bdf83dfef45504ba6182dd1a5605a17eca695015a129"
+      "sha256": "0736cb55360eca5b132aebdda007846ddf5e5ba0bdc7559432bbb4fef713ebd5"
     },
     {
       "path": ".aup/app.json",
@@ -142,9 +142,9 @@
     },
     {
       "path": ".aup/pages/posts.json",
-      "size": 12860,
+      "size": 5935,
       "contentType": "application/json",
-      "sha256": "b3b6c5d99dfeb8001dcfde75531785309e25171bad087212cfdebc1f58526aed"
+      "sha256": "3c1cf6c4e225c6ef652627f3179af2e53102ca3f440e196e95f3b38c016e472b"
     },
     {
       "path": ".aup/pages/preview.json",
@@ -204,7 +204,7 @@
       "path": ".web-cache/.artifacts.json",
       "size": 865,
       "contentType": "application/json",
-      "sha256": "26f3c17c72c1cea4e14b045e83c95d875b1cc8eead338ed6a904195d5c21c700"
+      "sha256": "f89cc4fdc21b908dd729095e05c23cefa518aaad998334943ff2658eff914359"
     },
     {
       "path": ".web-cache/llms-full.txt",
@@ -226,15 +226,57 @@
     },
     {
       "path": ".web-cache/sitemap-pages.xml",
-      "size": 455,
+      "size": 607,
       "contentType": "text/xml",
-      "sha256": "f58ffb6431f4f0b4e8530237b98aacc12aafcbb960eeee1b06e2bca609209e2a"
+      "sha256": "35985c2f18f4a3755a9215fc883abf3be463bff809dd060518fbf8f61f0615e0"
     },
     {
       "path": ".web-cache/sitemap.xml",
       "size": 205,
       "contentType": "text/xml",
       "sha256": "c73f165db06431a2c8d39210d6469e31955f938683db3c78ccdc9ea7ba2f646a"
+    },
+    {
+      "path": ".web/components/hero-carousel/component.dsl",
+      "size": 142,
+      "contentType": "application/octet-stream",
+      "sha256": "ca4658ba4e70f4861c1b5244d7504ec27dd727f8168cd7b737df34b2fd902b07"
+    },
+    {
+      "path": ".web/components/hero-carousel/init.js",
+      "size": 7478,
+      "contentType": "text/javascript",
+      "sha256": "23b89d2410460c0ecc7fb6e8874f56a35e02957175fa88dc01c3e465408e95fa"
+    },
+    {
+      "path": ".web/components/hero-carousel/manifest.json",
+      "size": 189,
+      "contentType": "application/json",
+      "sha256": "e86ccca78684fe1356faf96866fa076c4e5c85c011b462cb24fc12e24b1b1891"
+    },
+    {
+      "path": ".web/components/hero-carousel/render.js",
+      "size": 1060,
+      "contentType": "text/javascript",
+      "sha256": "d00284f9e79c66580c1f11f232cf04954e38c738a814a91d83e3e69a3d99a45f"
+    },
+    {
+      "path": ".web/components/hero-carousel/script.js",
+      "size": 36202,
+      "contentType": "text/javascript",
+      "sha256": "f59a18e3da16b3a79412d2b5d22b2fc375214f229e35f40a448f0b7d2ef21b43"
+    },
+    {
+      "path": ".web/components/hero-carousel/style.css",
+      "size": 8330,
+      "contentType": "text/css",
+      "sha256": "1c02a8fa8c606f8628a26731a9cc7859d42373dd506df063dcbe7700b60ee9be"
+    },
+    {
+      "path": ".web/components/hero-carousel/vendor/photo-story.js",
+      "size": 28578,
+      "contentType": "text/javascript",
+      "sha256": "d94cb51169695da2c561526f6bf5b7cfaffa35e96817d3f81a99dedc6aa431bb"
     },
     {
       "path": ".web/components/theme-bridge/component.dsl",
@@ -1024,15 +1066,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 13208,
+      "size": 13604,
       "contentType": "text/markdown",
-      "sha256": "7a190ea6f8059e7db1b62ed4a7212e68bbfde6f8093c81ddc2c0c32ae30b0a51"
+      "sha256": "778ff46973f8e4a47dd189c3d55840f7ee312be06f17d49f23f1b8785364203b"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 30182,
+      "size": 32394,
       "contentType": "text/markdown",
-      "sha256": "e7b1019aaa4dfe034ec03cc5db6f36db24915f429d6acf1ace324470eae06e7d"
+      "sha256": "76d3ba2b6d71054d56db173e9c9a68958125e62b769f76fd7ddc6ef60480b22a"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1048,9 +1090,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 19434,
+      "size": 19923,
       "contentType": "text/markdown",
-      "sha256": "a9649d0002104e88df9b6e47b299219fa59b5502b01a5d3bcb0cd0dcbd15d0e0"
+      "sha256": "7d6344a320e517320cb854a7f3b2d8a0e773acefa9c60b549d6969d638837ff5"
     },
     {
       "path": "docs/error-codes.md",
@@ -1060,9 +1102,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 17951,
+      "size": 19368,
       "contentType": "text/markdown",
-      "sha256": "306221eb9b26b8f2c1fec3c4af60ba858156586fc18e4c7fdd32a1668c5574b1"
+      "sha256": "f017794768a8245c6f10788c92a51c9da3cf9c13ea8b7bb3a3d40b8b405c0623"
     },
     {
       "path": "docs/persistence.md",
@@ -1111,6 +1153,12 @@
       "size": 186,
       "contentType": "application/json",
       "sha256": "4e5a5b377d02b96c2e94dcfeb02a53b33cd76ca2180bdf773601637b46747f71"
+    },
+    {
+      "path": "pages/hero-carousel/layout.aup",
+      "size": 49,
+      "contentType": "application/octet-stream",
+      "sha256": "0153a727d55a910e259c53498b77e1751816cb7428131f6e4f108d9556c41db2"
     },
     {
       "path": "pages/theme-bridge/layout.aup",
@@ -1231,6 +1279,18 @@
       "size": 17321,
       "contentType": "text/javascript",
       "sha256": "9273190ca029c69a7ae6aaef06c49e101a0b2b1d7d0e30728ded01aee7042883"
+    },
+    {
+      "path": "scripts/arcblog-hero-carousel.mjs",
+      "size": 2482,
+      "contentType": "text/javascript",
+      "sha256": "6104cdf4bdd7c0db33085f962b6b554fb9c9fef9199cc4b6f9e935d04aaaba84"
+    },
+    {
+      "path": "scripts/arcblog-hero-carousel.test.mjs",
+      "size": 2535,
+      "contentType": "text/javascript",
+      "sha256": "731c744685f09e1bdad8757971cd7941014696b1ddcd785273e0db20e07c0177"
     },
     {
       "path": "scripts/arcblog-i18n.test.mjs",

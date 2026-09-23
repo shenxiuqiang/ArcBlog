@@ -74,6 +74,12 @@
         "source": "aup:src"
       },
       {
+        "path": "/p/en/hero-carousel",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/p/en/theme-bridge",
         "op": "list",
         "required": true,
