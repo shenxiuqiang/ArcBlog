@@ -1,0 +1,12 @@
+kind: Product
+fields:
+  id: string
+  creatorDid: string
+  type: string # article | membership | digital | subscription (spec §41)
+  contentId: string
+  priceAmount: string
+  priceAsset: string
+  visibility: string # public | private
+  settlementPolicy: string
+  createdAt: datetime
+  updatedAt: datetime

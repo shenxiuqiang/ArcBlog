@@ -21,6 +21,8 @@
 - `INVALID_TRANSITION`
   - Illegal lifecycle transition
   - e.g. `draft -> archived` (not allowed in instance post path)
+  - Also returned by `scripts/arcblog-economy.mjs settle` when the order is not
+    `paid` — payment and settlement are separate phases (spec §89)
 
 - `USER_SPACE_UNAVAILABLE`
   - Runtime does not permit direct write to `/blocklets/arcblog/users/<did>/...` from current caller/session

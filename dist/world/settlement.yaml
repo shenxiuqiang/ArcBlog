@@ -1,0 +1,15 @@
+kind: Settlement
+fields:
+  orderId: string
+  creatorDid: string
+  hubDid: string
+  asset: string
+  amount: string
+  creatorAmount: string
+  hubAmount: string
+  protocolAmount: string
+  policyVersion: string
+  status: string # settled (spec §43)
+  transactionHash: string
+  createdAt: datetime
+  updatedAt: datetime

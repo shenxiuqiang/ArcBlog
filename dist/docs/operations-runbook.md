@@ -114,8 +114,34 @@ is false, `studio.*` and `hub.*` never appear in the effective set, even if the
 node profile declares those roles. Config comes from flags or
 `ARCBLOG_STUDIO_COLLECTION` / `ARCBLOG_HUB_COLLECTION` / `ARCBLOG_NETWORK`.
 
-## Growth operations
+## Economy (Phase 8 / MVP-3)
 
+```bash
+node scripts/arcblog-economy.mjs policy init              # v1: creator 0.80 / hub 0.15 / protocol 0.05
+node scripts/arcblog-economy.mjs policy show              # includes an example split of 10
+node scripts/arcblog-economy.mjs product add --id my-article --creator-did did:key:z... \
+  --type article --price-amount 10 --price-asset USDC
+node scripts/arcblog-economy.mjs order create --id order-1 --product-id my-article \
+  --buyer-did did:key:z... --hub-did did:key:z...
+node scripts/arcblog-economy.mjs order pay --id order-1 --adapter manual --payment-ref ref-1
+node scripts/arcblog-economy.mjs settle --order order-1
+node scripts/arcblog-economy.mjs ledger list --order order-1
+```
+
+Rules the commands enforce:
+
+- **Payment ≠ settlement** (spec §89): `order pay` records that money moved;
+  `settle` decides where it goes and refuses an order that is not `paid`
+  (`INVALID_TRANSITION`).
+- **Fail closed** (spec §44): the policy's `paymentAdapter` defaults to `none`, so
+  `order pay` refuses until an adapter is configured (`--adapter` overrides for
+  development; `manual` is the only built-in and does not verify anything).
+- **Append-only ledger** (spec §92): ledger entry ids are deterministic
+  (`<orderId>:creator_share`), so a retry never double-posts; re-settling returns
+  `settle-existing` and writes nothing.
+- The split always sums back to the order amount exactly (integer minor units).
+
+## Growth operations
 ### Generate RSS
 ```bash
 node scripts/arcblog-rss.mjs \

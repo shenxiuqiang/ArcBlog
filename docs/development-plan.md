@@ -129,7 +129,9 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I6a** ✅ | Phase 5 | Identity 契约固化：`scripts/arcblog-doctor.mjs`（资源目录 / node profile+identity / categories / 作者归属报告）；修正 3 处"UI 记录 authorDid 为空"的过时文档（compose 实际写 `$session.did`，但运行期插值未验证） | validate + test + check + build（65 测试） |
 | **I6b** ✅ | Phase 5 | DID Space 契约固化：doctor 增加 `space-layout`（按退出码，因管道 64KB 截断）/ `space-app` / `de-identification`；抽出 `lib/manifest.mjs` 共享 manifest 读取；记录本机索引漂移 | validate + test + check + build（68 测试） |
 | **I7a** ✅ | Phase 6–7（MVP-2 起） | Role Engine：`config/roles.json` 外部化配置（spec §9，含 env 回退）+ RoleStatus（spec §10）+ Role→Capability 能力引擎（spec §11，**fail closed**）；`scripts/arcblog-roles.mjs` init/show/status/capabilities/check | validate + test + check + build（81 测试） |
-| I7b | Phase 6–7 | Studio discovery 与 Hub registration：节点互发现、`/studio/registrations`、Hub 索引（需先确认 ARC 侧可用能力） | 同上 |
+| I7b | Phase 6–7 | Studio discovery 与 Hub registration：节点互发现、`/studio/registrations`、Hub 索引（需先核验 ARC 侧可用能力，不得臆造） | 同上 |
+| **I8a** ✅ | Phase 8（MVP-3） | Economy 基础：版本化分成策略 + Product/Order/Settlement/Ledger 资源 + 整数最小单位的分成计算（**永远守恒**）+ 支付与结算分离（未支付订单拒绝结算）+ 支付适配器缺省 `none`（fail closed）+ 账本确定性 id（重放不重复记账） | validate + test + check + build（92 测试） |
+| I8b | Phase 8 | Tip / 付费阅读门控：Article→Product 关联、Access Grant、Hub attribution（spec §31–§37） | 同上 |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading | 同上 |
 | I9 | Phase 9（MVP-4） | Agent：`agents/` 声明 + MCP 工具面 + 权限分级 | 同上 |
 

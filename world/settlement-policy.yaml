@@ -1,0 +1,9 @@
+kind: SettlementPolicy
+fields:
+  version: string # spec §29: split rules are versioned
+  creator: number # fraction 0..1
+  hub: number # fraction 0..1
+  protocol: number # fraction 0..1
+  paymentAdapter: string # spec §44: none | manual | <future adapter>
+  createdAt: datetime
+  updatedAt: datetime

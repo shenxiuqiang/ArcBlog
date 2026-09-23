@@ -56,6 +56,18 @@ networkRead:
   # network can see which collections this node claims to honour.
   - path: /instance/app/arcblog/config
     role: guest
+  # spec §50: economic transparency — the split policy is public; orders,
+  # settlements and the ledger stay admin-only (they name buyers).
+  - path: /instance/app/arcblog/economy/policies
+    role: guest
+  - path: /instance/app/arcblog/economy/products
+    role: guest
+  - path: /instance/app/arcblog/economy/orders
+    role: admin
+  - path: /instance/app/arcblog/economy/settlements
+    role: admin
+  - path: /instance/app/arcblog/economy/ledger
+    role: admin
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -102,3 +114,30 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
+  # spec §29/§41/§42/§91: economy records. The policy is public (transparency),
+  # everything naming a buyer stays admin-only.
+  economy-policy:
+    canonical: instance/app/arcblog/economy/policies/*
+    copy: none
+    minRole: admin
+    readRole: guest
+  economy-products:
+    canonical: instance/app/arcblog/economy/products/*
+    copy: none
+    minRole: admin
+    readRole: guest
+  economy-orders:
+    canonical: instance/app/arcblog/economy/orders/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  economy-settlements:
+    canonical: instance/app/arcblog/economy/settlements/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  economy-ledger:
+    canonical: instance/app/arcblog/economy/ledger/*
+    copy: none
+    minRole: admin
+    readRole: admin

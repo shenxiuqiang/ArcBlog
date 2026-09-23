@@ -1,0 +1,13 @@
+kind: LedgerEntry
+fields:
+  id: string
+  orderId: string
+  type: string # creator_share | hub_share | protocol_fee | refund | settlement (spec §91)
+  from: string
+  to: string
+  asset: string
+  amount: string
+  status: string
+  policyVersion: string
+  transactionHash: string
+  createdAt: datetime

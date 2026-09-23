@@ -17,6 +17,11 @@ Arc exposes the following scoped paths for this Blocklet:
 - `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy `{slug, name, description, sort, createdAt, updatedAt}`; guest-readable, admin-writable. Managed by `scripts/arcblog-category.mjs`. The lifecycle validator reads this resource and falls back to the built-in `technology|design|life` while it is empty.
 - `/instance/app/arcblog/media/<id>.json` — upload index `{id, title, alt, path, mimeType, size, width, height, uploaderDid, createdAt, updatedAt}`; **admin-only** (the index exposes upload paths). Managed by `scripts/arcblog-media.mjs`; removing a record never deletes the binary.
 - `/instance/app/arcblog/config/roles.json` — externalized role configuration (`studio`/`hub` collection address, network, asset type) plus the `chainVerification` switch; guest-readable, admin-writable. Managed by `scripts/arcblog-roles.mjs`. Collection addresses are **never** hard-coded (spec §9), and a role only becomes `active` once something verified it (fail closed, spec §114/§115).
+- `/instance/app/arcblog/economy/policies/active.json` — the versioned settlement policy (`version`, `creator`/`hub`/`protocol` fractions, `paymentAdapter`); guest-readable (spec §50 transparency), admin-writable. Managed by `scripts/arcblog-economy.mjs policy`.
+- `/instance/app/arcblog/economy/products/<id>.json` — Product records (spec §41); guest-readable, admin-writable.
+- `/instance/app/arcblog/economy/orders/<id>.json` — Order records (spec §42): payment state only, **admin-only** (they name buyers).
+- `/instance/app/arcblog/economy/settlements/<orderId>.json` — Settlement records (spec §43); admin-only. Written once per order; re-settling is a no-op.
+- `/instance/app/arcblog/economy/ledger/<orderId>:<type>.json` — append-only ledger entries (spec §91/§92); admin-only. Deterministic ids (`<orderId>:creator_share`) make retries idempotent instead of double-posting.
 - `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 
