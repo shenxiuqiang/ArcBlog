@@ -268,6 +268,82 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "studio-archive",
+                  "type": "action",
+                  "props": {
+                    "variant": "secondary",
+                    "size": "sm",
+                    "label": "$t(admin.admin-archive)",
+                    "confirm": {
+                      "title": "$t(admin.admin-archive-title)",
+                      "message": "$t(admin.admin-archive-msg)"
+                    },
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.archived-ok)",
+                      "duration": 3000
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
+                        "content": {
+                          "title": "${entry.content.title}",
+                          "slug": "${entry.content.slug}",
+                          "summary": "${entry.content.summary}",
+                          "body": "${entry.content.body}",
+                          "coverImage": "${entry.content.coverImage}",
+                          "images": [],
+                          "tags": "${entry.content.tags}",
+                          "category": "${entry.content.category}",
+                          "seoTitle": "${entry.content.seoTitle}",
+                          "seoDescription": "${entry.content.seoDescription}",
+                          "ogTitle": "${entry.content.ogTitle}",
+                          "ogDescription": "${entry.content.ogDescription}",
+                          "ogImage": "${entry.content.ogImage}",
+                          "status": "archived",
+                          "authorDid": "${entry.content.authorDid}",
+                          "authorName": "${entry.content.authorName}",
+                          "published": false,
+                          "publishedAt": "${entry.content.publishedAt}",
+                          "archivedAt": "${generate.timeiso}",
+                          "deletedAt": "",
+                          "createdAt": "${entry.content.createdAt}",
+                          "updatedAt": "${generate.timeiso}",
+                          "version": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "studio-unpublish",
+                  "type": "action",
+                  "props": {
+                    "variant": "destructive",
+                    "size": "sm",
+                    "icon": "trash",
+                    "label": "$t(admin.admin-unpublish)",
+                    "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
+                    "confirm": {
+                      "title": "$t(admin.admin-unpublish-title)",
+                      "message": "$t(admin.admin-unpublish-msg)"
+                    },
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.unpublished-ok)",
+                      "duration": 3000
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/delete"
+                    }
+                  }
                 }
               ]
             }
@@ -373,6 +449,109 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "studio-publish",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "size": "sm",
+                    "label": "$t(admin.admin-publish)",
+                    "confirm": {
+                      "title": "$t(admin.admin-publish-title)",
+                      "message": "$t(admin.admin-publish-msg)"
+                    },
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.published-ok)",
+                      "duration": 3000
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
+                        "content": {
+                          "title": "${entry.content.title}",
+                          "slug": "${entry.content.slug}",
+                          "summary": "${entry.content.summary}",
+                          "body": "${entry.content.body}",
+                          "coverImage": "${entry.content.coverImage}",
+                          "images": [],
+                          "tags": "${entry.content.tags}",
+                          "category": "${entry.content.category}",
+                          "seoTitle": "${entry.content.seoTitle}",
+                          "seoDescription": "${entry.content.seoDescription}",
+                          "ogTitle": "${entry.content.ogTitle}",
+                          "ogDescription": "${entry.content.ogDescription}",
+                          "ogImage": "${entry.content.ogImage}",
+                          "status": "published",
+                          "authorDid": "${entry.content.authorDid}",
+                          "authorName": "${entry.content.authorName}",
+                          "published": true,
+                          "publishedAt": "${generate.timeiso}",
+                          "archivedAt": "",
+                          "deletedAt": "",
+                          "createdAt": "${entry.content.createdAt}",
+                          "updatedAt": "${generate.timeiso}",
+                          "version": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "studio-delete",
+                  "type": "action",
+                  "props": {
+                    "variant": "destructive",
+                    "size": "sm",
+                    "icon": "trash",
+                    "label": "$t(admin.admin-delete)",
+                    "confirm": {
+                      "title": "$t(admin.admin-delete-title)",
+                      "message": "$t(admin.admin-delete-msg)"
+                    },
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.deleted-ok)",
+                      "duration": 3000
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
+                        "content": {
+                          "title": "${entry.content.title}",
+                          "slug": "${entry.content.slug}",
+                          "summary": "${entry.content.summary}",
+                          "body": "${entry.content.body}",
+                          "coverImage": "${entry.content.coverImage}",
+                          "images": [],
+                          "tags": "${entry.content.tags}",
+                          "category": "${entry.content.category}",
+                          "seoTitle": "${entry.content.seoTitle}",
+                          "seoDescription": "${entry.content.seoDescription}",
+                          "ogTitle": "${entry.content.ogTitle}",
+                          "ogDescription": "${entry.content.ogDescription}",
+                          "ogImage": "${entry.content.ogImage}",
+                          "status": "deleted",
+                          "authorDid": "${entry.content.authorDid}",
+                          "authorName": "${entry.content.authorName}",
+                          "published": false,
+                          "publishedAt": "${entry.content.publishedAt}",
+                          "archivedAt": "${entry.content.archivedAt}",
+                          "deletedAt": "${generate.timeiso}",
+                          "createdAt": "${entry.content.createdAt}",
+                          "updatedAt": "${generate.timeiso}",
+                          "version": 1
+                        }
+                      }
+                    }
+                  }
                 },
                 {
                   "id": "draftEdit",
