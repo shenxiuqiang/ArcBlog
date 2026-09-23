@@ -7,10 +7,18 @@ app "ArcBlog" {
 
   page settings "Appearance" {
     i18n {
+      gate-title { en "Appearance" zh "外观" }
+      gate-desc { en "Sign in with DID Wallet to set this site's palette and tone. Signed-in users can also personalize their own theme." zh "使用 DID Wallet 登录后可设置本站的配色与风格；登录用户还可以个性化自己的主题。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
       title { en "Appearance" zh "外观" }
       desc { en "Theme, tone and palette for this site. Admins set the defaults; signed-in users can personalize their own theme." zh "本站的主题、风格与配色。管理员设置默认值；登录用户可以个性化自己的主题。" }
     }
-    view gap=lg {
+    card gap=md visible="!$session.authenticated" {
+      h2 :gate-title level=2
+      p :gate-desc intent=info
+      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dsettings&cancel_to=%2F%3Fpage%3Dsettings" variant=primary label=:login
+    }
+    view gap=lg visible=$session.authenticated {
       h1 :title level=1
       p :desc intent=muted
       auto-surface appearance-settings "Appearance" from "/instance/settings/arcblog"
@@ -530,6 +538,9 @@ app "ArcBlog" {
 
   page dashboard "Dashboard" {
     i18n {
+      gate-title { en "Dashboard" zh "仪表盘" }
+      gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
       title { en "Dashboard" zh "仪表盘" }
       desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
       node { en "Node" zh "节点" }
@@ -558,7 +569,12 @@ app "ArcBlog" {
       q-settings { en "Appearance" zh "外观" }
       q-ops { en "Operations" zh "运维" }
     }
-    view gap=lg {
+    card gap=md visible="!$session.authenticated" {
+      h2 :gate-title level=2
+      p :gate-desc intent=info
+      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Ddashboard&cancel_to=%2F%3Fpage%3Ddashboard" variant=primary label=:login
+    }
+    view gap=lg visible=$session.authenticated {
       card gap=md {
         h1 :title level=1
         p :desc intent=muted
@@ -636,6 +652,9 @@ app "ArcBlog" {
 
   page operations "Operations" {
     i18n {
+      gate-title { en "Operations" zh "运维" }
+      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
       title { en "Operations" zh "运维" }
       desc { en "Live state of this node: health, discovery, Hubs, economy, media and agent grants." zh "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。" }
       health { en "Node health" zh "节点健康" }
@@ -673,7 +692,12 @@ app "ArcBlog" {
       admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
       mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
     }
-    view gap=lg {
+    card gap=md visible="!$session.authenticated" {
+      h2 :gate-title level=2
+      p :gate-desc intent=info
+      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Doperations&cancel_to=%2F%3Fpage%3Doperations" variant=primary label=:login
+    }
+    view gap=lg visible=$session.authenticated {
       card gap=md {
         h1 :title level=1
         p :desc intent=muted

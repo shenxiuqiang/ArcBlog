@@ -467,3 +467,46 @@ arc service restart
 | `visible=$session.authenticated` **可靠** | 用它把管理员专属列表对访客隐藏，已验证 |
 | afs-list 的 `emptyText` 在**目录缺失**时不生效，且 `empty`/`error` 事件不触发 | 平台仍渲染自己的英文 `aup-list-empty: No items to display`；`emptyText` 用 `:key` 或字面量都一样 |
 | 遍历目录会把**子目录**也当记录渲染 | `/config` 下有 `trusted-hubs/`，Dashboard 角色卡因此多渲染一行空值（标签重复）；改为 `propBind` 单文件读取 |
+
+## 13. 权限模型实测（`networkRead` vs `replicated`）
+
+权限分三层：**页面可见性**（AUP DSL）、**资源读写**（blocklet.yaml）、**UI 入口**（按钮指向哪）。
+
+### 权威来源是 `replicated.<collection>.readRole` / `minRole`
+实测：把 `networkRead` 的 `config` 从 `guest` 改成 `admin`，构建 + `instance deploy` +
+`arc service restart` 之后，访客**仍然**能列出 `config/` 并读到 `config/roles.json` —— 因为同名的
+`replicated.config` 仍写着 `readRole: guest`。改成 `admin` 后才真正生效。
+
+### `networkRead` 是**前缀增补**（PREFIX grant），不能收回权限
+ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:164`）：
+
+> `networkRead` is a PREFIX grant … the whole tree is deliberately gated at `admin` …
+> never by widening this prefix to guest
+> Separate two-segment prefix `instance/wall` (**NOT under** `instance/campaigns`)
+
+### 父前缀 guest 会泄漏子目录的"列目录"
+只要 `config` 前缀对 guest 开放，访客就能 `list(/config/agent-grants)` 拿到 admin-only 记录的
+**文件名 / 路径 / 时间**（内容读取被正确拒绝）。子集合的规则匹配其**内部**（`…/agent-grants/*`），
+**不匹配目录本身**。→ 公开子树必须放在**另一个顶层前缀**，绝不嵌在私有父目录下。
+
+### 未声明路径默认**拒绝**
+`Forbidden: path is not a declared replicated collection; network reads are not permitted here`。
+（唯一观察到的例外：`/instance/settings/arcblog/*` 访客可读 —— 平台自己的设置面，未在本清单声明。）
+
+### 收紧后的访客矩阵（浏览器内 `window.afs` 实测）
+| 路径 | 声明角色 | 访客 |
+|---|---|---|
+| `posts` / `heroes` / `node` / `categories` | guest | ✅ ALLOWED |
+| `economy/policies` / `economy/products` | guest | ✅ ALLOWED |
+| `drafts` / `media` / `config`（整树）/ `hub` | admin | ⛔ DENIED |
+| `economy/{orders,settlements,ledger,access-grants,attributions}` | admin | ⛔ DENIED |
+| 未声明路径 | — | ⛔ DENIED |
+
+### 页面与菜单
+- **页面**：`blocklet.yaml` 的 `sites[].bindings[]` **没有** role 字段（在 ARC 全部官方 blocklet 里核对过，
+  也没有顶层 `navigation`/`menu`/`permissions` 键）。授权靠 AUP：内容包在 `view visible=$session.authenticated`，
+  再放一张 `visible="!$session.authenticated"` 的登录卡：
+  `action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dsettings&cancel_to=…"`。
+- **菜单**：定义在 `wrapper.aup`（`app-header actions=[{kind: user-menu, items: […]}]`）。官方示例的菜单项只有
+  `{id,label,src,href}`，**没有角色字段**；未登录时平台用登录按钮替代整个 user-menu。要按权限显示自定义菜单，
+  只能用 `view visible=…` 包一层自定义导航。

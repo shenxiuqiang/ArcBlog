@@ -52,10 +52,16 @@ networkRead:
   # spec §12 /content/media: upload index; admin-only (it exposes upload paths).
   - path: /instance/app/arcblog/media
     role: admin
-  # spec §9: role asset configuration (external, never hard-coded). Public so the
-  # network can see which collections this node claims to honour.
+  # `networkRead` is a PREFIX grant (ARC launch-kit §"Network-read allowance"): a
+  # guest grant on a parent exposes the whole subtree, INCLUDING the directory
+  # listing of admin-only children — measured: a guest could list
+  # config/agent-grants/ and see the file ids of capability grants. The documented
+  # pattern is to gate the whole tree and never nest a public child under a private
+  # parent. config/ therefore holds no public surface at all: roles and trusted Hub
+  # keys are read by the CLI and by admin-only pages (the dashboard is behind the
+  # sign-in gate), so the whole prefix stays admin.
   - path: /instance/app/arcblog/config
-    role: guest
+    role: admin
   # spec §50: economic transparency — the split policy is public; orders,
   # settlements and the ledger stay admin-only (they name buyers).
   - path: /instance/app/arcblog/economy/policies
@@ -74,14 +80,11 @@ networkRead:
   # public keys are public by definition.
   - path: /instance/app/arcblog/economy/attributions
     role: admin
-  - path: /instance/app/arcblog/config/trusted-hubs
-    role: guest
-  # spec §61: capability grants for agents are security material — admin only.
-  - path: /instance/app/arcblog/config/agent-grants
-    role: admin
-  # spec §71/§109: which Hubs this Studio is registered with is network metadata.
+  # spec §71: Studio→Hub registrations are this node's own bookkeeping (DID +
+  # endpoint + sync state). The public discovery surface is node/discovery.json,
+  # so the registrations stay admin (nothing guest-facing reads them).
   - path: /instance/app/arcblog/hub
-    role: guest
+    role: admin
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -127,7 +130,12 @@ replicated:
     canonical: instance/app/arcblog/config/*
     copy: none
     minRole: admin
-    readRole: guest
+    # guest on the PARENT prefix also exposes the directory listing of nested
+    # admin-only collections (measured: a guest could list config/agent-grants and
+    # read the grant file ids), so the whole tree is admin — the documented ARC
+    # pattern is to gate the tree and never nest a public child under a private
+    # parent.
+    readRole: admin
   # spec §29/§41/§42/§91: economy records. The policy is public (transparency),
   # everything naming a buyer stays admin-only.
   economy-policy:
@@ -170,7 +178,7 @@ replicated:
     canonical: instance/app/arcblog/config/trusted-hubs/*
     copy: none
     minRole: admin
-    readRole: guest
+    readRole: admin
   config-agent-grants:
     canonical: instance/app/arcblog/config/agent-grants/*
     copy: none
@@ -181,4 +189,4 @@ replicated:
     canonical: instance/app/arcblog/hub/registrations/*
     copy: none
     minRole: admin
-    readRole: guest
+    readRole: admin

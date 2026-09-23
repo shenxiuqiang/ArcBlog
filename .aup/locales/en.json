@@ -223,5 +223,14 @@
   "author.stories-empty": "No published stories yet.",
   "operations.admin-only": "Sign in as an administrator to see this list.",
   "posts.hero-about": "About this node",
-  "preview.back-home": "Back to latest stories"
+  "preview.back-home": "Back to latest stories",
+  "settings.gate-title": "Appearance",
+  "settings.gate-desc": "Sign in with DID Wallet to set this site's palette and tone. Signed-in users can also personalize their own theme.",
+  "settings.login": "Sign in with DID Wallet",
+  "dashboard.gate-title": "Dashboard",
+  "dashboard.gate-desc": "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data.",
+  "dashboard.login": "Sign in with DID Wallet",
+  "operations.gate-title": "Operations",
+  "operations.gate-desc": "Sign in with DID Wallet to view node health, Hubs, economy and agent state.",
+  "operations.login": "Sign in with DID Wallet"
 }

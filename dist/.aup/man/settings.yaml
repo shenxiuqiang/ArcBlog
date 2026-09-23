@@ -1,0 +1,12 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "settings".
+schemaVersion: 1
+page: settings
+description: >-
+  TODO: describe what "settings" is for and when an agent should use it
+  (auto-scaffolded stub — fill in before relying on this man page).
+refs:
+  actions:
+    - id: arcblog-settings-card-1-action-3
+      event: click

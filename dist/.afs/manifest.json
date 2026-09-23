@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 61185,
+      "size": 63092,
       "contentType": "application/octet-stream",
-      "sha256": "5250612a1e581f4b7f0b890f7ee02daf77eb0ab2760275de9939d9b582f83b39"
+      "sha256": "e7e2fe5c9ae0f6c2c011bdf83dfef45504ba6182dd1a5605a17eca695015a129"
     },
     {
       "path": ".aup/app.json",
@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 14016,
+      "size": 14638,
       "contentType": "application/json",
-      "sha256": "54a520fdae02e50e6751ca818a83ddd53a2daed990a3b2b83def092f8f392fcd"
+      "sha256": "54da9f3a9a7af6ecc4da362b92b4edc8adb9846869b793aad5ecc923572a26ff"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 13791,
+      "size": 14407,
       "contentType": "application/json",
-      "sha256": "31978e9428792022eb41eca81bdc0752f06344516626fd4a83f0d431641a66d6"
+      "sha256": "180526ceeba6271a2b6ebf4d403e15a59099c6a82467e8bb19588a9d846af5d7"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -93,6 +93,12 @@
       "sha256": "946cebc833f909fa28867f868c95955481d9c68be1df97870740cce9f707dfd3"
     },
     {
+      "path": ".aup/man/settings.yaml",
+      "size": 501,
+      "contentType": "text/yaml",
+      "sha256": "f023330c6e50461ade5266343689f0417619fa42cef32c3f0dff053a57f1d0d0"
+    },
+    {
       "path": ".aup/pages/about.json",
       "size": 1589,
       "contentType": "application/json",
@@ -124,15 +130,15 @@
     },
     {
       "path": ".aup/pages/dashboard.json",
-      "size": 15632,
+      "size": 19251,
       "contentType": "application/json",
-      "sha256": "8d3202df4d7bb5cc886543ea143ed0ab04e3ec81bdb294f2dbcc9e1376c073eb"
+      "sha256": "502e91f0ed50835f2134625dba00413e404e188f4ec22542a7c8993f337f40e8"
     },
     {
       "path": ".aup/pages/operations.json",
-      "size": 24291,
+      "size": 29032,
       "contentType": "application/json",
-      "sha256": "8cd5486db406701088110ed015aaa0dc18da9ad5ba93697eb0d73c1804ee20f7"
+      "sha256": "5bb0a5cddbb00e2ba82effea2ac02aecbf6ac30c749680884ca8c3eb16345a26"
     },
     {
       "path": ".aup/pages/posts.json",
@@ -154,9 +160,9 @@
     },
     {
       "path": ".aup/pages/settings.json",
-      "size": 643,
+      "size": 2052,
       "contentType": "application/json",
-      "sha256": "b7199dd635b6f21959cdcad8a6366ac108893af1bf828d256211cba1813b5891"
+      "sha256": "9c187d42bedc390c9bda9dbd8c735ab1071b46df7b48ca310ef17fbb3142172f"
     },
     {
       "path": ".aup/wrapper.aup",
@@ -1012,21 +1018,21 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 6207,
+      "size": 6941,
       "contentType": "text/yaml",
-      "sha256": "115b631d1f9129e69d7df1397bbb6a41fb153f63bc253f24bb8b7585f28e379d"
+      "sha256": "31471c6fa3f43427482ec9c88de03011c0213290b4661516de040cbc49d88276"
     },
     {
       "path": "CLAUDE.md",
-      "size": 12752,
+      "size": 13100,
       "contentType": "text/markdown",
-      "sha256": "8b67792377c7f1d3eaad098e1665f0a4d3e000554eee7f7d759a0679e7386cbc"
+      "sha256": "2235bf428a8908ec823fbe501cff19103df237b7221aa8f728e0f7ce27386a7f"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 26797,
+      "size": 29674,
       "contentType": "text/markdown",
-      "sha256": "80e986cff957ae729b8bc2dab43ef38ad53c0935e0716036ac40c74a0e62e21d"
+      "sha256": "31859e52adc4dff5e86874ffb0266a353acb4d029497133ecc9c6f7b121c0e11"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1060,9 +1066,9 @@
     },
     {
       "path": "docs/persistence.md",
-      "size": 8694,
+      "size": 8784,
       "contentType": "text/markdown",
-      "sha256": "29d86fd1b623f11069c4a9b73f67fef152f2bd0f70001689529d7b5a0bb2da08"
+      "sha256": "d648b7beefa892d8a7cc058500278adc71b52e72dd078fceca8920bb3bb10a1d"
     },
     {
       "path": "docs/publishing-ops.md",

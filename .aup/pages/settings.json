@@ -1,35 +1,92 @@
 {
-  "id": "arcblog-settings-view-1",
+  "id": "arcblog-settings",
   "type": "view",
   "props": {
     "layout": {
       "gap": "lg"
+    },
+    "size": {
+      "maxWidth": "lg"
     }
   },
   "children": [
     {
-      "id": "arcblog-settings-view-1-h1-1",
-      "type": "text",
+      "id": "arcblog-settings-card-1",
+      "type": "view",
       "props": {
-        "level": 1,
-        "content": "$t(settings.title)"
-      }
-    },
-    {
-      "id": "arcblog-settings-view-1-p-2",
-      "type": "text",
-      "props": {
-        "content": "$t(settings.desc)",
-        "intent": "muted"
-      }
-    },
-    {
-      "id": "appearance-settings",
-      "type": "auto-surface",
-      "props": {
-        "title": "Appearance"
+        "mode": "card",
+        "layout": {
+          "gap": "md"
+        }
       },
-      "src": "/instance/settings/arcblog"
+      "visible": "!$session.authenticated",
+      "children": [
+        {
+          "id": "arcblog-settings-card-1-h2-1",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(settings.gate-title)"
+          }
+        },
+        {
+          "id": "arcblog-settings-card-1-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(settings.gate-desc)",
+            "intent": "info"
+          }
+        },
+        {
+          "id": "arcblog-settings-card-1-action-3",
+          "type": "action",
+          "props": {
+            "variant": "primary",
+            "label": "$t(settings.login)"
+          },
+          "events": {
+            "click": {
+              "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Dsettings&cancel_to=%2F%3Fpage%3Dsettings"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-settings-view-2",
+      "type": "view",
+      "props": {
+        "layout": {
+          "gap": "lg"
+        }
+      },
+      "visible": "$session.authenticated",
+      "children": [
+        {
+          "id": "arcblog-settings-view-2-h1-1",
+          "type": "text",
+          "props": {
+            "level": 1,
+            "content": "$t(settings.title)"
+          }
+        },
+        {
+          "id": "arcblog-settings-view-2-p-2",
+          "type": "text",
+          "props": {
+            "content": "$t(settings.desc)",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "appearance-settings",
+          "type": "auto-surface",
+          "props": {
+            "title": "Appearance"
+          },
+          "src": "/instance/settings/arcblog"
+        }
+      ]
     }
   ]
 }

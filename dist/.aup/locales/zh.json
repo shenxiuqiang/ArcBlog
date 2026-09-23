@@ -223,5 +223,14 @@
   "author.stories-empty": "还没有已发布的文章。",
   "operations.admin-only": "以管理员身份登录后可见该列表。",
   "posts.hero-about": "关于本节点",
-  "preview.back-home": "返回最新文章"
+  "preview.back-home": "返回最新文章",
+  "settings.gate-title": "外观",
+  "settings.gate-desc": "使用 DID Wallet 登录后可设置本站的配色与风格；登录用户还可以个性化自己的主题。",
+  "settings.login": "使用 DID Wallet 登录",
+  "dashboard.gate-title": "仪表盘",
+  "dashboard.gate-desc": "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。",
+  "dashboard.login": "使用 DID Wallet 登录",
+  "operations.gate-title": "运维",
+  "operations.gate-desc": "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。",
+  "operations.login": "使用 DID Wallet 登录"
 }
