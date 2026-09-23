@@ -416,3 +416,37 @@ spec Phase 2 要求确认「list / read / write / search / exec 哪些真正由 
 **仍未验证的部分（诚实边界）**：`${args.*}` / `$session.*` / `${generate.timeiso}` 在 **浏览器运行期**
 的插值行为无法在本环境验证（AUP 页面是客户端渲染的 SPA）。因此凡是新增的页面写表单，都严格复用
 compose/compose-edit/admin 已在用的同一套 `action -> exec` 形态，而不是发明新写法。
+
+## 11. 本地部署与重载的真实机理（实测）
+
+本机 daemon（ARC 2.0.0-beta.50，端口 4939）**直接从工作区目录提供 blocklet**：
+
+```
+arc service restart
+  Sources:  /Users/shenxiuqiang/workspace/my-app, /Users/shenxiuqiang/workspace/ArcBlog
+```
+
+### 一次实测的部署过程
+
+| 步骤 | 结果 |
+|---|---|
+| 部署前 `__aup_boot__` | **3** 个 bindings（posts-list / post-reader / draft-preview） |
+| `arc blocklet instance deploy . --domain arcblog.localhost` | 写入 `~/.arc/pages/projects/arcblog`（第 5 个 deployment，255 文件）——**线上无变化** |
+| `arc blocklet instance deploy . --cloud=none` | 聚合到 `~/.afs/blocklets-staging/arcblog`（257 文件）——**线上仍无变化** |
+| `arc service restart` | **线上生效**：bindings 变为 **4**（新增 `draft-edit /edit/{slug}`），与 `blocklet.yaml` 一致 |
+
+**结论**：在"daemon 服务工作区源码"这种模式下，`instance deploy` 不是生效路径；
+生效路径是 **`arc blocklet build` → `arc service restart`**（daemon 在启动时编译 AUP 并缓存，
+不重启就一直是旧 bundle）。
+
+### 静态文件与 RSS
+
+- Web 路由 `.route/web`（`path: /p`、`source: .`）服务的是 **blocklet 根目录（即仓库根）**，
+  而不是 `dist/`。证据：把 `rss.xml` 写进 `dist/.web-cache/` 后 `/p/rss.xml` 仍 404；
+  写进**根目录** `.web-cache/` 后 **立即 200（无需重启）**。
+- 平台自行生成 `robots.txt` / `sitemap.xml` / `llms.txt` 到根与 `dist` 的 `.web-cache/`，
+  但**不生成 RSS**——feed 必须由 `scripts/arcblog-rss.mjs` 生成到根 `.web-cache/rss.xml`：
+  ```bash
+  node scripts/arcblog-rss.mjs --feed-link "<canonical>" > .web-cache/rss.xml
+  ```
+  根 `.web-cache/` 在 `.gitignore` 中，因此本地 URL 不会被提交；重建后需重新生成。

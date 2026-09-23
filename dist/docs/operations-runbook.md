@@ -259,6 +259,24 @@ roles, payments) stay explicit CLI actions with a DID session — the same reaso
 `settle_payment` / `change_wallet` / `change_role` are default-closed for agents
 (spec §61/§130).
 
+## Local deployment and reload (verified)
+
+This machine's daemon serves blocklets **directly from the workspace**, and it
+compiles the AUP bundle at startup and caches it:
+
+```bash
+arc dsl validate --json && npm test     # gates
+arc blocklet build                      # refresh dist/ (committed) and .web-cache/
+arc service restart                     # ← what actually makes code changes live
+```
+
+Measured: before the restart the served app advertised 3 URL bindings; afterwards
+it advertised 4 (`draft-edit`), matching `blocklet.yaml`. `arc blocklet instance
+deploy` (both `--cloud=fs` into `~/.arc/pages` and `--cloud=none` into
+`~/.afs/blocklets-staging`) did **not** change what was served in this setup — it is
+not the reload path here. Static files under the root `.web-cache/` (including the
+RSS feed) do *not* need a restart; the compiled AUP bundle does.
+
 ## Development instance hygiene
 
 The live test suite is non-hermetic: it writes to the default instance and the
@@ -320,9 +338,14 @@ Publish the feed with the site (the platform cannot emit XML at request time, so
 the feed is a **deploy-time snapshot**):
 ```bash
 arc blocklet build
-node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > dist/.web-cache/rss.xml
+node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com" > .web-cache/rss.xml
 arc blocklet instance deploy . --domain <domain>
 ```
+Write it to the **repository root's** `.web-cache/` — that is what the `/p` web route
+serves (measured: a file in `dist/.web-cache/` is *not* served, a file in the root
+`.web-cache/` is served immediately). The root cache is gitignored, so a local feed
+URL never gets committed.
+
 It is then served at **`/p/rss.xml`** (web route). `/rss.xml` on the app root is
 *not* the feed — the AUP handler returns the app shell for every path (see
 `arc-contracts.md` §3.4). Rebuilding wipes `dist/.web-cache/rss.xml`, so always
