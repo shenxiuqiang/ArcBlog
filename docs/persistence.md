@@ -16,6 +16,7 @@ Arc exposes the following scoped paths for this Blocklet:
 - `/instance/app/arcblog/node/identity.json` — who this node is (`did`, `authMethod` ∈ `developer | provider | blocklet | did-connect`, `caller`, `blockletDid`, timestamps); same visibility as the profile. Managed by `scripts/arcblog-node.mjs identity init|show|check`.
 - `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy `{slug, name, description, sort, createdAt, updatedAt}`; guest-readable, admin-writable. Managed by `scripts/arcblog-category.mjs`. The lifecycle validator reads this resource and falls back to the built-in `technology|design|life` while it is empty.
 - `/instance/app/arcblog/media/<id>.json` — upload index `{id, title, alt, path, mimeType, size, width, height, uploaderDid, createdAt, updatedAt}`; **admin-only** (the index exposes upload paths). Managed by `scripts/arcblog-media.mjs`; removing a record never deletes the binary.
+- `/instance/app/arcblog/config/roles.json` — externalized role configuration (`studio`/`hub` collection address, network, asset type) plus the `chainVerification` switch; guest-readable, admin-writable. Managed by `scripts/arcblog-roles.mjs`. Collection addresses are **never** hard-coded (spec §9), and a role only becomes `active` once something verified it (fail closed, spec §114/§115).
 - `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 

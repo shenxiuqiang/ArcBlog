@@ -52,6 +52,10 @@ networkRead:
   # spec §12 /content/media: upload index; admin-only (it exposes upload paths).
   - path: /instance/app/arcblog/media
     role: admin
+  # spec §9: role asset configuration (external, never hard-coded). Public so the
+  # network can see which collections this node claims to honour.
+  - path: /instance/app/arcblog/config
+    role: guest
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -92,3 +96,9 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
+  # spec §9: externalized role/NFT configuration (operator-managed).
+  config:
+    canonical: instance/app/arcblog/config/*
+    copy: none
+    minRole: admin
+    readRole: guest

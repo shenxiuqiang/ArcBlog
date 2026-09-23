@@ -1,0 +1,7 @@
+kind: RoleConfig
+fields:
+  studio: json # { collectionAddress, network, assetType } — externalized (spec §9)
+  hub: json # { collectionAddress, network, assetType } — externalized (spec §9)
+  chainVerification: boolean # master switch for on-chain role verification
+  createdAt: datetime
+  updatedAt: datetime

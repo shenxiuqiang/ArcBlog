@@ -35,7 +35,7 @@ Both must pass before committing: `arc dsl validate --json` and `npm test`.
 
 - `blocklet.yaml` — blocklet metadata, **URL bindings** (`sites[].bindings` map pretty URLs like `/posts/{slug}` to AUP pages + AFS records), `scope: app`, `networkRead` permissions, and `replicated` collections that authorize member writes from page sessions.
 - `.aup/` — the app itself: `app.aup` (app shell + page definitions with inline i18n en/zh), `man/*.yaml` (management docs), `pages/*.json`, `wrapper.json/.aup` (app chrome), `locales/`.
-- `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`).
+- `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`, `role-config`).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
@@ -53,6 +53,7 @@ There is one Post schema, but **two AFS directories enforce the draft boundary**
 - `/instance/app/arcblog/node/{profile,identity}.json` — public node metadata (name, DID, roles, capabilities) and how the identity was established; guest-readable, admin-writable. Managed by `scripts/arcblog-node.mjs` (`init`/`show`/`set`/`check`, plus `identity init|show|check`).
 - `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy; guest-readable, admin-writable, and read by the lifecycle validator (falls back to `technology|design|life` while empty). Managed by `scripts/arcblog-category.mjs`.
 - `/instance/app/arcblog/media/<id>.json` — upload index; **admin-only** reads (it exposes upload paths). Managed by `scripts/arcblog-media.mjs`.
+- `/instance/app/arcblog/config/roles.json` — externalized role/NFT configuration (`studio`/`hub` collection + network + `chainVerification`); guest-readable, admin-writable. Managed by `scripts/arcblog-roles.mjs`. Addresses are never hard-coded, and a role grants no capability until verified (fail closed).
 - `/instance/settings/arcblog/` — appearance settings (`tone`, `palette`, `theme`) driving the theme bridge.
 
 Lifecycle transitions: `draft → published → archived → published`, plus `draft|archived → deleted` (soft). Validation: required `title`/`slug`/`author-did`; category whitelist read from the categories resource (built-in `technology|design|life` as fallback); tags are lowercase underscore tokens, max 10; `coverImage`/`ogImage` must be http(s). The compose form writes `authorDid: "$session.did"` / `authorName: "$session.displayName"` best-effort (whether `$session.*` interpolates inside `exec` args is not runtime-verified) and stores `tags` as a raw string (args templates can't split arrays); the CLI always sets authorship and normalizes tags — use the CLI when it matters, and run `node scripts/arcblog-doctor.mjs` to find records with an empty `authorDid`.

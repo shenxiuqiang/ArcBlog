@@ -158,6 +158,8 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/arcblog-category.mjs` — category taxonomy (seed/list/add/show/remove)
 - `scripts/arcblog-media.mjs` — media/upload index (add/list/show/remove)
 - `scripts/arcblog-doctor.mjs` — instance contract check (resources, node profile/identity, categories, author attribution)
+- `scripts/arcblog-roles.mjs` — role engine: externalized role asset config, RoleStatus and capability report (spec §9/§10/§11)
+- `scripts/lib/roles.mjs` — pure role/capability engine (fail-closed: a role grants nothing until verified)
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
 - `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 

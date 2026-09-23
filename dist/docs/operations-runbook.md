@@ -64,7 +64,6 @@ node scripts/arcblog-audit.mjs read --slug post-title
 ```
 
 ## Taxonomy, media and node profile
-
 ### Categories
 ```bash
 node scripts/arcblog-category.mjs seed                 # install technology/design/life (idempotent)
@@ -101,6 +100,19 @@ node scripts/arcblog-media.mjs remove --id cover
 ```
 The id defaults to the file basename (`cover.png` → `cover`). Records index the
 binary; removing a record never deletes the file.
+
+### Roles and capabilities
+```bash
+ARCBLOG_NETWORK=arcblock ARCBLOG_STUDIO_COLLECTION=0x... ARCBLOG_HUB_COLLECTION=0x... \
+  node scripts/arcblog-roles.mjs init
+node scripts/arcblog-roles.mjs show          # externalized config (spec §9)
+node scripts/arcblog-roles.mjs status        # RoleStatus per role (spec §10)
+node scripts/arcblog-roles.mjs capabilities  # declared vs effective (spec §11)
+```
+Capabilities are **withheld until a role is verified**: while `chainVerification`
+is false, `studio.*` and `hub.*` never appear in the effective set, even if the
+node profile declares those roles. Config comes from flags or
+`ARCBLOG_STUDIO_COLLECTION` / `ARCBLOG_HUB_COLLECTION` / `ARCBLOG_NETWORK`.
 
 ## Growth operations
 
