@@ -1,0 +1,19 @@
+schemaVersion: 1
+page: operations
+description: >-
+  Read-only operations console for this ArcBlog node: the published node health
+  and discovery records, the Hubs this Studio is registered with and their sync
+  state, the active settlement policy, products, access grants, the media index
+  and agent capability grants.
+synopsis: >-
+  Report the live state of the V2 network, economy, media and agent surfaces in
+  one place, and state plainly that value-bearing mutations stay on the CLI.
+flows:
+  - Read the node health record (scripts/arcblog-network.mjs health --publish).
+  - Read the discovery document and its transport (AFS/MCP, not a REST API).
+  - List registered Hubs and each Hub's last sync (scripts/arcblog-network.mjs hub register|sync).
+  - Read the active settlement policy version and split (scripts/arcblog-economy.mjs policy).
+  - List products, access grants and the media index.
+  - List time-boxed agent capability grants (scripts/arcblog-agent.mjs authorize).
+  - Note that settlement, wallet, role and payment operations are deliberate CLI
+    actions, never agent tools (spec §61/§130).

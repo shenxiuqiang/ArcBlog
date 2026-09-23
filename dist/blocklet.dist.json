@@ -50,6 +50,36 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/hub/registrations",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/economy/products",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/economy/access-grants",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/media",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/config/agent-grants",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/p/en/theme-bridge",
         "op": "list",
         "required": true,

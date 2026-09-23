@@ -36,6 +36,9 @@
     "dashboard": {
       "tree": "pages/dashboard.json"
     },
+    "operations": {
+      "tree": "pages/operations.json"
+    },
     "author": {
       "tree": "pages/author.json"
     }

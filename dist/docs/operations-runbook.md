@@ -219,6 +219,26 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Operations console (AUP)
+
+The admin UI (`?page=operations`, also in the user menu and the dashboard's quick
+actions) is the read-only counterpart of the V2 CLIs. It reports:
+
+| Card | Source | Written by |
+|---|---|---|
+| Node health | `node/health.json` | `arcblog-network.mjs health --publish` |
+| Discovery document | `node/discovery.json` | `arcblog-network.mjs discovery publish` |
+| Registered Hubs + last sync | `hub/registrations` | `arcblog-network.mjs hub register\|sync` |
+| Settlement policy | `economy/policies/active.json` | `arcblog-economy.mjs policy init` |
+| Products / access grants | `economy/products`, `economy/access-grants` | `arcblog-economy.mjs` |
+| Media index | `media` | `arcblog-media.mjs add` |
+| Agent capability grants | `config/agent-grants` | `arcblog-agent.mjs authorize` |
+
+It deliberately reports state only. Value-bearing mutations (settlement, wallets,
+roles, payments) stay explicit CLI actions with a DID session — the same reason
+`settle_payment` / `change_wallet` / `change_role` are default-closed for agents
+(spec §61/§130).
+
 ## Development instance hygiene
 
 The live test suite is non-hermetic: it writes to the default instance and the

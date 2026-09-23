@@ -42,6 +42,12 @@
                 "label": "$t(wrapper.nav-studio)",
                 "icon": "settings",
                 "exec": "admin"
+              },
+              {
+                "id": "operations",
+                "label": "$t(wrapper.nav-operations)",
+                "icon": "grid",
+                "exec": "operations"
               }
             ]
           }

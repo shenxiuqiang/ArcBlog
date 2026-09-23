@@ -580,6 +580,22 @@
               "id": "arcblog-dashboard-view-1-card-8-row-2-action-3",
               "type": "action",
               "props": {
+                "variant": "secondary",
+                "label": "$t(dashboard.q-ops)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "operations"
+                  }
+                }
+              }
+            },
+            {
+              "id": "arcblog-dashboard-view-1-card-8-row-2-action-4",
+              "type": "action",
+              "props": {
                 "variant": "ghost",
                 "label": "$t(dashboard.q-settings)"
               },

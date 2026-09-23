@@ -512,6 +512,7 @@ app "ArcBlog" {
       q-write { en "Write a post" zh "写文章" }
       q-studio { en "Creator Studio" zh "创作者工作室" }
       q-settings { en "Appearance" zh "外观" }
+      q-ops { en "Operations" zh "运维" }
     }
     view gap=lg {
       card gap=md {
@@ -586,8 +587,143 @@ app "ArcBlog" {
         row gap=sm {
           action -> page compose variant=primary label=:q-write
           action -> page admin variant=secondary label=:q-studio
+          action -> page operations variant=secondary label=:q-ops
           action -> page settings variant=ghost label=:q-settings
         }
+      }
+    }
+  }
+
+  page operations "Operations" {
+    i18n {
+      title { en "Operations" zh "运维" }
+      desc { en "Live state of this node: health, discovery, Hubs, economy, media and agent grants." zh "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。" }
+      health { en "Node health" zh "节点健康" }
+      health-status { en "Status" zh "状态" }
+      health-version { en "Blocklet version" zh "Blocklet 版本" }
+      health-did { en "DID" zh "DID" }
+      health-checked { en "Checked at" zh "检查时间" }
+      health-empty { en "Not published yet — run: node scripts/arcblog-network.mjs health --publish" zh "尚未发布——运行：node scripts/arcblog-network.mjs health --publish" }
+      discovery { en "Discovery document" zh "发现文档" }
+      discovery-protocol { en "Protocol" zh "协议" }
+      discovery-transport { en "Transport" zh "传输" }
+      discovery-generated { en "Generated at" zh "生成时间" }
+      discovery-empty { en "Not published yet — run: node scripts/arcblog-network.mjs discovery publish" zh "尚未发布——运行：node scripts/arcblog-network.mjs discovery publish" }
+      hubs { en "Registered Hubs" zh "已注册 Hub" }
+      hubs-empty { en "No Hub registered yet — run: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有注册 Hub——运行：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
+      hub-endpoint { en "Endpoint" zh "端点" }
+      hub-sync { en "Last sync" zh "最近同步" }
+      hub-version { en "Last version" zh "最后版本" }
+      policy { en "Settlement policy" zh "结算策略" }
+      policy-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
+      policy-adapter { en "Payment adapter" zh "支付适配器" }
+      policy-empty { en "No policy yet — run: node scripts/arcblog-economy.mjs policy init" zh "还没有策略——运行：node scripts/arcblog-economy.mjs policy init" }
+      products { en "Products" zh "商品" }
+      products-empty { en "No product yet — run: node scripts/arcblog-economy.mjs product add" zh "还没有商品——运行：node scripts/arcblog-economy.mjs product add" }
+      product-price { en "Price" zh "价格" }
+      grants { en "Access grants" zh "访问授权" }
+      grants-empty { en "No access grant yet (paid reading)." zh "还没有访问授权（付费阅读）。" }
+      grant-reader { en "Reader" zh "读者" }
+      media { en "Media index" zh "媒体索引" }
+      media-empty { en "No media record yet — run: node scripts/arcblog-media.mjs add" zh "还没有媒体记录——运行：node scripts/arcblog-media.mjs add" }
+      agent-grants { en "Agent capability grants" zh "Agent 能力授权" }
+      agent-grants-empty { en "No grant — agent write tools stay refused." zh "没有授权——Agent 写工具保持拒绝。" }
+      agent-expires { en "Expires" zh "到期" }
+      agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
+      mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
+    }
+    view gap=lg propBind={health: "/instance/app/arcblog/node/health.json", policy: "/instance/app/arcblog/economy/policies/active.json"} {
+      card gap=md {
+        h1 :title level=1
+        p :desc intent=muted
+      }
+      card gap=md {
+        h2 :health level=2
+        p :health-status scale=sm intent=muted
+        p "${state.health.status}" scale=sm
+        p :health-version scale=sm intent=muted
+        p "${state.health.version}" scale=sm
+        p :health-did scale=sm intent=muted
+        p "${state.health.did}" scale=sm
+        p :health-checked scale=sm intent=muted
+        p "${state.health.checkedAt}" scale=sm
+        p :health-empty scale=sm intent=muted
+      }
+      card gap=md {
+        h2 :discovery level=2
+        afs-list ops-discovery layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:discovery-empty from "/instance/app/arcblog/node" {
+          row opsDiscoveryRow role=item gap=xs {
+            p "${entry.content.protocol}" scale=sm
+            p :discovery-transport scale=sm intent=muted
+            p "${entry.content.transport}" scale=sm
+            p :discovery-generated scale=sm intent=muted
+            p "${entry.content.generatedAt}" scale=sm
+          }
+        }
+      }
+      card gap=md {
+        h2 :hubs level=2
+        afs-list ops-hubs layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:hubs-empty transform={syncAt: "content.sync.lastSync", syncVersion: "content.sync.lastVersion"} from "/instance/app/arcblog/hub/registrations" {
+          row opsHubRow role=item gap=xs {
+            h3 "${entry.content.hubDid}"
+            p :hub-endpoint scale=sm intent=muted
+            p "${entry.content.endpoint}" scale=sm
+            p :hub-sync scale=sm intent=muted
+            p "${entry.content.syncAt}" scale=sm
+            p :hub-version scale=sm intent=muted
+            p "${entry.content.syncVersion}" scale=sm
+          }
+        }
+      }
+      card gap=md {
+        h2 :policy level=2
+        p :policy-split scale=sm intent=muted
+        p "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}" scale=sm
+        p :policy-adapter scale=sm intent=muted
+        p "${state.policy.paymentAdapter}" scale=sm
+        p :policy-empty scale=sm intent=muted
+      }
+      card gap=md {
+        h2 :products level=2
+        afs-list ops-products layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:products-empty from "/instance/app/arcblog/economy/products" {
+          row opsProductRow role=item gap=xs {
+            h3 "${entry.content.id}"
+            p :product-price scale=sm intent=muted
+            p "${entry.content.priceAmount}" scale=sm
+          }
+        }
+      }
+      card gap=md {
+        h2 :grants level=2
+        afs-list ops-grants layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:grants-empty from "/instance/app/arcblog/economy/access-grants" {
+          row opsGrantRow role=item gap=xs {
+            p "${entry.content.contentId}" scale=sm
+            p :grant-reader scale=sm intent=muted
+            p "${entry.content.readerDid}" scale=sm
+          }
+        }
+      }
+      card gap=md {
+        h2 :media level=2
+        afs-list ops-media layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:media-empty from "/instance/app/arcblog/media" {
+          row opsMediaRow role=item gap=xs {
+            h3 "${entry.content.id}"
+            p "${entry.content.mimeType}" scale=sm intent=muted
+          }
+        }
+      }
+      card gap=md {
+        h2 :agent-grants level=2
+        afs-list ops-agent layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:agent-grants-empty from "/instance/app/arcblog/config/agent-grants" {
+          row opsAgentRow role=item gap=xs {
+            h3 "${entry.content.agentDid}"
+            p "${entry.content.capabilities}" scale=sm
+            p :agent-expires scale=sm intent=muted
+            p "${entry.content.expiresAt}" scale=sm
+          }
+        }
+        p :agent-closed scale=sm intent=muted
+        p :mutations scale=sm intent=muted
       }
     }
   }

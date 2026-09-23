@@ -10,27 +10,27 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 48409,
+      "size": 56366,
       "contentType": "application/octet-stream",
-      "sha256": "365d504180a2cc904c7b1e7baf5f81549108018feed4a8af39ec40db75f898e8"
+      "sha256": "e279556c2a1733e6a1ca1ae44249192eea365d05fdf692da7b24fcf4619252a9"
     },
     {
       "path": ".aup/app.json",
-      "size": 773,
+      "size": 838,
       "contentType": "application/json",
-      "sha256": "53340f89e7edfeb920cecd0283516c5d1cfdc911e5f4caeed884a0d606752560"
+      "sha256": "6f97f5b49ebf5b640fccaa1afb686e65d1c25f8407a705491ecfa08232eeaf6a"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 11036,
+      "size": 13334,
       "contentType": "application/json",
-      "sha256": "ae751dd33d1b7aef1e053b4ff39e3845790c8eda67fbb7fc719fb36f40f61692"
+      "sha256": "603c52a717822d675ce634fa6bfa723c7a853eff973ba73cb4f354c22c656eaa"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 10879,
+      "size": 13174,
       "contentType": "application/json",
-      "sha256": "a7bdd5210d9596730065766607e7e7d778bfbdbb18e358b9db45a8c079bf520c"
+      "sha256": "39c4367f25b5d0200fb21aba8c5b7f117aa90cef1fb568cc0255886284f38cda"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -67,6 +67,12 @@
       "size": 1069,
       "contentType": "text/yaml",
       "sha256": "25f4e27f7a97627a90c340260faa9645a9699538f358ca4fe8c1a4fa7065101c"
+    },
+    {
+      "path": ".aup/man/operations.yaml",
+      "size": 1116,
+      "contentType": "text/yaml",
+      "sha256": "e3a866d8671af5693ea47cb010cca6ebcb9392af4ce81dbdf02fd79e1257afe9"
     },
     {
       "path": ".aup/man/posts.yaml",
@@ -118,9 +124,15 @@
     },
     {
       "path": ".aup/pages/dashboard.json",
-      "size": 16257,
+      "size": 16729,
       "contentType": "application/json",
-      "sha256": "633cda522464501c5090d2a6539b4487fc94bbab522d7c40248bd63a1a9756b3"
+      "sha256": "5f6f68af54231e526ad91491aff7d6638649bb6bd0ba9439d61f73eec932134b"
+    },
+    {
+      "path": ".aup/pages/operations.json",
+      "size": 19484,
+      "contentType": "application/json",
+      "sha256": "f50727062ca988c8580df0e878cf4259175f3f3fa98dba5b0b89e8e611be8577"
     },
     {
       "path": ".aup/pages/posts.json",
@@ -148,15 +160,15 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 1311,
+      "size": 1451,
       "contentType": "application/octet-stream",
-      "sha256": "e72a45c2e7ddb6d9cf3798ca7c415eb96ddb3ff29e67a5c3c88efe5413f4c052"
+      "sha256": "94735db0858541a3694908d3eba3149006a414f00bb8f736902b7dafaa52f802"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 2335,
+      "size": 2528,
       "contentType": "application/json",
-      "sha256": "768704a3b2cefd5765a1af071a4cd7fc0d6fa8c3851219bdbec244d19b35bb1f"
+      "sha256": "0c1f35b760dc86293e6b858d2d711290f62b6e9cd0b677d5acb132504e57e8ec"
     },
     {
       "path": ".gitignore",
@@ -1006,9 +1018,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 12030,
+      "size": 12318,
       "contentType": "text/markdown",
-      "sha256": "9bcf20c552b22e7c1077baaec0e6bb1ada85131e74a38fae22e3b7430c629a6f"
+      "sha256": "d817531be33dabc158adf87d12106f000a079ba661593343e96fa5a9ec2a31b6"
     },
     {
       "path": "docs/arc-contracts.md",
@@ -1030,9 +1042,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 17722,
+      "size": 18346,
       "contentType": "text/markdown",
-      "sha256": "280ac9615b6443d01035782e16a72d50486f2460cd2664b94892b90a4a780a8a"
+      "sha256": "c5152e62a4d35100574027f9c5c7b3af6f2d32dfc215efd7e8878fdef4dd914e"
     },
     {
       "path": "docs/error-codes.md",
@@ -1042,9 +1054,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 13096,
+      "size": 14175,
       "contentType": "text/markdown",
-      "sha256": "df4e7ef8056b435d853b8b747fb9474f224acada786607b29dccaa7d2a9b3890"
+      "sha256": "a16814cbb1b204278ac2e48ece9f9d734b005b03c327aa5e95faa35b5d258e52"
     },
     {
       "path": "docs/persistence.md",
