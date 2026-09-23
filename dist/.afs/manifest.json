@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 60406,
+      "size": 61185,
       "contentType": "application/octet-stream",
-      "sha256": "7a74ad71400147806ba61c7e2206456f93e5a4510bda6fc7573b54dc0c3f04d2"
+      "sha256": "5250612a1e581f4b7f0b890f7ee02daf77eb0ab2760275de9939d9b582f83b39"
     },
     {
       "path": ".aup/app.json",
@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 13926,
+      "size": 14016,
       "contentType": "application/json",
-      "sha256": "7115330d4a97db6607ac6264d6544a1badeb7c0a1852f16c2a8e62d92c7ec671"
+      "sha256": "54a520fdae02e50e6751ca818a83ddd53a2daed990a3b2b83def092f8f392fcd"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 13705,
+      "size": 13791,
       "contentType": "application/json",
-      "sha256": "9edae266704d2d727db415618d2f80881565f6cebd38bcec3a1a3efffde7da49"
+      "sha256": "31978e9428792022eb41eca81bdc0752f06344516626fd4a83f0d431641a66d6"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -100,9 +100,9 @@
     },
     {
       "path": ".aup/pages/admin.json",
-      "size": 41702,
+      "size": 41760,
       "contentType": "application/json",
-      "sha256": "e5f1d21e0dc2fa17c1d7e2bb9575a19f785e7d852af96076f98e00f431c4c793"
+      "sha256": "67678d994cceef6ce8a54d781c36e26a56b8587783e747cd73b7cb181240472c"
     },
     {
       "path": ".aup/pages/author.json",
@@ -112,15 +112,15 @@
     },
     {
       "path": ".aup/pages/compose-edit.json",
-      "size": 17623,
+      "size": 17681,
       "contentType": "application/json",
-      "sha256": "bde5ab94f28350c5608dfd25e26d62861a751da29d336632d87545709e5b750c"
+      "sha256": "0cf53d5782994142505efeb38f6d8f24e9330f1a7ab2e683230e673870a6eb92"
     },
     {
       "path": ".aup/pages/compose.json",
-      "size": 13565,
+      "size": 13627,
       "contentType": "application/json",
-      "sha256": "7c218f7aedb102fa085cbc054eda6d327943bba11e01b056695cc9b28336d17a"
+      "sha256": "59e13507d8882f0807eaecec2abb9bed999488516d671c514b657b19a1071851"
     },
     {
       "path": ".aup/pages/dashboard.json",
@@ -136,15 +136,15 @@
     },
     {
       "path": ".aup/pages/posts.json",
-      "size": 11912,
+      "size": 12860,
       "contentType": "application/json",
-      "sha256": "c3a1e330b22863a494be8f03f471ae97024d1a0b2b6b188560ecf487acbec19a"
+      "sha256": "b3b6c5d99dfeb8001dcfde75531785309e25171bad087212cfdebc1f58526aed"
     },
     {
       "path": ".aup/pages/preview.json",
-      "size": 9351,
+      "size": 10124,
       "contentType": "application/json",
-      "sha256": "e4482fc90ab1adc2d3e57174f0e5d92949107d52506d58cc662c5ae7d6681cac"
+      "sha256": "8bdcdbccc209951903b8baf96f0126885eab192bbe44f4844d9b5c636f02d414"
     },
     {
       "path": ".aup/pages/reader.json",

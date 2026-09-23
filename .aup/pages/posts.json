@@ -190,23 +190,53 @@
           },
           "children": [
             {
-              "id": "hero-default-row-3-action-1",
-              "type": "action",
-              "props": {
-                "variant": "primary",
-                "label": "$t(posts.hero-cta)"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "compose"
+              "id": "hero-cta-auth",
+              "type": "view",
+              "visible": "$session.authenticated",
+              "children": [
+                {
+                  "id": "hero-cta-auth-action-1",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "label": "$t(posts.hero-cta)"
+                  },
+                  "events": {
+                    "click": {
+                      "target": "_root",
+                      "set": {
+                        "page": "compose"
+                      }
+                    }
                   }
                 }
-              }
+              ]
             },
             {
-              "id": "hero-default-row-3-action-2",
+              "id": "hero-cta-guest",
+              "type": "view",
+              "visible": "!$session.authenticated",
+              "children": [
+                {
+                  "id": "hero-cta-guest-action-1",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "label": "$t(posts.hero-about)"
+                  },
+                  "events": {
+                    "click": {
+                      "target": "_root",
+                      "set": {
+                        "page": "about"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "hero-default-row-3-action-3",
               "type": "action",
               "props": {
                 "variant": "ghost",

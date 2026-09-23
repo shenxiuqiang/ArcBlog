@@ -22,6 +22,7 @@ app "ArcBlog" {
       hero-title { en "A calmer place to read." zh "一个安静阅读的地方。" }
       hero-desc { en "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle." zh "公共 feed 只展示已发布的文章。每篇文章都带有 DID 署名，并遵循 草稿 → 发布 → 归档 的生命周期。" }
       hero-cta { en "Write a post" zh "开始写作" }
+      hero-about { en "About this node" zh "关于本节点" }
       tf-all { en "All" zh "全部" }
       tf-tech { en "Technology" zh "技术" }
       tf-design { en "Design" zh "设计" }
@@ -48,7 +49,12 @@ app "ArcBlog" {
         h1 :hero-title level=1 scale=display
         p :hero-desc intent=info
         row gap=sm {
-          action -> page compose variant=primary label=:hero-cta
+          view hero-cta-auth visible=$session.authenticated {
+            action -> page compose variant=primary label=:hero-cta
+          }
+          view hero-cta-guest visible="!$session.authenticated" {
+            action -> page about variant=primary label=:hero-about
+          }
           action -> navigate "/p/rss.xml" variant=ghost label=:rss
         }
       }
@@ -103,7 +109,7 @@ app "ArcBlog" {
       card gap=md visible="!$session.authenticated" {
         h2 :gate-title level=2
         p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login" variant=primary label=:login
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose&cancel_to=%2F%3Fpage%3Dcompose" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
         card gap=md {
@@ -177,7 +183,7 @@ app "ArcBlog" {
       card gap=md visible="!$session.authenticated" {
         h2 :gate-title level=2
         p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login" variant=primary label=:login
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
         card gap=md visible="!$state.post" {
@@ -333,7 +339,7 @@ app "ArcBlog" {
       card gap=md visible="!$session.authenticated" {
         h2 :gate-title level=2
         p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login" variant=primary label=:login
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
         card gap=md {
@@ -449,6 +455,7 @@ app "ArcBlog" {
 
   page preview "Draft preview" {
     i18n {
+      back-home { en "Back to latest stories" zh "返回最新文章" }
       title { en "Preview" zh "预览" }
       notice { en "Draft preview — this record is not public." zh "草稿预览 — 该记录未公开。" }
       not-found { en "Preview not found." zh "预览不存在。" }
@@ -464,7 +471,12 @@ app "ArcBlog" {
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
-        action preview-back -> page admin variant=ghost label=:back
+        view preview-back-studio visible=$session.authenticated {
+          action preview-back -> page admin variant=ghost label=:back
+        }
+        view preview-back-home href="/posts" visible="!$session.authenticated" style={cursor: "pointer", color: "var(--color-dim)"} {
+          p :back-home
+        }
         view preview-edit href="/edit/${state.post.slug}" visible="$state.post" style={cursor: "pointer", color: "var(--color-dim)"} {
           p :edit scale=sm
         }

@@ -21,20 +21,48 @@
       },
       "children": [
         {
-          "id": "preview-back",
-          "type": "action",
-          "props": {
-            "variant": "ghost",
-            "label": "$t(preview.back)"
-          },
-          "events": {
-            "click": {
-              "target": "_root",
-              "set": {
-                "page": "admin"
+          "id": "preview-back-studio",
+          "type": "view",
+          "visible": "$session.authenticated",
+          "children": [
+            {
+              "id": "preview-back",
+              "type": "action",
+              "props": {
+                "variant": "ghost",
+                "label": "$t(preview.back)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "admin"
+                  }
+                }
               }
             }
-          }
+          ]
+        },
+        {
+          "id": "preview-back-home",
+          "type": "view",
+          "props": {
+            "href": "/posts",
+            "style": {
+              "cursor": "pointer",
+              "color": "var(--color-dim)"
+            }
+          },
+          "visible": "!$session.authenticated",
+          "children": [
+            {
+              "id": "preview-back-home-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(preview.back-home)"
+              }
+            }
+          ]
         },
         {
           "id": "preview-edit",

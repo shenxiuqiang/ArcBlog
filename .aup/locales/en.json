@@ -221,5 +221,7 @@
   "author.roles": "Roles",
   "author.stories": "Stories",
   "author.stories-empty": "No published stories yet.",
-  "operations.admin-only": "Sign in as an administrator to see this list."
+  "operations.admin-only": "Sign in as an administrator to see this list.",
+  "posts.hero-about": "About this node",
+  "preview.back-home": "Back to latest stories"
 }

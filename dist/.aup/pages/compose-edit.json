@@ -46,7 +46,7 @@
           },
           "events": {
             "click": {
-              "navigate": "/.well-known/service/login"
+              "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin"
             }
           }
         }
