@@ -31,6 +31,8 @@ node scripts/arcblog-roles.mjs status        # RoleStatus + withheld capabilitie
 node scripts/arcblog-economy.mjs policy show # versioned split policy (spec §29)
 node scripts/arcblog-attribution.mjs trusted    # hub public keys (spec §30-33)
 node scripts/arcblog-agent.mjs check         # agent policy: read-only, default-closed tools (spec §59-62)
+node scripts/arcblog-agent.mjs run --tool search_posts --query x   # execute a read tool
+node scripts/arcblog-agent.mjs authorize --agent did:key:z... --capability agent.write --ttl 30
 node scripts/arcblog-network.mjs health      # node health (spec §110)
 node scripts/arcblog-network.mjs hub list    # Studio -> Hub registrations (spec §70/§71)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
@@ -45,7 +47,7 @@ Both must pass before committing: `arc dsl validate --json` and `npm test`.
 
 - `blocklet.yaml` — blocklet metadata, **URL bindings** (`sites[].bindings` map pretty URLs like `/posts/{slug}` to AUP pages + AFS records), `scope: app`, `networkRead` permissions, and `replicated` collections that authorize member writes from page sessions.
 - `.aup/` — the app itself: `app.aup` (app shell + page definitions with inline i18n en/zh), `man/*.yaml` (management docs), `pages/*.json`, `wrapper.json/.aup` (app chrome), `locales/`.
-- `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`, `role-config`, `settlement-policy`, `product`, `order`, `settlement`, `ledger-entry`, `access-grant`, `discovery-context`, `trusted-hub`, `discovery-document`, `node-health`, `hub-registration`).
+- `world/*.yaml` — AFS record schemas (`post`, `node`, `node-identity`, `category`, `media`, `role-config`, `settlement-policy`, `product`, `order`, `settlement`, `ledger-entry`, `access-grant`, `discovery-context`, `trusted-hub`, `discovery-document`, `node-health`, `hub-registration`, `agent-grant`).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
@@ -67,6 +69,7 @@ There is one Post schema, but **two AFS directories enforce the draft boundary**
 - `/instance/app/arcblog/config/roles.json` — externalized role/NFT configuration (`studio`/`hub` collection + network + `chainVerification`); guest-readable, admin-writable. Managed by `scripts/arcblog-roles.mjs`. Addresses are never hard-coded, and a role grants no capability until verified (fail closed).
 - `/instance/app/arcblog/economy/{policies,products,orders,settlements,ledger,access-grants}/` — the economy (spec §41–§43/§91/§37). The policy is public; products are guest-readable; orders, settlements, ledger entries and access grants are **admin-only**. Managed by `scripts/arcblog-economy.mjs`; payment and settlement are separate steps, the ledger is append-only with deterministic ids, tips (`kind: tip`) never grant access while a paid purchase of content does. A hub share is paid only with a **verified** attribution (`config/trusted-hubs/` + `economy/attributions/`, spec §30/§33), otherwise it folds into the creator.
 - `/instance/app/arcblog/node/{discovery,health}.json` — Discovery Document (spec §69) and Node Health (spec §110); guest-readable. HTTP discovery endpoints (`/.well-known/arcblog`, `/api/*`) are impossible on this platform (the AUP handler owns `/`), so the network layer is AFS-native — see docs/arc-contracts.md §7.
+- `/instance/app/arcblog/config/agent-grants/<didHash>.json` — time-boxed agent capability grants (spec §61); **admin-only**. A write tool only runs with an unexpired grant; `agent.admin` cannot be granted (those tools never run from the agent surface, spec §130).
 - `/instance/app/arcblog/hub/registrations/<didHash>.json` — Studio→Hub registrations and their sync state (spec §70/§71/§112); guest-readable.
 - `/instance/settings/arcblog/` — appearance settings (`tone`, `palette`, `theme`) driving the theme bridge.
 

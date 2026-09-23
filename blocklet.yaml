@@ -76,6 +76,9 @@ networkRead:
     role: admin
   - path: /instance/app/arcblog/config/trusted-hubs
     role: guest
+  # spec §61: capability grants for agents are security material — admin only.
+  - path: /instance/app/arcblog/config/agent-grants
+    role: admin
   # spec §71/§109: which Hubs this Studio is registered with is network metadata.
   - path: /instance/app/arcblog/hub
     role: guest
@@ -168,6 +171,11 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
+  config-agent-grants:
+    canonical: instance/app/arcblog/config/agent-grants/*
+    copy: none
+    minRole: admin
+    readRole: admin
   # spec §70/§71: Studio -> Hub registrations (public network topology).
   hub-registrations:
     canonical: instance/app/arcblog/hub/registrations/*

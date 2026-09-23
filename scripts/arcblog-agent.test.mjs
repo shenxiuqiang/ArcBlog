@@ -11,12 +11,20 @@ import {
   AGENT_TOOLS,
   READ_OPS,
   WRITE_OPS,
+  buildAgentGrant,
   checkAgentDir,
   checkAgentManifest,
   checkDeclaredAgents,
+  closedTools,
   defaultClosedTools,
+  executableReadTools,
+  grantAllows,
+  scopeCoversResource,
   summarizeAgentChecks,
   toolPolicy,
+  uncoveredReadTools,
+  validateAgentGrant,
+  writeTools,
 } from './lib/agents.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -42,7 +50,14 @@ function readOnlyAgent(overrides = {}) {
     type: 'ai',
     instructions: 'system.md',
     model: 'gpt-5.5',
-    tools: [{ path: '/instance/app/arcblog/posts/**', ops: ['read', 'list'], maxDepth: 2 }],
+    // covers every executable read tool, so the fixture stays policy-clean
+    tools: [
+      { path: '/instance/app/arcblog/posts/**', ops: ['read', 'list'], maxDepth: 2 },
+      { path: '/instance/app/arcblog/categories/**', ops: ['read', 'list'], maxDepth: 2 },
+      { path: '/instance/app/arcblog/node/**', ops: ['read', 'list'], maxDepth: 2 },
+      { path: '/instance/app/arcblog/economy/products/**', ops: ['read', 'list'], maxDepth: 2 },
+      { path: '/instance/app/arcblog/economy/policies/**', ops: ['read', 'list'], maxDepth: 2 },
+    ],
     budget: { max_rounds: 4, total_tokens: 8000 },
     ...overrides,
   };
@@ -168,4 +183,132 @@ test('the repository declares a policy-compliant read-only agent', () => {
   for (const tool of agent.tools) {
     for (const op of tool.ops) assert.ok(READ_OPS.includes(op), `${tool.path} declares ${op}`);
   }
+});
+
+// --- executable tool catalogue (I9b) ----------------------------------------
+
+test('every catalogue entry declares how it would act', () => {
+  for (const tool of AGENT_TOOLS) {
+    if (tool.kind === 'read' && tool.status === 'available') {
+      assert.ok(tool.resource?.path?.startsWith('/'), `${tool.name} needs a resource path`);
+      assert.ok(tool.resource?.op, `${tool.name} needs a resource op`);
+    } else if (tool.kind === 'write') {
+      assert.ok(tool.command, `${tool.name} needs a command binding`);
+    } else if (tool.kind === 'closed') {
+      assert.ok(tool.reason, `${tool.name} needs a reason`);
+    }
+  }
+  assert.equal(executableReadTools().length, 6);
+  assert.equal(writeTools().length, 4);
+  assert.equal(closedTools().length, 6);
+});
+
+test('scopeCoversResource matches a directory scope and its children', () => {
+  assert.equal(scopeCoversResource('/instance/app/arcblog/posts/**', '/instance/app/arcblog/posts'), true);
+  assert.equal(scopeCoversResource('/instance/app/arcblog/posts/**', '/instance/app/arcblog/posts/a.json'), true);
+  assert.equal(scopeCoversResource('/instance/app/arcblog/posts/**', '/instance/app/arcblog/drafts'), false);
+  assert.equal(scopeCoversResource('', '/anything'), false);
+});
+
+test('declaration drift is reported: read tools need a covering scope', () => {
+  const agent = readOnlyAgent({ tools: [{ path: '/instance/app/arcblog/posts/**', ops: ['read'], maxDepth: 1 }] });
+  const uncovered = uncoveredReadTools(agent).map((tool) => tool.name);
+  assert.ok(uncovered.includes('list_categories'), JSON.stringify(uncovered));
+  assert.ok(!uncovered.includes('get_post'));
+
+  const coverage = checkAgentManifest(agent).find((check) => check.id.endsWith(':tool-coverage'));
+  assert.equal(coverage.ok, false);
+  assert.match(coverage.detail, /scopes missing for/);
+});
+
+// --- capability grants (spec §61) -------------------------------------------
+
+test('buildAgentGrant time-boxes authorization and validates capabilities', () => {
+  const grant = buildAgentGrant(
+    { agentDid: 'did:key:zA', capabilities: ['agent.write'], ttlMinutes: 30 },
+    { now: '2026-01-01T00:00:00.000Z' },
+  );
+  assert.deepEqual(grant.capabilities, ['agent.write']);
+  assert.equal(grant.expiresAt, '2026-01-01T00:30:00.000Z');
+  assert.deepEqual(validateAgentGrant(grant), []);
+
+  assert.throws(() => buildAgentGrant({ agentDid: 'did:key:zA', capabilities: ['agent.root'] }), /unknown capability/);
+  assert.throws(() => buildAgentGrant({ agentDid: '', capabilities: ['agent.write'] }), /agent did is required/);
+  assert.throws(() => buildAgentGrant({ agentDid: 'did:key:zA', capabilities: [] }), /at least one capability/);
+});
+
+test('grantAllows checks capability and expiry', () => {
+  const grant = buildAgentGrant({ agentDid: 'did:key:zA', capabilities: ['agent.write'], ttlMinutes: 30 }, { now: '2026-01-01T00:00:00.000Z' });
+  assert.equal(grantAllows(null, 'agent.write').ok, false);
+  assert.match(grantAllows(null, 'agent.write').reason, /no grant/);
+  assert.equal(grantAllows(grant, 'agent.write', { now: '2026-01-01T00:10:00.000Z' }).ok, true);
+  assert.match(grantAllows(grant, 'agent.publish', { now: '2026-01-01T00:10:00.000Z' }).reason, /does not include/);
+  const expired = grantAllows(grant, 'agent.write', { now: '2026-01-01T01:00:00.000Z' });
+  assert.equal(expired.ok, false);
+  assert.match(expired.reason, /expired/);
+});
+
+// --- run: closed and unavailable tools --------------------------------------
+
+test('run refuses closed and unavailable tools with distinct codes', () => {
+  const closed = run(['run', '--tool', 'settle_payment']);
+  assert.equal(closed.status, 1);
+  assert.equal(json(closed.stderr).code, 'FORBIDDEN');
+  assert.match(json(closed.stderr).error, /default-closed/);
+
+  const privacy = run(['run', '--tool', 'get_orders']);
+  assert.equal(privacy.status, 1);
+  assert.equal(json(privacy.stderr).code, 'FORBIDDEN');
+  assert.match(json(privacy.stderr).error, /admin-only/);
+
+  const unavailable = run(['run', '--tool', 'list_studios']);
+  assert.equal(unavailable.status, 1);
+  assert.equal(json(unavailable.stderr).code, 'NOT_AVAILABLE');
+
+  const unknown = run(['run', '--tool', 'nope']);
+  assert.equal(unknown.status, 1);
+  assert.equal(json(unknown.stderr).code, 'NOT_FOUND');
+});
+
+test('run requires a grant before a write tool, and agent.admin cannot be granted', () => {
+  const agent = `did:key:zNoGrant${Date.now()}`;
+  const denied = run(['run', '--tool', 'create_draft', '--title', 'x', '--body', 'y', '--author-did', 'did:key:zA', '--agent', agent]);
+  assert.equal(denied.status, 1);
+  assert.equal(json(denied.stderr).code, 'FORBIDDEN');
+  assert.match(json(denied.stderr).error, /requires agent.write/);
+
+  const adminGrant = run(['authorize', '--agent', agent, '--capability', 'agent.admin']);
+  assert.equal(adminGrant.status, 1);
+  assert.equal(json(adminGrant.stderr).code, 'FORBIDDEN');
+  assert.match(json(adminGrant.stderr).error, /never run from the agent surface/);
+});
+
+test('live: read tools answer from AFS and a granted write tool runs', () => {
+  const search = run(['run', '--tool', 'search_posts', '--limit', '2']);
+  assert.equal(search.status, 0, search.stderr);
+  assert.ok(Array.isArray(json(search.stdout).result.posts));
+
+  const categories = run(['run', '--tool', 'list_categories']);
+  assert.equal(categories.status, 0, categories.stderr);
+  assert.ok(json(categories.stdout).result.count > 0);
+
+  const profile = run(['run', '--tool', 'get_node_profile']);
+  assert.equal(profile.status, 0, profile.stderr);
+  assert.ok(json(profile.stdout).result.did);
+
+  const agent = `did:key:zAgentLive${Date.now()}`;
+  const grant = run(['authorize', '--agent', agent, '--capability', 'agent.write', '--ttl', '5']);
+  assert.equal(grant.status, 0, grant.stderr);
+
+  const stamp = Date.now();
+  const drafted = run(['run', '--tool', 'create_draft', '--title', `Agent surface draft ${stamp}`, '--body', 'written through the agent surface', '--author-did', 'did:key:zAgentLive', '--agent', agent]);
+  assert.equal(drafted.status, 0, drafted.stderr);
+  assert.equal(json(drafted.stdout).via, 'lifecycle-draft');
+
+  const revoked = run(['revoke', '--agent', agent]);
+  assert.equal(revoked.status, 0, revoked.stderr);
+
+  const blocked = run(['run', '--tool', 'create_draft', '--title', 'x', '--body', 'y', '--author-did', 'did:key:zA', '--agent', agent]);
+  assert.equal(blocked.status, 1);
+  assert.equal(json(blocked.stderr).code, 'FORBIDDEN');
 });

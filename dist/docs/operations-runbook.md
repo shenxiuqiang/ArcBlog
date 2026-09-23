@@ -181,9 +181,33 @@ node scripts/arcblog-agent.mjs tools     # tool catalogue + capabilities
 node scripts/arcblog-agent.mjs tools --tool settle_payment
 ```
 
+### Running tools
+
+```bash
+node scripts/arcblog-agent.mjs run --tool search_posts --query identity --limit 5
+node scripts/arcblog-agent.mjs run --tool get_post --slug hello-arcblog
+node scripts/arcblog-agent.mjs run --tool list_categories
+node scripts/arcblog-agent.mjs run --tool get_policy
+# write tools need an explicit, time-boxed grant (spec §61)
+node scripts/arcblog-agent.mjs authorize --agent did:key:z... --capability agent.write --ttl 30
+node scripts/arcblog-agent.mjs run --tool create_draft --title "Draft" --body "..." \
+  --author-did did:key:z... --agent did:key:z...
+node scripts/arcblog-agent.mjs revoke --agent did:key:z...
+node scripts/arcblog-agent.mjs grants
+```
+
+Read tools run straight against AFS. Write tools delegate to the operational CLIs
+but only with an unexpired grant at their capability. Closed tools never run:
+`get_orders`/`get_settlements`/`get_sales` name buyers, and `settle_payment` /
+`change_wallet` / `change_role` are default-closed (spec §130) — `authorize`
+refuses to grant `agent.admin` rather than implying an access that cannot exist.
+Grants are stored under `config/agent-grants/` (admin-only).
+
 The agent lives in `agents/arcblog-agent/` and is declared with the platform's own
 contract (`path` + `ops` + `maxDepth`). The surface itself — `/mcp`, AFS RPC,
-`llms.txt` — comes from ARC Runtime; ArcBlog only declares and audits.
+`llms.txt` — comes from ARC Runtime; ArcBlog only declares and audits. `check`
+also verifies the declaration and the tool catalogue have not drifted: every
+executable read tool must be covered by a declared scope.
 
 Policy enforced by `check`:
 

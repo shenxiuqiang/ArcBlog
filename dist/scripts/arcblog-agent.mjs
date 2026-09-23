@@ -11,19 +11,205 @@
 // default, no buyer/reader data, bounded scopes, and a default-closed list of
 // high-risk tools.
 
-import { fail, parseArgs } from './lib/arc.mjs';
+import { execFileSync } from 'node:child_process';
+import { join } from 'node:path';
+
+import { INSTANCE_ROOT, ensure, fail, list, optString, parseArgs, readJson, remove, resolveInstance } from './lib/arc.mjs';
 import {
   AGENT_CAPABILITIES,
+  AGENT_GRANTS_DIR,
   AGENT_TOOLS,
   READ_OPS,
   SENSITIVE_PATH_PREFIXES,
   WRITE_OPS,
+  buildAgentGrant,
   checkDeclaredAgents,
   defaultClosedTools,
+  agentGrantPath,
+  getAgentGrant,
+  grantAllows,
+  listAgentGrants,
   readDeclaredAgents,
+  saveAgentGrant,
   summarizeAgentChecks,
   toolPolicy,
 } from './lib/agents.mjs';
+import { REPO_ROOT } from './lib/manifest.mjs';
+
+
+// --- read tools: real AFS reads ---------------------------------------------
+
+function recordsIn(dir, instance) {
+  const out = [];
+  for (const entry of list(dir, instance)) {
+    const id = String(entry?.id ?? '').replace(/\.json$/, '');
+    if (!id) continue;
+    const value = readJson(`${dir}/${id}.json`, instance)?.value;
+    if (value) out.push(value);
+  }
+  return out;
+}
+
+function required(opts, flag) {
+  const value = optString(opts[flag]).trim();
+  ensure(value, `--${flag} is required for this tool`);
+  return value;
+}
+
+const READ_RUNNERS = {
+  search_posts(opts, instance) {
+    const query = optString(opts.query).trim().toLowerCase();
+    const category = optString(opts.category).trim().toLowerCase();
+    const limit = Number(opts.limit ?? 20);
+    let posts = recordsIn(`${INSTANCE_ROOT}/posts`, instance);
+    if (category) posts = posts.filter((post) => String(post.category ?? '').toLowerCase() === category);
+    if (query) {
+      posts = posts.filter((post) =>
+        [post.title, post.summary, post.body, Array.isArray(post.tags) ? post.tags.join(' ') : post.tags]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+          .includes(query),
+      );
+    }
+    return {
+      count: posts.length,
+      posts: posts.slice(0, Number.isFinite(limit) && limit > 0 ? limit : 20).map((post) => ({
+        slug: post.slug,
+        title: post.title,
+        summary: post.summary,
+        category: post.category,
+        publishedAt: post.publishedAt,
+        authorDid: post.authorDid,
+      })),
+    };
+  },
+  get_post(opts, instance) {
+    const slug = required(opts, 'slug');
+    const record = readJson(`${INSTANCE_ROOT}/posts/${slug}.json`, instance);
+    if (!record) fail('NOT_FOUND', `post not found: ${slug}`);
+    return record.value;
+  },
+  list_categories(opts, instance) {
+    const categories = recordsIn(`${INSTANCE_ROOT}/categories`, instance);
+    return { count: categories.length, categories };
+  },
+  get_node_profile(opts, instance) {
+    const record = readJson(`${INSTANCE_ROOT}/node/profile.json`, instance);
+    if (!record) fail('NOT_FOUND', 'node profile not found');
+    return record.value;
+  },
+  list_products(opts, instance) {
+    const products = recordsIn(`${INSTANCE_ROOT}/economy/products`, instance);
+    return { count: products.length, products };
+  },
+  get_policy(opts, instance) {
+    const record = readJson(`${INSTANCE_ROOT}/economy/policies/active.json`, instance);
+    if (!record) fail('NOT_FOUND', 'settlement policy not found');
+    return record.value;
+  },
+};
+
+// --- write tools: delegate to the operational CLIs (already tested) ---------
+
+function runCli(scriptName, args, instance) {
+  const argv = [join(REPO_ROOT, 'scripts', scriptName), ...args];
+  if (instance) argv.push('--instance', instance);
+  const stdout = execFileSync(process.execPath, argv, { encoding: 'utf8' });
+  return stdout ? JSON.parse(stdout) : {};
+}
+
+const WRITE_RUNNERS = {
+  'lifecycle-draft': (opts, instance) =>
+    runCli(
+      'arcblog-lifecycle.mjs',
+      ['draft', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), '--body', optString(opts.body), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
+      instance,
+    ),
+  'lifecycle-publish': (opts, instance) =>
+    runCli(
+      'arcblog-lifecycle.mjs',
+      ['publish', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), '--body', optString(opts.body), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
+      instance,
+    ),
+  'economy-product-add': (opts, instance) =>
+    runCli(
+      'arcblog-economy.mjs',
+      [
+        'product', 'add',
+        '--id', required(opts, 'id'),
+        '--creator-did', required(opts, 'creator-did'),
+        '--price-amount', required(opts, 'price-amount'),
+        ...(opts['price-asset'] ? ['--price-asset', optString(opts['price-asset'])] : []),
+        ...(opts['content-id'] ? ['--content-id', optString(opts['content-id'])] : []),
+        '--update',
+      ],
+      instance,
+    ),
+};
+
+// --- run (spec §130) --------------------------------------------------------
+
+function commandRun(opts, instance) {
+  const name = required(opts, 'tool');
+  const tool = toolPolicy(name);
+  if (!tool) fail('NOT_FOUND', `unknown tool: ${name} (see: node scripts/arcblog-agent.mjs tools)`);
+
+  if (tool.kind === 'closed') fail('FORBIDDEN', `${name} is not available to agents: ${tool.reason}`);
+  if (tool.kind === 'read' && tool.status === 'unavailable') fail('NOT_AVAILABLE', `${name}: ${tool.reason}`);
+
+  if (tool.kind === 'write') {
+    const agentDid = required(opts, 'agent');
+    const grant = getAgentGrant(agentDid, instance)?.value ?? null;
+    const verdict = grantAllows(grant, tool.capability);
+    if (!verdict.ok) {
+      fail(
+        'FORBIDDEN',
+        `${name} requires ${tool.capability}: ${verdict.reason} (grant it with: authorize --agent ${agentDid} --capability ${tool.capability})`,
+      );
+    }
+    const result = WRITE_RUNNERS[tool.command](opts, instance);
+    console.log(JSON.stringify({ ok: true, tool: name, capability: tool.capability, via: tool.command, result }, null, 2));
+    return;
+  }
+
+  const result = READ_RUNNERS[name](opts, instance);
+  console.log(JSON.stringify({ ok: true, tool: name, capability: tool.capability, result }, null, 2));
+}
+
+// --- capability grants (spec §61) -------------------------------------------
+
+function commandAuthorize(opts, instance) {
+  const agentDid = required(opts, 'agent');
+  const capabilities = optString(opts.capability).split(',').map((value) => value.trim()).filter(Boolean);
+  ensure(capabilities.length > 0, '--capability is required (e.g. agent.write,agent.publish)');
+  // spec §130: the admin tier gates default-closed tools, which never run from
+  // the agent surface — granting it would only imply an access that cannot exist.
+  if (capabilities.includes('agent.admin')) {
+    fail('FORBIDDEN', 'agent.admin gates default-closed tools (spec §130) which never run from the agent surface; use the operator CLI with a DID session');
+  }
+  const grant = buildAgentGrant({
+    agentDid,
+    capabilities,
+    ttlMinutes: opts.ttl !== undefined ? Number(opts.ttl) : undefined,
+    note: optString(opts.note),
+  });
+  saveAgentGrant(grant, instance);
+  console.log(JSON.stringify({ ok: true, action: 'authorize', path: AGENT_GRANTS_DIR, grant }, null, 2));
+}
+
+function commandRevoke(opts, instance) {
+  const agentDid = required(opts, 'agent');
+  const existing = getAgentGrant(agentDid, instance);
+  if (!existing) fail('NOT_FOUND', `no grant for agent: ${agentDid}`);
+  remove(agentGrantPath(agentDid), instance);
+  console.log(JSON.stringify({ ok: true, action: 'revoke', agentDid, path: AGENT_GRANTS_DIR }, null, 2));
+}
+
+function commandGrants(opts, instance) {
+  const grants = listAgentGrants(instance);
+  console.log(JSON.stringify({ ok: true, path: AGENT_GRANTS_DIR, count: grants.length, grants }, null, 2));
+}
 
 function commandShow() {
   const { dirs, agents } = readDeclaredAgents();
@@ -99,6 +285,16 @@ Usage:
   node scripts/arcblog-agent.mjs show          # declared agents and their tool scopes
   node scripts/arcblog-agent.mjs check         # enforce the agent policy
   node scripts/arcblog-agent.mjs tools [--tool <name>]
+  node scripts/arcblog-agent.mjs run --tool <name> [--slug <s>] [--query <q>] [--category <c>]
+                                       [--agent <did>] [--title <t>] [--body <markdown>] [--id <id>] [...]
+  node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write[,agent.publish] [--ttl <minutes>]
+  node scripts/arcblog-agent.mjs revoke --agent <did>
+  node scripts/arcblog-agent.mjs grants
+
+Read tools run straight against AFS. Write tools require an unexpired grant at
+their capability (spec §61) and delegate to the operational CLIs. Tools marked
+closed never run here: buyer data stays private and settle_payment /
+change_wallet / change_role are default-closed (spec §130).
 
 Agent declarations live in agents/<name>/{agent.dsl,agent.json,system.md} and are
 the platform's own contract (path + ops + maxDepth). The policy enforced here:
@@ -121,6 +317,10 @@ ArcBlog does not implement its own protocol (spec §129).
     if (cmd === 'show') return commandShow();
     if (cmd === 'check') return commandCheck();
     if (cmd === 'tools') return commandTools(args);
+    if (cmd === 'run') return commandRun(args, resolveInstance(args));
+    if (cmd === 'authorize') return commandAuthorize(args, resolveInstance(args));
+    if (cmd === 'revoke') return commandRevoke(args, resolveInstance(args));
+    if (cmd === 'grants') return commandGrants(args, resolveInstance(args));
     fail('VALIDATION', `unknown command: ${cmd}`);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

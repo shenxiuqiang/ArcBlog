@@ -28,6 +28,17 @@
   - Runtime does not permit direct write to `/blocklets/arcblog/users/<did>/...` from current caller/session
   - Usually indicates missing DID-wallet-bound author context
 
+- `FORBIDDEN`
+  - `scripts/arcblog-agent.mjs run`: the tool is closed to agents (buyer data,
+    or a spec §130 default-closed tool) or the calling agent has no unexpired
+    grant for the tool's capability
+  - `authorize`: refusing to grant `agent.admin`, which gates tools that never
+    run from the agent surface
+
+- `NOT_AVAILABLE`
+  - The tool exists in the spec §130 catalogue but has no surface on this
+    platform version (e.g. `list_studios`, `get_studios`, `get_analytics`)
+
 - `RUNTIME_ERROR`
   - `arc` command execution failure or unexpected runtime issue
 
