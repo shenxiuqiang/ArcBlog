@@ -402,6 +402,13 @@ app "ArcBlog" {
       not-found { en "Preview not found." zh "预览不存在。" }
       back { en "Back to studio" zh "返回工作室" }
       edit { en "Edit" zh "编辑" }
+      preview-publish { en "Publish" zh "发布" }
+      published-ok { en "Published." zh "已发布。" }
+      published-hint { en "Published. The draft copy is still in studio drafts — remove it when done." zh "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。" }
+      preview-delete { en "Delete draft" zh "删除草稿" }
+      preview-delete-title { en "Delete this draft?" zh "删除这篇草稿？" }
+      preview-delete-msg { en "The record stays in the archive with status deleted (soft delete)." zh "记录将以 deleted 状态保留（软删除）。" }
+      deleted-ok { en "Draft deleted." zh "草稿已删除。" }
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
@@ -415,6 +422,10 @@ app "ArcBlog" {
         p :not-found intent=muted
       }
       view preview-article gap=md visible="$state.post" {
+        row gap=sm {
+          action preview-publish -> exec "/.actions/write" variant=primary label=:preview-publish args={path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000}
+          action preview-delete -> exec "/.actions/write" variant=destructive label=:preview-delete args={path: "/instance/app/arcblog/drafts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: deleted, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "${state.post.publishedAt}", archivedAt: "${state.post.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :preview-delete-title, message: :preview-delete-msg} onSuccessToast={intent: success, message: "$t(preview.deleted-ok)", duration: 3000}
+        }
         card gap=sm {
           p :notice intent=info
         }
