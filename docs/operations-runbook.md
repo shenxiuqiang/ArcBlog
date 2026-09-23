@@ -124,8 +124,10 @@ node scripts/arcblog-economy.mjs product add --id my-article --creator-did did:k
 node scripts/arcblog-economy.mjs order create --id order-1 --product-id my-article \
   --buyer-did did:key:z... --hub-did did:key:z...
 node scripts/arcblog-economy.mjs order pay --id order-1 --adapter manual --payment-ref ref-1
+node scripts/arcblog-economy.mjs tip create --id tip-1 --creator-did did:key:z... --amount 3
 node scripts/arcblog-economy.mjs settle --order order-1
 node scripts/arcblog-economy.mjs ledger list --order order-1
+node scripts/arcblog-economy.mjs access check --content hello-arcblog --reader did:key:z...
 ```
 
 Rules the commands enforce:
@@ -140,6 +142,11 @@ Rules the commands enforce:
   (`<orderId>:creator_share`), so a retry never double-posts; re-settling returns
   `settle-existing` and writes nothing.
 - The split always sums back to the order amount exactly (integer minor units).
+  **Without Hub attribution the hub share goes to the creator** (spec §34), so the
+  ledger still accounts for the whole amount.
+- **Tips vs paid reading** (spec §36): a `tip` order has no product and never
+  grants access; paying a `purchase` whose product has a `contentId` writes an
+  Access Grant (spec §37/§88), checked with `access check --content … --reader …`.
 
 ## Growth operations
 ### Generate RSS

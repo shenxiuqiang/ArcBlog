@@ -5,15 +5,18 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  buildAccessGrant,
   buildOrder,
   buildProduct,
   buildSettlement,
   buildSettlementPolicy,
   fromMinor,
+  hasAccess,
   ledgerEntriesFor,
   splitAmount,
   sumLedger,
   toMinor,
+  validateAccessGrant,
   validateOrder,
   validateProduct,
   validateSettlementPolicy,
@@ -180,4 +183,108 @@ test('live order pay fails closed when no payment adapter is configured', () => 
   const out = json(res.stderr);
   assert.equal(out.code, 'VALIDATION');
   assert.match(out.error, /no payment adapter configured/);
+});
+
+// --- tips vs paid reading (spec §35–§37) ------------------------------------
+
+test('a purchase needs a product, a tip does not', () => {
+  const purchase = buildOrder({ id: 'o1', kind: 'purchase', creatorDid: 'd', amount: '1' });
+  assert.ok(validateOrder(purchase).some((issue) => /productId is required for a purchase/.test(issue)));
+
+  const tip = buildOrder({ id: 'o2', kind: 'tip', creatorDid: 'd', amount: '1' });
+  assert.deepEqual(validateOrder(tip), []);
+
+  assert.ok(validateOrder(buildOrder({ id: 'o3', kind: 'gift', creatorDid: 'd', amount: '1' })).some((i) => /kind must be one of/.test(i)));
+});
+
+test('buildAccessGrant covers content purchases only', () => {
+  const product = buildProduct({ id: 'p1', creatorDid: 'd', contentId: 'hello', priceAmount: '2' });
+  const purchase = buildOrder({ id: 'o1', kind: 'purchase', productId: 'p1', creatorDid: 'd', buyerDid: 'did:key:zR', amount: '2', status: 'paid' });
+  const grant = buildAccessGrant(purchase, product);
+  assert.equal(grant.contentId, 'hello');
+  assert.equal(grant.readerDid, 'did:key:zR');
+  assert.equal(grant.expiresAt, null);
+  assert.deepEqual(validateAccessGrant(grant), []);
+
+  // a tip never grants access, and a product without content grants nothing
+  assert.equal(buildAccessGrant(buildOrder({ id: 'o2', kind: 'tip', creatorDid: 'd', amount: '1' }), product), null);
+  assert.equal(buildAccessGrant(purchase, buildProduct({ id: 'p2', creatorDid: 'd', priceAmount: '2' })), null);
+});
+
+test('hasAccess matches reader + content and ignores expired grants', () => {
+  const grant = { id: 'o1', contentId: 'hello', readerDid: 'did:key:zR', orderId: 'o1', expiresAt: null };
+  assert.equal(hasAccess([grant], { contentId: 'hello', readerDid: 'did:key:zR', now: '2026-01-01T00:00:00.000Z' }), grant);
+  assert.equal(hasAccess([grant], { contentId: 'hello', readerDid: 'did:key:zOther' }), null);
+  assert.equal(hasAccess([grant], { contentId: 'other', readerDid: 'did:key:zR' }), null);
+  assert.equal(hasAccess([grant], { contentId: 'hello', readerDid: '' }), null);
+
+  const expired = { ...grant, expiresAt: '2020-01-01T00:00:00.000Z' };
+  assert.equal(hasAccess([expired], { contentId: 'hello', readerDid: 'did:key:zR', now: '2026-01-01T00:00:00.000Z' }), null);
+});
+
+test('ledger entries record whether the movement was a tip or a purchase', () => {
+  const order = buildOrder({ id: 'o9', kind: 'tip', creatorDid: 'd', hubDid: 'h', amount: '5', status: 'paid' });
+  const entries = ledgerEntriesFor(buildSettlement(order, policy()));
+  assert.equal(entries[0].orderKind, 'tip');
+  assert.equal(sumLedger(entries), '5');
+});
+
+test('without Hub attribution the hub share goes to the creator (spec §34)', () => {
+  const noHub = buildOrder({ id: 'o10', kind: 'tip', creatorDid: 'd', amount: '5', status: 'paid' });
+  const settlement = buildSettlement(noHub, policy());
+  assert.equal(settlement.hubAmount, '0');
+  assert.equal(settlement.creatorAmount, '4.75'); // 5 * 0.95: creator + the unused hub share
+  assert.equal(settlement.protocolAmount, '0.25');
+  // the ledger must still account for the whole amount
+  assert.equal(sumLedger(ledgerEntriesFor(settlement)), '5');
+
+  const withHub = buildSettlement({ ...noHub, hubDid: 'did:key:zHub' }, policy());
+  assert.equal(withHub.hubAmount, '0.75');
+  assert.equal(withHub.creatorAmount, '4');
+  assert.equal(sumLedger(ledgerEntriesFor(withHub)), '5');
+});
+
+test('live tip settles without granting access', () => {
+  const stamp = Date.now();
+  const tipId = `econ-test-tip-${stamp}`;
+  const created = run(['tip', 'create', '--id', tipId, '--creator-did', 'did:key:zEconAlice', '--buyer-did', 'did:key:zEconReader', '--amount', '3']);
+  assert.equal(created.status, 0, created.stderr);
+  assert.equal(json(created.stdout).order.kind, 'tip');
+
+  const paid = run(['order', 'pay', '--id', tipId, '--adapter', 'manual']);
+  assert.equal(paid.status, 0, paid.stderr);
+  assert.equal(json(paid.stdout).accessGrant, null);
+
+  const settled = run(['settle', '--order', tipId]);
+  assert.equal(settled.status, 0, settled.stderr);
+  assert.equal(json(settled.stdout).ledgerTotal, '3');
+
+  const ledger = run(['ledger', 'list', '--order', tipId]);
+  assert.equal(ledger.status, 0, ledger.stderr);
+  assert.deepEqual([...new Set(json(ledger.stdout).entries.map((e) => e.orderKind))], ['tip']);
+});
+
+test('live purchase of content grants reading rights to the buyer only', () => {
+  const stamp = Date.now();
+  const contentId = `econ-test-content-${stamp}`;
+  const productId = `econ-test-paid-${stamp}`;
+  const orderId = `econ-test-paid-order-${stamp}`;
+  const buyer = 'did:key:zEconBuyer';
+
+  assert.equal(run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zEconAlice', '--price-amount', '2', '--content-id', contentId]).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', buyer]).status, 0);
+
+  const paid = run(['order', 'pay', '--id', orderId, '--adapter', 'manual']);
+  assert.equal(paid.status, 0, paid.stderr);
+  const grant = json(paid.stdout).accessGrant;
+  assert.equal(grant.contentId, contentId);
+  assert.equal(grant.readerDid, buyer);
+
+  const allowed = run(['access', 'check', '--content', contentId, '--reader', buyer]);
+  assert.equal(allowed.status, 0, allowed.stderr);
+  assert.equal(json(allowed.stdout).allowed, true);
+
+  const denied = run(['access', 'check', '--content', contentId, '--reader', 'did:key:zEconStranger']);
+  assert.equal(denied.status, 0, denied.stderr);
+  assert.equal(json(denied.stdout).allowed, false);
 });

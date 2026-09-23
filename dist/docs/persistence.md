@@ -19,9 +19,10 @@ Arc exposes the following scoped paths for this Blocklet:
 - `/instance/app/arcblog/config/roles.json` — externalized role configuration (`studio`/`hub` collection address, network, asset type) plus the `chainVerification` switch; guest-readable, admin-writable. Managed by `scripts/arcblog-roles.mjs`. Collection addresses are **never** hard-coded (spec §9), and a role only becomes `active` once something verified it (fail closed, spec §114/§115).
 - `/instance/app/arcblog/economy/policies/active.json` — the versioned settlement policy (`version`, `creator`/`hub`/`protocol` fractions, `paymentAdapter`); guest-readable (spec §50 transparency), admin-writable. Managed by `scripts/arcblog-economy.mjs policy`.
 - `/instance/app/arcblog/economy/products/<id>.json` — Product records (spec §41); guest-readable, admin-writable.
-- `/instance/app/arcblog/economy/orders/<id>.json` — Order records (spec §42): payment state only, **admin-only** (they name buyers).
-- `/instance/app/arcblog/economy/settlements/<orderId>.json` — Settlement records (spec §43); admin-only. Written once per order; re-settling is a no-op.
-- `/instance/app/arcblog/economy/ledger/<orderId>:<type>.json` — append-only ledger entries (spec §91/§92); admin-only. Deterministic ids (`<orderId>:creator_share`) make retries idempotent instead of double-posting.
+- `/instance/app/arcblog/economy/orders/<id>.json` — Order records (spec §42): payment state only, **admin-only** (they name buyers). `kind` is `purchase` or `tip` — a tip needs no product (spec §36).
+- `/instance/app/arcblog/economy/settlements/<orderId>.json` — Settlement records (spec §43); admin-only. Written once per order; re-settling is a no-op. Without Hub attribution the hub share is added to the creator (spec §34) so the ledger always accounts for the full amount.
+- `/instance/app/arcblog/economy/ledger/<orderId>:<type>.json` — append-only ledger entries (spec §91/§92); admin-only. Deterministic ids (`<orderId>:creator_share`) make retries idempotent instead of double-posting; each entry carries `orderKind` so tips are distinguishable from purchases.
+- `/instance/app/arcblog/economy/access-grants/<orderId>.json` — Access Grants (spec §37): `{contentId, readerDid, creatorDid, orderId, grantedAt, expiresAt}`; **admin-only** (they name readers). Written when a *purchase of content* is paid (spec §88); a tip never creates one (spec §36). `expiresAt: null` means a permanent reading right.
 - `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 

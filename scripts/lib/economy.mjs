@@ -147,6 +147,7 @@ export function validateProduct(product) {
 export function buildOrder(input = {}, { now = new Date().toISOString(), existing = null } = {}) {
   return {
     id: str(input.id ?? existing?.id),
+    kind: str(input.kind ?? existing?.kind) || 'purchase',
     buyerDid: str(input.buyerDid ?? existing?.buyerDid),
     creatorDid: str(input.creatorDid ?? existing?.creatorDid),
     hubDid: str(input.hubDid ?? existing?.hubDid),
@@ -165,13 +166,18 @@ export function buildOrder(input = {}, { now = new Date().toISOString(), existin
 
 const ORDER_STATUSES = ['pending', 'paid', 'failed', 'refunded'];
 
+/** A tip is a gift, not a purchase (spec §36) — it never produces an access grant. */
+export const ORDER_KINDS = ['purchase', 'tip'];
+
 /** Validate an Order record; returns issues (empty = ok). */
 export function validateOrder(order) {
   const issues = [];
   if (!order || typeof order !== 'object') return ['order must be an object'];
   if (!str(order.id)) issues.push('id is required');
   if (!str(order.creatorDid)) issues.push('creatorDid is required');
-  if (!str(order.productId)) issues.push('productId is required');
+  if (!ORDER_KINDS.includes(str(order.kind))) issues.push(`kind must be one of: ${ORDER_KINDS.join(', ')}`);
+  // A purchase must name what is being bought; a tip has no product (spec §36).
+  if (str(order.kind) === 'purchase' && !str(order.productId)) issues.push('productId is required for a purchase');
   try {
     toMinor(order.amount);
   } catch {
@@ -193,14 +199,23 @@ export function buildSettlement(order, policy, { now = new Date().toISOString() 
     throw err;
   }
   const split = splitAmount(order.amount, policy);
+  // No Hub attribution (spec §34: a reader who arrived directly has no hub).
+  // The hub share must not evaporate — it goes to the creator, which keeps the
+  // ledger summing to the order amount.
+  const hasHub = Boolean(str(order.hubDid));
+  const creatorAmount = hasHub
+    ? split.creator
+    : fromMinor(toMinor(split.creator) + toMinor(split.hub));
+  const hubAmount = hasHub ? split.hub : '0';
   return {
     orderId: order.id,
+    orderKind: str(order.kind) || 'purchase',
     creatorDid: order.creatorDid,
     hubDid: order.hubDid,
     asset: order.asset,
     amount: order.amount,
-    creatorAmount: split.creator,
-    hubAmount: split.hub,
+    creatorAmount,
+    hubAmount,
     protocolAmount: split.protocol,
     policyVersion: policy.version,
     status: 'settled',
@@ -225,6 +240,7 @@ export function ledgerEntriesFor(settlement, { now = new Date().toISOString() } 
     .map(([type, to, amount]) => ({
       id: `${settlement.orderId}:${type}`,
       orderId: settlement.orderId,
+      orderKind: str(settlement.orderKind) || 'purchase',
       type,
       from: 'buyer',
       to,
@@ -235,6 +251,56 @@ export function ledgerEntriesFor(settlement, { now = new Date().toISOString() } 
       transactionHash: settlement.transactionHash ?? '',
       createdAt: now,
     }));
+}
+
+/**
+ * Access Grant (spec §37). Only a **purchase of content** produces one — a tip
+ * never does (spec §36). Returns null when the order grants no reading right,
+ * which is the normal case for tips, memberships and products without content.
+ */
+export function buildAccessGrant(order, product, { now = new Date().toISOString() } = {}) {
+  if (str(order?.kind) !== 'purchase') return null;
+  const contentId = str(product?.contentId);
+  if (!contentId) return null;
+  return {
+    id: str(order.id),
+    contentId,
+    readerDid: str(order.buyerDid),
+    creatorDid: str(order.creatorDid),
+    orderId: str(order.id),
+    grantedAt: now,
+    // null = permanent reading right (spec §37)
+    expiresAt: null,
+  };
+}
+
+/** Validate an Access Grant record; returns issues (empty = ok). */
+export function validateAccessGrant(grant) {
+  const issues = [];
+  if (!grant || typeof grant !== 'object') return ['access grant must be an object'];
+  if (!str(grant.id)) issues.push('id is required');
+  if (!str(grant.contentId)) issues.push('contentId is required');
+  if (!str(grant.readerDid)) issues.push('readerDid is required');
+  if (!str(grant.orderId)) issues.push('orderId is required');
+  return issues;
+}
+
+/**
+ * Find the grant that lets `readerDid` read `contentId`, or null.
+ * An expired grant does not count (spec §37: `expiresAt: null` means permanent).
+ */
+export function hasAccess(grants, { contentId, readerDid, now = new Date().toISOString() } = {}) {
+  const wantedContent = str(contentId);
+  const wantedReader = str(readerDid);
+  if (!wantedContent || !wantedReader) return null;
+  return (
+    (Array.isArray(grants) ? grants : []).find(
+      (grant) =>
+        str(grant?.contentId) === wantedContent &&
+        str(grant?.readerDid) === wantedReader &&
+        (!grant?.expiresAt || String(grant.expiresAt) > String(now)),
+    ) ?? null
+  );
 }
 
 /** Sum ledger entry amounts (minor units) — used to prove the split conserves. */

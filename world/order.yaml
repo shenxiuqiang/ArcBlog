@@ -1,6 +1,7 @@
 kind: Order
 fields:
   id: string
+  kind: string # purchase | tip (spec §36)
   buyerDid: string
   creatorDid: string
   hubDid: string

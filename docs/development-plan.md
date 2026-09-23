@@ -131,7 +131,8 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I7a** ✅ | Phase 6–7（MVP-2 起） | Role Engine：`config/roles.json` 外部化配置（spec §9，含 env 回退）+ RoleStatus（spec §10）+ Role→Capability 能力引擎（spec §11，**fail closed**）；`scripts/arcblog-roles.mjs` init/show/status/capabilities/check | validate + test + check + build（81 测试） |
 | I7b | Phase 6–7 | Studio discovery 与 Hub registration：节点互发现、`/studio/registrations`、Hub 索引（需先核验 ARC 侧可用能力，不得臆造） | 同上 |
 | **I8a** ✅ | Phase 8（MVP-3） | Economy 基础：版本化分成策略 + Product/Order/Settlement/Ledger 资源 + 整数最小单位的分成计算（**永远守恒**）+ 支付与结算分离（未支付订单拒绝结算）+ 支付适配器缺省 `none`（fail closed）+ 账本确定性 id（重放不重复记账） | validate + test + check + build（92 测试） |
-| I8b | Phase 8 | Tip / 付费阅读门控：Article→Product 关联、Access Grant、Hub attribution（spec §31–§37） | 同上 |
+| **I8b** ✅ | Phase 8 | Tip 与付费阅读：`order.kind = purchase\|tip`（tip 无 product，spec §36）+ Access Grant（spec §37，支付后授予、`expiresAt: null` 为永久）+ `access check\|list`；**无 Hub 归因时 hub 分成归创作者**（spec §34，测试抓出的守恒缺陷） | validate + test + check + build（99 测试） |
+| I8c | Phase 8 | Hub attribution：签名 Discovery Context（±签名校验，spec §31–§33）与结算归属 | 同上 |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading | 同上 |
 | I9 | Phase 9（MVP-4） | Agent：`agents/` 声明 + MCP 工具面 + 权限分级 | 同上 |
 

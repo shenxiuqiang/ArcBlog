@@ -15,13 +15,16 @@
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { INSTANCE_ROOT, list, nowIso } from './lib/arc.mjs';
 import {
+  buildAccessGrant,
   buildOrder,
   buildProduct,
   buildSettlement,
   buildSettlementPolicy,
+  hasAccess,
   ledgerEntriesFor,
   splitAmount,
   sumLedger,
+  validateAccessGrant,
   validateOrder,
   validateProduct,
   validateSettlementPolicy,
@@ -36,6 +39,7 @@ const PRODUCTS_DIR = `${ECONOMY_DIR}/products`;
 const ORDERS_DIR = `${ECONOMY_DIR}/orders`;
 const SETTLEMENTS_DIR = `${ECONOMY_DIR}/settlements`;
 const LEDGER_DIR = `${ECONOMY_DIR}/ledger`;
+const ACCESS_DIR = `${ECONOMY_DIR}/access-grants`;
 
 /** Payment adapters ArcBlog knows about (spec §44). `manual` is dev-only. */
 const ADAPTERS = ['none', 'manual'];
@@ -183,7 +187,71 @@ function commandOrderPay(opts, instance) {
     updatedAt: nowIso(),
   };
   writeJson(`${ORDERS_DIR}/${id}.json`, paid, instance, record.ifMatch ?? undefined);
-  console.log(JSON.stringify({ ok: true, action: 'order-pay', path: `${ORDERS_DIR}/${id}.json`, adapter, order: paid }, null, 2));
+
+  // Payment is verified; access follows (spec §88 order: verify → grant →
+  // settle). Only a purchase of content grants anything — never a tip (§36).
+  let grant = null;
+  if (paid.kind === 'purchase' && paid.productId) {
+    const product = readJson(`${PRODUCTS_DIR}/${paid.productId}.json`, instance)?.value ?? null;
+    const candidate = buildAccessGrant(paid, product);
+    if (candidate) {
+      const issues = validateAccessGrant(candidate);
+      if (issues.length) fail('VALIDATION', issues.join('; '));
+      writeJson(`${ACCESS_DIR}/${candidate.id}.json`, candidate, instance, undefined);
+      grant = candidate;
+    }
+  }
+
+  console.log(
+    JSON.stringify({ ok: true, action: 'order-pay', path: `${ORDERS_DIR}/${id}.json`, adapter, order: paid, accessGrant: grant }, null, 2),
+  );
+}
+
+// A tip is a gift, not a purchase (spec §35/§36): no product, no access grant.
+function commandTipCreate(opts, instance) {
+  const id = optString(opts.id).trim();
+  ensure(id, 'tip id is required (--id)');
+  if (readJson(`${ORDERS_DIR}/${id}.json`, instance)) fail('CONFLICT', `order already exists: ${id}`);
+  const amount = optString(opts.amount).trim();
+  ensure(amount, 'tip amount is required (--amount)');
+  const creatorDid = optString(opts['creator-did']).trim();
+  ensure(creatorDid, 'tip creator did is required (--creator-did)');
+
+  const policy = readJson(POLICY_PATH, instance)?.value ?? null;
+  const order = buildOrder({
+    id,
+    kind: 'tip',
+    buyerDid: opts['buyer-did'],
+    creatorDid,
+    hubDid: opts['hub-did'],
+    amount,
+    asset: opts.asset,
+    status: 'pending',
+    settlementVersion: policy?.version ?? 'v1',
+  });
+  const issues = validateOrder(order);
+  if (issues.length) fail('VALIDATION', issues.join('; '));
+  writeJson(`${ORDERS_DIR}/${id}.json`, order, instance, undefined);
+  console.log(JSON.stringify({ ok: true, action: 'tip-create', path: `${ORDERS_DIR}/${id}.json`, order }, null, 2));
+}
+
+// Reading-right lookup (spec §37). `allowed:false` is an answer, not an error.
+function commandAccessCheck(opts, instance) {
+  const contentId = optString(opts.content).trim();
+  const readerDid = optString(opts.reader).trim();
+  ensure(contentId, '--content is required');
+  ensure(readerDid, '--reader is required');
+  const grant = hasAccess(recordsIn(ACCESS_DIR, instance), { contentId, readerDid });
+  console.log(JSON.stringify({ ok: true, allowed: Boolean(grant), contentId, readerDid, grant, path: ACCESS_DIR }, null, 2));
+}
+
+function commandAccessList(opts, instance) {
+  const contentId = optString(opts.content).trim();
+  const readerDid = optString(opts.reader).trim();
+  const grants = recordsIn(ACCESS_DIR, instance).filter(
+    (grant) => (!contentId || grant.contentId === contentId) && (!readerDid || grant.readerDid === readerDid),
+  );
+  console.log(JSON.stringify({ ok: true, path: ACCESS_DIR, count: grants.length, grants }, null, 2));
 }
 
 // Settlement phase (spec §89): decides who gets what, and appends the ledger.
@@ -243,12 +311,16 @@ Usage:
   node scripts/arcblog-economy.mjs order create --id <id> --product-id <id> [--buyer-did <did>] [--hub-did <did>]
   node scripts/arcblog-economy.mjs order list | order show --id <id>
   node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
+  node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
   node scripts/arcblog-economy.mjs settle --order <id>
   node scripts/arcblog-economy.mjs ledger list [--order <id>]
+  node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
+  node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]
 
 Resources live under ${ECONOMY_DIR}. Payment and settlement are separate phases
 (spec §89); the ledger is append-only (spec §92) and the split always sums back
-to the order amount exactly.
+to the order amount exactly. Paying a purchase of content also writes an Access
+Grant (spec §37/§88); a tip never does (spec §36).
 `);
 }
 
@@ -277,6 +349,15 @@ to the order amount exactly.
       fail('VALIDATION', `unknown order command: ${sub ?? '(none)'} (use create|list|show|pay)`);
     }
     if (cmd === 'settle') return commandSettle(args, instance);
+    if (cmd === 'tip') {
+      if (sub === 'create') return commandTipCreate(args, instance);
+      fail('VALIDATION', `unknown tip command: ${sub ?? '(none)'} (use create)`);
+    }
+    if (cmd === 'access') {
+      if (sub === 'check') return commandAccessCheck(args, instance);
+      if (sub === 'list' || sub === 'ls') return commandAccessList(args, instance);
+      fail('VALIDATION', `unknown access command: ${sub ?? '(none)'} (use check|list)`);
+    }
     if (cmd === 'ledger') {
       if (sub === 'list' || sub === 'ls') return commandLedgerList(args, instance);
       fail('VALIDATION', `unknown ledger command: ${sub ?? '(none)'} (use list)`);

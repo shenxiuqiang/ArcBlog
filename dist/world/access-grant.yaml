@@ -1,0 +1,9 @@
+kind: AccessGrant
+fields:
+  id: string
+  contentId: string
+  readerDid: string
+  creatorDid: string
+  orderId: string
+  grantedAt: datetime
+  expiresAt: datetime # null = permanent reading right (spec §37)

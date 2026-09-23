@@ -1,6 +1,7 @@
 kind: Settlement
 fields:
   orderId: string
+  orderKind: string # purchase | tip
   creatorDid: string
   hubDid: string
   asset: string

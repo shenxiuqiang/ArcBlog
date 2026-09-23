@@ -68,6 +68,8 @@ networkRead:
     role: admin
   - path: /instance/app/arcblog/economy/ledger
     role: admin
+  - path: /instance/app/arcblog/economy/access-grants
+    role: admin
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -138,6 +140,11 @@ replicated:
     readRole: admin
   economy-ledger:
     canonical: instance/app/arcblog/economy/ledger/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  economy-access-grants:
+    canonical: instance/app/arcblog/economy/access-grants/*
     copy: none
     minRole: admin
     readRole: admin
