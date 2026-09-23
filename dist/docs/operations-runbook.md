@@ -53,6 +53,26 @@ node scripts/arcblog-query-posts.mjs published --tag identity
 node scripts/arcblog-audit.mjs read --slug post-title
 ```
 
+## Taxonomy and node profile
+
+### Categories
+```bash
+node scripts/arcblog-category.mjs seed                 # install technology/design/life (idempotent)
+node scripts/arcblog-category.mjs list
+node scripts/arcblog-category.mjs add --slug review --name Review --sort 40
+node scripts/arcblog-category.mjs remove --slug review
+```
+`arcblog-lifecycle.mjs` validates `--category` against this resource (it falls back
+to the built-in `technology|design|life` while the resource is empty).
+
+### Node profile
+```bash
+node scripts/arcblog-node.mjs init        # derive from blocklet.yaml (roles: basic)
+node scripts/arcblog-node.mjs show
+node scripts/arcblog-node.mjs set --roles studio   # capabilities re-derive from the role
+node scripts/arcblog-node.mjs check
+```
+
 ## Growth operations
 
 ### Generate RSS

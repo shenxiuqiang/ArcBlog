@@ -11,7 +11,9 @@ Arc exposes the following scoped paths for this Blocklet:
 - `/blocklets/arcblog/instance/members` — read-only DID Connect membership projection.
 - `/instance/app/arcblog/posts/<slug>.json` — published post records only, guest-readable via the `networkRead` declaration in `blocklet.yaml` so the public feed renders without a session.
 - `/instance/app/arcblog/drafts/<slug>.json` — draft, archived, and soft-deleted records; private (`networkRead` grant limited to `role: admin` for the studio). Anonymous reads are denied.
-- `/instance/app/arcblog/heroes/<id>.json` — homepage carousel records `{title, description, image, url, sort, createdAt}`; guest-readable (rendered without a session), writable by members (replicated collection, `minRole: member`). Managed from the studio's Hero section.
+- `/instance/app/arcblog/heroes/<id>.json` — homepage carousel records `{title, description, image, url, sort, createdAt}`; guest-readable (rendered without a session), writable by admins (replicated collection, `minRole: admin`). Managed from the studio's Hero section.
+- `/instance/app/arcblog/node/profile.json` — the node's public profile (`name`, `description`, `avatar`, `did`, `endpoint`, `roles`, `capabilities`, `version`, `protocolVersion`, timestamps); guest-readable, admin-writable. Managed by `scripts/arcblog-node.mjs`; `roles` are `basic | studio | hub` and `capabilities` derive from them (spec §7 / §11).
+- `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy `{slug, name, description, sort, createdAt, updatedAt}`; guest-readable, admin-writable. Managed by `scripts/arcblog-category.mjs`. The lifecycle validator reads this resource and falls back to the built-in `technology|design|life` while it is empty.
 - `/blocklets/arcblog/instance/audits/<slug>.audit.jsonl` — blocklet-private audit trail (owner/operator access only).
 - `/blocklets/arcblog/users/<did>/media/<id>` — per-wallet uploaded media.
 

@@ -46,6 +46,9 @@ networkRead:
   # spec §109: a node's identity/roles/capabilities are public network metadata.
   - path: /instance/app/arcblog/node
     role: guest
+  # spec §12 /content/categories: public taxonomy used by the reader filters.
+  - path: /instance/app/arcblog/categories
+    role: guest
 
 # Collection declarations authorize admin writes from the UI (the compose
 # form's exec `/.actions/write`) to the record directories — plain base-path
@@ -71,6 +74,12 @@ replicated:
   # admin-writable (node identity/roles are operator-controlled).
   node:
     canonical: instance/app/arcblog/node/*
+    copy: none
+    minRole: admin
+    readRole: guest
+  # spec §12: /arcblog/content/categories — operator-managed taxonomy.
+  categories:
+    canonical: instance/app/arcblog/categories/*
     copy: none
     minRole: admin
     readRole: guest

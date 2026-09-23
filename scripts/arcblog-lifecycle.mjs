@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { allowedCategorySlugs, validateCategorySlug } from './lib/categories.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -212,8 +213,6 @@ function ensure(condition, message) {
   if (!condition) fail('VALIDATION', message);
 }
 
-const ALLOWED_CATEGORIES = new Set(['technology', 'design', 'life']);
-
 function normalizeTags(value) {
   return splitTags(value)
     .map((x) => slugify(x).replace(/-/g, '_'))
@@ -221,11 +220,12 @@ function normalizeTags(value) {
     .slice(0, 10);
 }
 
-function validateCategory(value) {
-  const category = optString(value).trim().toLowerCase();
-  if (!category) return '';
-  if (!ALLOWED_CATEGORIES.has(category)) fail('VALIDATION', `category must be one of: ${[...ALLOWED_CATEGORIES].join(', ')}`);
-  return category;
+// Categories are AFS records (spec §12 `/arcblog/content/categories`, managed by
+// scripts/arcblog-category.mjs). `allowedCategorySlugs` falls back to the
+// built-in defaults while the resource is empty, so an unseeded instance
+// validates exactly like the old hard-coded whitelist.
+function validateCategory(value, instance) {
+  return validateCategorySlug(value, allowedCategorySlugs(instance));
 }
 
 function validateCoverImage(value) {
@@ -279,10 +279,11 @@ function getStoredPost(path, instance) {
 }
 
 function commandValidate(opts) {
+  const instance = optString(opts.instance);
   const title = optString(opts.title).trim();
   const body = readBody(opts);
   const slug = slugify(optString(opts.slug) || title);
-  const category = validateCategory(opts.category);
+  const category = validateCategory(opts.category, instance);
   const coverImage = validateCoverImage(opts['cover-image']);
   const tags = normalizeTags(optString(opts.tags));
   const ogImage = validateCoverImage(opts['og-image']);
@@ -319,7 +320,7 @@ function commandPublish(opts) {
     return;
   }
 
-  const category = validateCategory(opts.category);
+  const category = validateCategory(opts.category, instance);
   const coverImage = validateCoverImage(opts['cover-image']);
   const tags = normalizeTags(optString(opts.tags));
   const seoTitle = optString(opts['seo-title']).trim();
@@ -384,7 +385,7 @@ function commandDraft(opts) {
   const body = readBody(opts);
   const slug = slugify(optString(opts.slug) || title);
   const authorDid = optString(opts['author-did']);
-  const category = validateCategory(opts.category);
+  const category = validateCategory(opts.category, instance);
   const coverImage = validateCoverImage(opts['cover-image']);
   const tags = normalizeTags(optString(opts.tags));
   const seoTitle = optString(opts['seo-title']).trim();
