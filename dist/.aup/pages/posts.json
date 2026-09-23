@@ -14,7 +14,8 @@
         "src": "/p/en/hero-carousel/",
         "loading": "eager",
         "aspectRatio": "16 / 7",
-        "title": "Hero carousel"
+        "title": "Hero carousel",
+        "sandbox": "allow-top-navigation-by-user-activation"
       }
     },
     {

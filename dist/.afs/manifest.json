@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 60740,
+      "size": 60790,
       "contentType": "application/octet-stream",
-      "sha256": "d350927319de0d39aff30b244ae9f0145c4002d5444a55fc673c7f690cc9f1db"
+      "sha256": "e049e1e85f0af92a5bcec391a69a7d6ddcb34c83b3b7bddaa32868aa9125ee7d"
     },
     {
       "path": ".aup/app.json",
@@ -142,9 +142,9 @@
     },
     {
       "path": ".aup/pages/posts.json",
-      "size": 5956,
+      "size": 6018,
       "contentType": "application/json",
-      "sha256": "58abfb6f734ae420166c7510a3a56b4880a575a6474057b2dc3eb446fb2a8143"
+      "sha256": "4c9c0cf0465b57a11dba5f69c400a79b4bed13a209e4d2daa82d42fe56122ab1"
     },
     {
       "path": ".aup/pages/preview.json",

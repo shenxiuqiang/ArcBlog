@@ -41,7 +41,7 @@ app "ArcBlog" {
       rss { en "Subscribe via RSS" zh "订阅 RSS" }
     }
     view gap=lg {
-      frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel"
+      frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel" sandbox="allow-top-navigation-by-user-activation"
       h2 :feed level=2
   afs-list published-feed layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none from "/instance/app/arcblog/posts" {
         row postRow cross=stretch role=item style={padding: "0", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)", overflow: "hidden", minHeight: "176px"} {
