@@ -6,10 +6,6 @@
       "gap": "lg"
     }
   },
-  "propBind": {
-    "health": "/instance/app/arcblog/node/health.json",
-    "policy": "/instance/app/arcblog/economy/policies/active.json"
-  },
   "children": [
     {
       "id": "arcblog-operations-view-1-card-1",
@@ -47,6 +43,9 @@
         "layout": {
           "gap": "md"
         }
+      },
+      "propBind": {
+        "health": "/instance/app/arcblog/node/health.json"
       },
       "children": [
         {
@@ -118,20 +117,12 @@
           }
         },
         {
-          "id": "arcblog-operations-view-1-card-2-p-9",
-          "type": "text",
+          "id": "arcblog-operations-view-1-card-2-time-9",
+          "type": "time",
           "props": {
-            "content": "${state.health.checkedAt}",
-            "scale": "sm"
-          }
-        },
-        {
-          "id": "arcblog-operations-view-1-card-2-p-10",
-          "type": "text",
-          "props": {
-            "content": "$t(operations.health-empty)",
-            "scale": "sm",
-            "intent": "muted"
+            "mode": "display",
+            "value": "${state.health.checkedAt}",
+            "timeMode": "relative"
           }
         }
       ]
@@ -164,7 +155,11 @@
             "showBreadcrumb": false,
             "showParent": false,
             "clickMode": "none",
-            "emptyText": "$t(operations.discovery-empty)"
+            "emptyText": "$t(operations.discovery-empty)",
+            "filter": {
+              "field": "content.protocol",
+              "match": "arcblog"
+            }
           },
           "src": "/instance/app/arcblog/node",
           "children": [
@@ -183,12 +178,21 @@
                   "id": "opsdiscoveryrow-p-1",
                   "type": "text",
                   "props": {
+                    "content": "$t(operations.discovery-protocol)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "opsdiscoveryrow-p-2",
+                  "type": "text",
+                  "props": {
                     "content": "${entry.content.protocol}",
                     "scale": "sm"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-2",
+                  "id": "opsdiscoveryrow-p-3",
                   "type": "text",
                   "props": {
                     "content": "$t(operations.discovery-transport)",
@@ -197,7 +201,7 @@
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-3",
+                  "id": "opsdiscoveryrow-p-4",
                   "type": "text",
                   "props": {
                     "content": "${entry.content.transport}",
@@ -205,7 +209,7 @@
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-4",
+                  "id": "opsdiscoveryrow-p-5",
                   "type": "text",
                   "props": {
                     "content": "$t(operations.discovery-generated)",
@@ -214,16 +218,26 @@
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-5",
-                  "type": "text",
+                  "id": "opsdiscoveryrow-time-6",
+                  "type": "time",
                   "props": {
-                    "content": "${entry.content.generatedAt}",
-                    "scale": "sm"
+                    "mode": "display",
+                    "value": "${entry.content.generatedAt}",
+                    "timeMode": "relative"
                   }
                 }
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-operations-view-1-card-3-p-3",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.discovery-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
         }
       ]
     },
@@ -336,6 +350,15 @@
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-operations-view-1-card-4-p-3",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.hubs-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
         }
       ]
     },
@@ -358,41 +381,74 @@
           }
         },
         {
-          "id": "arcblog-operations-view-1-card-5-p-2",
-          "type": "text",
+          "id": "ops-policy",
+          "type": "afs-list",
           "props": {
-            "content": "$t(operations.policy-split)",
-            "scale": "sm",
-            "intent": "muted"
-          }
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "clickMode": "none",
+            "emptyText": "$t(operations.policy-empty)",
+            "filter": {
+              "field": "content.version",
+              "match": "v1"
+            }
+          },
+          "src": "/instance/app/arcblog/economy/policies",
+          "children": [
+            {
+              "id": "opsPolicyRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "gap": "xs"
+                },
+                "role": "item"
+              },
+              "children": [
+                {
+                  "id": "opspolicyrow-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.policy-split)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "opspolicyrow-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}",
+                    "scale": "sm"
+                  }
+                },
+                {
+                  "id": "opspolicyrow-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.policy-adapter)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "opspolicyrow-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.paymentAdapter}",
+                    "scale": "sm"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "arcblog-operations-view-1-card-5-p-3",
-          "type": "text",
-          "props": {
-            "content": "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}",
-            "scale": "sm"
-          }
-        },
-        {
-          "id": "arcblog-operations-view-1-card-5-p-4",
-          "type": "text",
-          "props": {
-            "content": "$t(operations.policy-adapter)",
-            "scale": "sm",
-            "intent": "muted"
-          }
-        },
-        {
-          "id": "arcblog-operations-view-1-card-5-p-5",
-          "type": "text",
-          "props": {
-            "content": "${state.policy.paymentAdapter}",
-            "scale": "sm"
-          }
-        },
-        {
-          "id": "arcblog-operations-view-1-card-5-p-6",
           "type": "text",
           "props": {
             "content": "$t(operations.policy-empty)",
@@ -473,6 +529,15 @@
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-operations-view-1-card-6-p-3",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.products-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
         }
       ]
     },
@@ -495,58 +560,84 @@
           }
         },
         {
-          "id": "ops-grants",
-          "type": "afs-list",
+          "id": "arcblog-operations-view-1-card-7-p-2",
+          "type": "text",
           "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "clickMode": "none",
-            "emptyText": "$t(operations.grants-empty)"
+            "content": "$t(operations.admin-only)",
+            "scale": "sm",
+            "intent": "muted"
           },
-          "src": "/instance/app/arcblog/economy/access-grants",
+          "visible": "!$session.authenticated"
+        },
+        {
+          "id": "ops-grants-gate",
+          "type": "view",
+          "visible": "$session.authenticated",
           "children": [
             {
-              "id": "opsGrantRow",
-              "type": "view",
+              "id": "ops-grants",
+              "type": "afs-list",
               "props": {
-                "layout": {
-                  "direction": "row",
-                  "gap": "xs"
-                },
-                "role": "item"
+                "layout": "list",
+                "itemStyle": "row",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "clickMode": "none",
+                "emptyText": "$t(operations.grants-empty)"
               },
+              "src": "/instance/app/arcblog/economy/access-grants",
               "children": [
                 {
-                  "id": "opsgrantrow-p-1",
-                  "type": "text",
+                  "id": "opsGrantRow",
+                  "type": "view",
                   "props": {
-                    "content": "${entry.content.contentId}",
-                    "scale": "sm"
-                  }
-                },
-                {
-                  "id": "opsgrantrow-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(operations.grant-reader)",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "opsgrantrow-p-3",
-                  "type": "text",
-                  "props": {
-                    "content": "${entry.content.readerDid}",
-                    "scale": "sm"
-                  }
+                    "layout": {
+                      "direction": "row",
+                      "gap": "xs"
+                    },
+                    "role": "item"
+                  },
+                  "children": [
+                    {
+                      "id": "opsgrantrow-p-1",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.contentId}",
+                        "scale": "sm"
+                      }
+                    },
+                    {
+                      "id": "opsgrantrow-p-2",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.grant-reader)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opsgrantrow-p-3",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.readerDid}",
+                        "scale": "sm"
+                      }
+                    }
+                  ]
                 }
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-operations-view-1-card-7-p-4",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.grants-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
         }
       ]
     },
@@ -569,50 +660,76 @@
           }
         },
         {
-          "id": "ops-media",
-          "type": "afs-list",
+          "id": "arcblog-operations-view-1-card-8-p-2",
+          "type": "text",
           "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "clickMode": "none",
-            "emptyText": "$t(operations.media-empty)"
+            "content": "$t(operations.admin-only)",
+            "scale": "sm",
+            "intent": "muted"
           },
-          "src": "/instance/app/arcblog/media",
+          "visible": "!$session.authenticated"
+        },
+        {
+          "id": "ops-media-gate",
+          "type": "view",
+          "visible": "$session.authenticated",
           "children": [
             {
-              "id": "opsMediaRow",
-              "type": "view",
+              "id": "ops-media",
+              "type": "afs-list",
               "props": {
-                "layout": {
-                  "direction": "row",
-                  "gap": "xs"
-                },
-                "role": "item"
+                "layout": "list",
+                "itemStyle": "row",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "clickMode": "none",
+                "emptyText": "$t(operations.media-empty)"
               },
+              "src": "/instance/app/arcblog/media",
               "children": [
                 {
-                  "id": "opsmediarow-h3-1",
-                  "type": "text",
+                  "id": "opsMediaRow",
+                  "type": "view",
                   "props": {
-                    "level": 3,
-                    "content": "${entry.content.id}"
-                  }
-                },
-                {
-                  "id": "opsmediarow-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "${entry.content.mimeType}",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
+                    "layout": {
+                      "direction": "row",
+                      "gap": "xs"
+                    },
+                    "role": "item"
+                  },
+                  "children": [
+                    {
+                      "id": "opsmediarow-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.id}"
+                      }
+                    },
+                    {
+                      "id": "opsmediarow-p-2",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.mimeType}",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    }
+                  ]
                 }
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-operations-view-1-card-8-p-4",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.media-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
         }
       ]
     },
@@ -635,69 +752,95 @@
           }
         },
         {
-          "id": "ops-agent",
-          "type": "afs-list",
+          "id": "arcblog-operations-view-1-card-9-p-2",
+          "type": "text",
           "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "clickMode": "none",
-            "emptyText": "$t(operations.agent-grants-empty)"
+            "content": "$t(operations.admin-only)",
+            "scale": "sm",
+            "intent": "muted"
           },
-          "src": "/instance/app/arcblog/config/agent-grants",
+          "visible": "!$session.authenticated"
+        },
+        {
+          "id": "ops-agent-gate",
+          "type": "view",
+          "visible": "$session.authenticated",
           "children": [
             {
-              "id": "opsAgentRow",
-              "type": "view",
+              "id": "ops-agent",
+              "type": "afs-list",
               "props": {
-                "layout": {
-                  "direction": "row",
-                  "gap": "xs"
-                },
-                "role": "item"
+                "layout": "list",
+                "itemStyle": "row",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "clickMode": "none",
+                "emptyText": "$t(operations.agent-grants-empty)"
               },
+              "src": "/instance/app/arcblog/config/agent-grants",
               "children": [
                 {
-                  "id": "opsagentrow-h3-1",
-                  "type": "text",
+                  "id": "opsAgentRow",
+                  "type": "view",
                   "props": {
-                    "level": 3,
-                    "content": "${entry.content.agentDid}"
-                  }
-                },
-                {
-                  "id": "opsagentrow-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "${entry.content.capabilities}",
-                    "scale": "sm"
-                  }
-                },
-                {
-                  "id": "opsagentrow-p-3",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(operations.agent-expires)",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "opsagentrow-p-4",
-                  "type": "text",
-                  "props": {
-                    "content": "${entry.content.expiresAt}",
-                    "scale": "sm"
-                  }
+                    "layout": {
+                      "direction": "row",
+                      "gap": "xs"
+                    },
+                    "role": "item"
+                  },
+                  "children": [
+                    {
+                      "id": "opsagentrow-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.agentDid}"
+                      }
+                    },
+                    {
+                      "id": "opsagentrow-p-2",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.capabilities}",
+                        "scale": "sm"
+                      }
+                    },
+                    {
+                      "id": "opsagentrow-p-3",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.agent-expires)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opsagentrow-p-4",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.expiresAt}",
+                        "scale": "sm"
+                      }
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
         {
-          "id": "arcblog-operations-view-1-card-9-p-3",
+          "id": "arcblog-operations-view-1-card-9-p-4",
+          "type": "text",
+          "props": {
+            "content": "$t(operations.agent-grants-empty)",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-operations-view-1-card-9-p-5",
           "type": "text",
           "props": {
             "content": "$t(operations.agent-closed)",
@@ -706,7 +849,7 @@
           }
         },
         {
-          "id": "arcblog-operations-view-1-card-9-p-4",
+          "id": "arcblog-operations-view-1-card-9-p-6",
           "type": "text",
           "props": {
             "content": "$t(operations.mutations)",

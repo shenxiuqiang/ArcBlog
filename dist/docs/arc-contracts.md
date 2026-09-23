@@ -450,3 +450,20 @@ arc service restart
   node scripts/arcblog-rss.mjs --feed-link "<canonical>" > .web-cache/rss.xml
   ```
   根 `.web-cache/` 在 `.gitignore` 中，因此本地 URL 不会被提交；重建后需重新生成。
+
+## 12. AUP 运行期实测（首次用真实浏览器验证）
+
+`dsh-builtin-browser` 插件装上后，第一次不再靠推测而是**真机**核对了这些行为：
+
+| 事实 | 证据 |
+|---|---|
+| `dsl generate` **不生成** `wrapper.*` 的 locale key | 删掉官方 `code-agents` blocklet 的 locales 再 `generate`，wrapper key 仍为空；它那些 key 是手工维护的 |
+| `dsl generate` 对 locale 文件是**合并**语义 | 手工补的 `wrapper.*` 在后续多次 `generate` 中保留下来（正因如此旧的 `wrapper.nav-posts` 残留了很久） |
+| wrapper 必须用 `:key` 引用（`label: :nav-about`） | 写成字面量 `label: "$t(wrapper.nav-about)"` 时，编译结果相同但 generate 不注册 key → 页脚渲染出字面量 `$t(wrapper.nav-author)`（**本次修掉的真 bug**） |
+| `$t(page.key)` 运行时由 **daemon 编译进 app bundle**，不是 HTTP 取 locale 文件 | `/.aup/locales/zh.json` 返回的是 AUP 外壳 HTML（root 路径被 AUP 接管，§7）→ 改文案必须重启 daemon |
+| `${state.a.b.c}` **深层取值可用** | Dashboard 角色卡用 `propBind` + `${state.roles.studio.collectionAddress}` 正常渲染 |
+| `<time mode=display value="..." timeMode=relative>` 可用 | 健康/发现卡显示 `5 minutes ago` |
+| `visible` 对 **propBind 异步数据不可靠** | `visible="!$state.health.status"` 在数据到达前求值 → 提示恒显、时间恒隐（本次修掉的 bug） |
+| `visible=$session.authenticated` **可靠** | 用它把管理员专属列表对访客隐藏，已验证 |
+| afs-list 的 `emptyText` 在**目录缺失**时不生效，且 `empty`/`error` 事件不触发 | 平台仍渲染自己的英文 `aup-list-empty: No items to display`；`emptyText` 用 `:key` 或字面量都一样 |
+| 遍历目录会把**子目录**也当记录渲染 | `/config` 下有 `trusted-hubs/`，Dashboard 角色卡因此多渲染一行空值（标签重复）；改为 `propBind` 单文件读取 |
