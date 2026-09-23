@@ -219,6 +219,35 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Permission matrix test
+
+`scripts/arcblog-permissions.test.mjs` asserts the guest contract from a
+**signed-out** context — the CLI runs as admin, so it cannot see these
+regressions. It posts to the daemon's AFS RPC (`POST /api/afs/rpc`) with no
+cookies, which the daemon resolves to the `guest` role:
+
+```bash
+node --test scripts/arcblog-permissions.test.mjs     # part of `npm test`
+ARCBLOG_BASE_URL=http://host:port node --test …      # point it elsewhere
+```
+
+What it pins:
+
+- **public** prefixes (`posts`, `heroes`, `node`, `categories`,
+  `economy/policies`, `economy/products`) are not refused to a guest;
+- **admin** prefixes (`drafts`, `media`, `config` + its children,
+  `hub/registrations`, `economy/{orders,settlements,ledger,access-grants,attributions}`)
+  answer 403 **with the role wording** — a typo'd or undeclared path answers
+  "not a declared replicated collection", so it can never pass as correctly gated;
+- an undeclared path is refused, and a guest cannot write even to a
+  guest-readable prefix (401 "Authentication required for write/delete");
+- every `replicated` collection behaves as its declared `readRole` says (derived
+  from `blocklet.yaml`, so a newly added collection is covered automatically);
+- the `replicated` table itself keeps those private collections at `readRole: admin`.
+
+Response contract it relies on: 200 = allowed, 404 `AFS_NOT_FOUND` = allowed but
+the path is missing (not a denial), 403 = denied.
+
 ## What is editable where
 
 | Surface | UI | CLI |

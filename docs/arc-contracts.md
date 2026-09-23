@@ -502,6 +502,13 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 | `economy/{orders,settlements,ledger,access-grants,attributions}` | admin | ⛔ DENIED |
 | 未声明路径 | — | ⛔ DENIED |
 
+### 自动化守卫
+`scripts/arcblog-permissions.test.mjs` 以**无 cookie 的访客身份**请求 `POST /api/afs/rpc`
+（200=放行 / 404 AFS_NOT_FOUND=放行但路径不存在 / 403=拒绝），把上面的矩阵固定下来；
+拒绝断言必须匹配 `below readRole`，因此拼错或未声明的路径（回答
+"not a declared replicated collection"）不会伪装成"已正确授权"。
+回归验证：把 `config.readRole` 注入为 guest，源真相守卫与派生一致性检查会立即失败。
+
 ### 页面与菜单
 - **页面**：`blocklet.yaml` 的 `sites[].bindings[]` **没有** role 字段（在 ARC 全部官方 blocklet 里核对过，
   也没有顶层 `navigation`/`menu`/`permissions` 键）。授权靠 AUP：内容包在 `view visible=$session.authenticated`，

@@ -38,6 +38,7 @@ node scripts/arcblog-network.mjs health      # node health (spec §110)
 node scripts/arcblog-network.mjs hub list    # Studio -> Hub registrations (spec §70/§71)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
 node scripts/arcblog-clean.mjs [--confirm]   # dev-instance test residue (dry run by default)
+node --test scripts/arcblog-permissions.test.mjs   # guest permission matrix (no cookies; part of npm test)
 # add `--instance <name>` to target a named Arc instance
 ```
 

@@ -1024,15 +1024,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 13100,
+      "size": 13208,
       "contentType": "text/markdown",
-      "sha256": "2235bf428a8908ec823fbe501cff19103df237b7221aa8f728e0f7ce27386a7f"
+      "sha256": "7a190ea6f8059e7db1b62ed4a7212e68bbfde6f8093c81ddc2c0c32ae30b0a51"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 29674,
+      "size": 30182,
       "contentType": "text/markdown",
-      "sha256": "31859e52adc4dff5e86874ffb0266a353acb4d029497133ecc9c6f7b121c0e11"
+      "sha256": "e7b1019aaa4dfe034ec03cc5db6f36db24915f429d6acf1ace324470eae06e7d"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1060,9 +1060,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 16495,
+      "size": 17951,
       "contentType": "text/markdown",
-      "sha256": "bb2d61d64f2bd8cae928c19d85d902f6aa058aa0c34a7676e9d1970532515028"
+      "sha256": "306221eb9b26b8f2c1fec3c4af60ba858156586fc18e4c7fdd32a1668c5574b1"
     },
     {
       "path": "docs/persistence.md",
@@ -1285,6 +1285,12 @@
       "size": 8958,
       "contentType": "text/javascript",
       "sha256": "6d79500acbf0e20eea257f0ccc6f35d2c73d793f8b8a2973ea594fea7b2bc3c0"
+    },
+    {
+      "path": "scripts/arcblog-permissions.test.mjs",
+      "size": 8226,
+      "contentType": "text/javascript",
+      "sha256": "986e07a9be093d599297c76f09210c4de4e63424d9e205c5caaf33609a3767d9"
     },
     {
       "path": "scripts/arcblog-query-posts.mjs",
