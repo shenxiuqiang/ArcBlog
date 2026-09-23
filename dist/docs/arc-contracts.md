@@ -102,6 +102,44 @@ package.json     仅元数据（"@aigne/blocklet-*", private, type: module），
 
 可写存储：新实例用 `/work`（`/storage` 不是默认 mount）。
 
+### 3.1 站点模型与 S1 spike 结论
+
+S1 问题：`pages/` 能否绑定 AFS 记录做**动态**文章页？
+
+做法：用 `create-site` 在 `/work` 建一次性站点（`s1spike`），读回它写出的文件；再核验
+CMS actions；核验后已 `undeclare` + 删除。
+
+```text
+<site>/.web/site.yaml             locale: en + theme {library: true, tone: clean}
+<site>/pages/<name>/layout.json   {"sections":[{"id","component","props"}]}
+```
+
+**结论：不能。** 证据：
+
+1. `render-all` 的自述是 *"Render all pages to static HTML"* —— Web Device 页面是
+   **预渲染静态页**；`layout.json` 只是「组件 + props」列表，没有 per-record 动态路由。
+2. **按 slug 动态绑定 AFS 记录只存在于 `sites[].bindings` → AUP 页**（现有
+   `/posts/{slug}` → `reader` 走的正是这条路径；`blocklet.dist.json` 里
+   `requirements.probes` 由 `aup:src` 生成，也印证绑定属于 AUP 侧）。
+3. 组件可以组合：`render(ctx)` 能拿到 `ctx.slots`
+   （`.web/themes/default/components/detail-content/render.js`）；主题自带
+   `post-hero` / `content-card` / `detail-content` / `tag-list` / `related-content`
+   ——博客展示组件齐全。
+4. 平台的内容发布模型是「内容站点」：`cms-write` 把内容文件写进站点工作树，
+   `cms-publish` 做 per-route render/SEO/link 校验并生成不可变快照 + 发布指针。
+
+补充区分：
+
+| 站点机制 | 位置 | 说明 |
+|---|---|---|
+| 包内 Web Device 站点 | `.route/web`（`path: /p`, `handler: web`）+ `pages/` + `.web/` | ArcBlog 自己的公开站点（预渲染静态） |
+| 包内 AUP 应用 | `.route/root`（`path: /`, `handler: aup`）+ `.aup/` | 管理后台 + 动态记录页 |
+| daemon 托管站点 | `create-site` → `/work/<name>` → `/web/sites/<name>` | 独立站点（本 spike 用它取模型） |
+
+**对 spec §17/§18 的影响**：公开站点无法靠请求期动态绑定实现，只能靠**发布期投影**
+（publish 时把已发布记录渲染进站点树再 `render-all`）。I3 按此设计。
+
+
 ## 4. DID Space（持久数据面）
 
 - `arc space init <dir>` / `check` / `list` / `tree` / `path` / `sync` / `migrate`。

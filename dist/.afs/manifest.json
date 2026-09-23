@@ -1000,9 +1000,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 6943,
+      "size": 9018,
       "contentType": "text/markdown",
-      "sha256": "631311d9f97ef656bcc15029196d6adf4cc112c1a0975b68c29589d99aa14ca5"
+      "sha256": "931edd5d683da84bcfaba3cc0d88529e640872f83899773f8daef194e3ecd779"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1018,9 +1018,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 10182,
+      "size": 10760,
       "contentType": "text/markdown",
-      "sha256": "753fc7db2092a3d19e6047218da33d3e24890ee81607792781566004b925fbe9"
+      "sha256": "14533163e8d92e4066ecd959ffc30c576cca4d4642418994897444ea1bb6e6a6"
     },
     {
       "path": "docs/error-codes.md",

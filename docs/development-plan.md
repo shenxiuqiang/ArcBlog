@@ -48,8 +48,13 @@ Provider 合同决定」。实测可用且被 `replicated` 授权的唯一可写
 ### D3｜双面分离：公开面 = Web Device，管理面 = AUP
 
 spec §127/§128 要求 Public → Web Device、Admin → AUP。现状是公开文章页由 AUP 页
-（`posts` / `reader` / `preview`）承担，**与 spec 不符**，Phase 3 迁移。迁移前先做 spike
-（见 §6 S1）。
+（`posts` / `reader` / `preview`）承担，**与 spec 不符**，Phase 3 迁移。
+
+**S1 spike 已定案（见 `arc-contracts.md` §3.1）**：Web Device 页面是预渲染静态页，
+**不支持**按 slug 动态绑定 AFS 记录；动态记录绑定只存在于 `sites[].bindings` → AUP 页。
+因此 Phase 3 采用**发布期投影**：AFS 记录仍是唯一源，发布时把已发布记录渲染进站点树
+（`pages/<slug>/layout.json`）再 `render-all`。这样公开面归 Web Device、管理面归 AUP，
+同时不必把内容真源搬进站点树。
 
 ### D4｜身份
 
@@ -109,10 +114,10 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 
 | # | 阶段 | 内容 | 验收 |
 |---|---|---|---|
-| **I0** | Phase 0 | 核验 ARC 契约，产出 `arc-contracts.md` | 文档 + 命令证据 |
-| **I1** | Phase 2 起 | `scripts/lib/arc.mjs` 适配层 + `world/node.yaml` + Node Profile 资源（init/show/set/check） | validate + test + check + build |
+| **I0** ✅ | Phase 0 | 核验 ARC 契约，产出 `arc-contracts.md` | 文档 + 命令证据（`63d1a17`） |
+| **I1** ✅ | Phase 2 起 | `scripts/lib/arc.mjs` 适配层 + `world/node.yaml` + Node Profile 资源（init/show/set/check） | validate + test + check + build（`63d1a17`，18→30 测试） |
 | I2 | Phase 2 | 资源补全：categories / pages / media / identity / capabilities；`world/*.yaml` 与 `replicated` 声明 | 同上 |
-| I3 | Phase 3 | 公开面迁 Web Device：Home / Article / Author / Archive / RSS + 主题库对接（含 S1 spike） | 同上 + `check-links` 绿 |
+| I3 | Phase 3 | 公开面 Web Device（S1 已定案）：AFS 记录为源 → **发布期投影**到站点树（`pages/<slug>/layout.json` + `render-all`）；Home / Author / Archive / RSS + 主题库组件 | 同上 + `check-links` 绿 |
 | I4 | Phase 4 | Admin 对齐 spec §15/§16：Dashboard（Node/Identity/Roles/Content/Network/Agent 卡）、Settings、Editor | 同上 |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | I6 | Phase 5 | Identity / DID Space 契约固化（作者身份、会话投影、space 校验、de-identification 开关说明） | 同上 |
@@ -122,7 +127,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 
 MVP-2（spec §135）落在 I7；MVP-3 落在 I8；MVP-4 落在 I9；spec §138 的 V2 功能不进入本计划。
 
-## 6. 本轮增量 I1（Phase 2 开端：适配层 + Node Profile）
+## 6. 增量 I1（已完成）：适配层 + Node Profile
 
 **目标**：建立后续所有阶段的共同底座——单一 ARC 适配层 + 第一个 spec 资源（Node Profile）。
 
@@ -153,7 +158,7 @@ MVP-2（spec §135）落在 I7；MVP-3 落在 I8；MVP-4 落在 I9；spec §138 
 
 | 风险 | 触发信号 | 降级 |
 |---|---|---|
-| S1：`pages/` 能否绑定 AFS 记录做动态文章页（Web Device 迁移） | spike 中 `explain` 显示无记录绑定能力 | 公开面拆两段：Home/Author/Archive 用 Web Device 静态页，文章页暂留 AUP `reader` |
+| S1（**已定案**）：Web Device 能否绑定 AFS 记录做动态文章页 | — | **不能**：页面预渲染静态，`layout.json` 只有组件+props。改走发布期投影（`cms-write` 风格写入站点树 + `render-all`） |
 | 会话投影无法从裸 shell 观测 `/instance` | `arc afs explain /instance/...` → `unknown` | 能力核验改在 blocklet 运行期（`arc blocklet run` / 页面内 `exec`）执行，结论记录到 `arc-contracts.md` |
 | 目录化内容对象（spec §19）与现有扁平 `<slug>.json` 冲突 | 迁移成本 > 收益 | 保留扁平记录为存储形态，用 `world` schema + 导出脚本提供「内容对象」视图 |
 | 经济/角色依赖链上能力 | 无可用 NFT/Stake provider | 只做 capability 门控 + 配置外置，链上校验留接口（MVP-3 前不实装） |
