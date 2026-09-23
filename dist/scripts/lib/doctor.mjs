@@ -108,3 +108,64 @@ export function summarize(checks) {
   const warnings = checks.filter((check) => !check.ok && check.severity === 'warn').map((check) => check.id);
   return { ok: failed.length === 0, failed, warnings };
 }
+
+// --- DID Space (spec §149 Phase 5, `arc space check|list --json`) ------------
+
+/**
+ * Layout + index freshness audit from `arc space check`.
+ *
+ * Driven by the **exit code**, not by parsing stdout: the command's JSON report
+ * grows past 64KB once the machine has a few spaces, and the CLI truncates at
+ * the pipe buffer, so piped output (which is how Node captures it) is not
+ * reliably parseable. The exit code is the documented contract.
+ */
+export function checkSpaceLayout(run) {
+  const status = run?.status;
+  if (typeof status !== 'number') {
+    return result('space-layout', 'warn', false, 'arc space check unavailable');
+  }
+  if (status === 0) {
+    return result('space-layout', 'error', true, 'layouts are files, index is fresh');
+  }
+  return result(
+    'space-layout',
+    'warn',
+    false,
+    `arc space check exited ${status} — layout or index-freshness issues; run \`arc space check\` for the full report`,
+  );
+}
+
+/**
+ * This blocklet's own DID Space entry. Absence is a warning, not an error: an
+ * instance that has never written durable data legitimately has no entry yet.
+ */
+export function checkSpaceApp(report, identifiers) {
+  const wanted = (Array.isArray(identifiers) ? identifiers : [identifiers])
+    .map((id) => String(id ?? '').trim().toLowerCase())
+    .filter(Boolean);
+  const apps = (report?.groups ?? []).flatMap((group) =>
+    (group.apps ?? []).map((app) => ({ ...app, role: group.role })),
+  );
+  const own = apps.filter((app) => wanted.includes(String(app.did ?? '').trim().toLowerCase()));
+  if (own.length === 0) {
+    return result('space-app', 'warn', false, `no DID Space entry for ${wanted.join(' / ') || '(unknown)'}`);
+  }
+  const entry = own.find((app) => app.role === 'instance') ?? own[0];
+  return result('space-app', 'warn', true, `${entry.did} (${entry.role}): ${entry.fileCount} files, ${entry.totalSize} bytes`);
+}
+
+/**
+ * Production hardening: DID Space scope directories are only de-identified when
+ * `AFS_DID_SPACE_SCOPE_SECRET` is set on the daemon (see persistence.md).
+ */
+export function checkDeidentification(stderr) {
+  const off = /AFS_DID_SPACE_SCOPE_SECRET unset/.test(String(stderr ?? ''));
+  return result(
+    'de-identification',
+    'warn',
+    !off,
+    off
+      ? 'AFS_DID_SPACE_SCOPE_SECRET unset — scope directories are plaintext; set it in production'
+      : 'AFS_DID_SPACE_SCOPE_SECRET set',
+  );
+}

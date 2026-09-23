@@ -8,9 +8,12 @@ import {
   EXPECTED_DIRS,
   checkAuthorship,
   checkCategories,
+  checkDeidentification,
   checkNodeIdentity,
   checkNodeProfile,
   checkResources,
+  checkSpaceApp,
+  checkSpaceLayout,
   summarize,
 } from './lib/doctor.mjs';
 
@@ -104,6 +107,43 @@ test('summarize separates failures from warnings', () => {
   assert.deepEqual(clean.warnings, ['authorship']);
 });
 
+// --- DID Space checks ------------------------------------------------------
+
+test('checkSpaceLayout follows the arc space check exit code', () => {
+  const unavailable = checkSpaceLayout(undefined);
+  assert.equal(unavailable.ok, false);
+  assert.match(unavailable.detail, /unavailable/);
+
+  const clean = checkSpaceLayout({ status: 0 });
+  assert.equal(clean.ok, true);
+  assert.match(clean.detail, /index is fresh/);
+
+  const drifted = checkSpaceLayout({ status: 1 });
+  assert.equal(drifted.ok, false);
+  assert.equal(drifted.severity, 'warn');
+  assert.match(drifted.detail, /exited 1/);
+});
+
+test('checkSpaceApp matches any blocklet identifier and warns when absent', () => {
+  const report = { groups: [{ role: 'instance', apps: [{ did: 'ArcBlog', fileCount: 178, totalSize: 72214 }] }] };
+  const found = checkSpaceApp(report, ['arcblog', 'ArcBlog', 'did:blocklet:arcblog']);
+  assert.equal(found.ok, true);
+  assert.equal(found.severity, 'warn');
+  assert.match(found.detail, /ArcBlog \(instance\): 178 files/);
+
+  const missing = checkSpaceApp({ groups: [{ role: 'user', apps: [] }] }, ['arcblog']);
+  assert.equal(missing.ok, false);
+  assert.match(missing.detail, /no DID Space entry/);
+});
+
+test('checkDeidentification warns only while the scope secret is unset', () => {
+  const off = checkDeidentification('{"message":"[afs-loader] AFS_DID_SPACE_SCOPE_SECRET unset — ..."}');
+  assert.equal(off.ok, false);
+  assert.equal(off.severity, 'warn');
+  assert.match(off.detail, /plaintext/);
+  assert.equal(checkDeidentification('').ok, true);
+});
+
 // --- CLI surface -----------------------------------------------------------
 
 test('doctor help exits 0', () => {
@@ -129,9 +169,22 @@ test('doctor reports a healthy instance on the live default instance', () => {
   assert.deepEqual(report.failed, []);
   assert.deepEqual(
     report.checks.map((c) => c.id),
-    ['resources', 'node-profile', 'node-identity', 'categories', 'authorship'],
+    [
+      'resources',
+      'node-profile',
+      'node-identity',
+      'categories',
+      'authorship',
+      'space-layout',
+      'space-app',
+      'de-identification',
+    ],
   );
   assert.equal(report.checks.find((c) => c.id === 'node-profile').ok, true);
   assert.equal(report.checks.find((c) => c.id === 'node-identity').ok, true);
   assert.equal(report.checks.find((c) => c.id === 'categories').ok, true);
+  assert.equal(report.checks.find((c) => c.id === 'space-app').ok, true);
+  // The dev instance reports index-vs-disk drift, so space-layout is a warning,
+  // never a hard failure (see arc-contracts.md §4).
+  assert.equal(report.checks.find((c) => c.id === 'space-layout').severity, 'warn');
 });

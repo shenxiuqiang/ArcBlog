@@ -10,7 +10,7 @@
 // - `arc afs exec` reports failures inside the stdout JSON envelope
 //   (`{success:false,error:{code,message}}`) while still exiting 0.
 
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 export const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
 export const INSTANCE_ROOT = '/instance/app/arcblog';
@@ -92,6 +92,59 @@ function run(argv, instance) {
 export function afsJson(args, instance) {
   const stdout = run(['afs', ...args, '--json'], instance);
   return stdout ? JSON.parse(stdout) : {};
+}
+
+/**
+ * Run an `arc` command and capture both streams without throwing.
+ * Non-zero status is returned rather than raised — several audits (`arc space
+ * check`) use the exit code as part of their report.
+ * Note: the CLI logs to stderr, so stdout stays parseable JSON.
+ */
+export function arcCapture(argv, instance) {
+  const full = [...argv];
+  if (instance) full.push('-i', instance);
+  const res = spawnSync('arc', full, { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  return {
+    status: res.status ?? (res.error ? 1 : 0),
+    stdout: res.stdout ?? '',
+    stderr: res.stderr ?? (res.error ? String(res.error.message) : ''),
+  };
+}
+
+/** `arc <argv> --json` -> parsed JSON (tolerates leading log/ANSI noise). */
+export function arcJson(argv, instance) {
+  const { stdout, stderr, status } = arcCapture([...argv, '--json'], instance);
+  const text = String(stdout ?? '').trim();
+  if (!text) fail('RUNTIME_ERROR', stderr.trim() || `no output from: arc ${argv.join(' ')}`);
+  try {
+    return JSON.parse(text);
+  } catch {
+    const start = text.indexOf('{');
+    if (start >= 0) {
+      try {
+        return JSON.parse(text.slice(start));
+      } catch {
+        /* fall through */
+      }
+    }
+  }
+  fail('RUNTIME_ERROR', `expected JSON from: arc ${argv.join(' ')} (status ${status})`);
+}
+
+/**
+ * Best-effort JSON parse of already-captured stdout: never throws.
+ * Reminder: the CLI truncates piped stdout at the 64KB pipe buffer, so large
+ * reports (e.g. `arc space check --json`, 69KB here) come back incomplete —
+ * prefer exit codes for those (see lib/doctor.mjs).
+ */
+export function parseJsonLoose(text) {
+  const raw = String(text ?? '').trim();
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 /**

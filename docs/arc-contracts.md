@@ -216,10 +216,46 @@ CMS actions；核验后已 `undeclare` + 删除。
 
 ## 4. DID Space（持久数据面）
 
-- `arc space init <dir>` / `check` / `list` / `tree` / `path` / `sync` / `migrate`。
-- 数据面即 AFS 路径（`/spaces`，会话内 `/user`、`/instance`、`/space`）：应用默认不需要额外
-  DB + 对象存储（spec §6 与之一致）。
-- 现有 ArcBlog space 已承载 116 个文件，说明 `/instance/app/arcblog/*` 落在这里。
+命令面：`arc space init <dir>` / `check` / `list` / `tree` / `path` / `sync` / `migrate`。
+
+数据面即 AFS 路径（`/spaces`，会话内 `/user`、`/instance`、`/space`）：应用默认不需要额外
+DB + 对象存储（spec §6 与之一致）。
+
+`--json` 契约（两条命令的 **stdout 都是纯净 JSON，日志走 stderr**——可直接 `JSON.parse`）：
+
+```text
+arc space list --json
+  { groups: [ { role: "instance"|"user", userDid, rootPath,
+                apps: [ { did, fileCount, totalSize } ] } ] }
+
+arc space check --json
+  { layouts:   { roots, missingRoots, spaces: [{folder, state}],
+                 migrated, needsMigration, unreadable, skipped },
+    freshness: { rootPath, spacesChecked, clean, ... } }
+```
+
+- `arc space check` 的退出码是报告的一部分：有需要迁移 / 不可读 / 索引漂移时**非 0**。
+- 实测：6 个 space 全部 `state: files`；`role: instance` 下 `ArcBlog` = **178 文件 / 72,214 字节**，
+  `role: user` 下同名条目为 0（用户作用域尚未使用）。
+- 启动时若未配置 scope secret，stderr 会打印
+  `AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories)`。
+  `scripts/arcblog-doctor.mjs` 把它作为 `de-identification` 检查的 warn 暴露出来。
+
+### 4.1 两个必须知道的坑
+
+**(a) `arc space check` 的输出在管道里会被截断到 64KB。**
+本机报告 69,403 字节；`arc space check --json | …` 只收到 65,536 字节，`JSON.parse` 直接失败
+（重定向到文件则完整）。Node 的 `spawnSync` 也是管道，同样受影响。因此
+`scripts/lib/doctor.mjs` 的 `space-layout` **只读退出码，不解析 stdout**。
+
+**(b) 退出码非 0 未必是布局问题——本机是索引漂移。**
+实测本机 `status=1`，但 `missingRoots / needsMigration / unreadable` 全为空，
+原因在 `freshness.drifted`：实例 space 有 1 个目录不新鲜（`/blocklets` → `arcblog`
+`missing-in-disk`，即 AFS 索引里有条目而磁盘上没有；`directoriesChecked: 203`, `fresh: false`）。
+这属于索引/磁盘一致性，不是数据面损坏，所以 doctor 把它记为 **warn** 而非 error。
+需要排查时直接跑 `arc space check`（结果会很长，建议重定向到文件）。
+
+
 
 ## 5. Identity
 

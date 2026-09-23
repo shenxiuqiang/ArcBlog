@@ -7,14 +7,18 @@
 // records. Exit code 1 only for broken contracts; authorship gaps and similar
 // honest limitations are reported as warnings.
 
-import { INSTANCE_ROOT, list, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
+import { INSTANCE_ROOT, arcCapture, list, optString, parseArgs, parseJsonLoose, readJson, resolveInstance } from './lib/arc.mjs';
 import { listCategories } from './lib/categories.mjs';
+import { blockletIdentifiers } from './lib/manifest.mjs';
 import {
   checkAuthorship,
   checkCategories,
+  checkDeidentification,
   checkNodeIdentity,
   checkNodeProfile,
   checkResources,
+  checkSpaceApp,
+  checkSpaceLayout,
   summarize,
 } from './lib/doctor.mjs';
 
@@ -40,7 +44,23 @@ function gather(instance) {
   const identity = readJson(NODE_IDENTITY_PATH, instance)?.value ?? null;
   const categories = listCategories(instance);
   const records = [...recordsIn(`${INSTANCE_ROOT}/posts`, instance), ...recordsIn(`${INSTANCE_ROOT}/drafts`, instance)];
-  return { dirs, profile, identity, categories, records };
+
+  // DID Space audits. `arc space check` uses a non-zero exit as part of its
+  // report, so capture rather than throw; its JSON report is >64KB and gets
+  // truncated when piped, so the check below reads the exit code only.
+  const spaceCheck = arcCapture(['space', 'check'], instance);
+  const spaceList = arcCapture(['space', 'list', '--json'], instance);
+
+  return {
+    dirs,
+    profile,
+    identity,
+    categories,
+    records,
+    spaceCheck,
+    spaceList: parseJsonLoose(spaceList.stdout),
+    spaceStderr: `${spaceCheck.stderr}\n${spaceList.stderr}`,
+  };
 }
 
 function help() {
@@ -50,11 +70,14 @@ Usage:
   node scripts/arcblog-doctor.mjs [--instance <name>]
 
 Checks:
-  resources      the spec §12 directories exist under ${INSTANCE_ROOT}
-  node-profile   node/profile.json exists and validates
-  node-identity  node/identity.json exists and validates
-  categories     at least one category record exists
-  authorship     reports records with an empty authorDid (warning only)
+  resources          the spec §12 directories exist under ${INSTANCE_ROOT}
+  node-profile       node/profile.json exists and validates
+  node-identity      node/identity.json exists and validates
+  categories         at least one category record exists
+  authorship         reports records with an empty authorDid (warning only)
+  space-layout       arc space check: roots present, layouts migrated, no drift
+  space-app          this blocklet has a DID Space entry (warning only)
+  de-identification  AFS_DID_SPACE_SCOPE_SECRET is set (warning only)
 
 Exit code: 1 when an "error" check fails; 0 otherwise (warnings are reported).
 `);
@@ -72,13 +95,16 @@ Exit code: 1 when an "error" check fails; 0 otherwise (warnings are reported).
       process.exit(1);
     }
 
-    const { dirs, profile, identity, categories, records } = gather(instance);
+    const { dirs, profile, identity, categories, records, spaceCheck, spaceList, spaceStderr } = gather(instance);
     const checks = [
       checkResources(dirs),
       checkNodeProfile(profile),
       checkNodeIdentity(identity),
       checkCategories(categories),
       checkAuthorship(records),
+      checkSpaceLayout(spaceCheck),
+      checkSpaceApp(spaceList, blockletIdentifiers()),
+      checkDeidentification(spaceStderr),
     ];
     const verdict = summarize(checks);
     console.log(

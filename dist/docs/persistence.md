@@ -49,3 +49,14 @@ The AFS action contract is discoverable at runtime:
 arc afs explain /blocklets/arcblog/instance/.actions/write --instance default
 arc afs explain /blocklets/arcblog/instance/.actions/query --instance default
 ```
+
+## Verifying the space
+
+```sh
+arc space list --json     # { groups: [{ role, apps: [{ did, fileCount, totalSize }] }] }
+arc space check --json    # { layouts, freshness }; non-zero exit when migration/drift is found
+node scripts/arcblog-doctor.mjs   # space-layout / space-app / de-identification checks
+```
+
+`arc space check` covers layout (`files` vs CAS) and index-vs-disk freshness; both
+commands keep stdout pure JSON and log to stderr.

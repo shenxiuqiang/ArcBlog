@@ -127,7 +127,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | **I6a** ✅ | Phase 5 | Identity 契约固化：`scripts/arcblog-doctor.mjs`（资源目录 / node profile+identity / categories / 作者归属报告）；修正 3 处"UI 记录 authorDid 为空"的过时文档（compose 实际写 `$session.did`，但运行期插值未验证） | validate + test + check + build（65 测试） |
-| I6 | Phase 5 | DID Space 契约固化：`arc space check` 集成、会话投影（`/user` `/instance`）行为记录、de-identification 开关 | 同上 |
+| **I6b** ✅ | Phase 5 | DID Space 契约固化：doctor 增加 `space-layout`（按退出码，因管道 64KB 截断）/ `space-app` / `de-identification`；抽出 `lib/manifest.mjs` 共享 manifest 读取；记录本机索引漂移 | validate + test + check + build（68 测试） |
 | I7 | Phase 6–7 | Studio / Hub 角色：capability engine + Role 配置外置（NFT/Stake 校验接口占位，不接链上行） | 同上 |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading | 同上 |
 | I9 | Phase 9（MVP-4） | Agent：`agents/` 声明 + MCP 工具面 + 权限分级 | 同上 |

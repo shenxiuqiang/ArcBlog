@@ -6,10 +6,6 @@
 // `/instance/app/arcblog/node/profile.json`; guest-readable, admin-writable
 // (see blocklet.yaml `networkRead` / `replicated`).
 
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import {
   INSTANCE_ROOT,
   ensure,
@@ -22,30 +18,20 @@ import {
   resolveInstance,
   writeJson,
 } from './lib/arc.mjs';
+import { readBlockletMeta } from './lib/manifest.mjs';
 import {
   NODE_AUTH_METHODS,
   NODE_ROLES,
   buildNodeIdentity,
   buildNodeProfile,
   capabilitiesForRoles,
-  parseManifest,
   validateNodeIdentity,
   validateNodeProfile,
 } from './lib/node-profile.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, '..');
 export const NODE_DIR = `${INSTANCE_ROOT}/node`;
 export const NODE_PROFILE_PATH = `${NODE_DIR}/profile.json`;
 export const NODE_IDENTITY_PATH = `${NODE_DIR}/identity.json`;
-
-function readManifestMeta() {
-  try {
-    return parseManifest(readFileSync(join(REPO_ROOT, 'blocklet.yaml'), 'utf8'));
-  } catch {
-    return {};
-  }
-}
 
 /** Fields an operator may set on the node profile, in argv order. */
 const SETTABLE = [
@@ -74,7 +60,7 @@ function commandInit(opts, instance) {
     fail('CONFLICT', `${NODE_PROFILE_PATH} already exists (use --update to overwrite)`);
   }
 
-  const meta = readManifestMeta();
+  const meta = readBlockletMeta();
   // `init` (re)derives the profile from blocklet.yaml + flags — it is the
   // "reset to a known-good profile" path. Only createdAt is carried over;
   // use `set` for incremental edits.
@@ -153,7 +139,7 @@ function commandIdentityInit(opts, instance) {
   if (existing && !opts.update) {
     fail('CONFLICT', `${NODE_IDENTITY_PATH} already exists (use --update to overwrite)`);
   }
-  const meta = readManifestMeta();
+  const meta = readBlockletMeta();
   const profile = readJson(NODE_PROFILE_PATH, instance);
   const identity = buildNodeIdentity(
     {

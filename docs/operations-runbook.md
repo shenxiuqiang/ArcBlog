@@ -26,9 +26,10 @@ node scripts/arcblog-daily-report.mjs --limit 100
 node scripts/arcblog-doctor.mjs
 ```
 Expected: `ok: true` (exit 0). It checks the spec §12 resource directories, the
-node profile and identity records, the category taxonomy, and reports records
-whose `authorDid` is empty as a warning (see CLAUDE.md / developer-guide for why
-UI-created records can lack attribution).
+node profile and identity records, the category taxonomy, the DID Space layout
+and this blocklet's space entry, and reports warnings for records whose
+`authorDid` is empty and for an unset `AFS_DID_SPACE_SCOPE_SECRET` (see
+CLAUDE.md / developer-guide for why UI-created records can lack attribution).
 
 ## Content operations
 
