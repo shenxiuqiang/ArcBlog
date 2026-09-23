@@ -45,14 +45,15 @@ node scripts/arcblog-rss.mjs --feed-link "https://blog.example.com"
 ```
 
 ## Documentation
-- `docs/product-summary.md`
-- `docs/operations-runbook.md`
-- `docs/developer-guide.md`
-- `docs/publishing-ops.md`
-- `docs/error-codes.md`
-- `docs/share-cards.md`
-- `docs/release-checklist.md`
-- `docs/roadmap.md`
+- `docs/ArcBlog-product-technical-spec.md` — **authoritative product & technical spec (V2.0)**
+- `docs/README.md` — documentation index
+- `docs/developer-guide.md` — current implementation deep-dive
+- `docs/persistence.md` — storage and identity contract
+- `docs/operations-runbook.md` — operator workflows
+- `docs/publishing-ops.md` — CLI reference
+- `docs/error-codes.md` — structured failure codes
+- `docs/share-cards.md` — OG/SEO usage
+- `docs/release-notes-v0.3.0.md` — release history
 
 ## Quality gates
 - `arc dsl validate --json` must pass

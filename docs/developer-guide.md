@@ -46,9 +46,23 @@ url, sort, createdAt}`, sorted ascending by `content.sort`):
   `backgroundImage`/`position` are dropped, so the slide is a flex column with
   `justifyContent: flex-end` and `background: <fallback-color> url(...) center
   / cover no-repeat`.
-- Empty directory: the `empty`/`error` events set `heroesEmpty` state on the
-  wrapper view, whose `visible="!$state.heroesEmpty"` collapses the section —
-  no broken UI on a fresh install.
+- Empty directory: the `empty`/`error` events set `heroesEmpty` state on BOTH
+  the carousel wrapper (`hero-wrap`, `visible="!$state.heroesEmpty"`) and the
+  default hero card (`hero-default`, `visible="$state.heroesEmpty"`) — state
+  set via event `target` is read through that element's own `$state`, so each
+  banner carries its own flag. Exactly one banner renders at a time: the
+  carousel when hero records exist, otherwise the default hero card (the
+  "A calmer place to read." title card) — no double banner, no broken UI on a
+  fresh install.
+- Feed image cards: the published feed uses a custom `role=item` card
+  template — bordered/rounded rows whose text block links to `/posts/<slug>`
+  and whose `postCover` thumbnail is a link view with a layered `background`:
+  `url(${entry.content.coverImage}) center / cover no-repeat` over a
+  `linear-gradient` placeholder, so posts without a cover still render a tidy
+  card (the empty `url()` layer stays valid CSS, fails to paint, and lets the
+  gradient show through). Per-item `visible` conditions are impossible (the
+  expression language only reads `$session.*`/`$state.*`), which is why the
+  placeholder is done in CSS rather than by hiding the thumbnail.
 - Studio "Hero 管理" (admin page): grid list with per-card delete
   (action prop `path="${entry.path}"` — entry substitution works in props and
   flows into the exec payload, like discuss-kit's postCollect), a manual add
@@ -106,7 +120,10 @@ templates read parsed fields client-side through `${state.post.*}` — the
 two-channel split documented in discuss-kit's `.aup/man/detail.yaml`. Feed
 rows in `posts`/`admin` are custom `role=item` afs-list templates whose
 `view href="..."` renders as a link; the runtime intercepts same-origin link
-clicks and resolves them through the bindings.
+clicks and resolves them through the bindings. On the posts page the feed
+items are image cards (see "Hero carousel" above); the reader and preview
+pages render the record's `coverImage` as a banner above the title, gated by
+`visible="$state.post.coverImage"`.
 Note the `visible` expression language supports only `||` / `&&` / leading
 `!` over `$session.*` / `$state.*` paths — no comparison operators — so
 visibility rules cannot compare `status`; the draft boundary is enforced by
@@ -114,10 +131,13 @@ the directory split (posts/ is guest-readable, drafts/ is admin-only) instead
 of by page-level conditions.
 
 The compose page's built-in `post-editor` widget was replaced by a
-self-contained form (title/slug/category/tags/summary/SEO/Markdown body) whose
-save-draft/publish buttons `exec "/.actions/write"` with `${args.*}`-templated
-nested content — records always use the ArcBlog single-file `<slug>.json`
-schema. Writes from page sessions are authorized by the `replicated`
+self-contained form (title/slug/category/tags/summary/cover
+image/SEO/Markdown body) whose save-draft/publish buttons
+`exec "/.actions/write"` with `${args.*}`-templated nested content — records
+always use the ArcBlog single-file `<slug>.json` schema. The cover image URL
+input feeds `content.coverImage` (previously hardcoded `""`), which the
+story-list cards and the reader/preview banners render. Writes from page
+sessions are authorized by the `replicated`
 collections declared in `blocklet.yaml` (`minRole: member`; plain base-path
 writes from network clients are denied otherwise). Author identity
 (`authorDid`/`authorName`) is empty for UI-created records: exec args are
@@ -148,10 +168,12 @@ Current suite covers:
 
 ## Documentation map
 
-- `docs/product-summary.md` — what ArcBlog is
+- `docs/ArcBlog-product-technical-spec.md` — **authoritative V2.0 product &
+  technical spec**; when this guide disagrees with it, the spec wins
+- `docs/README.md` — documentation index
 - `docs/operations-runbook.md` — operator workflows
 - `docs/publishing-ops.md` — detailed publish/query/audit/rss commands
 - `docs/error-codes.md` — structured failure codes
 - `docs/share-cards.md` — OG/SEO usage
-- `docs/release-checklist.md` — release gates
-- `docs/roadmap.md` — iteration history and plans
+- `docs/persistence.md` — storage and identity contract
+- `docs/release-notes-v0.3.0.md` — release history

@@ -1,24 +1,12 @@
 schemaVersion: 1
 page: about
 description: >-
-  Product context and trust surface for ArcBlog, including links to roadmap and
-  release quality checklist.
+  Product context and trust surface for ArcBlog: what it is, how DID identity
+  works, and how readers can subscribe.
 synopsis: >-
-  Explain what ArcBlog is, how DID identity works, and where users can inspect
-  product maturity artifacts.
+  Explain what ArcBlog is, how DID Wallet identity works, and where readers can
+  follow new posts.
 flows:
-  - Read the product summary.
-  - Open roadmap for planned capabilities.
-  - Open release checklist for operational quality gates.
-refs:
-  actions:
-    - id: arcblog-about-action-view-product-summary
-      event: click
-    - id: arcblog-about-action-view-operations-runbook
-      event: click
-    - id: arcblog-about-action-view-developer-guide
-      event: click
-    - id: arcblog-about-action-view-product-roadmap
-      event: click
-    - id: arcblog-about-action-view-release-checklist
-      event: click
+  - Read what ArcBlog is.
+  - Read the content lifecycle model.
+  - Subscribe via RSS.
