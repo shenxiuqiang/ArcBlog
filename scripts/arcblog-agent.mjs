@@ -14,7 +14,7 @@
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
-import { INSTANCE_ROOT, ensure, fail, list, optString, parseArgs, readJson, remove, resolveInstance } from './lib/arc.mjs';
+import { INSTANCE_ROOT, ensure, fail, list, optString, parseArgs, queryRecords, readJson, remove, resolveInstance, whereAll, whereEq } from './lib/arc.mjs';
 import {
   AGENT_CAPABILITIES,
   AGENT_GRANTS_DIR,
@@ -61,8 +61,14 @@ const READ_RUNNERS = {
     const query = optString(opts.query).trim().toLowerCase();
     const category = optString(opts.category).trim().toLowerCase();
     const limit = Number(opts.limit ?? 20);
-    let posts = recordsIn(`${INSTANCE_ROOT}/posts`, instance);
-    if (category) posts = posts.filter((post) => String(post.category ?? '').toLowerCase() === category);
+    // Provider-native query: category is filtered server-side and the content
+    // comes back inline, so this is one call instead of list + one read per post.
+    // Free text stays client-side — this provider does not support `text`.
+    let posts = queryRecords(
+      `${INSTANCE_ROOT}/posts`,
+      { where: whereAll([whereEq('category', category)]), select: ['slug', 'title', 'summary', 'category', 'tags', 'publishedAt', 'authorDid'] },
+      instance,
+    );
     if (query) {
       posts = posts.filter((post) =>
         [post.title, post.summary, post.body, Array.isArray(post.tags) ? post.tags.join(' ') : post.tags]

@@ -362,3 +362,34 @@ spec §126 要求逐条静态 HTML + OpenGraph + Canonical + Sitemap。平台确
 **处置**：Phase 3 的「逐条静态 SEO」由 POST-MVP 改记为**平台受限**；公开面继续使用 AUP（动态 SPA）。
 `/p/robots.txt`、`/p/sitemap.xml` 由平台生成，且只在 `/p/` 下可达（§3.4）。
 探测用的临时站点已 `undeclare` + 删除，`/work` 与 `/web/sites` 均已清空。
+
+## 9. Provider 能力矩阵（spec §149 Phase 2 的答案）
+
+spec Phase 2 要求确认「list / read / write / search / exec 哪些真正由 Provider 支持」。
+实测本 provider（`/blocklets/arcblog/.actions/*`）共声明 9 个动作：
+
+| 动作 | 支持 | 说明 |
+|---|---|---|
+| `read` / `list` | ✅ | 单条读 / 目录列举 |
+| `write` | ✅ | 单文件写（由 `replicated` 集合授权） |
+| `delete` / `batchDelete` | ✅ | 单条 / 批量删除 |
+| `query` | ✅ | **服务端过滤，且内容内联返回** |
+| `aggregate` | ✅ | 分组统计（count/sum/avg/max/min + `groupBy` + 时间桶） |
+| `mount` / `unmount` | ✅ | provider 挂载管理 |
+| `search` | ❌ | **该动作不存在**：`Root action not found: search` |
+
+`query` 的实测契约：
+
+| 形式 | 结果 |
+|---|---|
+| 扁平等值映射 `{"status":"published","category":"technology"}` | ✅ |
+| 类型化叶子 `{"field":"tags","contains":"identity"}` | ✅（数组字段用 `contains`） |
+| AND 组合 `{"all":[{…},{…}]}` | ✅ |
+| 投影 `select:["slug","title"]` | ✅ 注意：**带 `select` 时 `content` 是对象，不带时是 JSON 字符串** |
+| `orderBy`、`limit` | ✅ |
+| `text`（自由文本） | ❌ `not supported by this provider` |
+
+**结论与影响**：集合读取应优先用 `query`——**一次调用连内容一起拿到**，而不是「list + 逐条 read」。
+`lib/arc.mjs` 的 `query` / `queryRecords` / `whereEq` / `whereContains` / `whereAll` 封装了它；
+`arcblog-query-posts.mjs`（category/tag 过滤）与 agent 的 `search_posts` 已改为服务端过滤。
+只有自由文本匹配仍需客户端处理，因为 `text` 不受支持。

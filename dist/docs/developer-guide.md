@@ -168,6 +168,7 @@ templates can't split arrays); the CLI normalizes to arrays.
 - `scripts/lib/agents.mjs` — pure agent policy checks + the spec §130 tool catalogue
 - `scripts/arcblog-network.mjs` — node network layer: discovery document, health, Hub registrations (spec §68–§74)
 - `scripts/lib/network.mjs` — pure builders/validators for the discovery document, health and Hub sync state
+- `lib/arc.mjs` also exposes `query` / `queryRecords` / `whereEq` / `whereContains` / `whereAll`: the provider's **server-side** query (one call, content inline) is preferred over `list` + per-record reads — see `arc-contracts.md` §9 for the capability matrix (`search` does not exist; `text` is unsupported)
 - `scripts/lib/arc.mjs` — shared ARC/AFS adapter (`exec`/`read`/`write`/`list`); new scripts go through it instead of calling `arc` directly
 - `scripts/lib/node-profile.mjs`, `scripts/lib/categories.mjs`, `scripts/lib/media.mjs`, `scripts/lib/util.mjs` — pure domain logic (unit-tested without a daemon)
 

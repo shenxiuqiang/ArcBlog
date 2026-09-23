@@ -80,8 +80,24 @@ function toRecord(parsed, path, dir) {
   };
 }
 
+/**
+ * Typed `where` from the CLI filters. The provider declares the `query` action,
+ * so status/category/tag are all filtered server-side — `contains` works on the
+ * `tags` array field. (Free-text matching would need `text`, which this provider
+ * does not support.)
+ */
+function buildWhere(status, category, tag) {
+  const clauses = [];
+  if (status) clauses.push({ field: 'status', eq: status });
+  if (category) clauses.push({ field: 'category', eq: category });
+  if (tag) clauses.push({ field: 'tags', contains: tag });
+  if (clauses.length === 0) return {};
+  if (clauses.length === 1) return clauses[0];
+  return { all: clauses };
+}
+
 function queryByAction({ dir, status, limit, instance, category, tag }) {
-  const where = status ? { status } : {};
+  const where = buildWhere(status, category, tag);
   let data;
   try {
     data = blockletExec(
@@ -107,8 +123,6 @@ function queryByAction({ dir, status, limit, instance, category, tag }) {
     } catch {
       continue;
     }
-    // The query action only filters by `where`; apply category/tag client-side.
-    if (!matchesFilters(parsed, null, category, tag)) continue;
     records.push(toRecord(parsed, entry?.path, dir === PUBLIC_DIR ? 'posts' : 'drafts'));
   }
   return { total: records.length, records };

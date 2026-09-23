@@ -44,6 +44,12 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/economy/policies",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/p/en/theme-bridge",
         "op": "list",
         "required": true,

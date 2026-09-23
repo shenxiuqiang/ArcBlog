@@ -501,9 +501,13 @@ app "ArcBlog" {
       roles-empty { en "No role configuration yet. Run: node scripts/arcblog-roles.mjs init" zh "还没有角色配置。运行：node scripts/arcblog-roles.mjs init" }
       verification { en "Chain verification" zh "链上验证" }
       econ { en "Economy" zh "经济" }
-      econ-desc { en "Not enabled yet — planned for MVP-3 (tips, paid reading, settlement)." zh "尚未启用——规划在 MVP-3（打赏、付费阅读、结算）。" }
+      econ-desc { en "Live: versioned split policy, tips, paid reading, settlement and an append-only ledger." zh "已上线：版本化分成策略、打赏、付费阅读、结算与只增账本。" }
+      econ-policy { en "Active policy" zh "当前策略" }
+      econ-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
+      econ-empty { en "No settlement policy yet. Run: node scripts/arcblog-economy.mjs policy init" zh "还没有结算策略。运行：node scripts/arcblog-economy.mjs policy init" }
       agent { en "Agent" zh "Agent" }
-      agent-desc { en "No agents declared yet — planned for MVP-4 (ARC Agent Access / MCP tools)." zh "尚未声明 Agent——规划在 MVP-4（ARC Agent Access / MCP 工具）。" }
+      agent-desc { en "Declared agent: arcblog-agent — read-only over published posts, taxonomy, node profile and public economy data." zh "已声明 Agent：arcblog-agent——对已发布文章、分类、节点档案与公开经济数据只读。" }
+      agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
       quick { en "Quick actions" zh "快捷操作" }
       q-write { en "Write a post" zh "写文章" }
       q-studio { en "Creator Studio" zh "创作者工作室" }
@@ -563,10 +567,19 @@ app "ArcBlog" {
       card gap=md {
         h2 :econ level=2
         p :econ-desc intent=muted
+        afs-list dash-econ layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:econ-empty from "/instance/app/arcblog/economy/policies" {
+          row dashEconRow role=item gap=xs {
+            p :econ-policy scale=sm intent=muted
+            p "${entry.content.version}" scale=sm
+            p :econ-split scale=sm intent=muted
+            p "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}" scale=sm
+          }
+        }
       }
       card gap=md {
         h2 :agent level=2
         p :agent-desc intent=muted
+        p :agent-closed scale=sm intent=muted
       }
       card gap=md {
         h2 :quick level=2

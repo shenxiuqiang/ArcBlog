@@ -109,6 +109,21 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | Public: RSS | ⚠️ 脚本产出 feed；链接已修正为 `/p/rss.xml` | 平台无请求期 XML 输出 → feed 是**部署期静态快照**（build 后生成再部署） |
 | Admin: Dashboard / Editor / Settings | ⚠️ 有 editor / settings | 缺 spec §16 的 Dashboard（roles / network / agent 卡） |
 
+## 4.1 Phase 4 覆盖的真实边界（第 20 轮核对）
+
+| spec Phase 4 项 | 交付形态 |
+|---|---|
+| Dashboard | ✅ AUP 页 `dashboard`（节点/角色/分类/最近发布/经济策略/Agent） |
+| Editor | ✅ AUP 页 `compose` + `compose-edit` |
+| Media | ⚠️ 资源 + `arcblog-media.mjs`；**无上传 UI 页** |
+| Settings | ✅ AUP 页 `settings`（tone/palette/theme） |
+| Role | ⚠️ 资源 + `arcblog-roles.mjs`；Dashboard 只读展示，**无管理 UI** |
+| Network | ⚠️ 资源 + `arcblog-network.mjs`；**无 UI** |
+| Economy | ⚠️ 资源 + `arcblog-economy.mjs`；Dashboard 只读展示策略，**无管理 UI** |
+
+内容与外观有完整 AUP 管理面；Role/Network/Economy/Media 目前是 **CLI 管理**——能力已实现且有测试覆盖，
+缺的是管理 UI。这是 Phase 4 尚未完成的部分（记为 I14）。
+
 ## 5. 增量计划
 
 每个增量 = 一次提交，结束时四项门全绿。顺序按 spec §149，但把可立即验证的 AFS 资源层
@@ -123,7 +138,7 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I2c** ✅ | Phase 2 | Node identity 资源：`world/node-identity.yaml` + `arcblog-node.mjs identity init\|show\|check`（DID 默认取 profile / blocklet.yaml） | validate + test + check + build（56 测试） |
 | I3 | Phase 3 | **按 S3/S4 修正**：Web Device 无 AFS 通道，content-site 烘焙路径又不可达（§8 证据）→ 动态公开面保留 AUP；「逐条静态 SEO」改记为**平台受限**而非 POST-MVP | 决策文档 + 证据（§3.3/§3.4/§8） |
 | **I4a** ✅ | Phase 4 | Dashboard 页（spec §16 子集）：节点档案（DID / roles / capabilities）、分类taxonomy、最近发布、快捷入口；含 `.aup/man/dashboard.yaml` 与 wrapper 导航项 | validate + test + check + build（218 文件） |
-| **I4b** ✅ | Phase 4 | Dashboard 补齐 spec §16 卡片：**Roles & verification**（读 `config/roles.json`，含 transform 取嵌套字段）、Economy / Agent 明确显示"未启用（MVP-3/4）"；man 页同步 | validate + test + check + build（221 文件） |
+| **I4b** ✅ | Phase 4 | Dashboard 补齐 spec §16 卡片：**Roles & verification**（读 `config/roles.json`，含 transform 取嵌套字段）、Economy / Agent 先显示"未启用（MVP-3/4）"（**该文案在 I13 被修正**：MVP-3/4 已实现，Dashboard 一度在说谎）；man 页同步 | validate + test + check + build（221 文件） |
 | **I5a** ✅ | Phase 3/4 | 公开面补全：新增 **Author 页**（node profile + identity + 已发布文章）；修正 RSS 死链为 `/p/rss.xml` 并确立"部署期静态快照"流程 | validate + test + check + build（213 文件） |
 | I5 | Phase 1 收口 | `arc blocklet check` + `build` 纳入质量门与 release 流程；版本与 dist 同步机制 | 同上 |
 | **I6a** ✅ | Phase 5 | Identity 契约固化：`scripts/arcblog-doctor.mjs`（资源目录 / node profile+identity / categories / 作者归属报告）；修正 3 处"UI 记录 authorDid 为空"的过时文档（compose 实际写 `$session.did`，但运行期插值未验证） | validate + test + check + build（65 测试） |
@@ -135,6 +150,8 @@ NFT 集合地址、分成比例、settlement policy 一律外置到配置记录�
 | **I8c** ✅ | Phase 8 | Hub attribution：Ed25519 签名 Discovery Context（零依赖 `node:crypto`）+ `trust`/`verify --store` + **结算只对已验证归因支付 hub 分成**（spec §30/§33）；私钥只落本地 0600，不入 AFS | validate + test + check + build（111 测试） |
 | I8 | Phase 8（MVP-3） | Economy：Product / Order / Payment Adapter / Settlement / Ledger / Tip / Paid Reading → 已由 I8a/I8b/I8c 交付 ✅ | — |
 | **I9a** ✅ | Phase 9（MVP-4） | Agent Access：`agents/arcblog-agent/` 平台原生声明（path+ops+maxDepth，只读）+ `scripts/arcblog-agent.mjs` 策略审计（只读、隐私路径不外露、深度/预算有界、`settle_payment`/`change_wallet`/`change_role` 默认关闭）+ spec §130 工具目录 | validate + test + check + build（123 测试，`agents: 1`） |
+| **I13** ✅ | Phase 4 校正 | 管理面**真实性修正**：Dashboard 移除"Economy/Agent 未启用"过时文案，改为读取真实策略（版本 + creator/hub/protocol）并声明 `arcblog-agent` 与默认关闭工具；记录 Phase 4 的真实边界——**Role / Network / Economy 目前只有 CLI，没有 AUP 管理页**（此前 I4 的 ✅ 覆盖面被高估） | validate + generate --write + test（150）+ build |
+| **I12** ✅ | Phase 2 收口 | provider 能力矩阵实测（`search` 不存在、`text` 不支持、`query`/`aggregate` 支持）→ 集合读取改为 `query` 一次取回内联内容；`arcblog-query-posts.mjs` 的 category/tag 过滤与 agent `search_posts` 改为**服务端过滤**；`whereEq`/`whereContains`/`whereAll` 封装 | validate + test（152）+ `arc-contracts.md` §9 |
 | **I11** ✅ | Hardening | 测试残留自动化：残差匹配收紧为**专用 token**（不用裸 `attr-`/`agent-`，避免误删真实归因 id）、`npm test` 通过后自动清理（失败时保留证据，`ARCBLOG_NO_CLEAN=1` 可关）、`npm run test:clean` 手动清理 | validate + test（146）+ 实测 840 条→0 |
 | **I10** ✅ | Hardening | 账本按确定性 id 定点读取（`--order` 由 O(n) 目录扫描 → 3 次读，18s→1.1s）、未限定查询分页（`--limit` 默认 20 / `--all`）、`doctor` 报告测试残留量、`arcblog-clean.mjs` 安全清理（默认 dry-run，永不触碰 posts/heroes） | validate + test + check + build（146 测试） |
 | **I9b** ✅ | Phase 9 | Agent 工具面：read 工具绑定真实 AFS 资源并可执行（6 个）、写工具经**限时授权**后委派给运维 CLI（4 个）、closed 工具（买家隐私 + spec §130 默认关闭）永不执行；`check` 增加「声明 vs 工具目录」漂移检测；`authorize` 拒绝 `agent.admin` | validate + test + check + build（141 测试） |

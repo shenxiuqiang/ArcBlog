@@ -290,6 +290,63 @@ export function remove(path, instance) {
   return afsJson(['delete', '--path', path], instance);
 }
 
+/**
+ * Provider-native collection query (spec §149 Phase 2).
+ *
+ * This provider declares the `query` action, so filtering happens server-side and
+ * each record's content comes back **inline**: a collection read is one call
+ * instead of list + N reads. Supported: a flat equality map, a typed leaf
+ * (`{field, eq|in|notIn|contains|gte|lte}`), `{all:[...]}`, `orderBy`, `select`
+ * projection and pagination. `text` is NOT supported — it answers "not supported
+ * by this provider", so free-text matching stays client-side.
+ *
+ * Note the shape change: with `select`, `entry.content` is already an object; the
+ * unprojected form returns it as a JSON string. `queryRecords` handles both.
+ */
+export function query(path, spec = {}, instance) {
+  const raw = exec('query', { path, ...spec }, instance);
+  if (Array.isArray(raw)) return { entries: raw, total: raw.length };
+  return { entries: raw?.entries ?? [], total: raw?.total, groups: raw?.aggregateGroups };
+}
+
+/** Query and JSON-decode each record's inline content. */
+export function queryRecords(path, spec = {}, instance) {
+  const records = [];
+  for (const entry of query(path, spec, instance).entries) {
+    const content = entry?.content;
+    if (content && typeof content === 'object') records.push(content);
+    else if (typeof content === 'string' && content.trim()) {
+      try {
+        records.push(JSON.parse(content));
+      } catch {
+        /* skip malformed records rather than failing the whole query */
+      }
+    }
+  }
+  return records;
+}
+
+/**
+ * Typed `where` predicate from optional equality/containment filters.
+ * Returns `{}` (match everything), a single leaf, or an `all` combinator.
+ */
+export function whereAll(clauses) {
+  const leaves = clauses.filter(Boolean);
+  if (leaves.length === 0) return {};
+  if (leaves.length === 1) return leaves[0];
+  return { all: leaves };
+}
+
+/** Build a typed `contains` leaf (used for array fields such as post tags). */
+export function whereContains(field, value) {
+  return value ? { field, contains: value } : null;
+}
+
+/** Build a typed equality leaf. */
+export function whereEq(field, value) {
+  return value ? { field, eq: value } : null;
+}
+
 /** List a directory. Returns the provider's entry array (possibly empty). */
 export function list(path, instance) {
   try {

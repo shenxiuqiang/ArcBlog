@@ -170,7 +170,11 @@
   "dashboard.roles-empty": "No role configuration yet. Run: node scripts/arcblog-roles.mjs init",
   "dashboard.verification": "Chain verification",
   "dashboard.econ": "Economy",
-  "dashboard.econ-desc": "Not enabled yet — planned for MVP-3 (tips, paid reading, settlement).",
+  "dashboard.econ-desc": "Live: versioned split policy, tips, paid reading, settlement and an append-only ledger.",
   "dashboard.agent": "Agent",
-  "dashboard.agent-desc": "No agents declared yet — planned for MVP-4 (ARC Agent Access / MCP tools)."
+  "dashboard.agent-desc": "Declared agent: arcblog-agent — read-only over published posts, taxonomy, node profile and public economy data.",
+  "dashboard.econ-policy": "Active policy",
+  "dashboard.econ-split": "Split (creator / hub / protocol)",
+  "dashboard.econ-empty": "No settlement policy yet. Run: node scripts/arcblog-economy.mjs policy init",
+  "dashboard.agent-closed": "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface."
 }

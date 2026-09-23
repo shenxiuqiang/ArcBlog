@@ -413,6 +413,69 @@
             "content": "$t(dashboard.econ-desc)",
             "intent": "muted"
           }
+        },
+        {
+          "id": "dash-econ",
+          "type": "afs-list",
+          "props": {
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "clickMode": "none",
+            "emptyText": "$t(dashboard.econ-empty)"
+          },
+          "src": "/instance/app/arcblog/economy/policies",
+          "children": [
+            {
+              "id": "dashEconRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "gap": "xs"
+                },
+                "role": "item"
+              },
+              "children": [
+                {
+                  "id": "dasheconrow-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(dashboard.econ-policy)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "dasheconrow-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.version}",
+                    "scale": "sm"
+                  }
+                },
+                {
+                  "id": "dasheconrow-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(dashboard.econ-split)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "dasheconrow-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}",
+                    "scale": "sm"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -439,6 +502,15 @@
           "type": "text",
           "props": {
             "content": "$t(dashboard.agent-desc)",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "arcblog-dashboard-view-1-card-7-p-3",
+          "type": "text",
+          "props": {
+            "content": "$t(dashboard.agent-closed)",
+            "scale": "sm",
             "intent": "muted"
           }
         }

@@ -83,3 +83,52 @@ test('non-published statuses query the private directory', () => {
     assert.equal(record.dir, 'drafts');
   }
 });
+
+test('filters are applied by the provider query, not client-side', () => {
+  // Pin the server-side path: a miss must come back empty from the provider,
+  // not by fetching everything and filtering in JS.
+  const hit = json(run(['published', '--category', 'technology']).stdout);
+  assert.equal(hit.mode, 'query-action');
+  assert.ok(hit.result.total >= 1);
+  for (const record of hit.result.records) assert.equal(record.category, 'technology');
+
+  const miss = json(run(['published', '--category', 'no-such-category']).stdout);
+  assert.equal(miss.mode, 'query-action');
+  assert.equal(miss.result.total, 0);
+  assert.deepEqual(miss.result.records, []);
+
+  const tagHit = json(run(['published', '--tag', 'identity']).stdout);
+  assert.equal(tagHit.mode, 'query-action');
+  assert.ok(tagHit.result.total >= 1);
+
+  const tagMiss = json(run(['published', '--tag', 'no-such-tag']).stdout);
+  assert.equal(tagMiss.result.total, 0);
+});
+
+test('query helpers build typed predicates and decode inline content', async () => {
+  const arc = await import('./lib/arc.mjs');
+  assert.deepEqual(arc.whereEq('category', ''), null);
+  assert.deepEqual(arc.whereEq('category', 'technology'), { field: 'category', eq: 'technology' });
+  assert.deepEqual(arc.whereContains('tags', 'x'), { field: 'tags', contains: 'x' });
+
+  assert.deepEqual(arc.whereAll([]), {});
+  // an empty filter must collapse to "match everything", never to a null `where`
+  // (the provider rejects `where: null`)
+  assert.deepEqual(arc.whereAll([arc.whereEq('category', '')]), {});
+  assert.deepEqual(arc.whereAll([arc.whereContains('tags', '')]), {});
+  assert.deepEqual(arc.whereAll([arc.whereEq('a', 'b')]), { field: 'a', eq: 'b' });
+  assert.deepEqual(arc.whereAll([arc.whereEq('a', 'b'), arc.whereContains('c', 'd')]), {
+    all: [{ field: 'a', eq: 'b' }, { field: 'c', contains: 'd' }],
+  });
+
+  // live: projected content arrives as an object, unprojected as a JSON string;
+  // queryRecords normalises both
+  const projected = arc.queryRecords('/instance/app/arcblog/posts', { select: ['slug'] });
+  const plain = arc.queryRecords('/instance/app/arcblog/posts');
+  assert.deepEqual(
+    projected.map((record) => record.slug).sort(),
+    plain.map((record) => record.slug).sort(),
+  );
+  assert.ok(plain.length >= 1);
+  for (const record of plain) assert.ok(record.title);
+});
