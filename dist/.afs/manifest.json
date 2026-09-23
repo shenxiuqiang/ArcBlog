@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 60648,
+      "size": 60740,
       "contentType": "application/octet-stream",
-      "sha256": "5b8bfd134387ad1e234cacd5ea095cfd8899d816883ba0bf2b137190e31728fc"
+      "sha256": "d350927319de0d39aff30b244ae9f0145c4002d5444a55fc673c7f690cc9f1db"
     },
     {
       "path": ".aup/app.json",
@@ -142,9 +142,9 @@
     },
     {
       "path": ".aup/pages/posts.json",
-      "size": 5790,
+      "size": 5956,
       "contentType": "application/json",
-      "sha256": "4b9d6e1c084d9bf0a0363d564c6657b3802fde624e18380598b1b3fd7a0e4737"
+      "sha256": "58abfb6f734ae420166c7510a3a56b4880a575a6474057b2dc3eb446fb2a8143"
     },
     {
       "path": ".aup/pages/preview.json",
@@ -244,9 +244,9 @@
     },
     {
       "path": ".web/components/hero-carousel/init.js",
-      "size": 7478,
+      "size": 7479,
       "contentType": "text/javascript",
-      "sha256": "23b89d2410460c0ecc7fb6e8874f56a35e02957175fa88dc01c3e465408e95fa"
+      "sha256": "d7543d2cc0bb9ced2082553da56ff5cc0ebf43b027bcf4c5b5c73b1a1a48dc09"
     },
     {
       "path": ".web/components/hero-carousel/manifest.json",
@@ -262,9 +262,9 @@
     },
     {
       "path": ".web/components/hero-carousel/script.js",
-      "size": 36202,
+      "size": 36203,
       "contentType": "text/javascript",
-      "sha256": "f59a18e3da16b3a79412d2b5d22b2fc375214f229e35f40a448f0b7d2ef21b43"
+      "sha256": "2f21c9ff853dd4ab71cc598a4de00968f5536fd7e5bae88e9375ae8ab104c3b2"
     },
     {
       "path": ".web/components/hero-carousel/style.css",

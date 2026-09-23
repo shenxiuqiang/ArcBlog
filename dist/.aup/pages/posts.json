@@ -46,15 +46,16 @@
           "props": {
             "layout": {
               "direction": "row",
-              "crossAlign": "center",
-              "gap": "lg"
+              "crossAlign": "stretch"
             },
             "role": "item",
             "style": {
-              "padding": "var(--space-block, 28px)",
+              "padding": "0",
               "border": "1px solid var(--color-border)",
               "borderRadius": "var(--radius-lg, 12px)",
-              "marginBottom": "var(--space-block, 20px)"
+              "marginBottom": "var(--space-block, 20px)",
+              "overflow": "hidden",
+              "minHeight": "176px"
             }
           },
           "children": [
@@ -70,11 +71,14 @@
                   "flex": 1
                 },
                 "style": {
-                  "display": "block",
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "justifyContent": "center",
                   "textDecoration": "none",
                   "color": "inherit",
                   "cursor": "pointer",
-                  "minWidth": 0
+                  "minWidth": 0,
+                  "padding": "24px 30px"
                 }
               },
               "children": [
@@ -87,7 +91,8 @@
                     "scale": "lg",
                     "style": {
                       "margin": "0",
-                      "lineHeight": "1.3"
+                      "fontSize": "clamp(1.3rem, 2vw, 1.62rem)",
+                      "lineHeight": "1.25"
                     }
                   }
                 },
@@ -169,10 +174,9 @@
                   "display": "block",
                   "flexGrow": 0,
                   "flexShrink": 0,
-                  "flexBasis": "200px",
-                  "width": "200px",
-                  "height": "132px",
-                  "borderRadius": "var(--radius-lg, 12px)",
+                  "flexBasis": "240px",
+                  "width": "240px",
+                  "alignSelf": "stretch",
                   "background": "url(${entry.content.coverImage}) center / cover no-repeat"
                 }
               },

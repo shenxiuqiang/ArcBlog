@@ -722,7 +722,7 @@
   if (!root) return;
 
   const HEROES = '/instance/app/arcblog/heroes';
-  const INTERVAL = 5500;
+  const INTERVAL = 10000;
 
   // Locale of the host page (the iframe URL is locale-prefixed with `en`, so take
   // it from the parent to keep the copy in step with what the reader chose).

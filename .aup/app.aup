@@ -44,9 +44,9 @@ app "ArcBlog" {
       frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel"
       h2 :feed level=2
   afs-list published-feed layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none from "/instance/app/arcblog/posts" {
-        row postRow cross=center gap=lg role=item style={padding: "var(--space-block, 28px)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)"} {
-          view postLink gap=sm href="/posts/${entry.content.slug}" size={flex: 1} style={display: "block", textDecoration: "none", color: "inherit", cursor: "pointer", minWidth: 0} {
-            h3 "${entry.content.title}" scale=lg style={margin: "0", lineHeight: "1.3"}
+        row postRow cross=stretch role=item style={padding: "0", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)", overflow: "hidden", minHeight: "176px"} {
+          view postLink gap=sm href="/posts/${entry.content.slug}" size={flex: 1} style={display: "flex", flexDirection: "column", justifyContent: "center", textDecoration: "none", color: "inherit", cursor: "pointer", minWidth: 0, padding: "24px 30px"} {
+            h3 "${entry.content.title}" scale=lg style={margin: "0", fontSize: "clamp(1.3rem, 2vw, 1.62rem)", lineHeight: "1.25"}
             row gap=xs cross=center {
               p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
               p "·" scale=sm intent=muted
@@ -56,7 +56,7 @@ app "ArcBlog" {
             }
             p "${entry.content.summary}" intent=muted scale=sm style={margin: "0"}
           }
-          view postCover visible="${entry.content.coverImage}" href="/posts/${entry.content.slug}" style={display: block, flexGrow: 0, flexShrink: 0, flexBasis: "200px", width: "200px", height: "132px", borderRadius: "var(--radius-lg, 12px)", background: "url(${entry.content.coverImage}) center / cover no-repeat"} {
+          view postCover visible="${entry.content.coverImage}" href="/posts/${entry.content.slug}" style={display: "block", flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: "stretch", background: "url(${entry.content.coverImage}) center / cover no-repeat"} {
             text content=" "
           }
         }
