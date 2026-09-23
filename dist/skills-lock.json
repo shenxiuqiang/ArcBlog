@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "afs": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/afs/SKILL.md",
+      "computedHash": "cee7f7fc2b9943602e58e94a427713de4d1c6ec68a7e7716d28d7065eb1e784e"
+    },
+    "arcblock-context": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arcblock-context/skills/arcblock-context/SKILL.md",
+      "computedHash": "de3a1d5f2515cd7a5aec5ad47d5f92200e6031d5c2a217ec745a7778cc66d26a"
+    },
+    "blocklet": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/blocklet/SKILL.md",
+      "computedHash": "790132d82c9b77a46306bc66149756c75262ac9c8f486da4cd9ed19086ce58d4"
+    },
+    "daemon": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/daemon/SKILL.md",
+      "computedHash": "d1e8d1abe934b6e8dbed3c50c2556f4667e2028f4090f4f90d40d6024e9ff155"
+    },
+    "index": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/index/SKILL.md",
+      "computedHash": "e91de6e48ee8b0db854abcfe2943e9ee123e7aa4fd9b334fde7aa4ed30debcc9"
+    },
+    "mcp": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/mcp/SKILL.md",
+      "computedHash": "77bca7a48d2060f76b142fd23fec864bb35b5fc0dc830203a701e74fbcf489d8"
+    },
+    "site": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/site/SKILL.md",
+      "computedHash": "3d55b7d7d88bf4e78a2ab7665b43068f269cfaab86c103a04b04a6a47735b840"
+    },
+    "space": {
+      "source": "ArcBlock/agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/arc/skills/space/SKILL.md",
+      "computedHash": "a2cccd781d80a2752b3cd6173998799aceb0bbe0a56b0389b19f0195a542f9b2"
+    }
+  }
+}

@@ -994,9 +994,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 6562,
+      "size": 7410,
       "contentType": "text/markdown",
-      "sha256": "52a69094aaadd19ffcf6e0d366af9656fc3c2911516a6c37f268afe97612d827"
+      "sha256": "f41d6c23c388e7cf3681a974c437c418ed98c6910205c5c5f4d4787c73fac1ec"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1036,9 +1036,9 @@
     },
     {
       "path": "docs/README.md",
-      "size": 2427,
+      "size": 2773,
       "contentType": "text/markdown",
-      "sha256": "ec5a785bf4eb1eb2553b255eb53531209b46d62c032c1fa0b13bf7c05b669331"
+      "sha256": "869245c1fc3a65f1b33c820b25d76604826ee5d5b18e62590f64fe1b01f9a87e"
     },
     {
       "path": "docs/release-notes-v0.3.0.md",
@@ -1189,6 +1189,12 @@
       "size": 229,
       "contentType": "application/json",
       "sha256": "5e8f37dac155d5cf960daeb6411b86e51b7a16b67bf1eee2d91f223fb6095287"
+    },
+    {
+      "path": "skills-lock.json",
+      "size": 1974,
+      "contentType": "application/json",
+      "sha256": "247ea441b888d71bf72077ed1ef2d92066fff9a9a5b6b7089dc6be077753910b"
     },
     {
       "path": "world/post.yaml",

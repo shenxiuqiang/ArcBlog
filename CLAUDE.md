@@ -70,3 +70,23 @@ Lifecycle transitions: `draft → published → archived → published`, plus `d
 - `share-cards.md` — OG/SEO usage
 - `persistence.md` — storage model details
 - `release-notes-v0.3.0.md` — historical release record
+
+**External references**
+
+- ArcBlock official technical docs — <https://www.arcblock.io/zh/docs/> — consult
+  these before guessing any ARC / AFS / AUP / Blocklet API (the spec's §150 rule
+  is "do not invent ARC APIs").
+
+## Agent skills (ArcBlock knowledge base)
+
+Project-level skills installed from `ArcBlock/agent-skills` live in
+`.agents/skills/` and are tracked by `skills-lock.json`:
+
+- `arcblock-context` — ArcBlock company knowledge base; topic payload in
+  `products/`, `technical/`, `strategy/`, `docs/`.
+- `afs`, `blocklet`, `daemon`, `index`, `mcp`, `site`, `space` — the ARC platform
+  development booklets (from the repo's `arc` plugin).
+
+Installed with `npx skills add ArcBlock/agent-skills -s <name> ... -a codex --copy`
+(the `codex` target is the universal `.agents/skills` directory); update with
+`npx skills update -p`.

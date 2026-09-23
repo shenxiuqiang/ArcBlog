@@ -10,6 +10,14 @@ reference for the current implementation or its operation. If a supporting
 document ever disagrees with the spec, the spec wins — update or remove the
 other document.
 
+## External references
+
+- **ArcBlock official technical docs** — <https://www.arcblock.io/zh/docs/> —
+  consult before guessing any ARC / AFS / AUP / Blocklet API.
+- **ArcBlock agent knowledge base** — `ArcBlock/agent-skills`, installed under
+  `.agents/skills/` (`arcblock-context` + the `arc` booklets), tracked by
+  `skills-lock.json`.
+
 ## Implementation
 
 - [developer-guide.md](developer-guide.md) — repository layout, content model,
