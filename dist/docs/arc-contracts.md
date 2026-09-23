@@ -1,0 +1,148 @@
+# ARC 契约核验记录（spec Phase 0）
+
+本文件是 `ArcBlog-product-technical-spec.md` §149 **Phase 0 — ARC Research** 的产出：
+在动手写代码之前，先用实测核验当前 ARC 的真实契约。
+
+**原则（spec §150）**：不臆造 ARC API。本文件的每一条结论都附有核验命令；任何一条
+都可能被一次新的 `explain` / `--help` / `/.knowledge` 推翻——冲突时以实测为准。
+
+## 0. 核验环境
+
+| 项 | 值 | 证据 |
+|---|---|---|
+| ARC 版本 | `2.0.0-beta.50 (c711b9aa)` 2026-09-10 | `arc --version` |
+| 实例 | `default`，端口 `4939`，`STATUS up`，home `/Users/shenxiuqiang` | `arc service list` |
+| 项目 blocklet | `arcblog` v0.3.7，`did:blocklet:arcblog`，`[published]` | `arc blocklet list .` |
+| 部署 | 4 次部署，域名 `arcblog.localhost` | `arc blocklet instance list` |
+| 本地 DID Space 根 | `/Users/shenxiuqiang/.afs/spaces`，Instance space `z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ` | `arc space list` |
+
+> `arc space list` 会打印 `AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF`。
+> 与 `persistence.md` 的说明一致：生产前需设置该 secret，且不要在此之前打开
+> `AFS_DID_SPACE_REQUIRE_DEID=true`。
+
+## 1. AFS（路径与能力层）
+
+```text
+arc afs ls / --instance default
+  /scheduler-state  /scheduler  /spaces  /pages  /peers  /proc  /work  /ash
+  /web  /blocklets  /.internal  /registry  /dev  /modules  /team
+  /.knowledge  /.meta  /.actions
+```
+
+- **`/instance` 与 `/user` 不是 root mount。** `arc afs ls /instance` 在裸 shell 中返回
+  `ERROR: No data found for path: /instance`；它们是 **session 作用域投影**，只在
+  blocklet/会话内可见（现有包正是靠 `scope: app` 使用 `/instance/app/arcblog/...`）。
+- **能力索引**：`arc afs read /.knowledge`（provider 列表 + 最小引导），单 provider 详情走
+  `arc afs read /.knowledge/<provider>`。
+- **`arc afs explain <path>`** 返回 `TYPE` / `SIDE EFFECTS`；对 session 投影路径在裸 shell 下
+  返回 `unknown` / `none`（属正常，不代表能力缺失）——能力必须在运行期核验。
+- 实例消歧：`--instance <name>` 绑定命名实例（无 daemon 则 fail closed）；
+  `--standalone` 是无 daemon 的临时 AFS；没有第三种模式（`arc skill show afs`）。
+- 检索索引在 `/modules/index`，不是 AFS 联邦 Index manifest。
+
+## 2. Blocklet manifest（specVersion 2）
+
+`arc blocklet recipe basic|blog` 生成的最小 manifest：
+
+```yaml
+specVersion: 2
+id: <id>
+name: <name>
+did: did:blocklet:<id>
+version: 0.1.0
+description: ""
+```
+
+ArcBlog 现有 manifest 额外使用（均被 `arc dsl validate` 与 `arc blocklet check` 接受）：
+
+| 键 | 语义 | 证据 |
+|---|---|---|
+| `sites[].bindings[]` | `{id, path, afs, page}`：把 `path`（含 `{slug}`）绑定到某 AUP 页 + 某 AFS 记录 | `blocklet.yaml:10-30` |
+| `scope: app` | 会话内 `/instance` overlay，允许写 `/instance/app/arcblog/...` | `blocklet.yaml:34` |
+| `networkRead[]` | `{path, role}` 匿名读授权（`guest` / `admin`） | `blocklet.yaml:39-45` |
+| `replicated{}` | `{canonical, copy, minRole, readRole}`：授权页面会话的 `exec "/.actions/write"` | `blocklet.yaml:51-66` |
+
+**未发现** `mounts` / `surfaces` / 自定义 HTTP server 声明：包是 **DSL + 资产** 形态，
+不存在“挂一个 Node 服务”的入口。配方给出的规范目录：
+
+```text
+.aup/            AUP 应用（app.aup + pages/*.json + man/*.yaml + locales/）
+.web/components/ 公开 Web 组件（component.dsl + manifest.json + render.js + style.css）
+pages/           Web Device 页面（layout.aup + seo/{title,description}）
+agents/          Agent 定义（agent.dsl + agent.json + system.md）
+seed/settings/   设置种子（settings-shell/app/**.json，形如 {label, value}）
+world/           记录 schema（world/post.yaml）
+package.json     仅元数据（"@aigne/blocklet-*", private, type: module），无依赖/无 bundler
+```
+
+包生命周期：`arc blocklet build` → `dist/`（`.afs/manifest.json` + `blocklet.dist.json`）；
+`arc blocklet instance deploy <ref>` 部署到本地 Pages 并绑定域名；`instance list|inspect|destroy|logs`。
+
+## 3. Web Device（公开站点层）
+
+`/web` mount 的实测结构：
+
+```text
+/web/sites            已声明站点
+/web/content-sites    CMS 内容站点
+/web/.library/themes  主题库（注意是 /web/.library，不是 /.library）
+/web/.actions         create-site declare undeclare bulk-undeclare get-dashboard
+                      render-all cms-write cms-publish cms-rollback cms-revert
+```
+
+站点级：`/web/sites/<name>/.actions/{doctor,check-links,deploy}`。
+
+关键区分（`arc skill show site`）：
+
+| 面 | 位置 |
+|---|---|
+| daemon HTTP | `http://localhost:4900/`（AFS/blocklet/MCP，**不是**站点） |
+| 站点 HTTP | `http://<site>.localhost:<web-port>/en/`（`declare` 启动，动态端口） |
+| `declare` / `build` | `build` 只写磁盘 `.web/.build`；HTTP host 有独立生命周期，build 不会热更新 |
+
+可写存储：新实例用 `/work`（`/storage` 不是默认 mount）。
+
+## 4. DID Space（持久数据面）
+
+- `arc space init <dir>` / `check` / `list` / `tree` / `path` / `sync` / `migrate`。
+- 数据面即 AFS 路径（`/spaces`，会话内 `/user`、`/instance`、`/space`）：应用默认不需要额外
+  DB + 对象存储（spec §6 与之一致）。
+- 现有 ArcBlog space 已承载 116 个文件，说明 `/instance/app/arcblog/*` 落在这里。
+
+## 5. Identity
+
+```text
+arc did init [--developer|--provider|--blocklet]   arc did check
+arc did issue    arc did verify    arc did info    arc did list    arc did issuer
+```
+
+会话内可用 `$session.did` / `$session.displayName` / `$session.authenticated`
+（见 `developer-guide.md` 与既有 AUP 用法）。
+
+## 6. Agent Access
+
+- 运行时已有：`/dev/ai/{agent,catalog,models,policies,score-weights,sessions,usage}`。
+- `arc mcp` 把 AFS 暴露为 stdio MCP server；`/.knowledge` 是给 agent 的自描述层。
+- 包内 `agents/<name>/{agent.dsl,agent.json,system.md}` 是官方配方支持的 agent 声明位置。
+- `arc blocklet check .` 会报告 agent 数量（当前 ArcBlog 为 `agents: 0`）。
+
+## 7. 质量门与常用命令（实测可用）
+
+```bash
+arc dsl validate --json      # 主质量门，ArcBlog 当前 issues: []
+arc dsl generate             # 由 app.aup 生成 app.json / pages/*.json
+arc dsl doctor               # decompile + format + regenerate-check + validate
+arc blocklet check .         # manifest + AUP + web + agents 体检
+arc blocklet build           # 生成 dist/
+npm test                     # scripts/*.test.mjs（node:test）
+```
+
+`arc blocklet check .` 当前输出：
+
+```text
+Passed blocklet check (basic)
+  AUP pages: about, admin, compose, compose-edit, posts, preview, reader, settings
+  web sections: 1
+  agents: 0
+  settings files: 0
+```

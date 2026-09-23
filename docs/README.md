@@ -20,6 +20,10 @@ other document.
 
 ## Implementation
 
+- [development-plan.md](development-plan.md) — spec → phase plan, architecture
+  decisions, increment breakdown and acceptance gates.
+- [arc-contracts.md](arc-contracts.md) — Phase 0 verified ARC contracts (AFS,
+  manifest, Web Device, DID Space, identity, agent access) with command evidence.
 - [developer-guide.md](developer-guide.md) — repository layout, content model,
   AUP conventions, theme bridge, URL bindings, scripts and tests.
 - [persistence.md](persistence.md) — AFS / DID Space storage and identity

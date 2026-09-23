@@ -1,0 +1,13 @@
+kind: NodeProfile
+fields:
+  name: string
+  description: string
+  avatar: string
+  did: string
+  endpoint: string
+  roles: json # basic | studio | hub (spec §7)
+  capabilities: json # spec §11 capability list
+  version: string
+  protocolVersion: string
+  createdAt: datetime
+  updatedAt: datetime
