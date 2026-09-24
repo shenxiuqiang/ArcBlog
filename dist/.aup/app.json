@@ -39,6 +39,15 @@
     "operations": {
       "tree": "pages/operations.json"
     },
+    "heroes-admin": {
+      "tree": "pages/heroes-admin.json"
+    },
+    "ops-admin": {
+      "tree": "pages/ops-admin.json"
+    },
+    "economy-admin": {
+      "tree": "pages/economy-admin.json"
+    },
     "author": {
       "tree": "pages/author.json"
     }

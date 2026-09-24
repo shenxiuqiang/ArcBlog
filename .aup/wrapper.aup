@@ -2,6 +2,12 @@ page wrapper {
   i18n {
     nav-studio { en "Studio" zh "工作室" }
     nav-console { en "Management" zh "管理后台" }
+    nav-heroes { en "Heroes & categories" zh "Hero 与分类" }
+    nav-media-agents { en "Media & agents" zh "媒体与 Agent" }
+    nav-policy-grants { en "Policy & access" zh "策略与授权" }
+    nav-group-content { en "Content" zh "内容" }
+    nav-group-ops { en "Operations" zh "运营" }
+    nav-group-economy { en "Economy" zh "经济" }
     nav-dashboard { en "Dashboard" zh "仪表盘" }
     nav-operations { en "Operations" zh "运维" }
     nav-about { en "About" zh "关于" }

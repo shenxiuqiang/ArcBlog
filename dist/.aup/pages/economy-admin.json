@@ -1,5 +1,5 @@
 {
-  "id": "arcblog-operations",
+  "id": "arcblog-economy-admin",
   "type": "view",
   "props": {
     "layout": {
@@ -11,7 +11,7 @@
   },
   "children": [
     {
-      "id": "arcblog-operations-card-1",
+      "id": "arcblog-economy-admin-card-1",
       "type": "view",
       "props": {
         "mode": "card",
@@ -22,31 +22,31 @@
       "visible": "!$session.authenticated",
       "children": [
         {
-          "id": "arcblog-operations-card-1-h2-1",
+          "id": "arcblog-economy-admin-card-1-h2-1",
           "type": "text",
           "props": {
             "level": 2,
-            "content": "$t(operations.gate-title)"
+            "content": "$t(economy-admin.gate-title)"
           }
         },
         {
-          "id": "arcblog-operations-card-1-p-2",
+          "id": "arcblog-economy-admin-card-1-p-2",
           "type": "text",
           "props": {
-            "content": "$t(operations.gate-desc)",
+            "content": "$t(economy-admin.gate-desc)",
             "intent": "info"
           }
         },
         {
-          "id": "arcblog-operations-card-1-action-3",
+          "id": "arcblog-economy-admin-card-1-action-3",
           "type": "action",
           "props": {
             "variant": "primary",
-            "label": "$t(operations.login)"
+            "label": "$t(economy-admin.login)"
           },
           "events": {
             "click": {
-              "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Doperations&cancel_to=%2F%3Fpage%3Doperations"
+              "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Deconomy-admin&cancel_to=%2F%3Fpage%3Deconomy-admin"
             }
           }
         }
@@ -150,8 +150,7 @@
               "id": "console-nav-operations",
               "type": "action",
               "props": {
-                "label": "$t(wrapper.nav-operations)",
-                "variant": "primary"
+                "label": "$t(wrapper.nav-operations)"
               },
               "events": {
                 "click": {
@@ -190,7 +189,8 @@
               "id": "console-nav-economy-admin",
               "type": "action",
               "props": {
-                "label": "$t(wrapper.nav-policy-grants)"
+                "label": "$t(wrapper.nav-policy-grants)",
+                "variant": "primary"
               },
               "events": {
                 "click": {
@@ -240,14 +240,14 @@
                       "type": "text",
                       "props": {
                         "level": 1,
-                        "content": "$t(operations.title)"
+                        "content": "$t(economy-admin.title)"
                       }
                     },
                     {
                       "id": "console-pane-view-1-card-1-p-2",
                       "type": "text",
                       "props": {
-                        "content": "$t(operations.desc)",
+                        "content": "$t(economy-admin.desc)",
                         "intent": "muted"
                       }
                     }
@@ -263,7 +263,7 @@
                     }
                   },
                   "propBind": {
-                    "health": "/instance/app/arcblog/node/health.json"
+                    "policy": "/instance/app/arcblog/economy/policies/active.json"
                   },
                   "children": [
                     {
@@ -271,76 +271,62 @@
                       "type": "text",
                       "props": {
                         "level": 2,
-                        "content": "$t(operations.health)"
+                        "content": "$t(economy-admin.policy)"
                       }
                     },
                     {
-                      "id": "console-pane-view-1-card-2-p-2",
-                      "type": "text",
+                      "id": "opsPolicyRow",
+                      "type": "view",
                       "props": {
-                        "content": "$t(operations.health-status)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
+                        "layout": {
+                          "direction": "row",
+                          "gap": "xs"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "opspolicyrow-p-1",
+                          "type": "text",
+                          "props": {
+                            "content": "$t(economy-admin.policy-split)",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "opspolicyrow-p-2",
+                          "type": "text",
+                          "props": {
+                            "content": "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}",
+                            "scale": "sm"
+                          }
+                        },
+                        {
+                          "id": "opspolicyrow-p-3",
+                          "type": "text",
+                          "props": {
+                            "content": "$t(economy-admin.policy-adapter)",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "opspolicyrow-p-4",
+                          "type": "text",
+                          "props": {
+                            "content": "${state.policy.paymentAdapter}",
+                            "scale": "sm"
+                          }
+                        }
+                      ]
                     },
                     {
                       "id": "console-pane-view-1-card-2-p-3",
                       "type": "text",
                       "props": {
-                        "content": "${state.health.status}",
-                        "scale": "sm"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-p-4",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.health-version)",
+                        "content": "$t(economy-admin.policy-empty)",
                         "scale": "sm",
                         "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-p-5",
-                      "type": "text",
-                      "props": {
-                        "content": "${state.health.version}",
-                        "scale": "sm"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-p-6",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.health-did)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-p-7",
-                      "type": "text",
-                      "props": {
-                        "content": "${state.health.did}",
-                        "scale": "sm"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-p-8",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.health-checked)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "console-pane-view-1-card-2-time-9",
-                      "type": "time",
-                      "props": {
-                        "mode": "display",
-                        "value": "${state.health.checkedAt}",
-                        "timeMode": "relative"
                       }
                     }
                   ]
@@ -354,79 +340,66 @@
                       "gap": "md"
                     }
                   },
-                  "propBind": {
-                    "discovery": "/instance/app/arcblog/node/discovery.json"
-                  },
                   "children": [
                     {
                       "id": "console-pane-view-1-card-3-h2-1",
                       "type": "text",
                       "props": {
                         "level": 2,
-                        "content": "$t(operations.discovery)"
+                        "content": "$t(economy-admin.products)"
                       }
                     },
                     {
-                      "id": "opsDiscoveryRow",
-                      "type": "view",
+                      "id": "ops-products",
+                      "type": "afs-list",
                       "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs"
-                        }
+                        "layout": "list",
+                        "itemStyle": "row",
+                        "subscribe": true,
+                        "showBreadcrumb": false,
+                        "showParent": false,
+                        "clickMode": "none",
+                        "emptyText": "$t(economy-admin.products-empty)"
                       },
+                      "src": "/instance/app/arcblog/economy/products",
                       "children": [
                         {
-                          "id": "opsdiscoveryrow-p-1",
-                          "type": "text",
+                          "id": "opsProductRow",
+                          "type": "view",
                           "props": {
-                            "content": "$t(operations.discovery-protocol)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "opsdiscoveryrow-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${state.discovery.protocol}",
-                            "scale": "sm"
-                          }
-                        },
-                        {
-                          "id": "opsdiscoveryrow-p-3",
-                          "type": "text",
-                          "props": {
-                            "content": "$t(operations.discovery-transport)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "opsdiscoveryrow-p-4",
-                          "type": "text",
-                          "props": {
-                            "content": "${state.discovery.transport}",
-                            "scale": "sm"
-                          }
-                        },
-                        {
-                          "id": "opsdiscoveryrow-p-5",
-                          "type": "text",
-                          "props": {
-                            "content": "$t(operations.discovery-generated)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "opsdiscoveryrow-time-6",
-                          "type": "time",
-                          "props": {
-                            "mode": "display",
-                            "value": "${state.discovery.generatedAt}",
-                            "timeMode": "relative"
-                          }
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs"
+                            },
+                            "role": "item"
+                          },
+                          "children": [
+                            {
+                              "id": "opsproductrow-h3-1",
+                              "type": "text",
+                              "props": {
+                                "level": 3,
+                                "content": "${entry.content.id}"
+                              }
+                            },
+                            {
+                              "id": "opsproductrow-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "$t(economy-admin.product-price)",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "opsproductrow-p-3",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.priceAmount}",
+                                "scale": "sm"
+                              }
+                            }
+                          ]
                         }
                       ]
                     },
@@ -434,7 +407,7 @@
                       "id": "console-pane-view-1-card-3-p-3",
                       "type": "text",
                       "props": {
-                        "content": "$t(operations.discovery-empty)",
+                        "content": "$t(economy-admin.products-empty)",
                         "scale": "sm",
                         "intent": "muted"
                       }
@@ -456,106 +429,85 @@
                       "type": "text",
                       "props": {
                         "level": 2,
-                        "content": "$t(operations.hubs)"
+                        "content": "$t(economy-admin.grants)"
                       }
                     },
                     {
-                      "id": "ops-hubs",
-                      "type": "afs-list",
+                      "id": "console-pane-view-1-card-4-p-2",
+                      "type": "text",
                       "props": {
-                        "layout": "list",
-                        "itemStyle": "row",
-                        "subscribe": true,
-                        "showBreadcrumb": false,
-                        "showParent": false,
-                        "clickMode": "none",
-                        "emptyText": "$t(operations.hubs-empty)",
-                        "transform": {
-                          "syncAt": "content.sync.lastSync",
-                          "syncVersion": "content.sync.lastVersion"
-                        }
+                        "content": "$t(economy-admin.admin-only)",
+                        "scale": "sm",
+                        "intent": "muted"
                       },
-                      "src": "/instance/app/arcblog/hub/registrations",
+                      "visible": "!$session.authenticated"
+                    },
+                    {
+                      "id": "ops-grants-gate",
+                      "type": "view",
+                      "visible": "$session.authenticated",
                       "children": [
                         {
-                          "id": "opsHubRow",
-                          "type": "view",
+                          "id": "ops-grants",
+                          "type": "afs-list",
                           "props": {
-                            "layout": {
-                              "direction": "row",
-                              "gap": "xs"
-                            },
-                            "role": "item"
+                            "layout": "list",
+                            "itemStyle": "row",
+                            "subscribe": true,
+                            "showBreadcrumb": false,
+                            "showParent": false,
+                            "clickMode": "none",
+                            "emptyText": "$t(economy-admin.grants-empty)"
                           },
+                          "src": "/instance/app/arcblog/economy/access-grants",
                           "children": [
                             {
-                              "id": "opshubrow-h3-1",
-                              "type": "text",
+                              "id": "opsGrantRow",
+                              "type": "view",
                               "props": {
-                                "level": 3,
-                                "content": "${entry.content.hubDid}"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-2",
-                              "type": "text",
-                              "props": {
-                                "content": "$t(operations.hub-endpoint)",
-                                "scale": "sm",
-                                "intent": "muted"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-3",
-                              "type": "text",
-                              "props": {
-                                "content": "${entry.content.endpoint}",
-                                "scale": "sm"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-4",
-                              "type": "text",
-                              "props": {
-                                "content": "$t(operations.hub-sync)",
-                                "scale": "sm",
-                                "intent": "muted"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-5",
-                              "type": "text",
-                              "props": {
-                                "content": "${entry.content.syncAt}",
-                                "scale": "sm"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-6",
-                              "type": "text",
-                              "props": {
-                                "content": "$t(operations.hub-version)",
-                                "scale": "sm",
-                                "intent": "muted"
-                              }
-                            },
-                            {
-                              "id": "opshubrow-p-7",
-                              "type": "text",
-                              "props": {
-                                "content": "${entry.content.syncVersion}",
-                                "scale": "sm"
-                              }
+                                "layout": {
+                                  "direction": "row",
+                                  "gap": "xs"
+                                },
+                                "role": "item"
+                              },
+                              "children": [
+                                {
+                                  "id": "opsgrantrow-p-1",
+                                  "type": "text",
+                                  "props": {
+                                    "content": "${entry.content.contentId}",
+                                    "scale": "sm"
+                                  }
+                                },
+                                {
+                                  "id": "opsgrantrow-p-2",
+                                  "type": "text",
+                                  "props": {
+                                    "content": "$t(economy-admin.grant-reader)",
+                                    "scale": "sm",
+                                    "intent": "muted"
+                                  }
+                                },
+                                {
+                                  "id": "opsgrantrow-p-3",
+                                  "type": "text",
+                                  "props": {
+                                    "content": "${entry.content.readerDid}",
+                                    "scale": "sm"
+                                  }
+                                }
+                              ]
                             }
                           ]
                         }
                       ]
                     },
                     {
-                      "id": "console-pane-view-1-card-4-p-3",
+                      "id": "console-pane-view-1-card-4-p-4",
                       "type": "text",
                       "props": {
-                        "content": "$t(operations.hubs-empty)",
+                        "content": "$t(economy-admin.grants-empty)",
                         "scale": "sm",
                         "intent": "muted"
                       }

@@ -1,0 +1,35 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "heroes-admin".
+schemaVersion: 1
+page: heroes-admin
+description: >-
+  Manage the home-page hero carousel and the post taxonomy.
+refs:
+  actions:
+    - id: arcblog-heroes-admin-card-1-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-ops-admin
+      event: click
+    - id: console-nav-economy-admin
+      event: click
+    - id: hero-delete
+      event: click
+    - id: hero-add
+      event: click
+    - id: hero-quickadd-list
+      event: select
+    - id: hero-quickadd-confirm
+      event: click
+    - id: cat-remove
+      event: click
+    - id: cat-add
+      event: click

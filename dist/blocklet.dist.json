@@ -20,31 +20,7 @@
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/heroes",
-        "op": "list",
-        "required": true,
-        "source": "aup:src"
-      },
-      {
-        "path": "/instance/app/arcblog/categories",
-        "op": "list",
-        "required": true,
-        "source": "aup:src"
-      },
-      {
         "path": "/instance/app/arcblog/node",
-        "op": "list",
-        "required": true,
-        "source": "aup:src"
-      },
-      {
-        "path": "/instance/app/arcblog/economy/policies",
-        "op": "list",
-        "required": true,
-        "source": "aup:src"
-      },
-      {
-        "path": "/instance/app/arcblog/hub/registrations",
         "op": "list",
         "required": true,
         "source": "aup:src"
@@ -57,6 +33,24 @@
       },
       {
         "path": "/instance/app/arcblog/economy/access-grants",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/heroes",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/categories",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/hub/registrations",
         "op": "list",
         "required": true,
         "source": "aup:src"

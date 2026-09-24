@@ -72,11 +72,11 @@
               "gap": "xs"
             },
             "size": {
-              "width": "210px",
+              "width": "200px",
               "flexShrink": 0
             },
             "style": {
-              "padding": "16px",
+              "padding": "14px",
               "border": "1px solid var(--color-border)",
               "borderRadius": "var(--radius-lg, 12px)",
               "background": "var(--color-surface)"
@@ -84,6 +84,15 @@
           },
           "visible": "$session.authenticated",
           "children": [
+            {
+              "id": "console-nav-p-1",
+              "type": "text",
+              "props": {
+                "content": "$t(wrapper.nav-group-content)",
+                "intent": "muted",
+                "scale": "caption"
+              }
+            },
             {
               "id": "console-nav-dashboard",
               "type": "action",
@@ -101,7 +110,7 @@
               }
             },
             {
-              "id": "console-nav-studio",
+              "id": "console-nav-admin",
               "type": "action",
               "props": {
                 "label": "$t(wrapper.nav-studio)"
@@ -116,6 +125,30 @@
               }
             },
             {
+              "id": "console-nav-heroes-admin",
+              "type": "action",
+              "props": {
+                "label": "$t(wrapper.nav-heroes)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "heroes-admin"
+                  }
+                }
+              }
+            },
+            {
+              "id": "console-nav-p-5",
+              "type": "text",
+              "props": {
+                "content": "$t(wrapper.nav-group-ops)",
+                "intent": "muted",
+                "scale": "caption"
+              }
+            },
+            {
               "id": "console-nav-operations",
               "type": "action",
               "props": {
@@ -126,6 +159,45 @@
                   "target": "_root",
                   "set": {
                     "page": "operations"
+                  }
+                }
+              }
+            },
+            {
+              "id": "console-nav-ops-admin",
+              "type": "action",
+              "props": {
+                "label": "$t(wrapper.nav-media-agents)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "ops-admin"
+                  }
+                }
+              }
+            },
+            {
+              "id": "console-nav-p-8",
+              "type": "text",
+              "props": {
+                "content": "$t(wrapper.nav-group-economy)",
+                "intent": "muted",
+                "scale": "caption"
+              }
+            },
+            {
+              "id": "console-nav-economy-admin",
+              "type": "action",
+              "props": {
+                "label": "$t(wrapper.nav-policy-grants)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "economy-admin"
                   }
                 }
               }
@@ -377,271 +449,11 @@
                   "type": "text",
                   "props": {
                     "level": 2,
-                    "content": "$t(dashboard.categories)"
-                  }
-                },
-                {
-                  "id": "dash-categories",
-                  "type": "afs-list",
-                  "props": {
-                    "layout": "list",
-                    "itemStyle": "row",
-                    "subscribe": true,
-                    "showBreadcrumb": false,
-                    "showParent": false,
-                    "clickMode": "none",
-                    "emptyText": "$t(dashboard.categories-empty)"
-                  },
-                  "src": "/instance/app/arcblog/categories",
-                  "children": [
-                    {
-                      "id": "dashCategoryRow",
-                      "type": "view",
-                      "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs"
-                        },
-                        "role": "item"
-                      },
-                      "children": [
-                        {
-                          "id": "dashcategoryrow-h3-1",
-                          "type": "text",
-                          "props": {
-                            "level": 3,
-                            "content": "${entry.content.name}"
-                          }
-                        },
-                        {
-                          "id": "dashcategoryrow-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.slug}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "console-pane-card-5",
-              "type": "view",
-              "props": {
-                "mode": "card",
-                "layout": {
-                  "gap": "md"
-                }
-              },
-              "propBind": {
-                "roles": "/instance/app/arcblog/config/roles.json"
-              },
-              "children": [
-                {
-                  "id": "console-pane-card-5-h2-1",
-                  "type": "text",
-                  "props": {
-                    "level": 2,
-                    "content": "$t(dashboard.network)"
-                  }
-                },
-                {
-                  "id": "console-pane-card-5-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(dashboard.network-desc)",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "console-pane-card-5-p-3",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(dashboard.verification)",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "console-pane-card-5-p-4",
-                  "type": "text",
-                  "props": {
-                    "content": "${state.roles.chainVerification}",
-                    "scale": "sm"
-                  }
-                },
-                {
-                  "id": "console-pane-card-5-p-5",
-                  "type": "text",
-                  "props": {
-                    "content": "${state.roles.studio.collectionAddress}",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "console-pane-card-5-p-6",
-                  "type": "text",
-                  "props": {
-                    "content": "${state.roles.hub.collectionAddress}",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "console-pane-card-6",
-              "type": "view",
-              "props": {
-                "mode": "card",
-                "layout": {
-                  "gap": "md"
-                }
-              },
-              "children": [
-                {
-                  "id": "console-pane-card-6-h2-1",
-                  "type": "text",
-                  "props": {
-                    "level": 2,
-                    "content": "$t(dashboard.econ)"
-                  }
-                },
-                {
-                  "id": "console-pane-card-6-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(dashboard.econ-desc)",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "dash-econ",
-                  "type": "afs-list",
-                  "props": {
-                    "layout": "list",
-                    "itemStyle": "row",
-                    "subscribe": true,
-                    "showBreadcrumb": false,
-                    "showParent": false,
-                    "clickMode": "none",
-                    "emptyText": "$t(dashboard.econ-empty)"
-                  },
-                  "src": "/instance/app/arcblog/economy/policies",
-                  "children": [
-                    {
-                      "id": "dashEconRow",
-                      "type": "view",
-                      "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs"
-                        },
-                        "role": "item"
-                      },
-                      "children": [
-                        {
-                          "id": "dasheconrow-p-1",
-                          "type": "text",
-                          "props": {
-                            "content": "$t(dashboard.econ-policy)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "dasheconrow-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.version}",
-                            "scale": "sm"
-                          }
-                        },
-                        {
-                          "id": "dasheconrow-p-3",
-                          "type": "text",
-                          "props": {
-                            "content": "$t(dashboard.econ-split)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "dasheconrow-p-4",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}",
-                            "scale": "sm"
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "console-pane-card-7",
-              "type": "view",
-              "props": {
-                "mode": "card",
-                "layout": {
-                  "gap": "md"
-                }
-              },
-              "children": [
-                {
-                  "id": "console-pane-card-7-h2-1",
-                  "type": "text",
-                  "props": {
-                    "level": 2,
-                    "content": "$t(dashboard.agent)"
-                  }
-                },
-                {
-                  "id": "console-pane-card-7-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(dashboard.agent-desc)",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "console-pane-card-7-p-3",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(dashboard.agent-closed)",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "console-pane-card-8",
-              "type": "view",
-              "props": {
-                "mode": "card",
-                "layout": {
-                  "gap": "md"
-                }
-              },
-              "children": [
-                {
-                  "id": "console-pane-card-8-h2-1",
-                  "type": "text",
-                  "props": {
-                    "level": 2,
                     "content": "$t(dashboard.quick)"
                   }
                 },
                 {
-                  "id": "console-pane-card-8-row-2",
+                  "id": "console-pane-card-4-row-2",
                   "type": "view",
                   "props": {
                     "layout": {
@@ -651,7 +463,7 @@
                   },
                   "children": [
                     {
-                      "id": "console-pane-card-8-row-2-action-1",
+                      "id": "console-pane-card-4-row-2-action-1",
                       "type": "action",
                       "props": {
                         "variant": "primary",
@@ -667,7 +479,7 @@
                       }
                     },
                     {
-                      "id": "console-pane-card-8-row-2-action-2",
+                      "id": "console-pane-card-4-row-2-action-2",
                       "type": "action",
                       "props": {
                         "variant": "secondary",
@@ -683,7 +495,7 @@
                       }
                     },
                     {
-                      "id": "console-pane-card-8-row-2-action-3",
+                      "id": "console-pane-card-4-row-2-action-3",
                       "type": "action",
                       "props": {
                         "variant": "secondary",
@@ -699,7 +511,7 @@
                       }
                     },
                     {
-                      "id": "console-pane-card-8-row-2-action-4",
+                      "id": "console-pane-card-4-row-2-action-4",
                       "type": "action",
                       "props": {
                         "variant": "ghost",

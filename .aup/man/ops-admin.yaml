@@ -1,0 +1,23 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "ops-admin".
+schemaVersion: 1
+page: ops-admin
+description: >-
+  Inspect the media upload index and the Agent capability grants.
+refs:
+  actions:
+    - id: arcblog-ops-admin-card-1-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-ops-admin
+      event: click
+    - id: console-nav-economy-admin
+      event: click

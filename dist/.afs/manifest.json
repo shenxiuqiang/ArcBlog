@@ -10,27 +10,27 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 62608,
+      "size": 66002,
       "contentType": "application/octet-stream",
-      "sha256": "696ad0eabdfed4f6dfbaab219d6f48b570efd9a9f7cf926e1eff83c16195ecc5"
+      "sha256": "0834014886ae8c41f1170382f4e39a4a2ef4e195b8799b32c3d0f1e2038583ac"
     },
     {
       "path": ".aup/app.json",
-      "size": 838,
+      "size": 1041,
       "contentType": "application/json",
-      "sha256": "6f97f5b49ebf5b640fccaa1afb686e65d1c25f8407a705491ecfa08232eeaf6a"
+      "sha256": "db7a3d17de3265d8289b9705b108a846d67aad9f3c87e46e50c9bc236044c27b"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 15074,
+      "size": 19711,
       "contentType": "application/json",
-      "sha256": "07409ba82439e35921617c5bb9f0d693072a16669879b00a40743ca8462e3ec2"
+      "sha256": "b0ac37c7a41c1ff455d7b23b0b470f42c471a49a6770a516740735101f74099a"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 14844,
+      "size": 19363,
       "contentType": "application/json",
-      "sha256": "13d9bbba8c60f4f9fae7f0f925134238a588fd959b55aa99336e056452398932"
+      "sha256": "7dbf4768effe9a02730b0ad79afe616841e3dffe081765e6aee477a1398a2acc"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -69,10 +69,28 @@
       "sha256": "25f4e27f7a97627a90c340260faa9645a9699538f358ca4fe8c1a4fa7065101c"
     },
     {
+      "path": ".aup/man/economy-admin.yaml",
+      "size": 771,
+      "contentType": "text/yaml",
+      "sha256": "70a1318fe1b89a1661add6345638bd1f24529cfa180194f2c08eb0a3f1aecd88"
+    },
+    {
+      "path": ".aup/man/heroes-admin.yaml",
+      "size": 997,
+      "contentType": "text/yaml",
+      "sha256": "1bec5dd5475d437e53a87ed3333c8d3b3eecb73c909cece077a077ccebbc76b2"
+    },
+    {
       "path": ".aup/man/operations.yaml",
       "size": 1116,
       "contentType": "text/yaml",
       "sha256": "e3a866d8671af5693ea47cb010cca6ebcb9392af4ce81dbdf02fd79e1257afe9"
+    },
+    {
+      "path": ".aup/man/ops-admin.yaml",
+      "size": 738,
+      "contentType": "text/yaml",
+      "sha256": "980de5552c5bdd13fb2ceedbc82aaa48e6411327f87eec803c61988cde689780"
     },
     {
       "path": ".aup/man/posts.yaml",
@@ -106,9 +124,9 @@
     },
     {
       "path": ".aup/pages/admin.json",
-      "size": 48217,
+      "size": 28963,
       "contentType": "application/json",
-      "sha256": "39ae65593ee320bf190dbfb40a3d7754043b0836bd408db01295f0cf58387aa3"
+      "sha256": "aa67f17ee5e3a8a243cd775821392b777dcb0f8c7a8a96f6a0ba717531a34dd4"
     },
     {
       "path": ".aup/pages/author.json",
@@ -130,15 +148,33 @@
     },
     {
       "path": ".aup/pages/dashboard.json",
-      "size": 23371,
+      "size": 16632,
       "contentType": "application/json",
-      "sha256": "4243ff089cd3573fb0cba3d8f4cc8e84adc7a02655be74ea14a404b87f781ce8"
+      "sha256": "15efa5913efa39de9e8321cd5d1fc2f368f2ef1dd9e436e8c2c2b0f1591d9db3"
+    },
+    {
+      "path": ".aup/pages/economy-admin.json",
+      "size": 17340,
+      "contentType": "application/json",
+      "sha256": "d1a50691151d75b97fa72b06eb4db65edb72a979f9681ae8bcffc4f37f87c2ee"
+    },
+    {
+      "path": ".aup/pages/heroes-admin.json",
+      "size": 33722,
+      "contentType": "application/json",
+      "sha256": "a3843ebd097cb843ddfdead035945eedd03096d2a384893866b999ff1e72c247"
     },
     {
       "path": ".aup/pages/operations.json",
-      "size": 32382,
+      "size": 18991,
       "contentType": "application/json",
-      "sha256": "d08e08b8da84a7618207044d551bcade8e6b79640bbb8665e8aced1146eb593d"
+      "sha256": "716b1d18809a9375dd5457a73d3ae2d047196ca9259cff6eb18e41b23044b28e"
+    },
+    {
+      "path": ".aup/pages/ops-admin.json",
+      "size": 15823,
+      "contentType": "application/json",
+      "sha256": "50537561df017c3e8fdf9f6678ccdd030681665a6ebc85f4547eae9d9f70fae2"
     },
     {
       "path": ".aup/pages/posts.json",
@@ -166,21 +202,15 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 1319,
+      "size": 1669,
       "contentType": "application/octet-stream",
-      "sha256": "ba9503cd56807e8c9cc7c51e2478a94dcaae8d8605156377f5b4b520ee59da57"
+      "sha256": "004a259967c2f448f0913125e8d67d070b668ea1b8d38c6c1ab6e9ecfb3cacbf"
     },
     {
       "path": ".aup/wrapper.json",
       "size": 2273,
       "contentType": "application/json",
       "sha256": "f3deb32bea9486f78638d79b59d44dfff0d81cc95e18f4ec5d8aaeea9f106b89"
-    },
-    {
-      "path": ".console-shell.py",
-      "size": 5534,
-      "contentType": "application/octet-stream",
-      "sha256": "160bac333e5e9e53ddfbc9598f1a9315b8a20f0698b85036b378fe44da6e65a4"
     },
     {
       "path": ".gitignore",
@@ -1072,15 +1102,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 16509,
+      "size": 17526,
       "contentType": "text/markdown",
-      "sha256": "fd486693b8b9695e689e6e7e54028db736bbb12e0cbeba902a01b7880a1d78eb"
+      "sha256": "1b684f214e2aeebb789015bc16b8e82c8fb2a2654b9ebb8c0f762163712c21fa"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 39120,
+      "size": 40456,
       "contentType": "text/markdown",
-      "sha256": "717c78965a230aae8c615bdf3428536d62b0df2ba4619fb2d0eee75fda18c6f5"
+      "sha256": "7823668ff73af216695f042c1b745f9531995d32c9ace26f85b45c646ca23a9d"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1096,9 +1126,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 20927,
+      "size": 21689,
       "contentType": "text/markdown",
-      "sha256": "5db86db5594c8c5d9bb2d551ae7bb6b5c194acb6d75b0d02ebe0f5756f599365"
+      "sha256": "073acd6e531bc5b82d653638aa65b4eeafa145677d7f76f4d84e4c7a89cfc165"
     },
     {
       "path": "docs/error-codes.md",
@@ -1281,6 +1311,18 @@
       "sha256": "12815d927c83be52beedb3808dff754d8ca6fd454e388d2285f9744210ddda05"
     },
     {
+      "path": "scripts/arcblog-console-nav.mjs",
+      "size": 3269,
+      "contentType": "text/javascript",
+      "sha256": "94b2cb8d227d6ca7b015cfe52c5834f635e1f66d9656a91c2def85925747bdd2"
+    },
+    {
+      "path": "scripts/arcblog-console-nav.test.mjs",
+      "size": 2630,
+      "contentType": "text/javascript",
+      "sha256": "2cf150030c41c42615aafe1c08cc10388d8fdd3595ae6c0ce932aa2a2a27dff9"
+    },
+    {
       "path": "scripts/arcblog-daily-report.mjs",
       "size": 3837,
       "contentType": "text/javascript",
@@ -1423,6 +1465,12 @@
       "size": 1211,
       "contentType": "text/javascript",
       "sha256": "50fa174480ae949ff67a5ebbaff9f576fd6ebc9f60d0a53c2e895693e81b6a1b"
+    },
+    {
+      "path": "scripts/console-nav.mjs",
+      "size": 2805,
+      "contentType": "text/javascript",
+      "sha256": "c2120eff7430d4f80dbdbfd5e5cd94985ccf3d021a3e259561d362fe6b59ae7c"
     },
     {
       "path": "scripts/lib/agents.mjs",

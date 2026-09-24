@@ -555,21 +555,6 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 （`nav-click: {target: _root, set: {page: $args.src}}`，应用内切换页面）或改用 `href`（整页导航）。
 首页 hero 的 CTA 也踩过同类坑（`frame` sandbox 拦 top-navigation，§14）。
 
-## 16. 左右布局与管理页外壳（实测）
-
-需求：用户菜单里把 3 个自定义管理入口合成 1 个，管理页改成"左侧菜单 + 右侧内容"。落地时的几条实测结论：
-
-| 事实 | 说明 |
-|---|---|
-| DSL **没有**片段/包含 primitive | `arc dsl schema` 的 63 个 primitive 里没有 fragment/include/component/partial/slot/macro；页面之间无法复用标记 |
-| 表达式**不支持比较** | 只有 `\|\|`/`&&`/`!` over `$session.*`/`$state.*`，所以无法用"当前页"条件决定侧栏或高亮；当前项只能**每页硬编码** `variant=primary` |
-| 因此外壳在 3 个页面各写一份 | dashboard / admin / operations 各自 `row console-shell` + `view console-nav`(210px) + `view console-pane`(`flex: 1`)；页面的登录门槛放在 row 之外，侧栏自身再带 `visible=$session.authenticated` |
-| 用户菜单只留 1 项 | `user-menu items=[{id: console, label: :nav-console, icon: "grid", exec: "dashboard"}]` + `wrapper.i18n` 与 `.aup/locales/*.json` 各加一个 key |
-| **locale 文件是扁平点号键** | 必须写 `"wrapper.nav-console"`；写成嵌套 `{"wrapper": {...}}` 时 `generate` 会保留但运行时读不到，菜单直接显示字面量 `$t(wrapper.nav-console)`（踩过） |
-| 几何验证 | 侧栏 `210px @x=32`，内容 `896px @x=272`（侧栏右边界 242 ≤ 内容左边界 272）⇒ 确实是并排而非堆叠 |
-
-维护提示：新增管理页时，把 `row console-shell` 那段一起复制过去，并给该页的 i18n 加上 `nav-dashboard`/`nav-studio`/`nav-operations` 三个标签（i18n 是页面作用域的，不能跨页引用）。
-
 ## 15. 列表筛选、查询索引与异步 `visible`（首页/正文页实测）
 
 ### 15.1 `filter` / `serverFilters` 会下推成服务端查询
@@ -623,3 +608,29 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 - `afs-list` 的 row 会给直接子元素加 `flex: 1 1 0%`，只看 `flexShrink: 0` 挡不住拉伸：
   固定尺寸的封面要同时写 `flexGrow: 0` + `flexBasis`。
 - `autoSelect=false` 可避免列表首项被标记为选中（否则第一张卡片会带选中底色）。
+
+## 16. 管理控制台的信息架构：按功能分页 + 分组侧栏（实测）
+
+需求演化：先把用户菜单里 3 个自定义入口合成 1 个（进入控制台），管理页改左右布局；再"拆分页面、
+菜单按功能分组"，避免单页承担过多功能。落地结论：
+
+| 事实 | 说明 |
+|---|---|
+| DSL **没有**片段/包含 primitive | `arc dsl schema` 的 primitive 里没有 fragment/include/component/partial/slot/macro；页面之间无法复用标记 |
+| 表达式**不支持比较** | 只有 `\|\|`/`&&`/`!` over `$session.*`/`$state.*`；无法按"当前页"条件渲染侧栏或高亮，当前项只能**每页硬编码** `variant=primary` |
+| 于是外壳是**生成**的 | 菜单模型在 `scripts/console-nav.mjs`；`node scripts/arcblog-console-nav.mjs` 把侧栏写进 6 个控制台页，`--check` 由 `scripts/arcblog-console-nav.test.mjs` 守住（缺项/漂移会点名页面）。AUP 无 include，"生成 + 守卫"是让菜单只定义一次的可行做法 |
+| 菜单分 3 组 | 内容（仪表盘 / 工作室 / Hero 与分类）、运营（运维 / 媒体与 Agent）、经济（策略与授权）；分组标题写作 `p "$t(wrapper.nav-group-*)" scale=caption intent=muted` |
+| 标签来自 wrapper 命名空间 | 页面**可以**引用 `$t(wrapper.*)`（与页面作用域 i18n 不同），所以 6 个页面共用同一份文案，只在 `wrapper.aup` + `.aup/locales/*.json` 里维护一次 |
+| 拆分结果 | `admin` 194→97 行（只留文章：工作室头部/生命周期/外观 + 已发布 + 草稿）；`operations` 165→89 行（只留节点与网络：健康/发现/Hub）；新增 `heroes-admin`（Hero + 分类）、`ops-admin`（媒体索引 + Agent 授权）、`economy-admin`（策略/商品/访问授权）；`dashboard` 瘦身为落地页（节点 + 最近发布 + 快捷操作），同时清掉 14 个因此变成死键的页面 i18n |
+| 用户菜单只留 1 项 | `user-menu items=[{id: console, label: :nav-console, icon: "grid", exec: "dashboard"}]` |
+| **locale 文件是扁平点号键** | 必须写 `"wrapper.nav-console"`；写成嵌套 `{"wrapper": {...}}` 时 `generate` 会保留但运行时读不到，菜单显示字面量 `$t(wrapper.nav-console)`（踩过） |
+| 几何验证 | 侧栏 `210px @x=32`、内容 `896px @x=272`（242 ≤ 272）⇒ 并排而非堆叠；6 个页面各有一个 `variant=primary` 当前项 |
+
+维护流程：
+
+1. 改菜单 → 改 `scripts/console-nav.mjs` → `node scripts/arcblog-console-nav.mjs` → `arc dsl generate --write`
+   → `arc blocklet build` → `arc service restart`；
+2. 新增控制台页 → 先加到模型，页面里放 `row console-shell`（`--check` 会要求它带完整菜单 + 恰好一个当前项）；
+3. 侧栏文案 → 在 `wrapper.aup` 的 i18n 与 `.aup/locales/{en,zh}.json`（**扁平键**）里各加一条，
+   `scripts/arcblog-i18n.test.mjs` 会检查"每个 wrapper 键都被引用、每个引用都有 en/zh"。
+
