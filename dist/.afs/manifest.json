@@ -1101,6 +1101,12 @@
       "sha256": "de2830f0fcc7e7afb86668ddc155ecb6489c1c676013166c8e84ae17fb517436"
     },
     {
+      "path": "docs/issues/arcblock-aup-console-header-and-menus.md",
+      "size": 10507,
+      "contentType": "text/markdown",
+      "sha256": "1d95905d0d30313fe05b3dda53f09767a872b2a20b870b196194716117260e27"
+    },
+    {
       "path": "docs/operations-runbook.md",
       "size": 21444,
       "contentType": "text/markdown",
