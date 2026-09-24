@@ -8,6 +8,11 @@
 // economy ledger is append-only (spec §92), so without this step a development
 // machine gains hundreds of records per run (round 18 measured 805 and growing).
 // Cleanup only happens after a *passing* run, so a failure keeps its evidence.
+//
+// Files run SERIALLY. They all mutate the same live instance, and the doctor's
+// live checks read it — with the default parallel file execution the doctor
+// intermittently saw another file's half-written state (its test failed ~1 run
+// in 3 at ~15s, always on a different check).
 
 import { readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -25,7 +30,7 @@ const tests = readdirSync(join(repoRoot, 'scripts'))
 
 console.log(`running ${tests.length} test files\n`);
 
-const result = spawnSync(process.execPath, ['--test', ...tests], {
+const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1', ...tests], {
   cwd: repoRoot,
   stdio: 'inherit',
   env: process.env,

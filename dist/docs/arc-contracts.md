@@ -540,6 +540,21 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 `ctx` 提供 `props`/`escapeHtml`）、`script.js`、`style.css`；页面在 `pages/<name>/layout.aup` 里
 写 `<name> slot=main`，随后用 `frame src="/p/en/<name>/"` 嵌入 AUP 页面。
 
+## 14b. `app-header` 品牌（logo）的两个字段与 `nav-click`
+
+`app-header` 的 `brand` 有两个容易混用的字段：
+
+| 字段 | 作用 |
+|---|---|
+| `logo` | **图片地址**（渲染 `<img class="aup-app-header-logo">`） |
+| `href` | 写成字符串 → 渲染成真正的 `<a href>`，点击即跳转（页脚品牌用的就是这种） |
+| `src` | **点击目标**：无 `href` 时运行时渲染成 `<button role=link>`，点击时发 `nav-click` 事件，payload 为 `{id: null, src: <src>, href: null}` |
+
+因此 `brand={title: ArcBlog, src: posts}` 而**没有**声明 `events={nav-click: …}` 时，每次点击都会弹
+`Node 'site-header' has no 'nav-click' event`（实测复现）。两种修法：补上处理器
+（`nav-click: {target: _root, set: {page: $args.src}}`，应用内切换页面）或改用 `href`（整页导航）。
+首页 hero 的 CTA 也踩过同类坑（`frame` sandbox 拦 top-navigation，§14）。
+
 ## 15. 列表筛选、查询索引与异步 `visible`（首页/正文页实测）
 
 ### 15.1 `filter` / `serverFilters` 会下推成服务端查询

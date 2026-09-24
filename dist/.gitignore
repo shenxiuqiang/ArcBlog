@@ -33,3 +33,8 @@ temp/
 auth.json
 *.pem
 *.key
+
+# Never commit shell/credential backups — `arc blocklet build` copies root files
+# into dist/, so a stray one ends up tracked by a plain `git add -A`.
+.zshrc*
+*.bak-*

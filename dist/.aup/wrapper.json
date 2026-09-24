@@ -59,6 +59,12 @@
           "set": {
             "page": "$args.exec"
           }
+        },
+        "nav-click": {
+          "target": "_root",
+          "set": {
+            "page": "$args.src"
+          }
         }
       }
     },
