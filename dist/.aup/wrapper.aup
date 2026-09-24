@@ -1,6 +1,7 @@
 page wrapper {
   i18n {
     nav-studio { en "Studio" zh "工作室" }
+    nav-console { en "Management" zh "管理后台" }
     nav-dashboard { en "Dashboard" zh "仪表盘" }
     nav-operations { en "Operations" zh "运维" }
     nav-about { en "About" zh "关于" }
@@ -9,7 +10,7 @@ page wrapper {
     tagline { en "DID-native writing, Markdown-first publishing." zh "DID 原生写作，Markdown 优先发布。" }
   }
   view {
-    app-header site-header variant=compact brand={title: ArcBlog, src: posts} actions=[{kind: theme-toggle, icon: sun, ariaLabel: :theme-label}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: dashboard, label: :nav-dashboard, icon: "grid", exec: "dashboard"}, {id: studio, label: :nav-studio, icon: "settings", exec: "admin"}, {id: operations, label: :nav-operations, icon: "grid", exec: "operations"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    app-header site-header variant=compact brand={title: ArcBlog, src: posts} actions=[{kind: theme-toggle, icon: sun, ariaLabel: :theme-label}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: :nav-console, icon: "grid", exec: "dashboard"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     slot content
     frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
     app-footer brand={title: ArcBlog, tagline: :tagline, href: "/"} columns=[{links: [{label: :nav-about, href: "/?page=about"}, {label: :nav-author, href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}

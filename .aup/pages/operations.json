@@ -53,548 +53,333 @@
       ]
     },
     {
-      "id": "arcblog-operations-view-2",
+      "id": "console-shell",
       "type": "view",
       "props": {
         "layout": {
-          "gap": "lg"
+          "direction": "row",
+          "gap": "lg",
+          "crossAlign": "start"
         }
       },
       "visible": "$session.authenticated",
       "children": [
         {
-          "id": "arcblog-operations-view-2-card-1",
+          "id": "console-nav",
           "type": "view",
           "props": {
-            "mode": "card",
             "layout": {
-              "gap": "md"
+              "gap": "xs"
+            },
+            "size": {
+              "width": "210px",
+              "flexShrink": 0
+            },
+            "style": {
+              "padding": "16px",
+              "border": "1px solid var(--color-border)",
+              "borderRadius": "var(--radius-lg, 12px)",
+              "background": "var(--color-surface)"
             }
           },
+          "visible": "$session.authenticated",
           "children": [
             {
-              "id": "arcblog-operations-view-2-card-1-h1-1",
-              "type": "text",
+              "id": "console-nav-dashboard",
+              "type": "action",
               "props": {
-                "level": 1,
-                "content": "$t(operations.title)"
+                "label": "$t(wrapper.nav-dashboard)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "dashboard"
+                  }
+                }
               }
             },
             {
-              "id": "arcblog-operations-view-2-card-1-p-2",
-              "type": "text",
+              "id": "console-nav-studio",
+              "type": "action",
               "props": {
-                "content": "$t(operations.desc)",
-                "intent": "muted"
+                "label": "$t(wrapper.nav-studio)"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "admin"
+                  }
+                }
+              }
+            },
+            {
+              "id": "console-nav-operations",
+              "type": "action",
+              "props": {
+                "label": "$t(wrapper.nav-operations)",
+                "variant": "primary"
+              },
+              "events": {
+                "click": {
+                  "target": "_root",
+                  "set": {
+                    "page": "operations"
+                  }
+                }
               }
             }
           ]
         },
         {
-          "id": "arcblog-operations-view-2-card-2",
+          "id": "console-pane",
           "type": "view",
           "props": {
-            "mode": "card",
             "layout": {
-              "gap": "md"
+              "gap": "lg"
+            },
+            "size": {
+              "flex": 1
             }
-          },
-          "propBind": {
-            "health": "/instance/app/arcblog/node/health.json"
           },
           "children": [
             {
-              "id": "arcblog-operations-view-2-card-2-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.health)"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.health-status)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-3",
-              "type": "text",
-              "props": {
-                "content": "${state.health.status}",
-                "scale": "sm"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-4",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.health-version)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-5",
-              "type": "text",
-              "props": {
-                "content": "${state.health.version}",
-                "scale": "sm"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-6",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.health-did)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-7",
-              "type": "text",
-              "props": {
-                "content": "${state.health.did}",
-                "scale": "sm"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-p-8",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.health-checked)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-2-time-9",
-              "type": "time",
-              "props": {
-                "mode": "display",
-                "value": "${state.health.checkedAt}",
-                "timeMode": "relative"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-3",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "propBind": {
-            "discovery": "/instance/app/arcblog/node/discovery.json"
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-3-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.discovery)"
-              }
-            },
-            {
-              "id": "opsDiscoveryRow",
+              "id": "console-pane-card-1",
               "type": "view",
               "props": {
+                "mode": "card",
                 "layout": {
-                  "direction": "row",
-                  "gap": "xs"
+                  "gap": "md"
                 }
               },
               "children": [
                 {
-                  "id": "opsdiscoveryrow-p-1",
+                  "id": "console-pane-card-1-h1-1",
                   "type": "text",
                   "props": {
-                    "content": "$t(operations.discovery-protocol)",
+                    "level": 1,
+                    "content": "$t(operations.title)"
+                  }
+                },
+                {
+                  "id": "console-pane-card-1-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.desc)",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "console-pane-card-2",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "propBind": {
+                "health": "/instance/app/arcblog/node/health.json"
+              },
+              "children": [
+                {
+                  "id": "console-pane-card-2-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.health)"
+                  }
+                },
+                {
+                  "id": "console-pane-card-2-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.health-status)",
                     "scale": "sm",
                     "intent": "muted"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-2",
+                  "id": "console-pane-card-2-p-3",
                   "type": "text",
                   "props": {
-                    "content": "${state.discovery.protocol}",
+                    "content": "${state.health.status}",
                     "scale": "sm"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-3",
+                  "id": "console-pane-card-2-p-4",
                   "type": "text",
                   "props": {
-                    "content": "$t(operations.discovery-transport)",
+                    "content": "$t(operations.health-version)",
                     "scale": "sm",
                     "intent": "muted"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-4",
+                  "id": "console-pane-card-2-p-5",
                   "type": "text",
                   "props": {
-                    "content": "${state.discovery.transport}",
+                    "content": "${state.health.version}",
                     "scale": "sm"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-p-5",
+                  "id": "console-pane-card-2-p-6",
                   "type": "text",
                   "props": {
-                    "content": "$t(operations.discovery-generated)",
+                    "content": "$t(operations.health-did)",
                     "scale": "sm",
                     "intent": "muted"
                   }
                 },
                 {
-                  "id": "opsdiscoveryrow-time-6",
+                  "id": "console-pane-card-2-p-7",
+                  "type": "text",
+                  "props": {
+                    "content": "${state.health.did}",
+                    "scale": "sm"
+                  }
+                },
+                {
+                  "id": "console-pane-card-2-p-8",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.health-checked)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "console-pane-card-2-time-9",
                   "type": "time",
                   "props": {
                     "mode": "display",
-                    "value": "${state.discovery.generatedAt}",
+                    "value": "${state.health.checkedAt}",
                     "timeMode": "relative"
                   }
                 }
               ]
             },
             {
-              "id": "arcblog-operations-view-2-card-3-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.discovery-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-4",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-4-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.hubs)"
-              }
-            },
-            {
-              "id": "ops-hubs",
-              "type": "afs-list",
-              "props": {
-                "layout": "list",
-                "itemStyle": "row",
-                "subscribe": true,
-                "showBreadcrumb": false,
-                "showParent": false,
-                "clickMode": "none",
-                "emptyText": "$t(operations.hubs-empty)",
-                "transform": {
-                  "syncAt": "content.sync.lastSync",
-                  "syncVersion": "content.sync.lastVersion"
-                }
-              },
-              "src": "/instance/app/arcblog/hub/registrations",
-              "children": [
-                {
-                  "id": "opsHubRow",
-                  "type": "view",
-                  "props": {
-                    "layout": {
-                      "direction": "row",
-                      "gap": "xs"
-                    },
-                    "role": "item"
-                  },
-                  "children": [
-                    {
-                      "id": "opshubrow-h3-1",
-                      "type": "text",
-                      "props": {
-                        "level": 3,
-                        "content": "${entry.content.hubDid}"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-2",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.hub-endpoint)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-3",
-                      "type": "text",
-                      "props": {
-                        "content": "${entry.content.endpoint}",
-                        "scale": "sm"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-4",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.hub-sync)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-5",
-                      "type": "text",
-                      "props": {
-                        "content": "${entry.content.syncAt}",
-                        "scale": "sm"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-6",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.hub-version)",
-                        "scale": "sm",
-                        "intent": "muted"
-                      }
-                    },
-                    {
-                      "id": "opshubrow-p-7",
-                      "type": "text",
-                      "props": {
-                        "content": "${entry.content.syncVersion}",
-                        "scale": "sm"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "arcblog-operations-view-2-card-4-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.hubs-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-5",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "propBind": {
-            "policy": "/instance/app/arcblog/economy/policies/active.json"
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-5-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.policy)"
-              }
-            },
-            {
-              "id": "opsPolicyRow",
+              "id": "console-pane-card-3",
               "type": "view",
               "props": {
+                "mode": "card",
                 "layout": {
-                  "direction": "row",
-                  "gap": "xs"
+                  "gap": "md"
                 }
+              },
+              "propBind": {
+                "discovery": "/instance/app/arcblog/node/discovery.json"
               },
               "children": [
                 {
-                  "id": "opspolicyrow-p-1",
+                  "id": "console-pane-card-3-h2-1",
                   "type": "text",
                   "props": {
-                    "content": "$t(operations.policy-split)",
-                    "scale": "sm",
-                    "intent": "muted"
+                    "level": 2,
+                    "content": "$t(operations.discovery)"
                   }
                 },
                 {
-                  "id": "opspolicyrow-p-2",
-                  "type": "text",
-                  "props": {
-                    "content": "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}",
-                    "scale": "sm"
-                  }
-                },
-                {
-                  "id": "opspolicyrow-p-3",
-                  "type": "text",
-                  "props": {
-                    "content": "$t(operations.policy-adapter)",
-                    "scale": "sm",
-                    "intent": "muted"
-                  }
-                },
-                {
-                  "id": "opspolicyrow-p-4",
-                  "type": "text",
-                  "props": {
-                    "content": "${state.policy.paymentAdapter}",
-                    "scale": "sm"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "arcblog-operations-view-2-card-5-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.policy-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-6",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-6-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.products)"
-              }
-            },
-            {
-              "id": "ops-products",
-              "type": "afs-list",
-              "props": {
-                "layout": "list",
-                "itemStyle": "row",
-                "subscribe": true,
-                "showBreadcrumb": false,
-                "showParent": false,
-                "clickMode": "none",
-                "emptyText": "$t(operations.products-empty)"
-              },
-              "src": "/instance/app/arcblog/economy/products",
-              "children": [
-                {
-                  "id": "opsProductRow",
+                  "id": "opsDiscoveryRow",
                   "type": "view",
                   "props": {
                     "layout": {
                       "direction": "row",
                       "gap": "xs"
-                    },
-                    "role": "item"
+                    }
                   },
                   "children": [
                     {
-                      "id": "opsproductrow-h3-1",
+                      "id": "opsdiscoveryrow-p-1",
                       "type": "text",
                       "props": {
-                        "level": 3,
-                        "content": "${entry.content.id}"
-                      }
-                    },
-                    {
-                      "id": "opsproductrow-p-2",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(operations.product-price)",
+                        "content": "$t(operations.discovery-protocol)",
                         "scale": "sm",
                         "intent": "muted"
                       }
                     },
                     {
-                      "id": "opsproductrow-p-3",
+                      "id": "opsdiscoveryrow-p-2",
                       "type": "text",
                       "props": {
-                        "content": "${entry.content.priceAmount}",
+                        "content": "${state.discovery.protocol}",
                         "scale": "sm"
+                      }
+                    },
+                    {
+                      "id": "opsdiscoveryrow-p-3",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.discovery-transport)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opsdiscoveryrow-p-4",
+                      "type": "text",
+                      "props": {
+                        "content": "${state.discovery.transport}",
+                        "scale": "sm"
+                      }
+                    },
+                    {
+                      "id": "opsdiscoveryrow-p-5",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.discovery-generated)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opsdiscoveryrow-time-6",
+                      "type": "time",
+                      "props": {
+                        "mode": "display",
+                        "value": "${state.discovery.generatedAt}",
+                        "timeMode": "relative"
                       }
                     }
                   ]
+                },
+                {
+                  "id": "console-pane-card-3-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.discovery-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
                 }
               ]
             },
             {
-              "id": "arcblog-operations-view-2-card-6-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.products-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-7",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-7-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.grants)"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-7-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.admin-only)",
-                "scale": "sm",
-                "intent": "muted"
-              },
-              "visible": "!$session.authenticated"
-            },
-            {
-              "id": "ops-grants-gate",
+              "id": "console-pane-card-4",
               "type": "view",
-              "visible": "$session.authenticated",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
               "children": [
                 {
-                  "id": "ops-grants",
+                  "id": "console-pane-card-4-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.hubs)"
+                  }
+                },
+                {
+                  "id": "ops-hubs",
                   "type": "afs-list",
                   "props": {
                     "layout": "list",
@@ -603,12 +388,16 @@
                     "showBreadcrumb": false,
                     "showParent": false,
                     "clickMode": "none",
-                    "emptyText": "$t(operations.grants-empty)"
+                    "emptyText": "$t(operations.hubs-empty)",
+                    "transform": {
+                      "syncAt": "content.sync.lastSync",
+                      "syncVersion": "content.sync.lastVersion"
+                    }
                   },
-                  "src": "/instance/app/arcblog/economy/access-grants",
+                  "src": "/instance/app/arcblog/hub/registrations",
                   "children": [
                     {
-                      "id": "opsGrantRow",
+                      "id": "opsHubRow",
                       "type": "view",
                       "props": {
                         "layout": {
@@ -619,82 +408,177 @@
                       },
                       "children": [
                         {
-                          "id": "opsgrantrow-p-1",
+                          "id": "opshubrow-h3-1",
                           "type": "text",
                           "props": {
-                            "content": "${entry.content.contentId}",
-                            "scale": "sm"
+                            "level": 3,
+                            "content": "${entry.content.hubDid}"
                           }
                         },
                         {
-                          "id": "opsgrantrow-p-2",
+                          "id": "opshubrow-p-2",
                           "type": "text",
                           "props": {
-                            "content": "$t(operations.grant-reader)",
+                            "content": "$t(operations.hub-endpoint)",
                             "scale": "sm",
                             "intent": "muted"
                           }
                         },
                         {
-                          "id": "opsgrantrow-p-3",
+                          "id": "opshubrow-p-3",
                           "type": "text",
                           "props": {
-                            "content": "${entry.content.readerDid}",
+                            "content": "${entry.content.endpoint}",
+                            "scale": "sm"
+                          }
+                        },
+                        {
+                          "id": "opshubrow-p-4",
+                          "type": "text",
+                          "props": {
+                            "content": "$t(operations.hub-sync)",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "opshubrow-p-5",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.syncAt}",
+                            "scale": "sm"
+                          }
+                        },
+                        {
+                          "id": "opshubrow-p-6",
+                          "type": "text",
+                          "props": {
+                            "content": "$t(operations.hub-version)",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "opshubrow-p-7",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.syncVersion}",
                             "scale": "sm"
                           }
                         }
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "console-pane-card-4-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.hubs-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
                 }
               ]
             },
             {
-              "id": "arcblog-operations-view-2-card-7-p-4",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.grants-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-8",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-8-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.media)"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-8-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.admin-only)",
-                "scale": "sm",
-                "intent": "muted"
-              },
-              "visible": "!$session.authenticated"
-            },
-            {
-              "id": "ops-media-gate",
+              "id": "console-pane-card-5",
               "type": "view",
-              "visible": "$session.authenticated",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "propBind": {
+                "policy": "/instance/app/arcblog/economy/policies/active.json"
+              },
               "children": [
                 {
-                  "id": "ops-media",
+                  "id": "console-pane-card-5-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.policy)"
+                  }
+                },
+                {
+                  "id": "opsPolicyRow",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "direction": "row",
+                      "gap": "xs"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "opspolicyrow-p-1",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.policy-split)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opspolicyrow-p-2",
+                      "type": "text",
+                      "props": {
+                        "content": "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}",
+                        "scale": "sm"
+                      }
+                    },
+                    {
+                      "id": "opspolicyrow-p-3",
+                      "type": "text",
+                      "props": {
+                        "content": "$t(operations.policy-adapter)",
+                        "scale": "sm",
+                        "intent": "muted"
+                      }
+                    },
+                    {
+                      "id": "opspolicyrow-p-4",
+                      "type": "text",
+                      "props": {
+                        "content": "${state.policy.paymentAdapter}",
+                        "scale": "sm"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "console-pane-card-5-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.policy-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "console-pane-card-6",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-card-6-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.products)"
+                  }
+                },
+                {
+                  "id": "ops-products",
                   "type": "afs-list",
                   "props": {
                     "layout": "list",
@@ -703,12 +587,12 @@
                     "showBreadcrumb": false,
                     "showParent": false,
                     "clickMode": "none",
-                    "emptyText": "$t(operations.media-empty)"
+                    "emptyText": "$t(operations.products-empty)"
                   },
-                  "src": "/instance/app/arcblog/media",
+                  "src": "/instance/app/arcblog/economy/products",
                   "children": [
                     {
-                      "id": "opsMediaRow",
+                      "id": "opsProductRow",
                       "type": "view",
                       "props": {
                         "layout": {
@@ -719,7 +603,7 @@
                       },
                       "children": [
                         {
-                          "id": "opsmediarow-h3-1",
+                          "id": "opsproductrow-h3-1",
                           "type": "text",
                           "props": {
                             "level": 3,
@@ -727,154 +611,354 @@
                           }
                         },
                         {
-                          "id": "opsmediarow-p-2",
+                          "id": "opsproductrow-p-2",
                           "type": "text",
                           "props": {
-                            "content": "${entry.content.mimeType}",
+                            "content": "$t(operations.product-price)",
                             "scale": "sm",
                             "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "opsproductrow-p-3",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.priceAmount}",
+                            "scale": "sm"
                           }
                         }
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "console-pane-card-6-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.products-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
                 }
               ]
             },
             {
-              "id": "arcblog-operations-view-2-card-8-p-4",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.media-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-operations-view-2-card-9",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-operations-view-2-card-9-h2-1",
-              "type": "text",
-              "props": {
-                "level": 2,
-                "content": "$t(operations.agent-grants)"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-9-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.admin-only)",
-                "scale": "sm",
-                "intent": "muted"
-              },
-              "visible": "!$session.authenticated"
-            },
-            {
-              "id": "ops-agent-gate",
+              "id": "console-pane-card-7",
               "type": "view",
-              "visible": "$session.authenticated",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
               "children": [
                 {
-                  "id": "ops-agent",
-                  "type": "afs-list",
+                  "id": "console-pane-card-7-h2-1",
+                  "type": "text",
                   "props": {
-                    "layout": "list",
-                    "itemStyle": "row",
-                    "subscribe": true,
-                    "showBreadcrumb": false,
-                    "showParent": false,
-                    "clickMode": "none",
-                    "emptyText": "$t(operations.agent-grants-empty)"
+                    "level": 2,
+                    "content": "$t(operations.grants)"
+                  }
+                },
+                {
+                  "id": "console-pane-card-7-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.admin-only)",
+                    "scale": "sm",
+                    "intent": "muted"
                   },
-                  "src": "/instance/app/arcblog/config/agent-grants",
+                  "visible": "!$session.authenticated"
+                },
+                {
+                  "id": "ops-grants-gate",
+                  "type": "view",
+                  "visible": "$session.authenticated",
                   "children": [
                     {
-                      "id": "opsAgentRow",
-                      "type": "view",
+                      "id": "ops-grants",
+                      "type": "afs-list",
                       "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs"
-                        },
-                        "role": "item"
+                        "layout": "list",
+                        "itemStyle": "row",
+                        "subscribe": true,
+                        "showBreadcrumb": false,
+                        "showParent": false,
+                        "clickMode": "none",
+                        "emptyText": "$t(operations.grants-empty)"
                       },
+                      "src": "/instance/app/arcblog/economy/access-grants",
                       "children": [
                         {
-                          "id": "opsagentrow-h3-1",
-                          "type": "text",
+                          "id": "opsGrantRow",
+                          "type": "view",
                           "props": {
-                            "level": 3,
-                            "content": "${entry.content.agentDid}"
-                          }
-                        },
-                        {
-                          "id": "opsagentrow-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.capabilities}",
-                            "scale": "sm"
-                          }
-                        },
-                        {
-                          "id": "opsagentrow-p-3",
-                          "type": "text",
-                          "props": {
-                            "content": "$t(operations.agent-expires)",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "opsagentrow-p-4",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.expiresAt}",
-                            "scale": "sm"
-                          }
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs"
+                            },
+                            "role": "item"
+                          },
+                          "children": [
+                            {
+                              "id": "opsgrantrow-p-1",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.contentId}",
+                                "scale": "sm"
+                              }
+                            },
+                            {
+                              "id": "opsgrantrow-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "$t(operations.grant-reader)",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "opsgrantrow-p-3",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.readerDid}",
+                                "scale": "sm"
+                              }
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
+                },
+                {
+                  "id": "console-pane-card-7-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.grants-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
                 }
               ]
             },
             {
-              "id": "arcblog-operations-view-2-card-9-p-4",
-              "type": "text",
+              "id": "console-pane-card-8",
+              "type": "view",
               "props": {
-                "content": "$t(operations.agent-grants-empty)",
-                "scale": "sm",
-                "intent": "muted"
-              }
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-card-8-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.media)"
+                  }
+                },
+                {
+                  "id": "console-pane-card-8-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.admin-only)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  },
+                  "visible": "!$session.authenticated"
+                },
+                {
+                  "id": "ops-media-gate",
+                  "type": "view",
+                  "visible": "$session.authenticated",
+                  "children": [
+                    {
+                      "id": "ops-media",
+                      "type": "afs-list",
+                      "props": {
+                        "layout": "list",
+                        "itemStyle": "row",
+                        "subscribe": true,
+                        "showBreadcrumb": false,
+                        "showParent": false,
+                        "clickMode": "none",
+                        "emptyText": "$t(operations.media-empty)"
+                      },
+                      "src": "/instance/app/arcblog/media",
+                      "children": [
+                        {
+                          "id": "opsMediaRow",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs"
+                            },
+                            "role": "item"
+                          },
+                          "children": [
+                            {
+                              "id": "opsmediarow-h3-1",
+                              "type": "text",
+                              "props": {
+                                "level": 3,
+                                "content": "${entry.content.id}"
+                              }
+                            },
+                            {
+                              "id": "opsmediarow-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.mimeType}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "console-pane-card-8-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.media-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                }
+              ]
             },
             {
-              "id": "arcblog-operations-view-2-card-9-p-5",
-              "type": "text",
+              "id": "console-pane-card-9",
+              "type": "view",
               "props": {
-                "content": "$t(operations.agent-closed)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-operations-view-2-card-9-p-6",
-              "type": "text",
-              "props": {
-                "content": "$t(operations.mutations)",
-                "scale": "sm",
-                "intent": "muted"
-              }
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-card-9-h2-1",
+                  "type": "text",
+                  "props": {
+                    "level": 2,
+                    "content": "$t(operations.agent-grants)"
+                  }
+                },
+                {
+                  "id": "console-pane-card-9-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.admin-only)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  },
+                  "visible": "!$session.authenticated"
+                },
+                {
+                  "id": "ops-agent-gate",
+                  "type": "view",
+                  "visible": "$session.authenticated",
+                  "children": [
+                    {
+                      "id": "ops-agent",
+                      "type": "afs-list",
+                      "props": {
+                        "layout": "list",
+                        "itemStyle": "row",
+                        "subscribe": true,
+                        "showBreadcrumb": false,
+                        "showParent": false,
+                        "clickMode": "none",
+                        "emptyText": "$t(operations.agent-grants-empty)"
+                      },
+                      "src": "/instance/app/arcblog/config/agent-grants",
+                      "children": [
+                        {
+                          "id": "opsAgentRow",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs"
+                            },
+                            "role": "item"
+                          },
+                          "children": [
+                            {
+                              "id": "opsagentrow-h3-1",
+                              "type": "text",
+                              "props": {
+                                "level": 3,
+                                "content": "${entry.content.agentDid}"
+                              }
+                            },
+                            {
+                              "id": "opsagentrow-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.capabilities}",
+                                "scale": "sm"
+                              }
+                            },
+                            {
+                              "id": "opsagentrow-p-3",
+                              "type": "text",
+                              "props": {
+                                "content": "$t(operations.agent-expires)",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "opsagentrow-p-4",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.expiresAt}",
+                                "scale": "sm"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "console-pane-card-9-p-4",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.agent-grants-empty)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "console-pane-card-9-p-5",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.agent-closed)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "console-pane-card-9-p-6",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(operations.mutations)",
+                    "scale": "sm",
+                    "intent": "muted"
+                  }
+                }
+              ]
             }
           ]
         }

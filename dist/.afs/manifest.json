@@ -10,9 +10,9 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 60790,
+      "size": 62608,
       "contentType": "application/octet-stream",
-      "sha256": "e049e1e85f0af92a5bcec391a69a7d6ddcb34c83b3b7bddaa32868aa9125ee7d"
+      "sha256": "696ad0eabdfed4f6dfbaab219d6f48b570efd9a9f7cf926e1eff83c16195ecc5"
     },
     {
       "path": ".aup/app.json",
@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 14678,
+      "size": 15074,
       "contentType": "application/json",
-      "sha256": "655abd257459ae9fe713b1deec0d72967c9af1c85021d9477b513e4f6fe41d20"
+      "sha256": "07409ba82439e35921617c5bb9f0d693072a16669879b00a40743ca8462e3ec2"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 14449,
+      "size": 14844,
       "contentType": "application/json",
-      "sha256": "48a29f53e627d60f6e569f1d182ff2260b567eae97b0be1b7f4b439b0a1684a3"
+      "sha256": "13d9bbba8c60f4f9fae7f0f925134238a588fd959b55aa99336e056452398932"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -106,9 +106,9 @@
     },
     {
       "path": ".aup/pages/admin.json",
-      "size": 41645,
+      "size": 48217,
       "contentType": "application/json",
-      "sha256": "587f261ac9aceaae38632a0abcd0c703d7380ba4a063b2d18da75cc541a6d73c"
+      "sha256": "39ae65593ee320bf190dbfb40a3d7754043b0836bd408db01295f0cf58387aa3"
     },
     {
       "path": ".aup/pages/author.json",
@@ -130,15 +130,15 @@
     },
     {
       "path": ".aup/pages/dashboard.json",
-      "size": 19251,
+      "size": 23371,
       "contentType": "application/json",
-      "sha256": "502e91f0ed50835f2134625dba00413e404e188f4ec22542a7c8993f337f40e8"
+      "sha256": "4243ff089cd3573fb0cba3d8f4cc8e84adc7a02655be74ea14a404b87f781ce8"
     },
     {
       "path": ".aup/pages/operations.json",
-      "size": 27442,
+      "size": 32382,
       "contentType": "application/json",
-      "sha256": "763c0434417fbfecccf71d86670585692b493a5e125e0ac15b3efea29bbe2943"
+      "sha256": "d08e08b8da84a7618207044d551bcade8e6b79640bbb8665e8aced1146eb593d"
     },
     {
       "path": ".aup/pages/posts.json",
@@ -166,15 +166,21 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 1412,
+      "size": 1319,
       "contentType": "application/octet-stream",
-      "sha256": "53e1c801ebf880061a014cea33947d0b43d0b97cc7f3397861239307d8ad4624"
+      "sha256": "ba9503cd56807e8c9cc7c51e2478a94dcaae8d8605156377f5b4b520ee59da57"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 2654,
+      "size": 2273,
       "contentType": "application/json",
-      "sha256": "d07d7306831d10c6011e6cb3d1d0f827780ff5040008e955ae08bd44fb49cefc"
+      "sha256": "f3deb32bea9486f78638d79b59d44dfff0d81cc95e18f4ec5d8aaeea9f106b89"
+    },
+    {
+      "path": ".console-shell.py",
+      "size": 5534,
+      "contentType": "application/octet-stream",
+      "sha256": "160bac333e5e9e53ddfbc9598f1a9315b8a20f0698b85036b378fe44da6e65a4"
     },
     {
       "path": ".gitignore",
@@ -1066,15 +1072,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 15588,
+      "size": 16509,
       "contentType": "text/markdown",
-      "sha256": "81a9d01f4c359b68f4a392f79d4e75b67594624ec6a85f55d3f6fa37d26fbc83"
+      "sha256": "fd486693b8b9695e689e6e7e54028db736bbb12e0cbeba902a01b7880a1d78eb"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 37478,
+      "size": 39120,
       "contentType": "text/markdown",
-      "sha256": "5e79986aed173ad21c0c87b6a40f6dc7dfcd698783568153d2a6b9c08bef4134"
+      "sha256": "717c78965a230aae8c615bdf3428536d62b0df2ba4619fb2d0eee75fda18c6f5"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1090,9 +1096,9 @@
     },
     {
       "path": "docs/development-plan.md",
-      "size": 20405,
+      "size": 20927,
       "contentType": "text/markdown",
-      "sha256": "f1fd03f53af0ac188c056fc606b332b07f869b289a93cd13b106c2a1870bf871"
+      "sha256": "5db86db5594c8c5d9bb2d551ae7bb6b5c194acb6d75b0d02ebe0f5756f599365"
     },
     {
       "path": "docs/error-codes.md",
@@ -1102,9 +1108,33 @@
     },
     {
       "path": "docs/issues/arcblock-aup-console-header-and-menus.md",
-      "size": 10507,
+      "size": 11409,
       "contentType": "text/markdown",
-      "sha256": "1d95905d0d30313fe05b3dda53f09767a872b2a20b870b196194716117260e27"
+      "sha256": "42575480322d5cc3857c996a8966669fb52059acd0ec90cf3a99a508313359ce"
+    },
+    {
+      "path": "docs/issues/assets/01-aup-app-header.png",
+      "size": 8628,
+      "contentType": "image/png",
+      "sha256": "a516344f2f6e8d362898d7d09ebeea119979852680237a2359dd98bbacde9837"
+    },
+    {
+      "path": "docs/issues/assets/02-aup-user-menu-items.png",
+      "size": 22624,
+      "contentType": "image/png",
+      "sha256": "0a6006973d070ee08c8476ffd93647f563d9df3b53950b70c651086cb792140f"
+    },
+    {
+      "path": "docs/issues/assets/03-console-user-center-header.png",
+      "size": 18593,
+      "contentType": "image/png",
+      "sha256": "fc60ad247b63a11fbe30034a2bfe3b072a1aa377f687b1e14bd5ea813aef2f3d"
+    },
+    {
+      "path": "docs/issues/assets/04-console-admin-console-header.png",
+      "size": 29064,
+      "contentType": "image/png",
+      "sha256": "ed51fe7fcfacdd8baa08af48eead6b5c3db46fbf702a2103300b44ef84f7f486"
     },
     {
       "path": "docs/operations-runbook.md",
@@ -1300,9 +1330,9 @@
     },
     {
       "path": "scripts/arcblog-i18n.test.mjs",
-      "size": 3661,
+      "size": 4293,
       "contentType": "text/javascript",
-      "sha256": "9c7c63fe64d8321880cec7b70bd0715cf41d85b3a601cb017a3cde0c6f8da0d8"
+      "sha256": "fa8d5857132f77d7b60c16d8b106747091f9aff37f4b06aa65bf0cd529e6daed"
     },
     {
       "path": "scripts/arcblog-lifecycle.mjs",

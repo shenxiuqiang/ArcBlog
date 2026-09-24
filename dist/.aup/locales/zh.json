@@ -233,5 +233,15 @@
   "operations.gate-title": "运维",
   "operations.gate-desc": "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。",
   "operations.login": "使用 DID Wallet 登录",
-  "posts.read-story": "阅读全文 →"
+  "posts.read-story": "阅读全文 →",
+  "admin.nav-dashboard": "仪表盘",
+  "admin.nav-studio": "工作室",
+  "admin.nav-operations": "运维",
+  "dashboard.nav-dashboard": "仪表盘",
+  "dashboard.nav-studio": "工作室",
+  "dashboard.nav-operations": "运维",
+  "operations.nav-dashboard": "仪表盘",
+  "operations.nav-studio": "工作室",
+  "operations.nav-operations": "运维",
+  "wrapper.nav-console": "管理后台"
 }

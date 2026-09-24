@@ -320,7 +320,13 @@ app "ArcBlog" {
       cat-remove-msg { en "Existing posts keep their category text, but the publish validator will reject it afterwards." zh "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。" }
       cat-removed { en "Category removed." zh "分类已删除。" }
     }
-    view gap=lg {
+    row console-shell gap=lg cross=start {
+      view console-nav gap=xs size={width: "210px", flexShrink: 0} style={padding: "16px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
+        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
+        action console-nav-studio -> page admin label="$t(wrapper.nav-studio)" variant=primary
+        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
+      }
+      view console-pane gap=lg size={flex: 1} {
       card gap=md visible="!$session.authenticated" {
         h2 :gate-title level=2
         p :gate-desc intent=info
@@ -436,6 +442,7 @@ app "ArcBlog" {
         }
       }
     }
+      }
   }
 
   page preview "Draft preview" {
@@ -551,7 +558,13 @@ app "ArcBlog" {
       p :gate-desc intent=info
       action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Ddashboard&cancel_to=%2F%3Fpage%3Ddashboard" variant=primary label=:login
     }
-    view gap=lg visible=$session.authenticated {
+    row console-shell gap=lg cross=start visible=$session.authenticated {
+      view console-nav gap=xs size={width: "210px", flexShrink: 0} style={padding: "16px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
+        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)" variant=primary
+        action console-nav-studio -> page admin label="$t(wrapper.nav-studio)"
+        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
+      }
+      view console-pane gap=lg size={flex: 1} {
       card gap=md {
         h1 :title level=1
         p :desc intent=muted
@@ -625,6 +638,7 @@ app "ArcBlog" {
         }
       }
     }
+      }
   }
 
   page operations "Operations" {
@@ -674,7 +688,13 @@ app "ArcBlog" {
       p :gate-desc intent=info
       action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Doperations&cancel_to=%2F%3Fpage%3Doperations" variant=primary label=:login
     }
-    view gap=lg visible=$session.authenticated {
+    row console-shell gap=lg cross=start visible=$session.authenticated {
+      view console-nav gap=xs size={width: "210px", flexShrink: 0} style={padding: "16px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
+        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
+        action console-nav-studio -> page admin label="$t(wrapper.nav-studio)"
+        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)" variant=primary
+      }
+      view console-pane gap=lg size={flex: 1} {
       card gap=md {
         h1 :title level=1
         p :desc intent=muted
@@ -783,6 +803,7 @@ app "ArcBlog" {
         p :mutations scale=sm intent=muted
       }
     }
+      }
   }
   page author "Author" {
     i18n {

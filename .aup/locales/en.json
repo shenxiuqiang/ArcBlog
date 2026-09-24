@@ -233,5 +233,15 @@
   "operations.gate-title": "Operations",
   "operations.gate-desc": "Sign in with DID Wallet to view node health, Hubs, economy and agent state.",
   "operations.login": "Sign in with DID Wallet",
-  "posts.read-story": "Read story →"
+  "posts.read-story": "Read story →",
+  "admin.nav-dashboard": "Dashboard",
+  "admin.nav-studio": "Studio",
+  "admin.nav-operations": "Operations",
+  "dashboard.nav-dashboard": "Dashboard",
+  "dashboard.nav-studio": "Studio",
+  "dashboard.nav-operations": "Operations",
+  "operations.nav-dashboard": "Dashboard",
+  "operations.nav-studio": "Studio",
+  "operations.nav-operations": "Operations",
+  "wrapper.nav-console": "Management"
 }

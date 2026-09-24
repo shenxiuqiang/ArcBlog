@@ -1,66 +1,96 @@
 {
-  "id": "arcblog-admin-view-1",
+  "id": "console-shell",
   "type": "view",
   "props": {
     "layout": {
-      "gap": "lg"
+      "direction": "row",
+      "gap": "lg",
+      "crossAlign": "start"
     }
   },
   "children": [
     {
-      "id": "arcblog-admin-view-1-card-1",
+      "id": "console-nav",
       "type": "view",
       "props": {
-        "mode": "card",
         "layout": {
-          "gap": "md"
+          "gap": "xs"
+        },
+        "size": {
+          "width": "210px",
+          "flexShrink": 0
+        },
+        "style": {
+          "padding": "16px",
+          "border": "1px solid var(--color-border)",
+          "borderRadius": "var(--radius-lg, 12px)",
+          "background": "var(--color-surface)"
         }
       },
-      "visible": "!$session.authenticated",
+      "visible": "$session.authenticated",
       "children": [
         {
-          "id": "arcblog-admin-view-1-card-1-h2-1",
-          "type": "text",
-          "props": {
-            "level": 2,
-            "content": "$t(admin.gate-title)"
-          }
-        },
-        {
-          "id": "arcblog-admin-view-1-card-1-p-2",
-          "type": "text",
-          "props": {
-            "content": "$t(admin.gate-desc)",
-            "intent": "info"
-          }
-        },
-        {
-          "id": "arcblog-admin-view-1-card-1-action-3",
+          "id": "console-nav-dashboard",
           "type": "action",
           "props": {
-            "variant": "primary",
-            "label": "$t(admin.login)"
+            "label": "$t(wrapper.nav-dashboard)"
           },
           "events": {
             "click": {
-              "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin"
+              "target": "_root",
+              "set": {
+                "page": "dashboard"
+              }
+            }
+          }
+        },
+        {
+          "id": "console-nav-studio",
+          "type": "action",
+          "props": {
+            "label": "$t(wrapper.nav-studio)",
+            "variant": "primary"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "admin"
+              }
+            }
+          }
+        },
+        {
+          "id": "console-nav-operations",
+          "type": "action",
+          "props": {
+            "label": "$t(wrapper.nav-operations)"
+          },
+          "events": {
+            "click": {
+              "target": "_root",
+              "set": {
+                "page": "operations"
+              }
             }
           }
         }
       ]
     },
     {
-      "id": "arcblog-admin-view-1-view-2",
+      "id": "console-pane",
       "type": "view",
       "props": {
         "layout": {
           "gap": "lg"
+        },
+        "size": {
+          "flex": 1
         }
       },
-      "visible": "$session.authenticated",
       "children": [
         {
-          "id": "arcblog-admin-view-1-view-2-card-1",
+          "id": "console-pane-card-1",
           "type": "view",
           "props": {
             "mode": "card",
@@ -68,1026 +98,168 @@
               "gap": "md"
             }
           },
+          "visible": "!$session.authenticated",
           "children": [
             {
-              "id": "arcblog-admin-view-1-view-2-card-1-h2-1",
+              "id": "console-pane-card-1-h2-1",
               "type": "text",
               "props": {
                 "level": 2,
-                "content": "$t(admin.studio)"
+                "content": "$t(admin.gate-title)"
               }
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-1-p-2",
+              "id": "console-pane-card-1-p-2",
               "type": "text",
               "props": {
-                "content": "$t(admin.studio-desc)",
-                "intent": "muted"
+                "content": "$t(admin.gate-desc)",
+                "intent": "info"
               }
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-1-action-3",
+              "id": "console-pane-card-1-action-3",
               "type": "action",
               "props": {
                 "variant": "primary",
-                "label": "$t(admin.new-post)"
+                "label": "$t(admin.login)"
               },
               "events": {
                 "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "compose"
-                  }
+                  "navigate": "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin"
                 }
               }
             }
           ]
         },
         {
-          "id": "arcblog-admin-view-1-view-2-card-2",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-admin-view-1-view-2-card-2-h3-1",
-              "type": "text",
-              "props": {
-                "level": 3,
-                "content": "$t(admin.lifecycle)"
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-2-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(admin.lifecycle-desc)",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-row-3",
+          "id": "console-pane-view-2",
           "type": "view",
           "props": {
             "layout": {
-              "direction": "row",
-              "gap": "sm"
+              "gap": "lg"
             }
           },
+          "visible": "$session.authenticated",
           "children": [
             {
-              "id": "arcblog-admin-view-1-view-2-row-3-action-1",
-              "type": "action",
-              "props": {
-                "variant": "secondary",
-                "size": "sm",
-                "label": "$t(admin.appearance)"
-              },
-              "events": {
-                "click": {
-                  "target": "_root",
-                  "set": {
-                    "page": "settings"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-h2-4",
-          "type": "text",
-          "props": {
-            "level": 2,
-            "content": "$t(admin.content)"
-          }
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-h3-5",
-          "type": "text",
-          "props": {
-            "level": 3,
-            "content": "$t(admin.group-published)"
-          }
-        },
-        {
-          "id": "studio-published",
-          "type": "afs-list",
-          "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "emptyText": "$t(admin.content-empty)",
-            "clickMode": "none"
-          },
-          "src": "/instance/app/arcblog/posts",
-          "children": [
-            {
-              "id": "studioRow",
+              "id": "console-pane-view-2-card-1",
               "type": "view",
               "props": {
+                "mode": "card",
                 "layout": {
-                  "direction": "row",
-                  "crossAlign": "start"
-                },
-                "role": "item",
-                "style": {
-                  "padding": "var(--space-block) 0",
-                  "borderBottom": "1px solid var(--color-border)"
+                  "gap": "md"
                 }
               },
               "children": [
                 {
-                  "id": "studioLink",
-                  "type": "view",
+                  "id": "console-pane-view-2-card-1-h2-1",
+                  "type": "text",
                   "props": {
-                    "layout": {
-                      "gap": "xs"
-                    },
-                    "href": "/posts/${entry.content.slug}",
-                    "size": {
-                      "flex": 1
-                    },
-                    "style": {
-                      "display": "block",
-                      "textDecoration": "none",
-                      "color": "inherit",
-                      "cursor": "pointer",
-                      "minWidth": 0
-                    }
-                  },
-                  "children": [
-                    {
-                      "id": "studiolink-h3-1",
-                      "type": "text",
-                      "props": {
-                        "level": 3,
-                        "content": "${entry.content.title}"
-                      }
-                    },
-                    {
-                      "id": "studiolink-row-2",
-                      "type": "view",
-                      "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs",
-                          "crossAlign": "center"
-                        }
-                      },
-                      "children": [
-                        {
-                          "id": "studiolink-row-2-p-1",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.status}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "studiolink-row-2-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.category}",
-                            "scale": "sm",
-                            "intent": "muted",
-                            "style": {
-                              "textTransform": "capitalize"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                    "level": 2,
+                    "content": "$t(admin.studio)"
+                  }
                 },
                 {
-                  "id": "studio-archive",
+                  "id": "console-pane-view-2-card-1-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.studio-desc)",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-1-action-3",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "label": "$t(admin.new-post)"
+                  },
+                  "events": {
+                    "click": {
+                      "target": "_root",
+                      "set": {
+                        "page": "compose"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-card-2",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-view-2-card-2-h3-1",
+                  "type": "text",
+                  "props": {
+                    "level": 3,
+                    "content": "$t(admin.lifecycle)"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-2-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.lifecycle-desc)",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-row-3",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "gap": "sm"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-view-2-row-3-action-1",
                   "type": "action",
                   "props": {
                     "variant": "secondary",
                     "size": "sm",
-                    "label": "$t(admin.admin-archive)",
-                    "confirm": {
-                      "title": "$t(admin.admin-archive-title)",
-                      "message": "$t(admin.admin-archive-msg)"
-                    },
-                    "onSuccessToast": {
-                      "intent": "success",
-                      "message": "$t(admin.archived-ok)",
-                      "duration": 3000
-                    }
+                    "label": "$t(admin.appearance)"
                   },
                   "events": {
                     "click": {
-                      "exec": "/.actions/write",
-                      "args": {
-                        "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
-                        "content": {
-                          "title": "${entry.content.title}",
-                          "slug": "${entry.content.slug}",
-                          "summary": "${entry.content.summary}",
-                          "body": "${entry.content.body}",
-                          "coverImage": "${entry.content.coverImage}",
-                          "images": [],
-                          "tags": "${entry.content.tags}",
-                          "category": "${entry.content.category}",
-                          "seoTitle": "${entry.content.seoTitle}",
-                          "seoDescription": "${entry.content.seoDescription}",
-                          "ogTitle": "${entry.content.ogTitle}",
-                          "ogDescription": "${entry.content.ogDescription}",
-                          "ogImage": "${entry.content.ogImage}",
-                          "status": "archived",
-                          "authorDid": "${entry.content.authorDid}",
-                          "authorName": "${entry.content.authorName}",
-                          "published": false,
-                          "publishedAt": "${entry.content.publishedAt}",
-                          "archivedAt": "${generate.timeiso}",
-                          "deletedAt": "",
-                          "createdAt": "${entry.content.createdAt}",
-                          "updatedAt": "${generate.timeiso}",
-                          "version": 1
-                        }
+                      "target": "_root",
+                      "set": {
+                        "page": "settings"
                       }
-                    }
-                  }
-                },
-                {
-                  "id": "studio-unpublish",
-                  "type": "action",
-                  "props": {
-                    "variant": "destructive",
-                    "size": "sm",
-                    "icon": "trash",
-                    "label": "$t(admin.admin-unpublish)",
-                    "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
-                    "confirm": {
-                      "title": "$t(admin.admin-unpublish-title)",
-                      "message": "$t(admin.admin-unpublish-msg)"
-                    },
-                    "onSuccessToast": {
-                      "intent": "success",
-                      "message": "$t(admin.unpublished-ok)",
-                      "duration": 3000
-                    }
-                  },
-                  "events": {
-                    "click": {
-                      "exec": "/.actions/delete"
                     }
                   }
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-h3-7",
-          "type": "text",
-          "props": {
-            "level": 3,
-            "content": "$t(admin.group-drafts)"
-          }
-        },
-        {
-          "id": "studio-drafts",
-          "type": "afs-list",
-          "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "emptyText": "$t(admin.content-empty)",
-            "clickMode": "none"
-          },
-          "src": "/instance/app/arcblog/drafts",
-          "children": [
+            },
             {
-              "id": "draftRow",
-              "type": "view",
-              "props": {
-                "layout": {
-                  "direction": "row",
-                  "crossAlign": "start"
-                },
-                "role": "item",
-                "style": {
-                  "padding": "var(--space-block) 0",
-                  "borderBottom": "1px solid var(--color-border)"
-                }
-              },
-              "children": [
-                {
-                  "id": "draftLink",
-                  "type": "view",
-                  "props": {
-                    "layout": {
-                      "gap": "xs"
-                    },
-                    "href": "/preview/${entry.content.slug}",
-                    "size": {
-                      "flex": 1
-                    },
-                    "style": {
-                      "display": "block",
-                      "textDecoration": "none",
-                      "color": "inherit",
-                      "cursor": "pointer",
-                      "minWidth": 0
-                    }
-                  },
-                  "children": [
-                    {
-                      "id": "draftlink-h3-1",
-                      "type": "text",
-                      "props": {
-                        "level": 3,
-                        "content": "${entry.content.title}"
-                      }
-                    },
-                    {
-                      "id": "draftlink-row-2",
-                      "type": "view",
-                      "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs",
-                          "crossAlign": "center"
-                        }
-                      },
-                      "children": [
-                        {
-                          "id": "draftlink-row-2-p-1",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.status}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "draftlink-row-2-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.category}",
-                            "scale": "sm",
-                            "intent": "muted",
-                            "style": {
-                              "textTransform": "capitalize"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "studio-publish",
-                  "type": "action",
-                  "props": {
-                    "variant": "primary",
-                    "size": "sm",
-                    "label": "$t(admin.admin-publish)",
-                    "confirm": {
-                      "title": "$t(admin.admin-publish-title)",
-                      "message": "$t(admin.admin-publish-msg)"
-                    },
-                    "onSuccessToast": {
-                      "intent": "success",
-                      "message": "$t(admin.published-ok)",
-                      "duration": 3000
-                    }
-                  },
-                  "events": {
-                    "click": {
-                      "exec": "/.actions/write",
-                      "args": {
-                        "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
-                        "content": {
-                          "title": "${entry.content.title}",
-                          "slug": "${entry.content.slug}",
-                          "summary": "${entry.content.summary}",
-                          "body": "${entry.content.body}",
-                          "coverImage": "${entry.content.coverImage}",
-                          "images": [],
-                          "tags": "${entry.content.tags}",
-                          "category": "${entry.content.category}",
-                          "seoTitle": "${entry.content.seoTitle}",
-                          "seoDescription": "${entry.content.seoDescription}",
-                          "ogTitle": "${entry.content.ogTitle}",
-                          "ogDescription": "${entry.content.ogDescription}",
-                          "ogImage": "${entry.content.ogImage}",
-                          "status": "published",
-                          "authorDid": "${entry.content.authorDid}",
-                          "authorName": "${entry.content.authorName}",
-                          "published": true,
-                          "publishedAt": "${generate.timeiso}",
-                          "archivedAt": "",
-                          "deletedAt": "",
-                          "createdAt": "${entry.content.createdAt}",
-                          "updatedAt": "${generate.timeiso}",
-                          "version": 1
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "id": "studio-delete",
-                  "type": "action",
-                  "props": {
-                    "variant": "destructive",
-                    "size": "sm",
-                    "icon": "trash",
-                    "label": "$t(admin.admin-delete)",
-                    "confirm": {
-                      "title": "$t(admin.admin-delete-title)",
-                      "message": "$t(admin.admin-delete-msg)"
-                    },
-                    "onSuccessToast": {
-                      "intent": "success",
-                      "message": "$t(admin.deleted-ok)",
-                      "duration": 3000
-                    }
-                  },
-                  "events": {
-                    "click": {
-                      "exec": "/.actions/write",
-                      "args": {
-                        "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
-                        "content": {
-                          "title": "${entry.content.title}",
-                          "slug": "${entry.content.slug}",
-                          "summary": "${entry.content.summary}",
-                          "body": "${entry.content.body}",
-                          "coverImage": "${entry.content.coverImage}",
-                          "images": [],
-                          "tags": "${entry.content.tags}",
-                          "category": "${entry.content.category}",
-                          "seoTitle": "${entry.content.seoTitle}",
-                          "seoDescription": "${entry.content.seoDescription}",
-                          "ogTitle": "${entry.content.ogTitle}",
-                          "ogDescription": "${entry.content.ogDescription}",
-                          "ogImage": "${entry.content.ogImage}",
-                          "status": "deleted",
-                          "authorDid": "${entry.content.authorDid}",
-                          "authorName": "${entry.content.authorName}",
-                          "published": false,
-                          "publishedAt": "${entry.content.publishedAt}",
-                          "archivedAt": "${entry.content.archivedAt}",
-                          "deletedAt": "${generate.timeiso}",
-                          "createdAt": "${entry.content.createdAt}",
-                          "updatedAt": "${generate.timeiso}",
-                          "version": 1
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "id": "draftEdit",
-                  "type": "view",
-                  "props": {
-                    "href": "/edit/${entry.content.slug}",
-                    "style": {
-                      "display": "block",
-                      "cursor": "pointer",
-                      "color": "var(--color-dim)"
-                    }
-                  },
-                  "children": [
-                    {
-                      "id": "draftedit-p-1",
-                      "type": "text",
-                      "props": {
-                        "content": "$t(admin.edit)",
-                        "scale": "sm"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-h2-9",
-          "type": "text",
-          "props": {
-            "level": 2,
-            "content": "$t(admin.hero-admin)"
-          }
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-card-10",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-admin-view-1-view-2-card-10-p-1",
+              "id": "console-pane-view-2-h2-4",
               "type": "text",
               "props": {
-                "content": "$t(admin.hero-admin-desc)",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "hero-admin-list",
-          "type": "afs-list",
-          "props": {
-            "layout": "grid",
-            "itemStyle": "card",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "emptyText": "$t(admin.hero-list-empty)",
-            "clickMode": "none",
-            "sort": {
-              "preset": "heroOrder",
-              "presets": {
-                "heroOrder": {
-                  "field": "content.sort",
-                  "desc": false
-                }
+                "level": 2,
+                "content": "$t(admin.content)"
               }
             },
-            "transform": {
-              "label": "content.title",
-              "description": "content.description",
-              "image": "content.image"
-            }
-          },
-          "src": "/instance/app/arcblog/heroes",
-          "children": [
             {
-              "id": "heroAdminRow",
-              "type": "view",
-              "props": {
-                "layout": {
-                  "direction": "row"
-                },
-                "role": "item"
-              },
-              "children": [
-                {
-                  "id": "hero-delete",
-                  "type": "action",
-                  "props": {
-                    "variant": "destructive",
-                    "size": "sm",
-                    "icon": "trash",
-                    "label": "$t(admin.hero-delete)",
-                    "path": "${entry.path}",
-                    "confirm": {
-                      "title": "$t(admin.hero-delete-title)",
-                      "message": "$t(admin.hero-delete-msg)"
-                    },
-                    "onSuccessToast": {
-                      "intent": "success",
-                      "message": "$t(admin.hero-deleted)",
-                      "duration": 2500
-                    }
-                  },
-                  "events": {
-                    "click": {
-                      "exec": "/.actions/delete"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-card-12",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-h3-1",
+              "id": "console-pane-view-2-h3-5",
               "type": "text",
               "props": {
                 "level": 3,
-                "content": "$t(admin.hero-form)"
+                "content": "$t(admin.group-published)"
               }
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-2",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-id)",
-                "name": "heroId",
-                "required": true
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(admin.hero-id-hint)",
-                "intent": "muted",
-                "scale": "caption"
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-4",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-f-title)",
-                "name": "heroTitle",
-                "required": true
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-5",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-f-desc)",
-                "name": "heroDesc"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-6",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-f-image)",
-                "name": "heroImage",
-                "required": true
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-7",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-f-url)",
-                "name": "heroUrl",
-                "required": true
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-12-input-8",
-              "type": "input",
-              "props": {
-                "type": "text",
-                "label": "$t(admin.hero-f-sort)",
-                "name": "heroSort"
-              },
-              "state": {
-                "value": "0"
-              }
-            },
-            {
-              "id": "hero-add",
-              "type": "action",
-              "props": {
-                "variant": "primary",
-                "label": "$t(admin.hero-add)",
-                "onSuccessToast": {
-                  "intent": "success",
-                  "message": "$t(admin.hero-added)",
-                  "duration": 2500
-                }
-              },
-              "events": {
-                "click": {
-                  "exec": "/.actions/write",
-                  "args": {
-                    "path": "/instance/app/arcblog/heroes/${args.heroId}.json",
-                    "content": {
-                      "title": "${args.heroTitle}",
-                      "description": "${args.heroDesc}",
-                      "image": "${args.heroImage}",
-                      "url": "${args.heroUrl}",
-                      "sort": "${args.heroSort}",
-                      "createdAt": "${generate.timeiso}"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-card-13",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-admin-view-1-view-2-card-13-p-1",
-              "type": "text",
-              "props": {
-                "content": "$t(admin.hero-dropzone-desc)",
-                "intent": "muted"
-              }
-            }
-          ]
-        },
-        {
-          "id": "h3",
-          "type": "afs-dropzone",
-          "props": {
-            "content": "$t(admin.hero-quickadd-title)",
-            "level": 3
-          }
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-p-15",
-          "type": "text",
-          "props": {
-            "content": "$t(admin.hero-quickadd-hint)",
-            "intent": "muted",
-            "scale": "caption"
-          }
-        },
-        {
-          "id": "hero-quickadd-list",
-          "type": "afs-list",
-          "props": {
-            "layout": "list",
-            "itemStyle": "row",
-            "subscribe": true,
-            "showBreadcrumb": false,
-            "showParent": false,
-            "emptyText": "$t(admin.content-empty)",
-            "clickMode": "select",
-            "autoSelect": false,
-            "selectAlwaysFires": true
-          },
-          "src": "/instance/app/arcblog/posts",
-          "events": {
-            "select": [
-              {
-                "target": "qa-title",
-                "set": {
-                  "state": {
-                    "value": "$args.item.title"
-                  }
-                }
-              },
-              {
-                "target": "qa-desc",
-                "set": {
-                  "state": {
-                    "value": "$args.item.summary"
-                  }
-                }
-              },
-              {
-                "target": "qa-image",
-                "set": {
-                  "state": {
-                    "value": "$args.item.coverImage"
-                  }
-                }
-              },
-              {
-                "target": "qa-slug",
-                "set": {
-                  "state": {
-                    "value": "$args.item.slug"
-                  }
-                }
-              }
-            ]
-          },
-          "children": [
-            {
-              "id": "heroPostRow",
-              "type": "view",
-              "props": {
-                "layout": {
-                  "direction": "row",
-                  "crossAlign": "center"
-                },
-                "role": "item",
-                "style": {
-                  "padding": "var(--space-block) 0",
-                  "borderBottom": "1px solid var(--color-border)"
-                }
-              },
-              "children": [
-                {
-                  "id": "heropostrow-view-1",
-                  "type": "view",
-                  "props": {
-                    "layout": {
-                      "gap": "xs"
-                    },
-                    "size": {
-                      "flex": 1
-                    },
-                    "style": {
-                      "minWidth": 0
-                    }
-                  },
-                  "children": [
-                    {
-                      "id": "heropostrow-view-1-h3-1",
-                      "type": "text",
-                      "props": {
-                        "level": 3,
-                        "content": "${entry.content.title}"
-                      }
-                    },
-                    {
-                      "id": "heropostrow-view-1-row-2",
-                      "type": "view",
-                      "props": {
-                        "layout": {
-                          "direction": "row",
-                          "gap": "xs",
-                          "crossAlign": "center"
-                        }
-                      },
-                      "children": [
-                        {
-                          "id": "heropostrow-view-1-row-2-p-1",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.category}",
-                            "scale": "sm",
-                            "intent": "muted",
-                            "style": {
-                              "textTransform": "capitalize"
-                            }
-                          }
-                        },
-                        {
-                          "id": "heropostrow-view-1-row-2-p-2",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.coverImage}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-view-17",
-          "type": "view",
-          "props": {
-            "layout": {
-              "gap": "sm"
-            }
-          },
-          "children": [
-            {
-              "id": "qa-title",
-              "type": "input",
-              "props": {
-                "type": "hidden",
-                "name": "qaTitle"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "qa-desc",
-              "type": "input",
-              "props": {
-                "type": "hidden",
-                "name": "qaDesc"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "qa-image",
-              "type": "input",
-              "props": {
-                "type": "hidden",
-                "name": "qaImage"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "qa-slug",
-              "type": "input",
-              "props": {
-                "type": "hidden",
-                "name": "qaSlug"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "hero-quickadd-confirm",
-              "type": "action",
-              "props": {
-                "variant": "secondary",
-                "size": "sm",
-                "label": "$t(admin.hero-quickadd)",
-                "onSuccessToast": {
-                  "intent": "success",
-                  "message": "$t(admin.hero-quickadded)",
-                  "duration": 2500
-                }
-              },
-              "events": {
-                "click": {
-                  "exec": "/.actions/write",
-                  "args": {
-                    "path": "/instance/app/arcblog/heroes/${args.qaSlug}.json",
-                    "content": {
-                      "title": "${args.qaTitle}",
-                      "description": "${args.qaDesc}",
-                      "image": "${args.qaImage}",
-                      "url": "/posts/${args.qaSlug}",
-                      "sort": "0",
-                      "createdAt": "${generate.timeiso}"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "arcblog-admin-view-1-view-2-card-18",
-          "type": "view",
-          "props": {
-            "mode": "card",
-            "layout": {
-              "gap": "md"
-            }
-          },
-          "children": [
-            {
-              "id": "arcblog-admin-view-1-view-2-card-18-h3-1",
-              "type": "text",
-              "props": {
-                "level": 3,
-                "content": "$t(admin.cat-title)"
-              }
-            },
-            {
-              "id": "arcblog-admin-view-1-view-2-card-18-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(admin.cat-desc)",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "studio-categories",
+              "id": "studio-published",
               "type": "afs-list",
               "props": {
                 "layout": "list",
@@ -1095,18 +267,18 @@
                 "subscribe": true,
                 "showBreadcrumb": false,
                 "showParent": false,
-                "clickMode": "none",
-                "emptyText": "$t(admin.cat-empty)"
+                "emptyText": "$t(admin.content-empty)",
+                "clickMode": "none"
               },
-              "src": "/instance/app/arcblog/categories",
+              "src": "/instance/app/arcblog/posts",
               "children": [
                 {
-                  "id": "studioCategoryRow",
+                  "id": "studioRow",
                   "type": "view",
                   "props": {
                     "layout": {
                       "direction": "row",
-                      "crossAlign": "center"
+                      "crossAlign": "start"
                     },
                     "role": "item",
                     "style": {
@@ -1116,64 +288,461 @@
                   },
                   "children": [
                     {
-                      "id": "studiocategoryrow-view-1",
+                      "id": "studioLink",
                       "type": "view",
                       "props": {
                         "layout": {
                           "gap": "xs"
                         },
+                        "href": "/posts/${entry.content.slug}",
                         "size": {
                           "flex": 1
                         },
                         "style": {
+                          "display": "block",
+                          "textDecoration": "none",
+                          "color": "inherit",
+                          "cursor": "pointer",
                           "minWidth": 0
                         }
                       },
                       "children": [
                         {
-                          "id": "studiocategoryrow-view-1-h3-1",
+                          "id": "studiolink-h3-1",
                           "type": "text",
                           "props": {
                             "level": 3,
-                            "content": "${entry.content.name}"
+                            "content": "${entry.content.title}"
                           }
                         },
                         {
-                          "id": "studiocategoryrow-view-1-p-2",
-                          "type": "text",
+                          "id": "studiolink-row-2",
+                          "type": "view",
                           "props": {
-                            "content": "${entry.content.slug}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
-                        },
-                        {
-                          "id": "studiocategoryrow-view-1-p-3",
-                          "type": "text",
-                          "props": {
-                            "content": "${entry.content.description}",
-                            "scale": "sm",
-                            "intent": "muted"
-                          }
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs",
+                              "crossAlign": "center"
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "studiolink-row-2-p-1",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.status}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "studiolink-row-2-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.category}",
+                                "scale": "sm",
+                                "intent": "muted",
+                                "style": {
+                                  "textTransform": "capitalize"
+                                }
+                              }
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "id": "cat-remove",
+                      "id": "studio-archive",
+                      "type": "action",
+                      "props": {
+                        "variant": "secondary",
+                        "size": "sm",
+                        "label": "$t(admin.admin-archive)",
+                        "confirm": {
+                          "title": "$t(admin.admin-archive-title)",
+                          "message": "$t(admin.admin-archive-msg)"
+                        },
+                        "onSuccessToast": {
+                          "intent": "success",
+                          "message": "$t(admin.archived-ok)",
+                          "duration": 3000
+                        }
+                      },
+                      "events": {
+                        "click": {
+                          "exec": "/.actions/write",
+                          "args": {
+                            "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
+                            "content": {
+                              "title": "${entry.content.title}",
+                              "slug": "${entry.content.slug}",
+                              "summary": "${entry.content.summary}",
+                              "body": "${entry.content.body}",
+                              "coverImage": "${entry.content.coverImage}",
+                              "images": [],
+                              "tags": "${entry.content.tags}",
+                              "category": "${entry.content.category}",
+                              "seoTitle": "${entry.content.seoTitle}",
+                              "seoDescription": "${entry.content.seoDescription}",
+                              "ogTitle": "${entry.content.ogTitle}",
+                              "ogDescription": "${entry.content.ogDescription}",
+                              "ogImage": "${entry.content.ogImage}",
+                              "status": "archived",
+                              "authorDid": "${entry.content.authorDid}",
+                              "authorName": "${entry.content.authorName}",
+                              "published": false,
+                              "publishedAt": "${entry.content.publishedAt}",
+                              "archivedAt": "${generate.timeiso}",
+                              "deletedAt": "",
+                              "createdAt": "${entry.content.createdAt}",
+                              "updatedAt": "${generate.timeiso}",
+                              "version": 1
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "id": "studio-unpublish",
                       "type": "action",
                       "props": {
                         "variant": "destructive",
                         "size": "sm",
                         "icon": "trash",
-                        "label": "$t(admin.cat-remove)",
-                        "path": "/instance/app/arcblog/categories/${entry.content.slug}.json",
+                        "label": "$t(admin.admin-unpublish)",
+                        "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
                         "confirm": {
-                          "title": "$t(admin.cat-remove-title)",
-                          "message": "$t(admin.cat-remove-msg)"
+                          "title": "$t(admin.admin-unpublish-title)",
+                          "message": "$t(admin.admin-unpublish-msg)"
                         },
                         "onSuccessToast": {
                           "intent": "success",
-                          "message": "$t(admin.cat-removed)",
+                          "message": "$t(admin.unpublished-ok)",
+                          "duration": 3000
+                        }
+                      },
+                      "events": {
+                        "click": {
+                          "exec": "/.actions/delete"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-h3-7",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(admin.group-drafts)"
+              }
+            },
+            {
+              "id": "studio-drafts",
+              "type": "afs-list",
+              "props": {
+                "layout": "list",
+                "itemStyle": "row",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "emptyText": "$t(admin.content-empty)",
+                "clickMode": "none"
+              },
+              "src": "/instance/app/arcblog/drafts",
+              "children": [
+                {
+                  "id": "draftRow",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "direction": "row",
+                      "crossAlign": "start"
+                    },
+                    "role": "item",
+                    "style": {
+                      "padding": "var(--space-block) 0",
+                      "borderBottom": "1px solid var(--color-border)"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "draftLink",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "gap": "xs"
+                        },
+                        "href": "/preview/${entry.content.slug}",
+                        "size": {
+                          "flex": 1
+                        },
+                        "style": {
+                          "display": "block",
+                          "textDecoration": "none",
+                          "color": "inherit",
+                          "cursor": "pointer",
+                          "minWidth": 0
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "draftlink-h3-1",
+                          "type": "text",
+                          "props": {
+                            "level": 3,
+                            "content": "${entry.content.title}"
+                          }
+                        },
+                        {
+                          "id": "draftlink-row-2",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs",
+                              "crossAlign": "center"
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "draftlink-row-2-p-1",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.status}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "draftlink-row-2-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.category}",
+                                "scale": "sm",
+                                "intent": "muted",
+                                "style": {
+                                  "textTransform": "capitalize"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "studio-publish",
+                      "type": "action",
+                      "props": {
+                        "variant": "primary",
+                        "size": "sm",
+                        "label": "$t(admin.admin-publish)",
+                        "confirm": {
+                          "title": "$t(admin.admin-publish-title)",
+                          "message": "$t(admin.admin-publish-msg)"
+                        },
+                        "onSuccessToast": {
+                          "intent": "success",
+                          "message": "$t(admin.published-ok)",
+                          "duration": 3000
+                        }
+                      },
+                      "events": {
+                        "click": {
+                          "exec": "/.actions/write",
+                          "args": {
+                            "path": "/instance/app/arcblog/posts/${entry.content.slug}.json",
+                            "content": {
+                              "title": "${entry.content.title}",
+                              "slug": "${entry.content.slug}",
+                              "summary": "${entry.content.summary}",
+                              "body": "${entry.content.body}",
+                              "coverImage": "${entry.content.coverImage}",
+                              "images": [],
+                              "tags": "${entry.content.tags}",
+                              "category": "${entry.content.category}",
+                              "seoTitle": "${entry.content.seoTitle}",
+                              "seoDescription": "${entry.content.seoDescription}",
+                              "ogTitle": "${entry.content.ogTitle}",
+                              "ogDescription": "${entry.content.ogDescription}",
+                              "ogImage": "${entry.content.ogImage}",
+                              "status": "published",
+                              "authorDid": "${entry.content.authorDid}",
+                              "authorName": "${entry.content.authorName}",
+                              "published": true,
+                              "publishedAt": "${generate.timeiso}",
+                              "archivedAt": "",
+                              "deletedAt": "",
+                              "createdAt": "${entry.content.createdAt}",
+                              "updatedAt": "${generate.timeiso}",
+                              "version": 1
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "id": "studio-delete",
+                      "type": "action",
+                      "props": {
+                        "variant": "destructive",
+                        "size": "sm",
+                        "icon": "trash",
+                        "label": "$t(admin.admin-delete)",
+                        "confirm": {
+                          "title": "$t(admin.admin-delete-title)",
+                          "message": "$t(admin.admin-delete-msg)"
+                        },
+                        "onSuccessToast": {
+                          "intent": "success",
+                          "message": "$t(admin.deleted-ok)",
+                          "duration": 3000
+                        }
+                      },
+                      "events": {
+                        "click": {
+                          "exec": "/.actions/write",
+                          "args": {
+                            "path": "/instance/app/arcblog/drafts/${entry.content.slug}.json",
+                            "content": {
+                              "title": "${entry.content.title}",
+                              "slug": "${entry.content.slug}",
+                              "summary": "${entry.content.summary}",
+                              "body": "${entry.content.body}",
+                              "coverImage": "${entry.content.coverImage}",
+                              "images": [],
+                              "tags": "${entry.content.tags}",
+                              "category": "${entry.content.category}",
+                              "seoTitle": "${entry.content.seoTitle}",
+                              "seoDescription": "${entry.content.seoDescription}",
+                              "ogTitle": "${entry.content.ogTitle}",
+                              "ogDescription": "${entry.content.ogDescription}",
+                              "ogImage": "${entry.content.ogImage}",
+                              "status": "deleted",
+                              "authorDid": "${entry.content.authorDid}",
+                              "authorName": "${entry.content.authorName}",
+                              "published": false,
+                              "publishedAt": "${entry.content.publishedAt}",
+                              "archivedAt": "${entry.content.archivedAt}",
+                              "deletedAt": "${generate.timeiso}",
+                              "createdAt": "${entry.content.createdAt}",
+                              "updatedAt": "${generate.timeiso}",
+                              "version": 1
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "id": "draftEdit",
+                      "type": "view",
+                      "props": {
+                        "href": "/edit/${entry.content.slug}",
+                        "style": {
+                          "display": "block",
+                          "cursor": "pointer",
+                          "color": "var(--color-dim)"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "draftedit-p-1",
+                          "type": "text",
+                          "props": {
+                            "content": "$t(admin.edit)",
+                            "scale": "sm"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-h2-9",
+              "type": "text",
+              "props": {
+                "level": 2,
+                "content": "$t(admin.hero-admin)"
+              }
+            },
+            {
+              "id": "console-pane-view-2-card-10",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-view-2-card-10-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.hero-admin-desc)",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "hero-admin-list",
+              "type": "afs-list",
+              "props": {
+                "layout": "grid",
+                "itemStyle": "card",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "emptyText": "$t(admin.hero-list-empty)",
+                "clickMode": "none",
+                "sort": {
+                  "preset": "heroOrder",
+                  "presets": {
+                    "heroOrder": {
+                      "field": "content.sort",
+                      "desc": false
+                    }
+                  }
+                },
+                "transform": {
+                  "label": "content.title",
+                  "description": "content.description",
+                  "image": "content.image"
+                }
+              },
+              "src": "/instance/app/arcblog/heroes",
+              "children": [
+                {
+                  "id": "heroAdminRow",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "direction": "row"
+                    },
+                    "role": "item"
+                  },
+                  "children": [
+                    {
+                      "id": "hero-delete",
+                      "type": "action",
+                      "props": {
+                        "variant": "destructive",
+                        "size": "sm",
+                        "icon": "trash",
+                        "label": "$t(admin.hero-delete)",
+                        "path": "${entry.path}",
+                        "confirm": {
+                          "title": "$t(admin.hero-delete-title)",
+                          "message": "$t(admin.hero-delete-msg)"
+                        },
+                        "onSuccessToast": {
+                          "intent": "success",
+                          "message": "$t(admin.hero-deleted)",
                           "duration": 2500
                         }
                       },
@@ -1188,80 +757,595 @@
               ]
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-18-input-4",
-              "type": "input",
+              "id": "console-pane-view-2-card-12",
+              "type": "view",
               "props": {
-                "type": "text",
-                "label": "$t(admin.cat-f-slug)",
-                "name": "catSlug",
-                "required": true
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
               },
-              "state": {
-                "value": ""
+              "children": [
+                {
+                  "id": "console-pane-view-2-card-12-h3-1",
+                  "type": "text",
+                  "props": {
+                    "level": 3,
+                    "content": "$t(admin.hero-form)"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-2",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-id)",
+                    "name": "heroId",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-p-3",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.hero-id-hint)",
+                    "intent": "muted",
+                    "scale": "caption"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-4",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-f-title)",
+                    "name": "heroTitle",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-5",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-f-desc)",
+                    "name": "heroDesc"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-6",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-f-image)",
+                    "name": "heroImage",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-7",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-f-url)",
+                    "name": "heroUrl",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-12-input-8",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.hero-f-sort)",
+                    "name": "heroSort"
+                  },
+                  "state": {
+                    "value": "0"
+                  }
+                },
+                {
+                  "id": "hero-add",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "label": "$t(admin.hero-add)",
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.hero-added)",
+                      "duration": 2500
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/heroes/${args.heroId}.json",
+                        "content": {
+                          "title": "${args.heroTitle}",
+                          "description": "${args.heroDesc}",
+                          "image": "${args.heroImage}",
+                          "url": "${args.heroUrl}",
+                          "sort": "${args.heroSort}",
+                          "createdAt": "${generate.timeiso}"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-card-13",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-view-2-card-13-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.hero-dropzone-desc)",
+                    "intent": "muted"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "h3",
+              "type": "afs-dropzone",
+              "props": {
+                "content": "$t(admin.hero-quickadd-title)",
+                "level": 3
               }
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-18-p-5",
+              "id": "console-pane-view-2-p-15",
               "type": "text",
               "props": {
-                "content": "$t(admin.cat-slug-hint)",
+                "content": "$t(admin.hero-quickadd-hint)",
                 "intent": "muted",
                 "scale": "caption"
               }
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-18-input-6",
-              "type": "input",
+              "id": "hero-quickadd-list",
+              "type": "afs-list",
               "props": {
-                "type": "text",
-                "label": "$t(admin.cat-f-name)",
-                "name": "catName",
-                "required": true
+                "layout": "list",
+                "itemStyle": "row",
+                "subscribe": true,
+                "showBreadcrumb": false,
+                "showParent": false,
+                "emptyText": "$t(admin.content-empty)",
+                "clickMode": "select",
+                "autoSelect": false,
+                "selectAlwaysFires": true
               },
-              "state": {
-                "value": ""
-              }
+              "src": "/instance/app/arcblog/posts",
+              "events": {
+                "select": [
+                  {
+                    "target": "qa-title",
+                    "set": {
+                      "state": {
+                        "value": "$args.item.title"
+                      }
+                    }
+                  },
+                  {
+                    "target": "qa-desc",
+                    "set": {
+                      "state": {
+                        "value": "$args.item.summary"
+                      }
+                    }
+                  },
+                  {
+                    "target": "qa-image",
+                    "set": {
+                      "state": {
+                        "value": "$args.item.coverImage"
+                      }
+                    }
+                  },
+                  {
+                    "target": "qa-slug",
+                    "set": {
+                      "state": {
+                        "value": "$args.item.slug"
+                      }
+                    }
+                  }
+                ]
+              },
+              "children": [
+                {
+                  "id": "heroPostRow",
+                  "type": "view",
+                  "props": {
+                    "layout": {
+                      "direction": "row",
+                      "crossAlign": "center"
+                    },
+                    "role": "item",
+                    "style": {
+                      "padding": "var(--space-block) 0",
+                      "borderBottom": "1px solid var(--color-border)"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "heropostrow-view-1",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "gap": "xs"
+                        },
+                        "size": {
+                          "flex": 1
+                        },
+                        "style": {
+                          "minWidth": 0
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "heropostrow-view-1-h3-1",
+                          "type": "text",
+                          "props": {
+                            "level": 3,
+                            "content": "${entry.content.title}"
+                          }
+                        },
+                        {
+                          "id": "heropostrow-view-1-row-2",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs",
+                              "crossAlign": "center"
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "heropostrow-view-1-row-2-p-1",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.category}",
+                                "scale": "sm",
+                                "intent": "muted",
+                                "style": {
+                                  "textTransform": "capitalize"
+                                }
+                              }
+                            },
+                            {
+                              "id": "heropostrow-view-1-row-2-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.coverImage}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             },
             {
-              "id": "arcblog-admin-view-1-view-2-card-18-input-7",
-              "type": "input",
+              "id": "console-pane-view-2-view-17",
+              "type": "view",
               "props": {
-                "type": "text",
-                "label": "$t(admin.cat-f-desc)",
-                "name": "catDesc"
-              },
-              "state": {
-                "value": ""
-              }
-            },
-            {
-              "id": "cat-add",
-              "type": "action",
-              "props": {
-                "variant": "primary",
-                "label": "$t(admin.cat-add)",
-                "onSuccessToast": {
-                  "intent": "success",
-                  "message": "$t(admin.cat-added)",
-                  "duration": 2500
+                "layout": {
+                  "gap": "sm"
                 }
               },
-              "events": {
-                "click": {
-                  "exec": "/.actions/write",
-                  "args": {
-                    "path": "/instance/app/arcblog/categories/${args.catSlug}.json",
-                    "content": {
-                      "slug": "${args.catSlug}",
-                      "name": "${args.catName}",
-                      "description": "${args.catDesc}",
-                      "sort": "0",
-                      "createdAt": "${generate.timeiso}",
-                      "updatedAt": "${generate.timeiso}"
+              "children": [
+                {
+                  "id": "qa-title",
+                  "type": "input",
+                  "props": {
+                    "type": "hidden",
+                    "name": "qaTitle"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "qa-desc",
+                  "type": "input",
+                  "props": {
+                    "type": "hidden",
+                    "name": "qaDesc"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "qa-image",
+                  "type": "input",
+                  "props": {
+                    "type": "hidden",
+                    "name": "qaImage"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "qa-slug",
+                  "type": "input",
+                  "props": {
+                    "type": "hidden",
+                    "name": "qaSlug"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "hero-quickadd-confirm",
+                  "type": "action",
+                  "props": {
+                    "variant": "secondary",
+                    "size": "sm",
+                    "label": "$t(admin.hero-quickadd)",
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.hero-quickadded)",
+                      "duration": 2500
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/heroes/${args.qaSlug}.json",
+                        "content": {
+                          "title": "${args.qaTitle}",
+                          "description": "${args.qaDesc}",
+                          "image": "${args.qaImage}",
+                          "url": "/posts/${args.qaSlug}",
+                          "sort": "0",
+                          "createdAt": "${generate.timeiso}"
+                        }
+                      }
                     }
                   }
                 }
-              }
+              ]
+            },
+            {
+              "id": "console-pane-view-2-card-18",
+              "type": "view",
+              "props": {
+                "mode": "card",
+                "layout": {
+                  "gap": "md"
+                }
+              },
+              "children": [
+                {
+                  "id": "console-pane-view-2-card-18-h3-1",
+                  "type": "text",
+                  "props": {
+                    "level": 3,
+                    "content": "$t(admin.cat-title)"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-18-p-2",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.cat-desc)",
+                    "intent": "muted"
+                  }
+                },
+                {
+                  "id": "studio-categories",
+                  "type": "afs-list",
+                  "props": {
+                    "layout": "list",
+                    "itemStyle": "row",
+                    "subscribe": true,
+                    "showBreadcrumb": false,
+                    "showParent": false,
+                    "clickMode": "none",
+                    "emptyText": "$t(admin.cat-empty)"
+                  },
+                  "src": "/instance/app/arcblog/categories",
+                  "children": [
+                    {
+                      "id": "studioCategoryRow",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "direction": "row",
+                          "crossAlign": "center"
+                        },
+                        "role": "item",
+                        "style": {
+                          "padding": "var(--space-block) 0",
+                          "borderBottom": "1px solid var(--color-border)"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "studiocategoryrow-view-1",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "gap": "xs"
+                            },
+                            "size": {
+                              "flex": 1
+                            },
+                            "style": {
+                              "minWidth": 0
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "studiocategoryrow-view-1-h3-1",
+                              "type": "text",
+                              "props": {
+                                "level": 3,
+                                "content": "${entry.content.name}"
+                              }
+                            },
+                            {
+                              "id": "studiocategoryrow-view-1-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.slug}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            },
+                            {
+                              "id": "studiocategoryrow-view-1-p-3",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.description}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "cat-remove",
+                          "type": "action",
+                          "props": {
+                            "variant": "destructive",
+                            "size": "sm",
+                            "icon": "trash",
+                            "label": "$t(admin.cat-remove)",
+                            "path": "/instance/app/arcblog/categories/${entry.content.slug}.json",
+                            "confirm": {
+                              "title": "$t(admin.cat-remove-title)",
+                              "message": "$t(admin.cat-remove-msg)"
+                            },
+                            "onSuccessToast": {
+                              "intent": "success",
+                              "message": "$t(admin.cat-removed)",
+                              "duration": 2500
+                            }
+                          },
+                          "events": {
+                            "click": {
+                              "exec": "/.actions/delete"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "console-pane-view-2-card-18-input-4",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.cat-f-slug)",
+                    "name": "catSlug",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-18-p-5",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(admin.cat-slug-hint)",
+                    "intent": "muted",
+                    "scale": "caption"
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-18-input-6",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.cat-f-name)",
+                    "name": "catName",
+                    "required": true
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "console-pane-view-2-card-18-input-7",
+                  "type": "input",
+                  "props": {
+                    "type": "text",
+                    "label": "$t(admin.cat-f-desc)",
+                    "name": "catDesc"
+                  },
+                  "state": {
+                    "value": ""
+                  }
+                },
+                {
+                  "id": "cat-add",
+                  "type": "action",
+                  "props": {
+                    "variant": "primary",
+                    "label": "$t(admin.cat-add)",
+                    "onSuccessToast": {
+                      "intent": "success",
+                      "message": "$t(admin.cat-added)",
+                      "duration": 2500
+                    }
+                  },
+                  "events": {
+                    "click": {
+                      "exec": "/.actions/write",
+                      "args": {
+                        "path": "/instance/app/arcblog/categories/${args.catSlug}.json",
+                        "content": {
+                          "slug": "${args.catSlug}",
+                          "name": "${args.catName}",
+                          "description": "${args.catDesc}",
+                          "sort": "0",
+                          "createdAt": "${generate.timeiso}",
+                          "updatedAt": "${generate.timeiso}"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
             }
           ]
         }

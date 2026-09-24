@@ -82,12 +82,30 @@ test('the wrapper declaration and its locale keys stay in step', () => {
   const declared = [...block[1].matchAll(/^\s*([a-z0-9-]+)\s*\{\s*en "/gm)].map((m) => `wrapper.${m[1]}`);
   assert.ok(declared.length > 0);
 
-  const compiled = readFileSync(join(aupDir, 'wrapper.json'), 'utf8');
+  // References may live anywhere in the compiled app, not just in wrapper.json: a
+  // page can point at the wrapper namespace (the console sidebar labels do). The
+  // runtime resolves `$t(wrapper.x)` against the shared locales either way, so
+  // "dead key" means "referenced nowhere", not "not referenced by the wrapper".
+  const compiled = [
+    join(aupDir, 'wrapper.json'),
+    join(aupDir, 'app.json'),
+    ...readdirSync(join(aupDir, 'pages'))
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => join(aupDir, 'pages', name)),
+  ]
+    .map((path) => {
+      try {
+        return readFileSync(path, 'utf8');
+      } catch {
+        return '';
+      }
+    })
+    .join('\n');
   const used = new Set([...compiled.matchAll(/\$t\((wrapper\.[A-Za-z0-9_-]+)\)/g)].map((m) => m[1]));
 
   const strings = locale('en');
   for (const key of declared) {
-    assert.ok(used.has(key), `${key} is declared but never referenced in wrapper.json`);
+    assert.ok(used.has(key), `${key} is declared but never referenced in the compiled app`);
     assert.ok(strings[key], `${key} is referenced but missing from locales/en.json`);
   }
 });

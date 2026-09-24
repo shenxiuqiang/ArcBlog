@@ -55,6 +55,13 @@ scripts/styles: `/.well-known/service/theme/init.js`, `assets/admin-core.<hash>.
 So the console header has a logo, a page title and a collapsible left sidebar; ours has a
 text-only brand and a right-side action strip.
 
+| our AUP app header | service console — User Center | service console — Admin Console |
+|---|---|---|
+| ![AUP app header](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/01-aup-app-header.png) | ![User Center header](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/03-console-user-center-header.png) | ![Admin Console header](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/04-console-admin-console-header.png) |
+
+(The console captures have the page body hidden — profile and member content are not
+relevant here.)
+
 **Questions**
 
 1. Is a single header across the AUP app and the service console supported today? For example
@@ -99,6 +106,11 @@ Wd = { en: {login, userCenter, signOut, adminConsole}, zh: {...}, ja: {...} }
 
 and the item click contract we had to reverse-engineer is `user-menu-item` with
 `$args.exec` — it is not in the DSL docs we could find.
+
+![Signed-in user menu](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/02-aup-user-menu-items.png)
+
+The three items we contribute (仪表盘 / 工作室 / 运维) always come **after** the platform's
+User Center and Admin Console — we can only append.
 
 **Questions**
 

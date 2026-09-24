@@ -32,22 +32,10 @@
             "kind": "user-menu",
             "items": [
               {
-                "id": "dashboard",
-                "label": "$t(wrapper.nav-dashboard)",
+                "id": "console",
+                "label": "$t(wrapper.nav-console)",
                 "icon": "grid",
                 "exec": "dashboard"
-              },
-              {
-                "id": "studio",
-                "label": "$t(wrapper.nav-studio)",
-                "icon": "settings",
-                "exec": "admin"
-              },
-              {
-                "id": "operations",
-                "label": "$t(wrapper.nav-operations)",
-                "icon": "grid",
-                "exec": "operations"
               }
             ]
           }
