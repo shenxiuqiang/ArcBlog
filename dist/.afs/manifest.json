@@ -10,15 +10,15 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 66002,
+      "size": 66015,
       "contentType": "application/octet-stream",
-      "sha256": "0834014886ae8c41f1170382f4e39a4a2ef4e195b8799b32c3d0f1e2038583ac"
+      "sha256": "e0cfaa901c8724d6f763f22c7ff184d96eda234ccd8093d5ae845f593a67148c"
     },
     {
       "path": ".aup/app.json",
-      "size": 1041,
+      "size": 1060,
       "contentType": "application/json",
-      "sha256": "db7a3d17de3265d8289b9705b108a846d67aad9f3c87e46e50c9bc236044c27b"
+      "sha256": "e3f316868334845d199ac9dfedf86c633af8f48138477f282756095755b222b3"
     },
     {
       "path": ".aup/locales/en.json",
@@ -334,9 +334,9 @@
     },
     {
       "path": ".web/components/theme-bridge/script.js",
-      "size": 7767,
+      "size": 9772,
       "contentType": "text/javascript",
-      "sha256": "78e4d8d7ebd927c8779ace72671c4cdd6b51a9ad615a3fdb25a393fc363cb342"
+      "sha256": "ceda60bd9c6ceda5edd22104e3e0250b726b6805c1a65323c75a56a1aca28b69"
     },
     {
       "path": ".web/components/theme-bridge/style.css",
@@ -1102,15 +1102,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 17526,
+      "size": 17944,
       "contentType": "text/markdown",
-      "sha256": "1b684f214e2aeebb789015bc16b8e82c8fb2a2654b9ebb8c0f762163712c21fa"
+      "sha256": "e54510f3b07e0b8c8fd2066f0bbdb27cf0eddb29c5764d64bae047e8bcbb57ec"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 40456,
+      "size": 43312,
       "contentType": "text/markdown",
-      "sha256": "7823668ff73af216695f042c1b745f9531995d32c9ace26f85b45c646ca23a9d"
+      "sha256": "f158f1c4dd276fc6264f91901152448fdd70cc6f3226f1576c691f6734d5d8ec"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1465,6 +1465,12 @@
       "size": 1211,
       "contentType": "text/javascript",
       "sha256": "50fa174480ae949ff67a5ebbaff9f576fd6ebc9f60d0a53c2e895693e81b6a1b"
+    },
+    {
+      "path": "scripts/arcblog-theme.test.mjs",
+      "size": 2599,
+      "contentType": "text/javascript",
+      "sha256": "7dad6a3619ce7333429b28557e0783ef3dacb9498ef028d8dacaf8b7fbfeabb7"
     },
     {
       "path": "scripts/console-nav.mjs",

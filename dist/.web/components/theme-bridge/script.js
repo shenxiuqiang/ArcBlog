@@ -31,13 +31,20 @@
     palette: SETTINGS_DIR + '/palette.json',
     theme: SETTINGS_DIR + '/theme.json',
   };
+  // Last resolved theme, mirrored into the host's localStorage on every apply
+  // and re-applied synchronously on boot (see applyCached). This closes the
+  // flash window on in-app navigation: the AUP runtime resets <html data-*>
+  // to the compiled default (dark) when it re-renders, and without the cache
+  // the correct mode only came back after the async settings reads — a dark
+  // frame on every menu click for light-theme visitors.
+  var CACHE_KEY = 'arcblog:theme:v1';
   var RANGES = {
     tone: { editorial: 1, clean: 1, mono: 1, bold: 1 },
     palette: { natural: 1, neutral: 1, electric: 1, vivid: 1, warm: 1 },
     theme: { system: 1, light: 1, dark: 1 },
   };
-  var BOOT_RETRIES = 40;
-  var BOOT_DELAY = 250;
+  var BOOT_RETRIES = 100;
+  var BOOT_DELAY = 30;
 
   function host() {
     try {
@@ -65,6 +72,23 @@
       if (res.data) return extractValue(res.data);
     }
     return null;
+  }
+
+  // Synchronously re-apply the last resolved theme from the host's localStorage.
+  // Runs on boot before afs is available, so the correct mode is restored within
+  // a frame of the bridge script executing instead of after the settings reads.
+  function applyCached(p) {
+    try {
+      var raw = p.localStorage.getItem(CACHE_KEY);
+      if (!raw) return;
+      var c = JSON.parse(raw);
+      var doc = p.document.documentElement;
+      if (c && typeof c.tone === 'string' && RANGES.tone[c.tone]) doc.setAttribute('data-tone', c.tone);
+      if (c && typeof c.palette === 'string' && RANGES.palette[c.palette]) doc.setAttribute('data-palette', c.palette);
+      if (c && typeof c.mode === 'string' && RANGES.theme[c.mode]) doc.setAttribute('data-mode', c.mode);
+    } catch (e) {
+      /* best effort */
+    }
   }
 
   function start(p, afs) {
@@ -123,6 +147,16 @@
         if (tone && doc.getAttribute('data-tone') !== tone) doc.setAttribute('data-tone', tone);
         if (palette && doc.getAttribute('data-palette') !== palette) doc.setAttribute('data-palette', palette);
         if (mode && doc.getAttribute('data-mode') !== mode) doc.setAttribute('data-mode', mode);
+        // Mirror the resolved theme so the next navigation's bridge instance
+        // can re-apply it synchronously (see applyCached).
+        try {
+          p.localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({ tone: tone || null, palette: palette || null, mode: mode || null })
+          );
+        } catch (e) {
+          /* best effort */
+        }
       } finally {
         // MutationObserver callbacks are microtasks: keep the flag raised until
         // they have drained so our own writes never trigger a re-apply.
@@ -216,6 +250,11 @@
     // no-op, but a fresh iframe (navigation recreates the frame) must take
     // over — the previous instance's document is gone.
     if (p.__arcblogThemeBridge === window) return;
+    // Fast path: restore the cached theme before waiting on afs. On in-app
+    // navigation the runtime has just reset data-* to the compiled default;
+    // applying the cache now (same task as the bridge script) avoids the dark
+    // frame that used to show until the async settings reads resolved.
+    applyCached(p);
     var afs = p.window && p.window.afs;
     if (!afs || typeof afs.read !== 'function') {
       if (tries++ < BOOT_RETRIES) setTimeout(boot, BOOT_DELAY);

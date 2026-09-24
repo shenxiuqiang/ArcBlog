@@ -3,6 +3,7 @@
   "defaultPage": "posts",
   "tone": "editorial",
   "palette": "natural",
+  "mode": "light",
   "wrapper": "wrapper.json",
   "locales": [
     "en",

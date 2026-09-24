@@ -2,6 +2,7 @@ app "ArcBlog" {
   default posts
   tone editorial
   palette natural
+  mode light
   locales [en, zh]
   wrapper "wrapper.json"
 

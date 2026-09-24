@@ -634,3 +634,38 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 3. 侧栏文案 → 在 `wrapper.aup` 的 i18n 与 `.aup/locales/{en,zh}.json`（**扁平键**）里各加一条，
    `scripts/arcblog-i18n.test.mjs` 会检查"每个 wrapper 键都被引用、每个引用都有 en/zh"。
 
+
+## 17. 主题闪烁：`data-mode` 重置 + 桥接 iframe 重建（实测）
+
+现象：点菜单切换控制台页面时，先闪一下深色，再变回明亮（约 250–350ms）。
+
+实测时间线（真实 Chrome，`MutationObserver` + rAF 采样；系统明亮主题，站点设置 `theme=system`）：
+
+| 时刻 | 事件 |
+|---|---|
+| t≈30ms | AUP 运行期在导航渲染时把 `<html data-mode>` **重置为编译默认值**；`.aup/app.aup` 未声明 `mode` 时该值为 `dark` |
+| t≈35ms | 旧桥接 iframe 被移除、新桥接 iframe 挂上（导航必然重建这个 frame） |
+| t≈70→314ms | 主线程被导航后的渲染占满（244ms 内 0 个 rAF 帧），iframe 的文档解析与内联脚本只能排队 |
+| t≈330–430ms | 新 iframe 的脚本终于执行，解析出 `system→light` 并写回 `data-mode=light` |
+
+**闪烁窗口 = 运行期重置到桥接 iframe 真正跑起来之间的主线程占用。** 三条平台限制（均已实测，别再试图绕）：
+
+1. **AUP 没有宿主脚本注入 primitive**：63 个 primitive 里没有 `script`/`html`/`raw`/`slot`，改 `<html>` 属性只能靠桥接 iframe——这正是 theme-bridge 存在的原因。
+2. **导航必然重建桥接 iframe**：给 iframe 的 `contentWindow` 打标记，导航后标记消失（`sameElement:false`）。
+3. **iframe 的 MutationObserver 随 iframe 一起死**：即使它 observe 的是父文档，移除 iframe 后回调不再触发（实测 `survived:false`），所以"让旧实例顺手补一刀"行不通。
+
+已做的优化（由 `scripts/arcblog-theme.test.mjs` 守住）：
+
+- **桥接侧**：解析结果写进父窗口 `localStorage['arcblog:theme:v1']`，新 iframe **一启动就同步回放缓存**（`applyCached`），不再等 3 次 `afs.read`；boot 重试间隔 250ms→30ms。这样"桥接开始执行 → 主题正确"落在同一个 tick。
+- **编译侧**：`.aup/app.aup` 声明 `mode light`，让运行期自己的默认值等于本站当前外观，于是对明亮访客**完全没有闪烁**。
+
+代价与选择：`mode` 只接受 `light`/`dark`（`mode must be "light" or "dark"`，**不接受 `system`**），所以：
+
+| 站点默认 `theme` | 编译 `mode` | 结果 |
+|---|---|---|
+| `system` | 未声明（运行期默认 `dark`） | 明亮访客每次导航闪深色（原始 bug） |
+| `system` | `light` | 明亮访客不闪；深色访客每次导航闪浅色（当前配置） |
+| `light` | `light` | **默认访客都不闪**；手动切到深色的用户会闪 |
+| `dark` | `dark` | **默认访客都不闪**；手动切到浅色的用户会闪 |
+
+想让所有默认访客都不闪，就把站点默认设成**固定**外观并与编译 `mode` 一致；保留 `system` 自适应，就必然有一半访客（系统偏好与编译值相反）看到闪烁——这是当前架构的硬边界。
