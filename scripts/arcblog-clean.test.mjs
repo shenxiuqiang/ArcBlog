@@ -27,6 +27,12 @@ test('isTestRecordId recognises residue and leaves real content alone', () => {
   assert.equal(isTestRecordId('attr-ok-123:creator_share.json'), true);
   assert.equal(isTestRecordId('econ-test-order-9.json'), true);
   for (const prefix of TEST_RECORD_PREFIXES) assert.equal(isTestRecordId(`${prefix}x`), true);
+
+  // Guard the ids the suite actually produces — the loop above only re-tests the
+  // list against itself. Keep these in step when a test starts writing records.
+  assert.equal(isTestRecordId('lifecycle-test-1789965654847.json'), true, 'arcblog-lifecycle.test.mjs');
+  assert.equal(isTestRecordId('query-fixture.json'), true, 'arcblog-query-posts.test.mjs');
+  assert.equal(isTestRecordId('audit-test-1789965654847.json'), true, 'arcblog-audit.test.mjs');
   assert.equal(isTestRecordId('hello-arcblog.json'), false);
   assert.equal(isTestRecordId('technology.json'), false);
   assert.equal(isTestRecordId(''), false);

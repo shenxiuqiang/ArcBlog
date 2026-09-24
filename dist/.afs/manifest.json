@@ -1041,6 +1041,12 @@
       "sha256": "93a2bdb15618a10d8f81fb30368f7245c55da46523e05ff9e8a471d31e534b65"
     },
     {
+      "path": ".zshrc.bak-before-socks-removal",
+      "size": 3207,
+      "contentType": "application/octet-stream",
+      "sha256": "fefa01a10a230db1b4cfaf6b09cf935d5edf815acb574d76d82a5370fc778301"
+    },
+    {
       "path": "agents/arcblog-agent/agent.dsl",
       "size": 604,
       "contentType": "application/octet-stream",
@@ -1066,15 +1072,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 14717,
+      "size": 15172,
       "contentType": "text/markdown",
-      "sha256": "c9eb134ed41af4fcb5af1c18c713488e0c35feb27d2e0069d7b90a591040cd14"
+      "sha256": "665baab2a643204710a57db2860f8132ec30ea798f856ec2727c8a856edb853c"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 35892,
+      "size": 36528,
       "contentType": "text/markdown",
-      "sha256": "5fbc484d9a00db4d35db00089dc14bf589a88f486ba4da0337050d1722abd672"
+      "sha256": "ea90b5979b0f892efa34eb101fe5d11a8c5fd9e80b95c6479c863c2c8a66c3da"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1102,9 +1108,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 20604,
+      "size": 21444,
       "contentType": "text/markdown",
-      "sha256": "cba84c6e20a2e3ea84d2176aa8202a45e9d400ce885f9f580adf279436e531b8"
+      "sha256": "27fc845a911af55b108df7dc683692ee84c6bc62afd9ba8c5c3da0f4af6ce810"
     },
     {
       "path": "docs/persistence.md",
@@ -1240,9 +1246,9 @@
     },
     {
       "path": "scripts/arcblog-clean.test.mjs",
-      "size": 3647,
+      "size": 4107,
       "contentType": "text/javascript",
-      "sha256": "eb1192b4ddcd16cffa4b4ddc79f90b04deb49cc104be1eda3d85802c39f97b91"
+      "sha256": "12815d927c83be52beedb3808dff754d8ca6fd454e388d2285f9744210ddda05"
     },
     {
       "path": "scripts/arcblog-daily-report.mjs",
@@ -1414,9 +1420,9 @@
     },
     {
       "path": "scripts/lib/doctor.mjs",
-      "size": 8033,
+      "size": 8492,
       "contentType": "text/javascript",
-      "sha256": "35cf5dba7949d74cf53c2973e15b43cf82862c44e75f75dab8e7407f1e82a8f9"
+      "sha256": "b751d4e04dcb10a27ae1b495939f0404bfdbd15eec2500b0ceb8c8b8ed7f7f57"
     },
     {
       "path": "scripts/lib/economy.mjs",

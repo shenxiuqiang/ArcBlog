@@ -531,6 +531,7 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 | `frame` **没有 `style` 属性** | 其 props 为 `src/bridge/overlay/loading/size/fallback/autoHeight*/aspectRatio/allow/sandbox/transparent/title/variant`；我传的 `style` 被安全样式白名单丢弃，iframe 保持默认 200px |
 | `frame` 的 `autoHeight` **未生效** | 子文档 `body.scrollHeight=900`，父级 iframe 仍为 200px；改用 `aspectRatio="16 / 7"` 后正常（1134→496px） |
 | `window.afs.tryList(path)` **只返回元数据** | 条目无 `content` 字段；需 `tryList(path, { includeContent: true })` 才带内容（`includeContent` 在运行时里出现 13 次） |
+| `frame` 默认给 iframe 加 `sandbox="allow-scripts allow-forms allow-popups allow-same-origin"` | 该列表**没有 top-navigation**，所以组件内 `target="_parent"` 的 CTA 点击**被浏览器静默拦截**。`sandbox` 属性可传字符串：运行时以 `allow-scripts allow-forms allow-popups` 为基列表，再附加字符串里合法的 token（`allow-top-navigation-by-user-activation` 等在白名单内）。首页 hero 用 `sandbox="allow-top-navigation-by-user-activation"`，点击"阅读全文"才会真正跳转；同源 src 会自动补 `allow-same-origin`，`sandbox=false` 在同源时直接不写该属性 |
 | 引擎在 slideshow/autoplay 模式把**内联样式**写到活动幻灯片 | `style.alignItems="center"; style.justifyContent="center"` —— 要改排版必须 `!important` |
 | `prefers-reduced-motion: reduce` 会影响体验 | 自动化 Chromium 报告 reduce；组件据此退化为手动轮播（`mode=slideshow`），实测 `reducedMotion: false` 时为 `autoplay` 且 `advanced: true` |
 

@@ -131,6 +131,14 @@ export const TEST_RECORD_PREFIXES = [
   'attr-content-',
   'agent-surface-',
   'agent-draft',
+  // `arcblog-lifecycle.test.mjs` / the audit test also leave timestamped residue.
+  'audit-test-',
+  // `arcblog-lifecycle.test.mjs` archives then deletes its fixture, so each run
+  // leaves a soft-deleted `lifecycle-test-<ts>` record in drafts/. It was missing
+  // here, so 107 of them accumulated and showed up in the Creator Studio list.
+  'lifecycle-test-',
+  // The provider-query test's fixture (same archive-then-delete cleanup).
+  'query-fixture',
 ];
 
 /** Does an AFS entry id look like test residue? */

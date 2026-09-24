@@ -219,6 +219,20 @@ Policy enforced by `check`:
 - **default-closed** tools (`settle_payment`, `change_wallet`, `change_role`)
   never run without explicit human authorization — spec §130.
 
+## Test residue and the cleaner
+
+`npm test` sweeps what the suites leave behind by running
+`node scripts/arcblog-clean.mjs --confirm` after a **passing** run (a failing run keeps
+the residue for inspection). The matcher only recognises ids listed in
+`TEST_RECORD_PREFIXES` (`scripts/lib/doctor.mjs`), so **a new test that writes records
+must add its prefix** — otherwise the records pile up in `drafts/` and are rendered in
+the Creator Studio list (107 `lifecycle-test-*` records once did exactly that).
+
+`scripts/arcblog-clean.test.mjs` pins the prefixes the suite actually produces
+(`lifecycle-test-`, `audit-test-`, `query-fixture`, …), so a gap fails a test instead of
+quietly accumulating. Stale one-off fixtures that no test creates are not the cleaner's
+job — remove those by hand (`economy/access-grants`, `economy/ledger`).
+
 ## Filtered lists and the query index
 
 `afs-list` `filter` / `serverFilters` push a `where` clause down to
