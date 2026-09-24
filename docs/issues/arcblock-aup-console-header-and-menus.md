@@ -107,7 +107,7 @@ Wd = { en: {login, userCenter, signOut, adminConsole}, zh: {...}, ja: {...} }
 and the item click contract we had to reverse-engineer is `user-menu-item` with
 `$args.exec` — it is not in the DSL docs we could find.
 
-![Signed-in user menu](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/02-aup-user-menu.png)
+![Signed-in user menu](https://raw.githubusercontent.com/shenxiuqiang/ArcBlog/main/docs/issues/assets/02-aup-user-menu-items.png)
 
 The three items we contribute (仪表盘 / 工作室 / 运维) always come **after** the platform's
 User Center and Admin Console — we can only append.
