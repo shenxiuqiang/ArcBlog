@@ -990,4 +990,6 @@ view probe-tabs mode=tabs {
 
 | 悬停菜单项时文字看不见 | 桥的 hover 规则只改了背景（`--color-accent-bg`，浅色），没有改文字色；选中项的文字色是 `--color-bg`（近白），于是悬停选中项 = 浅底 + 浅字 | hover 规则同时设定 `color:var(--color-text)`；并追加**选中态的 `:hover` 变体**（保持深底反白），CSS 顺序改为 hover 在前、active 在后 | 悬停未选中项：底 `rgba(42,110,0,.08)` + 字 `rgb(26,26,31)`，对比度 **16.59:1**；悬停选中项：底 `rgb(26,26,31)` + 字 `rgb(250,250,248)`，对比度 **16.59:1**（两态都可读） |
 
+| 从绑定路由进控制台时 URL 带着旧路径 | 在 `/posts/<slug>`、`/store` 这类绑定路由上，用户菜单的"管理后台"是**应用内换页**：运行时保留当前 path，只把 `?page=console` 追加到查询串（实测 `/posts/hello-arcblog?page=console#dashboard`），页面正确但 URL 撒谎——分享/刷新会落到文章页语义上 | 桥的 `setHash()` 统一产出规范 URL：`/?page=console` + 其余查询参数（如 `locale`，去掉 `page`）+ `#<section>`，用 `replaceState` 立即改写 | 文章页 → 管理后台：`/?page=console&locale=zh#dashboard`；商店页同样；`/manage/seo` → `/?page=console&locale=zh#seo-admin`（面板与高亮均正确） |
+
 **历史与深链（一并定案）**：`pushState` 每节一条历史会与运行时的历史处理互相打架——实测 `history.back()` 后立刻收到一次 `popstate` 把上一个 hash **原样塞回**，栈不移动。因此节切换只做 **`replaceState`**：URL 始终带 `#<section>`（可深链、可分享、刷新后恢复），但浏览器前进/后退按普通页面离开控制台。这是当前运行时能力下的诚实取舍，待运行时暴露导航历史接口再改。

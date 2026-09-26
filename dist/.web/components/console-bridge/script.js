@@ -175,7 +175,18 @@
   function setHash(section) {
     var location = hostLocation();
     if (!location) return;
-    var url = location.pathname + location.search + '#' + section;
+    // Canonical form, always `/?page=console&…​#<section>`.
+    //
+    // Entering the console from a bound route (an article at `/posts/<slug>`, a
+    // preview, a static page) makes the runtime switch the page *in place*: it
+    // keeps the path and only appends `?page=console`, so the URL read
+    // `/posts/hello-arcblog?page=console#dashboard` while showing the console.
+    // Normalising here fixes every entry path at once, without a reload.
+    var params = new URLSearchParams(location.search);
+    params.delete('page');
+    var extra = params.toString();
+    var url = '/?page=console' + (extra ? '&' + extra : '') + '#' + section;
+    if (url === location.pathname + location.search + location.hash) return;
     try {
       hostWindow().history.replaceState(null, '', url);
     } catch (err) {

@@ -114,6 +114,7 @@
 * **15 个节 = 15 个页签面板**（`view console-sections mode=tabs`）：内容、帖子、页面、写文章、Hero、分类、SEO、分发、外观、运维、Hub、媒体、Agent、分成策略、访问授权。
 * **侧栏是导航、页签条隐藏**：侧栏项是 `action … href="#<section>"` 的 hash 链接；运行时生成的 tab 条由 console-bridge 用 CSS 隐藏，只当切换引擎用。
 * **切换是就地替换**：实测点击侧栏/页签时侧栏、页签容器、15 个面板与其内列表的 DOM **全部复用**，零网络往返、零整页重渲染（arc-contracts §21.14 坑 1：`hashchange` 会导致子树重建，因此 URL 用 `pushState` 更新）。
+* **URL 永远规范化**：无论从哪个入口进入控制台（`/?page=console`、文章/商店等绑定路由上的应用内换页、`/manage/seo`），桥都会用 `replaceState` 把 URL 改写成 `/?page=console&…​#<section>`——路径不带旧页面语义，分享与刷新都落到控制台。
 * **深链**：`?page=console#media-admin` 可直接打开、可分享、刷新后恢复；默认 landing 规范化为 `#dashboard`。节切换用 `replaceState`，**不进入浏览器历史**（运行时自身的历史处理会与 `pushState` 打架，arc-contracts §21.14.1）——后退按普通页面离开控制台。
 * **侧栏行必须铺满**：`action href` 渲染的 `<a>` 被运行时按行内布局（实测 258px 列里只有 91px），桥注入 `align-self:stretch` 才成为整行可点、整行高亮的菜单项。
 * **切面板不要点运行时的页签按钮**：那会触发 `tab-change` 上报并导致侧栏/面板子树重写（闪动）；桥直接切换 `data-active`（同一 DOM 契约）。

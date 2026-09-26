@@ -165,12 +165,6 @@
       "sha256": "01e71699ce1f04d27cd140fba998b98f4f48f13d7a0241b24c6dfe27f062dd33"
     },
     {
-      "path": ".aup/man/probe-partial.yaml",
-      "size": 534,
-      "contentType": "text/yaml",
-      "sha256": "5c46dae560b606a42d1c5ee19e85075637d53db41df814c9d4f62bbb3384374f"
-    },
-    {
       "path": ".aup/man/reader.yaml",
       "size": 1601,
       "contentType": "text/yaml",
@@ -430,9 +424,9 @@
     },
     {
       "path": ".web/components/console-bridge/script.js",
-      "size": 14426,
+      "size": 15089,
       "contentType": "text/javascript",
-      "sha256": "f62b4e61dad15b939f535dff242f21fb5bb50923638fa03be773fb1bb371d3fc"
+      "sha256": "b719a72cda92f69fa33783b66da14f8ef512a03b0361ce65855f4e8af6f46e83"
     },
     {
       "path": ".web/components/console-bridge/style.css",
@@ -1276,21 +1270,21 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 84145,
+      "size": 84855,
       "contentType": "text/markdown",
-      "sha256": "ca416c0d814aab641f09017b1605fb79e2ec92932242f8cfb31da20e17f306a3"
+      "sha256": "45eeb2e4f336c34915fdc3891fb1713fcee27e0f16098ae76ff0a98f5591e8fb"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 32369,
+      "size": 32678,
       "contentType": "text/markdown",
-      "sha256": "ad2648faac31792c0aabca1e6a03f7447d922938115b3fa66b24c24e4ac22eed"
+      "sha256": "8bba50d2e9efaa43fa2b372053a100d228e708f9a00c9ff9f312a7b1eb5d888b"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 24337,
+      "size": 24756,
       "contentType": "text/markdown",
-      "sha256": "aeb78da0ef8a02abe242100d7800d7c0239c25ae300668234f7df90d8e0c837c"
+      "sha256": "a926c1e863439ce42c3aca95ca94ba1de9a7a1105cb8bdfe35f6c887cb81215a"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
