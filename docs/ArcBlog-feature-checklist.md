@@ -202,3 +202,4 @@
 | 2026-09 | 修复轮次 10：重构上线后三处问题——顶栏丢失全宽包装、侧栏 `action href` 锚点不铺满（91px/258px，桥注入 `align-self:stretch`）、切节仍触发 `tab-change` 上报并重写子树（改为直接切换面板 DOM 状态，回归 0 次 HTTP 往返）；节切换定案为 `replaceState`（深链保留、不进历史）。复测证据入 arc-contracts §21.14.1 与 UI 标准 §2.3。→ 状态计数不变 |
 | 2026-09 | 修复轮次 11：侧栏**悬停不可读**——hover 规则只改背景未改文字色，悬停选中项呈"浅底+近白字"；改为 hover 同时设文字色 + 选中态 `:hover` 变体（顺序 hover 在前、active 在后），两态对比度实测 16.59:1。→ 状态计数不变 |
 | 2026-09 | 修复轮次 12：**控制台 URL 未规范化**——从绑定路由（`/posts/<slug>`、`/store`）点"管理后台"是应用内换页，运行时保留旧 path 只追加 `?page=console`，URL 变成 `/posts/hello-arcblog?page=console#dashboard`；桥改为统一 `replaceState` 成 `/?page=console&…#<section>`，实测文章页/商店页/`/manage/seo` 三处入口均正确。→ 状态计数不变 |
+| 2026-09 | 改版轮次 13：**页脚重排**——横线移到页脚顶边（原为底部栏 border-top）、右侧链接改为一行靠右、版权留在末行；因 `app-footer` 无 variant/divider props，由 theme bridge 注入 `#arcblog-chrome-style` 覆盖（arc-contracts §21.15，含平台 CSS 实测）。→ 状态计数不变 |

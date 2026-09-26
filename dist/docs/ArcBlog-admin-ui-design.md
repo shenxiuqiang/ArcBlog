@@ -122,6 +122,16 @@
 * **旧链接不失效**：15 个旧页名（`?page=admin` 等）与绑定路由 `/manage/seo` 各保留一个**极简别名页**，由 console-bridge 用 `sessionStorage` 交接后跳到对应 `#<section>`。
 * **右侧内容多时用节内页签**：节内可再放 `view mode=tabs`（桥只接管顶层 `console-sections`），用于"列表 + 详情"或多视图并列。
 
+### 2.35 页脚布局
+
+公共页页脚（`app-footer`）的固定排版：**横线在页脚顶边**（不是内容与版权之间），随后是「品牌 + 标语」在左、**站点链接在同一行靠右**，版权在最后一行。
+
+| 规则 | 落地方式 |
+| --- | --- |
+| 横线在顶边、内部无横线 | 覆盖 `.aup-app-footer` 的 `border-top` 与 `.aup-footer-bottom-bar` 的 `border-top` |
+| 链接一行靠右 | `.aup-footer-column` 改 `flex-direction:row`、`.aup-footer-columns[data-count="1"]` 右对齐 |
+| 注入位置 | theme bridge 注入的 `#arcblog-chrome-style`（随 render 幂等重放），改版需复测（arc-contracts §21.15） |
+
 ### 2.4 页面内部结构
 
 每个页面自上而下只有三层，顺序固定：

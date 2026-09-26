@@ -45,6 +45,30 @@
   };
   var BOOT_RETRIES = 100;
   var BOOT_DELAY = 30;
+  // App-chrome layout that the platform's footer primitive cannot express
+  // (arc-contracts §21.15): the divider belongs on the footer's top edge, and
+  // the right-hand link column reads as one row. Class names are the platform's
+  // own, verified against the served aup-app.css.
+  var CHROME_STYLE_ID = 'arcblog-chrome-style';
+  var CHROME_CSS = [
+    '.aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}',
+    '.aup-footer-bottom-bar{border-top:0;padding-top:0}',
+    '.aup-footer-columns[data-count="1"]{grid-template-columns:auto;justify-items:end}',
+    '.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}',
+  ].join('');
+
+  function injectChromeStyles(p) {
+    try {
+      var doc = p.document;
+      if (!doc || !doc.head || doc.getElementById(CHROME_STYLE_ID)) return;
+      var el = doc.createElement('style');
+      el.id = CHROME_STYLE_ID;
+      el.textContent = CHROME_CSS;
+      doc.head.appendChild(el);
+    } catch (e) {
+      /* best effort: the footer keeps the platform layout */
+    }
+  }
 
   function host() {
     try {
@@ -93,6 +117,7 @@
 
   function start(p, afs) {
     var doc = p.document.documentElement;
+    injectChromeStyles(p);
     var applying = false;
     var current = { tone: null, palette: null, theme: null };
     var unsubs = [];
@@ -139,6 +164,8 @@
 
     function apply() {
       if (!alive()) return;
+      // The runtime may replace the host head on a render; re-assert idempotently.
+      injectChromeStyles(p);
       var tone = current.tone;
       var palette = current.palette;
       var mode = resolvedMode();

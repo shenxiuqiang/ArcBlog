@@ -993,3 +993,39 @@ view probe-tabs mode=tabs {
 | 从绑定路由进控制台时 URL 带着旧路径 | 在 `/posts/<slug>`、`/store` 这类绑定路由上，用户菜单的"管理后台"是**应用内换页**：运行时保留当前 path，只把 `?page=console` 追加到查询串（实测 `/posts/hello-arcblog?page=console#dashboard`），页面正确但 URL 撒谎——分享/刷新会落到文章页语义上 | 桥的 `setHash()` 统一产出规范 URL：`/?page=console` + 其余查询参数（如 `locale`，去掉 `page`）+ `#<section>`，用 `replaceState` 立即改写 | 文章页 → 管理后台：`/?page=console&locale=zh#dashboard`；商店页同样；`/manage/seo` → `/?page=console&locale=zh#seo-admin`（面板与高亮均正确） |
 
 **历史与深链（一并定案）**：`pushState` 每节一条历史会与运行时的历史处理互相打架——实测 `history.back()` 后立刻收到一次 `popstate` 把上一个 hash **原样塞回**，栈不移动。因此节切换只做 **`replaceState`**：URL 始终带 `#<section>`（可深链、可分享、刷新后恢复），但浏览器前进/后退按普通页面离开控制台。这是当前运行时能力下的诚实取舍，待运行时暴露导航历史接口再改。
+
+### 21.15 页脚排版：分割线在顶边、链接横排（平台 CSS 覆盖）
+
+平台 `app-footer` 原语的 DOM/样式是固定的（bundle 证据 + 线上 `aup-app.css` 实测）：
+
+```
+footer.aup-app-footer
+  div.aup-footer-top        ← brand（.aup-footer-brand）+ columns（.aup-footer-columns > .aup-footer-column > .aup-footer-link-wrap 逐条竖排）
+  div.aup-footer-bottom-bar ← .aup-footer-copyright + .aup-footer-bottom-links（margin-left:auto，天然横排）
+```
+
+| 事实 | 证据 |
+| --- | --- |
+| 那条横线是 `.aup-footer-bottom-bar` 的 `border-top`，不是页脚顶边 | 线上 CSS：`.aup-footer-bottom-bar{display:flex;...;border-top:1px solid var(--color-border);padding-top:16px}` |
+| 链接列默认**竖排** | `.aup-footer-column{display:flex;flex-direction:column;gap:8px}` |
+| 底部链接天生横排且右对齐 | `.aup-footer-bottom-links{...;margin-left:auto}` |
+| `app-footer` 只有 `brand` / `columns` / `social` / `bottomBar` 四个 props，没有 variant/divider 开关 | 渲染器 `fh()` 只读这四个字段；平台自带的 build-info 页脚是用 `.aup-build-info-footer .aup-footer-bottom-bar{border-top:none}` 这条**额外 class** 关掉横线的 |
+
+因此「横线在顶边 + 右侧链接一行」无法用 props 表达，需要覆盖样式。ArcBlog 由 theme bridge（本就负责宿主文档外观）注入一处全局样式，随每次 render 幂等重放：
+
+```css
+.aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}
+.aup-footer-bottom-bar{border-top:0;padding-top:0}
+.aup-footer-columns[data-count="1"]{grid-template-columns:auto;justify-items:end}
+.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}
+```
+
+实测（`?page=about` 与首页 `/`，中英双语、宽屏与 500px 窄屏）：
+
+| 观测 | 结果 |
+| --- | --- |
+| 页脚顶边 | `border-top: 1px solid`，底栏 `border-top: 0`（页脚内不再有横线） |
+| 链接 | 关于/商店/作者/RSS 或 About/Store/Author/RSS **同一行**（`y` 相同）、靠右 |
+| 顺序 | 品牌 → 标语 → 链接 → 版权 |
+| 窄屏 | `scrollWidth === clientWidth`，无横向溢出；链接行可换行不溢出 |
+| 代价 | 依赖平台 class 名（与 §21.4/§21.14 同类的"实测契约"）；平台改版需复测这四行 |
