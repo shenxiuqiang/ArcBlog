@@ -411,8 +411,8 @@ spec Phase 2 要求确认「list / read / write / search / exec 哪些真正由 
 删除单条记录用 `exec "/.actions/delete" path="…"`（Studio 的取消发布与分类删除即此路径）。
 
 **授权边界**（`replicated`，均为 `minRole: admin`）：`categories`、`config`、`economy-policy`、
-`economy-products`、`hub-registrations` 可写；`economy-orders`/`settlements`/`ledger`/`attributions`/
-`access-grants`/`config-agent-grants` 连读都是 admin-only（含买家与读者身份）。
+`economy-products` 可写；`economy-orders`/`settlements`/`ledger`/`refunds`/`attributions`/`access-grants` 与整棵 `config`、`hub`
+连读都是 admin-only（含买家与读者身份）。
 
 **仍未验证的部分（诚实边界）**：`${args.*}` / `$session.*` / `${generate.timeiso}` 在 **浏览器运行期**
 的插值行为无法在本环境验证（AUP 页面是客户端渲染的 SPA）。因此凡是新增的页面写表单，都严格复用
@@ -502,6 +502,17 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 | `drafts` / `media` / `config`（整树）/ `hub` | admin | ⛔ DENIED |
 | `economy/{orders,settlements,ledger,access-grants,attributions}` | admin | ⛔ DENIED |
 | 未声明路径 | — | ⛔ DENIED |
+
+### 声明收敛（2026-09）
+
+`replicated` 的集合是**权限来源**（未声明 = 默认拒绝），不是可有可无的装饰，因此清理时只做"合并等价集合"，不做删除：
+
+| 变化 | 之前 | 之后 | 为什么等价 |
+| --- | --- | --- | --- |
+| config 树 | `config`（`config/*`）+ `config-trusted-hubs` + `config-agent-grants` | 单个 `config`（`config/*`，admin/admin） | 三者都是 admin/admin，父前缀 `networkRead: config` 已是 admin；合并后顺带覆盖 `config/signing-keys`、`config/nft-factories.json`、`config/node-nft.json`（此前无集合覆盖） |
+| hub 树 | `hub-registrations` + `hub-index` | 单个 `hub`（`hub/*`，admin/admin） | 同上，父前缀 `networkRead: hub` 已是 admin |
+
+集合数 21 → 19，访客可见性不变（`arcblog-permissions.test.mjs` 6/6）。守卫同时从"硬编码集合名"改为**按路径覆盖**断言：私有目录必须有 admin-only 集合覆盖、公开目录必须有 guest 集合覆盖——以后合并/改名只要权限不变就不会误报，而真删掉授权一定会失败。
 
 ### 自动化守卫
 `scripts/arcblog-permissions.test.mjs` 以**无 cookie 的访客身份**请求 `POST /api/afs/rpc`

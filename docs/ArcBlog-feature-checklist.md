@@ -203,3 +203,4 @@
 | 2026-09 | 修复轮次 11：侧栏**悬停不可读**——hover 规则只改背景未改文字色，悬停选中项呈"浅底+近白字"；改为 hover 同时设文字色 + 选中态 `:hover` 变体（顺序 hover 在前、active 在后），两态对比度实测 16.59:1。→ 状态计数不变 |
 | 2026-09 | 修复轮次 12：**控制台 URL 未规范化**——从绑定路由（`/posts/<slug>`、`/store`）点"管理后台"是应用内换页，运行时保留旧 path 只追加 `?page=console`，URL 变成 `/posts/hello-arcblog?page=console#dashboard`；桥改为统一 `replaceState` 成 `/?page=console&…#<section>`，实测文章页/商店页/`/manage/seo` 三处入口均正确。→ 状态计数不变 |
 | 2026-09 | 改版轮次 13：**页脚重排**——横线移到页脚顶边（原为底部栏 border-top）、右侧链接改为一行靠右、版权留在末行；因 `app-footer` 无 variant/divider props，由 theme bridge 注入 `#arcblog-chrome-style` 覆盖（arc-contracts §21.15，含平台 CSS 实测）。→ 状态计数不变 |
+| 2026-09 | 维护轮次 14：**blocklet.yaml 补全与收敛**——按官方 manifest 分组补齐可发布 metadata（`logo`（新增 24×24 currentColor 图标）、`keywords`、`tags`、`author`、`copyright`、`license: UNLICENSED`、`homepage`、`documentation`、`support`、`repository`）；删除 4 个过窄集合、合并为 2 个整树集合（`config`、`hub`，21→19，访客可见性不变）；修正引用已不存在路径的过时注释；权限守卫改为按路径覆盖断言。依据与实测入 arc-contracts §13（声明收敛）。→ 状态计数不变 |

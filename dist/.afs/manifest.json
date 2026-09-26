@@ -346,9 +346,9 @@
     },
     {
       "path": ".gitignore",
-      "size": 536,
+      "size": 542,
       "contentType": "application/octet-stream",
-      "sha256": "91757ea8bee7cea188487fa8cc2c2b0630eb410db15f8b038d3baa57a541a15e"
+      "sha256": "ce1d216c7616fa0ca2eee8d0794d6e01c43506b270c20e3fa0a4734087f77c80"
     },
     {
       "path": ".route/root",
@@ -1258,9 +1258,9 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 9208,
+      "size": 9696,
       "contentType": "text/yaml",
-      "sha256": "49358bc12cb1ff57c2400a527af623d3b3092ac75c66018d209489aa4d25e3d7"
+      "sha256": "c7a1f6780df9aaa290c5b355756a1c965f1181437b66d75d875df9efd0336b51"
     },
     {
       "path": "CLAUDE.md",
@@ -1270,9 +1270,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 87150,
+      "size": 87142,
       "contentType": "text/markdown",
-      "sha256": "d08b81904b358ceaa74979014d641024af26d09102ae9099e8efa774e12aad01"
+      "sha256": "af6828a58ae3a54f353dd33766930920a5699e69395d7397bbaff84a6117cc82"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1387,6 +1387,12 @@
       "size": 1272,
       "contentType": "text/markdown",
       "sha256": "2e2ba1d889f0f1eb6b16cb2ffe6921362fcc3f1565ace11df71577884f6d1cfc"
+    },
+    {
+      "path": "logo.svg",
+      "size": 472,
+      "contentType": "image/svg+xml",
+      "sha256": "cb51326ea2dbbac65aebfc1a17cb71b4d952f1b5ada772979c04123752ef5cd4"
     },
     {
       "path": "logs/combined.log",

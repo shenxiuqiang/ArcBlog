@@ -411,8 +411,8 @@ spec Phase 2 要求确认「list / read / write / search / exec 哪些真正由 
 删除单条记录用 `exec "/.actions/delete" path="…"`（Studio 的取消发布与分类删除即此路径）。
 
 **授权边界**（`replicated`，均为 `minRole: admin`）：`categories`、`config`、`economy-policy`、
-`economy-products`、`hub-registrations` 可写；`economy-orders`/`settlements`/`ledger`/`attributions`/
-`access-grants`/`config-agent-grants` 连读都是 admin-only（含买家与读者身份）。
+`economy-products` 可写；`economy-orders`/`settlements`/`ledger`/`refunds`/`attributions`/`access-grants` 与整棵 `config`、`hub`
+连读都是 admin-only（含买家与读者身份）。
 
 **仍未验证的部分（诚实边界）**：`${args.*}` / `$session.*` / `${generate.timeiso}` 在 **浏览器运行期**
 的插值行为无法在本环境验证（AUP 页面是客户端渲染的 SPA）。因此凡是新增的页面写表单，都严格复用

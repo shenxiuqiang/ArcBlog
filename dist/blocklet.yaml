@@ -5,6 +5,39 @@ did: did:blocklet:arcblog
 version: 0.3.7
 description: "A DID-native publishing space for readable Markdown posts and images."
 
+# Publishable metadata (manifest groups: identity / metadata / runtime / data).
+# Values are facts about this repository: the git remote, the docs tree, and the
+# package privacy flag in package.json (no LICENSE file exists yet, so the
+# manifest says UNLICENSED rather than inventing a licence).
+logo: logo.svg
+keywords:
+  - blocklet
+  - did
+  - blog
+  - markdown
+  - publishing
+  - afs
+  - aup
+  - self-hosted
+tags:
+  - blog
+  - publishing
+  - did
+  - markdown
+author:
+  name: shenxiuqiang
+  url: https://github.com/shenxiuqiang
+copyright:
+  owner: ArcBlog
+  year: 2026
+license: UNLICENSED
+homepage: https://github.com/shenxiuqiang/ArcBlog
+documentation: https://github.com/shenxiuqiang/ArcBlog/tree/main/docs
+support: https://github.com/shenxiuqiang/ArcBlog/issues
+repository:
+  type: git
+  url: https://github.com/shenxiuqiang/ArcBlog
+
 # Pretty URLs for the reader page: /posts/<slug> resolves the post record and
 # renders the `reader` page (see .aup/app.aup), same pattern as discuss-kit.
 sites:
@@ -140,35 +173,35 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
-  # spec §12: /arcblog/node/{profile,identity,capabilities} — public metadata,
-  # admin-writable (node identity/roles are operator-controlled).
+  # /arcblog/node/{profile,identity} — public metadata, admin-writable
+  # (node identity/roles are operator-controlled, spec §107–§109).
   node:
     canonical: instance/app/arcblog/node/*
     copy: none
     minRole: admin
     readRole: guest
-  # spec §12: /arcblog/content/categories — operator-managed taxonomy.
+  # /arcblog/categories — operator-managed taxonomy (spec §12).
   categories:
     canonical: instance/app/arcblog/categories/*
     copy: none
     minRole: admin
     readRole: guest
-  # spec §12: /arcblog/content/media — upload index (admin-only reads).
+  # /arcblog/media — upload index, admin-only reads (spec §15.4).
   media:
     canonical: instance/app/arcblog/media/*
     copy: none
     minRole: admin
     readRole: admin
-  # spec §9: externalized role/NFT configuration (operator-managed).
+  # The whole config tree is one admin-only collection: roles, content-signing
+  # keys, trusted Hub keys, agent grants and the node-NFT records (spec §9/§61/§67).
+  # Guest on the PARENT prefix would also expose the directory listing of nested
+  # admin-only records (measured: a guest could list config/agent-grants and read
+  # the grant file ids), so the tree stays admin — the documented ARC pattern is
+  # to gate the tree and never nest a public child under a private parent.
   config:
     canonical: instance/app/arcblog/config/*
     copy: none
     minRole: admin
-    # guest on the PARENT prefix also exposes the directory listing of nested
-    # admin-only collections (measured: a guest could list config/agent-grants and
-    # read the grant file ids), so the whole tree is admin — the documented ARC
-    # pattern is to gate the tree and never nest a public child under a private
-    # parent.
     readRole: admin
   # spec §29/§41/§42/§91: economy records. The policy is public (transparency),
   # everything naming a buyer stays admin-only.
@@ -215,16 +248,6 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
-  config-trusted-hubs:
-    canonical: instance/app/arcblog/config/trusted-hubs/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  config-agent-grants:
-    canonical: instance/app/arcblog/config/agent-grants/*
-    copy: none
-    minRole: admin
-    readRole: admin
   # spec §15.4: static pages — two states only, stored on two sides of a
   # directory boundary exactly like posts/drafts.
   pages:
@@ -237,16 +260,11 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
-  # spec §70/§71: Studio -> Hub registrations (public network topology).
-  hub-registrations:
-    canonical: instance/app/arcblog/hub/registrations/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §73/§74: the Hub's derived content index — metadata only (Studio =
-  # source, Hub = index), admin-only like the rest of hub/.
-  hub-index:
-    canonical: instance/app/arcblog/hub/index/*
+  # spec §70–§74: this node's Hub bookkeeping — Studio→Hub registrations and the
+  # Hub's derived content index (metadata only: Studio = source, Hub = index).
+  # One admin-only collection for the tree.
+  hub:
+    canonical: instance/app/arcblog/hub/*
     copy: none
     minRole: admin
     readRole: admin
