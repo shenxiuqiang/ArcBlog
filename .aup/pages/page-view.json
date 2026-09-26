@@ -1,5 +1,5 @@
 {
-  "id": "arcblog-about",
+  "id": "arcblog-page-view",
   "type": "view",
   "props": {
     "layout": {
@@ -76,48 +76,52 @@
       ]
     },
     {
-      "id": "arcblog-about-view-2",
+      "id": "arcblog-page-view-view-2",
       "type": "view",
       "props": {
         "layout": {
           "gap": "lg"
         }
       },
+      "propBind": {
+        "page": "/instance/app/arcblog/pages/$params.slug.json"
+      },
       "children": [
         {
-          "id": "arcblog-about-view-2-view-1",
+          "id": "arcblog-page-view-view-2-row-1",
           "type": "view",
           "props": {
             "layout": {
-              "gap": "md"
-            },
-            "style": {
-              "background": "var(--card-bg)",
-              "border": "var(--card-border)",
-              "borderRadius": "var(--radius-lg, 10px)",
-              "padding": "var(--space-block, 16px)"
+              "direction": "row",
+              "gap": "sm"
             }
           },
           "children": [
             {
-              "id": "arcblog-about-view-2-view-1-h2-1",
-              "type": "text",
+              "id": "page-back",
+              "type": "view",
               "props": {
-                "level": 2,
-                "content": "$t(about.title)"
-              }
-            },
-            {
-              "id": "arcblog-about-view-2-view-1-p-2",
-              "type": "text",
-              "props": {
-                "content": "$t(about.desc)"
-              }
+                "href": "/posts",
+                "style": {
+                  "cursor": "pointer",
+                  "color": "var(--color-dim)"
+                }
+              },
+              "children": [
+                {
+                  "id": "page-back-p-1",
+                  "type": "text",
+                  "props": {
+                    "content": "$t(page-view.back)",
+                    "scale": "sm"
+                  }
+                }
+              ]
             }
           ]
         },
         {
-          "id": "arcblog-about-view-2-view-2",
+          "id": "arcblog-page-view-view-2-view-2",
           "type": "view",
           "props": {
             "layout": {
@@ -130,42 +134,59 @@
               "padding": "var(--space-block, 16px)"
             }
           },
+          "visible": "!$state.page",
           "children": [
             {
-              "id": "arcblog-about-view-2-view-2-h3-1",
+              "id": "arcblog-page-view-view-2-view-2-h2-1",
               "type": "text",
               "props": {
-                "level": 3,
-                "content": "$t(about.lifecycle)"
+                "level": 2,
+                "content": "$t(page-view.title)"
               }
             },
             {
-              "id": "arcblog-about-view-2-view-2-p-2",
+              "id": "arcblog-page-view-view-2-view-2-p-2",
               "type": "text",
               "props": {
-                "content": "$t(about.lifecycle-desc)",
+                "content": "$t(page-view.not-found)",
                 "intent": "muted"
               }
             }
           ]
         },
         {
-          "id": "arcblog-about-view-2-action-3",
-          "type": "action",
+          "id": "page-article",
+          "type": "view",
           "props": {
-            "variant": "secondary",
-            "label": "$t(about.rss)"
-          },
-          "events": {
-            "click": {
-              "navigate": "/p/rss.xml"
+            "layout": {
+              "gap": "md"
             }
-          }
+          },
+          "visible": "$state.page",
+          "children": [
+            {
+              "id": "page-title",
+              "type": "text",
+              "props": {
+                "level": 1,
+                "content": "${state.page.title}",
+                "scale": "display"
+              }
+            },
+            {
+              "id": "page-body",
+              "type": "text",
+              "props": {
+                "format": "markdown",
+                "content": "${state.page.body}"
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "id": "arcblog-about-app-footer-3",
+      "id": "arcblog-page-view-app-footer-3",
       "type": "app-footer",
       "props": {
         "brand": {

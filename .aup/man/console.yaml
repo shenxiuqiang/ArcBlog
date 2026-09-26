@@ -1,0 +1,58 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "console".
+schemaVersion: 1
+page: console
+description: >-
+  TODO: describe what "console" is for and when an agent should use it
+  (auto-scaffolded stub — fill in before relying on this man page).
+refs:
+  actions:
+    - id: site-header
+      event: user-menu-item
+    - id: site-header
+      event: nav-click
+    - id: console-gate-login
+      event: click
+    - id: studio-archive
+      event: click
+    - id: studio-unpublish
+      event: click
+    - id: studio-publish
+      event: click
+    - id: studio-delete
+      event: click
+    - id: page-create
+      event: click
+    - id: page-offline
+      event: click
+    - id: page-remove-public
+      event: click
+    - id: page-online
+      event: click
+    - id: page-delete
+      event: click
+    - id: hero-delete
+      event: click
+    - id: hero-add
+      event: click
+    - id: hero-quickadd-list
+      event: select
+    - id: hero-quickadd-confirm
+      event: click
+    - id: cat-remove
+      event: click
+    - id: cat-add
+      event: click
+    - id: seo-save
+      event: click
+    - id: hub-approve
+      event: click
+    - id: hub-reject
+      event: click
+    - id: hub-purge
+      event: click
+    - id: save-draft
+      event: click
+    - id: publish-now
+      event: click

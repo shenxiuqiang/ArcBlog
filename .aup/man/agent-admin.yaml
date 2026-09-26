@@ -1,0 +1,42 @@
+# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
+# point, not finished documentation. Fill in description/synopsis/examples/flows,
+# then this file is the authoritative man page for "agent-admin".
+schemaVersion: 1
+page: agent-admin
+description: >-
+  TODO: describe what "agent-admin" is for and when an agent should use it
+  (auto-scaffolded stub — fill in before relying on this man page).
+refs:
+  actions:
+    - id: site-header
+      event: user-menu-item
+    - id: site-header
+      event: nav-click
+    - id: console-frame-view-2-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-pages-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-categories-admin
+      event: click
+    - id: console-nav-seo-admin
+      event: click
+    - id: console-nav-feeds-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-hub-admin
+      event: click
+    - id: console-nav-media-admin
+      event: click
+    - id: console-nav-agent-admin
+      event: click
+    - id: console-nav-policy-admin
+      event: click
+    - id: console-nav-access-admin
+      event: click

@@ -1,5 +1,5 @@
 {
-  "id": "arcblog-admin-view-1",
+  "id": "arcblog-feeds-admin-view-1",
   "type": "view",
   "props": {
     "layout": {
@@ -8,7 +8,7 @@
   },
   "children": [
     {
-      "id": "arcblog-admin-view-1-p-1",
+      "id": "arcblog-feeds-admin-view-1-p-1",
       "type": "text",
       "props": {
         "content": "$t(wrapper.console-opening)",

@@ -1,32 +1,1029 @@
 app "ArcBlog" {
-  default posts
+  default index
   tone editorial
   palette natural
   mode light
   locales [en, zh]
   wrapper "wrapper.json"
 
-  page settings "Appearance" {
+  page console "Management" {
     i18n {
-      gate-title { en "Appearance" zh "外观" }
-      gate-desc { en "Sign in with DID Wallet to set this site's palette and tone. Signed-in users can also personalize their own theme." zh "使用 DID Wallet 登录后可设置本站的配色与风格；登录用户还可以个性化自己的主题。" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      title { en "Appearance" zh "外观" }
-      desc { en "Theme, tone and palette for this site. Admins set the defaults; signed-in users can personalize their own theme." zh "本站的主题、风格与配色。管理员设置默认值；登录用户可以个性化自己的主题。" }
+      gate-title { en "Management requires signing in" zh "管理后台需要登录" }
+      gate-desc { en "Sign in with your DID to manage this ArcBlog instance." zh "使用你的 DID 登录后管理这个 ArcBlog 实例。" }
+      login { en "Sign in" zh "登录" }
+      access-admin-admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
+      access-admin-desc { en "Reading rights created when a paid order settles." zh "付费订单结算后生成的阅读权限。" }
+      access-admin-gate-desc { en "Sign in with DID Wallet to view the economy and grants." zh "使用 DID Wallet 登录后查看经济与授权。" }
+      access-admin-gate-title { en "Economy" zh "经济" }
+      access-admin-grant-reader { en "Reader" zh "读者" }
+      access-admin-grants-empty { en "Created automatically when a paid reading order settles." zh "付费阅读订单结算后自动生成。" }
+      access-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      access-admin-title { en "Access grants" zh "访问授权" }
+      admin-admin-archive { en "Archive" zh "归档" }
+      admin-admin-archive-msg { en "This writes an archived copy to private drafts. The public post stays live until you remove it from public." zh "这会在私有 drafts 中写入一份 archived 副本。公开文章会继续保留，直到你执行从公开移除。" }
+      admin-admin-archive-title { en "Archive this post?" zh "归档这篇文章？" }
+      admin-admin-delete { en "Delete" zh "删除" }
+      admin-admin-delete-msg { en "The record stays in drafts with status deleted and can be republished later." zh "记录会以 deleted 状态保留在 drafts 中，后续仍可重新发布。" }
+      admin-admin-delete-title { en "Soft-delete this record?" zh "软删除这条记录？" }
+      admin-admin-publish { en "Publish" zh "发布" }
+      admin-admin-publish-msg { en "This publishes the current draft record. Deleted records can be republished." zh "这会发布当前草稿记录。deleted 状态记录也可以重新发布。" }
+      admin-admin-publish-title { en "Publish this draft record?" zh "发布这条草稿记录？" }
+      admin-admin-unpublish { en "Remove from public" zh "从公开移除" }
+      admin-admin-unpublish-msg { en "Archive first keeps a copy in drafts. Removing from public deletes the original from public posts." zh "请先归档以在 drafts 保留副本。从公开移除会删除公开 posts 中的原记录。" }
+      admin-admin-unpublish-title { en "Remove this post from public?" zh "将这篇文章从公开移除？" }
+      admin-appearance { en "Appearance settings" zh "外观设置" }
+      admin-archived-ok { en "Archived copy saved to drafts." zh "已在 drafts 中保存归档副本。" }
+      admin-content { en "Your content" zh "你的内容" }
+      admin-content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
+      admin-deleted-ok { en "Record soft-deleted." zh "记录已软删除。" }
+      admin-edit { en "Edit" zh "编辑" }
+      admin-gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+      admin-gate-title { en "Operations" zh "运维" }
+      admin-group-drafts { en "Drafts & archived" zh "草稿与归档" }
+      admin-group-published { en "Published" zh "已发布" }
+      admin-lifecycle { en "Lifecycle controls" zh "生命周期控制" }
+      admin-lifecycle-desc { en "Archive copies a post to the private drafts directory; Remove from public takes it off the public feed. Drafts can be published or soft-deleted from the row actions." zh "归档会把文章复制到私有 drafts 目录；从公开移除会把它从公开 feed 下线。草稿可在行内操作中发布或软删除。" }
+      admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      admin-new-post { en "New post" zh "新建文章" }
+      admin-published-ok { en "Published." zh "已发布。" }
+      admin-studio { en "Your studio" zh "你的工作室" }
+      admin-studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
+      admin-unpublished-ok { en "Removed from public." zh "已从公开移除。" }
+      agent-admin-admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
+      agent-admin-agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
+      agent-admin-agent-expires { en "Expires" zh "到期" }
+      agent-admin-agent-grants-empty { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "如何授权：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
+      agent-admin-desc { en "Time-boxed capability grants issued to agents." zh "发放给 Agent 的限时能力授权。" }
+      agent-admin-gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+      agent-admin-gate-title { en "Operations" zh "运维" }
+      agent-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      agent-admin-mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
+      agent-admin-title { en "Agent grants" zh "Agent 授权" }
+      appearance-desc { en "Theme, tone and palette for this site. Admins set the defaults; signed-in users can personalize their own theme." zh "本站的主题、风格与配色。管理员设置默认值；登录用户可以个性化自己的主题。" }
+      appearance-gate-desc { en "Sign in with DID Wallet to set this site's palette and tone. Signed-in users can also personalize their own theme." zh "使用 DID Wallet 登录后可设置本站的配色与风格；登录用户还可以个性化自己的主题。" }
+      appearance-gate-title { en "Appearance" zh "外观" }
+      appearance-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      appearance-title { en "Appearance" zh "外观" }
+      categories-admin-cat-add { en "Add category" zh "添加分类" }
+      categories-admin-cat-added { en "Category saved." zh "分类已保存。" }
+      categories-admin-cat-empty { en "No categories yet." zh "还没有分类。" }
+      categories-admin-cat-f-desc { en "Description" zh "描述" }
+      categories-admin-cat-f-name { en "Name" zh "名称" }
+      categories-admin-cat-f-slug { en "Slug" zh "标识（slug）" }
+      categories-admin-cat-remove { en "Remove" zh "删除" }
+      categories-admin-cat-remove-msg { en "Existing posts keep their category text, but the publish validator will reject it afterwards." zh "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。" }
+      categories-admin-cat-remove-title { en "Remove this category?" zh "删除该分类？" }
+      categories-admin-cat-removed { en "Category removed." zh "分类已删除。" }
+      categories-admin-cat-slug-hint { en "Lowercase letters, digits and hyphens, e.g. technology." zh "小写字母、数字与连字符，例如 technology。" }
+      categories-admin-desc { en "Taxonomy used by the publish validator and the public feed." zh "发布校验器与公开信息流使用的分类法。" }
+      categories-admin-gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
+      categories-admin-gate-title { en "Site" zh "站点" }
+      categories-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      categories-admin-title { en "Categories" zh "分类" }
+      compose-category { en "Category" zh "分类" }
+      compose-checks { en "Pre-publish checks" zh "发布前检查" }
+      compose-checks-desc { en "Title and slug are required. Publishing is immediately public; drafts stay private until published. Saving an existing slug overwrites that record." zh "标题和 slug 必填。发布即公开；草稿在发布前保持私有。相同 slug 会覆盖已有记录。" }
+      compose-cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
+      compose-draft-saved { en "Draft saved — preview it from the studio." zh "草稿已保存——可在工作室预览。" }
+      compose-f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+      compose-f-cover { en "Cover image URL" zh "封面图 URL" }
+      compose-f-slug { en "Slug" zh "Slug" }
+      compose-f-summary { en "Summary" zh "摘要" }
+      compose-f-title { en "Title" zh "标题" }
+      compose-gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
+      compose-gate-title { en "Publish with your wallet" zh "用钱包发布" }
+      compose-images { en "Images" zh "图片" }
+      compose-images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+      compose-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      compose-meta { en "Metadata" zh "元数据" }
+      compose-publish-now { en "Publish" zh "发布" }
+      compose-published-ok { en "Published." zh "已发布。" }
+      compose-save-draft { en "Save draft" zh "存草稿" }
+      compose-seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
+      compose-seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
+      compose-slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
+      compose-tags { en "Tags" zh "标签" }
+      dashboard-agents { en "Agent grants" zh "Agent 授权" }
+      dashboard-agents-empty { en "No agent grants. Read-only tools are available by default; write tools need a grant." zh "还没有 Agent 授权。读工具默认可用；写工具需要授权。" }
+      dashboard-capabilities-label { en "Capabilities" zh "能力" }
+      dashboard-content { en "Recent published" zh "最近发布" }
+      dashboard-content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+      dashboard-desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
+      dashboard-economy { en "Economy" zh "经济" }
+      dashboard-economy-empty { en "No orders yet. Products and tips appear here once readers pay." zh "还没有订单。读者付费后订单会出现在这里。" }
+      dashboard-gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
+      dashboard-gate-title { en "Dashboard" zh "仪表盘" }
+      dashboard-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      dashboard-node { en "Node" zh "节点" }
+      dashboard-node-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+      dashboard-q-ops { en "Operations" zh "运维" }
+      dashboard-q-settings { en "Appearance" zh "外观" }
+      dashboard-q-studio { en "Creator Studio" zh "创作者工作室" }
+      dashboard-q-write { en "Write a post" zh "写文章" }
+      dashboard-quick { en "Quick actions" zh "快捷操作" }
+      dashboard-roles-label { en "Roles" zh "角色" }
+      dashboard-title { en "Dashboard" zh "仪表盘" }
+      feeds-admin-desc { en "Subscription and index surfaces generated from published content." zh "由已发布内容生成的订阅与索引入口。" }
+      feeds-admin-feeds-agent { en "Agent access (llms.txt / MCP) is declared by the runtime." zh "Agent 访问（llms.txt / MCP）由运行时声明。" }
+      feeds-admin-feeds-desc { en "These surfaces are always on and generated from published content — nothing to configure." zh "以下分发面由已发布内容自动生成，无需配置。" }
+      feeds-admin-feeds-posts { en "Article index" zh "文章索引" }
+      feeds-admin-feeds-rss { en "RSS feed" zh "RSS 订阅" }
+      feeds-admin-gate-desc { en "Sign in with DID Wallet to view the distribution surfaces." zh "使用 DID Wallet 登录后查看分发面。" }
+      feeds-admin-gate-title { en "Site" zh "站点" }
+      feeds-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      feeds-admin-title { en "Feeds" zh "分发" }
+      heroes-admin-content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
+      heroes-admin-desc { en "Home carousel records: title, image URL, target link and sort order." zh "首页轮播记录：标题、图片 URL、跳转链接与排序。" }
+      heroes-admin-gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
+      heroes-admin-gate-title { en "Site" zh "站点" }
+      heroes-admin-hero-add { en "Add hero" zh "添加 Hero" }
+      heroes-admin-hero-added { en "Hero added." zh "Hero 已添加。" }
+      heroes-admin-hero-admin-desc { en "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending." zh "Hero 显示为首页轮播。每条记录需要标题、图片 URL 和跳转链接；sort 按升序决定播放顺序。" }
+      heroes-admin-hero-delete { en "Delete" zh "删除" }
+      heroes-admin-hero-delete-msg { en "This removes the hero record permanently." zh "将永久删除该 Hero 记录。" }
+      heroes-admin-hero-delete-title { en "Delete hero?" zh "删除 Hero？" }
+      heroes-admin-hero-deleted { en "Hero deleted." zh "Hero 已删除。" }
+      heroes-admin-hero-dropzone-desc { en "Upload an image here, then paste the resulting URL into the form above." zh "把图片拖到这里上传，把得到的 URL 粘贴到上面的表单。" }
+      heroes-admin-hero-f-desc { en "Description" zh "描述" }
+      heroes-admin-hero-f-image { en "Image URL" zh "图片 URL" }
+      heroes-admin-hero-f-sort { en "Sort order" zh "排序" }
+      heroes-admin-hero-f-title { en "Title" zh "标题" }
+      heroes-admin-hero-f-url { en "Link URL" zh "链接 URL" }
+      heroes-admin-hero-form { en "Add hero" zh "添加 Hero" }
+      heroes-admin-hero-id { en "ID (slug)" zh "ID（slug）" }
+      heroes-admin-hero-id-hint { en "Lowercase letters, numbers and dashes; same ID overwrites." zh "小写字母、数字和连字符；相同 ID 会覆盖。" }
+      heroes-admin-hero-list-empty { en "No heroes yet." zh "还没有 Hero。" }
+      heroes-admin-hero-quickadd { en "Add to hero" zh "加入 Hero" }
+      heroes-admin-hero-quickadd-hint { en "Click a post row to stage it below, then confirm. Title, summary, cover and /posts/<slug> link are copied automatically." zh "点击文章行将其暂存到下方，确认后加入。自动带标题、摘要、封面和 /posts/<slug> 链接。" }
+      heroes-admin-hero-quickadd-title { en "Quick add from a post" zh "从文章快速加入" }
+      heroes-admin-hero-quickadded { en "Added to heroes." zh "已加入 Hero。" }
+      heroes-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      heroes-admin-title { en "Hero management" zh "Hero 管理" }
+      hub-admin-approve { en "Approve" zh "通过" }
+      hub-admin-approve-msg { en "The relation becomes indexed. Only meaningful for applied relations." zh "关系将变为 indexed。仅对 applied 状态的申请有意义。" }
+      hub-admin-approve-title { en "Approve this application?" zh "通过这条申请？" }
+      hub-admin-approved-ok { en "Approved — relation is indexed." zh "已通过——关系为 indexed。" }
+      hub-admin-cli-desc { en "Relation ids are derived from the Hub DID by hashing, which the UI cannot compute — add a Studio and rebuild the index with:" zh "收录记录的 id 由 Hub DID 哈希派生，界面无法计算——主动收录与索引重建请使用：" }
+      hub-admin-cli-title { en "Add & rebuild via CLI" zh "主动收录与索引重建（CLI）" }
+      hub-admin-desc { en "Studio ↔ Hub relations and the derived content index. Indexing is the Hub's sovereignty: it only ever carries metadata, never the source body." zh "Studio ↔ Hub 收录关系与派生内容索引。索引是 Hub 的主权行为：只承载元数据，永不承载原文。" }
+      hub-admin-gate-desc { en "Sign in with DID Wallet to curate Studios and the content index." zh "使用 DID Wallet 登录后管理 Studio 收录与内容索引。" }
+      hub-admin-gate-title { en "Hub console" zh "Hub 管理" }
+      hub-admin-index-card { en "Content index" zh "内容索引" }
+      hub-admin-index-empty { en "Index is empty. Rebuild: node scripts/arcblog-network.mjs hub index rebuild" zh "索引为空。重建：node scripts/arcblog-network.mjs hub index rebuild" }
+      hub-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      hub-admin-purge { en "Purge" zh "彻底删除" }
+      hub-admin-purge-msg { en "Deletes the tombstone entirely. Prefer Terminate for auditability." zh "将记录彻底删除。为了可审计性，建议使用「终止」。" }
+      hub-admin-purge-title { en "Purge this record?" zh "彻底删除这条记录？" }
+      hub-admin-purged-ok { en "Record purged." zh "记录已删除。" }
+      hub-admin-reject { en "Terminate" zh "终止" }
+      hub-admin-reject-msg { en "The relation becomes a removed tombstone (kept for audit). Either side may terminate." zh "关系将变为 removed（保留 Tombstone 以供审计）。任一方都可终止。" }
+      hub-admin-reject-title { en "Terminate this relation?" zh "终止这条关系？" }
+      hub-admin-rejected-ok { en "Relation terminated (tombstone kept)." zh "关系已终止（保留 Tombstone）。" }
+      hub-admin-relations { en "Studio relations" zh "收录关系" }
+      hub-admin-relations-empty { en "No relations yet. A Studio applies with: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有收录关系。Studio 申请：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
+      hub-admin-relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
+      hub-admin-title { en "Hub console" zh "Hub 管理" }
+      media-admin-admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
+      media-admin-desc { en "The upload index and where each file is referenced." zh "上传索引与引用关系。" }
+      media-admin-gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+      media-admin-gate-title { en "Operations" zh "运维" }
+      media-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      media-admin-media-empty { en "How to add one: node scripts/arcblog-media.mjs add" zh "如何添加：node scripts/arcblog-media.mjs add" }
+      media-admin-title { en "Media" zh "媒体" }
+      operations-desc { en "Live state of this node: health, discovery, Hubs, economy, media and agent grants." zh "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。" }
+      operations-discovery { en "Discovery document" zh "发现文档" }
+      operations-discovery-empty { en "How to publish it: node scripts/arcblog-network.mjs discovery publish" zh "如何发布：node scripts/arcblog-network.mjs discovery publish" }
+      operations-discovery-generated { en "Generated" zh "生成于" }
+      operations-discovery-protocol { en "Protocol" zh "协议" }
+      operations-discovery-transport { en "Transport" zh "传输" }
+      operations-gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+      operations-gate-title { en "Operations" zh "运维" }
+      operations-health { en "Node health" zh "节点健康" }
+      operations-health-checked { en "Checked" zh "检查于" }
+      operations-health-did { en "DID" zh "DID" }
+      operations-health-status { en "Status" zh "状态" }
+      operations-health-version { en "Blocklet version" zh "Blocklet 版本" }
+      operations-hub-endpoint { en "Endpoint" zh "端点" }
+      operations-hub-sync { en "Last sync" zh "最近同步" }
+      operations-hub-version { en "Last version" zh "最后版本" }
+      operations-hubs { en "Registered Hubs" zh "已注册 Hub" }
+      operations-hubs-empty { en "How to add one: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "如何添加：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
+      operations-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      operations-title { en "Operations" zh "运维" }
+      pages-admin-act-delete { en "Delete" zh "删除" }
+      pages-admin-act-delete-msg { en "Pages have no soft delete — this removes the record." zh "页面没有软删除——这将直接移除记录。" }
+      pages-admin-act-delete-title { en "Delete this page?" zh "删除这个页面？" }
+      pages-admin-act-offline { en "Take offline" zh "下线" }
+      pages-admin-act-offline-msg { en "Keeps an offline copy under page-drafts/; remove the public copy to complete." zh "会在 page-drafts/ 保留离线副本；移除公开副本后完成下线。" }
+      pages-admin-act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
+      pages-admin-act-publish { en "Bring online" zh "上线" }
+      pages-admin-act-publish-msg { en "Writes a public copy under pages/; delete the offline copy afterwards." zh "会向 pages/ 写入公开副本；随后请删除离线副本。" }
+      pages-admin-act-publish-title { en "Bring this page online?" zh "上线这个页面？" }
+      pages-admin-act-remove-public { en "Remove public copy" zh "移除公开副本" }
+      pages-admin-create { en "New page" zh "新建页面" }
+      pages-admin-create-offline { en "Create (offline)" zh "创建（离线）" }
+      pages-admin-created-ok { en "Page created offline. Bring it online when ready." zh "页面已创建（离线）。准备好后再上线。" }
+      pages-admin-desc { en "Standalone pages such as About. Two states only — online and offline; no post lifecycle, no RSS, no Hub indexing." zh "About 等独立页面。只有上线 / 下线两个状态——不复用文章生命周期，不进 RSS，不被 Hub 索引。" }
+      pages-admin-f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+      pages-admin-f-slug { en "Slug" zh "别名" }
+      pages-admin-f-summary { en "Summary" zh "摘要" }
+      pages-admin-f-title { en "Title" zh "标题" }
+      pages-admin-gate-desc { en "Sign in with DID Wallet to manage standalone pages." zh "使用 DID Wallet 登录后管理独立页面。" }
+      pages-admin-gate-title { en "Pages" zh "页面" }
+      pages-admin-list-empty { en "No pages yet. Create your first page above." zh "还没有页面。在上方创建第一个页面。" }
+      pages-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      pages-admin-offline-hint { en "Offline pages are admin-only. Bring one online when it is ready." zh "离线页面仅后台可见；准备好后点击「上线」。" }
+      pages-admin-offline-list { en "Offline" zh "已下线" }
+      pages-admin-offline-ok { en "Offline copy saved." zh "已保存离线副本。" }
+      pages-admin-online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。" }
+      pages-admin-online-list { en "Online" zh "已上线" }
+      pages-admin-published-ok { en "Page is online." zh "页面已上线。" }
+      pages-admin-removed-ok { en "Removed." zh "已移除。" }
+      pages-admin-title { en "Pages" zh "页面" }
+      pages-admin-view-page { en "View" zh "查看" }
+      policy-admin-desc { en "The split policy and the product catalogue." zh "分成策略与商品目录。" }
+      policy-admin-gate-desc { en "Sign in with DID Wallet to view the economy and grants." zh "使用 DID Wallet 登录后查看经济与授权。" }
+      policy-admin-gate-title { en "Economy" zh "经济" }
+      policy-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      policy-admin-policy { en "Settlement policy" zh "结算策略" }
+      policy-admin-policy-adapter { en "Payment adapter" zh "支付适配器" }
+      policy-admin-policy-empty { en "How to set it: node scripts/arcblog-economy.mjs policy init" zh "如何设置：node scripts/arcblog-economy.mjs policy init" }
+      policy-admin-policy-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
+      policy-admin-product-price { en "Price" zh "价格" }
+      policy-admin-products { en "Products" zh "商品" }
+      policy-admin-products-empty { en "How to add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "如何添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
+      policy-admin-title { en "Split policy" zh "分成策略" }
+      seo-admin-desc { en "Site-level defaults: name, description, OG image and endpoint." zh "站点级默认值：名称、描述、OG 图与站点地址。" }
+      seo-admin-f-desc { en "Site description" zh "站点描述" }
+      seo-admin-f-endpoint { en "Site endpoint (https URL)" zh "站点地址（https URL）" }
+      seo-admin-f-name { en "Site name" zh "站点名称" }
+      seo-admin-f-og { en "Default OG image (https URL)" zh "默认 OG 图（https 地址）" }
+      seo-admin-gate-desc { en "Sign in with DID Wallet to manage site-level SEO." zh "使用 DID Wallet 登录后管理站点级 SEO。" }
+      seo-admin-gate-title { en "Site" zh "站点" }
+      seo-admin-login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+      seo-admin-profile-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+      seo-admin-save { en "Save" zh "保存" }
+      seo-admin-saved-ok { en "Site metadata saved." zh "站点元数据已保存。" }
+      seo-admin-site-card { en "Site metadata" zh "站点元数据" }
+      seo-admin-title { en "SEO" zh "SEO" }
     }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
+    view console-frame style={gap: "0"} {
+      view console-topbar style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+    view gap=sm visible="!$session.authenticated" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} {
+      h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
       p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dsettings&cancel_to=%2F%3Fpage%3Dsettings" variant=primary label=:login
+      action console-gate-login -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dconsole&cancel_to=%2F%3Fpage%3Dconsole" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
     }
-    view gap=lg visible=$session.authenticated {
-      h1 :title level=1
-      p :desc intent=muted
+    row console-shell gap=lg cross=stretch visible=$session.authenticated style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} {
+      view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: "auto", gap: "0", height: "100%"} visible=$session.authenticated {
+        p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+        action console-nav-dashboard href="#dashboard" label="$t(wrapper.nav-dashboard)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-admin href="#admin" label="$t(wrapper.nav-studio)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-pages-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-pages-admin href="#pages-admin" label="$t(wrapper.nav-pages)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-compose href="#compose" label="$t(wrapper.nav-write)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+        action console-nav-heroes-admin href="#heroes-admin" label="$t(wrapper.nav-heroes)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-categories-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-categories-admin href="#categories-admin" label="$t(wrapper.nav-categories)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-seo-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-seo-admin href="#seo-admin" label="$t(wrapper.nav-seo)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-feeds-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-feeds-admin href="#feeds-admin" label="$t(wrapper.nav-feeds)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-appearance href="#appearance" label="$t(wrapper.nav-appearance)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+        action console-nav-operations href="#operations" label="$t(wrapper.nav-operations)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-hub-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-hub-admin href="#hub-admin" label="$t(wrapper.nav-hub)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-media-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-media-admin href="#media-admin" label="$t(wrapper.nav-media)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-agent-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-agent-admin href="#agent-admin" label="$t(wrapper.nav-agents)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+        action console-nav-policy-admin href="#policy-admin" label="$t(wrapper.nav-policy)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+        view console-nav-divider-access-admin style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          text content=" "
+        }
+        action console-nav-access-admin href="#access-admin" label="$t(wrapper.nav-access)" style={border: "none", borderRadius: "0", padding: "8px 20px 8px 32px"}
+      }
+      view console-pane gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+      view console-sections mode=tabs size={flex: 1} style={height: "100%", minHeight: 0} {
+      view console-section-dashboard label="Dashboard" style={height: "100%", minHeight: 0} propBind={nodeProfile: "/instance/app/arcblog/node/profile.json", nodeHealth: "/instance/app/arcblog/node/health.json"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+        h2 :dashboard-title level=2 style={fontSize: "var(--type-subheading)"}
+        p :dashboard-desc intent=muted
+      }
+      view console-scroll-dashboard gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-dashboard style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+      view gap=sm visible="${state.nodeProfile}" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        row gap=sm cross=center {
+          h3 "${state.nodeProfile.name}"
+          p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: "monospace"}
+          p "v${state.nodeProfile.version}" scale=sm intent=muted
+          row gap=xs cross=center visible="${state.nodeHealth}" {
+            p "●" intent=success scale=sm
+            p "${state.nodeHealth.status}" scale=sm
+          }
+        }
+        row gap=sm cross=center {
+          p :dashboard-roles-label scale=sm intent=muted
+          p "${state.nodeProfile.roles}" scale=sm
+          p :dashboard-capabilities-label scale=sm intent=muted
+          p "${state.nodeProfile.capabilities}" scale=sm
+        }
+      }
+      view gap=sm visible="!${state.nodeProfile}" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        p :dashboard-node-empty intent=info
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :dashboard-content level=2 style={fontSize: "var(--type-body)"}
+        afs-list dash-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:dashboard-content-empty from "/instance/app/arcblog/posts" {
+          row dashPostRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            view dashPostLink layout=inline href="/posts/${entry.content.slug}" target=_blank style={display: block, textDecoration: none, color: inherit} {
+              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+            }
+            row gap=xs cross=center {
+              p "${entry.content.category}" scale=sm intent=muted
+              view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                time mode=display value="${entry.content.publishedAt}" timeMode=relative
+              }
+            }
+          }
+        }
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :dashboard-economy level=2 style={fontSize: "var(--type-body)"}
+        afs-list dash-orders layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:dashboard-economy-empty from "/instance/app/arcblog/economy/orders" {
+          row dashOrderRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            h3 "${entry.content.id}"
+            p "${entry.content.amount} ${entry.content.asset}" scale=sm
+            p "${entry.content.status}" scale=sm intent=muted
+          }
+        }
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :dashboard-agents level=2 style={fontSize: "var(--type-body)"}
+        afs-list dash-agents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:dashboard-agents-empty from "/instance/app/arcblog/config/agent-grants" {
+          row dashAgentRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            p "${entry.content.agentDid}" scale=sm style={fontFamily: "monospace"}
+            p "${entry.content.capabilities}" scale=sm intent=muted
+          }
+        }
+      }
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :dashboard-quick level=2 style={fontSize: "var(--type-body)"}
+        row gap=sm {
+          action dashboard-out-compose href="#compose" variant=primary label=:dashboard-q-write style={borderRadius: "var(--radius-md, 8px)"}
+          action dashboard-q-studio href="#admin" variant=secondary label=:dashboard-q-studio style={borderRadius: "var(--radius-md, 8px)"}
+          action dashboard-q-ops href="#operations" variant=secondary label=:dashboard-q-ops style={borderRadius: "var(--radius-md, 8px)"}
+          action dashboard-out-settings href="#appearance" variant=ghost label=:dashboard-q-settings style={borderRadius: "var(--radius-md, 8px)"}
+        }
+      }
+    }
+      }
+      view console-section-admin label="Posts" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        row gap=md cross=center style={justifyContent: "space-between"} {
+          view gap=xs {
+            h2 :admin-studio level=2 style={fontSize: "var(--type-subheading)"}
+            p :admin-studio-desc intent=muted
+          }
+          action admin-out-compose href="#compose" variant=primary label=:admin-new-post style={borderRadius: "var(--radius-md, 8px)"}
+        }
+        view console-scroll-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :admin-lifecycle level=3 style={fontSize: "var(--type-body)"}
+          p :admin-lifecycle-desc intent=muted
+          row console-action-row-1 cross=start {
+          action admin-out-settings href="#appearance" variant=secondary size=sm label=:admin-appearance style={borderRadius: "var(--radius-md, 8px)"}
+          }
+        }
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :admin-content level=2 style={fontSize: "var(--type-body)"}
+        h3 :admin-group-published level=3 style={fontSize: "var(--type-body)"}
+        afs-list studio-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:admin-content-empty autoSelect=false clickMode=none from "/instance/app/arcblog/posts" style={flexShrink: 0} {
+          row studioRow cross=start role=item style={background: "transparent", padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+            view studioLink gap=xs layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+              row gap=xs cross=center {
+                p "${entry.content.status}" scale=sm intent=muted
+                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              }
+            }
+            action studio-archive -> exec "/.actions/write" variant=secondary size=sm label=:admin-admin-archive args={path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: archived, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-admin-archive-title, message: :admin-admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+            action studio-unpublish -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-admin-unpublish-title, message: :admin-admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+          }
+        }
+        h3 :admin-group-drafts level=3 style={fontSize: "var(--type-body)"}
+        afs-list studio-drafts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:admin-content-empty autoSelect=false clickMode=none from "/instance/app/arcblog/drafts" style={flexShrink: 0} {
+          row draftRow cross=start role=item style={background: "transparent", padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+            view draftLink gap=xs layout=inline href="/preview/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+              row gap=xs cross=center {
+                p "${entry.content.status}" scale=sm intent=muted
+                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+              }
+            }
+            action studio-publish -> exec "/.actions/write" variant=primary size=sm label=:admin-admin-publish args={path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-admin-publish-title, message: :admin-admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+            action studio-delete -> exec "/.actions/write" variant=destructive size=sm icon=trash label=:admin-admin-delete args={path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: deleted, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${entry.content.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-admin-delete-title, message: :admin-admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+            view draftEdit layout=inline href="/edit/${entry.content.slug}" target=_blank style={display: block, cursor: pointer, color: "var(--color-dim)"} {
+              p :admin-edit scale=sm
+            }
+          }
+        }
+        }
+        }
+        }
+      }
+      view console-section-pages-admin label="Pages" style={height: "100%", minHeight: 0} {
+        view gap=xs {
+          h2 :pages-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :pages-admin-desc intent=muted
+        }
+        view console-scroll-pages-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-pages-admin style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :pages-admin-create level=3 style={fontSize: "var(--type-body)"}
+          input type=text label=:pages-admin-f-slug name=slug required=true state={value: ""}
+          input type=text label=:pages-admin-f-title name=title required=true state={value: ""}
+          input type=text label=:pages-admin-f-summary name=summary state={value: ""}
+          input type=textarea label=:pages-admin-f-body name=body required=true state={value: ""}
+          row console-action-row-2 cross=start {
+          action page-create -> exec "/.actions/write" variant=primary label=:pages-admin-create-offline args={path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: "$session.did", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(pages-admin.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+          }
+        }
+        view gap=sm style={flexShrink: 0} {
+          h3 :pages-admin-online-list level=3 style={fontSize: "var(--type-body)"}
+          afs-list pages-online layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:pages-admin-list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/pages" {
+            row gap=sm cross=center {
+              view gap=xs style={flex: "1 1 0%"} {
+                p "${entry.content.title}" scale=lg
+                p "/pages/${entry.content.slug}" scale=sm intent=muted
+              }
+              view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: "pointer", color: "var(--color-dim)", flexGrow: 0} {
+                p :pages-admin-view-page scale=sm
+              }
+              action page-offline -> exec "/.actions/write" variant=secondary size=sm label=:pages-admin-act-offline args={path: "/instance/app/arcblog/page-drafts/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: offline, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}} confirm={title: :pages-admin-act-offline-title, message: :pages-admin-act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.offline-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+              action page-remove-public -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:pages-admin-act-remove-public path="/instance/app/arcblog/pages/${entry.content.slug}.json" confirm={title: :pages-admin-act-offline-title, message: :pages-admin-act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          p :pages-admin-online-hint scale=sm intent=muted
+        }
+        view gap=sm style={flexShrink: 0} {
+          h3 :pages-admin-offline-list level=3 style={fontSize: "var(--type-body)"}
+          afs-list pages-offline layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:pages-admin-list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/page-drafts" {
+            row gap=sm cross=center {
+              view gap=xs style={flex: "1 1 0%"} {
+                p "${entry.content.title}" scale=lg
+                p "${entry.content.slug}" scale=sm intent=muted
+              }
+              action page-online -> exec "/.actions/write" variant=primary size=sm label=:pages-admin-act-publish args={path: "/instance/app/arcblog/pages/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: online, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}} confirm={title: :pages-admin-act-publish-title, message: :pages-admin-act-publish-msg} onSuccessToast={intent: success, message: "$t(pages-admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+              action page-delete -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:pages-admin-act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :pages-admin-act-delete-title, message: :pages-admin-act-delete-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          p :pages-admin-offline-hint scale=sm intent=muted
+        }
+      }
+      }
+      }
+      view console-section-heroes-admin label="Heroes" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :heroes-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :heroes-admin-desc intent=muted
+        }
+        view console-scroll-heroes-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-heroes-admin style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+            p :heroes-admin-hero-admin-desc intent=muted
+          }
+            afs-list hero-admin-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:heroes-admin-hero-list-empty autoSelect=false clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} from "/instance/app/arcblog/heroes" style={flexShrink: 0} {
+              row heroAdminRow role=item cross=start style={background: "transparent", padding: "0"} {
+                row gap=sm cross=start style={flex: 1, padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 10px)", minWidth: 0} {
+                  view gap=xs size={flex: 1} style={minWidth: 0} {
+                    h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                    p "${entry.content.description}" scale=sm intent=muted
+                    row gap=xs cross=center {
+                      p "${entry.content.url}" scale=sm intent=muted
+                      p "sort ${entry.content.sort}" scale=sm intent=muted
+                    }
+                  }
+                action hero-delete -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:heroes-admin-hero-delete path="${entry.path}" confirm={title: :heroes-admin-hero-delete-title, message: :heroes-admin-hero-delete-msg} onSuccessToast={intent: success, message: "$t(heroes-admin.hero-deleted)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                }
+              }
+            }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+            h3 :heroes-admin-hero-form level=3 style={fontSize: "var(--type-body)"}
+            input type=text label=:heroes-admin-hero-id name=heroId required=true state={value: ""}
+            p :heroes-admin-hero-id-hint intent=muted scale=caption
+            input type=text label=:heroes-admin-hero-f-title name=heroTitle required=true state={value: ""}
+            input type=text label=:heroes-admin-hero-f-desc name=heroDesc state={value: ""}
+            input type=text label=:heroes-admin-hero-f-image name=heroImage required=true state={value: ""}
+            input type=text label=:heroes-admin-hero-f-url name=heroUrl required=true state={value: ""}
+            input type=text label=:heroes-admin-hero-f-sort name=heroSort state={value: "0"}
+            row console-action-row-4 cross=start {
+            action hero-add -> exec "/.actions/write" variant=primary label=:heroes-admin-hero-add args={path: "/instance/app/arcblog/heroes/${args.heroId}.json", content: {title: "${args.heroTitle}", description: "${args.heroDesc}", image: "${args.heroImage}", url: "${args.heroUrl}", sort: "${args.heroSort}", createdAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(heroes-admin.hero-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+            p :heroes-admin-hero-dropzone-desc intent=muted
+          afs-dropzone
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :heroes-admin-hero-quickadd-title level=3 style={fontSize: "var(--type-body)"}
+          p :heroes-admin-hero-quickadd-hint intent=muted scale=caption
+          afs-list hero-quickadd-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:heroes-admin-content-empty clickMode=select autoSelect=false selectAlwaysFires=true events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} from "/instance/app/arcblog/posts" style={flexShrink: 0} {
+            row heroPostRow cross=center role=item style={padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+              view gap=xs size={flex: 1} style={minWidth: 0} {
+                h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                row gap=xs cross=center {
+                  p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+                  p "${entry.content.coverImage}" scale=sm intent=muted
+                }
+              }
+            }
+          }
+          view gap=sm style={flexShrink: 0} {
+            input qa-title type=hidden name=qaTitle state={value: ""}
+            input qa-desc type=hidden name=qaDesc state={value: ""}
+            input qa-image type=hidden name=qaImage state={value: ""}
+            input qa-slug type=hidden name=qaSlug state={value: ""}
+            row console-action-row-5 cross=start {
+            action hero-quickadd-confirm -> exec "/.actions/write" variant=secondary size=sm label=:heroes-admin-hero-quickadd args={path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(heroes-admin.hero-quickadded)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          }
+      }
+        }
+        }
+      }
+      view console-section-categories-admin label="Categories" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :categories-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :categories-admin-desc intent=muted
+        }
+        view console-scroll-categories-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          afs-list studio-categories layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:categories-admin-cat-empty from "/instance/app/arcblog/categories" {
+            row studioCategoryRow cross=center role=item style={background: "transparent", padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+              view gap=xs size={flex: 1} style={minWidth: 0} {
+                h3 "${entry.content.name}"
+                p "${entry.content.slug}" scale=sm intent=muted
+                p "${entry.content.description}" scale=sm intent=muted
+              }
+              action cat-remove -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:categories-admin-cat-remove path="/instance/app/arcblog/categories/${entry.content.slug}.json" confirm={title: :categories-admin-cat-remove-title, message: :categories-admin-cat-remove-msg} onSuccessToast={intent: success, message: "$t(heroes-admin.cat-removed)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          input type=text label=:categories-admin-cat-f-slug name=catSlug required=true state={value: ""}
+          p :categories-admin-cat-slug-hint intent=muted scale=caption
+          input type=text label=:categories-admin-cat-f-name name=catName required=true state={value: ""}
+          input type=text label=:categories-admin-cat-f-desc name=catDesc state={value: ""}
+          row console-action-row-6 cross=start {
+          action cat-add -> exec "/.actions/write" variant=primary label=:categories-admin-cat-add args={path: "/instance/app/arcblog/categories/${args.catSlug}.json", content: {slug: "${args.catSlug}", name: "${args.catName}", description: "${args.catDesc}", sort: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(heroes-admin.cat-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+          }
+        }
+        }
+        }
+      }
+      view console-section-seo-admin label="SEO" style={height: "100%", minHeight: 0} propBind={profile: "/instance/app/arcblog/node/profile.json"} {
+        view gap=xs {
+          h2 :seo-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :seo-admin-desc intent=muted
+        }
+        view console-scroll-seo-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-seo-admin style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+          view gap=sm visible="!${state.profile}" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+            p :seo-admin-profile-empty intent=info
+          }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+              h3 :seo-admin-site-card level=3 style={fontSize: "var(--type-body)"}
+              input type=text label=:seo-admin-f-name name=name value="${state.profile.name}"
+              input type=text label=:seo-admin-f-desc name=description value="${state.profile.description}"
+              input type=text label=:seo-admin-f-og name=ogImage value="${state.profile.ogImage}"
+              input type=text label=:seo-admin-f-endpoint name=endpoint value="${state.profile.endpoint}"
+              row console-action-row-3 cross=start {
+              action seo-save -> exec "/.actions/write" variant=primary label=:seo-admin-save args={path: "/instance/app/arcblog/node/profile.json", content: {name: "${args.name}", description: "${args.description}", avatar: "${state.profile.avatar}", ogImage: "${args.ogImage}", did: "${state.profile.did}", endpoint: "${args.endpoint}", roles: "${state.profile.roles}", capabilities: "${state.profile.capabilities}", version: "${state.profile.version}", protocolVersion: "${state.profile.protocolVersion}", createdAt: "${state.profile.createdAt}", updatedAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(seo-admin.saved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+              }
+            }
+      }
+      }
+      }
+      view console-section-feeds-admin label="Feeds" style={height: "100%", minHeight: 0} propBind={profile: "/instance/app/arcblog/node/profile.json"} {
+        view gap=xs {
+          h2 :feeds-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :feeds-admin-desc intent=muted
+        }
+        view console-scroll-feeds-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+            p :feeds-admin-feeds-desc intent=muted
+            view href="/p/rss.xml" target=_blank style={cursor: "pointer", color: "var(--color-dim)"} {
+              p :feeds-admin-feeds-rss scale=sm
+            }
+            view href="/posts" target=_blank style={cursor: "pointer", color: "var(--color-dim)"} {
+              p :feeds-admin-feeds-posts scale=sm
+            }
+            p :feeds-admin-feeds-agent scale=sm intent=muted
+          }
+      }
+      }
+      view console-section-operations label="Operations" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+        h2 :operations-title level=2 style={fontSize: "var(--type-subheading)"}
+        p :operations-desc intent=muted
+      }
+      view console-scroll-operations gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-operations style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+      view gap=sm propBind={health: "/instance/app/arcblog/node/health.json"} style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :operations-health level=2 style={fontSize: "var(--type-body)"}
+        p :operations-health-status scale=sm intent=muted
+        p "${state.health.status}" scale=sm
+        p :operations-health-version scale=sm intent=muted
+        p "${state.health.version}" scale=sm
+        p :operations-health-did scale=sm intent=muted
+        p "${state.health.did}" scale=sm
+        p :operations-health-checked scale=sm intent=muted
+        time mode=display value="${state.health.checkedAt}" timeMode=relative
+      }
+      view gap=sm propBind={discovery: "/instance/app/arcblog/node/discovery.json"} style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :operations-discovery level=2 style={fontSize: "var(--type-body)"}
+        row opsDiscoveryRow gap=xs {
+          p :operations-discovery-protocol scale=sm intent=muted
+          p "${state.discovery.protocol}" scale=sm
+          p :operations-discovery-transport scale=sm intent=muted
+          p "${state.discovery.transport}" scale=sm
+          p :operations-discovery-generated scale=sm intent=muted
+          time mode=display value="${state.discovery.generatedAt}" timeMode=relative
+        }
+        p :operations-discovery-empty scale=sm intent=muted
+      }
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        h2 :operations-hubs level=2 style={fontSize: "var(--type-body)"}
+          afs-list ops-hubs layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:operations-hubs-empty transform={syncAt: "content.sync.lastSync", syncVersion: "content.sync.lastVersion"} from "/instance/app/arcblog/hub/registrations" {
+            row opsHubRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+              p "${entry.content.hubDid}" scale=sm style={fontFamily: "monospace"}
+              p :operations-hub-endpoint scale=sm intent=muted
+              p "${entry.content.endpoint}" scale=sm
+              p :operations-hub-sync scale=sm intent=muted
+              view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} visible="${entry.content.syncAt}" {
+                time mode=display value="${entry.content.syncAt}" timeMode=relative
+              }
+              p :operations-hub-version scale=sm intent=muted
+              p "${entry.content.syncVersion}" scale=sm
+            }
+          }
+        p :operations-hubs-empty scale=sm intent=muted
+      }
+        }
+        }
+      }
+      view console-section-hub-admin label="Hubs" style={height: "100%", minHeight: 0} {
+        view gap=xs {
+          h2 :hub-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :hub-admin-desc intent=muted
+        }
+        view console-scroll-hub-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-hub-admin style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :hub-admin-relations level=3 style={fontSize: "var(--type-body)"}
+          afs-list hub-relations layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hub-admin-relations-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/registrations" {
+            row gap=sm cross=center {
+              view gap=xs style={flex: "1 1 0%"} {
+                p "${entry.content.hubDid}" scale=sm style={fontFamily: "monospace"}
+                row gap=xs {
+                  p "${entry.content.relation}" scale=sm
+                  p "${entry.content.direction}" scale=sm intent=muted
+                  p "${entry.content.status}" scale=sm intent=muted
+                  p "${entry.content.freshness.state}" scale=sm intent=muted
+                }
+              }
+              action hub-approve -> exec "/.actions/write" variant=primary size=sm label=:hub-admin-approve args={path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}} confirm={title: :hub-admin-approve-title, message: :hub-admin-approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+              action hub-reject -> exec "/.actions/write" variant=secondary size=sm label=:hub-admin-reject args={path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: removed, direction: "${entry.content.direction}", removedAt: "${generate.timeiso}", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}} confirm={title: :hub-admin-reject-title, message: :hub-admin-reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+              action hub-purge -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:hub-admin-purge path="${entry.path}" confirm={title: :hub-admin-purge-title, message: :hub-admin-purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          p :hub-admin-relations-legend scale=sm intent=muted
+        }
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :hub-admin-cli-title level=3 style={fontSize: "var(--type-body)"}
+          p :hub-admin-cli-desc intent=muted
+          p "node scripts/arcblog-network.mjs hub add --hub-did <did>" scale=sm style={fontFamily: "monospace"}
+          p "node scripts/arcblog-network.mjs hub index rebuild" scale=sm style={fontFamily: "monospace"}
+        }
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h3 :hub-admin-index-card level=3 style={fontSize: "var(--type-body)"}
+          afs-list hub-index layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hub-admin-index-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/index" {
+            row gap=sm cross=center {
+              view gap=xs style={flex: "1 1 0%"} {
+                p "${entry.content.title}" scale=lg
+                p "${entry.content.postId} · v${entry.content.version}" scale=sm intent=muted
+              }
+              p "${entry.content.status}" scale=sm intent=muted style={flexGrow: 0}
+            }
+          }
+        }
+      }
+      }
+      }
+      view console-section-media-admin label="Media" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :media-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :media-admin-desc intent=muted
+        }
+        view console-scroll-media-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        p :media-admin-admin-only scale=sm intent=muted visible="!$session.authenticated"
+        view ops-media-gate visible=$session.authenticated {
+          afs-list ops-media layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-admin-media-empty from "/instance/app/arcblog/media" {
+            row opsMediaRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+              h3 "${entry.content.id}"
+              p "${entry.content.mimeType}" scale=sm intent=muted
+            }
+          }
+        }
+        p :media-admin-media-empty scale=sm intent=muted
+      }
+        }
+        }
+      }
+      view console-section-agent-admin label="Agents" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :agent-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :agent-admin-desc intent=muted
+        }
+        view console-scroll-agent-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        p :agent-admin-admin-only scale=sm intent=muted visible="!$session.authenticated"
+        view ops-agent-gate visible=$session.authenticated {
+          afs-list ops-agent layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agent-admin-agent-grants-empty from "/instance/app/arcblog/config/agent-grants" {
+            row opsAgentRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+              p "${entry.content.agentDid}" scale=sm style={fontFamily: "monospace"}
+              p "${entry.content.capabilities}" scale=sm
+              p :agent-admin-agent-expires scale=sm intent=muted
+              view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                time mode=display value="${entry.content.expiresAt}" timeMode=relative
+              }
+            }
+          }
+        }
+        p :agent-admin-agent-grants-empty scale=sm intent=muted
+        p :agent-admin-agent-closed scale=sm intent=muted
+        p :agent-admin-mutations scale=sm intent=muted
+      }
+        }
+        }
+      }
+      view console-section-policy-admin label="Policy" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :policy-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :policy-admin-desc intent=muted
+        }
+        view console-scroll-policy-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view console-grid-policy-admin style={display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: "start"} {
+        view gap=sm propBind={policy: "/instance/app/arcblog/economy/policies/active.json"} style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h2 :policy-admin-policy level=2 style={fontSize: "var(--type-body)"}
+          row opsPolicyRow gap=xs {
+            p :policy-admin-policy-split scale=sm intent=muted
+            p "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}" scale=sm
+            p :policy-admin-policy-adapter scale=sm intent=muted
+            p "${state.policy.paymentAdapter}" scale=sm
+          }
+          p :policy-admin-policy-empty scale=sm intent=muted
+        }
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+          h2 :policy-admin-products level=2 style={fontSize: "var(--type-body)"}
+            afs-list ops-products layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:policy-admin-products-empty from "/instance/app/arcblog/economy/products" {
+              row opsProductRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                h3 "${entry.content.id}"
+                p :policy-admin-product-price scale=sm intent=muted
+                p "${entry.content.priceAmount} ${entry.content.priceAsset}" scale=sm
+              }
+            }
+          p :policy-admin-products-empty scale=sm intent=muted
+        }
+      }
+        }
+        }
+      }
+      view console-section-access-admin label="Access" style={height: "100%", minHeight: 0} {
+        view gap=lg visible=$session.authenticated style={height: "100%", minHeight: 0} {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px"} {
+          h2 :access-admin-title level=2 style={fontSize: "var(--type-subheading)"}
+          p :access-admin-desc intent=muted
+        }
+        view console-scroll-access-admin gap=sm size={flex: 1} style={overflowY: "auto"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: "none", padding: "14px", flexShrink: 0} {
+        p :access-admin-admin-only scale=sm intent=muted visible="!$session.authenticated"
+        view ops-grants-gate visible=$session.authenticated {
+          afs-list ops-grants layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:access-admin-grants-empty from "/instance/app/arcblog/economy/access-grants" {
+            row opsGrantRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+              p "${entry.content.contentId}" scale=sm
+              p :access-admin-grant-reader scale=sm intent=muted
+              p "${entry.content.readerDid}" scale=sm
+            }
+          }
+        }
+        p :access-admin-grants-empty scale=sm intent=muted
+      }
+        }
+        }
+      }
+      view console-section-compose label="Write" style={height: "100%", minHeight: 0} {
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h3 :compose-checks level=3
+          p :compose-checks-desc intent=muted
+        }
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h3 :compose-meta level=3
+          input type=text label=:compose-f-title name=title required=true state={value: ""}
+          input type=text label=:compose-f-slug name=slug required=true state={value: ""}
+          p :compose-slug-hint intent=muted scale=caption
+          input type=select label=:compose-category name=category options=[technology, design, life] state={value: technology}
+          input type=text label=:compose-tags name=tags state={value: ""}
+          input type=text label=:compose-f-summary name=summary state={value: ""}
+          input type=text label=:compose-f-cover name=coverImage state={value: ""}
+          p :compose-cover-hint intent=muted scale=caption
+        }
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h3 :compose-seo level=3
+          p :compose-seo-desc intent=muted
+          input type=text label="SEO Title" name=seoTitle state={value: ""}
+          input type=text label="SEO Description" name=seoDescription state={value: ""}
+          input type=text label="OG Title" name=ogTitle state={value: ""}
+          input type=text label="OG Description" name=ogDescription state={value: ""}
+          input type=text label="OG Image" name=ogImage state={value: ""}
+        }
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          input type=textarea label=:compose-f-body name=body required=true state={value: ""}
+        }
+        row gap=sm {
+          action save-draft -> exec "/.actions/write" variant=secondary label=:compose-save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "$session.did", authorName: "$session.displayName", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
+          action publish-now -> exec "/.actions/write" variant=primary label=:compose-publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "$session.did", authorName: "$session.displayName", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
+        }
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h3 :compose-images level=3
+          p :compose-images-desc intent=muted
+        }
+        afs-dropzone
+      }
+      view console-section-appearance label="Appearance" style={height: "100%", minHeight: 0} {
+      h2 :appearance-title level=2
+      p :appearance-desc intent=muted
       auto-surface appearance-settings "Appearance" from "/instance/settings/arcblog"
+      }
+      }
+      }
+    }
     }
   }
 
-  page posts "Latest stories" {
+  # Legacy URL alias: `?page=dashboard` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page dashboard "Dashboard" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page admin "Posts" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=pages-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page pages-admin "Pages" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=compose` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page compose "Write" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=heroes-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page heroes-admin "Heroes" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=categories-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page categories-admin "Categories" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=seo-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page seo-admin "SEO" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=feeds-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page feeds-admin "Feeds" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=settings` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page settings "Appearance" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=operations` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page operations "Operations" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=hub-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page hub-admin "Hubs" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=media-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page media-admin "Media" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=agent-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page agent-admin "Agents" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=policy-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page policy-admin "Policy" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+  # Legacy URL alias: `?page=access-admin` predates the single-page console; the app
+  # wrapper's console bridge hands the section over and redirects (spec §15.5).
+  page access-admin "Access" {
+    view gap=sm {
+      p "$t(wrapper.console-opening)" intent=muted
+    }
+  }
+
+  page index "Latest stories" {
     i18n {
       hero-title { en "A calmer place to read." zh "一个安静阅读的地方。" }
       hero-desc { en "Only published stories appear in the public feed. Every post remains DID-attributed and follows a draft → published → archived lifecycle." zh "公共 feed 只展示已发布的文章。每篇文章都带有 DID 署名，并遵循 草稿 → 发布 → 归档 的生命周期。" }
@@ -41,12 +1038,15 @@ app "ArcBlog" {
       hero-empty { en "" zh "" }
       rss { en "Subscribe via RSS" zh "订阅 RSS" }
     }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
     view gap=lg {
       frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel" sandbox="allow-top-navigation-by-user-activation"
       h2 :feed level=2
   afs-list published-feed layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none from "/instance/app/arcblog/posts" {
         row postRow cross=stretch role=item style={padding: "0", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)", overflow: "hidden", minHeight: "176px"} {
-          view postLink gap=sm href="/posts/${entry.content.slug}" size={flex: 1} style={display: "flex", flexDirection: "column", justifyContent: "center", textDecoration: "none", color: "inherit", cursor: "pointer", minWidth: 0, padding: "24px 30px"} {
+          view postLink gap=sm layout=inline href="/posts/${entry.content.slug}" size={flex: 1} style={display: "flex", flexDirection: "column", justifyContent: "center", textDecoration: "none", color: "inherit", cursor: "pointer", minWidth: 0, padding: "24px 30px"} {
             h3 "${entry.content.title}" scale=lg style={margin: "0", fontSize: "clamp(1.3rem, 2vw, 1.62rem)", lineHeight: "1.25"}
             row gap=xs cross=center {
               p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
@@ -57,86 +1057,15 @@ app "ArcBlog" {
             }
             p "${entry.content.summary}" intent=muted scale=sm style={margin: "0"}
           }
-          view postCover visible="${entry.content.coverImage}" href="/posts/${entry.content.slug}" style={display: "block", flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: "stretch", background: "url(${entry.content.coverImage}) center / cover no-repeat"} {
+          view postCover visible="${entry.content.coverImage}" layout=inline href="/posts/${entry.content.slug}" style={display: "block", flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: "stretch", background: "url(${entry.content.coverImage}) center / cover no-repeat"} {
             text content=" "
           }
         }
       }
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 
-  page compose "Write" {
-    i18n {
-      gate-title { en "Publish with your wallet" zh "用钱包发布" }
-      gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      checks { en "Pre-publish checks" zh "发布前检查" }
-      checks-desc { en "Title and slug are required. Publishing is immediately public; drafts stay private until published. Saving an existing slug overwrites that record." zh "标题和 slug 必填。发布即公开；草稿在发布前保持私有。相同 slug 会覆盖已有记录。" }
-      meta { en "Metadata" zh "元数据" }
-      f-title { en "Title" zh "标题" }
-      f-slug { en "Slug" zh "Slug" }
-      slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
-      f-summary { en "Summary" zh "摘要" }
-      f-cover { en "Cover image URL" zh "封面图 URL" }
-      cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
-      f-body { en "Body (Markdown)" zh "正文（Markdown）" }
-      category { en "Category" zh "分类" }
-      tags { en "Tags" zh "标签" }
-      save-draft { en "Save draft" zh "存草稿" }
-      publish-now { en "Publish" zh "发布" }
-      draft-saved { en "Draft saved — preview it from the studio." zh "草稿已保存——可在工作室预览。" }
-      published-ok { en "Published." zh "已发布。" }
-      seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
-      seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
-      images { en "Images" zh "图片" }
-      images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
-    }
-    view gap=lg {
-      card gap=md visible="!$session.authenticated" {
-        h2 :gate-title level=2
-        p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose&cancel_to=%2F%3Fpage%3Dcompose" variant=primary label=:login
-      }
-      view gap=lg visible=$session.authenticated {
-        card gap=md {
-          h3 :checks level=3
-          p :checks-desc intent=muted
-        }
-        card gap=md {
-          h3 :meta level=3
-          input type=text label=:f-title name=title required=true state={value: ""}
-          input type=text label=:f-slug name=slug required=true state={value: ""}
-          p :slug-hint intent=muted scale=caption
-          input type=select label=:category name=category options=[technology, design, life] state={value: technology}
-          input type=text label=:tags name=tags state={value: ""}
-          input type=text label=:f-summary name=summary state={value: ""}
-          input type=text label=:f-cover name=coverImage state={value: ""}
-          p :cover-hint intent=muted scale=caption
-        }
-        card gap=md {
-          h3 :seo level=3
-          p :seo-desc intent=muted
-          input type=text label="SEO Title" name=seoTitle state={value: ""}
-          input type=text label="SEO Description" name=seoDescription state={value: ""}
-          input type=text label="OG Title" name=ogTitle state={value: ""}
-          input type=text label="OG Description" name=ogDescription state={value: ""}
-          input type=text label="OG Image" name=ogImage state={value: ""}
-        }
-        card gap=md {
-          input type=textarea label=:f-body name=body required=true state={value: ""}
-        }
-        row gap=sm {
-          action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "$session.did", authorName: "$session.displayName", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
-          action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "$session.did", authorName: "$session.displayName", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000}
-        }
-        card gap=md {
-          h3 :images level=3
-          p :images-desc intent=muted
-        }
-        afs-dropzone
-      }
-    }
-  }
 
   page compose-edit "Edit post" {
     i18n {
@@ -166,50 +1095,50 @@ app "ArcBlog" {
       publish-hint { en "Published. The draft copy is still in studio drafts — delete it there when done." zh "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。" }
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
-      card gap=md visible="!$session.authenticated" {
+      view gap=md visible="!$session.authenticated" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :gate-title level=2
         p :gate-desc intent=info
         action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
-        card gap=md visible="!$state.post" {
+        view gap=md visible="!$state.post" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
           h2 :title level=2
           p :not-found intent=muted
-          action -> page admin variant=ghost label=:back
+          action compose-edit-back href="/?page=console#admin" variant=ghost label=:back
         }
         view gap=lg visible="$state.post" {
-          card gap=md {
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
             h3 "$t(compose-edit.editing)" level=3
             p "${state.post.slug}" intent=muted scale=caption
           }
-          card gap=md {
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
             h3 :meta level=3
-            input type=text label=:f-title name=title required=true state={value: "${state.post.title}"}
-            input type=text label=:f-slug name=slug required=true state={value: "${state.post.slug}"}
+            input type=text label=:f-title name=title required=true value="${state.post.title}"
+            input type=text label=:f-slug name=slug required=true value="${state.post.slug}"
             p :slug-hint intent=muted scale=caption
-            input type=select label=:category name=category options=[technology, design, life] state={value: "${state.post.category}"}
-            input type=text label=:tags name=tags state={value: "${state.post.tags}"}
-            input type=text label=:f-summary name=summary state={value: "${state.post.summary}"}
-            input type=text label=:f-cover name=coverImage state={value: "${state.post.coverImage}"}
+            input type=select label=:category name=category options=[technology, design, life] value="${state.post.category}"
+            input type=text label=:tags name=tags value="${state.post.tags}"
+            input type=text label=:f-summary name=summary value="${state.post.summary}"
+            input type=text label=:f-cover name=coverImage value="${state.post.coverImage}"
             p :cover-hint intent=muted scale=caption
           }
-          card gap=md {
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
             h3 :seo level=3
             p :seo-desc intent=muted
-            input type=text label="SEO Title" name=seoTitle state={value: "${state.post.seoTitle}"}
-            input type=text label="SEO Description" name=seoDescription state={value: "${state.post.seoDescription}"}
-            input type=text label="OG Title" name=ogTitle state={value: "${state.post.ogTitle}"}
-            input type=text label="OG Description" name=ogDescription state={value: "${state.post.ogDescription}"}
-            input type=text label="OG Image" name=ogImage state={value: "${state.post.ogImage}"}
+            input type=text label="SEO Title" name=seoTitle value="${state.post.seoTitle}"
+            input type=text label="SEO Description" name=seoDescription value="${state.post.seoDescription}"
+            input type=text label="OG Title" name=ogTitle value="${state.post.ogTitle}"
+            input type=text label="OG Description" name=ogDescription value="${state.post.ogDescription}"
+            input type=text label="OG Image" name=ogImage value="${state.post.ogImage}"
           }
-          card gap=md {
-            input type=textarea label=:f-body name=body required=true state={value: "${state.post.body}"}
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            input type=textarea label=:f-body name=body required=true value="${state.post.body}"
           }
           row gap=sm {
             action save-draft -> exec "/.actions/write" variant=secondary label=:save-draft args={path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000}
             action publish-now -> exec "/.actions/write" variant=primary label=:publish-now args={path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}} onSuccessToast={intent: success, message: "$t(compose-edit.publish-hint)", duration: 3000}
           }
-          card gap=md {
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
             h3 :images level=3
             p :images-desc intent=muted
           }
@@ -225,6 +1154,11 @@ app "ArcBlog" {
       desc { en "This surface renders only published post records (status=published). Body remains Markdown at rest and is sanitized at render time." zh "此页面只渲染已发布的文章（status=published）。正文以 Markdown 存储，渲染时经过消毒。" }
       not-found { en "Post not found." zh "文章不存在。" }
       back { en "Back to latest stories" zh "返回最新文章" }
+      paid-title { en "Paid content" zh "付费内容" }
+      paid-notice { en "This is a paid article. The full text is released after purchase — it is never shipped to your browser before that." zh "这是一篇付费文章。购买后才会下发全文——在此之前正文不会送达你的浏览器。" }
+    }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     }
     view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
       row gap=sm {
@@ -232,7 +1166,7 @@ app "ArcBlog" {
           p :back scale=sm
         }
       }
-      card gap=md visible="!$state.post" {
+      view gap=md visible="!$state.post" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :title level=2
         p :not-found intent=muted
       }
@@ -249,106 +1183,16 @@ app "ArcBlog" {
           p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
         }
         text reader-body format=markdown content="${state.post.body}"
+        view gap=md visible="${state.post.previewOnly}" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h3 :paid-title level=3
+          p "${state.post.summary}"
+          p :paid-notice intent=muted scale=sm
+        }
       }
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 
-  page admin "Creator Studio" {
-    i18n {
-      admin-archive { en "Archive" zh "归档" }
-      admin-archive-msg { en "This writes an archived copy to private drafts. The public post stays live until you remove it from public." zh "这会在私有 drafts 中写入一份 archived 副本。公开文章会继续保留，直到你执行从公开移除。" }
-      admin-archive-title { en "Archive this post?" zh "归档这篇文章？" }
-      admin-delete { en "Delete" zh "删除" }
-      admin-delete-msg { en "The record stays in drafts with status deleted and can be republished later." zh "记录会以 deleted 状态保留在 drafts 中，后续仍可重新发布。" }
-      admin-delete-title { en "Soft-delete this record?" zh "软删除这条记录？" }
-      admin-publish { en "Publish" zh "发布" }
-      admin-publish-msg { en "This publishes the current draft record. Deleted records can be republished." zh "这会发布当前草稿记录。deleted 状态记录也可以重新发布。" }
-      admin-publish-title { en "Publish this draft record?" zh "发布这条草稿记录？" }
-      admin-unpublish { en "Remove from public" zh "从公开移除" }
-      admin-unpublish-msg { en "Archive first keeps a copy in drafts. Removing from public deletes the original from public posts." zh "请先归档以在 drafts 保留副本。从公开移除会删除公开 posts 中的原记录。" }
-      admin-unpublish-title { en "Remove this post from public?" zh "将这篇文章从公开移除？" }
-      appearance { en "Appearance settings" zh "外观设置" }
-      content { en "Your content" zh "你的内容" }
-      content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
-      edit { en "Edit" zh "编辑" }
-      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-      gate-title { en "Operations" zh "运维" }
-      group-drafts { en "Drafts & archived" zh "草稿与归档" }
-      group-published { en "Published" zh "已发布" }
-      lifecycle { en "Lifecycle controls" zh "生命周期控制" }
-      lifecycle-desc { en "Archive copies a post to the private drafts directory; Remove from public takes it off the public feed. Drafts can be published or soft-deleted from the row actions." zh "归档会把文章复制到私有 drafts 目录；从公开移除会把它从公开 feed 下线。草稿可在行内操作中发布或软删除。" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      new-post { en "New post" zh "新建文章" }
-      studio { en "Your studio" zh "你的工作室" }
-      studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
-    }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
-    }
-    row console-shell gap=lg cross=start {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)" variant=primary
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)"
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)"
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)"
-      }
-      view console-pane gap=lg size={flex: 1} {
-        view gap=lg visible=$session.authenticated {
-        card gap=md {
-          h2 :studio level=2
-          p :studio-desc intent=muted
-          action -> page compose variant=primary label=:new-post
-        }
-        card gap=md {
-          h3 :lifecycle level=3
-          p :lifecycle-desc intent=muted
-        }
-        row gap=sm {
-          action -> page settings variant=secondary size=sm label=:appearance
-        }
-        h2 :content level=2
-        h3 :group-published level=3
-        afs-list studio-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=none from "/instance/app/arcblog/posts" {
-          row studioRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
-            view studioLink gap=xs href="/posts/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
-              h3 "${entry.content.title}"
-              row gap=xs cross=center {
-                p "${entry.content.status}" scale=sm intent=muted
-                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
-              }
-            }
-            action studio-archive -> exec "/.actions/write" variant=secondary size=sm label=:admin-archive args={path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: archived, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000}
-            action studio-unpublish -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish-title, message: :admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000}
-          }
-        }
-        h3 :group-drafts level=3
-        afs-list studio-drafts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=none from "/instance/app/arcblog/drafts" {
-          row draftRow cross=start role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
-            view draftLink gap=xs href="/preview/${entry.content.slug}" size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
-              h3 "${entry.content.title}"
-              row gap=xs cross=center {
-                p "${entry.content.status}" scale=sm intent=muted
-                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
-              }
-            }
-            action studio-publish -> exec "/.actions/write" variant=primary size=sm label=:admin-publish args={path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000}
-            action studio-delete -> exec "/.actions/write" variant=destructive size=sm icon=trash label=:admin-delete args={path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: deleted, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${entry.content.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000}
-            view draftEdit href="/edit/${entry.content.slug}" style={display: block, cursor: pointer, color: "var(--color-dim)"} {
-              p :edit scale=sm
-            }
-          }
-        }
-        }
-      }
-    }
-  }
 
   page preview "Draft preview" {
     i18n {
@@ -366,19 +1210,22 @@ app "ArcBlog" {
       preview-delete-msg { en "The record stays in the archive with status deleted (soft delete)." zh "记录将以 deleted 状态保留（软删除）。" }
       deleted-ok { en "Draft deleted." zh "草稿已删除。" }
     }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
         view preview-back-studio visible=$session.authenticated {
-          action preview-back -> page admin variant=ghost label=:back
+          action preview-back href="#admin" variant=ghost label=:back
         }
         view preview-back-home href="/posts" visible="!$session.authenticated" style={cursor: "pointer", color: "var(--color-dim)"} {
           p :back-home
         }
-        view preview-edit href="/edit/${state.post.slug}" visible="$state.post" style={cursor: "pointer", color: "var(--color-dim)"} {
+        view preview-edit layout=inline href="/edit/${state.post.slug}" visible="$state.post" style={cursor: "pointer", color: "var(--color-dim)"} {
           p :edit scale=sm
         }
       }
-      card gap=md visible="!$state.post" {
+      view gap=md visible="!$state.post" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :title level=2
         p :not-found intent=muted
       }
@@ -387,7 +1234,7 @@ app "ArcBlog" {
           action preview-publish -> exec "/.actions/write" variant=primary label=:preview-publish args={path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000}
           action preview-delete -> exec "/.actions/write" variant=destructive label=:preview-delete args={path: "/instance/app/arcblog/drafts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: deleted, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "${state.post.publishedAt}", archivedAt: "${state.post.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}} confirm={title: :preview-delete-title, message: :preview-delete-msg} onSuccessToast={intent: success, message: "$t(preview.deleted-ok)", duration: 3000}
         }
-        card gap=sm {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
           p :notice intent=info
         }
         view preview-cover visible="$state.post.coverImage" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
@@ -402,6 +1249,7 @@ app "ArcBlog" {
         text preview-body format=markdown content="${state.post.body}"
       }
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 
   page about "About" {
@@ -412,472 +1260,104 @@ app "ArcBlog" {
       lifecycle-desc { en "Posts follow a draft → published → archived lifecycle with optimistic concurrency and a full audit trail. Soft deletes keep records recoverable." zh "文章遵循 草稿 → 发布 → 归档 的生命周期，带乐观并发控制和完整审计日志。软删除保证记录可恢复。" }
       rss { en "Subscribe via RSS" zh "订阅 RSS" }
     }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
     view gap=lg {
-      card gap=md {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :title level=2
         p :desc
       }
-      card gap=md {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h3 :lifecycle level=3
         p :lifecycle-desc intent=muted
       }
       action -> navigate "/p/rss.xml" variant=secondary label=:rss
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 
-  page dashboard "Dashboard" {
+  page store "Store" {
     i18n {
-      gate-title { en "Dashboard" zh "仪表盘" }
-      gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      title { en "Dashboard" zh "仪表盘" }
-      desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
-      node { en "Node" zh "节点" }
-      node-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
-      roles-label { en "Roles" zh "角色" }
-      capabilities-label { en "Capabilities" zh "能力" }
-      content { en "Recent published" zh "最近发布" }
-      content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
-      quick { en "Quick actions" zh "快捷操作" }
-      q-write { en "Write a post" zh "写文章" }
-      q-studio { en "Creator Studio" zh "创作者工作室" }
-      q-settings { en "Appearance" zh "外观" }
-      q-ops { en "Operations" zh "运维" }
-    }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Ddashboard&cancel_to=%2F%3Fpage%3Ddashboard" variant=primary label=:login
-    }
-    row console-shell gap=lg cross=start visible=$session.authenticated {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)" variant=primary
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)"
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)"
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)"
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)"
-      }
-      view console-pane gap=lg size={flex: 1} {
-      card gap=md {
-        h1 :title level=1
-        p :desc intent=muted
-      }
-      card gap=md {
-        h2 :node level=2
-        afs-list dash-node layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:node-empty from "/instance/app/arcblog/node" {
-          row dashNodeRow role=item gap=xs {
-            h3 "${entry.content.name}"
-            p "${entry.content.did}" scale=sm intent=muted
-            p "${entry.content.version}" scale=sm intent=muted
-            p :roles-label scale=sm intent=muted
-            p "${entry.content.roles}" scale=sm
-            p :capabilities-label scale=sm intent=muted
-            p "${entry.content.capabilities}" scale=sm
-          }
-        }
-      }
-      card gap=md {
-        h2 :content level=2
-        afs-list dash-published layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none pageSize=5 emptyText=:content-empty from "/instance/app/arcblog/posts" {
-          row dashPostRow role=item gap=xs {
-            view dashPostLink href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
-              h3 "${entry.content.title}"
-            }
-            p "${entry.content.category}" scale=sm intent=muted
-          }
-        }
-      }
-      card gap=md {
-        h2 :quick level=2
-        row gap=sm {
-          action -> page compose variant=primary label=:q-write
-          action -> page admin variant=secondary label=:q-studio
-          action -> page operations variant=secondary label=:q-ops
-          action -> page settings variant=ghost label=:q-settings
-        }
-      }
-    }
-      }
-  }
-
-  page operations "Operations" {
-    i18n {
-      desc { en "Live state of this node: health, discovery, Hubs, economy, media and agent grants." zh "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。" }
-      discovery { en "Discovery document" zh "发现文档" }
-      discovery-empty { en "How to publish it: node scripts/arcblog-network.mjs discovery publish" zh "如何发布：node scripts/arcblog-network.mjs discovery publish" }
-      discovery-generated { en "Generated" zh "生成于" }
-      discovery-protocol { en "Protocol" zh "协议" }
-      discovery-transport { en "Transport" zh "传输" }
-      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-      gate-title { en "Operations" zh "运维" }
-      health { en "Node health" zh "节点健康" }
-      health-checked { en "Checked" zh "检查于" }
-      health-did { en "DID" zh "DID" }
-      health-status { en "Status" zh "状态" }
-      health-version { en "Blocklet version" zh "Blocklet 版本" }
-      hub-endpoint { en "Endpoint" zh "端点" }
-      hub-sync { en "Last sync" zh "最近同步" }
-      hub-version { en "Last version" zh "最后版本" }
-      hubs { en "Registered Hubs" zh "已注册 Hub" }
-      hubs-empty { en "How to add one: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "如何添加：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      title { en "Operations" zh "运维" }
-    }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Doperations&cancel_to=%2F%3Fpage%3Doperations" variant=primary label=:login
-    }
-    row console-shell gap=lg cross=start {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)"
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)"
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)" variant=primary
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)"
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)"
-      }
-      view console-pane gap=lg size={flex: 1} {
-        view gap=lg visible=$session.authenticated {
-      card gap=md {
-        h1 :title level=1
-        p :desc intent=muted
-      }
-      card gap=md propBind={health: "/instance/app/arcblog/node/health.json"} {
-        h2 :health level=2
-        p :health-status scale=sm intent=muted
-        p "${state.health.status}" scale=sm
-        p :health-version scale=sm intent=muted
-        p "${state.health.version}" scale=sm
-        p :health-did scale=sm intent=muted
-        p "${state.health.did}" scale=sm
-        p :health-checked scale=sm intent=muted
-        time mode=display value="${state.health.checkedAt}" timeMode=relative
-      }
-      card gap=md propBind={discovery: "/instance/app/arcblog/node/discovery.json"} {
-        h2 :discovery level=2
-        row opsDiscoveryRow gap=xs {
-          p :discovery-protocol scale=sm intent=muted
-          p "${state.discovery.protocol}" scale=sm
-          p :discovery-transport scale=sm intent=muted
-          p "${state.discovery.transport}" scale=sm
-          p :discovery-generated scale=sm intent=muted
-          time mode=display value="${state.discovery.generatedAt}" timeMode=relative
-        }
-        p :discovery-empty scale=sm intent=muted
-      }
-      card gap=md {
-        h2 :hubs level=2
-          afs-list ops-hubs layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:hubs-empty transform={syncAt: "content.sync.lastSync", syncVersion: "content.sync.lastVersion"} from "/instance/app/arcblog/hub/registrations" {
-            row opsHubRow role=item gap=xs {
-              h3 "${entry.content.hubDid}"
-              p :hub-endpoint scale=sm intent=muted
-              p "${entry.content.endpoint}" scale=sm
-              p :hub-sync scale=sm intent=muted
-              p "${entry.content.syncAt}" scale=sm
-              p :hub-version scale=sm intent=muted
-              p "${entry.content.syncVersion}" scale=sm
-            }
-          }
-        p :hubs-empty scale=sm intent=muted
-      }
-        }
-      }
-    }
-  }
-
-  page heroes-admin "Heroes & categories" {
-    i18n {
-      cat-add { en "Add category" zh "添加分类" }
-      cat-desc { en "Taxonomy used by the publish validator and the public feed." zh "发布校验器与公开信息流使用的分类法。" }
-      cat-empty { en "No categories yet." zh "还没有分类。" }
-      cat-f-desc { en "Description" zh "描述" }
-      cat-f-name { en "Name" zh "名称" }
-      cat-f-slug { en "Slug" zh "标识（slug）" }
-      cat-remove { en "Remove" zh "删除" }
-      cat-remove-msg { en "Existing posts keep their category text, but the publish validator will reject it afterwards." zh "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。" }
-      cat-remove-title { en "Remove this category?" zh "删除该分类？" }
-      cat-slug-hint { en "Lowercase letters, digits and hyphens, e.g. technology." zh "小写字母、数字与连字符，例如 technology。" }
-      cat-title { en "Categories" zh "分类" }
-      content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
-      desc { en "Home carousel slides and the post taxonomy." zh "首页轮播与文章分类。" }
-      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-      gate-title { en "Operations" zh "运维" }
-      hero-add { en "Add hero" zh "添加 Hero" }
-      hero-admin { en "Hero management" zh "Hero 管理" }
-      hero-admin-desc { en "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending." zh "Hero 显示为首页轮播。每条记录需要标题、图片 URL 和跳转链接；sort 按升序决定播放顺序。" }
-      hero-delete { en "Delete" zh "删除" }
-      hero-delete-msg { en "This removes the hero record permanently." zh "将永久删除该 Hero 记录。" }
-      hero-delete-title { en "Delete hero?" zh "删除 Hero？" }
-      hero-dropzone-desc { en "Upload an image here, then paste the resulting URL into the form above." zh "把图片拖到这里上传，把得到的 URL 粘贴到上面的表单。" }
-      hero-f-desc { en "Description" zh "描述" }
-      hero-f-image { en "Image URL" zh "图片 URL" }
-      hero-f-sort { en "Sort order" zh "排序" }
-      hero-f-title { en "Title" zh "标题" }
-      hero-f-url { en "Link URL" zh "链接 URL" }
-      hero-form { en "Add hero" zh "添加 Hero" }
-      hero-id { en "ID (slug)" zh "ID（slug）" }
-      hero-id-hint { en "Lowercase letters, numbers and dashes; same ID overwrites." zh "小写字母、数字和连字符；相同 ID 会覆盖。" }
-      hero-list-empty { en "No heroes yet." zh "还没有 Hero。" }
-      hero-quickadd { en "Add to hero" zh "加入 Hero" }
-      hero-quickadd-hint { en "Click a post row to stage it below, then confirm. Title, summary, cover and /posts/<slug> link are copied automatically." zh "点击文章行将其暂存到下方，确认后加入。自动带标题、摘要、封面和 /posts/<slug> 链接。" }
-      hero-quickadd-title { en "Quick add from a post" zh "从文章快速加入" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      title { en "Heroes & categories" zh "Hero 与分类" }
-    }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dheroes-admin&cancel_to=%2F%3Fpage%3Dheroes-admin" variant=primary label=:login
-    }
-    row console-shell gap=lg cross=start {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)"
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)" variant=primary
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)"
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)"
-      }
-      view console-pane gap=lg size={flex: 1} {
-        view gap=lg visible=$session.authenticated {
-        card gap=md {
-          h1 :title level=1
-          p :desc intent=muted
-        }
-        h2 :hero-admin level=2
-        card gap=md {
-          p :hero-admin-desc intent=muted
-        }
-        afs-list hero-admin-list layout=grid itemStyle=card subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-list-empty clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} from "/instance/app/arcblog/heroes" {
-          row heroAdminRow role=item {
-            action hero-delete -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:hero-delete path="${entry.path}" confirm={title: :hero-delete-title, message: :hero-delete-msg} onSuccessToast={intent: success, message: "$t(admin.hero-deleted)", duration: 2500}
-          }
-        }
-        card gap=md {
-          h3 :hero-form level=3
-          input type=text label=:hero-id name=heroId required=true state={value: ""}
-          p :hero-id-hint intent=muted scale=caption
-          input type=text label=:hero-f-title name=heroTitle required=true state={value: ""}
-          input type=text label=:hero-f-desc name=heroDesc state={value: ""}
-          input type=text label=:hero-f-image name=heroImage required=true state={value: ""}
-          input type=text label=:hero-f-url name=heroUrl required=true state={value: ""}
-          input type=text label=:hero-f-sort name=heroSort state={value: "0"}
-          action hero-add -> exec "/.actions/write" variant=primary label=:hero-add args={path: "/instance/app/arcblog/heroes/${args.heroId}.json", content: {title: "${args.heroTitle}", description: "${args.heroDesc}", image: "${args.heroImage}", url: "${args.heroUrl}", sort: "${args.heroSort}", createdAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(admin.hero-added)", duration: 2500}
-        }
-        card gap=md {
-          p :hero-dropzone-desc intent=muted
-        }
-        afs-dropzone
-        h3 :hero-quickadd-title level=3
-        p :hero-quickadd-hint intent=muted scale=caption
-        afs-list hero-quickadd-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} from "/instance/app/arcblog/posts" {
-          row heroPostRow cross=center role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
-            view gap=xs size={flex: 1} style={minWidth: 0} {
-              h3 "${entry.content.title}"
-              row gap=xs cross=center {
-                p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
-                p "${entry.content.coverImage}" scale=sm intent=muted
-              }
-            }
-          }
-        }
-        view gap=sm {
-          input qa-title type=hidden name=qaTitle state={value: ""}
-          input qa-desc type=hidden name=qaDesc state={value: ""}
-          input qa-image type=hidden name=qaImage state={value: ""}
-          input qa-slug type=hidden name=qaSlug state={value: ""}
-          action hero-quickadd-confirm -> exec "/.actions/write" variant=secondary size=sm label=:hero-quickadd args={path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(admin.hero-quickadded)", duration: 2500}
-        }
-        card gap=md {
-          h3 :cat-title level=3
-          p :cat-desc intent=muted
-          afs-list studio-categories layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:cat-empty from "/instance/app/arcblog/categories" {
-            row studioCategoryRow cross=center role=item style={padding: "var(--space-block) 0", borderBottom: "1px solid var(--color-border)"} {
-              view gap=xs size={flex: 1} style={minWidth: 0} {
-                h3 "${entry.content.name}"
-                p "${entry.content.slug}" scale=sm intent=muted
-                p "${entry.content.description}" scale=sm intent=muted
-              }
-              action cat-remove -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:cat-remove path="/instance/app/arcblog/categories/${entry.content.slug}.json" confirm={title: :cat-remove-title, message: :cat-remove-msg} onSuccessToast={intent: success, message: "$t(admin.cat-removed)", duration: 2500}
-            }
-          }
-          input type=text label=:cat-f-slug name=catSlug required=true state={value: ""}
-          p :cat-slug-hint intent=muted scale=caption
-          input type=text label=:cat-f-name name=catName required=true state={value: ""}
-          input type=text label=:cat-f-desc name=catDesc state={value: ""}
-          action cat-add -> exec "/.actions/write" variant=primary label=:cat-add args={path: "/instance/app/arcblog/categories/${args.catSlug}.json", content: {slug: "${args.catSlug}", name: "${args.catName}", description: "${args.catDesc}", sort: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}} onSuccessToast={intent: success, message: "$t(admin.cat-added)", duration: 2500}
-        }
-        }
-      }
-    }
-  }
-
-  page ops-admin "Media & agents" {
-    i18n {
-      admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-      agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
-      agent-expires { en "Expires" zh "到期" }
-      agent-grants { en "Agent capability grants" zh "Agent 能力授权" }
-      agent-grants-empty { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "如何授权：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
-      desc { en "The media index and the Agent capability grants." zh "媒体索引与 Agent 能力授权。" }
-      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-      gate-title { en "Operations" zh "运维" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      media { en "Media index" zh "媒体索引" }
-      media-empty { en "How to add one: node scripts/arcblog-media.mjs add" zh "如何添加：node scripts/arcblog-media.mjs add" }
-      mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
-      title { en "Media & agents" zh "媒体与 Agent" }
-    }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dops-admin&cancel_to=%2F%3Fpage%3Dops-admin" variant=primary label=:login
-    }
-    row console-shell gap=lg cross=start {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)"
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)"
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)" variant=primary
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)"
-      }
-      view console-pane gap=lg size={flex: 1} {
-        view gap=lg visible=$session.authenticated {
-        card gap=md {
-          h1 :title level=1
-          p :desc intent=muted
-        }
-      card gap=md {
-        h2 :media level=2
-        p :admin-only scale=sm intent=muted visible="!$session.authenticated"
-        view ops-media-gate visible=$session.authenticated {
-          afs-list ops-media layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:media-empty from "/instance/app/arcblog/media" {
-            row opsMediaRow role=item gap=xs {
-              h3 "${entry.content.id}"
-              p "${entry.content.mimeType}" scale=sm intent=muted
-            }
-          }
-        }
-        p :media-empty scale=sm intent=muted
-      }
-      card gap=md {
-        h2 :agent-grants level=2
-        p :admin-only scale=sm intent=muted visible="!$session.authenticated"
-        view ops-agent-gate visible=$session.authenticated {
-          afs-list ops-agent layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:agent-grants-empty from "/instance/app/arcblog/config/agent-grants" {
-            row opsAgentRow role=item gap=xs {
-              h3 "${entry.content.agentDid}"
-              p "${entry.content.capabilities}" scale=sm
-              p :agent-expires scale=sm intent=muted
-              p "${entry.content.expiresAt}" scale=sm
-            }
-          }
-        }
-        p :agent-grants-empty scale=sm intent=muted
-        p :agent-closed scale=sm intent=muted
-        p :mutations scale=sm intent=muted
-      }
-        }
-      }
-    }
-  }
-
-  page economy-admin "Policy & access" {
-    i18n {
-      admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-      desc { en "The split policy, the products and the access grants." zh "分成策略、商品与访问授权。" }
-      gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-      gate-title { en "Operations" zh "运维" }
-      grant-reader { en "Reader" zh "读者" }
-      grants { en "Access grants" zh "访问授权" }
-      grants-empty { en "Created automatically when a paid reading order settles." zh "付费阅读订单结算后自动生成。" }
-      login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-      policy { en "Settlement policy" zh "结算策略" }
-      policy-adapter { en "Payment adapter" zh "支付适配器" }
-      policy-empty { en "How to set it: node scripts/arcblog-economy.mjs policy init" zh "如何设置：node scripts/arcblog-economy.mjs policy init" }
-      policy-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
-      product-price { en "Price" zh "价格" }
+      title { en "Creator store" zh "创作者商店" }
+      desc { en "Digital goods published by this node. The creator sets the price; buying happens with a DID wallet." zh "本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。" }
       products { en "Products" zh "商品" }
-      products-empty { en "How to add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "如何添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
-      title { en "Policy & access" zh "策略与授权" }
+      subscription { en "subscription" zh "订阅" }
+      empty { en "No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "还没有公开商品。添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
+      howto-title { en "How buying works" zh "购买流程" }
+      howto-desc { en "A purchase is an Order paid through the configured adapter; settlement then splits the amount (creator / Hub / protocol), and a paid article unlocks through an Access Grant. This page is the catalogue only — there is no checkout here." zh "购买即一笔订单，通过配置的支付适配器支付；随后结算按分成（创作者 / Hub / 协议）拆分，付费文章凭 Access Grant 解锁。本页只是商品目录，不含收银台。" }
     }
-    card gap=md visible="!$session.authenticated" {
-      h2 :gate-title level=2
-      p :gate-desc intent=info
-      action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Deconomy-admin&cancel_to=%2F%3Fpage%3Deconomy-admin" variant=primary label=:login
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     }
-    row console-shell gap=lg cross=start {
-      view console-nav gap=xs size={width: "200px", flexShrink: 0} style={padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-surface)"} visible=$session.authenticated {
-        p "$t(wrapper.nav-group-content)" intent=muted scale=caption
-        action console-nav-dashboard -> page dashboard label="$t(wrapper.nav-dashboard)"
-        action console-nav-admin -> page admin label="$t(wrapper.nav-studio)"
-        action console-nav-heroes-admin -> page heroes-admin label="$t(wrapper.nav-heroes)"
-        p "$t(wrapper.nav-group-ops)" intent=muted scale=caption
-        action console-nav-operations -> page operations label="$t(wrapper.nav-operations)"
-        action console-nav-ops-admin -> page ops-admin label="$t(wrapper.nav-media-agents)"
-        p "$t(wrapper.nav-group-economy)" intent=muted scale=caption
-        action console-nav-economy-admin -> page economy-admin label="$t(wrapper.nav-policy-grants)" variant=primary
+    view gap=lg {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :title level=2
+        p :desc intent=muted
       }
-      view console-pane gap=lg size={flex: 1} {
-        view gap=lg visible=$session.authenticated {
-        card gap=md {
-          h1 :title level=1
-          p :desc intent=muted
-        }
-      card gap=md propBind={policy: "/instance/app/arcblog/economy/policies/active.json"} {
-        h2 :policy level=2
-        row opsPolicyRow gap=xs {
-          p :policy-split scale=sm intent=muted
-          p "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}" scale=sm
-          p :policy-adapter scale=sm intent=muted
-          p "${state.policy.paymentAdapter}" scale=sm
-        }
-        p :policy-empty scale=sm intent=muted
-      }
-      card gap=md {
-        h2 :products level=2
-          afs-list ops-products layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:products-empty from "/instance/app/arcblog/economy/products" {
-            row opsProductRow role=item gap=xs {
-              h3 "${entry.content.id}"
-              p :product-price scale=sm intent=muted
-              p "${entry.content.priceAmount}" scale=sm
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h3 :products level=3
+        afs-list store-products layout=list itemStyle=row autoSelect=false clickMode=none subscribe=true showBreadcrumb=false showParent=false filter={field: "content.visibility", match: public} emptyText=:empty from "/instance/app/arcblog/economy/products" style={flexShrink: 0} {
+          row storeProductRow role=item style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            view gap=xs size={flex: 1} style={minWidth: 0} {
+              h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
+              row gap=xs cross=center {
+                p "${entry.content.priceAmount} ${entry.content.priceAsset}" scale=sm
+                p "${entry.content.type}" scale=sm intent=muted
+              }
             }
-          }
-        p :products-empty scale=sm intent=muted
-      }
-      card gap=md {
-        h2 :grants level=2
-        p :admin-only scale=sm intent=muted visible="!$session.authenticated"
-        view ops-grants-gate visible=$session.authenticated {
-          afs-list ops-grants layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:grants-empty from "/instance/app/arcblog/economy/access-grants" {
-            row opsGrantRow role=item gap=xs {
-              p "${entry.content.contentId}" scale=sm
-              p :grant-reader scale=sm intent=muted
-              p "${entry.content.readerDid}" scale=sm
-            }
+            p "content ${entry.content.contentId}" scale=sm intent=muted
           }
         }
-        p :grants-empty scale=sm intent=muted
       }
-        }
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h3 :howto-title level=3
+        p :howto-desc intent=muted
       }
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
+
+  page page-view "Page" {
+    i18n {
+      title { en "Page" zh "页面" }
+      not-found { en "Page not found." zh "页面不存在。" }
+      back { en "Back to latest stories" zh "返回最新文章" }
+    }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
+    view gap=lg propBind={page: "/instance/app/arcblog/pages/$params.slug.json"} {
+      row gap=sm {
+        view page-back href="/posts" style={cursor: "pointer", color: "var(--color-dim)"} {
+          p :back scale=sm
+        }
+      }
+      view gap=md visible="!$state.page" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :title level=2
+        p :not-found intent=muted
+      }
+      view page-article gap=md visible="$state.page" {
+        h1 page-title "${state.page.title}" level=1 scale=display
+        text page-body format=markdown content="${state.page.body}"
+      }
+    }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   page author "Author" {
     i18n {
@@ -889,8 +1369,11 @@ app "ArcBlog" {
       stories { en "Stories" zh "文章" }
       stories-empty { en "No published stories yet." zh "还没有已发布的文章。" }
     }
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
     view gap=lg propBind={profile: "/instance/app/arcblog/node/profile.json", identity: "/instance/app/arcblog/node/identity.json"} {
-      card gap=md {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h1 "${state.profile.name}" level=1
         p "${state.profile.description}" intent=muted
         p :did scale=sm intent=muted
@@ -900,17 +1383,18 @@ app "ArcBlog" {
         p :roles scale=sm intent=muted
         p "${state.profile.roles}" scale=sm
       }
-      card gap=md {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :stories level=2
-        afs-list author-posts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false clickMode=none emptyText=:stories-empty from "/instance/app/arcblog/posts" {
-          row authorPostRow role=item gap=xs {
-            view authorPostLink href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
-              h3 "${entry.content.title}"
+        afs-list author-posts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty from "/instance/app/arcblog/posts" {
+          row authorPostRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            view authorPostLink layout=inline href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
+              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
             }
             p "${entry.content.summary}" scale=sm intent=muted
           }
         }
       }
     }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 }

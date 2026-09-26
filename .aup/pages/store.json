@@ -1,5 +1,5 @@
 {
-  "id": "arcblog-author",
+  "id": "arcblog-store",
   "type": "view",
   "props": {
     "layout": {
@@ -76,20 +76,16 @@
       ]
     },
     {
-      "id": "arcblog-author-view-2",
+      "id": "arcblog-store-view-2",
       "type": "view",
       "props": {
         "layout": {
           "gap": "lg"
         }
       },
-      "propBind": {
-        "profile": "/instance/app/arcblog/node/profile.json",
-        "identity": "/instance/app/arcblog/node/identity.json"
-      },
       "children": [
         {
-          "id": "arcblog-author-view-2-view-1",
+          "id": "arcblog-store-view-2-view-1",
           "type": "view",
           "props": {
             "layout": {
@@ -104,80 +100,29 @@
           },
           "children": [
             {
-              "id": "arcblog-author-view-2-view-1-h1-1",
+              "id": "arcblog-store-view-2-view-1-h2-1",
               "type": "text",
               "props": {
-                "level": 1,
-                "content": "${state.profile.name}"
+                "level": 2,
+                "content": "$t(store.title)"
               }
             },
             {
-              "id": "arcblog-author-view-2-view-1-p-2",
+              "id": "arcblog-store-view-2-view-1-p-2",
               "type": "text",
               "props": {
-                "content": "${state.profile.description}",
+                "content": "$t(store.desc)",
                 "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-3",
-              "type": "text",
-              "props": {
-                "content": "$t(author.did)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-4",
-              "type": "text",
-              "props": {
-                "content": "${state.profile.did}",
-                "scale": "sm"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-5",
-              "type": "text",
-              "props": {
-                "content": "$t(author.auth)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-6",
-              "type": "text",
-              "props": {
-                "content": "${state.identity.authMethod}",
-                "scale": "sm"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-7",
-              "type": "text",
-              "props": {
-                "content": "$t(author.roles)",
-                "scale": "sm",
-                "intent": "muted"
-              }
-            },
-            {
-              "id": "arcblog-author-view-2-view-1-p-8",
-              "type": "text",
-              "props": {
-                "content": "${state.profile.roles}",
-                "scale": "sm"
               }
             }
           ]
         },
         {
-          "id": "arcblog-author-view-2-view-2",
+          "id": "arcblog-store-view-2-view-2",
           "type": "view",
           "props": {
             "layout": {
-              "gap": "md"
+              "gap": "sm"
             },
             "style": {
               "background": "var(--card-bg)",
@@ -188,35 +133,41 @@
           },
           "children": [
             {
-              "id": "arcblog-author-view-2-view-2-h2-1",
+              "id": "arcblog-store-view-2-view-2-h3-1",
               "type": "text",
               "props": {
-                "level": 2,
-                "content": "$t(author.stories)"
+                "level": 3,
+                "content": "$t(store.products)"
               }
             },
             {
-              "id": "author-posts",
+              "id": "store-products",
               "type": "afs-list",
               "props": {
                 "layout": "list",
                 "itemStyle": "row",
+                "autoSelect": false,
+                "clickMode": "none",
                 "subscribe": true,
                 "showBreadcrumb": false,
                 "showParent": false,
-                "autoSelect": false,
-                "clickMode": "none",
-                "emptyText": "$t(author.stories-empty)"
+                "filter": {
+                  "field": "content.visibility",
+                  "match": "public"
+                },
+                "emptyText": "$t(store.empty)",
+                "style": {
+                  "flexShrink": 0
+                }
               },
-              "src": "/instance/app/arcblog/posts",
+              "src": "/instance/app/arcblog/economy/products",
               "children": [
                 {
-                  "id": "authorPostRow",
+                  "id": "storeProductRow",
                   "type": "view",
                   "props": {
                     "layout": {
-                      "direction": "row",
-                      "gap": "xs"
+                      "direction": "row"
                     },
                     "role": "item",
                     "style": {
@@ -227,36 +178,68 @@
                   },
                   "children": [
                     {
-                      "id": "authorPostLink",
+                      "id": "storeproductrow-view-1",
                       "type": "view",
                       "props": {
-                        "layout": "inline",
-                        "href": "/posts/${entry.content.slug}",
+                        "layout": {
+                          "gap": "xs"
+                        },
+                        "size": {
+                          "flex": 1
+                        },
                         "style": {
-                          "display": "block",
-                          "textDecoration": "none",
-                          "color": "inherit"
+                          "minWidth": 0
                         }
                       },
                       "children": [
                         {
-                          "id": "authorpostlink-h3-1",
+                          "id": "storeproductrow-view-1-h3-1",
                           "type": "text",
                           "props": {
                             "level": 3,
-                            "content": "${entry.content.title}",
+                            "content": "${entry.content.id}",
                             "style": {
                               "fontSize": "var(--type-body)"
                             }
                           }
+                        },
+                        {
+                          "id": "storeproductrow-view-1-row-2",
+                          "type": "view",
+                          "props": {
+                            "layout": {
+                              "direction": "row",
+                              "gap": "xs",
+                              "crossAlign": "center"
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "storeproductrow-view-1-row-2-p-1",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.priceAmount} ${entry.content.priceAsset}",
+                                "scale": "sm"
+                              }
+                            },
+                            {
+                              "id": "storeproductrow-view-1-row-2-p-2",
+                              "type": "text",
+                              "props": {
+                                "content": "${entry.content.type}",
+                                "scale": "sm",
+                                "intent": "muted"
+                              }
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "id": "authorpostrow-p-2",
+                      "id": "storeproductrow-p-2",
                       "type": "text",
                       "props": {
-                        "content": "${entry.content.summary}",
+                        "content": "content ${entry.content.contentId}",
                         "scale": "sm",
                         "intent": "muted"
                       }
@@ -266,11 +249,44 @@
               ]
             }
           ]
+        },
+        {
+          "id": "arcblog-store-view-2-view-3",
+          "type": "view",
+          "props": {
+            "layout": {
+              "gap": "md"
+            },
+            "style": {
+              "background": "var(--card-bg)",
+              "border": "var(--card-border)",
+              "borderRadius": "var(--radius-lg, 10px)",
+              "padding": "var(--space-block, 16px)"
+            }
+          },
+          "children": [
+            {
+              "id": "arcblog-store-view-2-view-3-h3-1",
+              "type": "text",
+              "props": {
+                "level": 3,
+                "content": "$t(store.howto-title)"
+              }
+            },
+            {
+              "id": "arcblog-store-view-2-view-3-p-2",
+              "type": "text",
+              "props": {
+                "content": "$t(store.howto-desc)",
+                "intent": "muted"
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "id": "arcblog-author-app-footer-3",
+      "id": "arcblog-store-app-footer-3",
       "type": "app-footer",
       "props": {
         "brand": {

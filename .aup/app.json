@@ -1,6 +1,6 @@
 {
   "title": "ArcBlog",
-  "defaultPage": "posts",
+  "defaultPage": "index",
   "tone": "editorial",
   "palette": "natural",
   "mode": "light",
@@ -10,14 +10,56 @@
     "zh"
   ],
   "pages": {
-    "settings": {
-      "tree": "pages/settings.json"
+    "console": {
+      "tree": "pages/console.json"
     },
-    "posts": {
-      "tree": "pages/posts.json"
+    "dashboard": {
+      "tree": "pages/dashboard.json"
+    },
+    "admin": {
+      "tree": "pages/admin.json"
+    },
+    "pages-admin": {
+      "tree": "pages/pages-admin.json"
     },
     "compose": {
       "tree": "pages/compose.json"
+    },
+    "heroes-admin": {
+      "tree": "pages/heroes-admin.json"
+    },
+    "categories-admin": {
+      "tree": "pages/categories-admin.json"
+    },
+    "seo-admin": {
+      "tree": "pages/seo-admin.json"
+    },
+    "feeds-admin": {
+      "tree": "pages/feeds-admin.json"
+    },
+    "settings": {
+      "tree": "pages/settings.json"
+    },
+    "operations": {
+      "tree": "pages/operations.json"
+    },
+    "hub-admin": {
+      "tree": "pages/hub-admin.json"
+    },
+    "media-admin": {
+      "tree": "pages/media-admin.json"
+    },
+    "agent-admin": {
+      "tree": "pages/agent-admin.json"
+    },
+    "policy-admin": {
+      "tree": "pages/policy-admin.json"
+    },
+    "access-admin": {
+      "tree": "pages/access-admin.json"
+    },
+    "index": {
+      "tree": "pages/index.json"
     },
     "compose-edit": {
       "tree": "pages/compose-edit.json"
@@ -25,29 +67,17 @@
     "reader": {
       "tree": "pages/reader.json"
     },
-    "admin": {
-      "tree": "pages/admin.json"
-    },
     "preview": {
       "tree": "pages/preview.json"
     },
     "about": {
       "tree": "pages/about.json"
     },
-    "dashboard": {
-      "tree": "pages/dashboard.json"
+    "store": {
+      "tree": "pages/store.json"
     },
-    "operations": {
-      "tree": "pages/operations.json"
-    },
-    "heroes-admin": {
-      "tree": "pages/heroes-admin.json"
-    },
-    "ops-admin": {
-      "tree": "pages/ops-admin.json"
-    },
-    "economy-admin": {
-      "tree": "pages/economy-admin.json"
+    "page-view": {
+      "tree": "pages/page-view.json"
     },
     "author": {
       "tree": "pages/author.json"

@@ -1,0 +1,49 @@
+# Man page for "hub-admin" (spec §15.6 / §70) — Hub curation console.
+schemaVersion: 1
+page: hub-admin
+description: >-
+  Wallet-gated Hub console: review Studio ↔ Hub relations (approve an
+  application, terminate one into a removed tombstone, or purge it) and inspect
+  the derived content index (metadata only — Studio = source, Hub = index,
+  spec §74). Adding a Studio and rebuilding the index are CLI operations
+  because relation ids are DID-hashes the UI cannot compute.
+synopsis: >-
+  Connect a DID Wallet, review relation rows (relation / direction / status),
+  approve applied rows, terminate live ones, and watch the content index.
+examples:
+  - label: Approve an application
+    action: click
+    target: hub-approve
+flows:
+  - Connect the DID Wallet to establish the operator session.
+  - Review Studio relations; approve applied ones, terminate live ones (tombstone), purge only when audit history is unwanted.
+  - Add a Studio or rebuild the index via the CLI commands shown on the page.
+  - Inspect the content index — tombstones stay visible after a post vanishes (spec §119).
+refs:
+  actions:
+    - id: arcblog-hub-admin-card-1-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-pages-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-seo-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-hub-admin
+      event: click
+    - id: console-nav-ops-admin
+      event: click
+    - id: console-nav-economy-admin
+      event: click
+    - id: hub-approve
+      event: click
+    - id: hub-reject
+      event: click
+    - id: hub-purge
+      event: click

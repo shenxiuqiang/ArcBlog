@@ -1,0 +1,3 @@
+page console-bridge {
+  console-bridge bridge slot=main
+}
