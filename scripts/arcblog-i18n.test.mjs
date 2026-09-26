@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -108,4 +109,19 @@ test('the wrapper declaration and its locale keys stay in step', () => {
     assert.ok(used.has(key), `${key} is declared but never referenced in the compiled app`);
     assert.ok(strings[key], `${key} is referenced but missing from locales/en.json`);
   }
+});
+
+test('no locale key is dead', () => {
+  // The wrapper test above only covers the wrapper namespace. `arc dsl generate`
+  // *appends* to the locale files and never prunes, so a page split or a namespace
+  // rename leaves unresolvable translations behind — the first prune removed 78 of
+  // them. scripts/arcblog-locales.mjs is the detector; --check exits non-zero and
+  // names the keys. Declare a key in an `i18n {}` block (or mention it literally
+  // in a source file) to keep it on purpose.
+  const res = execFileSync(
+    process.execPath,
+    [join(repoRoot, 'scripts', 'arcblog-locales.mjs'), '--check'],
+    { cwd: repoRoot, encoding: 'utf8' },
+  );
+  assert.match(res, /"ok": true/);
 });

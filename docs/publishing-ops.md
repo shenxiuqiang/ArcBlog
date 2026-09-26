@@ -136,7 +136,7 @@ node scripts/arcblog-lifecycle.mjs publish \
   --og-image "https://.../cover.png"
 ```
 
-Public feed (posts page) also includes category/tag filter inputs for reader-side narrowing.
+Public feed (index page) also includes category/tag filter inputs for reader-side narrowing.
 
 ### 7) Audit trail helper (Iteration 3)
 

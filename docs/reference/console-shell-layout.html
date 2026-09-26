@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh" data-mode="ok">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ArcBlog console shell — layout reference</title>
+<!--
+  ArcBlog admin console — 布局参考实现（零依赖，单文件）
+
+  对应 docs/ArcBlog-admin-ui-design.md §2.3「全高流式布局与滚动归属」。
+  用途：给 AI 与评审者一份可运行的最小范式——宽高 100% 流式、页面固定、
+  只有右侧 console-pane 内部滚动。
+
+  六条自检（与文档 §9 验收清单一致）：
+  ① 页面无纵向滚动条  ② 无横向滚动        ③ 滚动只发生在 console-pane
+  ④ 滚动时页头静止    ⑤ 无固定像素页宽    ⑥ 宽高均 100% 流式
+
+  右上角按钮可切到反例：去掉 overflow:hidden 与 min-height:0，
+  即可复现「内容区滚不动、整页反而出现滚动条」的双滚动条故障。
+-->
+<style>
+  :root {
+    --color-surface: #ffffff;
+    --color-border: #e4e6eb;
+    --color-dim: #6b7280;
+    --color-primary: #2563eb;
+    --color-bg: #f6f7f9;
+    --radius-lg: 12px;
+    --space-sm: 8px;
+    --space-md: 14px;
+    --space-block: 20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-surface: #1b1d21;
+      --color-border: #2f3237;
+      --color-dim: #9aa0a6;
+      --color-primary: #6b9aff;
+      --color-bg: #131417;
+    }
+  }
+
+  /* ── 全高流式骨架：① 高度 100% 锁定，宽度 100% 流式 ─────────────── */
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--color-bg);
+    color: inherit;
+  }
+
+  .app-shell {
+    height: 100vh;                  /* 旧浏览器回退 */
+    height: 100dvh;                 /* 现代浏览器覆盖：地址栏不吃高度 */
+    display: grid;
+    grid-template-rows: auto 1fr;   /* app-header / 剩余空间 */
+    grid-template-columns: 200px 1fr;
+    grid-template-areas:
+      "header header"
+      "nav    pane";
+    overflow: hidden;               /* 关键 1：页面自身永不出现滚动条 */
+  }
+
+  .app-header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .brand { font-weight: 600; }
+  .user { margin-left: auto; color: var(--color-dim); font-size: 12px; }
+
+  /* ── 侧边栏：静止，不参与滚动 ─────────────────────────────────── */
+  .console-nav {
+    grid-area: nav;
+    overflow-y: auto;               /* 仅极端窄高时自滚，不撑破页面 */
+    padding: var(--space-md);
+    margin: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+  .nav-group {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-dim);
+    font-size: 12px;
+  }
+  .nav-item {
+    display: block;
+    padding: 6px var(--space-sm);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .nav-item[aria-current="page"] {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  /* ── 内容区：唯一的滚动容器（关键 2：min-height: 0） ───────────── */
+  .console-pane {
+    grid-area: pane;
+    min-height: 0;                  /* flex/grid 子项默认 auto，会撑破容器 */
+    overflow-y: auto;               /* ③ 全页唯一的滚动条在这里 */
+    overflow-x: hidden;             /* ② 绝不横向滚动 */
+    padding: var(--space-block);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-block);
+  }
+
+  /* ── 页头：推荐固定在滚动视口顶部，主操作常驻可见 ───────────────── */
+  .page-head {
+    position: sticky;
+    top: calc(-1 * var(--space-block));   /* 抵消 pane 的 padding */
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-block) 0 var(--space-md);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .page-head h2 { margin: 0; font-size: 18px; }
+  .page-head p { margin: 2px 0 0; color: var(--color-dim); font-size: 12px; }
+  .primary-action {
+    margin-left: auto;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .card {
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+  .card + .card { margin-top: var(--space-block); }
+
+  .toggle {
+    margin-left: auto;
+    padding: 4px 10px;
+    font-size: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ── 反例：仅用于演示双滚动条故障，真实页面禁止 ─────────────────── */
+  html[data-mode="broken"] .app-shell { overflow: visible; }
+  html[data-mode="broken"] .console-pane {
+    min-height: auto;
+    overflow: visible;
+  }
+  html[data-mode="broken"] .page-head { position: static; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="app-header">
+    <span class="brand">ArcBlog</span>
+    <span class="user">did:key:z6Mk…k9d2</span>
+    <button class="toggle" id="toggle" type="button">切到反例</button>
+  </header>
+
+  <nav class="console-nav" aria-label="控制台导航">
+    <p class="nav-group">内容</p>
+    <a class="nav-item" href="#">仪表盘</a>
+    <a class="nav-item" href="#" aria-current="page">创作台</a>
+    <a class="nav-item" href="#">页面</a>
+    <p class="nav-group">站点</p>
+    <a class="nav-item" href="#">首屏与分类</a>
+    <a class="nav-item" href="#">SEO</a>
+    <p class="nav-group">运营</p>
+    <a class="nav-item" href="#">节点状态</a>
+    <a class="nav-item" href="#">Hub</a>
+    <a class="nav-item" href="#">媒体</a>
+    <a class="nav-item" href="#">Agent</a>
+    <p class="nav-group">经济</p>
+    <a class="nav-item" href="#">分成与授权</a>
+  </nav>
+
+  <main class="console-pane">
+    <div class="page-head">
+      <div>
+        <h2>创作台</h2>
+        <p>管理草稿、已发布与已归档的文章——滚动时页头与主操作保持可见。</p>
+      </div>
+      <button class="primary-action" type="button">写新文章</button>
+    </div>
+
+    <!-- 故意放长内容：滚动只应发生在这个 pane 内 -->
+    <section class="card"><h3>已发布（1）</h3><p>内容区滚动时，侧边栏与页头静止不动。</p></section>
+    <section class="card"><h3>已发布（2）</h3><p>页面本身不出现纵向滚动条。</p></section>
+    <section class="card"><h3>已发布（3）</h3><p>宽屏时内容区随视口拉宽，不设固定页宽。</p></section>
+    <section class="card"><h3>已发布（4）</h3><p>窄屏折叠为顶部导航后，恢复整页滚动（§7）。</p></section>
+    <section class="card"><h3>已发布（5）</h3><p>继续滚动，页头仍固定在内容区顶部。</p></section>
+    <section class="card"><h3>已发布（6）</h3><p>若这里出现第二条滚动条，就是布局缺陷。</p></section>
+    <section class="card"><h3>已发布（7）</h3><p>反例模式下可复现双滚动条故障。</p></section>
+    <section class="card"><h3>已发布（8）</h3><p>到底了。</p></section>
+  </main>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const button = document.getElementById('toggle');
+  button.addEventListener('click', () => {
+    const broken = root.dataset.mode === 'ok';
+    root.dataset.mode = broken ? 'broken' : 'ok';
+    button.textContent = broken ? '切回正确' : '切到反例';
+  });
+</script>
+</body>
+</html>

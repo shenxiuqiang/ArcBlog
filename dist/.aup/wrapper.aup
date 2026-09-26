@@ -2,23 +2,34 @@ page wrapper {
   i18n {
     nav-studio { en "Studio" zh "工作室" }
     nav-console { en "Management" zh "管理后台" }
-    nav-heroes { en "Heroes & categories" zh "Hero 与分类" }
-    nav-media-agents { en "Media & agents" zh "媒体与 Agent" }
-    nav-policy-grants { en "Policy & access" zh "策略与授权" }
+    nav-heroes { en "Heroes" zh "Hero" }
+    nav-pages { en "Pages" zh "页面" }
+    nav-seo { en "SEO" zh "SEO" }
+    nav-group-site { en "Site" zh "站点" }
+    nav-media { en "Media" zh "媒体" }
+    nav-agents { en "Agents" zh "Agent" }
+    nav-categories { en "Categories" zh "分类" }
+    nav-feeds { en "Feeds" zh "分发" }
+    nav-policy { en "Policy" zh "分成策略" }
+    nav-access { en "Access" zh "访问授权" }
     nav-group-content { en "Content" zh "内容" }
     nav-group-ops { en "Operations" zh "运营" }
     nav-group-economy { en "Economy" zh "经济" }
     nav-dashboard { en "Dashboard" zh "仪表盘" }
     nav-operations { en "Operations" zh "运维" }
+    nav-hub { en "Hub console" zh "Hub 管理" }
     nav-about { en "About" zh "关于" }
+    nav-store { en "Store" zh "商店" }
     nav-author { en "Author" zh "作者" }
+    nav-write { en "Write" zh "写文章" }
+    nav-appearance { en "Appearance" zh "外观设置" }
     theme-label { en "Toggle theme" zh "切换主题" }
     tagline { en "DID-native writing, Markdown-first publishing." zh "DID 原生写作，Markdown 优先发布。" }
+    console-opening { en "Opening the management console…" zh "正在打开管理后台…" }
   }
   view {
-    app-header site-header variant=compact brand={title: ArcBlog, src: posts} actions=[{kind: theme-toggle, icon: sun, ariaLabel: :theme-label}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: :nav-console, icon: "grid", exec: "dashboard"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     slot content
     frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
-    app-footer brand={title: ArcBlog, tagline: :tagline, href: "/"} columns=[{links: [{label: :nav-about, href: "/?page=about"}, {label: :nav-author, href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+    frame console-bridge-frame src="/p/en/console-bridge/" bridge=true overlay=true loading=eager sandbox="allow-top-navigation"
   }
 }

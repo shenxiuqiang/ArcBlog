@@ -1,0 +1,18 @@
+kind: ContentIndexEntry
+fields:
+  postId: string # post slug on the source Studio
+  studioDid: string
+  title: string
+  excerpt: string
+  cover: string
+  url: string
+  tags: json
+  publishedAt: datetime
+  contentHash: string # spec §66; change detection (§120)
+  version: number # source post version (§120)
+  status: string # indexed | deleted (tombstone, spec §119)
+  indexedAt: datetime
+  deletedAt: datetime
+  updatedAt: datetime
+# spec §73/§74: this is the Hub's derived index — metadata only, never the
+# body. Studio = source, Hub = index.

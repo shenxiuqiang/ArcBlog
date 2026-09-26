@@ -7,3 +7,4 @@ fields:
   orderId: string
   grantedAt: datetime
   expiresAt: datetime # null = permanent reading right (spec §37)
+  revokedAt: datetime # set by a refund (spec §90); revokes reading access

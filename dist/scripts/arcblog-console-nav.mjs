@@ -1,17 +1,18 @@
 #!/usr/bin/env node
-// Keep every console page's sidebar in step with the menu model.
+// Keep the console page's sidebar in step with the menu model.
 //
-//   node scripts/arcblog-console-nav.mjs           # write the sidebars
+//   node scripts/arcblog-console-nav.mjs           # write the sidebar
 //   node scripts/arcblog-console-nav.mjs --check   # verify (used by the test suite)
 //
-// AUP has no include primitive, so the sidebar is physically repeated per page;
-// this is what makes the menu still live in exactly one place.
+// The console is one page (`?page=console#<section>`) whose sections are tab
+// panels; this generator owns the single sidebar block inside it, so the menu
+// still lives in exactly one place.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CONSOLE_PAGES, blockEnd, sidebarLines } from './console-nav.mjs';
+import { CONSOLE_PAGE, CONSOLE_SECTIONS, blockEnd, sidebarLines } from './console-nav.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const appPath = join(repoRoot, '.aup', 'app.aup');
@@ -49,10 +50,19 @@ function main() {
   const raw = readFileSync(appPath, 'utf8');
   const lines = raw.split('\n');
 
-  // Walk the pages in menu order; edits shift indexes, so re-locate each time.
-  const results = [];
-  for (const page of CONSOLE_PAGES) {
-    results.push(syncPage(lines, page, !check));
+  // The console is one page; also make sure no *other* page grew a sidebar.
+  const results = [syncPage(lines, CONSOLE_PAGE, !check)];
+  // `\b` would also match `view console-nav-divider-*`; require a space.
+  const strays = lines.filter((line) => /^\s*view console-nav\s/.test(line)).length;
+  if (strays !== 1) {
+    console.error(
+      JSON.stringify(
+        { ok: false, error: `expected exactly one console-nav block (page ${CONSOLE_PAGE}), found ${strays}` },
+        null,
+        2,
+      ),
+    );
+    process.exit(1);
   }
 
   if (check) {
@@ -71,7 +81,7 @@ function main() {
       );
       process.exit(1);
     }
-    console.log(JSON.stringify({ ok: true, action: 'check', pages: results.length }, null, 2));
+    console.log(JSON.stringify({ ok: true, action: 'check', page: CONSOLE_PAGE, sections: CONSOLE_SECTIONS.length }, null, 2));
     return;
   }
 
@@ -81,7 +91,8 @@ function main() {
       {
         ok: true,
         action: 'write',
-        pages: results.length,
+        page: CONSOLE_PAGE,
+        sections: CONSOLE_SECTIONS.length,
         changed: results.filter((r) => r.changed).map((r) => r.page),
       },
       null,

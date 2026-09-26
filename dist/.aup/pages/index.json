@@ -1,0 +1,315 @@
+{
+  "id": "arcblog-index",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "lg"
+    },
+    "size": {
+      "maxWidth": "lg"
+    }
+  },
+  "children": [
+    {
+      "id": "page-topbar",
+      "type": "view",
+      "props": {
+        "style": {
+          "margin": "0 calc(-1 * var(--page-gutter, 32px))"
+        }
+      },
+      "children": [
+        {
+          "id": "site-header",
+          "type": "app-header",
+          "props": {
+            "variant": "compact",
+            "brand": {
+              "title": "ArcBlog",
+              "src": "index"
+            },
+            "actions": [
+              {
+                "kind": "theme-toggle",
+                "icon": "sun",
+                "ariaLabel": "$t(wrapper.theme-label)"
+              },
+              {
+                "kind": "locale-switcher",
+                "locales": [
+                  "en",
+                  "zh"
+                ],
+                "labels": {
+                  "en": "EN",
+                  "zh": "中文"
+                }
+              },
+              {
+                "kind": "user-menu",
+                "items": [
+                  {
+                    "id": "console",
+                    "label": "$t(wrapper.nav-console)",
+                    "icon": "grid",
+                    "exec": "console"
+                  }
+                ]
+              }
+            ]
+          },
+          "events": {
+            "user-menu-item": {
+              "target": "_root",
+              "set": {
+                "page": "$args.exec"
+              }
+            },
+            "nav-click": {
+              "target": "_root",
+              "set": {
+                "page": "$args.src"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "arcblog-index-view-2",
+      "type": "view",
+      "props": {
+        "layout": {
+          "gap": "lg"
+        }
+      },
+      "children": [
+        {
+          "id": "hero-carousel-frame",
+          "type": "frame",
+          "props": {
+            "src": "/p/en/hero-carousel/",
+            "loading": "eager",
+            "aspectRatio": "16 / 7",
+            "title": "Hero carousel",
+            "sandbox": "allow-top-navigation-by-user-activation"
+          }
+        },
+        {
+          "id": "arcblog-index-view-2-h2-2",
+          "type": "text",
+          "props": {
+            "level": 2,
+            "content": "$t(index.feed)"
+          }
+        },
+        {
+          "id": "published-feed",
+          "type": "afs-list",
+          "props": {
+            "layout": "list",
+            "itemStyle": "row",
+            "subscribe": true,
+            "autoSelect": false,
+            "showBreadcrumb": false,
+            "showParent": false,
+            "emptyText": "$t(index.feed-empty)",
+            "clickMode": "none"
+          },
+          "src": "/instance/app/arcblog/posts",
+          "children": [
+            {
+              "id": "postRow",
+              "type": "view",
+              "props": {
+                "layout": {
+                  "direction": "row",
+                  "crossAlign": "stretch"
+                },
+                "role": "item",
+                "style": {
+                  "padding": "0",
+                  "border": "1px solid var(--color-border)",
+                  "borderRadius": "var(--radius-lg, 12px)",
+                  "marginBottom": "var(--space-block, 20px)",
+                  "overflow": "hidden",
+                  "minHeight": "176px"
+                }
+              },
+              "children": [
+                {
+                  "id": "postLink",
+                  "type": "view",
+                  "props": {
+                    "layout": "inline",
+                    "href": "/posts/${entry.content.slug}",
+                    "size": {
+                      "flex": 1
+                    },
+                    "style": {
+                      "display": "flex",
+                      "flexDirection": "column",
+                      "justifyContent": "center",
+                      "textDecoration": "none",
+                      "color": "inherit",
+                      "cursor": "pointer",
+                      "minWidth": 0,
+                      "padding": "24px 30px"
+                    }
+                  },
+                  "children": [
+                    {
+                      "id": "postlink-h3-1",
+                      "type": "text",
+                      "props": {
+                        "level": 3,
+                        "content": "${entry.content.title}",
+                        "scale": "lg",
+                        "style": {
+                          "margin": "0",
+                          "fontSize": "clamp(1.3rem, 2vw, 1.62rem)",
+                          "lineHeight": "1.25"
+                        }
+                      }
+                    },
+                    {
+                      "id": "postlink-row-2",
+                      "type": "view",
+                      "props": {
+                        "layout": {
+                          "direction": "row",
+                          "gap": "xs",
+                          "crossAlign": "center"
+                        }
+                      },
+                      "children": [
+                        {
+                          "id": "postlink-row-2-p-1",
+                          "type": "text",
+                          "props": {
+                            "content": "${entry.content.category}",
+                            "scale": "sm",
+                            "intent": "muted",
+                            "style": {
+                              "textTransform": "capitalize"
+                            }
+                          }
+                        },
+                        {
+                          "id": "postlink-row-2-p-2",
+                          "type": "text",
+                          "props": {
+                            "content": "·",
+                            "scale": "sm",
+                            "intent": "muted"
+                          }
+                        },
+                        {
+                          "id": "postlink-row-2-view-3",
+                          "type": "view",
+                          "props": {
+                            "style": {
+                              "fontSize": "var(--type-small)",
+                              "color": "var(--color-dim)"
+                            }
+                          },
+                          "children": [
+                            {
+                              "id": "postlink-row-2-view-3-time-1",
+                              "type": "time",
+                              "props": {
+                                "mode": "display",
+                                "value": "${entry.content.publishedAt}",
+                                "timeMode": "relative"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "postlink-p-3",
+                      "type": "text",
+                      "props": {
+                        "content": "${entry.content.summary}",
+                        "intent": "muted",
+                        "scale": "sm",
+                        "style": {
+                          "margin": "0"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "postCover",
+                  "type": "view",
+                  "props": {
+                    "layout": "inline",
+                    "href": "/posts/${entry.content.slug}",
+                    "style": {
+                      "display": "block",
+                      "flexGrow": 0,
+                      "flexShrink": 0,
+                      "flexBasis": "240px",
+                      "width": "240px",
+                      "alignSelf": "stretch",
+                      "background": "url(${entry.content.coverImage}) center / cover no-repeat"
+                    }
+                  },
+                  "visible": "${entry.content.coverImage}",
+                  "children": [
+                    {
+                      "id": "postcover-text-1",
+                      "type": "text",
+                      "props": {
+                        "content": " "
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arcblog-index-app-footer-3",
+      "type": "app-footer",
+      "props": {
+        "brand": {
+          "title": "ArcBlog",
+          "tagline": "$t(wrapper.tagline)",
+          "href": "/"
+        },
+        "columns": [
+          {
+            "links": [
+              {
+                "label": "$t(wrapper.nav-about)",
+                "href": "/?page=about"
+              },
+              {
+                "label": "$t(wrapper.nav-store)",
+                "href": "/store"
+              },
+              {
+                "label": "$t(wrapper.nav-author)",
+                "href": "/?page=author"
+              },
+              {
+                "label": "RSS",
+                "href": "/p/rss.xml",
+                "external": true
+              }
+            ]
+          }
+        ],
+        "bottomBar": {
+          "copyright": "© 2026 ArcBlog"
+        }
+      }
+    }
+  ]
+}

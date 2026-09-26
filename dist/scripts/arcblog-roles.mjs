@@ -11,18 +11,21 @@
 // fail-closed rule (§114/§115) and the reason `status` never reports an active
 // chain role while `chainVerification` is false.
 
-import { fail, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
+import { fail, list, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
 import {
   CHAIN_ROLES,
   ROLE_CONFIG_PATH,
+  STAKE_STATES,
   buildRoleConfig,
   capabilityReport,
   getRoleConfig,
   putRoleConfig,
+  putRoleLifecycle,
   roleStatuses,
   validateRoleConfig,
 } from './lib/roles.mjs';
+import { listHubRegistrations, tombstoneHubRelations } from './lib/network.mjs';
 
 const NODE_PROFILE_PATH = `${INSTANCE_ROOT}/node/profile.json`;
 
@@ -99,6 +102,76 @@ function commandCheck(opts, instance) {
   if (issues.length) process.exit(1);
 }
 
+// Spec §8.5: the five-state lifecycle. Operator-declared until chain
+// verification is wired — setting state=staked does NOT activate the role
+// (fail closed, §114/§115).
+const ORDERS_DIR = `${INSTANCE_ROOT}/economy/orders`;
+const POLICIES_DIR = `${INSTANCE_ROOT}/economy/policies`;
+const IN_FLIGHT_ORDER_STATUSES = ['pending', 'paid'];
+
+/**
+ * Spec §8.6 — the data promise when a role leaves. Run with `--link-exit`:
+ *
+ *   1. every live Hub relation is Tombstoned (Hubs stop believing this node
+ *      still publishes; history and content stay),
+ *   2. in-flight orders are *reported*, never rewritten: they settle under the
+ *      split policy in force at settlement time (§29 keeps policy versions), so
+ *      the operator gets the list + the policy version that will govern them,
+ *      and a warning when a recorded version no longer resolves.
+ */
+function linkRoleExit(opts, instance) {
+  const reason = optString(opts.reason) || `role exit: ${optString(opts.role) || 'unknown role'}`;
+  const hubs = tombstoneHubRelations(reason, instance);
+
+  const policy = readJson(`${POLICIES_DIR}/active.json`, instance)?.value ?? null;
+  const orders = list(ORDERS_DIR, instance)
+    .map((entry) => readJson(`${ORDERS_DIR}/${String(entry?.id ?? '')}`, instance)?.value ?? null)
+    .filter(Boolean)
+    .filter((order) => IN_FLIGHT_ORDER_STATUSES.includes(String(order.status)))
+    .map((order) => ({
+      id: order.id,
+      status: order.status,
+      amount: order.amount,
+      asset: order.asset,
+      // blank means "the policy in force when the settlement runs" (§29/§43)
+      settlementVersion: order.settlementVersion || null,
+      settlesUnder: order.settlementVersion || `policy v${policy?.version ?? '?'} at settlement time`,
+    }));
+
+  return {
+    role: optString(opts.role),
+    reason,
+    hubsTombstoned: hubs.tombstoned,
+    hubsStillLive: hubs.live,
+    activePolicyVersion: policy?.version ?? null,
+    ordersInFlight: orders,
+    // §8.6: content is never deleted by an exit — nothing here touches posts/.
+    contentKept: true,
+  };
+}
+
+function commandState(opts, instance) {
+  const [sub] = opts._.slice(1);
+  if (sub === 'set') {
+    const role = optString(opts.role);
+    const status = putRoleLifecycle(
+      role,
+      {
+        state: opts.state,
+        assetId: opts['asset-id'],
+        stakeId: opts['stake-id'],
+        claimableAt: opts['claimable-at'],
+      },
+      instance,
+    );
+    const linkExit = Boolean(opts['link-exit']);
+    const exitLinkage = linkExit ? linkRoleExit(opts, instance) : null;
+    console.log(JSON.stringify({ ok: true, action: 'role-state-set', status, exitLinkage }, null, 2));
+    return;
+  }
+  fail('VALIDATION', `unknown state command: ${sub ?? '(none)'} (use set)`);
+}
+
 function help() {
   console.log(`ArcBlog role engine (spec §9/§10/§11)
 
@@ -109,6 +182,15 @@ Usage:
   node scripts/arcblog-roles.mjs status
   node scripts/arcblog-roles.mjs capabilities
   node scripts/arcblog-roles.mjs check
+  node scripts/arcblog-roles.mjs state set --role studio --state <${STAKE_STATES.join('|')}>
+  node scripts/arcblog-roles.mjs state set --role studio --state revoking --link-exit [--reason "…"]
+      §8.6: Tombstone live Hub relations + report in-flight orders (content is kept)
+                                          [--asset-id <id>] [--stake-id <id>] [--claimable-at <iso>]
+
+Lifecycle (spec §8.5): none → acquired → staked → revoking → claimable → acquired.
+The state is operator-declared until chain verification is wired; it never
+activates a capability on its own. revoking requires --claimable-at (the end of
+the waiting period, §8.4); it derives to claimable at read time once reached.
 
 Config is external (spec §9): flags win, then environment —
   ARCBLOG_STUDIO_COLLECTION / ARCBLOG_HUB_COLLECTION / ARCBLOG_NETWORK
@@ -130,6 +212,7 @@ with --chain-verification unset every chain role reports active=false.
     if (cmd === 'status') return commandStatus(args, instance);
     if (cmd === 'capabilities' || cmd === 'caps') return commandCapabilities(args, instance);
     if (cmd === 'check') return commandCheck(args, instance);
+    if (cmd === 'state') return commandState(args, instance);
     fail('VALIDATION', `unknown command: ${cmd}`);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

@@ -117,3 +117,39 @@ test('media add/show/list/remove roundtrip on the live instance', () => {
   assert.equal(gone.status, 1);
   assert.equal(json(gone.stderr).code, 'NOT_FOUND');
 });
+
+// --- reference tracking (spec §15.4) ------------------------------------------
+
+test('media refs finds referencing posts; remove is blocked until resolved', () => {
+  const stamp = Date.now();
+  const slug = `media-test-${stamp}`;
+  const mediaId = `media-test-${stamp}`;
+  const mediaPath = `/user/uploads/media-test-${stamp}.png`;
+  try {
+    assert.equal(run(['add', '--id', mediaId, '--path', mediaPath, '--title', 'Ref Test']).status, 0);
+
+    // no references yet → orphan, removable
+    const orphans = json(run(['orphans']).stdout);
+    assert.ok(orphans.orphans.some((o) => o.id === mediaId));
+
+    // a post referencing the path blocks removal
+    assert.equal(
+      spawnSync(process.execPath, [join(repoRoot, 'scripts', 'arcblog-lifecycle.mjs'), 'draft', '--title', slug, '--author-did', 'did:key:zTest', '--body', `cover: ${mediaPath}`], { encoding: 'utf8', cwd: repoRoot }).status,
+      0,
+    );
+    const refs = json(run(['refs', '--id', mediaId]).stdout);
+    assert.ok(refs.refs.some((r) => r.slug === slug));
+
+    const blocked = run(['remove', '--id', mediaId]);
+    assert.equal(blocked.status, 1);
+    assert.equal(json(blocked.stderr).code, 'CONFLICT');
+
+    // --force overrides after the operator has seen the references
+    const forced = run(['remove', '--id', mediaId, '--force']);
+    assert.equal(forced.status, 0, forced.stderr);
+    assert.equal(json(forced.stdout).refs, 1);
+  } finally {
+    run(['remove', '--id', mediaId, '--force']);
+    spawnSync(process.execPath, [join(repoRoot, 'scripts', 'arcblog-lifecycle.mjs'), 'delete', '--slug', slug], { encoding: 'utf8', cwd: repoRoot });
+  }
+});

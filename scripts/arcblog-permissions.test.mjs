@@ -30,6 +30,7 @@ const PUBLIC_PATHS = [
   'heroes',
   'node',
   'categories',
+  'pages',
   'economy/policies',
   'economy/products',
 ];
@@ -37,6 +38,8 @@ const PUBLIC_PATHS = [
 /** Prefixes that must stay admin-only (they name buyers, readers or secrets). */
 const ADMIN_PATHS = [
   'drafts',
+  'page-drafts',
+  'paid',
   'media',
   'config',
   'config/agent-grants',
@@ -47,6 +50,7 @@ const ADMIN_PATHS = [
   'economy/ledger',
   'economy/access-grants',
   'economy/attributions',
+  'economy/refunds',
 ];
 
 const root = '/instance/app/arcblog';

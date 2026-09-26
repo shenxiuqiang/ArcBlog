@@ -1,7 +1,11 @@
 kind: RoleConfig
 fields:
-  studio: json # { collectionAddress, network, assetType } — externalized (spec §9)
-  hub: json # { collectionAddress, network, assetType } — externalized (spec §9)
+  studio: json # { collectionAddress, network, assetType, lifecycle } — externalized (spec §9)
+  hub: json # { collectionAddress, network, assetType, lifecycle } — externalized (spec §9)
+  # lifecycle: { state, assetId, stakeId, revokedAt, claimableAt } — the §8.5
+  # five-state lifecycle (none|acquired|staked|revoking|claimable),
+  # operator-declared until chain verification is wired; never grants a
+  # capability on its own (fail closed, §115)
   chainVerification: boolean # master switch for on-chain role verification
   createdAt: datetime
   updatedAt: datetime

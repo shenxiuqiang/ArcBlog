@@ -11,6 +11,7 @@ import {
   declaredCapabilities,
   effectiveCapabilities,
   isRoleConfigured,
+  deriveStakeState,
   roleStatus,
   roleStatuses,
   validateRoleConfig,
@@ -172,4 +173,115 @@ test('roles capabilities never grants a chain capability while unverified', () =
   const report = json(res.stdout);
   assert.deepEqual(report.effective, BASE_CAPABILITIES);
   for (const capability of report.effective) assert.ok(capability.startsWith('blog.'), capability);
+});
+
+// --- five-state role lifecycle (spec §8.5) -----------------------------------
+
+test('roleStatus derives assetOwned/stakeActive from the lifecycle state (spec §8.5)', () => {
+  const base = { collectionAddress: '0xS', network: 'arcblock' };
+  const at = (state, extra = {}) =>
+    roleStatus(buildRoleConfig({ studio: { ...base, lifecycle: { state, ...extra } } }, { now: '2026-01-01' }), 'studio', { now: '2026-01-01' });
+
+  assert.deepEqual(
+    ['none', 'acquired', 'staked'].map((s) => [s, at(s).assetOwned, at(s).stakeActive]),
+    [
+      ['none', false, false],
+      ['acquired', true, false],
+      ['staked', true, true],
+    ],
+  );
+  // fail closed holds in every state while chain verification is unwired (§115)
+  for (const s of ['none', 'acquired', 'staked', 'revoking', 'claimable']) assert.equal(at(s).active, false);
+});
+
+test('revoking derives to claimable once the waiting period ends (spec §8.4)', () => {
+  const entry = { lifecycle: { state: 'revoking', claimableAt: '2026-06-01T00:00:00Z' } };
+  assert.equal(deriveStakeState(entry, { now: '2026-05-01T00:00:00Z' }), 'revoking');
+  assert.equal(deriveStakeState(entry, { now: '2026-06-01T00:00:01Z' }), 'claimable');
+  assert.equal(deriveStakeState({ lifecycle: { state: 'revoking' } }, { now: '2026-06-01' }), 'revoking');
+});
+
+test('validateRoleConfig rejects an unknown lifecycle state', () => {
+  const config = buildRoleConfig({ studio: { collectionAddress: '0xS', network: 'n', lifecycle: { state: 'limbo' } } });
+  assert.ok(validateRoleConfig(config).some((i) => /lifecycle.state/.test(i)));
+});
+
+test('live: roles state set records the lifecycle and never activates the role', () => {
+  const status = () => json(run(['status']).stdout);
+  try {
+    const res = run(['state', 'set', '--role', 'studio', '--state', 'acquired', '--asset-id', 'asset-test-1']);
+    assert.equal(res.status, 0, res.stderr);
+    assert.equal(json(res.stdout).status.stakeState, 'acquired');
+
+    const staked = run(['state', 'set', '--role', 'studio', '--state', 'staked', '--stake-id', 'stake-test-1']);
+    assert.equal(staked.status, 0, staked.stderr);
+    const after = status().statuses.find((s) => s.role === 'studio');
+    assert.equal(after.stakeState, 'staked');
+    assert.equal(after.stakeActive, true);
+    assert.equal(after.active, false); // fail closed (§115)
+
+    const revoking = run(['state', 'set', '--role', 'studio', '--state', 'revoking', '--claimable-at', '2999-01-01T00:00:00Z']);
+    assert.equal(revoking.status, 0, revoking.stderr);
+    const rev = status().statuses.find((s) => s.role === 'studio');
+    assert.equal(rev.stakeState, 'revoking');
+    assert.equal(rev.stakeActive, false);
+    assert.ok(rev.claimableAt);
+
+    const bad = run(['state', 'set', '--role', 'studio', '--state', 'limbo']);
+    assert.equal(bad.status, 1);
+    assert.equal(json(bad.stderr).code, 'VALIDATION');
+  } finally {
+    run(['state', 'set', '--role', 'studio', '--state', 'none']);
+  }
+});
+
+// §8.6: a role exit keeps the content, Tombstones live Hub relations and
+// reports the in-flight orders with the policy version that will govern them.
+test('live: --link-exit tombstones Hub relations and reports in-flight orders (spec §8.6)', () => {
+  const network = join(repoRoot, 'scripts', 'arcblog-network.mjs');
+  const economy = join(repoRoot, 'scripts', 'arcblog-economy.mjs');
+  const stamp = Date.now();
+  const hubDid = `did:key:zExitTest${stamp}`;
+  const productId = `exit-test-product-${stamp}`;
+  const orderId = `exit-test-order-${stamp}`;
+  const run2 = (script, args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: repoRoot, env: { ...process.env } });
+  try {
+    // a live Hub relation and an in-flight (paid, unsettled) order
+    assert.equal(run2(network, ['hub', 'register', '--hub-did', hubDid, '--endpoint', 'https://hub.example.com']).status, 0);
+    assert.equal(run2(economy, ['product', 'add', '--id', productId, '--creator-did', 'did:key:zTest', '--price-amount', '3']).status, 0);
+    assert.equal(run2(economy, ['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zBuyer']).status, 0);
+    assert.equal(run2(economy, ['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+
+    const res = run(['state', 'set', '--role', 'studio', '--state', 'revoking', '--claimable-at', '2999-01-01T00:00:00Z', '--link-exit', '--reason', 'studio exit test']);
+    assert.equal(res.status, 0, res.stderr);
+    const linkage = json(res.stdout).exitLinkage;
+    assert.ok(linkage, 'exitLinkage is reported');
+    assert.equal(linkage.contentKept, true);
+    assert.ok(linkage.hubsTombstoned.some((h) => h.hubDid === hubDid), 'the live relation is Tombstoned');
+    assert.equal(linkage.hubsTombstoned.find((h) => h.hubDid === hubDid).removedReason, 'studio exit test');
+    assert.ok(linkage.ordersInFlight.some((o) => o.id === orderId), 'the paid, unsettled order is listed');
+    assert.ok(linkage.ordersInFlight.find((o) => o.id === orderId).settlesUnder.length > 0);
+
+    // the relation really is a Tombstone now, and the order is untouched
+    const listed = run2(network, ['hub', 'show', '--hub-did', hubDid]);
+    assert.equal(listed.status, 0, listed.stderr);
+    const record = json(listed.stdout).registration;
+    assert.equal(record.relation, 'removed');
+    assert.equal(record.removedReason, 'studio exit test');
+    assert.ok(record.removedAt);
+    const order = json(run2(economy, ['order', 'show', '--id', orderId]).stdout).order;
+    assert.equal(order.status, 'paid');
+
+    // without the flag nothing is touched (the linkage is explicit, never a side effect)
+    const quietHub = `did:key:zQuietTest${stamp}`;
+    assert.equal(run2(network, ['hub', 'register', '--hub-did', quietHub, '--endpoint', 'https://hub.example.com']).status, 0);
+    const plain = run(['state', 'set', '--role', 'studio', '--state', 'revoking']);
+    assert.equal(plain.status, 0, plain.stderr);
+    assert.equal(json(plain.stdout).exitLinkage, null);
+    assert.equal(json(run2(network, ['hub', 'show', '--hub-did', quietHub]).stdout).registration.relation, 'applied');
+  } finally {
+    run(['state', 'set', '--role', 'studio', '--state', 'none']);
+    run2(network, ['hub', 'remove', '--hub-did', hubDid, '--purge']);
+    run2(network, ['hub', 'remove', '--hub-did', `did:key:zQuietTest${stamp}`, '--purge']);
+  }
 });

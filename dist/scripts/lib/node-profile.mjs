@@ -127,6 +127,9 @@ export function buildNodeProfile(input = {}, { now = new Date().toISOString(), e
     name: str(input.name ?? existing?.name),
     description: str(input.description ?? existing?.description),
     avatar: str(input.avatar ?? existing?.avatar),
+    // Default share-card image for the site (spec §15.5 SEO & feeds); posts
+    // override it with their own ogImage.
+    ogImage: str(input.ogImage ?? existing?.ogImage),
     did: str(input.did ?? existing?.did),
     endpoint: str(input.endpoint ?? existing?.endpoint),
     roles,

@@ -198,7 +198,7 @@ test('every catalogue entry declares how it would act', () => {
       assert.ok(tool.reason, `${tool.name} needs a reason`);
     }
   }
-  assert.equal(executableReadTools().length, 6);
+  assert.equal(executableReadTools().length, 7);
   assert.equal(writeTools().length, 4);
   assert.equal(closedTools().length, 6);
 });
@@ -311,4 +311,16 @@ test('live: read tools answer from AFS and a granted write tool runs', () => {
   const blocked = run(['run', '--tool', 'create_draft', '--title', 'x', '--body', 'y', '--author-did', 'did:key:zA', '--agent', agent]);
   assert.equal(blocked.status, 1);
   assert.equal(json(blocked.stderr).code, 'FORBIDDEN');
+});
+
+test('get_analytics aggregates public surfaces only (spec §60/§62)', () => {
+  const res = run(['run', '--tool', 'get_analytics']);
+  assert.equal(res.status, 0, res.stderr);
+  const out = json(res.stdout);
+  assert.equal(out.capability, 'agent.read');
+  assert.ok(Number.isFinite(out.result.publishedPosts));
+  assert.ok(Number.isFinite(out.result.productsListed));
+  // privacy boundary: no buyer data, ever (spec §62)
+  assert.ok(!('orders' in out.result));
+  assert.ok(!('buyers' in out.result));
 });

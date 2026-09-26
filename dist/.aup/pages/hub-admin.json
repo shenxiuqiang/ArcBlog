@@ -1,0 +1,19 @@
+{
+  "id": "arcblog-hub-admin-view-1",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "sm"
+    }
+  },
+  "children": [
+    {
+      "id": "arcblog-hub-admin-view-1-p-1",
+      "type": "text",
+      "props": {
+        "content": "$t(wrapper.console-opening)",
+        "intent": "muted"
+      }
+    }
+  ]
+}

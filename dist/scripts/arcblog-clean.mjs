@@ -15,7 +15,16 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { INSTANCE_ROOT, fail, list, optString, parseArgs, remove, resolveInstance } from './lib/arc.mjs';
+import {
+  INSTANCE_ROOT,
+  fail,
+  list,
+  optString,
+  parseArgs,
+  readJson,
+  remove,
+  resolveInstance,
+} from './lib/arc.mjs';
 import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
 
 /**
@@ -29,21 +38,57 @@ export const CLEAN_DIRS = [
   'economy/products',
   'economy/access-grants',
   'economy/attributions',
+  'economy/refunds',
   'config/agent-grants',
   'config/trusted-hubs',
+  // §67: public keys registered by `publish --sign-key` — test DIDs leave residue here.
+  'config/signing-keys',
+  // per-test mock-chain ledgers live directly under config/ (id-prefixed).
+  'config',
   'hub/registrations',
+  'hub/index',
   'drafts',
+  'page-drafts',
+  'paid',
   'media',
 ];
 
-/** Find test residue per directory (entry ids only — no record reads). */
+/**
+ * Directories whose file names are DID hashes, not readable ids: the test
+ * prefix lives in the record body (`did` / `hubDid` / `agentDid` / `label`), so
+ * these need a record read to recognise residue.
+ */
+export const CONTENT_MATCH_DIRS = [
+  'config/signing-keys',
+  'config/agent-grants',
+  'config/trusted-hubs',
+  'hub/registrations',
+];
+
+/** Identity fields a content-matched record may carry. */
+function residueIdentity(record) {
+  if (!record || typeof record !== 'object') return '';
+  return [record.did, record.hubDid, record.agentDid, record.label].filter(Boolean).join('\n');
+}
+
+/** Find test residue per directory (ids first, then record content where needed). */
 export function findTestRecords(instance, dirs = CLEAN_DIRS) {
   const found = [];
   for (const dir of dirs) {
     const path = `${INSTANCE_ROOT}/${dir}`;
     for (const entry of list(path, instance)) {
       const id = String(entry?.id ?? '');
-      if (isTestRecordId(id)) found.push({ dir, path: `${path}/${id}`, id });
+      if (isTestRecordId(id)) {
+        found.push({ dir, path: `${path}/${id}`, id });
+        continue;
+      }
+      if (!CONTENT_MATCH_DIRS.includes(dir)) continue;
+      const record = readJson(`${path}/${id}`, instance)?.value ?? null;
+      const identity = residueIdentity(record);
+      // Match each line separately: a multi-line identity must not hide a prefix.
+      if (identity.split('\n').some((value) => isTestRecordId(value))) {
+        found.push({ dir, path: `${path}/${id}`, id, matchedOn: identity.split('\n').find((v) => isTestRecordId(v)) });
+      }
     }
   }
   return found;

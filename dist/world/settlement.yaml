@@ -13,7 +13,8 @@ fields:
   hubAmount: string
   protocolAmount: string
   policyVersion: string
-  status: string # settled (spec §43)
+  status: string # settled | reversed (spec §43/§90)
   transactionHash: string
+  reversedAt: datetime
   createdAt: datetime
   updatedAt: datetime

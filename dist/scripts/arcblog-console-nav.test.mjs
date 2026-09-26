@@ -5,17 +5,18 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CONSOLE_MENU, CONSOLE_PAGES, blockEnd } from './console-nav.mjs';
+import { CONSOLE_LEGACY_PAGES, CONSOLE_MENU, CONSOLE_PAGE, CONSOLE_SECTIONS, blockEnd } from './console-nav.mjs';
 
-// The console menu lives in `scripts/console-nav.mjs`, but AUP has no include
-// primitive, so the sidebar is physically repeated in every console page. These
-// tests are what keep the copies honest (`docs/arc-contracts.md` §16).
+// The console menu lives in `scripts/console-nav.mjs`. Since the console became a
+// single page (`?page=console#<section>`, docs/arc-contracts.md §21.14) the sidebar
+// exists exactly once — these tests keep it, the 15 tab panels, the legacy alias
+// pages and the labels honest.
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const appPath = join(repoRoot, '.aup', 'app.aup');
+const readApp = () => readFileSync(appPath, 'utf8');
 
-test('every console page carries the canonical sidebar', () => {
-  // --check exits non-zero and names the drifted pages.
+test('the console page carries the canonical sidebar', () => {
   const res = execFileSync(
     process.execPath,
     [join(repoRoot, 'scripts', 'arcblog-console-nav.mjs'), '--check'],
@@ -24,25 +25,62 @@ test('every console page carries the canonical sidebar', () => {
   assert.match(res, /"ok": true/);
 });
 
-test('the menu model matches the pages that exist, one active item each', () => {
-  const lines = readFileSync(appPath, 'utf8').split('\n');
-  for (const page of CONSOLE_PAGES) {
-    const start = lines.findIndex((line) => new RegExp(`^  page ${page}\\b`).test(line));
-    assert.ok(start >= 0, `page ${page} is missing from .aup/app.aup`);
-    // Only the sidebar counts: dashboard's quick-action buttons are also primary.
-    const navStart = lines.findIndex(
-      (line, i) => i > start && /^\s*view console-nav\b/.test(line),
+test('exactly one page carries the sidebar, and it is the console page', () => {
+  const lines = readApp().split('\n');
+  const navLines = lines.filter((line) => /^\s*view console-nav\s/.test(line));
+  assert.equal(navLines.length, 1, 'the sidebar must exist exactly once');
+
+  const start = lines.findIndex((line) => new RegExp(`^  page ${CONSOLE_PAGE}\\b`).test(line));
+  assert.ok(start >= 0, `page ${CONSOLE_PAGE} is missing from .aup/app.aup`);
+  const navStart = lines.findIndex((line, i) => i > start && /^\s*view console-nav\s/.test(line));
+  assert.ok(navStart > start, `the sidebar must live inside page ${CONSOLE_PAGE}`);
+  assert.ok(navStart < blockEnd(lines, start), 'the sidebar must live inside the console page block');
+});
+
+test('every section is a panel and a hash link, in menu order', () => {
+  const lines = readApp().split('\n');
+  const start = lines.findIndex((line) => new RegExp(`^  page ${CONSOLE_PAGE}\\b`).test(line));
+  const end = blockEnd(lines, start);
+  const page = lines.slice(start, end + 1).join('\n');
+
+  assert.match(page, /view console-sections mode=tabs/, 'the console must switch sections with a tabs node');
+  for (const section of CONSOLE_SECTIONS) {
+    assert.ok(
+      new RegExp(`view console-section-${section}\\b`).test(page),
+      `section ${section} has no panel`,
     );
-    assert.ok(navStart >= 0, `${page} has no console-nav block`);
-    const navEnd = blockEnd(lines, navStart);
-    const block = lines.slice(navStart, navEnd + 1).join('\n');
-    const active = (block.match(/variant=primary/g) || []).length;
-    assert.equal(active, 1, `${page} must mark exactly one sidebar item as active, found ${active}`);
-    for (const group of CONSOLE_MENU) {
-      for (const item of group.items) {
-        assert.match(block, new RegExp(`-> page ${item.page} label="\\$t\\(wrapper\\.${item.label}\\)"`));
-      }
-    }
+    assert.ok(
+      page.includes(`action console-nav-${section} href="#${section}" label="$t(wrapper.`),
+      `section ${section} has no hash link in the sidebar`,
+    );
+  }
+  // The panels must be the tab children of the sections node, not loose views.
+  const tabsStart = lines.findIndex((line, i) => i > start && /view console-sections mode=tabs/.test(line));
+  const tabsEnd = blockEnd(lines, tabsStart);
+  const tabs = lines.slice(tabsStart, tabsEnd + 1).join('\n');
+  for (const section of CONSOLE_SECTIONS) {
+    assert.ok(tabs.includes(`view console-section-${section}`), `panel ${section} sits outside the tabs node`);
+  }
+  assert.equal((tabs.match(/view console-section-/g) || []).length, CONSOLE_SECTIONS.length);
+
+  // The sidebar is the navigation: no `variant=primary` (it would centre labels).
+  const navStart = lines.findIndex((line, i) => i > start && /^\s*view console-nav\s/.test(line));
+  const nav = lines.slice(navStart, blockEnd(lines, navStart) + 1).join('\n');
+  assert.equal((nav.match(/variant=primary/g) || []).length, 0, 'the sidebar must not use variant=primary');
+  assert.equal((nav.match(/background: "var\(--color-text\)"/g) || []).length, 0,
+    'the active row is marked by the bridge, not statically painted');
+});
+
+test('legacy URLs keep working through a minimal alias page per section', () => {
+  const lines = readApp().split('\n');
+  for (const [section, alias] of Object.entries(CONSOLE_LEGACY_PAGES)) {
+    const start = lines.findIndex((line) => new RegExp(`^  page ${alias}\\b`).test(line));
+    assert.ok(start >= 0, `legacy alias page ${alias} is missing (old ?page=${alias} links would 404)`);
+    const end = blockEnd(lines, start);
+    const block = lines.slice(start, end + 1).join('\n');
+    // An alias must stay a hand-off stub: the console content lives exactly once.
+    assert.ok(block.length < 400, `alias page ${alias} grew content (${block.length} chars) — it must stay a stub`);
+    assert.ok(block.includes('$t(wrapper.console-opening)'), `alias page ${alias} lost the hand-off note`);
   }
 });
 
@@ -55,5 +93,6 @@ test('the grouped menu labels resolve in both locales', () => {
         assert.ok(strings[`wrapper.${item.label}`], `locales/${lang}.json is missing wrapper.${item.label}`);
       }
     }
+    assert.ok(strings['wrapper.console-opening'], `locales/${lang}.json is missing wrapper.console-opening`);
   }
 });

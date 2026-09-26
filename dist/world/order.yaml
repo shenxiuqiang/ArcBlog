@@ -15,5 +15,7 @@ fields:
   paidAt: datetime
   settlementVersion: string
   settledAt: datetime
+  refundedAt: datetime
+  refundReason: string
   createdAt: datetime
   updatedAt: datetime

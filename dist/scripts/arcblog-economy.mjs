@@ -13,21 +13,25 @@
 // unconfigured instance cannot silently accept a payment claim (spec §44).
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { INSTANCE_ROOT, list, nowIso } from './lib/arc.mjs';
+import { INSTANCE_ROOT, list, nowIso, remove } from './lib/arc.mjs';
 import { findVerifiedAttribution } from './lib/attribution.mjs';
+import { scanPosts } from './lib/content-scan.mjs';
 import {
   buildAccessGrant,
   buildOrder,
   buildProduct,
+  buildRefundEvent,
   buildSettlement,
   buildSettlementPolicy,
   hasAccess,
   ledgerEntriesFor,
+  refundLedgerEntriesFor,
   splitAmount,
   sumLedger,
   validateAccessGrant,
   validateOrder,
   validateProduct,
+  validateRefundEvent,
   validateSettlementPolicy,
 } from './lib/economy.mjs';
 
@@ -41,6 +45,7 @@ const ORDERS_DIR = `${ECONOMY_DIR}/orders`;
 const SETTLEMENTS_DIR = `${ECONOMY_DIR}/settlements`;
 const LEDGER_DIR = `${ECONOMY_DIR}/ledger`;
 const ACCESS_DIR = `${ECONOMY_DIR}/access-grants`;
+const REFUNDS_DIR = `${ECONOMY_DIR}/refunds`;
 
 /** Payment adapters ArcBlog knows about (spec §44). `manual` is dev-only. */
 const ADAPTERS = ['none', 'manual'];
@@ -104,6 +109,7 @@ function commandProductAdd(opts, instance) {
     priceAsset: opts['price-asset'],
     visibility: opts.visibility,
     settlementPolicy: opts['settlement-policy'],
+    periodDays: opts['period-days'] !== undefined ? Number(opts['period-days']) : undefined,
   }, { existing: existing?.value ?? null });
   const issues = validateProduct(product);
   if (issues.length) fail('VALIDATION', issues.join('; '));
@@ -120,6 +126,21 @@ function commandProductShow(opts, instance) {
   const id = optString(opts.id).trim();
   ensure(id, 'product id is required (--id)');
   console.log(JSON.stringify({ ok: true, path: `${PRODUCTS_DIR}/${id}.json`, product: requireRecord(PRODUCTS_DIR, id, instance, 'product').value }, null, 2));
+}
+
+// Removing a product is refused while orders reference it — the price history
+// must stay re-derivable (spec §29/§50). No orders yet → safe to remove.
+function commandProductRemove(opts, instance) {
+  const id = optString(opts.id).trim();
+  ensure(id, 'product id is required (--id)');
+  requireRecord(PRODUCTS_DIR, id, instance, 'product');
+  const referencing = recordsIn(ORDERS_DIR, instance).filter((order) => order.productId === id);
+  if (referencing.length) fail('CONFLICT', `product ${id} has ${referencing.length} order(s) — products with orders stay for auditability (spec §50)`);
+  // a paid post references the product for its price (spec §45)
+  const posts = scanPosts(instance).filter((post) => post.value.productId === id && post.value.status !== 'deleted');
+  if (posts.length) fail('CONFLICT', `product ${id} is referenced by post(s): ${posts.map((post) => post.value.slug).join(', ')} — detach or archive them first (spec §45)`);
+  remove(`${PRODUCTS_DIR}/${id}.json`, instance);
+  console.log(JSON.stringify({ ok: true, action: 'product-remove', id }, null, 2));
 }
 
 // --- orders -----------------------------------------------------------------
@@ -209,6 +230,66 @@ function commandOrderPay(opts, instance) {
   );
 }
 
+// Refund (spec §90): never deletes the original order — appends a refund
+// event, reverses the settlement in the ledger, and revokes the access grant.
+// Every id is deterministic so a retry is a no-op rather than a double refund.
+function commandOrderRefund(opts, instance) {
+  const id = optString(opts.id).trim();
+  ensure(id, 'order id is required (--id)');
+  const record = requireRecord(ORDERS_DIR, id, instance, 'order');
+  const order = record.value;
+  if (order.status === 'refunded') fail('CONFLICT', `order ${id} is already refunded`);
+  if (readJson(`${REFUNDS_DIR}/${id}.json`, instance)) fail('CONFLICT', `refund already recorded for order: ${id}`);
+
+  const refund = buildRefundEvent(order, { reason: optString(opts.reason) });
+  const issues = validateRefundEvent(refund);
+  if (issues.length) fail('VALIDATION', issues.join('; '));
+
+  // Settlement reversal (spec §90): flip every posted share back to the buyer.
+  const settlementRecord = readJson(`${SETTLEMENTS_DIR}/${id}.json`, instance);
+  let reversal = null;
+  let appended = 0;
+  if (settlementRecord?.value && settlementRecord.value.status === 'settled') {
+    reversal = refundLedgerEntriesFor(settlementRecord.value, order);
+    for (const entry of reversal) {
+      if (readJson(`${LEDGER_DIR}/${entry.id}.json`, instance)) continue;
+      writeJson(`${LEDGER_DIR}/${entry.id}.json`, entry, instance, undefined);
+      appended += 1;
+    }
+    const reversed = { ...settlementRecord.value, status: 'reversed', reversedAt: nowIso(), updatedAt: nowIso() };
+    writeJson(`${SETTLEMENTS_DIR}/${id}.json`, reversed, instance, settlementRecord.ifMatch ?? undefined);
+  }
+
+  // A refunded purchase no longer grants reading access (spec §37/§90).
+  const grantRecord = readJson(`${ACCESS_DIR}/${id}.json`, instance);
+  let grantRevoked = false;
+  if (grantRecord?.value && !grantRecord.value.revokedAt) {
+    const revoked = { ...grantRecord.value, revokedAt: nowIso() };
+    writeJson(`${ACCESS_DIR}/${id}.json`, revoked, instance, grantRecord.ifMatch ?? undefined);
+    grantRevoked = true;
+  }
+
+  writeJson(`${REFUNDS_DIR}/${id}.json`, refund, instance, undefined);
+  const refundedOrder = { ...order, status: 'refunded', refundedAt: refund.refundedAt, refundReason: refund.reason, updatedAt: nowIso() };
+  writeJson(`${ORDERS_DIR}/${id}.json`, refundedOrder, instance, record.ifMatch ?? undefined);
+
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        action: 'order-refund',
+        refund,
+        settlementReversed: Boolean(reversal),
+        reversalEntriesAppended: appended,
+        accessGrantRevoked: grantRevoked,
+        order: { id: refundedOrder.id, status: refundedOrder.status },
+      },
+      null,
+      2,
+    ),
+  );
+}
+
 // A tip is a gift, not a purchase (spec §35/§36): no product, no access grant.
 function commandTipCreate(opts, instance) {
   const id = optString(opts.id).trim();
@@ -255,6 +336,20 @@ function commandAccessList(opts, instance) {
     (grant) => (!contentId || grant.contentId === contentId) && (!readerDid || grant.readerDid === readerDid),
   );
   console.log(JSON.stringify({ ok: true, path: ACCESS_DIR, count: grants.length, grants }, null, 2));
+}
+
+// Paid full-text read (spec §24/§86): the body is served only with a valid
+// Access Grant — never from the guest-readable posts/ directory.
+function commandAccessRead(opts, instance) {
+  const contentId = optString(opts.content).trim();
+  const readerDid = optString(opts.reader).trim();
+  ensure(contentId, '--content is required');
+  ensure(readerDid, '--reader is required');
+  const grant = hasAccess(recordsIn(ACCESS_DIR, instance), { contentId, readerDid });
+  if (!grant) fail('FORBIDDEN', `no valid access grant for ${readerDid} on ${contentId}`);
+  const record = readJson(`${INSTANCE_ROOT}/paid/${contentId}.json`, instance);
+  if (!record) fail('NOT_FOUND', `paid content not found: ${contentId}`);
+  console.log(JSON.stringify({ ok: true, contentId, readerDid, grant: grant.id, content: record.value }, null, 2));
 }
 
 // Settlement phase (spec §89): decides who gets what, and appends the ledger.
@@ -325,8 +420,12 @@ const LEDGER_TYPES = ['creator_share', 'hub_share', 'protocol_fee'];
 
 function ledgerEntriesForOrder(orderId, instance) {
   const out = [];
-  for (const type of LEDGER_TYPES) {
-    const record = readJson(`${LEDGER_DIR}/${orderId}:${type}.json`, instance);
+  const ids = [
+    ...LEDGER_TYPES.map((type) => `${orderId}:${type}`),
+    ...LEDGER_TYPES.map((type) => `${orderId}:refund:${type}`),
+  ];
+  for (const id of ids) {
+    const record = readJson(`${LEDGER_DIR}/${id}.json`, instance);
     if (record?.value) out.push(record.value);
   }
   return out;
@@ -389,14 +488,18 @@ Usage:
   node scripts/arcblog-economy.mjs policy show
   node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> [--type article] \\
                                               --price-amount <n> [--price-asset USDC] [--content-id <id>] [--update]
+                                              # --type subscription --period-days 30 (spec §38, manual renewal)
   node scripts/arcblog-economy.mjs product list | product show --id <id>
+  node scripts/arcblog-economy.mjs product remove --id <id>   # refused while orders reference it (spec §50)
   node scripts/arcblog-economy.mjs order create --id <id> --product-id <id> [--buyer-did <did>] [--hub-did <did>]
   node scripts/arcblog-economy.mjs order list | order show --id <id>
   node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
+  node scripts/arcblog-economy.mjs order refund --id <id> [--reason <text>]
   node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
   node scripts/arcblog-economy.mjs settle --order <id>
   node scripts/arcblog-economy.mjs ledger list [--order <id>] [--limit <n>|--all] [--limit <n>|--all]
   node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
+  node scripts/arcblog-economy.mjs access read --content <id> --reader <did>   # paid full text (spec §86)
   node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]
 
 Resources live under ${ECONOMY_DIR}. Payment and settlement are separate phases
@@ -421,14 +524,16 @@ Grant (spec §37/§88); a tip never does (spec §36).
       if (sub === 'add') return commandProductAdd(args, instance);
       if (sub === 'list' || sub === 'ls') return commandProductList(args, instance);
       if (sub === 'show') return commandProductShow(args, instance);
-      fail('VALIDATION', `unknown product command: ${sub ?? '(none)'} (use add|list|show)`);
+      if (sub === 'remove' || sub === 'rm') return commandProductRemove(args, instance);
+      fail('VALIDATION', `unknown product command: ${sub ?? '(none)'} (use add|list|show|remove)`);
     }
     if (cmd === 'order') {
       if (sub === 'create') return commandOrderCreate(args, instance);
       if (sub === 'list' || sub === 'ls') return commandOrderList(args, instance);
       if (sub === 'show') return commandOrderShow(args, instance);
       if (sub === 'pay') return commandOrderPay(args, instance);
-      fail('VALIDATION', `unknown order command: ${sub ?? '(none)'} (use create|list|show|pay)`);
+      if (sub === 'refund') return commandOrderRefund(args, instance);
+      fail('VALIDATION', `unknown order command: ${sub ?? '(none)'} (use create|list|show|pay|refund)`);
     }
     if (cmd === 'settle') return commandSettle(args, instance);
     if (cmd === 'tip') {
@@ -437,8 +542,9 @@ Grant (spec §37/§88); a tip never does (spec §36).
     }
     if (cmd === 'access') {
       if (sub === 'check') return commandAccessCheck(args, instance);
+      if (sub === 'read') return commandAccessRead(args, instance);
       if (sub === 'list' || sub === 'ls') return commandAccessList(args, instance);
-      fail('VALIDATION', `unknown access command: ${sub ?? '(none)'} (use check|list)`);
+      fail('VALIDATION', `unknown access command: ${sub ?? '(none)'} (use check|read|list)`);
     }
     if (cmd === 'ledger') {
       if (sub === 'list' || sub === 'ls') return commandLedgerList(args, instance);

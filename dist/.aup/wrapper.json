@@ -3,60 +3,6 @@
   "type": "view",
   "children": [
     {
-      "id": "site-header",
-      "type": "app-header",
-      "props": {
-        "variant": "compact",
-        "brand": {
-          "title": "ArcBlog",
-          "src": "posts"
-        },
-        "actions": [
-          {
-            "kind": "theme-toggle",
-            "icon": "sun",
-            "ariaLabel": "$t(wrapper.theme-label)"
-          },
-          {
-            "kind": "locale-switcher",
-            "locales": [
-              "en",
-              "zh"
-            ],
-            "labels": {
-              "en": "EN",
-              "zh": "中文"
-            }
-          },
-          {
-            "kind": "user-menu",
-            "items": [
-              {
-                "id": "console",
-                "label": "$t(wrapper.nav-console)",
-                "icon": "grid",
-                "exec": "dashboard"
-              }
-            ]
-          }
-        ]
-      },
-      "events": {
-        "user-menu-item": {
-          "target": "_root",
-          "set": {
-            "page": "$args.exec"
-          }
-        },
-        "nav-click": {
-          "target": "_root",
-          "set": {
-            "page": "$args.src"
-          }
-        }
-      }
-    },
-    {
       "$ref": "content"
     },
     {
@@ -70,36 +16,14 @@
       }
     },
     {
-      "id": "wrapper-view-1-app-footer-4",
-      "type": "app-footer",
+      "id": "console-bridge-frame",
+      "type": "frame",
       "props": {
-        "brand": {
-          "title": "ArcBlog",
-          "tagline": "$t(wrapper.tagline)",
-          "href": "/"
-        },
-        "columns": [
-          {
-            "links": [
-              {
-                "label": "$t(wrapper.nav-about)",
-                "href": "/?page=about"
-              },
-              {
-                "label": "$t(wrapper.nav-author)",
-                "href": "/?page=author"
-              },
-              {
-                "label": "RSS",
-                "href": "/p/rss.xml",
-                "external": true
-              }
-            ]
-          }
-        ],
-        "bottomBar": {
-          "copyright": "© 2026 ArcBlog"
-        }
+        "src": "/p/en/console-bridge/",
+        "bridge": true,
+        "overlay": true,
+        "loading": "eager",
+        "sandbox": "allow-top-navigation"
       }
     }
   ]

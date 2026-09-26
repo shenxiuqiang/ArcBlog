@@ -23,3 +23,7 @@ fields:
   createdAt: datetime
   updatedAt: datetime
   version: number
+  contentHash: string # sha256:<hex> over normalized content (spec §66)
+  visibility: string # public | paid (spec §21; paid strips body from the public record)
+  productId: string # spec §45: the price lives on the Product, never on the post
+  previewOnly: boolean # true on the public copy of a paid post (spec §24)

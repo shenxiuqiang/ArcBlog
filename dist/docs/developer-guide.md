@@ -33,7 +33,7 @@ Allowed transitions:
 
 ### Hero carousel
 
-The homepage (posts page) opens with a hero carousel over
+The homepage (index page) opens with a hero carousel over
 `/instance/app/arcblog/heroes/<id>.json` records (`{title, description, image,
 url, sort, createdAt}`, sorted ascending by `content.sort`):
 
@@ -118,9 +118,9 @@ root views pull the record server-side via
 `propBind={post: ".../$params.slug.json"}` (`$params.slug`, no braces) and
 templates read parsed fields client-side through `${state.post.*}` — the
 two-channel split documented in discuss-kit's `.aup/man/detail.yaml`. Feed
-rows in `posts`/`admin` are custom `role=item` afs-list templates whose
+rows in `index`/`admin` are custom `role=item` afs-list templates whose
 `view href="..."` renders as a link; the runtime intercepts same-origin link
-clicks and resolves them through the bindings. On the posts page the feed
+clicks and resolves them through the bindings. On the index page the feed
 items are image cards (see "Hero carousel" above); the reader and preview
 pages render the record's `coverImage` as a banner above the title, gated by
 `visible="$state.post.coverImage"`.

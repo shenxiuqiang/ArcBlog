@@ -1,0 +1,7 @@
+{
+  "name": "console-bridge",
+  "description": "Hidden bridge that turns the console's section panels into a hash router (?page=console#section)",
+  "seoStrategy": "partial",
+  "hasScript": true,
+  "props": {}
+}

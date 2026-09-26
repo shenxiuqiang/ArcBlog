@@ -1,0 +1,49 @@
+# Man page for "pages-admin" (spec §15.4) — static page management.
+schemaVersion: 1
+page: pages-admin
+description: >-
+  Wallet-gated management of standalone pages (About, Support, ...). Pages have
+  exactly two states — online (public under pages/) and offline (admin-only
+  under page-drafts/) — and deliberately do not reuse the post lifecycle.
+synopsis: >-
+  Connect a DID Wallet, create an offline page from the form, then move it
+  between the Online and Offline lists. Taking a page offline writes an
+  offline copy first; removing the public copy completes the move.
+examples:
+  - label: Create a page
+    action: click
+    target: page-create
+flows:
+  - Connect the DID Wallet to establish the operator session.
+  - Create a page with the form; it is written offline (page-drafts/) first.
+  - Bring an offline page online (writes the public copy), then delete the offline copy.
+  - Take an online page offline (writes the offline copy), then remove the public copy.
+  - Delete removes an offline record entirely — pages have no soft delete.
+refs:
+  actions:
+    - id: arcblog-pages-admin-card-1-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-pages-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-ops-admin
+      event: click
+    - id: console-nav-economy-admin
+      event: click
+    - id: page-create
+      event: click
+    - id: page-offline
+      event: click
+    - id: page-remove-public
+      event: click
+    - id: page-online
+      event: click
+    - id: page-delete
+      event: click

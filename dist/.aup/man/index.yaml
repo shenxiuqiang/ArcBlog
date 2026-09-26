@@ -1,8 +1,8 @@
 # Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
 # point, not finished documentation. Fill in description/synopsis/examples/flows,
-# then this file is the authoritative man page for "posts".
+# then this file is the authoritative man page for "index".
 schemaVersion: 1
-page: posts
+page: index
 description: >-
   Public ArcBlog reading surface. It lists only publishable records from the
   post lifecycle (status=published), with DID-attributed authorship.

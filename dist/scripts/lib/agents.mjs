@@ -29,11 +29,14 @@ export const WRITE_OPS = ['write', 'delete', 'exec', 'mount', 'unmount', 'create
 /** Paths that are never exposed to an agent (privacy / admin-only). */
 export const SENSITIVE_PATH_PREFIXES = [
   '/instance/app/arcblog/drafts',
+  '/instance/app/arcblog/page-drafts',
+  '/instance/app/arcblog/paid',
   '/instance/app/arcblog/economy/orders',
   '/instance/app/arcblog/economy/settlements',
   '/instance/app/arcblog/economy/ledger',
   '/instance/app/arcblog/economy/attributions',
   '/instance/app/arcblog/economy/access-grants',
+  '/instance/app/arcblog/economy/refunds',
   '/instance/app/arcblog/config/trusted-hubs',
   '/blocklets',
 ];
@@ -64,10 +67,12 @@ export const AGENT_TOOLS = [
   { name: 'get_node_profile', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/node', op: 'get' } },
   { name: 'list_products', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/economy/products', op: 'list' } },
   { name: 'get_policy', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/economy/policies', op: 'get' } },
+  // Aggregate counts over public surfaces only — economy analytics stay closed
+  // because orders name buyers (privacy, spec §62).
+  { name: 'get_analytics', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'list' } },
   // --- reads with no surface in this platform version ------------------------
   { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)' },
   { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no cross-node Studio registry in this platform version' },
-  { name: 'get_analytics', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no analytics surface yet; derive counts with search_posts of the same data' },
   // --- writes: gated by an explicit grant -----------------------------------
   { name: 'create_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'update_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },

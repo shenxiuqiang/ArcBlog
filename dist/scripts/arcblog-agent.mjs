@@ -114,6 +114,29 @@ const READ_RUNNERS = {
     if (!record) fail('NOT_FOUND', 'settlement policy not found');
     return record.value;
   },
+  // Aggregate counts over public surfaces only (spec §60). Economy analytics
+  // stay closed: orders name buyers (privacy, spec §62).
+  get_analytics(opts, instance) {
+    const posts = recordsIn(`${INSTANCE_ROOT}/posts`, instance);
+    const pages = recordsIn(`${INSTANCE_ROOT}/pages`, instance);
+    const products = recordsIn(`${INSTANCE_ROOT}/economy/products`, instance);
+    const byCategory = {};
+    const tagCounts = new Map();
+    for (const post of posts) {
+      if (post.category) byCategory[post.category] = (byCategory[post.category] ?? 0) + 1;
+      for (const tag of Array.isArray(post.tags) ? post.tags : []) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+    }
+    return {
+      publishedPosts: posts.length,
+      onlinePages: pages.length,
+      productsListed: products.length,
+      byCategory,
+      topTags: [...tagCounts.entries()]
+        .map(([tag, count]) => ({ tag, count }))
+        .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
+        .slice(0, 10),
+    };
+  },
 };
 
 // --- write tools: delegate to the operational CLIs (already tested) ---------

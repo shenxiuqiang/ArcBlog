@@ -77,6 +77,8 @@ function toRecord(parsed, path, dir) {
     publishedAt: parsed.publishedAt || '',
     updatedAt: parsed.updatedAt || '',
     authorDid: parsed.authorDid || '',
+    version: Number(parsed.version || 0),
+    contentHash: parsed.contentHash || '',
   };
 }
 

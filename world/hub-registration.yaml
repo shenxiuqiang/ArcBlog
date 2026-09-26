@@ -4,6 +4,9 @@ fields:
   hubDid: string
   endpoint: string
   status: string # registered | active | error (spec §70)
+  relation: string # applied | indexed | removed (spec §70.3; removed keeps a tombstone)
+  direction: string # studio | hub — who initiated (spec §70.1/§70.2)
+  removedAt: datetime
   registeredAt: datetime
   updatedAt: datetime
   sync: json # { status, lastSync, lastVersion, lastHash, lastError } (spec §112)

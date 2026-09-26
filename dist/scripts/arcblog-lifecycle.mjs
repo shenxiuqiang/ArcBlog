@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { allowedCategorySlugs, validateCategorySlug } from './lib/categories.mjs';
+import { contentHashFor } from './lib/content-hash.mjs';
+import { putSigningKey, signPostContent } from './lib/content-sign.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -76,6 +78,35 @@ function arcAfs(args, instance) {
 const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
 const PUBLIC_DIR = '/instance/app/arcblog/posts';
 const PRIVATE_DIR = '/instance/app/arcblog/drafts';
+// Paid full text never lives in the guest-readable posts/ directory (spec §24:
+// no "hide with CSS"). The public record carries metadata + preview only; the
+// full record lives in paid/ (admin-only) and is released by an Access Grant
+// check (spec §86). unlisted/members stay unimplemented until the feed can
+// gate on them honestly.
+const PAID_DIR = '/instance/app/arcblog/paid';
+
+function paidPath(slug) {
+  return `${PAID_DIR}/${slug}.json`;
+}
+
+/**
+ * Split a post for storage by visibility. `paid`: the public record keeps
+ * everything except the body (preview only); the full record goes to paid/.
+ */
+function splitForVisibility(post) {
+  if (post.visibility !== 'paid') return { publicRecord: post, paidRecord: null };
+  return {
+    publicRecord: { ...post, body: '', previewOnly: true },
+    paidRecord: post,
+  };
+}
+
+/** Reassemble the full record (used when a paid post leaves the public dir). */
+function joinPaidRecord(publicRecord, instance) {
+  if (publicRecord.visibility !== 'paid') return publicRecord;
+  const paid = getStoredPost(paidPath(publicRecord.slug), instance);
+  return paid ? { ...publicRecord, body: paid.post.body, previewOnly: false } : publicRecord;
+}
 
 function publicPath(slug) {
   return `${PUBLIC_DIR}/${slug}.json`;
@@ -159,13 +190,48 @@ function arcDelete(path, instance) {
   return blockletExec('delete', { path }, instance);
 }
 
+/** Write a published record, honoring the paid split (spec §24/§86). */
+// Spec §65–§67: optional provenance. `publish --sign-key <pem-file>` signs the
+// content hash + authorship + version with an Ed25519 key and registers the
+// matching public key under config/signing-keys/ so it can be verified later.
+function applyContentSignature(post, opts, instance) {
+  const keyFile = optString(opts['sign-key']).trim();
+  if (!keyFile) return post;
+  let pem;
+  try {
+    pem = readFileSync(keyFile, 'utf8');
+  } catch {
+    fail('VALIDATION', `cannot read --sign-key file: ${keyFile}`);
+  }
+  const { signature, publicKeyPem } = signPostContent(post, {
+    privateKeyPem: pem,
+    signerDid: optString(opts['signer-did']) || post.authorDid,
+  });
+  putSigningKey({ did: signature.signerDid, publicKeyPem, label: optString(opts['signer-label']) }, instance);
+  return { ...post, contentSignature: signature };
+}
+
+function writePublished(next, instance, destPath, ifMatch) {
+  const { publicRecord, paidRecord } = splitForVisibility(next);
+  const dest = getStoredPost(destPath, instance);
+  arcWrite(destPath, JSON.stringify(publicRecord, null, 2), instance, ifMatch || dest?.ifMatch || undefined);
+  const existingPaid = getStoredPost(paidPath(next.slug), instance);
+  if (paidRecord) {
+    arcWrite(paidPath(next.slug), JSON.stringify(paidRecord, null, 2), instance, existingPaid?.ifMatch || undefined);
+  } else if (existingPaid) {
+    arcDelete(paidPath(next.slug), instance);
+  }
+}
+
 // Move between the public and private directories: read source (with its
 // optimistic-concurrency token), write destination, then delete the source.
 function moveRecord({ from, to, instance, toStatus }) {
   const existing = getStoredPost(from, instance);
   if (!existing) fail('NOT_FOUND', `post not found: ${from}`);
 
-  const prev = existing.post;
+    // Leaving the public directory reassembles the full body from paid/ (a paid
+  // post's public record is preview-only, spec §24).
+  const prev = toStatus === 'published' ? existing.post : joinPaidRecord(existing.post, instance);
   const now = nowIso();
   const next = buildPost({
     ...prev,
@@ -178,8 +244,13 @@ function moveRecord({ from, to, instance, toStatus }) {
     version: Number(prev.version || 0) + 1,
   });
 
-  const dest = getStoredPost(to, instance);
-  arcWrite(to, JSON.stringify(next, null, 2), instance, dest?.ifMatch || undefined);
+  if (toStatus === 'published') {
+    writePublished(next, instance, to);
+  } else {
+    const dest = getStoredPost(to, instance);
+    arcWrite(to, JSON.stringify(next, null, 2), instance, dest?.ifMatch || undefined);
+    if (prev.visibility === 'paid' && getStoredPost(paidPath(next.slug), instance)) arcDelete(paidPath(next.slug), instance);
+  }
   arcDelete(from, instance);
   return { next, prev };
 }
@@ -236,7 +307,7 @@ function validateCoverImage(value) {
 }
 
 function buildPost(base = {}) {
-  return {
+  const post = {
     title: base.title || '',
     slug: base.slug || '',
     summary: base.summary || '',
@@ -260,7 +331,19 @@ function buildPost(base = {}) {
     createdAt: base.createdAt || '',
     updatedAt: base.updatedAt || '',
     version: Number(base.version || 0),
+    // spec §21/§23: public by default; `paid` strips the body from the public
+    // record (preview only) — the full text lives in paid/ behind an Access
+    // Grant check (§86).
+    visibility: base.visibility === 'paid' ? 'paid' : 'public',
+    productId: base.productId || '',
+    previewOnly: Boolean(base.previewOnly),
+    contentHash: '',
   };
+  // Spec §66: the hash covers content only (title/body/summary/category/tags),
+  // never lifecycle metadata, so archive/republish keep the same hash while any
+  // content edit changes it. Recomputed on every build so legacy records heal.
+  post.contentHash = contentHashFor(post);
+  return post;
 }
 
 function getStoredPost(path, instance) {
@@ -315,6 +398,8 @@ function commandPublish(opts) {
       fail('INVALID_TRANSITION', `cannot transition ${existing.post.status} -> published`);
     }
     const { next } = moveRecord({ from: src, to: publicPath(slug), instance, toStatus: 'published' });
+    const signed = applyContentSignature(next, opts, instance);
+    if (signed !== next) writePublished(signed, instance, publicPath(slug));
     auditEvent({ action: 'publish', slug, actor: next.authorDid || 'unknown', detail: `version=${next.version}`, instance });
     console.log(JSON.stringify({ ok: true, action: 'publish', path: publicPath(slug), slug, status: next.status }, null, 2));
     return;
@@ -345,6 +430,10 @@ function commandPublish(opts) {
 
   const prev = draftExisting?.post || publicExisting?.post || {};
   const now = nowIso();
+  const visibility = optString(opts.visibility) || prev.visibility || 'public';
+  ensure(['public', 'paid'].includes(visibility), 'visibility must be public | paid (unlisted/members are not implemented)');
+  const productId = optString(opts['product-id']) || prev.productId || '';
+  if (visibility === 'paid') ensure(productId, 'a paid post needs --product-id (spec §45: the price lives on the Product)');
   const next = buildPost({
     ...prev,
     title,
@@ -369,11 +458,15 @@ function commandPublish(opts) {
     createdAt: prev.createdAt || now,
     updatedAt: now,
     version: Number(prev.version || 0) + 1,
+    visibility,
+    productId,
+    previewOnly: false,
   });
 
   ensure(next.authorDid, 'author-did is required');
 
-  arcWrite(path, JSON.stringify(next, null, 2), instance, publicExisting?.ifMatch || undefined);
+  const signed = applyContentSignature(next, opts, instance);
+  writePublished(signed, instance, path);
   if (draftExisting) arcDelete(privatePath(slug), instance);
   auditEvent({ action: 'publish', slug, actor: next.authorDid, detail: `version=${next.version}`, instance });
   console.log(JSON.stringify({ ok: true, action: 'publish', path, slug, status: next.status }, null, 2));
@@ -511,7 +604,16 @@ Options:
   --og-image <url>      OG image override
   --author-did <did>    DID author id
   --author-name <name>  Author display name
+  --visibility <v>      public | paid (paid: public record is preview-only; the
+                        full text lives in paid/ behind an Access Grant, §24/§86)
+  --product-id <id>     required for --visibility paid (the price lives on the
+                        Product, never on the post — spec §45)
   --update              Allow overwrite if slug exists (ifMatch protected)
+  --sign-key <path>     Sign the published content (§65–§67) with this Ed25519
+                        PEM private key; the public key is registered under
+                        config/signing-keys/ so it can be verified later
+  --signer-did <did>    DID that owns the signing key (defaults to author-did)
+  --signer-label <text> Optional label stored with the registered public key
 `);
 }
 

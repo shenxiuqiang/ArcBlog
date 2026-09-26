@@ -3,6 +3,7 @@ fields:
   name: string
   description: string
   avatar: string
+  ogImage: string # default share-card image (spec §15.5); posts override per-article
   did: string
   endpoint: string
   roles: json # basic | studio | hub (spec §7)

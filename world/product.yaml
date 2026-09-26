@@ -8,5 +8,6 @@ fields:
   priceAsset: string
   visibility: string # public | private
   settlementPolicy: string
+  periodDays: number # subscription period (spec §38); manual renewal = a new order, no auto-billing
   createdAt: datetime
   updatedAt: datetime

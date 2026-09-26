@@ -114,3 +114,36 @@ export function removeMedia(id, instance) {
   remove(mediaPath(normalized), instance);
   return normalized;
 }
+
+// --- reference tracking (spec §15.4) -----------------------------------------
+//
+// Every media record answers "where am I used?" before it can be deleted.
+// References are matched by the record's AFS path appearing anywhere in a
+// post / page / hero record (coverImage, images[], markdown body, hero image).
+
+const REF_SCAN_DIRS = [
+  { kind: 'post', path: `${INSTANCE_ROOT}/posts` },
+  { kind: 'post (draft)', path: `${INSTANCE_ROOT}/drafts` },
+  { kind: 'page', path: `${INSTANCE_ROOT}/pages` },
+  { kind: 'page (offline)', path: `${INSTANCE_ROOT}/page-drafts` },
+  { kind: 'hero', path: `${INSTANCE_ROOT}/heroes` },
+];
+
+/** Records whose serialized content mentions `needle`. */
+export function findMediaReferences(needle, instance) {
+  const text = optString(needle);
+  if (!text) return [];
+  const refs = [];
+  for (const { kind, path } of REF_SCAN_DIRS) {
+    for (const entry of list(path, instance)) {
+      const id = String(entry?.id ?? '').replace(/\.json$/, '');
+      if (!id) continue;
+      const record = readJson(`${path}/${id}.json`, instance);
+      if (!record?.value) continue;
+      if (JSON.stringify(record.value).includes(text)) {
+        refs.push({ kind, slug: record.value.slug ?? id, path: `${path}/${id}.json` });
+      }
+    }
+  }
+  return refs;
+}

@@ -1,0 +1,45 @@
+# Man page for "seo-admin" (spec §15.5) — site-level SEO & distribution.
+schemaVersion: 1
+page: seo-admin
+description: >-
+  Wallet-gated site metadata (name, description, default OG image, endpoint)
+  stored on the public node profile, plus the always-on distribution surfaces
+  (RSS, article index, Agent access). Every article inherits these defaults
+  and can override them per post.
+synopsis: >-
+  Connect a DID Wallet, edit the site metadata fields, and save; distribution
+  surfaces need no configuration.
+examples:
+  - label: Save site metadata
+    action: click
+    target: seo-save
+flows:
+  - Connect the DID Wallet to establish the operator session.
+  - Edit site name / description / default OG image / endpoint and save.
+  - Use the distribution card to open the RSS feed or the article index.
+refs:
+  actions:
+    - id: seo-save
+      event: click
+refs:
+  actions:
+    - id: arcblog-seo-admin-card-1-action-3
+      event: click
+    - id: console-nav-dashboard
+      event: click
+    - id: console-nav-admin
+      event: click
+    - id: console-nav-pages-admin
+      event: click
+    - id: console-nav-heroes-admin
+      event: click
+    - id: console-nav-seo-admin
+      event: click
+    - id: console-nav-operations
+      event: click
+    - id: console-nav-ops-admin
+      event: click
+    - id: console-nav-economy-admin
+      event: click
+    - id: seo-save
+      event: click

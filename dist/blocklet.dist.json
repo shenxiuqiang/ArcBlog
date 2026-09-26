@@ -14,25 +14,31 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/economy/orders",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/config/agent-grants",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/instance/app/arcblog/drafts",
         "op": "list",
         "required": true,
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/node",
+        "path": "/instance/app/arcblog/pages",
         "op": "list",
         "required": true,
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/economy/products",
-        "op": "list",
-        "required": true,
-        "source": "aup:src"
-      },
-      {
-        "path": "/instance/app/arcblog/economy/access-grants",
+        "path": "/instance/app/arcblog/page-drafts",
         "op": "list",
         "required": true,
         "source": "aup:src"
@@ -56,13 +62,25 @@
         "source": "aup:src"
       },
       {
+        "path": "/instance/app/arcblog/hub/index",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
         "path": "/instance/app/arcblog/media",
         "op": "list",
         "required": true,
         "source": "aup:src"
       },
       {
-        "path": "/instance/app/arcblog/config/agent-grants",
+        "path": "/instance/app/arcblog/economy/products",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/instance/app/arcblog/economy/access-grants",
         "op": "list",
         "required": true,
         "source": "aup:src"
@@ -75,6 +93,12 @@
       },
       {
         "path": "/p/en/theme-bridge",
+        "op": "list",
+        "required": true,
+        "source": "aup:src"
+      },
+      {
+        "path": "/p/en/console-bridge",
         "op": "list",
         "required": true,
         "source": "aup:src"

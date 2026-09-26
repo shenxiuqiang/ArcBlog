@@ -119,6 +119,9 @@ export function buildProduct(input = {}, { now = new Date().toISOString(), exist
     priceAsset: str(input.priceAsset ?? existing?.priceAsset) || 'USDC',
     visibility: str(input.visibility ?? existing?.visibility) || 'public',
     settlementPolicy: str(input.settlementPolicy ?? existing?.settlementPolicy) || 'v1',
+    // Subscription period in days (spec §38). Only meaningful for
+    // type=subscription; manual renewal = a new order, never auto-billing.
+    periodDays: Number(input.periodDays ?? existing?.periodDays ?? 0) || 0,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -140,6 +143,10 @@ export function validateProduct(product) {
   }
   if (!str(product.priceAsset)) issues.push('priceAsset is required');
   if (!['public', 'private'].includes(str(product.visibility))) issues.push('visibility must be public or private');
+  // spec §38: a subscription needs a period; manual renewal only.
+  if (str(product.type) === 'subscription' && !(Number(product.periodDays) > 0)) {
+    issues.push('periodDays must be a positive number for a subscription');
+  }
   return issues;
 }
 
@@ -272,6 +279,13 @@ export function buildAccessGrant(order, product, { now = new Date().toISOString(
   if (str(order?.kind) !== 'purchase') return null;
   const contentId = str(product?.contentId);
   if (!contentId) return null;
+  // spec §38: a subscription grants access for one period (manual renewal = a
+  // new order); everything else is a permanent reading right (§37).
+  const periodDays = Number(product?.periodDays ?? 0);
+  const expiresAt =
+    str(product?.type) === 'subscription' && periodDays > 0
+      ? new Date(new Date(now).getTime() + periodDays * 86400000).toISOString()
+      : null;
   return {
     id: str(order.id),
     contentId,
@@ -279,8 +293,7 @@ export function buildAccessGrant(order, product, { now = new Date().toISOString(
     creatorDid: str(order.creatorDid),
     orderId: str(order.id),
     grantedAt: now,
-    // null = permanent reading right (spec §37)
-    expiresAt: null,
+    expiresAt,
   };
 }
 
@@ -308,6 +321,7 @@ export function hasAccess(grants, { contentId, readerDid, now = new Date().toISO
       (grant) =>
         str(grant?.contentId) === wantedContent &&
         str(grant?.readerDid) === wantedReader &&
+        !grant?.revokedAt && // a refunded order revokes its grant (spec §90)
         (!grant?.expiresAt || String(grant.expiresAt) > String(now)),
     ) ?? null
   );
@@ -316,4 +330,75 @@ export function hasAccess(grants, { contentId, readerDid, now = new Date().toISO
 /** Sum ledger entry amounts (minor units) — used to prove the split conserves. */
 export function sumLedger(entries) {
   return fromMinor(entries.reduce((total, entry) => total + toMinor(entry.amount), 0n));
+}
+
+// --- Refund (spec §90) -------------------------------------------------------
+//
+// A refund never deletes anything: it is an *event* appended next to the
+// original order — refund record + reversal ledger entries + settlement
+// reversal + access-grant revocation. The ledger stays append-only (§92).
+
+/** Build the refund event record (spec §90: Original Order + Refund Event). */
+export function buildRefundEvent(order, { reason = '', now = new Date().toISOString() } = {}) {
+  if (str(order?.status) !== 'paid') {
+    const err = new Error(`order ${order?.id ?? '?'} is ${order?.status ?? 'unknown'}, not paid — only paid orders can be refunded`);
+    err.code = 'INVALID_TRANSITION';
+    throw err;
+  }
+  return {
+    id: str(order.id),
+    orderId: str(order.id),
+    orderKind: str(order.kind) || 'purchase',
+    buyerDid: str(order.buyerDid),
+    amount: str(order.amount),
+    asset: str(order.asset),
+    reason: str(reason),
+    refundedAt: now,
+  };
+}
+
+/**
+ * Reversal ledger entries for a settled order (spec §90: Settlement Reversal).
+ * One `refund` entry per original share, direction flipped (recipient → buyer),
+ * with deterministic ids `<orderId>:refund:<type>` so a re-run cannot
+ * double-post. The original entries are never touched.
+ */
+export function refundLedgerEntriesFor(settlement, order, { now = new Date().toISOString() } = {}) {
+  const buyer = str(order?.buyerDid) || 'buyer';
+  const rows = [
+    ['creator_share', settlement.creatorDid, settlement.creatorAmount],
+    ['hub_share', settlement.hubDid, settlement.hubAmount],
+    ['protocol_fee', 'protocol', settlement.protocolAmount],
+  ];
+  return rows
+    .filter(([, from, amount]) => str(from) && toMinor(amount) > 0n)
+    .map(([type, from, amount]) => ({
+      id: `${settlement.orderId}:refund:${type}`,
+      orderId: settlement.orderId,
+      orderKind: str(settlement.orderKind) || 'purchase',
+      type: 'refund',
+      from,
+      to: buyer,
+      reverses: `${settlement.orderId}:${type}`,
+      asset: settlement.asset,
+      amount,
+      status: 'reversed',
+      policyVersion: settlement.policyVersion,
+      transactionHash: '',
+      createdAt: now,
+    }));
+}
+
+/** Validate a refund event record; returns issues (empty = ok). */
+export function validateRefundEvent(refund) {
+  const issues = [];
+  if (!refund || typeof refund !== 'object') return ['refund must be an object'];
+  if (!str(refund.orderId)) issues.push('orderId is required');
+  try {
+    toMinor(refund.amount);
+  } catch {
+    issues.push('amount must be a non-negative decimal string');
+  }
+  if (!str(refund.asset)) issues.push('asset is required');
+  return issues;
 }

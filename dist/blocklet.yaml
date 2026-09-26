@@ -15,7 +15,7 @@ sites:
       - id: posts-list
         path: "/posts"
         afs: "/instance/app/arcblog/posts"
-        page: posts
+        page: index
       - id: post-reader
         path: "/posts/{slug}"
         afs: "/instance/app/arcblog/posts/{slug}.json"
@@ -28,18 +28,36 @@ sites:
         path: "/edit/{slug}"
         afs: "/instance/app/arcblog/drafts/{slug}.json"
         page: compose-edit
+      - id: page-view
+        path: "/pages/{slug}"
+        afs: "/instance/app/arcblog/pages/{slug}.json"
+        page: page-view
+      - id: seo-admin
+        path: "/manage/seo"
+        afs: "/instance/app/arcblog/node/profile.json"
+        page: seo-admin   # legacy alias page -> the console bridge redirects to #seo-admin
+      # spec §39: the public creator storefront — the product catalogue
+      # (guest-readable, §50) rendered as its own page.
+      - id: store
+        path: "/store"
+        afs: "/instance/app/arcblog/economy/products"
+        page: store
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).
 scope: app
 
-# Anonymous read access for the public feed: the posts page renders an afs-list
+# Anonymous read access for the public feed: the index page renders an afs-list
 # over published records without a session. drafts/ (draft + archived + deleted)
 # is admin-only — the studio lists it, anonymous readers cannot.
 networkRead:
   - path: /instance/app/arcblog/posts
     role: guest
   - path: /instance/app/arcblog/drafts
+    role: admin
+  # spec §24/§86: paid full text is admin-only storage; readers get it through
+  # an Access Grant check, never through the guest-readable posts/ directory.
+  - path: /instance/app/arcblog/paid
     role: admin
   - path: /instance/app/arcblog/heroes
     role: guest
@@ -76,9 +94,19 @@ networkRead:
     role: admin
   - path: /instance/app/arcblog/economy/access-grants
     role: admin
+  # spec §90: refund events are corrections, never deletions — admin-only like
+  # the orders they reference.
+  - path: /instance/app/arcblog/economy/refunds
+    role: admin
   # Attribution proofs are evidence for settlement (admin-only); trusted Hub
   # public keys are public by definition.
   - path: /instance/app/arcblog/economy/attributions
+    role: admin
+  # spec §15.4: static pages. The same directory-boundary rule as posts —
+  # pages/ is online only (guest), page-drafts/ is offline only (admin).
+  - path: /instance/app/arcblog/pages
+    role: guest
+  - path: /instance/app/arcblog/page-drafts
     role: admin
   # spec §71: Studio→Hub registrations are this node's own bookkeeping (DID +
   # endpoint + sync state). The public discovery surface is node/discovery.json,
@@ -98,6 +126,12 @@ replicated:
     readRole: guest
   drafts:
     canonical: instance/app/arcblog/drafts/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  # spec §24/§86: full text of paid posts (preview-only copies live in posts/).
+  paid:
+    canonical: instance/app/arcblog/paid/*
     copy: none
     minRole: admin
     readRole: admin
@@ -168,6 +202,13 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
+  # spec §90: refund events (Original Order + Refund Event + Settlement
+  # Reversal; the ledger stays append-only).
+  economy-refunds:
+    canonical: instance/app/arcblog/economy/refunds/*
+    copy: none
+    minRole: admin
+    readRole: admin
   # spec §30–§33: discovery proofs and the Hub keys needed to verify them.
   economy-attributions:
     canonical: instance/app/arcblog/economy/attributions/*
@@ -184,9 +225,28 @@ replicated:
     copy: none
     minRole: admin
     readRole: admin
+  # spec §15.4: static pages — two states only, stored on two sides of a
+  # directory boundary exactly like posts/drafts.
+  pages:
+    canonical: instance/app/arcblog/pages/*
+    copy: none
+    minRole: admin
+    readRole: guest
+  page-drafts:
+    canonical: instance/app/arcblog/page-drafts/*
+    copy: none
+    minRole: admin
+    readRole: admin
   # spec §70/§71: Studio -> Hub registrations (public network topology).
   hub-registrations:
     canonical: instance/app/arcblog/hub/registrations/*
+    copy: none
+    minRole: admin
+    readRole: admin
+  # spec §73/§74: the Hub's derived content index — metadata only (Studio =
+  # source, Hub = index), admin-only like the rest of hub/.
+  hub-index:
+    canonical: instance/app/arcblog/hub/index/*
     copy: none
     minRole: admin
     readRole: admin

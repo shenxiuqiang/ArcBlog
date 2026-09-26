@@ -8,17 +8,20 @@ import {
   buildAccessGrant,
   buildOrder,
   buildProduct,
+  buildRefundEvent,
   buildSettlement,
   buildSettlementPolicy,
   fromMinor,
   hasAccess,
   ledgerEntriesFor,
+  refundLedgerEntriesFor,
   splitAmount,
   sumLedger,
   toMinor,
   validateAccessGrant,
   validateOrder,
   validateProduct,
+  validateRefundEvent,
   validateSettlementPolicy,
 } from './lib/economy.mjs';
 
@@ -342,4 +345,148 @@ test('live: ledger lookup is by deterministic id, and the whole-ledger listing i
   assert.ok(page.totalCount >= 1);
   assert.equal(page.truncated, page.totalCount > 1);
   if (page.truncated) assert.match(page.hint, /newest entries/);
+});
+
+// --- refund (spec §90) -------------------------------------------------------
+
+test('refund event requires a paid order and validates cleanly', () => {
+  assert.throws(() => buildRefundEvent(buildOrder({ id: 'o1', creatorDid: 'd', productId: 'p', amount: '5', status: 'pending' })), /not paid/);
+  const refund = buildRefundEvent(buildOrder({ id: 'o1', kind: 'purchase', creatorDid: 'd', buyerDid: 'b', productId: 'p', amount: '5', status: 'paid' }), { reason: 'duplicate' });
+  assert.deepEqual(validateRefundEvent(refund), []);
+  assert.equal(refund.orderId, 'o1');
+  assert.equal(refund.reason, 'duplicate');
+});
+
+test('refund reversal entries flip direction with deterministic ids (spec §90/§92)', () => {
+  const order = buildOrder({ id: 'o9', kind: 'purchase', creatorDid: 'd', buyerDid: 'b', hubDid: 'h', productId: 'p', amount: '10', status: 'paid' });
+  const policy = buildSettlementPolicy({ version: 'v1', creator: 0.8, hub: 0.15, protocol: 0.05 });
+  const settlement = buildSettlement(order, policy, { attributed: true, attributionId: 'a1' });
+  const entries = refundLedgerEntriesFor(settlement, order);
+  // creator + hub + protocol all posted, so all three reverse
+  assert.equal(entries.length, 3);
+  for (const entry of entries) {
+    assert.equal(entry.type, 'refund');
+    assert.equal(entry.status, 'reversed');
+    assert.equal(entry.to, 'b');
+    assert.ok(entry.id.startsWith('o9:refund:'));
+    assert.equal(entry.reverses, entry.id.replace(':refund:', ':'));
+  }
+  // reversal conserves the amount exactly (minor units, no drift)
+  assert.equal(sumLedger(entries), sumLedger(ledgerEntriesFor(settlement)));
+});
+
+test('a revoked grant no longer grants access (spec §90)', () => {
+  const grant = { id: 'o1', contentId: 'c1', readerDid: 'r1', orderId: 'o1', grantedAt: '2026-01-01', expiresAt: null };
+  assert.ok(hasAccess([grant], { contentId: 'c1', readerDid: 'r1' }));
+  assert.equal(hasAccess([{ ...grant, revokedAt: '2026-02-01' }], { contentId: 'c1', readerDid: 'r1' }), null);
+});
+
+test('live refund: settle → refund reverses the ledger and revokes access', () => {
+  const stamp = Date.now();
+  const productId = `econ-test-rf-product-${stamp}`;
+  const orderId = `econ-test-rf-order-${stamp}`;
+  const contentId = `econ-test-rf-content-${stamp}`;
+
+  assert.equal(run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zEconCreator', '--price-amount', '10', '--content-id', contentId]).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zEconReader']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+
+  // purchase of content granted reading access (spec §37)
+  const before = run(['access', 'check', '--content', contentId, '--reader', 'did:key:zEconReader']);
+  assert.equal(json(before.stdout).allowed, true);
+
+  assert.equal(run(['settle', '--order', orderId]).status, 0);
+
+  const refund = run(['order', 'refund', '--id', orderId, '--reason', 'buyer requested']);
+  assert.equal(refund.status, 0, refund.stderr);
+  const receipt = json(refund.stdout);
+  assert.equal(receipt.order.status, 'refunded');
+  assert.equal(receipt.settlementReversed, true);
+  assert.equal(receipt.reversalEntriesAppended, 2); // creator_share + protocol_fee (hub withheld)
+  assert.equal(receipt.accessGrantRevoked, true);
+
+  // the original order is untouched history; the refund is an appended event
+  const order = json(run(['order', 'show', '--id', orderId]).stdout).order;
+  assert.equal(order.status, 'refunded');
+  assert.ok(order.refundedAt);
+
+  // ledger: original entries + reversal entries, all readable by the O(1) lookup
+  const ledger = json(run(['ledger', 'list', '--order', orderId]).stdout);
+  assert.equal(ledger.count, 4);
+  const refunds = ledger.entries.filter((e) => e.type === 'refund');
+  assert.equal(refunds.length, 2);
+  for (const entry of refunds) {
+    assert.equal(entry.to, 'did:key:zEconReader');
+    assert.equal(entry.status, 'reversed');
+  }
+
+  // refund revoked the reading right
+  const after = run(['access', 'check', '--content', contentId, '--reader', 'did:key:zEconReader']);
+  assert.equal(json(after.stdout).allowed, false);
+
+  // a second refund is a conflict, not a double-post (spec §92)
+  const again = run(['order', 'refund', '--id', orderId]);
+  assert.equal(again.status, 1);
+  assert.equal(json(again.stderr).code, 'CONFLICT');
+});
+
+test('refund refuses an unpaid order', () => {
+  const stamp = Date.now();
+  const productId = `econ-test-rn-product-${stamp}`;
+  const orderId = `econ-test-rn-order-${stamp}`;
+  assert.equal(run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zEconCreator', '--price-amount', '1']).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId]).status, 0);
+  const res = run(['order', 'refund', '--id', orderId]);
+  assert.equal(res.status, 1);
+  assert.equal(json(res.stderr).code, 'INVALID_TRANSITION');
+});
+
+// --- subscription: manual renewal (spec §38) ----------------------------------
+
+test('a subscription requires a period and grants time-boxed access (spec §38)', () => {
+  // no period → invalid
+  assert.ok(
+    validateProduct(buildProduct({ id: 's1', creatorDid: 'd', type: 'subscription', priceAmount: '5' })).some((i) => /periodDays/.test(i)),
+  );
+  const product = buildProduct({ id: 's1', creatorDid: 'd', type: 'subscription', priceAmount: '5', contentId: 'c1', periodDays: 30 });
+  assert.deepEqual(validateProduct(product), []);
+
+  const order = buildOrder({ id: 'o-sub', kind: 'purchase', creatorDid: 'd', buyerDid: 'r', productId: 's1', amount: '5', status: 'paid' });
+  const grant = buildAccessGrant(order, product, { now: '2026-01-01T00:00:00Z' });
+  assert.ok(grant.expiresAt, 'subscription access is time-boxed');
+  assert.equal(grant.expiresAt, '2026-01-31T00:00:00.000Z');
+
+  // after expiry the grant lapses; a renewal (new order) restores access
+  assert.equal(hasAccess([grant], { contentId: 'c1', readerDid: 'r', now: '2026-02-15T00:00:00Z' }), null);
+  const renewal = buildAccessGrant(buildOrder({ ...order, id: 'o-sub-2' }), product, { now: '2026-02-10T00:00:00Z' });
+  assert.ok(hasAccess([grant, renewal], { contentId: 'c1', readerDid: 'r', now: '2026-02-15T00:00:00Z' }));
+
+  // non-subscription products keep permanent grants (§37)
+  const permanent = buildAccessGrant(order, buildProduct({ id: 'p1', creatorDid: 'd', type: 'article', priceAmount: '5', contentId: 'c1' }));
+  assert.equal(permanent.expiresAt, null);
+});
+
+test('live subscription: pay grants time-boxed access, renewal extends it', () => {
+  const stamp = Date.now();
+  const productId = `econ-test-sub-product-${stamp}`;
+  const contentId = `econ-test-sub-content-${stamp}`;
+  const orderId = `econ-test-sub-order-${stamp}`;
+  const orderId2 = `econ-test-sub-order2-${stamp}`;
+
+  assert.equal(
+    run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zEconCreator', '--type', 'subscription', '--price-amount', '5', '--content-id', contentId, '--period-days', '30']).status,
+    0,
+  );
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zSubReader']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+
+  const access = json(run(['access', 'check', '--content', contentId, '--reader', 'did:key:zSubReader']).stdout);
+  assert.equal(access.allowed, true);
+  assert.ok(access.grant.expiresAt, 'grant is time-boxed');
+
+  // manual renewal: a second order produces a second grant (spec §38)
+  assert.equal(run(['order', 'create', '--id', orderId2, '--product-id', productId, '--buyer-did', 'did:key:zSubReader']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId2, '--adapter', 'manual']).status, 0);
+  const grants = json(run(['access', 'list', '--content', contentId, '--reader', 'did:key:zSubReader']).stdout);
+  assert.equal(grants.count, 2);
 });

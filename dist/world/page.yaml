@@ -1,0 +1,16 @@
+kind: Page
+fields:
+  slug: string
+  title: string
+  summary: string
+  body: markdown
+  status: string # online | offline (spec §15.4: pages have two states only)
+  authorDid: string
+  createdAt: datetime
+  updatedAt: datetime
+  version: number
+  contentHash: string # sha256:<hex> over normalized content (spec §66)
+# Pages are NOT posts: no lifecycle states beyond online/offline, no RSS, no Hub
+# indexing. Storage follows the same directory-boundary rule as posts:
+#   pages/        online only — guest-readable
+#   page-drafts/  offline only — admin-only

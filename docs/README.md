@@ -10,6 +10,10 @@ reference for the current implementation or its operation. If a supporting
 document ever disagrees with the spec, the spec wins — update or remove the
 other document.
 
+**[ArcBlog-feature-checklist.md](ArcBlog-feature-checklist.md)** tracks the
+implementation status of every feature in the spec (✅ / 🟡 / ⬜ / ⚪). The two
+documents are linked: any change to the spec must be mirrored in the checklist.
+
 ## External references
 
 - **ArcBlock official technical docs** — <https://www.arcblock.io/zh/docs/> —
@@ -19,6 +23,13 @@ other document.
   `skills-lock.json`.
 
 ## Implementation
+
+- [ArcBlog-admin-ui-design.md](ArcBlog-admin-ui-design.md) — admin console UI
+- [ArcBlog-nft-factory.md](ArcBlog-nft-factory.md) — node NFT factories (§8.1–§8.4): factory specs, the GLofter field mapping, the `mock`/`ocap` chain adapter and the operator runbook
+  standard (spec §15): layout, tokens, components, states, acceptance checklist.
+  Appendix A maps §2.5 (full-height fluid layout, inner-scroll pane) to
+  framework-free references, with a runnable skeleton at
+  [reference/console-shell-layout.html](reference/console-shell-layout.html).
 
 - [development-plan.md](development-plan.md) — spec → phase plan, architecture
   decisions, increment breakdown and acceptance gates.

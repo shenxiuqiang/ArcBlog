@@ -1,0 +1,13 @@
+kind: Refund
+fields:
+  id: string # = orderId
+  orderId: string
+  orderKind: string # purchase | tip
+  buyerDid: string
+  amount: string
+  asset: string
+  reason: string
+  refundedAt: datetime
+# spec §90: a refund never deletes the original order — it is an appended event
+# alongside reversal ledger entries (<orderId>:refund:<type>) and the access
+# grant's revokedAt marker.
