@@ -139,6 +139,27 @@ export const TEST_RECORD_PREFIXES = [
   'lifecycle-test-',
   // The provider-query test's fixture (same archive-then-delete cleanup).
   'query-fixture',
+  // `arcblog-content-hash.test.mjs` (publish → archive → delete residue).
+  'hash-test-',
+  // `arcblog-pages.test.mjs` (offline page fixtures deleted in `finally`).
+  'page-test-',
+  // `arcblog-tags.test.mjs` (draft fixtures deleted in `finally`).
+  'cat-test-',
+  // `arcblog-media.test.mjs` (media + draft fixtures deleted in `finally`).
+  'media-test-',
+  // `arcblog-network.test.mjs` hub-index fixtures (publish → archive → delete).
+  'hub-idx-test-',
+  // `arcblog-content-hash.test.mjs` paid-visibility fixtures.
+  'paid-test-',
+  // `arcblog-content-sign.test.mjs` signed/unsigned publish fixtures.
+  'sign-test-',
+  'sign-plain-',
+  // `arcblog-roles.test.mjs` §8.6 exit-linkage fixtures (product + order).
+  'exit-test-',
+  // `arcblog-store` fixtures used while verifying the public catalogue.
+  'store-test-',
+  // `arcblog-node-nft.test.mjs` uses an isolated mock-chain ledger per run.
+  'mock-chain-test-',
 ];
 
 /** Does an AFS entry id look like test residue? */
