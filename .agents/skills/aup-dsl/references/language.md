@@ -67,7 +67,32 @@ Measured rules:
    or not) is invisible: `Unknown component "x"`.
 5. No slots: `use comp(x) { … }` is a parse error.
 
-## 4. `include` / `partial` / `import` — do not use
+## 3b. The two navigation levels (app chrome vs in-page patch)
+
+Two mechanisms, easy to confuse — pick by scope:
+
+1. **Page navigation** (`-> page <name>`) switches the named page. The app chrome
+   must come from a place that survives the switch.
+2. **In-page node update** (`-> set <nodeId> src|state|props <value>`) patches one
+   node in place — no page switch, no reload. Measured on ArcBlog's daemon:
+   `action -> set zz-box state {v: "after"}` changed that node's rendered state
+   immediately. **Only `src`, `state` and `props` are accepted** — `children`
+   fails validation with `Expected set field "src", "state", or "props"`.
+
+**Shared chrome across pages = the app wrapper's slot.** `.aup/wrapper.aup`
+declares `page wrapper { … slot content … }`; everything outside `slot content`
+renders on **every** page (ArcBlog's theme-bridge frame lives there, and a probe
+node added next to the slot rendered on all pages). This is the sanctioned
+"Shell + Page Slot" pattern — prefer it over copying chrome into every page or
+over the (runtime-blocked) `include`.
+
+Caveat measured on ArcBlog: a **shared sidebar cannot highlight the current
+item**, because the platform's `active` prop is honoured only as a literal
+`true` (no implicit "is this the current page" comparison). Highlighting the
+active row is the one thing that still forces per-page chrome (ArcBlog generates
+its sidebar into each page for exactly this reason).
+
+
 
 * `include "<path>"` resolves relative to the **including page file** and accepts
   another *page file* (`page frag { … }`); a bare node fragment is rejected with

@@ -1262,3 +1262,37 @@ provider 缺 `package.json`（平台每个 provider 都带，我们补上后仍�
 
 **现状口径**：provider 是目标形态（去掉外部常驻进程），意图队列 + worker（§8）是当前可用的过渡实现；
 两者不冲突——provider 一旦挂载成功，按钮即可直接执行，worker 仅保留离线/队列语义。
+
+## 27. 对照《用 AUP 设计管理后台》（多菜单/多页面/局部刷新/组件化）
+
+那篇教程给的是**架构模型**；下面只记"在本 runtime 实测成立/不成立"的部分，以及我们据此能改什么。
+
+### 27.1 实测（本次新增的两条）
+
+| 教程主张 | 实测结果 |
+| --- | --- |
+| Shell + Page Slot：公共外壳写一次，页面只填插槽 | ✅ 成立。ArcBlog 的 `.aup/wrapper.aup` 就是 `page wrapper { … slot content … }`；在 `slot content` 旁边加一个探针节点，**所有页面**都渲染出它（theme-bridge frame 一直住在那里）。这是"共享 chrome"的正规机制，优于把 chrome 复制进每页，也优于不可用的 `include`。 |
+| 页内局部刷新：`button -> set viewer src ...` | ✅ 成立（`state` 已实测）。`action -> set zz-box state {v: "after"}` 点击后该节点就地变为 `state.v=after`，无页面切换。**DSL 只接受 `src` / `state` / `props`**；`children` 直接校验失败：`Expected set field "src", "state", or "props"`。 |
+
+### 27.2 我们本来就符合教程的部分
+
+`app.aup` 只做应用清单（14 行）✓ · 每个菜单一个页面，且按功能分目录（16 页）✓ ·
+菜单用 `-> page`（一级导航）✓ · 数据用 `propBind` / `afs-list subscribe=true`（AFS 绑定与 live 区域）✓ ·
+公开站点走 Web Device、登录后后台走 AUP ✓（教程 §19 的边界与我们一致）✓。
+
+### 27.3 可借鉴的优化（按性价比）
+
+1. **把 header 收进 wrapper（16 份 → 1 份）**：每页的 `app-header site-header …` 完全一致，是纯重复；
+   `wrapper` 已证明能承载共享节点。代价：要改 16 个页面并重新验证全出血/`--aup-content-max` cap 在 wrapper 层的行为。
+2. **列表 + 详情用 `-> set` 就地刷新**：目前 `admin/posts`、`ops/media`、`ops/hub`、`economy/policy`、`factory` 的意图队列
+   要么整块铺开、要么跳走。教程的"两级导航"正是让我们用 `-> set detail state {…}` 就地展开详情。
+3. **生成器扩到更多"共享组件"**：`include` 不可用、`component` 只在本页有效，所以跨页复用的正解是
+   **生成器投影**（现有 `arcblog-console-nav.mjs` 就是这个模式）。可把 gate 卡片、页头、空状态纳入同一份单源。
+4. **开发环**：`arc blocklet run <path>`（"Serve a single blocklet on the daemon and print its access URLs"）
+   可能比我们现在的 build + instance deploy + restart 快，值得先验证再写进流程。
+
+### 27.4 教程里"不能照抄"的部分
+
+教程的 `stats`/`card`/`table from "/..."` 是**示意写法**（它自己也标注了）；真实可用原语以 §25 的实测清单为准。
+另外它没覆盖一个我们踩到的约束：**共享侧栏无法高亮当前项**——平台的 `active` 只认字面 `true`，
+所以"当前菜单项"这一件事仍然只能靠按页生成（ArcBlog 现在就是这么做的）。
