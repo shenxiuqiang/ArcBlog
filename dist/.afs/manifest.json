@@ -1270,15 +1270,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 24156,
+      "size": 24808,
       "contentType": "text/markdown",
-      "sha256": "f297635e62a0849dc1df505651361b5cefcaaae167ebd42c7c25271ce8c15360"
+      "sha256": "adfa86723d3b428c8c430a5193c0c520cdbafaa614152de28b883566eb551eae"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 103378,
+      "size": 103925,
       "contentType": "text/markdown",
-      "sha256": "0225c1654f70e380252a1b93949cd7ab578edad358d09c7f58911d6d6bdc0296"
+      "sha256": "08ce30ece4b236214ad0b75432472b1fecfb45f4ac70ff6e487361d6468dea95"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",

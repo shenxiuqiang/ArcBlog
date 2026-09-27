@@ -149,8 +149,18 @@ Lifecycle transitions: `draft → published → archived → published`, plus `d
 
 ## Agent skills (ArcBlock knowledge base)
 
-Project-level skills installed from `ArcBlock/agent-skills` live in
-`.agents/skills/` and are tracked by `skills-lock.json`:
+Project-level skills live in `.agents/skills/`:
+
+* **`aup-dsl`** — *first-party* (written here, so **not** in `skills-lock.json`;
+  `npx skills update -p` will not touch it). It is the condensed, measured
+  knowledge of this language: the verified primitive inventory (54 usable, 9 that
+  must never be written), renderer-read prop contracts, `component`/`use`/`for`
+  semantics versus the unusable `include`, id/i18n/interpolation rules, 23 runtime
+  gotchas and the verification recipes. **Read it before touching `.aup` files**
+  instead of re-deriving platform behaviour; when a new measurement contradicts
+  it, update the skill in the same change (see `references/verification.md` §6).
+
+Skills installed from `ArcBlock/agent-skills` are tracked by `skills-lock.json`:
 
 - `arcblock-context` — ArcBlock company knowledge base; topic payload in
   `products/`, `technical/`, `strategy/`, `docs/`.

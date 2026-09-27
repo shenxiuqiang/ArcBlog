@@ -1201,3 +1201,11 @@ view {
 | P4 | `entity-overview` / `afs-stat` / `afs-preview` | 节点档案、仪表盘 KPI | 平台级卡片与统计 | 中高（`afs-stat`/`afs-preview` 走的是 view 渲染器，props 契约未验） |
 
 **禁用清单**（bundle 里不存在，写了就是"发明 API"）：`blocklet-embed`、`camera-preview`、`connection-gate`、`explorer`、`globe`、`provider-card`、`rtc`、`skills`、`wm-surface`。
+
+### 25.6 沉淀为 skill
+
+以上 §25 的能力映射、片段语义、已采纳原语、`--fix` 陷阱与候选清单已固化为项目级 skill
+`.agents/skills/aup-dsl/`（`SKILL.md` + `references/{primitives,language,runtime-gotchas,verification}.md`），
+并已出现在运行时 skill 目录中（无需写 `skills-lock.json`：那是外部 skill 的锁）。
+**以后动 `.aup` 之前先读 skill，不要再重新调研平台行为**；若出现与 skill 矛盾的新实测，按
+`references/verification.md` §6 的顺序同步更新。
