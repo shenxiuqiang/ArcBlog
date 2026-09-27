@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 33546,
+      "size": 37469,
       "contentType": "application/json",
-      "sha256": "c61e1b828e48cb3d1478101acb2034aa6b75461c8511c22c887c79ab5b976af1"
+      "sha256": "736ae5cb491f1078ac0818e55fbcdbe6f07d043be6e83af8788e23a1cedf6ec6"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 32943,
+      "size": 36687,
       "contentType": "application/json",
-      "sha256": "2497142cbea38b85f2eea78463ba411d5e8567c6282df80795ce54b58667e2cf"
+      "sha256": "4b45d7dbe57b5a40c5a61ce351ac652b4c3369646bb0ba6039b1e1b5683e8c8e"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -226,15 +226,15 @@
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 17235,
+      "size": 18028,
       "contentType": "application/octet-stream",
-      "sha256": "c5bce9c31c75590058249ec6412ec4b955bfc7c7ba39fcd3afd496d1ea2e7d86"
+      "sha256": "31a4cb24b73c1629894edd78d4f910168bec41fbfe7606bbccd67f36c0a29176"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 24075,
+      "size": 25036,
       "contentType": "application/octet-stream",
-      "sha256": "7307dd1f7f20b8699595ce4afb31fecfdf6c463ad8a67a00b58744e3c6e2b5bd"
+      "sha256": "9d998038d24fdc1dafdcb7fe7ace00f20952a4e55a53ef9537476517060e12cd"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -286,15 +286,15 @@
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 18361,
+      "size": 16525,
       "contentType": "application/octet-stream",
-      "sha256": "0d8e9703814c388cef305d2db0b641524c94a8cf0d2cd60f9e821492c189621d"
+      "sha256": "b2db130fb77c8737c1f2e990517d7c00fb62f1130a5997b4266e7c63eca5e024"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 9676,
+      "size": 18419,
       "contentType": "application/octet-stream",
-      "sha256": "003e3b121dd71ea6ce3cdfbff234a684382ab53d5168902f34ae10c7d7b8089f"
+      "sha256": "4a1ddd2ab5d3839e87943671aa2f804cda18ed6c2fee2b92a4d33fd726c89ec9"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
@@ -1312,21 +1312,21 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 126384,
+      "size": 127471,
       "contentType": "text/markdown",
-      "sha256": "fb263a79703468bacfb3f6e8c8b488dc30abd7aed62014f0c8c326138840eeba"
+      "sha256": "6600e3d9f1a69747676ad55c9786ec76d917cf8b6d4e39902e1ca80638b83fb5"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 49350,
+      "size": 50398,
       "contentType": "text/markdown",
-      "sha256": "c364dad93b03f5fd43b93d698eb302f8cec47012230f3f4ade090d3232824709"
+      "sha256": "3c68e4ca4eb3f208164d7c1281f1547d47631e48746cac6e740b67ed728e2c4b"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 36323,
+      "size": 38239,
       "contentType": "text/markdown",
-      "sha256": "4c968e2a5d384dcad31c6ad93bc853635e3656dc11d485c72aaede2e6f063793"
+      "sha256": "553a72b88f9db79d4ebb687a0a4782ec866b9c9f893a33bf08a585de71167ea3"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1438,9 +1438,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 119613,
+      "size": 167092,
       "contentType": "text/markdown",
-      "sha256": "e4dee86b3ecd357b9e592d2c4c5868135caec705e017af97b39c400e63682093"
+      "sha256": "d556c9c490412019e1d6c5341b7218dbd71e823260b2a4d412c706d64cfc2e81"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1551,6 +1551,24 @@
       "sha256": "c31f11b50396067175d7424ee3939ec4b10cdcad6119fddc2b67ac920e8c916b"
     },
     {
+      "path": "docs/team/bugs/BUG-018-pages-bring-online-refusal-not-reproducible-contracts-29-2-stale.md",
+      "size": 5549,
+      "contentType": "text/markdown",
+      "sha256": "7a7f41f49aedd822eadbc5cada1235cf39e92ad00012409a7c342671b39813a5"
+    },
+    {
+      "path": "docs/team/bugs/BUG-019-req009-a2-time-selector-mismatch.md",
+      "size": 2597,
+      "contentType": "text/markdown",
+      "sha256": "39d3aa9909bb896c55d872a459a720aa68be60bc32001c02a5c64587b6afe47b"
+    },
+    {
+      "path": "docs/team/bugs/BUG-020-req009-a3-claimsperrowstatus-false-positive.md",
+      "size": 3601,
+      "contentType": "text/markdown",
+      "sha256": "15c1bfe835ba925253000d78e4e2467815752bbe530aec51861a8fb64dc842b3"
+    },
+    {
       "path": "docs/team/design/review-console.md",
       "size": 18928,
       "contentType": "text/markdown",
@@ -1611,10 +1629,22 @@
       "sha256": "361015760d609e682cc258a8bafe1349a114991928b49dd7357488533b317dd7"
     },
     {
-      "path": "docs/team/journal/README.md",
-      "size": 4568,
+      "path": "docs/team/design/UI-006-appendix-residuals.md",
+      "size": 26115,
       "contentType": "text/markdown",
-      "sha256": "60f5378734c4982c61112a0e884b065adbe4e40d62ad91b30765aa93a3b0fa63"
+      "sha256": "3455802e1d4c5bfe9f2f9687bd870f0d54da4d2a266345561bed2af687446599"
+    },
+    {
+      "path": "docs/team/journal/README.md",
+      "size": 7025,
+      "contentType": "text/markdown",
+      "sha256": "15345800f63f3fcd7801520bbf23c23de334bb45f379a38f4d24975d99e5aa62"
+    },
+    {
+      "path": "docs/team/journal/round-10.md",
+      "size": 28447,
+      "contentType": "text/markdown",
+      "sha256": "fbdc3db8bd73b840cbf21ea442561068c7af603f9fd64554ba4777a5efe42562"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -1695,6 +1725,24 @@
       "sha256": "3d50fe85c03c23ee667658315f5794a20928b08df14fe06e95e676e9d3e4a229"
     },
     {
+      "path": "docs/team/requirements/REQ-009-media-admin-and-p3-closure.md",
+      "size": 43849,
+      "contentType": "text/markdown",
+      "sha256": "00be0a6a1d309fbb92b303603585346de53893546f194f0b3fdd459ef5df101a"
+    },
+    {
+      "path": "docs/team/requirements/REQ-010-ui-standard-appendix-residuals.md",
+      "size": 25363,
+      "contentType": "text/markdown",
+      "sha256": "32efdc8d2018a1feb52fca2e6896111481fb7d769d7cce102382a573c0735f32"
+    },
+    {
+      "path": "docs/team/requirements/REQ-011-media-upload-observability-and-copy-hygiene.md",
+      "size": 13892,
+      "contentType": "text/markdown",
+      "sha256": "1d9d0ddddf3c23501418694c53247f6bf0e6ffe7b9368f4b06a965dd30ae0eb0"
+    },
+    {
       "path": "docs/team/roles/dev.md",
       "size": 10670,
       "contentType": "text/markdown",
@@ -1753,6 +1801,12 @@
       "size": 147517,
       "contentType": "image/png",
       "sha256": "f354730b399557d9d76e85f6de9ecbbb5eaa63026485068ed2c350e7a136d8e9"
+    },
+    {
+      "path": "docs/team/test-reports/round-10.md",
+      "size": 40490,
+      "contentType": "text/markdown",
+      "sha256": "d7f23f290e0a8e88749dcf037030631aa559612a18abe1d7f4dd2e54a6aa4bb1"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",

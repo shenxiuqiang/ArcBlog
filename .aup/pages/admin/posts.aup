@@ -15,8 +15,8 @@ page posts {
     admin-delete-msg { en "The record stays in drafts with status deleted and can be republished later." zh "记录会以 deleted 状态保留在 drafts 中，后续仍可重新发布。" }
     admin-delete-title { en "Soft-delete this record?" zh "软删除这条记录？" }
     admin-publish { en "Publish" zh "发布" }
-    admin-publish-msg { en "This publishes the current draft record. Deleted records can be republished." zh "这会发布当前草稿记录。deleted 状态记录也可以重新发布。" }
-    admin-publish-title { en "Publish this draft record?" zh "发布这条草稿记录？" }
+    admin-publish-msg { en "This copies the draft into the public posts/ directory — the source draft record stays in your draft list (this page never moves records). The CLI behaves differently: node scripts/arcblog-lifecycle.mjs publish writes the public copy and then deletes the source draft (move semantics). Deleted records can be republished." zh "这会把草稿复制到公开 posts/ 目录——源草稿记录仍保留在草稿列表中（本页从不移动记录）。CLI 的语义不同：node scripts/arcblog-lifecycle.mjs publish 会写公开副本并随后删除源草稿（移动语义）。deleted 状态记录也可以重新发布。" }
+    admin-publish-title { en "Publish a copy of this draft?" zh "发布这条草稿的副本？" }
     admin-unpublish { en "Remove from public" zh "从公开移除" }
     admin-unpublish-msg { en "Archive first keeps a copy in drafts. Removing from public deletes the original from public posts." zh "请先归档以在 drafts 保留副本。从公开移除会删除公开 posts 中的原记录。" }
     admin-unpublish-title { en "Remove this post from public?" zh "将这篇文章从公开移除？" }
@@ -25,6 +25,7 @@ page posts {
     content { en "Your content" zh "你的内容" }
     content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
     deleted-ok { en "Record soft-deleted." zh "记录已软删除。" }
+    drafts-note { en "Publish copies the draft into public posts/; the source draft record stays here. To move it instead, use the CLI — node scripts/arcblog-lifecycle.mjs publish deletes the source draft (move semantics)." zh "「发布」会把草稿复制到公开 posts/，源草稿记录仍保留在这里。若要移动，请改用 CLI——node scripts/arcblog-lifecycle.mjs publish 会删除源草稿（移动语义）。" }
     edit { en "Edit" zh "编辑" }
     gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
     gate-title { en "Studio" zh "创作者工作室" }
@@ -189,6 +190,7 @@ page posts {
                   }
                 }
                 h3 :group-drafts level=3 style={fontSize: "var(--type-body)"}
+                p :drafts-note scale=sm intent=muted
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty autoSelect=false clickMode=none style={flexShrink: 0} from "/instance/app/arcblog/drafts" {
                   row cross=start role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
                     view layout=inline href="/preview/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {

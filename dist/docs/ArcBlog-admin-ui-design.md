@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.4（Round 9 · 2026-09-28 落盘（授权书 2026-09-27）：**BUG-011**——§2.6 / §9 末条断言限定视口（admin 会话、1803×908）并补「只针对内容列、候选容器数 ≥1」的等价断言（期望值 `0` 不变）；**U1**——§2.5 / §3.3 的 `console-pane` / `console-shell` 按 §8 既有范式标注为本文档的**概念名**；**U2**——§7 交叉引用改指 §2.5；**U3**——§2.6 重复的 RSS / `llms.txt` 行去重。逐条 before/after 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)，上一轮见 [UI-003](team/design/UI-003-ui-standard-residuals.md)）
+**文档版本：** V1.5（Round 10 · 2026-09-28 落盘（授权书 2026-09-27，**L-R10-1 事实对齐**）：**残留收口**——(a) §9 第 2 条条目文字里的 `console-pane` 按 §2.5 / §8 既有范式标注为本文档的**概念名**（条目判据与 `^□` 十二条不变）；(b) 附录 A.1 的参考 CSS 类名与提示词模板里的 `console-pane` / `console-shell` 同范式标注（CSS 骨架与 `docs/reference/console-shell-layout.html` 引用未动）；(c) 附录三处 §2.3 交叉引用改准为「§2.3 结构 + §2.5 滚动」（双滚动条那处直指 §2.5）。三项**只做事实对齐**：期望值、§9 条目结构、两个等价断言块逐字节未动。逐条 before/after 见 [UI-006](team/design/UI-006-appendix-residuals.md)，上一轮见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -468,7 +468,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 
 ```text
 □ 骨架：侧边栏由 console-nav 生成，--check 通过
-□ 布局：宽高 100% 流式；页面固定无纵向滚动条，滚动只发生在 console-pane 内（无双滚动条）
+□ 布局：宽高 100% 流式；页面固定无纵向滚动条，滚动只发生在 console-pane（本文档的概念名，实现里没有这个选择器）内（无双滚动条）
 □ 页头：标题 + 一句话说明 + 至多一个主操作
 □ Token：无硬编码颜色 / 字号 / 间距 / 圆角
 □ 状态：空状态有引导和动作；加载有骨架；错误三要素齐全
@@ -529,7 +529,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 
 ## 附录 A：布局参考范本（给 AI 实现时的参照）
 
-§2.3 是标准，本附录是**喂给 AI 的原材料**。给 AI 的正确姿势是「一份骨架 + 一个真实案例 + 本页验收标准」，而不是一串仓库链接——给多了它会跨框架混搭。
+§2.3 结构 + §2.5 滚动是标准，本附录是**喂给 AI 的原材料**。给 AI 的正确姿势是「一份骨架 + 一个真实案例 + 本页验收标准」，而不是一串仓库链接——给多了它会跨框架混搭。
 
 ### A.1 与框架无关的 CSS 骨架（首选）
 
@@ -557,9 +557,11 @@ html, body { height: 100%; margin: 0; }
 
 AUP 落地时对应的是**结构而不是这段 CSS**：`row console-shell` ≈ `.app-shell`，`view console-nav` ≈ `.console-nav`，`view console-pane` ≈ `.console-pane`；高度与滚动通过 `size={height: "100%"}` 与 `style={overflowY: "auto"}` 表达（§8）。
 
+> 本节的参考 CSS 类名（`.app-shell` / `.console-nav` / `.console-pane` / `.page-head`）与上面这段的 `row console-shell` ≈ `.app-shell`、`view console-pane` ≈ `.console-pane` **都是本文档的概念名，不是仓库里的选择器**（`grep -rnE 'console-pane|console-shell' .aup/ scripts/` 命中 0）：`.app-shell` / `.console-pane` 是**与框架无关的 CSS 骨架**类名（本节是喂给 AI 的原材料，不描述本仓库实现），`row console-shell` / `view console-pane` 表达的是**结构类比、非仓库选择器**，AUP 落地对应的是结构而不是这段 CSS（§8）；A.3 自检条目里的 `console-pane` 同此口径。
+
 **AI 最常犯的三个错**（评审时优先查这三条）：
 
-1. **漏 `min-height: 0`**——grid/flex 子项默认 `min-height: auto`，会被内容撑高，于是「内容区滚不动，整页反而出现滚动条」，正好是 §2.3 禁止的双滚动条。
+1. **漏 `min-height: 0`**——grid/flex 子项默认 `min-height: auto`，会被内容撑高，于是「内容区滚不动，整页反而出现滚动条」，正好是 §2.5 禁止的双滚动条。
 2. **用 `100vh` 而不是 `100dvh`**——移动端地址栏收起/展开时高度跳变。
 3. **祖先容器给了固定高度或裁剪，却没给滚动容器留收缩余量**，内容被直接裁掉（表格最后一行点不到）。
 
@@ -578,8 +580,8 @@ AUP 落地时对应的是**结构而不是这段 CSS**：`row console-shell` ≈
 
 ```text
 目标：AUP DSL（row / view / size / style），不是 React，也不是原生 HTML/CSS。
-标准：docs/ArcBlog-admin-ui-design.md §2.3 + 附录 A.1。
+标准：docs/ArcBlog-admin-ui-design.md §2.3 结构 + §2.5 滚动 + 附录 A.1。
 参照：附录 A.1 的 CSS 骨架，加附录 A.2 中一个案例的 DOM 结构。
-交付后自检：① 页面无纵向滚动条 ② 无横向滚动 ③ 滚动只发生在 console-pane
+交付后自检：① 页面无纵向滚动条 ② 无横向滚动 ③ 滚动只发生在 console-pane（本文档的概念名，实现里没有这个选择器）
           ④ 滚动时页头与侧边栏静止 ⑤ 无固定像素页宽 ⑥ 宽高均 100% 流式。
 ```

@@ -17,6 +17,9 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
+> 🛑 **R11 起需人工恢复**：**Round 10 是本次长时目标（`create_goal` 自动续轮，`max_goal_rounds=3`）的最后一轮自动续轮**，自动续轮到此为止。**Round 10 结果 = 交付通过 + QA-005 放行（`VERDICT=pass, BLOCKING=0`）**：REQ-009 / REQ-010 均验收通过、BUG-016 修复闭环、BUG-017 与 D14 文案落地；新增 3 条 P3（BUG-018/019/020，全部文档/判据层、不阻断）。R11 **不会自动开始**——必须由人类在本会话说「**继续 / resume**」（Lead 执行 `update_goal action=resume`）或重新下达轮次目标。恢复后从「本轮：Round 10」小节的「下一步」、**「🎯 目标收尾」④ 批次表**与「排队（🟨）」区 #3 / #5–#11 / #16 取用候选。
+
+
 ---
 
 ## 本轮：Round 6
@@ -137,6 +140,173 @@
 **R9F 新增缺陷（均 P3、不阻断）**：**BUG-016** = `?page=hub` 行内重写把 `sync.lastVersion` 改型（探针 `null → ""`；追加探针数字 `7 → "7"`；真实 4 条记录 2 条 `null` / 2 条数字，两种形态都会被改型；本次 delete+write 重写引入）；**BUG-017** = 旧 CLI/root 授权的公开页面副本存在时，`?page=pages` 行内 Bring online 被平台**诚实拒绝**（toast `Forbidden … network write target exists without a recoverable authority sidecar`，AFS `updatedAt` 未变 = 无写；先点 Remove public copy 后重试即成功）→ 普适化需产品裁决（见下 D13）。
 
 > **Round 9 最终结论（PM，2026-09-27 复验后更新）**：**交付通过 + R9F 复验放行**（QA `VERDICT=pass, BLOCKING=0`）。初验的 `BLOCKING=1`（BUG-012 P1）已由 R9F 修复并经 QA 独立反向复验证伪原失败态；BUG-013 / BUG-014 一并闭环。**剩余为 2 条 P3（BUG-016/017）+ 4 条需裁决观察**（见下 🐞 区），**无未裁决 P0/P1**。清单状态列仍由 Lead 落笔（建议见「Round 9 checklist 建议」）。
+
+---
+
+## 本轮：Round 10 ｜ **长时目标的最后一轮自动续轮（R11 起需人工恢复）**
+
+> ⚠️ **本轮性质（用户 2026-09-27 裁定 ＋ Lead 记录）**：Round 10 是本次**长时目标（`create_goal` 自动续轮）的最后一轮自动续轮**。**R11 不会再自动开始**——必须由人类在本会话说「**继续 / resume**」（Lead 执行 `update_goal action=resume`）或重新下达轮次目标，PM 才会重排 backlog 并派活。本小节的「下轮候选」与排队区 #5–#15 供人工恢复时**直接取用**。**本轮为精简轮**：**不跑全量 `npm run test:live`**（~21 min 且写共享实例）。
+
+**目标**：① **收口 R9F 遗留的两条 P3**（BUG-016 hub `sync.lastVersion` 类型漂移 / BUG-017 旧 CLI·root 授权公开副本下 Bring online 被平台诚实拒绝）；② 完成清单第 **102** 行 **§15.4 媒体管理界面**（🟡 → **✅ 候选**）；③ **UI 标准附录事实对齐**（L-R10-1：§9 第 2 条条目文字 + 附录 A.1 概念名 + 附录三处 §2.3 交叉引用）。
+
+**入选理由**：BUG-016/017 是 R9F 之后仓库**仅有的两条缺陷**（均 P3、不阻断），且 Lead 已给出**先裁决再动手**的执行口径（D15 一次保型探针 / D13 选项 ①）；媒体管理界面是排队 **#3**「功能界面补全」的**第 1 项**，也是 D 组 6 项 🟡 里唯一「CLI 已完整、界面只读」的一项（清单第 102 行备注）；UI 标准残留是 R9 **唯一未收口项**（D12 留 R10 授权），纯文档债。三项**互不阻塞**：REQ-009（`.aup/**`）∥ REQ-010（`docs/ArcBlog-admin-ui-design.md`）→ QA-005 串行。
+
+**门规（延续用户 2026-09-27 精简轮裁定）**：门 = `arc dsl validate --json`（issues=[]）+ `npm test`（**28/28**）+ 改了 `.aup/**` 的 `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check`（17 页）+ `arc dsl generate --check`（无漂移）。只有触及 **CLI / AFS 记录 / 链适配器 / daemon 路由**时才**定向单跑**受影响的那一个测试文件（写实例前先在 `docs/team/.gate-lock` 写一行 owner+时间，跑完删除）。**只在验收标准确实要求 DOM 断言时启动浏览器**。
+
+| ID | 需求 | 规格 | 角色 | 状态 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| REQ-009 | 媒体管理页补全（索引字段 / 引用视图 / 孤儿清单与清理入口 / 上传入口，按平台能力**如实降级为 CLI 指引**）+ **BUG-017（D13 文案）** + **BUG-016（D15 一次保型探针）** + **D14 Publish 副本语义文案** | §15.4 / §15.1 / §70·§71；UI 标准 §4.3/§4.4/§9 | Dev | ✅ 完成 | REQ: [requirements/REQ-009-media-admin-and-p3-closure.md](requirements/REQ-009-media-admin-and-p3-closure.md)；任务 **`task-21`**；**写范围** `.aup/pages/ops/media.aup`、`.aup/pages/admin/{posts,pages}.aup`、`.aup/pages/ops/hub.aup`（**仅 D15 探针证明可保型时**）、`.aup/locales/**`（生成）、`dist/**`（build）；**不动 `scripts/**`**（判需改动 → 停手上报）；上传只用 `afs-dropzone`（仓库既有**无参**用法），**不臆造上传 API** ｜ **Round 10 结果（PM，2026-09-28）**：**交付通过 + QA-005 独立复验放行**（[round-10.md](test-reports/round-10.md) §9 `VERDICT=pass, BLOCKING=0`）。**A1/A2/A3/A6/A7/A8 通过**；**A5 期望 1/3/4 通过、期望 2（平台诚实拒绝）未复现** → BUG-018（判据已由 PM 在 **REQ-009 §3.1** 重述为「文案已备 + 平台行为不作断言」）；**A4 页面侧达标但上传行为受限未验证**（CDP 合成/可信拖拽均未触发 drop handler；D-1/D-2 分支无法判定）→ **不阻断**，交 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) 补可复现观测。**BUG-016 走「修」分支并经 QA 独立复验属实**（`tree-merge` 保型：`null` 仍 `null`、`7` 仍 number）；**BUG-017 文案（D13 选项①）已正确落地**、**D14 复制语义文案已落地**；**BUG-019/020（REQ 断言缺陷）由 PM 本轮内联修订**（REQ-009 §3.1）。**证据三类**：**浏览器实测** = A2/A3/A5/A6/A7 + N1–N3；**静态复核** = A1/A8 + 改动面归因（`.aup/pages/{ops/media,ops/hub,admin/posts,admin/pages}.aup` + 生成 locales + `dist/**`；`scripts/world/blocklet.yaml` 零改动）+ i18n 键集（en/zh 各 540）；**受限未验证** = A4 上传行为（工具限制）。实例零残留（§8）。
+| REQ-010 | UI 标准附录事实对齐（**L-R10-1 三项**）：§9 第 2 条条目文字 + 附录 A.1 概念名 + 附录三处 §2.3 交叉引用 | UI 标准 §9 / 附录 A.1 / A.3；D12 | UI | ✅ 完成 | REQ: [requirements/REQ-010-ui-standard-appendix-residuals.md](requirements/REQ-010-ui-standard-appendix-residuals.md)；任务 **`task-22`**；**写范围** `docs/ArcBlog-admin-ui-design.md`（**仅三项 + 版本行 V1.5**，超出即停手上报）+ `docs/team/design/**`（UI-006）；**只做事实对齐**：不改期望值、不改 §9 条目口径与结构、不动断言表达式（`eqBytes=846` 逐字节不变、`^□` 仍 12）；与 REQ-009 **不重叠 → 可并行** ｜ **Round 10 结果（PM，2026-09-28）**：**A1–A7 全部通过**，QA-005 独立复核判通过（[round-10.md](test-reports/round-10.md) §2 / §3-F）。**最重要的 A5 逐字节**：`marker_lines=[218,501]`、两块 `identical=True`、`full_bytes=857`、`full_sha256=8f7e535963101a8530ca1574dac056784406cfa891a41975f8f87cae7986e1bd` **与 PM 基线一致**、行口径 `eqBytes=846`、`^□`=**12**、断言 token `git diff` 命中 **0**；§2.3 正文与 `docs/reference/console-shell-layout.html`（7990 B）零改动；版本行 **V1.5**（只改第 5 行）。**唯一悬留 = V1.5 是否在 L-R10-1 授权内**（UI 已按 §1.2 上报）→ **待 Lead 一句话裁决**（PM 建议保留）。**证据三类**：**静态复核 + 逐字节比对**（主）；**无浏览器实测**（本项无 DOM 要求，未开浏览器/未加锁/未 build）；**受限未验证** = 无。另：QA 登记的两处**检查脚本缺陷**已由 PM 本轮内联修订（A3 的 `awk '/^# 附录 A/'` 恒不匹配 → 改 `/^## 附录 A/`；A5 的 `full[1:-1]` 字符切片 → 改行口径）｜
+| QA-005 | Round 10 验收：REQ-009 + REQ-010（独立重跑门 + 真实点击 + AFS 复核） | 两 REQ 的验收标准；UI 标准 §9 | QA | ✅ 完成（放行） | 任务 **`task-23`**，**`blocked_by task-21 + task-22`**（两者 complete 后才 ready）；**写范围** `docs/team/test-reports/**`、`docs/team/bugs/**`；自造 `qa-r10-*` 探针、自己点击、自己复核（**不采信自述**）；需 `.gate-lock` + admin 会话；**不跑全量 live**；报告落 `test-reports/round-10.md` ｜ **Round 10 结果（PM，2026-09-28）**：报告已完整落盘（573 行，末行机读结论 **`VERDICT=pass, BLOCKING=0`**）。**REQ-009**：A1/A2/A3/A6/A7/A8 通过；**A4 部分通过 + 上传行为受限未验证**（工具限制）；**A5 期望 2 未复现** → BUG-018。**REQ-010**：A1–A7 全通过。**新增 3 条 P3**：BUG-018（pages Bring online 拒绝不可复现 / `arc-contracts.md` §29.2 记载与实测不符）、BUG-019（REQ-009 A2 `hasTime` 选择器不符）、BUG-020（REQ-009 A3 `claimsPerRowStatus` 假阳性）→ **PM 裁决见下 🐞 区**（2 条本轮修·PM 内联 + 1 条拆分为 Dev 不修/Lead 文档更正）。**BUG-016 复验通过（走「修」分支）**；**BUG-017 文案收口通过、现象转 BUG-018**。**证据三类**：**浏览器实测** = A2/A3/A5/A6/A7 + N1–N3 + 34/34 等价断言回归（17 页 × 2 视口 `candidates=1,total=0`）；**静态复核** = 门 + `git diff --name-only -- scripts world blocklet.yaml` 空 + i18n 键集 + 逐字节比对；**受限未验证** = 上传行为（CDP 无法驱动）、Dev 自报的 `arcblog-network.test.mjs` 15/15 **未由 QA 采信为证据**（本轮未触及 CLI/记录形态/适配器/路由，按门规不单跑）。实例零残留（§8：10 条探针逐条清理、锁已删、baseline 复原、真实 4 条 hub 记录类型未变）｜
+
+> **PM 侧配套任务（同一轮，不在上表内）**：**`task-20`** = 本轮规划（本小节 + REQ-009 / REQ-010 新建 + `journal/round-10.md`）— **✅ 已完成**；**`task-24`** = 轮末裁决（QA 报告后逐条裁决新 BUG + 写 `journal/round-10.md` 结果节 + 更新本文件 + 判据内联修订 + 新建 REQ-011）— **✅ 已完成**（3 条 P3 全部裁决：2 条本轮修·PM 内联 + 1 条拆分；REQ-009/010 §3.1 与 REQ-011 落盘；「🎯 目标收尾」节已写）。**本轮「🟥 同时最多 2 项」已按写范围满足**：`task-21`（`.aup/**`）与 `task-22`（`docs/ArcBlog-admin-ui-design.md`）不重叠。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）。
+
+### 本轮裁定（Lead 2026-09-27，Round 10 生效）
+
+| # | 裁定 | 摘要 | 落点 |
+| - | ---- | ---- | ---- |
+| **D13** | **BUG-017 = 选项 ①** | `?page=pages` 的 **Bring online** 确认/提示文案写明：「旧 CLI/root 授权的**既有公开副本**需先 **Remove public copy**，否则平台会拒绝」；**保留平台的诚实拒绝**（`Forbidden … without a recoverable authority sidecar`，且**无写**）；**不做** page-owned overlay / worker（= 不改 AFS 记录形态、不改 CLI） | REQ-009 §2.1 ② / `task-21`；`.aup/pages/admin/pages.aup:10`（`act-publish-msg`），`exec` 形态 `:184` **保持** |
+| **D15** | **BUG-016 = 允许一次「保型写入」探针** | Dev 做**一次**保型探针（partial / merge / patch / 只写必要字段等）：**能保留 `sync.lastVersion` 原类型就修**（JSON `null` 仍 `null`、数字 `7` 仍 number）；**做不到就停下不改**，把探针原始证据（命令 + 输出 + 被拒形态）写进报告 → 后续裁决 = **「不修 + 留档」**（Lead 写 `docs/arc-contracts.md`）。**只有一次**；判需改 AFS 记录形态 / CLI → 停手上报 | REQ-009 §2.1 ③ / `task-21`；`.aup/pages/ops/hub.aup:147/148`，隐藏输入 `:157–161`（`eSyncLastVersion` 在 **159**） |
+| **D14** | **生命周期口径 = 页面「复制」＋ 页面文案写明** | 页面 Publish **保留**「复制到公开」语义（源 draft 保留 `status: draft`），但**必须在页面文案里写明这是复制而非移动**（**CLI `publish` 是移动语义**：`scripts/arcblog-lifecycle.mjs:470` 写 public 后删源 draft）；**差异留档、不改 CLI** | REQ-009 §2.1 ④ / `task-21`；`.aup/pages/admin/posts.aup:18`（`admin-publish-msg`） |
+| **L-R10-1** | **UI 授权（仅三项）** | 授权 UI 修订 `docs/ArcBlog-admin-ui-design.md` 的 L-R9-1 **授权外残留**：**(a)** §9 第 2 条（现 **471** 行）条目文字里的 `console-pane` 按 §2.5/§2.1 既有范式标注为**概念名**；**(b)** 附录 **A.1** 的 `console-pane` / `console-shell`（现 **554 / 558 / 583** 行）同范式标注；**(c)** 附录**三处** `§2.3` 交叉引用（现 **532 / 562 / 581** 行）改指 §2.5 或写明「§2.3 结构 + §2.5 滚动」。**只做事实对齐**：不改任何期望值、不改 §9 条目口径与结构、不动断言表达式（两断言块 `eqBytes=846` 逐字节不变、`^□` 仍 12）；**超出三项 = 停手上报**。版本行按 V1.3→V1.4 惯例升 **V1.5** 并写明三项（若 Lead 认为版本行不在授权内 → 停手上报） | REQ-010 §2 / `task-22` |
+
+**写范围冲突矩阵本轮映射**（矩阵本体见「排队（🟨）」区末的 A–D 批次表）：
+
+| 批次 | 成员 / 任务 | 本轮写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A** | Dev / `task-21`（REQ-009） | `.aup/pages/ops/media.aup`、`.aup/pages/admin/{posts,pages}.aup`、`.aup/pages/ops/hub.aup`、`.aup/locales/**`（生成）、`dist/**`（build） | 同一 owner 串行；**`scripts/**` 不在本轮范围**（判需改动 → 停手上报）；写实例（探针/点击/上传）必须先 `docs/team/.gate-lock` 并逐条清理 |
+| **B** | UI / `task-22`（REQ-010） | `docs/ArcBlog-admin-ui-design.md`（仅 L-R10-1 三项 + 版本行）、`docs/team/design/**` | 与 A **可并行**；**不动** §9 十二条与两个断言块；纯 docs，不加锁、不开浏览器 |
+| **C** | QA / `task-23`（QA-005） | `docs/team/test-reports/**`、`docs/team/bugs/**` | **`blocked_by` A + B 定稿**（验证对象不得在脚下移动）；需 `.gate-lock` + admin 会话；真实点击 + AFS/公开面复核；**不跑全量 live** |
+| **D** | PM / `task-20` + `task-24` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划（本轮）+ 轮末裁决；**不调用 `team_task_*`** |
+
+### Round 10 checklist 建议（**只建议**；checklist 由 Lead 落笔）
+
+- **第 102 行「媒体管理界面」（§15.4）**：**最终建议 = 🟡 → ✅（附不阻断缺口登记）**。**前置已满足**：QA-005 已放行 REQ-009（`VERDICT=pass, BLOCKING=0`），四项能力（索引字段 / 引用视图 / 孤儿清单与清理入口 / 上传入口）**按平台能力如实降级为 CLI 指引并写明**（与第 116 行 Agent 工具页同范式）；本 PM 规划时预设的「不落 ✅」触发条件（QA 判不放行，**或** A4 未给出 `list` 前后原始输出）**均未触发** —— QA 明确给出了上传前后两次 `list` 原始 JSON，并按门规把无法由 CDP 驱动 dropzone 的部分**如实登记为「受限未验证 + 原因」**（工具限制，非 ArcBlog 产物缺陷）。**论证**：页面在 **D-1（上传不索引）/ D-2（上传即索引）两分支下均无误导性断言**（页面只给 `add` CLI 指引、不声称「已索引」），故界面要求已达成；未验证的是**平台原语的运行期行为**。
+  - **不阻断缺口（必须写进备注，不得省略）**：**① 上传行为未实测**（CDP 合成 `DragEvent` 与 CDP 可信拖拽均未触发 drop handler；D-1/D-2 未判定、落点路径未取得）→ 降级路径 = **上传走 CLI `arcblog-media.mjs add` 登记**；**② 空态未复跑**（只测有记录态）；**③ `upload-note` 引用了一次不可复现的观测**（BUG-018 的同类问题，P3 文案债）。
+  - 备注建议文案：「AUP 界面：索引列表（`title`/`id`/`path`（可选文本+`title`）/`mimeType`/`size`/相对时间）+ 每行引用查询 CLI 指引（`arcblog-media.mjs refs --id <真实 id>`）+ 孤儿清单与清理 CLI 指引（`orphans` / `remove --id <id> [--force]`，写明「被引用即 CONFLICT 拒绝」「只删索引、不删二进制」「先 refs」）+ `afs-dropzone` 上传入口（无参，与 compose/compose-edit/heroes 同范式）；**降级路径 = 页面只读 + CLI 引导**（AUP 无跨集合 join / 无剪贴板原语 / `afs-list layout=grid` 列数不可控）；索引记录仍由 `arcblog-media.mjs` 维护；**上传行为本身受限未验证**（CDP 无法驱动 dropzone，见 [test-reports/round-10.md](test-reports/round-10.md) §7-1）→ 上传后请用 CLI `add` 登记；后续观测见 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md)」。
+  - **若 Lead 采严格口径**（坚持「上传入口必须有一次成功观测」才落 ✅）→ 则**暂留 🟡**，条件 = [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) A3 给出 D-1/D-2 判定或如实限制登记；**PM 不推荐**（会把一个工具限制当作实现缺口）。
+- **计数（QA-005 已回填）**：第 102 行落 ✅ → **✅ 79→80 ｜ 🟡 10→9 ｜ ⬜ 9 ｜ ⚪ 2**；D 组 **18→19 ✅ / 6→5 🟡**。（BUG-016/017/018/019/020 与 D14、REQ-010、REQ-011 **均不新增清单行**——前四者为既有行的质量/文档/判据缺口，REQ-010 为文档债，REQ-011 为同一行的可观测性收尾。**checklist 现网计数实测 = `✅ 79 ｜ 🟡 10 ｜ ⬜ 9 ｜ ⚪ 2`**，见该文件「总览」表。）
+- **`## 维护记录` 追加一行（轮末由 Lead 写）**：`2026-09 | 收口轮次 10（精简轮；**长时目标最后一轮自动续轮**）：REQ-009（§15.4 媒体管理界面补全 + BUG-017 D13 两步走文案 + BUG-016 D15 一次保型探针【**tree-merge 保型成功**】+ D14 Publish 复制语义文案）与 REQ-010（UI 标准附录事实对齐，V1.5）交付通过；QA-005 独立复验 **VERDICT=pass / BLOCKING=0**：A4 上传行为受限未验证（CDP 无法驱动 dropzone）、A5 期望 2（平台拒绝）不可复现；新增 BUG-018（§29.2 记载与实测不符，Lead 文档更正）/ BUG-019、BUG-020（REQ 断言缺陷，PM 本轮内联修订 REQ-009 §3.1）；BUG-016 修复闭环、BUG-017 文案收口；→ 若第 102 行落笔则 D 组 §15.4 媒体管理界面 🟡→✅：**✅ 80 / 🟡 9 / ⬜ 9 / ⚪ 2**；R11 起需人工恢复`
+- **第 101 行「页面管理」（BUG-017）备注（最终建议）**：在 R9 建议之上补：「**R10／D13 已落地文案**：Bring online 的确认框与离线区常驻说明（en/zh）写明——若公开副本已存在（旧 CLI / root 授权写入），平台会拒绝写入（`without a recoverable authority sidecar`），**请先点 Remove public copy 再 Bring online**；页面**未**新增 overlay / worker（`exec` 形态未动）。**注（BUG-018）**：该「必然拒绝」在当前 daemon 下**不可复现**（属环境相关历史观察），文案保留为**条件式提示**」。**状态列不变（✅）**。
+- **第 110 行「Hub 管理」（BUG-016）备注（最终建议，走 D15 的① 探针成功分支）**：追加「**Round 10／D15 保型探针成功**：Approve/Terminate 由 delete+write 全量重写改为**单次 `/.actions/write` + `mode: tree-merge`**，只写 `{relation, removedAt, updatedAt}`（删除 10 个 hidden input），QA 独立复验 `sync.lastVersion` **原类型保留**（`null` 仍 `null`、`7` 仍 number）→ **类型漂移缺陷已修复、不需留档**；[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) A6」。**状态列不变（✅）**。
+
+**下一步（R11 起需人工恢复）**：首选顺序 = 排队 **#3 第 2 项**（设置-通用 §15.9）→ **#16**（REQ-011 媒体上传可观测性 + 文案去不可复现引用）→ **#5/#6/#7**（像素级走查 / BUG-015 等价断言回归 / `${args.*}` 形态实测）→ **#8–#11**（工程沉淀：Agent 目录核对门、标签规范化、状态呈现范式留档、一键复制）。恢复方式：人类说「**继续 / resume**」——详见下节「🎯 目标收尾」。
+
+---
+
+### 🎯 目标收尾（Round 10 轮末，PM 2026-09-28）— **长时目标最后一轮自动续轮**
+
+> **一句话**：本轮 5 项目标**全部收口**（2 项交付通过 + QA 放行；BUG-016 修复、BUG-017/D14 文案落地、REQ-010 事实对齐），仓库进入**可封板状态**（快层门全绿、无未裁决 P0/P1）；**自动续轮到此停止，R11 需人工恢复**。
+
+#### ① 目标达成情况（Round 10 五项目标逐项）
+
+| 目标 | 结果 | 证据 |
+| ---- | ---- | ---- |
+| §15.4 媒体管理界面（🟡 → ✅ 候选） | **达成**：索引字段 / 引用视图 / 孤儿清理 / 上传入口全部落地，做不到的**如实降级为 CLI 指引** | [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) A1/A2/A3/A6/A7/A8 通过；[round-10.md](test-reports/round-10.md) §3-B |
+| BUG-017（D13 选项①：文案 + 保留诚实拒绝） | **达成（文案口径）**：en/zh modal + 离线区常驻说明写明「先 Remove public copy 再 Bring online」；两步走闭环；未做 overlay/worker | round-10.md §3-C；`git diff --name-only -- scripts world blocklet.yaml` 空 |
+| BUG-016（D15 一次保型探针） | **达成（走「修」分支）**：`tree-merge` 只写必要字段即保型（`null` 仍 `null`、`7` 仍 number） | round-10.md §3-D；REQ-009 A6 |
+| D14（Publish = 复制 + 文案写明） | **达成**：modal + `drafts-note` 写明「复制到公开 / 源草稿保留 / CLI 是移动语义」；CLI 未改 | round-10.md §3-E |
+| REQ-010（UI 标准附录事实对齐） | **达成**：A1–A7 全通过（断言块 `eqBytes=846`、`full_sha256` 与基线一致、`^□`=12）；版本行 V1.5 待 Lead 一句话 | round-10.md §3-F |
+| **Round 10 整体** | **放行**：`VERDICT=pass, BLOCKING=0`；新增 3 条 P3（全部文档/判据层，不阻断） | round-10.md §9 |
+
+#### ② 仓库终态（PM 只读复核，2026-09-28；命令 + 真实输出）
+
+```text
+$ arc dsl validate --json      → "issues": []                                   [exit=0]
+$ npm test                     → tests 28 / pass 28 / fail 0                     [exit=0]（fast tier passed — this is the gate）
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":17} [exit=0]
+$ arc dsl generate --check     → Would generate 0 file(s) … nothing to change    [exit=0]
+$ git status --short           → 见下方归因清单（`.aup/**`+`dist/**`=Dev；`docs/ArcBlog-admin-ui-design.md`=UI；
+                                 `docs/team/**`=PM/QA/UI；`docs/team/backlog.md`=PM）
+```
+
+**净交付（文件级归因，PM 清点 `git status --short`）**
+- **Dev（`task-21`）**：`M .aup/pages/{admin/pages,admin/posts,ops/hub,ops/media}.aup`、`M .aup/locales/{en,zh}.json`（生成）+ `M dist/{.afs/manifest.json,.aup/**}`（build）。
+- **UI（`task-22`）**：`M docs/ArcBlog-admin-ui-design.md`（`8/6`）+ `?? docs/team/design/UI-006-appendix-residuals.md`。
+- **QA（`task-23`）**：`?? docs/team/test-reports/round-10.md` + `?? docs/team/bugs/BUG-018/019/020-*.md`。
+- **PM（`task-20`/`task-24`）**：`M docs/team/backlog.md`、`?? docs/team/journal/round-10.md`、`?? docs/team/requirements/REQ-009/010/011-*.md`、`M docs/team/journal/README.md`。
+- **⚠️ 非本轮产物（不得 `git add -A` 卷入）**：`?? docs/dsh-workflow-and-ralph.md` 与 `?? dist/docs/dsh-workflow-and-ralph.md`（dsh 部署级说明，非 ArcBlog 产品文档）。
+- **`dist/docs/**` 是 build 镜像**：本轮 PM/QA/UI 最后写盘晚于 Dev 的 build → **Lead 轮末必须再 `arc blocklet build` 一次**（必须晚于所有人写盘），并注意 `dist/docs/team/.gate-lock` 这类 build 期残留。
+
+#### ③ 未收口事项（如实列出，不粉饰）
+
+1. **BUG-018（P3）**：`docs/arc-contracts.md` §29.2 的「既有记录写入被拒」记载与 R10 实测不符 → **只能由 Lead 更正/限定**（PM 无权）；本轮已由 PM 在 [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §3.1 重述判据。
+2. **REQ-010 版本行 V1.5**：REQ-010 §1.2 要求「若 Lead 认为版本行不在 L-R10-1 授权内 → 停手上报」；UI 已上报，QA 判非缺陷 → **待 Lead 一句话**（PM 建议保留；回退方式见 UI-006 §5/§9-1）。
+3. **REQ-009 A4 上传行为**：**受限未验证**（工具限制）→ 交 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md)（排队 #16）。
+4. **media 页空态未复跑**、**像素级视觉走查未做**、**`${args.*}` 登记组未实测**、**`posts.aup:169` Detail / `hub.aup:149` Purge 未单击**（如实登记，均不阻断）。
+5. **hub 4 条真实记录 `relation` 全为 `removed`**：既有状态、非本轮引入；是否恢复属**运营动作**。
+6. **全量 `npm run test:live` 未跑**（用户 2026-09-27 裁定）；本轮未触及 CLI/AFS 记录形态/适配器/路由，故亦未定向单跑 live（Dev 自报的 `arcblog-network.test.mjs` 15/15 未被 QA 采信为证据）。
+
+#### ④ 剩余可交付项（人工恢复后可直接取用；按批次分列，含依赖与写范围冲突）
+
+| 批 | 项 | 规格 / 来源 | 角色 · 写范围 | 依赖 / 写范围冲突 |
+| - | -- | ----------- | ------------- | ----------------- |
+| **A（Dev `.aup/pages/**` + `scripts/**`，每轮 1–2 项，串行）** | ① **设置-通用**（站点名称/语言/时区、功能总开关） | 清单 **119** 🟡 / §15.9 | Dev | 与 A 批其它项**同写范围 → 串行**；外观设置已 ✅ |
+| | ② **设置-角色与能力**（Factory 卡片、购买/质押引导） | 清单 **120** 🟡 / §15.9、§8.2–8.5 | Dev | **链上动作保持 operator-declared，不接链 SDK**；购买/质押引导的完整度依赖 ⑤ 决策表的 **D-链**（真实链环境） |
+| | ③ **Hub 注册界面**（申请流 / 被收录列表） | 清单 **109** 🟡 / §15.6、§70.1–70.2 | Dev | CLI 已完整（`register`=申请 / `approve` / `reject` / `add` / `remove`）；纯界面 |
+| | ④ **§8.1 Factory 元数据读取与展示** | 清单 64 备注 / §8.1 | Dev | mock 可做；`--adapter ocap` 真链演练需外部环境 |
+| | ⑤ **§126 SEO/OG**（站点级默认 + 文章继承） | 清单 **91** 🟡 / §126 | Dev | `docs/share-cards.md` 已有基础 |
+| | ⑥ **Agent 工具目录漂移门 + 逐工具说明** | 排队 **#8** / §15.8、§130 | Dev | 新测试文件**默认算 live**，须评估是否进 `FAST_TESTS`（不写实例）；与 A 批串行 |
+| | ⑦ **标签规范化口径统一**（console 保 `_` vs lifecycle 剥 `_`） | 排队 **#9** / §15.4 | Dev（**先出评估结论**） | 改任一侧都会改变既有标签落库形式 → 未评估前不动手 |
+| | ⑧ **[REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) 媒体上传可观测性 + 文案去不可复现引用** | 排队 **#16** / QA round-10 §7-1/§7-3/§7-5 | Dev + QA | 与 A 批同写范围（`.aup/pages/ops/media.aup`）→ **串行**；写实例需 `.gate-lock` |
+| **B（UI，串行）** | ⑨ **像素级视觉走查**（间距/字号/色值） | 排队 **#5** / UI 标准 §9 | UI（**需授权**，D8/L-R9-4 延续） | 与 `docs/team/design/**` 同范围；截图落 `test-reports/assets/**` 需 QA 同意 |
+| **C（QA）** | ⑩ **BUG-015 等价断言复跑**（R9F 已 34/34，属回归确认） | 排队 **#6** / REQ-006 §3.1 | QA | 可与 A 批复验**同一次 admin 会话并轨** |
+| | ⑪ **`?page=compose` `Publish now` / `${args.*}` 形态实测** | 排队 **#7** / REQ-002 A17 续 | QA（探针）→ 若坏则 Dev 另立 REQ | **不得**据 BUG-012 推断同坏；需填表 + 完整提交流程 |
+| **D（Lead，非 teammate 写范围）** | ⑫ **`arc-contracts.md` §29.2 更正/限定**（BUG-018） | 本文件 🐞 区 | Lead | 含 BUG-016 结论（**无需留档**，因为走「修」分支） |
+| | ⑬ **状态/枚举呈现范式沉淀**（路径 B：本地化中性标签 + 原始值可见 + 常驻 dim） | 排队 **#10** | Lead（`arc-contracts.md` / `.agents/skills/aup-dsl`） | §28.8 已有路径 B 原文，待 skill 同步 |
+| | ⑭ **checklist 落笔**（第 102 行 ✅ + 维护记录 + 第 101/110 行备注）+ `journal/README.md` 索引行 + 轮末 `arc blocklet build` + 分拣提交 | 本文件「Round 10 checklist 建议」 | Lead | **必须晚于 PM/QA/UI 最后写盘** |
+| **E（候选，未评估）** | ⑮ **控制台「一键复制」**（DID / 哈希 / 地址） | 排队 **#11** / §15 / UI 标准 §5.1 | 候选：`.web/components/copy-field/` + `frame` | 需先实测 `frame` 在控制台页的尺寸/性能代价（`arc-contracts.md` §14） |
+| | ⑯ 内容对象目录化（§19）、Hub Topics（§52/§73）、内容缓存（§77）、Hub AI（§64/§131） | 候选区 | 待评估 | V2 形态 / 需先定迁移方案 |
+
+#### ⑤ 需要用户或 Lead 决策的事项（人工恢复时先拍这些）
+
+| # | 议题 | 决策点 | 影响 |
+| - | ---- | ------ | ---- |
+| **D2（待用户）** | spec §15.1/§15.2 仍描述 **hash 版控制台**（`§15.2` 菜单树把「分类与标签」放内容组、无 `factory`），与现状（一事一页 `?page=`）不一致 | spec 是唯一权威且**只有人类可改** → 改 spec 还是继续标「待用户裁定」 | 决定后续是否还要继续「文档对齐实现」类轮次 |
+| **D14 续（待用户/Lead）** | 本轮已落「页面 Publish = 复制 + 文案写明」（Lead D14）；**是否要把统一口径改为「移动语义」**（页面也删源草稿）尚未评估 | 统一为移动（改 `.aup` 写入形态）还是维持「复制 + 文案」双语义并存 | 影响 `?page=posts` 生命周期与运营直觉；改则需另立 REQ + 定向单跑 |
+| **D-链（待用户）** | **真实链 `--adapter ocap` 端到端演练**（§8.1）与 **Payment Adapter 真实支付通道**（§44） | 需要**有 ARC 依赖 + 资金钱包的环境**；何时/在哪做 | 阻断清单 64「真实链验证」与 120「购买/质押引导」的完成度 |
+| **D-可见性（待用户）** | **内容可见性五档 unlisted / members**（§21） | feed 基于**目录边界**无法诚实过滤 → **改存储模型**还是**记为平台限制并降级** | 决定 §21 是 ⬜ 还是 ⛔ |
+| **D-编辑面（待用户/Lead）** | 控制台**管理员编辑面**（auto-surface）的自动化验证 | guest 测试身份无法验证 → 接受**人工验证**还是换测试身份方案 | 影响 §15.5 外观页的验收口径 |
+| **D16（Lead，本轮新增）** | **BUG-018**：`arc-contracts.md` §29.2 如何更正 | 限定适用条件（「R9F 由重启前 daemon 观测到」）还是整条标记为历史观察 | 团队文档可信度；不阻断功能 |
+| **D17（Lead，本轮新增）** | **REQ-010 版本行 V1.5** 是否保留 | 保留（PM 建议，符合 V1.3→V1.4 惯例）还是回退 | 纯文档；回退方式 UI-006 §5/§9-1 已附 |
+| **D18（Lead，本轮新增）** | **checklist 第 102 行**是否落 ✅ | PM 最终建议 **落 ✅（附缺口登记）**；严格口径则暂留 🟡 待 REQ-011 | 清单计数 ✅79→80 / 🟡10→9 |
+| **D19（运营/用户）** | `?page=hub` **4 条真实记录的 `relation` 全为 `removed`** | 是否恢复收录关系（运营动作） | 只影响 dev 实例展示，非代码缺陷 |
+
+#### ⑥ 自动续轮停止声明
+
+**确认：Round 10 是本长时目标（`max_goal_rounds=3`）的最后一轮自动续轮，本轮结束后不会再自动开始 R11。** 继续工作必须由人类在本会话说「**继续 / resume**」（Lead 执行 `update_goal action=resume`）或重新下达轮次目标；恢复后 PM 从 ④ 的批次表与排队区 #3/#5–#11/#16 取用候选，重排「本轮：Round 11」。**R10 交付物已通过 QA 独立验收并放行，仓库处于可封板状态 —— 封板动作（build → 分拣 add → commit → checklist 落笔）由 Lead 执行。**
+
+---
+
+
+## 缺陷（🐞）— Round 10 QA 新增，PM 已逐条裁决（2026-09-28）
+
+> **裁决结果：3 条全部 P3、无 P0/P1（P0 规则不触发），无「不修」** —— **2 条「本轮修」（判据文案，PM 内联执行于 REQ-009/REQ-010）** + **1 条拆分为「Dev 不修（无缺陷）/ 文档交 Lead 更正（下一轮/Lead 写范围）/ 判据由 PM 本轮重述」**。
+> **大前提**：QA-005 **放行**（[round-10.md](test-reports/round-10.md) §9 `VERDICT=pass, BLOCKING=0`）；3 条新增缺陷**均不阻断**，且**都是文档/断言层面**（无实现缺陷、无数据损坏、无公开面污染）。本轮为**长时目标最后一轮自动续轮**，故**不再开修复窗口**：能在 PM 写范围内内联修掉的当轮修掉，需要 Lead/Dev 动文件的一律**登记为下一轮候选**。
+> 依据：[round-10.md](test-reports/round-10.md) §2（逐条验收）/ §3（原始命令与输出）/ §4（负面用例 N1–N7）/ §6（新增 BUG 表）/ §7（受限项与观察）/ §8（实例清理自证）/ §9（放行结论）+ 三个 BUG 文件的复现命令与原始输出。裁决办法见 [`roles/pm.md`](roles/pm.md) §6.2。
+
+| BUG | 级别 | 标题 | 裁决 | 理由 + spec / 标准章节 | 落点 / 依赖 |
+| --- | ---- | ---- | ---- | --- | --- |
+| **BUG-018** | **P3** | `?page=pages` Bring online 的「诚实拒绝」在 R10 环境**不可复现**（写入成功、`updatedAt` 被改写）；`arc-contracts.md` §29.2 的记载与实测不符 | **拆分：① Dev/页面 = 不修（无缺陷）；② `arc-contracts.md` §29.2 = 下一轮修（Lead 写范围，本轮 PM 无权）；③ A5 期望 2 判据 = 本轮修（PM 内联，已执行）** | **不是实现缺陷**：D13 要求的「文案写明两步走 + 保留平台诚实拒绝 + 不做 overlay/worker」在代码层**已正确落地**（QA §3-C/§3-A：仅 2 行 i18n、`exec` 形态未动、`scripts/world/blocklet.yaml` 零改动），页面行为**符合当前平台事实**（既有副本可重写，两步走亦闭环）。**风险在团队文档可信度**：R9F 的拒绝观测（17:36Z）由**重启前**的 daemon 服务，R10（18:14Z 起）同实例/同 admin 会话/同类 seed 复现为**成功**（BUG-018 时间线证据）→ 该节应**限定适用条件**而非当作普适规则；据 spec §150「不臆造 / 不谎报已验证」的同精神与 `roles/pm.md` §6.1（文档事实待更正项升级 Lead） | ① 无需动作（回归基线）；② **Lead**：`docs/arc-contracts.md` §29.2（现 1479–1487 行）更正/限定；③ 已执行：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) **§3 A5 期望 2 修订说明 + §3.1 判据重述**（原文不改写）；**BUG-017 的状态同步降级为「文案口径已收口 + 现象=历史观察」** |
+| **BUG-019** | **P3** | REQ-009 **A2** 的 `hasTime: !!document.querySelector('time')` 与平台渲染不符（实现为 `div.aup-time.aup-time-display`，无 `<time>`）→ 任何逐字复跑必得 `hasTime:false` 误判「相对时间缺失」 | **本轮修（判据文案，PM 内联执行，已完成）** | **验收判据措辞缺陷，不是实现缺陷**（相对时间已正确渲染：`div.aup-time.aup-time-display`、文本 `1 minute ago`、非零几何，QA §3-B1）。断言文件属 **PM 写范围**；与 BUG-015/014（同类「判据可满足性」教训）同批口径 | **已执行**：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §3 A2 断言处加 **R10 修订说明**，§3.1 给出修订口径（`.aup-time.aup-time-display` 非空文本 **或** 文本含 `/ago|前/`）；**原行不改写、实现不动** |
+| **BUG-020** | **P3** | REQ-009 **A3** 的 `claimsPerRowStatus` 用 `document.body.innerText` → 被常驻卡片的 CLI 指引文案（`Unreferenced media & cleanup` / `no references`）命中，对被引用的 `qa-r10-ref` 也返回 `true`（假阳性），N1 失去鉴别力 | **本轮修（判据文案，PM 内联执行，已完成）** | **验收脚本缺陷，不是实现缺陷**：页面**逐行无状态声称**（`hasOrphanWord:[false]`，只有 CLI 指引），符合 REQ-009 §2.1 ①B/C 的「如实降级、不得凭空断言」口径（QA §3-B2 + §4-N1）。断言文件属 **PM 写范围** | **已执行**：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §3 A3 断言处加 **R10 修订说明**、N1 加修订指向，§3.1 给出修订口径（只看 `div.aup-view[data-layout="row"]` 的**行文本**，必须 `false`） |
+
+**BUG-016 / BUG-017 终态（Round 10 收口，PM 2026-09-28）**
+
+| BUG | 级别 | Round 10 终态 | 依据 | 落点 / 残留 |
+| --- | ---- | ------------- | ---- | ----------- |
+| **BUG-016** | P3 | **✅ 已修复 · 独立复验通过（D15 走「修」分支）** | QA-005 §3-D：`tree-merge` 只写 `{relation, removedAt, updatedAt}` → null 探针 `lastVersion` 仍 `null`（`typeof object`）、数字探针仍 `7`（`typeof number`）、`removedAt` 落库；真实 4 条记录类型前后均 `null/null/7/1` | 已从排队 **#13** 结清（见下方「✅ 已结清」）；[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1③ / A6 / `task-21`；**无需 Lead 留档**（D15 的「做不到才留档」未触发） |
+| **BUG-017** | P3 | **✅ 文案部分已收口（D13 选项①）**；其「平台必然拒绝」现象 = **历史观察（降级）** | QA-005 §3-C：en/zh modal + `offline-hint` 均写明「先 Remove public copy 再 Bring online」、两步走闭环成功且 `createdAt` 保留；**但首次 Bring online 未被拒绝**（无写判据不成立） | 已从排队 **#14** 结清（文案口径）；**现象前提的新承接 = BUG-018**（文档更正交 Lead）；`:184` `exec` 形态未动 |
+
+**QA round-10 §7 的 4 条需裁决观察 + §7-2 检查脚本缺陷 —— PM 一并裁决（不允许挂着）**
+
+| # | 观察 / 缺陷 | 裁决 | 说明 / 落点 |
+| - | ----------- | ---- | ----------- |
+| 7-1 | BUG-017 的前提是否需要重写（§29.2 若不再成立，REQ-009 A5 期望 2 的验收标准本身要重述） | **本轮修（PM 内联，已执行）+ 文档更正交 Lead** | [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) **§3.1** 已把 A5 期望 2 重述为「**文案已备 + 平台行为不作断言**」；`arc-contracts.md` §29.2 的更正 = BUG-018 的 Lead 落点 |
+| 7-2 | **REQ-010 的检查脚本本身有两处缺陷**：(i) A3 的 `awk '/^# 附录 A/'` 匹配不到真实标题 `## 附录 A`（子检查恒空通过）；(ii) A5 的 `full[1:-1]` 是**字符**切片（855），与基线 `846`（**行**口径）不可比 | **本轮修（PM 内联执行，已完成）** | [REQ-010](requirements/REQ-010-ui-standard-appendix-residuals.md) §3 A3 起始模式改 `/^## 附录 A/`；A5 改行口径 `''.join(full.splitlines(keepends=True)[1:-1]).rstrip('\n')` → 复算 `eqBytes=846`；结论未受影响（QA 已用修正口径重跑） |
+| 7-3 | `.aup/pages/ops/media.aup:28` 的 `upload-note` 引用了**不可复现**的实测（`Measured 2026-09-27 … Upload failed: targetDir must be a non-empty string`）；QA 既未复现失败也未复现成功 → 建议改为「既有范式 + CLI 登记」措辞或补可复现步骤 | **下一轮修（R11，新立项）** | **不在本轮改动**（避免在 QA 放行后再次移动本轮交付物；P3 文案）。**已立 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md)**（排队 **#16**）：去不可复现引用 + 补一条可复现人工拖拽观测 + 空态/有记录态双态验收 |
+| 7-4 | `?page=hub` 真实 4 条记录的 `relation` 全为 `removed`（页面实测）；QA 未点击任何真实记录 | **不修（运营动作 / 既有状态）** | **非本轮引入**（QA 只点了两条 `qa-r10-hubprobe-*` 探针；4 条真实记录 `updatedAt` 在本轮开工前已改写，类型前后一致）；如需恢复收录关系属**运营动作**，不在任何 REQ 范围。登记备查即可 |
+| 7-5 | 未做项：`?page=media` **空态**未再开一次无记录页面断言；像素级视觉走查；`${args.*}` 登记组实测 | **不修（本轮）/ 并入已有排队项** | 空态 → **并入 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) A4**（双态验收）；像素走查 = 排队 **#5**（本轮未获授权，D8/L-R9-4 延续）；`${args.*}` = 排队 **#7** |
 
 ---
 
@@ -316,7 +486,7 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | - | --- | --- | --- | --- | --- |
 | ~~1~~ | ~~**BUG-012（P1）行内 Publish / Delete 不落库 + 同类写法普查**~~ → **✅ 已结清（R9F，2026-09-27）** | spec §15.4 / §15.1；`CLAUDE.md`（`args` 模板） | round-9.md §3-H / §6 / §8；R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §3-B/§3-C/§3-F；[BUG-012](bugs/BUG-012-posts-inline-row-actions-write-literal-entry-template.md) | **Dev**（`task-16`）：`.aup/pages/admin/{posts,pages}.aup` + `ops/hub.aup` + 生成 locales + `dist/**` | **已修复并复验通过**（[REQ-008](requirements/REQ-008-console-inline-write-evaluation.md) A2/A3）；遗留受限项（`posts:169` Detail / `hub:149` Purge 未单击）转 R10 观察，不阻断 |
 | ~~2~~ | ~~**BUG-013（P2）`?page=agents` closed 状态词 i18n**~~ → **✅ 已结清（R9F，2026-09-27）** | UI 标准 §9；REQ-006 §2.1 | round-9.md §3-G / §6；R9F：§3-D；[BUG-013](bugs/BUG-013-agents-closed-status-not-localized.md) | **Dev**（`task-16`）：`.aup/pages/ops/agents.aup` + 生成的 `.aup/locales/**` | **已修复并复验通过**（zh 6 行 `关闭 · agent.economy/admin`，与 CLI `closed(6)` 同序）；**checklist 第 116 行 ✅ 的前置已解除**（D11 → 建议 Lead 落笔） |
-| 3 | **功能界面补全（清单 🟡，按序推进，每轮 1–2 项）**：媒体管理（§15.4）→ 设置-通用（§15.9）→ 设置-角色与能力（§15.9 / §8.2–8.5）→ Hub 注册（§15.6）→ Factory 元数据（§8.1）→ SEO/OG（§126） | §15.4 / §15.6 / §15.9 / §8.1 / §126 | 清单第 102 / 109 / 119 / 120 / 91 行 🟡 | **Dev**：`.aup/pages/**`、`scripts/**` | 与已结清的 #1/#2 **同写范围**（`.aup/pages/**`）→ **R9F 已定稿，R10 起可开工**；**R10 首选**；若与 #13/#14 同轮则同一 Dev 批次串行；链上动作保持 operator-declared，**不接链 SDK**；每轮 1–2 项 |
+| 3 | **功能界面补全（清单 🟡，按序推进，每轮 1–2 项）**：媒体管理（§15.4）→ 设置-通用（§15.9）→ 设置-角色与能力（§15.9 / §8.2–8.5）→ Hub 注册（§15.6）→ Factory 元数据（§8.1）→ SEO/OG（§126） | §15.4 / §15.6 / §15.9 / §8.1 / §126 | 清单第 102 / 109 / 119 / 120 / 91 行 🟡 | **Dev**：`.aup/pages/**`、`scripts/**` | 与已结清的 #1/#2 **同写范围**（`.aup/pages/**`）→ **R9F 已定稿，R10 起可开工**；**R10 已开工第 1 项「媒体管理（§15.4）」**：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) / `task-21`（**其余 4 项留后续轮次**，每次 1–2 项）；链上动作保持 operator-declared，**不接链 SDK** |
 | ~~4~~ | ~~**BUG-014（P3）UI 标准 §2.6 / §9 旧测量描述更正**（「去掉过滤后 compose = 2」→ BUG-010 后实测 `0`）~~ → **✅ 已结清（R9F / Lead D10 一行授权，2026-09-27）** | UI 标准 §2.6 / §9；REQ-003 §2.2 第 6 条；REQ-007 §2.2 第 9 条 | round-9.md §4 用例 4 / §6；R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §3-E；[BUG-014](bugs/BUG-014-ui-standard-header-filter-negative-case-stale.md) | **UI**（`task-17`）：`docs/ArcBlog-admin-ui-design.md`（仅 D10 授权段）+ `docs/team/design/UI-005-*.md` | **已修复并复验通过**（断言块与 round-9 另存副本逐字节 IDENTICAL、期望值 `0` 未放宽、§9 十二条未动、两视口 34/34）；**#12 授权外残留仍未做（D12）→ R10 与 #5 同 UI 批** |
 | 5 | **像素级视觉走查**（间距/字号/色值逐像素；tags 页 §9 + 全 17 页） | UI 标准 §9 | UI-001 §3.4；round-9.md §7 第 7 条；**L-R9-4 = D8 本轮不做**；R9F 复验 §5 第 5 条仍列为未跑 | **UI**：`docs/team/design/**`（截图落 `test-reports/assets/**` 需 QA 同意） | **#4 已结清 → 本项与 #12 同角色 → R10 UI 批内串行**；与 Dev 批次无写范围冲突（对 `.aup/**`、`dist/**` 只读） |
 | 6 | **BUG-015 判据修订后的等价断言复跑**（DOM 断言，R10 QA 按 REQ-006 §3.1 新口径复跑；含 BUG-011 等价断言 17 页 × 2 视口回归） | REQ-006 §3.1；UI 标准 §2.6 / §9 | round-9.md §2.1 A2 / §3-B / §8 | **QA**：`docs/team/test-reports/**` | **可与 R10 Dev 批次的复验同一次 admin 会话并轨**（同角色串行）；需浏览器 + `.gate-lock`（写实例动作）；**R9F 已复跑 34/34（[round-9-reverify.md](test-reports/round-9-reverify.md) §3-E3）→ 本项降为「回归确认」** |
@@ -325,10 +495,11 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | 9 | 标签规范化口径统一（console `normalizeTag` 保 `_` vs lifecycle 剥 `_`） | §15.4 | R6 / R7 / R8 / R9 四轮未评估；R9F 未涉及 | **Dev**：`.aup/**`、`scripts/**` | **需先出评估结论再立项**（改任一侧都会改变既有标签落库形式）；与 #3/#8 同范围 → 串行 |
 | 10 | 状态 / 枚举呈现写法的沉淀（R8 路径 B：本地化中性标签 + 原始值可见 + 常驻 dim） | UI 标准 §4.1；REQ-002 F5 | round-8.md §2 A2.3；BUG-005 R8 复验 | **Lead**（`docs/arc-contracts.md`、`.agents/skills/aup-dsl`）；PM 只出草案 | 无写范围冲突；**等 Lead 落笔**（不是 Dev/UI 任务）。**R9F 另建议 Lead 把 BUG-017 的平台规则（既有记录需可恢复 authority sidecar）也留档到 `arc-contracts.md`** |
 | 11 | 控制台「一键复制」（DID / 哈希 / 地址） | §15（UI 标准 §5.1） | UI-001 F8②；`arc-contracts.md` §25.1 | **候选**：`.web/components/copy-field/` + `frame` | 需先实测 `frame` 在控制台页的尺寸 / 性能代价（§14）；**未评估**（R8/R9/R9F 均未启动） |
-| 12 | L-R9-1 授权外残留：§9 第 2 条条目文字 / 附录 A.1 的 `console-pane`、附录三处 `§2.3` 交叉引用（**D12：R9F 本轮不做**） | UI 标准 §9 / 附录 A.1 | UI-004 §8；round-9.md §2.2 A7；**Lead D12** | **UI**（**需 Lead 新一轮授权**） | **纯文档债**（P3）；#4 已结清 ⇒ 与 #5 同角色 → **R10 UI 批内串行**；若 Lead 授权，建议与 #5 一次授权覆盖 |
-| 13 | **BUG-016（P3）`?page=hub` 行内重写把 `sync.lastVersion` 改型**（`null→""`、数字 `7→"7"`） | spec §70/§71；REQ-008 §2.1 D | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 3；[BUG-016](bugs/BUG-016-hub-sync-lastversion-null-to-empty-type-drift.md) | **Dev**：`.aup/pages/ops/hub.aup`（147/148 + 160）；**先出评估结论**（模板层能否保型 / 保留原 `sync` 对象 / 接受漂移 + 留档） | **P3 不阻断**；未动 AFS 记录形态前**不需要** `.gate-lock`；若结论要求改记录形态/CLI → **停手上报另立 REQ**；与 #3 同写范围 → 串行 |
-| 14 | **BUG-017（P3）旧 CLI/root 授权公开副本存在时 `?page=pages` Bring online 被平台诚实拒绝** | spec §15.4；REQ-008 §2.1 D | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 2；[BUG-017](bugs/BUG-017-pages-bring-online-legacy-root-authority-refused.md) | **取决于 D13**：选项 ① UI 文案（`pages.aup` confirm/toast，1 行）；选项 ② page-owned overlay + CLI worker（**另立 REQ**，AFS/CLI 改动 → `.gate-lock` + 定向单跑 live）；选项 ③ 维持现状 + 留档 | **P3 不阻断**；**先裁决再动手**（D13）；选项 ② 与 #3 同写范围 → 串行 |
-| 15 | **「UI 复制 vs CLI 移动」生命周期口径统一**（页面 Publish 保留源 draft ⇒ 同一篇同屏出现在「已发布」与「草稿」两组；CLI `publish` 是移动语义，`arcblog-lifecycle.mjs:470` 删源 draft） | spec §15.4 文章生命周期；REQ-008 A2.1 | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 1；`scripts/arcblog-lifecycle.mjs:391/470` | **PM 先修订口径 → Dev 评估**（`.aup/pages/admin/posts.aup` ± `scripts/**`） | **需产品裁决 D14**（复制语义 vs 移动语义）；未裁决前**不改页面**；`arcblog-lifecycle.mjs` 属 `scripts/**` → 若动必须先 `.gate-lock` + 定向单跑 `arcblog-lifecycle.test.mjs`；与 #3 同写范围 → 串行 |
+| 12 | L-R9-1 授权外残留：§9 第 2 条条目文字 / 附录 A.1 的 `console-pane`、附录三处 `§2.3` 交叉引用（**D12：R9F 本轮不做**） | UI 标准 §9 / 附录 A.1 | UI-004 §8；round-9.md §2.2 A7；**Lead D12**；**Lead L-R10-1 已授权三项** | **UI**（**已获授权：仅三项**） | **纯文档债**（P3）；**R10 已开工**：[REQ-010](requirements/REQ-010-ui-standard-appendix-residuals.md) / `task-22`（**只做事实对齐**：不改期望值、不改 §9 条目口径与结构、不动断言表达式）；**#5（像素级走查）本轮未获授权**，仍留队列 |
+| ~~13~~ | ~~**BUG-016（P3）**：`?page=hub` 行内重写把 `sync.lastVersion` 改型（`null→""`、数字 `7→"7"`）~~ → **✅ 已结清（R10 / D15 走「修」分支，2026-09-28）** | spec §70/§71；REQ-008 §2.1 D | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 3；[BUG-016](bugs/BUG-016-hub-sync-lastversion-null-to-empty-type-drift.md) | **Dev**：`.aup/pages/ops/hub.aup`（147/148 + 160）；**先出评估结论**（模板层能否保型 / 保留原 `sync` 对象 / 接受漂移 + 留档） | **P3 不阻断**；未动 AFS 记录形态前**不需要** `.gate-lock`；若结论要求改记录形态/CLI → **停手上报另立 REQ**；与 #3 同写范围 → 串行。**R10 已开工**（Lead **D15 = 一次保型探针**，失败即停手不改）：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1 ③ / `task-21` ｜ **结果：走「修」分支** —— `mode: "tree-merge"` 只写 `{relation, removedAt, updatedAt}` 即保住原类型（null 探针 `lastVersion` 仍 `null`/`typeof object`、数字探针仍 `7`/`typeof number`；真实 4 条记录类型前后均 `null/null/7/1`），QA 独立复验通过 → **缺陷闭环、无需 Lead 留档**（[round-10.md](test-reports/round-10.md) §3-D） |
+| ~~14~~ | ~~**BUG-017（P3）旧 CLI/root 授权公开副本存在时 `?page=pages` Bring online 被平台诚实拒绝**~~ → **✅ 已结清（R10 / D13 选项① 文案口径，2026-09-28；现象前提转 BUG-018）** | spec §15.4；REQ-008 §2.1 D | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 2；[BUG-017](bugs/BUG-017-pages-bring-online-legacy-root-authority-refused.md) | **取决于 D13**：选项 ① UI 文案（`pages.aup` confirm/toast，1 行）；选项 ② page-owned overlay + CLI worker（**另立 REQ**，AFS/CLI 改动 → `.gate-lock` + 定向单跑 live）；选项 ③ 维持现状 + 留档 | **P3 不阻断**；**先裁决再动手**（D13）；选项 ② 与 #3 同写范围 → 串行。**R10 已开工**（Lead **D13 = 选项 ①**：文案写明两步走 + **保留平台诚实拒绝**，不做 overlay/worker）：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1 ② / `task-21` ｜ **结果**：en/zh modal + 离线区常驻说明均写明「先 Remove public copy 再 Bring online」、两步走闭环成功且 `createdAt` 保留、`scripts/world/blocklet.yaml` 零改动、`:184` `exec` 形态未动 → **文案口径收口**；**「平台必然拒绝」在 R10 不可复现**（写入成功）→ 现象前提由 **BUG-018** 承接（`arc-contracts.md` §29.2 更正属 Lead） |
+| ~~15~~ | ~~**「UI 复制 vs CLI 移动」生命周期口径统一**（页面 Publish 保留源 draft；CLI `publish` 是移动语义）~~ → **✅ 已结清（R10 / D14 = 保留复制语义 + 页面文案写明，2026-09-28；「统一为移动语义」未评估，列 D14 续）** | spec §15.4 文章生命周期；REQ-008 A2.1 | R9F：[round-9-reverify.md](test-reports/round-9-reverify.md) §5 观察 1；`scripts/arcblog-lifecycle.mjs:391/470` | **PM 先修订口径 → Dev 评估**（`.aup/pages/admin/posts.aup` ± `scripts/**`） | **需产品裁决 D14**（复制语义 vs 移动语义）；未裁决前**不改页面**；`arcblog-lifecycle.mjs` 属 `scripts/**` → 若动必须先 `.gate-lock` + 定向单跑 `arcblog-lifecycle.test.mjs`；与 #3 同写范围 → 串行。**R10 已开工**（Lead **D14 = 页面保留「复制」语义 + 页面文案写明复制而非移动**；差异留档、**不改 CLI**）：[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1 ④ / `task-21` ｜ **结果**：en/zh modal + `drafts-note` 写明「复制到公开 `posts/`、源草稿保留、CLI `arcblog-lifecycle.mjs publish` 是移动语义」；真实点击后 `posts/qa-r10-pubprobe.json{status:published}` 与 `drafts/qa-r10-pubprobe.json{status:draft}` **并存**；`git diff -- scripts` 为空 → **口径落地**；**「是否统一为移动语义」仍未评估**（见「目标收尾」⑤ D14 续） |
+| **16** | **媒体上传入口的可观测性 + 文案去「不可复现观测」引用**（`?page=media` 的空态/有记录态双态验收） | 清单第 **102** 行 / §15.4、§15.1 | QA round-10 **§7-1/§7-3/§7-5**；[BUG-019/020](bugs/BUG-019-req009-a2-time-selector-mismatch.md)（判据已修订，本项须用修订口径复验） | **Dev**：`.aup/pages/ops/media.aup` + 生成 locales + `dist/**`；**QA**：`docs/team/test-reports/**`、`docs/team/bugs/**` | **新立项（PM 本轮）**：[REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md)（草案·未派发）；**与 A 批功能界面项同写范围 → 串行**；写实例（真实拖拽 + 探针）需 `.gate-lock`；**人员恢复后由 Lead 建任务并置 🟥** |
 
 **✅ 已结清、移出排队**：
 - 原 R9 排队 **#1**（BUG-010 P2）→ **R9 完成并复验收口**（[REQ-006](requirements/REQ-006-console-scroll-and-agent-surface.md) / `task-12`；6/6 组无可滚动容器含 `.aup-app-header`、静态 17/17）。
@@ -338,7 +509,13 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 - 原 R10 排队 **#1（BUG-012 P1）** → **R9F 修复 + QA 复验通过**（[REQ-008](requirements/REQ-008-console-inline-write-evaluation.md) / `task-16` + `task-18`；真实点击 → 正确 slug、零字面量、公开面无垃圾）。
 - 原 R10 排队 **#2（BUG-013 P2）** → **R9F 修复 + QA 复验通过**（同批 `task-16` / `task-18`；zh 6 行 `关闭 ·` 与 CLI `closed(6)` 同序）。
 - 原 R10 排队 **#4（BUG-014 P3）** → **Lead D10 一行授权并入 R9F，UI `task-17` 修复 + QA 复验通过**（断言块逐字节未动、期望值 `0` 未放宽、§9 十二条未动）。
+- 原 R10 排队 **#13（BUG-016 P3）** → **R10 / D15 走「修」分支：`tree-merge` 保型成功 + QA 独立复验通过**（[REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) A6；round-10.md §3-D）→ **缺陷闭环、无需 Lead 留档**。
+- 原 R10 排队 **#14（BUG-017 P3）** → **R10 / D13 选项① 文案收口**（en/zh modal + `offline-hint` 两步走 + 两步走闭环；未做 overlay/worker）→ **文案口径结清**；**「平台必然拒绝」前提不可复现 → BUG-018**（文档更正交 Lead）。
+- 原 R10 排队 **#15（UI 复制 vs CLI 移动）** → **R10 / D14 口径落地**（页面保留复制语义 + 文案写明 CLI 是移动语义、不改 CLI）→ **结清**；**「是否统一为移动语义」未评估**（见「目标收尾」⑤ D14 续）。
+- 原 R10 排队 **#12（L-R9-1 授权外残留）** → **R10 / L-R10-1 三项授权 + [REQ-010](requirements/REQ-010-ui-standard-appendix-residuals.md) 交付并 QA 放行** → **结清**（版本行 V1.5 待 Lead 一句话）。
 - 原 R8 排队 #1–#6 与 R7 排队 #1 → 保持出列（R8/R7 已收口）。
+
+**R10 轮末重排（PM，2026-09-28）**：#13/#14/#15 与 #12 **全部结清**；新增 **#16（[REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) 媒体上传可观测性 + 文案去不可复现引用，草案·未派发）**；#5/#6/#7/#8/#9/#10/#11 保持原状并成为 **R11 人工恢复后的候选**（批次表见「🎯 目标收尾」④）。**本轮不再开工任何 🟥 项**（自动续轮已停止）。
 
 **写范围冲突矩阵（R10 派活必须照此）**
 
@@ -388,10 +565,15 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | **D9**（Round 9 轮末） | **R9F 修复窗口开不开**：BUG-012 是 **P1（阻断）**，QA 判不放行（`VERDICT=fail`）；Round 9 的两份 REQ 已交付并验收，但仓库带一个**主操作不可用 + 公开 feed/RSS 被污染**的缺陷 | P1 不允许默认延后（`roles/pm.md` §6.2）；开窗 = 加一个 Dev 批次 + 一次 QA 复验；封板 = 缺陷进 R10 首项 | **已裁定（Lead 2026-09-27）= 开窗**：`task-16`（Dev）/ `task-17`（UI）/ `task-18`（QA）/ `task-19`（PM）。**结果**：QA 复验 `VERDICT=pass, BLOCKING=0` → Round 9「交付通过 + 复验放行」。**本节保留裁定记录，不再待决** |
 | **D10**（Round 9 轮末） | BUG-014 是否随 BUG-010 一并修订（UI 标准 §2.6 第 235 行 / §9 第 518 行的旧测量 `2`） | 修改点是**说明性实测段**，在 L-R9-1 授权四项（(a) 只授权断言块）**文字之外**；P3 非阻断 | **已裁定（Lead 2026-09-27）= 一行授权并入 R9F**：只改说明性实测描述，**不动断言语义、不放宽期望值 `0`、不改 §9 其余条目**；UI `task-17` 执行 + QA 复验通过（断言块逐字节 IDENTICAL）→ **BUG-014 闭环**。**本节保留裁定记录，不再待决** |
 | **D11**（Round 9 轮末） | checklist 第 116 行「Agent 能力与工具页」🟡→✅ 的落笔时机 | **R9F 后前置已解除**：BUG-013 已修复并复验通过；另有 4 条已登记缺口（目录静态漂移、`启用开关` 降级路径、逐工具说明、平台面受限未验证），**均不阻断** | **Lead 已裁定口径（D11）：等 BUG-013 复验通过后由 Lead 落笔** ⇒ **条件已满足 → PM 最终建议：Lead 现在落 ✅**（备注文案建议见「Round 9 checklist 建议」②；第 98/100/101/110 行备注同步更新）。**checklist 本轮由 Lead 落笔，PM 不写** |
-| **D12**（Round 9 轮末） | L-R9-1 授权外残留的 `console-pane` 出现处（§9 第 2 条条目文字、附录 A.1 CSS 类名与 AI 提示词、附录三处 `§2.3` 交叉引用） | 属 §9 条目口径（禁改项）或参考 CSS/提示词，**不在 R9F 授权内**；纯文档债（P3） | **已裁定（Lead 2026-09-27）= R9F 本轮不做**，留 R10 另行授权 → **排队 #12**（与 #5 像素级走查同 UI 批，PM 建议一次授权覆盖两项） |
-| **D13**（新，R9F 复验后） | **BUG-017（P3）**：旧 CLI/root 授权的公开页面副本存在时，`?page=pages` Bring online 被平台诚实拒绝（无写）——是否普适化 | 选项 ① 接受诚实报错 + 把「先 Remove public copy」写进 confirm/toast（`.aup` 1 行）；选项 ② page-owned overlay + CLI worker（= **AFS 记录 / CLI 改动**，需另立 REQ + `.gate-lock` + 定向单跑 live）；选项 ③ 维持现状并把平台规则留档 `arc-contracts.md` | **需要 Lead/产品决定**：**PM 倾向 ①**（成本最低、语义诚实、无需动 CLI；页面自建记录已可闭环）；**② 才需要新 REQ**；③ 可作 ① 的补充（留档）。**未裁决前 Dev 不动手**（排队 #14） |
-| **D14**（新，R9F 复验后） | **文章 Publish 的生命周期口径**：页面 Publish = **复制到公开**（源 draft 保留 `status: draft`，同一篇同屏出现在「已发布」与「草稿」两组）；CLI `publish` = **移动**（`arcblog-lifecycle.mjs:470` 删源 draft） | 两套语义并存会让运营者困惑；但页面侧 confirm 文案已如实描述「发布当前草稿记录」（未承诺移除），公开面与数据均正确 | **需要 Lead/产品决定**：**（A）** 统一为页面「复制」语义（改 CLI 或至少文档写明两种入口差异）；**（B）** 统一为「移动」语义（页面 Publish 后删/改源 draft——但平台对既有记录的重写有 authority sidecar 限制，见 BUG-017，需先验证可行性）；**（C）** 维持双语义 + 在页面提示写明。**PM 建议先做（C）的文案检查，再评估（B）的可行性**；未裁决前不改页面（排队 #15） |
+| **D12**（Round 9 轮末） | L-R9-1 授权外残留的 `console-pane` 出现处（§9 第 2 条条目文字、附录 A.1 CSS 类名与 AI 提示词、附录三处 `§2.3` 交叉引用） | 属 §9 条目口径（禁改项）或参考 CSS/提示词，**不在 R9F 授权内**；纯文档债（P3） | **已裁定（Lead 2026-09-27）= R9F 本轮不做**，留 R10 另行授权 → **排队 #12**。**Round 10 进展（Lead L-R10-1，2026-09-27）**：已授权**三项**（§9 第 2 条条目文字概念名 / 附录 A.1 概念名 / 附录三处 `§2.3` 交叉引用），落地为 [REQ-010](requirements/REQ-010-ui-standard-appendix-residuals.md) / `task-22`（**只做事实对齐**）；**排队 #5（像素级视觉走查）本轮未获授权**，仍留队列 |
+| **D13**（新，R9F 复验后） | **BUG-017（P3）**：旧 CLI/root 授权的公开页面副本存在时，`?page=pages` Bring online 被平台诚实拒绝（无写）——是否普适化 | 选项 ① 接受诚实报错 + 把「先 Remove public copy」写进 confirm/toast（`.aup` 1 行）；选项 ② page-owned overlay + CLI worker（= **AFS 记录 / CLI 改动**，需另立 REQ + `.gate-lock` + 定向单跑 live）；选项 ③ 维持现状并把平台规则留档 `arc-contracts.md` | **已裁定（Lead 2026-09-27，Round 10）= 选项 ①**：`?page=pages` 的 Bring online 确认/提示文案写明「旧 CLI/root 授权的既有公开副本需先 Remove public copy」；**保留平台的诚实拒绝，不做 page-owned overlay / worker**（不改 AFS 记录形态、不改 CLI）。落地 = [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1 ② / `task-21`；③ 的「平台规则留档 `arc-contracts.md`」由 Lead 轮末一并处理（属 Lead 写范围） |
+| **D14**（新，R9F 复验后） | **文章 Publish 的生命周期口径**：页面 Publish = **复制到公开**（源 draft 保留 `status: draft`，同一篇同屏出现在「已发布」与「草稿」两组）；CLI `publish` = **移动**（`arcblog-lifecycle.mjs:470` 删源 draft） | 两套语义并存会让运营者困惑；但页面侧 confirm 文案已如实描述「发布当前草稿记录」（未承诺移除），公开面与数据均正确 | **已裁定（Lead 2026-09-27，Round 10）= 页面保留「复制到公开」语义 + 必须在页面文案里写明这是复制而非移动**（并说明 CLI `publish` 是移动语义）；**差异留档、不改 CLI**。落地 = [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §2.1 ④ / `task-21`（`.aup/pages/admin/posts.aup:18`）；选项（B）「统一为移动语义」**本轮不评估**（平台对既有记录重写有 authority sidecar 限制，见 BUG-017） |
 | **D5 续**（Round 7 新增待归档事实） | Dev 报告的「动态 `$t(<key>)` 运行期渲染字面量 / bundle 内无 `$t(` 解析器」**尚未写入** `docs/arc-contracts.md`；QA 因写范围限制无法独立复现（运行时主体是二进制，`grep` 无命中不能证伪） | 该文件不在 PM/Dev/UI 写范围；且此条是 **D6 裁定的前提依据** | **已归档（Lead，2026-09-27）→ [`docs/arc-contracts.md`](../arc-contracts.md) §28.8**《动态 i18n key 不生效：`$t()` 的 key 必须是**编译期常量**》——含 R7 Dev 探针记录、802 KB runtime bundle 内「无客户端 `$t(` 解析器」的检索结论、§28.1/§28.6 的交叉限制，以及 D6 的**降级路径 B** 原文（本地化中性标签 + 原始状态值可见 + 常驻 dim 说明；不同真实状态不得被同一句话断言）。**证据边界（原文照录）**：证据来自 R7 Dev 探针 + R7 QA 的 bundle 复检，**QA 未能独立证伪**；**R8 的 Dev（`task-7`）必须在页面上重跑该探针并把原始输出附在回报里，若与 §28.8 有出入以新证据为准，Lead 回来修订该节**。另：`.agents/skills/aup-dsl` 的同步仍待 Lead 确认（`CLAUDE.md` 要求测量与 skill 同改） |
+| **D16**（新，Round 10 轮末） | **BUG-018**：`docs/arc-contracts.md` §29.2 记载「对 CLI/root 授权的既有记录写入一律被拒」，但 R10 同实例/同 admin 会话/同类 seed **写入成功**（R9F 的拒绝由**重启前**的 daemon 观测到）；该节是团队权威「平台实测结论」落点，不在 PM/Dev 写范围，据它做的断言会误判 | **需 Lead 一句话**：更正为**限定适用条件**（含时间线证据）还是整条标记为**历史观察**；PM 已在 [REQ-009](requirements/REQ-009-media-admin-and-p3-closure.md) §3.1 把 A5 期望 2 重述为「文案已备 + 平台行为不作断言」。**不阻断功能** |
+| **D17**（新，Round 10 轮末） | **REQ-010 版本行 V1.5** 是否在 **L-R10-1** 授权内 | REQ-010 §1.2 原文要求「若 Lead 认为版本行不在授权内 → 停手上报」；UI 已显式上报并按惯例执行；QA 静态确认只改第 5 行、未触断言块与期望值，判**非缺陷** | **需 Lead 一句话**：保留（PM 建议，符合 V1.3→V1.4 惯例）或回退；回退方式见 `docs/team/design/UI-006-appendix-residuals.md` §5/§9-1 |
+| **D18**（新，Round 10 轮末） | **checklist 第 102 行「媒体管理界面」🟡→✅** 的落笔 | QA-005 放行 REQ-009（`VERDICT=pass, BLOCKING=0`）；四项能力已按平台能力如实降级并写明；**唯一未验证 = 上传行为本身**（CDP 无法驱动 dropzone，属工具限制） | **需 Lead 落笔**；**PM 最终建议 = 落 ✅（附三条不阻断缺口登记）**，严格口径则暂留 🟡 待 [REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) A3；计数 ✅79→**80** / 🟡10→**9**（见本文件「Round 10 checklist 建议」） |
+| **D19**（新，Round 10 轮末） | `?page=hub` **4 条真实记录的 `relation` 全为 `removed`** | 既有状态、非本轮引入（QA 未点击任何真实记录；`updatedAt` 在本轮开工前已改写、`lastVersion` 类型前后一致） | **运营动作**：是否恢复收录关系由运营/用户决定；**不立项、不阻断** |
+| **D14 续**（新，Round 10 轮末） | Publish 生命周期口径的**下一步**：本轮（D14）已落「页面=复制 + 文案写明、CLI=移动、不改 CLI」；**是否要把统一口径改为「移动语义」**（页面也删源草稿）仍**未评估** | 双语义并存会让运营者困惑；改页面写入形态需另立 REQ + 定向单跑 | **需用户/Lead 决定**：维持双语义（现状 + 文案）还是统一为移动；见「目标收尾」⑤ |
 
 ---
 

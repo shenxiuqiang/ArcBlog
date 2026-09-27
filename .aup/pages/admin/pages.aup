@@ -7,7 +7,7 @@ page pages {
     act-offline-msg { en "Keeps an offline copy under page-drafts/; remove the public copy to complete." zh "会在 page-drafts/ 保留离线副本；移除公开副本后完成下线。" }
     act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
     act-publish { en "Bring online" zh "上线" }
-    act-publish-msg { en "Writes a public copy under pages/; delete the offline copy afterwards." zh "会向 pages/ 写入公开副本；随后请删除离线副本。" }
+    act-publish-msg { en "Writes a public copy under pages/. If a public copy already exists — for example one written by the old CLI or by root authority — the platform refuses this write (\"without a recoverable authority sidecar\"); click \"Remove public copy\" on the online row first, then bring it online." zh "会向 pages/ 写入公开副本。若公开副本已存在——例如旧 CLI 或 root 授权写入的既有记录——平台的写入会被拒绝（without a recoverable authority sidecar）；请先在上线区对应行点「移除公开副本」，再点「上线」。" }
     act-publish-title { en "Bring this page online?" zh "上线这个页面？" }
     act-remove-public { en "Remove public copy" zh "移除公开副本" }
     create { en "New page" zh "新建页面" }
@@ -22,7 +22,7 @@ page pages {
     gate-title { en "Pages" zh "页面" }
     list-empty { en "No pages yet. Create your first page above." zh "还没有页面。在上方创建第一个页面。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    offline-hint { en "Offline pages are admin-only. Bring one online when it is ready." zh "离线页面仅后台可见；准备好后点击「上线」。" }
+    offline-hint { en "Offline pages are admin-only. Bring one online when it is ready. If the public copy still exists (an older CLI / root-authorized record), the platform refuses that write — first click \"Remove public copy\" on the matching online row, then bring it online." zh "离线页面仅后台可见；准备好后点「上线」。若公开副本仍存在（旧 CLI / root 授权的既有记录），平台会拒绝写入——请先在上线区对应行点「移除公开副本」，再点「上线」。" }
     offline-list { en "Offline" zh "已下线" }
     offline-ok { en "Offline copy saved." zh "已保存离线副本。" }
     online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。" }

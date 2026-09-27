@@ -1476,15 +1476,24 @@ BUG-005 据此采用路径 B（本地化中性标签 + 原始值可见 + 色点 
 - 只有 `path=`/`href=` 这类**属性**（例如 `-> exec "/.actions/delete" path="…/${entry.content.slug}.json"`）
   一直是对的，是仓库里的正确先例（`posts.aup` 的 Remove from public）。
 
-### 29.2 页面对**已存在的**记录写入需要「可恢复的 authority sidecar」；CLI/root 授权的记录页面改不动
+### 29.2 页面对**已存在的**记录写入可能被拒（「可恢复的 authority sidecar」）——**条件性、与 daemon 进程相关**
 
-- 同一路径的 `write` 目标已存在、且该记录由 **CLI/root** 写就时，页面写入被拒绝：
+- Round 9（R9F）观测：同一路径的 `write` 目标已存在、且该记录由 **CLI/root** 写就时，页面写入被拒绝：
   `Forbidden … network write target exists without a recoverable authority sidecar`。
-  已逐一实测的失败模式：`replace` / `create` / `update` / `tree-merge` / `patch`（`op:add`）全部拒绝；
+  当时逐一试过的 `replace` / `create` / `update` / `tree-merge` / `patch`（`op:add`）**全部拒绝**；
   `dedupBy: "slug"` 走集合路径则报 `network clients cannot write non-replicated instance paths`。
-- **豁免**：`/.actions/delete` 对任何记录都可用；写入**不存在的路径**（新建）也可用；
-  页面自建的记录（页面写入的 sidecar 可恢复）重写也可用。
-- 因此「就地更新 CLI 授权记录」的唯一可用组合是 **delete + 重写**（见 §29.3）。
+- **⚠️ Round 10 复测推翻了「一律被拒」的表述**：在**当前** daemon 进程下，对一条用 CLI
+  （`scripts/lib/arc.mjs` → `/.actions/write`，与 `arcblog-pages.mjs` 同通道）重新 seed 的
+  `hub/registrations` 记录，`mode: "tree-merge"`（只写 `{relation, removedAt, updatedAt}`）与
+  `mode: "replace"` **都写入成功**；`update` 会整条替换 content（**破坏性**，丢其他字段），
+  `patch` 仍未找到正确参数名（`patches:[…]` 报 `Patch target cannot be empty`）。
+  R10 因此把 hub 的 Approve/Terminate 从 delete+write 改为**单次 `tree-merge`**，并保留了
+  `sync.lastVersion` 的原类型（null 仍 null、7 仍 number）。
+- **结论（诚实的口径）**：该拒绝**不是**「CLI/root 记录永远只读」，而是与记录来源 / 写入模式
+  **以及当时的 daemon 状态**相关（R9F 的观测发生在旧 daemon 进程下；当前进程已换）。
+  不要把本节当作普适规则：**动手前先探针**，并优先选**最小写入面**（`tree-merge` 只写要改的字段）。
+- **确定可用的豁免**：`/.actions/delete` 对任何记录都可用；写入**不存在的路径**（新建）也可用。
+- `delete + 重写` 仍是一种**后备**组合（最小写入被拒时），但要付 §29.3 的代价，且可能损失字段类型。
 
 ### 29.3 `afterSuccess: [{exec: …}]` 只在首个 exec **成功**后运行；`delete` 对不存在的路径会失败
 
