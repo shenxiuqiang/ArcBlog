@@ -5,5 +5,11 @@
   "scripts": {
     "test": "node scripts/run-tests.mjs",
     "test:clean": "node scripts/arcblog-clean.mjs --confirm"
+  },
+  "dependencies": {
+    "@arcblock/did-ext": "^1.30.24",
+    "@ocap/client": "^1.30.24",
+    "@ocap/wallet": "^1.30.24",
+    "bip39": "^3.1.0"
   }
 }

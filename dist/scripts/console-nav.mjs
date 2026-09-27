@@ -50,6 +50,7 @@ export const CONSOLE_MENU = [
     items: [
       { label: 'nav-policy', page: 'policy' },
       { label: 'nav-access', page: 'access' },
+      { label: 'nav-factory', page: 'factory' },
     ],
   },
 ];

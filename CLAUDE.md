@@ -4,7 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What ArcBlog is
 
-ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the Arc/AUP stack — not a conventional Node app. There is no `npm install`, no bundler, no dev server: the app is authored in AUP DSL (`.aup/*.aup`, `.aup/man/*.yaml`, `.aup/pages/*.json`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
+ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the Arc/AUP stack — not a conventional Node app. There is no bundler and no dev server (and the AUP app itself has **no runtime
+dependencies**); `package.json` carries the npm packages the **chain scripts**
+need (`@ocap/client`, `@ocap/wallet`, `@arcblock/did-ext`, `bip39` — install with
+`npm install`, only required for `--adapter ocap`): the app is authored in AUP DSL (`.aup/*.aup`, `.aup/man/*.yaml`, `.aup/pages/*.json`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
 
 > This file describes **today's implementation**. The authoritative product & technical direction (V2.0: content-network nodes with Studio/Hub roles, economy, Agent Access) is `docs/ArcBlog-product-technical-spec.md`; the current codebase implements the early blog-phase subset of it.
 

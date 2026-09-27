@@ -217,7 +217,13 @@ async function commandRevoke(opts, instance) {
   const { role, chain, clock } = await roleContext(opts, instance);
   const stored = readNodeNft(instance);
   const roleState = stored.state.roles[role] ?? {};
-  const stakeAddress = optString(opts['stake-address']).trim() || roleState.stakeAddress;
+  // The chain derives the stake address (`toStakeAddress(owner, factory, '')`); a
+  // record written before that was captured is stale, so the derived value wins
+  // on the real adapter.
+  const stakeAddress =
+    optString(opts['stake-address']).trim() ||
+    (chain.adapter === 'ocap' ? chain.stakeAddressFor?.() || '' : '') ||
+    roleState.stakeAddress;
   ensure(stakeAddress, `no ${role} stake recorded — stake the NFT first (§8.4 step 0)`);
   const assetId = assetForRole(opts, stored.state, role);
   const waitingPeriod = Number(roleState.revokeWaitingPeriod || DEFAULT_REVOKE_WAITING_PERIOD_DAYS);

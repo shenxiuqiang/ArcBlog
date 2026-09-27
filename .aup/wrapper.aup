@@ -12,6 +12,7 @@ page wrapper {
     nav-feeds { en "Feeds" zh "分发" }
     nav-policy { en "Policy" zh "分成策略" }
     nav-access { en "Access" zh "访问授权" }
+    nav-factory { en "Factory" zh "工厂" }
     nav-group-content { en "Content" zh "内容" }
     nav-group-ops { en "Operations" zh "运营" }
     nav-group-economy { en "Economy" zh "经济" }

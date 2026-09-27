@@ -24,6 +24,10 @@ const factoryCli = join(repoRoot, 'scripts', 'arcblog-factory.mjs');
 const nftCli = join(repoRoot, 'scripts', 'arcblog-node-nft.mjs');
 const stamp = Date.now();
 const statePath = `/instance/app/arcblog/config/mock-chain-test-${stamp}.json`;
+// The registry and the node-NFT state are production AFS paths by default: a mock
+// run once wiped the real beta registry, so every test run gets its own files.
+const registryPath = `/instance/app/arcblog/config/nft-factories-test-${stamp}.json`;
+const nftStatePath = `/instance/app/arcblog/config/node-nft-test-${stamp}.json`;
 
 const {
   ROLE_FACTORIES,
@@ -40,7 +44,7 @@ function run(script, args) {
   return spawnSync(process.execPath, [script, ...args], {
     encoding: 'utf8',
     cwd: repoRoot,
-    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath },
+    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath },
   });
 }
 const json = (text) => JSON.parse(text);
@@ -281,4 +285,35 @@ test('live: hub acquire computes capacity from the stake (spec §8.3)', () => {
   assert.equal(status.onChain.data.pricing.enterprise, '0.4');
   assert.match(status.onChain.data.rules, /Comply with local laws/);
   factory(['reset', '--adapter', 'mock']);
+});
+
+// The chain renders `output.display.content` / `data.value` with JSON.parse, so a
+// raw control character anywhere in the payload kills the mint on a real chain
+// ("Bad control character in string literal"). The multi-line SVG card did exactly
+// that, so the whole payload is asserted JSON-safe for both roles.
+test('factory payloads are JSON-safe (no raw control characters)', () => {
+  for (const role of ['studio', 'hub']) {
+    const payload = buildNodeFactory({ role, tokenAddress: 'z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', issuerAddress: 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a' });
+    const bad = [];
+    const walk = (node, path) => {
+      if (typeof node === 'string') {
+        if (/[\u0000-\u001f]/.test(node)) bad.push(path);
+        return;
+      }
+      if (Array.isArray(node)) return node.forEach((v, i) => walk(v, `${path}[${i}]`));
+      if (node && typeof node === 'object') return Object.entries(node).forEach(([k, v]) => walk(v, `${path}.${k}`));
+    };
+    walk(payload, role);
+    assert.deepEqual(bad, [], `${role} payload has control characters in: ${bad.join(', ')}`);
+
+    // The mint inputs are template variables rendered with JSON.parse on chain —
+    // a multi-line PEM `pk` broke the real beta mint with "Bad control character".
+    const inputs = buildMintInputs({
+      role,
+      pk: '-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAU/dpMj0qliK/D5uubHrHsn2WqgyqkfvbMLBHJbuLMHs=\n-----END PUBLIC KEY-----',
+    });
+    const badInputs = Object.entries(inputs).filter(([, v]) => /[\u0000-\u001f]/.test(String(v))).map(([k]) => k);
+    assert.deepEqual(badInputs, [], `${role} mint inputs carry control characters: ${badInputs.join(', ')}`);
+    assert.equal(inputs.pk.includes('\n'), false, 'pk must be a single line');
+  }
 });

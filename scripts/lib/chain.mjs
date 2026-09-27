@@ -40,8 +40,13 @@ import {
 // Tests (and parallel dev work) can point the simulation at another record:
 //   ARCBLOG_MOCK_STATE_PATH=/instance/app/arcblog/config/mock-chain-test-<ts>.json
 export const MOCK_STATE_PATH = process.env.ARCBLOG_MOCK_STATE_PATH || '/instance/app/arcblog/config/mock-chain.json';
-export const FACTORY_REGISTRY_PATH = '/instance/app/arcblog/config/nft-factories.json';
-export const NODE_NFT_STATE_PATH = '/instance/app/arcblog/config/node-nft.json';
+// Overridable so the mock/live tests never overwrite a real-chain registry that
+// `arcblog-factory.mjs create --adapter ocap` wrote (it happened once — see
+// docs/ArcBlog-nft-factory.md §7).
+export const FACTORY_REGISTRY_PATH =
+  process.env.ARCBLOG_FACTORY_REGISTRY_PATH || '/instance/app/arcblog/config/nft-factories.json';
+export const NODE_NFT_STATE_PATH =
+  process.env.ARCBLOG_NODE_NFT_STATE_PATH || '/instance/app/arcblog/config/node-nft.json';
 export const DEFAULT_REVOKE_WAITING_PERIOD_DAYS = 30;
 // Mock wallets start with 100 ABT, expressed in minimal units like the chain does.
 export const MOCK_START_BALANCE = fromTokenToUnit('100', TOKEN_DECIMALS);
@@ -332,12 +337,34 @@ export function createMockChain({ instance, now } = {}) {
   };
 }
 
+/** GLofter's duplicate-factory detector, kept generic (code or message). */
+export function isDuplicateFactory(err) {
+  const seen = new Set();
+  const visit = (e) => {
+    if (e == null || typeof e !== 'object' || seen.has(e)) return false;
+    seen.add(e);
+    if (Array.isArray(e.errors)) {
+      for (const item of e.errors) {
+        if (item?.code === 'DUPLICATE_FACTORY') return true;
+        if (typeof item?.message === 'string' && item.message.includes('already exist on chain')) return true;
+      }
+    }
+    if (typeof e.message === 'string') {
+      if (e.message.includes('DUPLICATE_FACTORY')) return true;
+      if (e.message.includes('already exist on chain')) return true;
+    }
+    if (e.cause !== undefined && visit(e.cause)) return true;
+    return false;
+  };
+  return visit(err);
+}
+
 /**
  * The real chain adapter. Written against the same calls GLofter uses; the ARC
  * libraries are imported lazily so a zero-dependency checkout still works for
  * everything except the chain itself.
  */
-export async function createOcapChain(config) {
+export async function createOcapChain(config, instance) {
   const missing = [];
   const load = async (name) => {
     try {
@@ -366,6 +393,9 @@ export async function createOcapChain(config) {
   }
 
   const GraphQLClient = clientModule.default ?? clientModule.GraphQLClient;
+  const toStakeAddress = clientModule.toStakeAddress ?? ((...args) => {
+    throw new Error(`toStakeAddress unavailable: ${args.length}`);
+  });
   const bip39 = bip39Module.default ?? bip39Module;
   const fromAppDid = didExtModule.fromAppDid;
   const client = new GraphQLClient(config.chainHost);
@@ -373,6 +403,18 @@ export async function createOcapChain(config) {
   // Mirrors glofter/hub/mock/libs/WalletUtil.ts (DID_TYPE_ARCBLOCK, index 0).
   const wallet = fromAppDid('', `0x${seed.toString('hex')}`, 'arcblock', 0);
   const ownerAddress = wallet.address;
+
+  /**
+   * Newest factory of this wallet with the given name (duplicate-factory path).
+   * `listFactories` returns newest-first — taking the last match would silently
+   * pick the oldest, which is exactly what happened when a fixed payload was
+   * rejected as a duplicate of the pre-fix factory.
+   */
+  const findFactoryByName = async (name) => {
+    const response = await client.listFactories({ owner: ownerAddress, paging: { size: 100 } });
+    const match = (response?.factories ?? []).find((f) => f.name === name);
+    return match?.address ?? '';
+  };
 
   return {
     adapter: 'ocap',
@@ -382,9 +424,64 @@ export async function createOcapChain(config) {
     wallet,
     client,
 
+    /** The factory record written by `arcblog-factory.mjs create` (AFS registry). */
+    async factoryFor(role) {
+      const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? null;
+      const entry = registry?.factories?.[role];
+      if (!entry?.address) return null;
+      this.__factoryAddress = entry.address;
+      return { address: entry.address, moniker: entry.moniker, role };
+    },
+
     async createFactory({ factory }) {
-      const response = await client.createAssetFactory({ wallet, factory });
-      return { hash: response?.hash ?? '', address: response?.address ?? response?.assetFactory ?? '', role: factory.arcblog?.role };
+      // `client.createAssetFactory` resolves to `[transactionHash, factoryAddress]`
+      // (extension.js), and throwing on a missing address is deliberate: a silent
+      // success with an empty address is worse than a loud failure.
+      let response;
+      try {
+        response = await client.createAssetFactory({ wallet, factory });
+      } catch (err) {
+        if (isDuplicateFactory(err)) {
+          const existing = await findFactoryByName(factory.name);
+          if (!existing) throw err;
+          return { hash: '', address: existing, role: factory.arcblog?.role, existing: true };
+        }
+        throw err;
+      }
+      const [hash, address] = Array.isArray(response)
+        ? response
+        : [response?.hash ?? '', response?.address ?? response?.assetFactory ?? ''];
+      if (!address) {
+        fail(
+          'CHAIN_ERROR',
+          `the chain accepted the factory tx but returned no address for ${factory.name} ` +
+            `(response: ${JSON.stringify(response).slice(0, 200)})`,
+        );
+      }
+      return { hash: hash ?? '', address, role: factory.arcblog?.role };
+    },
+
+    /** The factory as the chain sees it (nil when the address is unknown). */
+    async factoryState(address) {
+      const response = await client.getFactoryState({ address });
+      const state = response?.state ?? response;
+      if (!state || !state.address) return null;
+      return {
+        address: state.address,
+        name: state.name,
+        description: state.description,
+        owner: state.owner,
+        balance: state.balance ?? null,
+        numMinted: state.numMinted ?? null,
+        settlement: state.settlement ?? null,
+        limit: state.limit ?? null,
+      };
+    },
+
+    /** Addresses of this wallet's factories, newest first (used by `--update`). */
+    async listFactories() {
+      const response = await client.listFactories({ owner: ownerAddress, paging: { size: 100 } });
+      return (response?.factories ?? []).map((f) => ({ address: f.address, name: f.name, owner: f.owner }));
     },
 
     async preMint({ role, inputs, owner }) {
@@ -393,12 +490,17 @@ export async function createOcapChain(config) {
       const factory = await this.factoryFor(role);
       ensure(factory?.address, `no ${role} factory recorded — run arcblog-factory.mjs create --role ${role} first`);
       const itx = await client.preMintAsset({ factory: factory.address, inputs, owner, wallet });
-      return { ...itx, role, factory: factory.address, inputs, owner };
+      // The pre-mint itx already carries the address the chain assigns to the new
+      // asset (it becomes `itx.address` of the acquire_asset tx), and
+      // `acquireAsset` only resolves to the transaction hash — so the asset id is
+      // read from here, not from the acquire response.
+      return { ...itx, address: itx.address, assetId: itx.address, role, factory: factory.address, inputs, owner };
     },
 
     async acquire({ itx }) {
-      const hash = await client.acquireAsset({ itx, wallet });
-      return { hash, owner: itx.owner };
+      const response = await client.acquireAsset({ itx, wallet });
+      const hash = typeof response === 'string' ? response : (response?.hash ?? '');
+      return { hash, assetId: itx.address ?? itx.assetId ?? '', owner: itx.owner };
     },
 
     async getAssetState(address) {
@@ -413,10 +515,37 @@ export async function createOcapChain(config) {
     },
 
     async stake({ assetId, owner, message, stakeAddress, revokeWaitingPeriod, slashers = [] }) {
-      const to = (await this.factoryFor('studio'))?.address || (await this.factoryFor('hub'))?.address;
-      ensure(to, 'no factory recorded to stake into');
+      // The receiver of an asset stake is the FACTORY (GLofter: `stake({assets, to:
+      // hubNFTFactory})`); the chain derives a separate stake address, so a
+      // recorded stake address must never be reused as `to` (that yields
+      // `Invalid itx: "address" Expected DID type info to match`).
+      const factory = (await this.factoryFor('studio')) || (await this.factoryFor('hub'));
+      ensure(factory?.address, 'no factory recorded to stake into');
+      const to = factory.address;
+      const address = stakeAddress || to;
+      const asset = await this.getAssetState(assetId);
+      // Self-owned asset: `client.stake` already signs and sends the tx, and an
+      // asset stake needs no token input (GLofter does the same for self-stake).
+      if (!owner || asset?.owner === owner || asset?.owner === ownerAddress) {
+        const response = await client.stake({
+          assets: [assetId],
+          tokens: [],
+          to,
+          locked: false,
+          message: message || '',
+          slashers,
+          nonce: '',
+          wallet,
+        });
+        // `client.stake` resolves to `[transactionHash, stakeAddress]` — the
+        // address the chain derived for the stake. Recording `to` instead made
+        // revoke/claim fail with `Invalid itx: "address" Expected DID type info`.
+        const [hash, chainStakeAddress] = Array.isArray(response) ? response : [response, address];
+        return { hash, stakeAddress: chainStakeAddress || address };
+      }
+      // Staking someone else's asset needs the owner's signature plus the factory
+      // owner's (GLofter parity): build, co-sign, then send.
       const token = { address: config.tokenId, value: (await import('./nft-factory.mjs')).fromTokenToUnit(1, config.tokenDecimals) };
-      const address = stakeAddress || mockStakeAddress(owner, to, '');
       const itx = {
         address,
         receiver: to,
@@ -431,6 +560,23 @@ export async function createOcapChain(config) {
       tx = await client.signStakeTx({ tx, wallet });
       const hash = await client.sendStakeTx({ tx, wallet });
       return { hash, stakeAddress: address };
+    },
+
+    /**
+     * The stake address the chain derives for this wallet + factory (same formula
+     * the SDK uses: `toStakeAddress(from, to, nonce)`). revoke/claim address the
+     * stake by it, so a stale record must not break them.
+     */
+    stakeAddressFor() {
+      const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? null;
+      const factory =
+        registry?.factories?.studio?.address || registry?.factories?.hub?.address || this.__factoryAddress || '';
+      if (!factory) return '';
+      try {
+        return toStakeAddress(ownerAddress, factory, '');
+      } catch {
+        return '';
+      }
     },
 
     async stakeState(stakeAddress) {
@@ -454,5 +600,5 @@ export async function createOcapChain(config) {
 export async function openChain(opts = {}, instance, { now } = {}) {
   const config = resolveChainOptions(opts);
   if (config.adapter === 'mock') return createMockChain({ instance, now });
-  return createOcapChain(config);
+  return createOcapChain(config, instance);
 }

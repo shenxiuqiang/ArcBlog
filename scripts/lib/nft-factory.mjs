@@ -116,7 +116,7 @@ export function buildNodeSVG(role) {
   const spec = ROLE_FACTORIES[role];
   if (!spec) throw new Error(`unknown node role: ${role}`);
   const accent = role === 'studio' ? '#2563eb' : '#0f766e';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="${spec.name}">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="${spec.name}">
   <rect width="480" height="300" rx="18" fill="#0b1020"/>
   <rect x="1" y="1" width="478" height="298" rx="17" fill="none" stroke="${accent}" stroke-width="2"/>
   <text x="32" y="58" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" letter-spacing="2" fill="${accent}">ARCBLOG</text>
@@ -129,6 +129,10 @@ export function buildNodeSVG(role) {
   <text x="248" y="228" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#f8fafc">${role === 'hub' ? '{{data.capacity}} studios' : '{{data.owner}}'}</text>
   <text x="32" y="268" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#475569">pk {{data.pk}}</text>
 </svg>`;
+  // OCAP keeps `output.display.content` as a JSON string and `@ocap/asset` renders
+  // it with JSON.parse — a raw newline is a control character there and the mint
+  // dies with "Bad control character in string literal". Collapse to one line.
+  return svg.replace(/\s*\n\s*/g, ' ').trim();
 }
 
 /**
@@ -304,7 +308,11 @@ export function buildMintInputs({ role, profile = {}, pk = '', stakeAmount = DEF
     name: String(profile.name ?? 'ArcBlog'),
     description: String(profile.description ?? ''),
     stake: String(stakeAmount),
-    pk: String(pk ?? ''),
+    // `pk` travels into the factory template, which the chain renders with
+    // JSON.parse — a multi-line PEM is a control character there and the mint
+    // fails ("Bad control character in string literal"). GLofter passes a
+    // single-line `wallet.publicKey`; collapse any whitespace so a PEM file works.
+    pk: String(pk ?? '').replace(/\s+/g, ''),
   };
   if (role === 'studio') {
     inputs.roles = Array.isArray(profile.roles) ? profile.roles.join(',') : String(profile.roles ?? 'basic');

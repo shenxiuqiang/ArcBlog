@@ -72,7 +72,7 @@ openChain(opts, instance, {now}) → adapter
 | factory 规格（模板/变量/hook/SVG/容量） | ✅ 已验证 | 9 个测试（结构、校验、公式、单位换算、模板渲染、mint 输入） |
 | §8.2–§8.4 全流程与等待期 | ✅ 已验证（mock 链） | live 测试：acquire → stake → revoke → 提前 claim 被拒 → 到期 claim 成功 → 资产回到所有者 |
 | AFS 与五态同步 | ✅ 已验证 | 同一测试断言 `config/node-nft.json` 与 `roles.json` 的 stakeState |
-| 真实链交易 | ⚠️ **未在本机执行** | 代码按 GLofter 调用序列实现；本机没有 ARC 依赖、没有链与资金钱包，因此 `--adapter ocap` 只验证了"缺依赖时报 CHAIN_UNAVAILABLE"的分支 |
+| 真实链交易 | ✅ **已在 ABT Network beta 执行**（2026-09-27） | 见 §7：两个 factory 上链、一次真实 acquire（NFT 已存在）、stake 已上链；revoke/claim 仍有阻塞 |
 
 因此：真实链能否跑通取决于部署环境的依赖与钱包，需要在有链的环境用 `--adapter ocap` 做一次端到端演练（见下）。
 
@@ -106,3 +106,40 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 ```
 
 `node/identity.json` 与 §67 内容签名共用同一把公钥：`acquire --pk` 省略时会自动取 `config/signing-keys/` 里登记的节点公钥（`publish --sign-key` 时写入），保证链上身份与内容签名是同一个 key。
+
+## 7. 真实链实测（ABT Network beta，2026-09-27）
+
+链：`https://beta.abtnetwork.io/api/`（`CHAIN_ID=beta`，ABT 资产地址 `z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG`），
+工厂主钱包按 GLofter 的 `WalletUtil`（`fromAppDid('', 0x+seed, 'arcblock', 0)`）从助记词派生：
+`z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a`。依懒通过 `npm i @ocap/client @ocap/wallet @arcblock/did-ext bip39`
+装入本仓库（`package.json` 因此首次有了 dependencies；`.env.local` 存 `ARCBLOG_CHAIN_*`，已 gitignore）。
+
+| 事实 | 证据 |
+| --- | --- |
+| Studio 工厂 | `z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo`（tx `E8F52CD40F0250C3…`，`ArcBlogStudioNode`） |
+| Hub 工厂 | `z3CtHrCfeZZQ8jah7rv9tuXsciDyKPzw2xjC8`（tx `73E7976991CF5BFB…`，`ArcBlogHubNode`） |
+| 真实 acquire | tx `A809E20E…`（`acquire_asset_v2`）铸出 NFT `zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW` |
+| 真实 stake | 资产进入质押地址 `zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5`（`getStakeState` 可查，sender=工厂主钱包，receiver=工厂） |
+| 余额 | 工厂主钱包 ABT 余额为 **0**，工厂创建与 acquire 仍然成功——**建厂/铸造本身不需要资金**（只有工厂声明的 token 输入需要，实测未阻断） |
+| revoke / claim | ❌ 仍阻塞：`Invalid itx: "address" Expected DID type info to match specified constraints`（见下方"未解"） |
+
+### 7.1 真实链暴露并修掉的 4 个缺陷（都是"只写未跑"的代码）
+
+1. **适配器把元组当对象**：`createAssetFactory`/`stake` 返回的是 `[txHash, address]`，适配器读 `response.hash` → 空地址却报 `ok:true`。现在解析元组，且**地址为空即 `CHAIN_ERROR` fail closed**；重复工厂（`DUPLICATE_FACTORY`）改为复用链上已有工厂。
+2. **`factoryFor` 在 ocap 分支不存在**：mock 有、ocap 没有，一调就崩。现在从 AFS 注册表读取。
+3. **SVG 卡片带裸换行**：`output.display.content` 是多行 SVG，而 `@ocap/asset` 用 `JSON.parse` 渲染模板 → `Bad control character in string literal`，mint 必挂。现在 SVG 坍成单行，并加了"载荷必须 JSON 安全"的守卫测试。
+4. **多行 PEM 作为 `pk` 输入**：同样触发 JSON 控制字符。现在 `buildMintInputs` 把 `pk` 归一为单行（GLofter 传的就是单行 `wallet.publicKey`）。
+
+另外修掉一个测试隔离缺陷：测试通过固定路径写**生产注册表** `config/nft-factories.json`，一次 mock 运行就把真链记录清空了。现在 `ARCBLOG_FACTORY_REGISTRY_PATH` / `ARCBLOG_NODE_NFT_STATE_PATH` 可覆盖，测试各用各的文件。
+
+### 7.2 未解：revoke / claim
+
+`revokeStake({assets, from: <stake address>, wallet})` 与 `claimStake` 都被链拒绝：
+`GraphQLError: Invalid itx: "address" Expected DID type info to match specified constraints`。
+已排除：`to` 误用（stake 的 receiver 是工厂，质押地址由链派生 ✓）、自造 `slashers`（已回退）、质押地址取错（已改为链派生地址 `zrjkV7pGy…`，`getStakeState` 能查到该地址的质押）。
+下一步：对比 GLofter `hub/api/src/routes/manage/node.ts` 的 revoke 调用与 `encodeRevokeStakeTx` 的地址类型编码，或在 SDK 侧打印 revoke itx 的 `address` 与链期望的类型常量。
+
+### 7.3 控制台页面
+
+`?page=factory`（`pages/ops/factory.aup`，导航"经济 → 工厂"）展示：链配置、两个工厂（地址/标识/发行方/质押额，地址可复制）、节点 NFT 生命周期（state/asset/stake/owner/claimable）以及 5 条可复制的运维命令（acquire / stake / revoke / claim / status）。
+**签名私钥绝不下发浏览器**：页面只读 `config/nft-factories.json` 与 `config/node-nft.json`（admin-only，guest 会话按 §13 fail closed，页面给出明确提示），操作通过复制命令在节点上执行。

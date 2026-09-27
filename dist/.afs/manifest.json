@@ -16,21 +16,21 @@
     },
     {
       "path": ".aup/app.json",
-      "size": 1604,
+      "size": 1666,
       "contentType": "application/json",
-      "sha256": "1b4acc35bd59969b796a66daebebf3ab67bfe5b103e83ec90892c2098fbfc4d6"
+      "sha256": "ce8690701833768cd34c51069b09ba0fae47a44ecf3143ec55789c3e87ecfa06"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 21376,
+      "size": 24448,
       "contentType": "application/json",
-      "sha256": "6a77c92176270b9ba2c9d5515ae0867e2eb4470198cf3ecf5f8c3640c5f6abbd"
+      "sha256": "ec851c62d1ed00f2830b5a618705222164dfc2cd7fc784107ae132d20d9e0036"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 21166,
+      "size": 24177,
       "contentType": "application/json",
-      "sha256": "e84702fe126cb3df8a508e97dd0317f2d685957b2f3b3a1eaef849f09c6c1cb4"
+      "sha256": "7fd9dc9d53b0c4e59765be0befbf36673a472ebb4365220d08ad43c699add650"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -202,9 +202,9 @@
     },
     {
       "path": ".aup/pages/admin/appearance.aup",
-      "size": 7366,
+      "size": 7657,
       "contentType": "application/octet-stream",
-      "sha256": "db174832fdfba822616286ddec1cb20ae6aa1a3e89c2651fbebd5bfeac5b954a"
+      "sha256": "027fe49e72aa165dc16aa356fd6cb2a282d8a8433cac59d22266f8c6ecb845a8"
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
@@ -214,27 +214,27 @@
     },
     {
       "path": ".aup/pages/admin/compose.aup",
-      "size": 13051,
+      "size": 13342,
       "contentType": "application/octet-stream",
-      "sha256": "3993e747918b97ffc70d107a0dc6ea8110721996266c7d60980a200e583ff6a9"
+      "sha256": "639f4b8d00598f33d438da83e69f4d4f7e5397c8504c6d71a2b8d1e38f4df12e"
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 13796,
+      "size": 14087,
       "contentType": "application/octet-stream",
-      "sha256": "a565ac5b9850b814ab090664f7813cd9e926bbd1ef627e171fddd92ce18f8ed8"
+      "sha256": "2fd8faa26b3d646be4633b164aa4e3a1ceea7563f6a370d06bb1532ee8b74ef3"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 14634,
+      "size": 14925,
       "contentType": "application/octet-stream",
-      "sha256": "bbda8cf3b4fde85bca91736c46def01d806c2dc7ab66b5630bf327bb64c7cee8"
+      "sha256": "a852c96796603ce296264cb6824ce97fea71884bd15f174a9d426da42fad4692"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 17293,
+      "size": 17584,
       "contentType": "application/octet-stream",
-      "sha256": "41c5b0585080296bf9815f479705071bca8b64cc64e6264df853e54591fea477"
+      "sha256": "21ba4058a1832000a98a87b163e95c3f9599d8a305cd3b8a5eccd01945b3b5ad"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -250,15 +250,15 @@
     },
     {
       "path": ".aup/pages/economy/access.aup",
-      "size": 8750,
+      "size": 9041,
       "contentType": "application/octet-stream",
-      "sha256": "9c5ca4f8ab6caa91aec04e588fcb545451056d6d296a02a3886e8c07ca84c080"
+      "sha256": "d8e74f2d872b0edb36b154620253cc3c41f11dcd53606f7dfe79c00a7203a130"
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 9995,
+      "size": 10286,
       "contentType": "application/octet-stream",
-      "sha256": "e9d0a5dd6654c69f3bef3bfbe42ac575c6065ebf44fd2307cc336febd842ac7c"
+      "sha256": "d3d97a1acac3d3f8e0ea79f8199d1ddc7cc935fd8e6d9dd424725c133d1e3c82"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -274,27 +274,33 @@
     },
     {
       "path": ".aup/pages/ops/agents.aup",
-      "size": 9820,
+      "size": 10111,
       "contentType": "application/octet-stream",
-      "sha256": "ab57b702c93c7ca8f938ac6d715e6aeb9c44ffc0217354cd97bbf83e512ab61c"
+      "sha256": "69fcf68431e82a6e58435a20db1f8d24caaed7ea804526b1d0f70909e41b96a1"
+    },
+    {
+      "path": ".aup/pages/ops/factory.aup",
+      "size": 16186,
+      "contentType": "application/octet-stream",
+      "sha256": "bbc4091d472535253bd94a0b1020c1d3a2b57657b62d5932da4c0eaf2cf7bc08"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 14246,
+      "size": 14537,
       "contentType": "application/octet-stream",
-      "sha256": "dad496ee6597dad17933d894a55306b3cdfae5eec7951f39584f81068ec9fbb0"
+      "sha256": "f1facc6ee3800df9e2646f37f98791443e8d4f2f661a4e9a42111f6cec7b1a46"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 8645,
+      "size": 8936,
       "contentType": "application/octet-stream",
-      "sha256": "edde0aa1d7a48d9421b42b6025cc399e9664a25422748f1e42eb5179ab703c04"
+      "sha256": "65b06bc7745b5e78772c263a22fcbf07d227b9a0623a72a8e6a207c6a7836cc0"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
-      "size": 11831,
+      "size": 12122,
       "contentType": "application/octet-stream",
-      "sha256": "5557ff69115b88b870ad0d1333fe4bebb0eb25d5043cf46f9165d36fd33c0e4e"
+      "sha256": "24e35969ac8f5b82b0c397d5733fb4edae5028c85d9f6a7a06945b7ed29c6984"
     },
     {
       "path": ".aup/pages/page-view.aup",
@@ -334,27 +340,27 @@
     },
     {
       "path": ".aup/pages/site/categories.aup",
-      "size": 10423,
+      "size": 10714,
       "contentType": "application/octet-stream",
-      "sha256": "043819088628359ff59fd60585e3788f828deac2477c4e8f8969bf57b5c0fb65"
+      "sha256": "ceeb5b926fe8acb69ed566d82ab8e370a7e2a6f028200903c4ba62edbcba7176"
     },
     {
       "path": ".aup/pages/site/feeds.aup",
-      "size": 8221,
+      "size": 8512,
       "contentType": "application/octet-stream",
-      "sha256": "7a110dc025f1a2686b05dc27af84720dd0ad1004152b82df9a0ed3568423f342"
+      "sha256": "0d1305b4a140a4b86072f67e3eaa808a9b7152ee2bbd769950b2a6788b24244b"
     },
     {
       "path": ".aup/pages/site/heroes.aup",
-      "size": 15627,
+      "size": 15918,
       "contentType": "application/octet-stream",
-      "sha256": "940375636b0e89f3d322387d8919e8ae01412a658949a25af4405de57cc7f4e1"
+      "sha256": "35860c737d986c43f8f26c1c92a6e50261174732fd9aa32bc503b8bb74cf128e"
     },
     {
       "path": ".aup/pages/site/seo.aup",
-      "size": 9635,
+      "size": 9926,
       "contentType": "application/octet-stream",
-      "sha256": "f190ad91ff929d070527a168bbe867501fbe29c7be29e6a86223511f8a282369"
+      "sha256": "26ddcebda2a3fddfead082782411b1ff6f926c99e03cf27ecbeb7cc4b8b60de2"
     },
     {
       "path": ".aup/pages/store.aup",
@@ -370,15 +376,27 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 1391,
+      "size": 1436,
       "contentType": "application/octet-stream",
-      "sha256": "c2a74095d38019abc91d99e0f1724fc3bf5eeb4d688036e9031a849149d4d7fc"
+      "sha256": "185b22ce70c7d01532b6f50c11a705e2f4f73b7d4dd187845bcdbd3eebef0d44"
     },
     {
       "path": ".aup/wrapper.json",
       "size": 313,
       "contentType": "application/json",
       "sha256": "bba62eaa513feb9d01d18013812e56a0aa59eae93384cbdc7f3d1fe96ac1cac6"
+    },
+    {
+      "path": ".env.example",
+      "size": 478,
+      "contentType": "application/octet-stream",
+      "sha256": "190212f1e0a2f76a3895347970192dbfbf0b6f0677932d679cf6d8ecae2db047"
+    },
+    {
+      "path": ".env.local",
+      "size": 401,
+      "contentType": "application/octet-stream",
+      "sha256": "3de86bbeab281d8f66f1bdffb45a759e7a6995254847424df653bb6b1edda966"
     },
     {
       "path": ".gitignore",
@@ -1270,9 +1288,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 24808,
+      "size": 25048,
       "contentType": "text/markdown",
-      "sha256": "adfa86723d3b428c8c430a5193c0c520cdbafaa614152de28b883566eb551eae"
+      "sha256": "44b7e7e53cbf14eabc86e77d55015de66b983b9bdf9ee9481bf694898bbd2a86"
     },
     {
       "path": "docs/arc-contracts.md",
@@ -1288,15 +1306,15 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 26607,
+      "size": 27192,
       "contentType": "text/markdown",
-      "sha256": "6835c20d0dd6b14460069ab2628f94aca46c64f2937deda84fbe320f0d8f6032"
+      "sha256": "a6c567fb42a65751952e8ae5bc6fc27f0864a4f192160183fbaecc5c17cd42ec"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
-      "size": 8871,
+      "size": 12690,
       "contentType": "text/markdown",
-      "sha256": "7fb2758aec19ca5ee1a8e3150224c7011ea24c65997ea00820b1ee5051f44c6b"
+      "sha256": "7998f8be144f090e2681f6f69043537f50d53cdb265904b9680122bff3e8e128"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1413,10 +1431,16 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "path": "package.json",
-      "size": 186,
+      "path": "package-lock.json",
+      "size": 31298,
       "contentType": "application/json",
-      "sha256": "4e5a5b377d02b96c2e94dcfeb02a53b33cd76ca2180bdf773601637b46747f71"
+      "sha256": "02e2be09ab560354d823704a2941c1060808131c9f01526592e1f52da6c68dcb"
+    },
+    {
+      "path": "package.json",
+      "size": 334,
+      "contentType": "application/json",
+      "sha256": "d2d27ef93d02119d55bd1df62d1e6fedaecf38991073c65fd116d4968e811c63"
     },
     {
       "path": "pages/hero-carousel/layout.aup",
@@ -1630,15 +1654,15 @@
     },
     {
       "path": "scripts/arcblog-node-nft.mjs",
-      "size": 15698,
+      "size": 15969,
       "contentType": "text/javascript",
-      "sha256": "6f33f9026e122c003c7b288b744a4b563e64592a93ffc5490ebff4ea90f2a781"
+      "sha256": "da897ea50658f0599070d6673672aae8e019d4f4f2ad59222b410072040fb3f9"
     },
     {
       "path": "scripts/arcblog-node-nft.test.mjs",
-      "size": 14238,
+      "size": 16420,
       "contentType": "text/javascript",
-      "sha256": "da36a68a6bf8de358b64b276166af7d00e7a929c102758a07ad5be011cee1f6e"
+      "sha256": "94128832a2d99a696155dddfb3af4adf3ab7f7c6d023335cad1ec3fb77373eac"
     },
     {
       "path": "scripts/arcblog-node.mjs",
@@ -1750,9 +1774,9 @@
     },
     {
       "path": "scripts/console-nav.mjs",
-      "size": 7187,
+      "size": 7236,
       "contentType": "text/javascript",
-      "sha256": "1bfd968f445addf2921635858e01b4a8df71de6a4b7e1469f8ae514e6af1b9b0"
+      "sha256": "7c27ead907e8e04f47e8331ac247db3936ac84732bf2028fd9a6c66557bac0e1"
     },
     {
       "path": "scripts/lib/agents.mjs",
@@ -1780,9 +1804,9 @@
     },
     {
       "path": "scripts/lib/chain.mjs",
-      "size": 19998,
+      "size": 26578,
       "contentType": "text/javascript",
-      "sha256": "28832f00aa98f5aa2d0459f0aca6b26d7e784db796b706c6dc7af3d57e8de9e6"
+      "sha256": "08186be941bf3778e1afadfe245f7219e1858fad017410b5b24149b41d61dc9c"
     },
     {
       "path": "scripts/lib/content-hash.mjs",
@@ -1834,9 +1858,9 @@
     },
     {
       "path": "scripts/lib/nft-factory.mjs",
-      "size": 15904,
+      "size": 16540,
       "contentType": "text/javascript",
-      "sha256": "f524dec128067e0402c25a672251f83c839d85b8736b1070a23936cd1c19e712"
+      "sha256": "baf8cd9a23c93859d13537a666cde82fb13f3b5e029bfbe041cb1deab744ae96"
     },
     {
       "path": "scripts/lib/node-profile.mjs",

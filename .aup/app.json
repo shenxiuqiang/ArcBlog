@@ -64,6 +64,9 @@
     "agents": {
       "tree": "pages/ops/agents.aup"
     },
+    "factory": {
+      "tree": "pages/ops/factory.aup"
+    },
     "hub": {
       "tree": "pages/ops/hub.aup"
     },

@@ -1,0 +1,169 @@
+page factory {
+  i18n {
+    title { en "Node factory" zh "节点工厂" }
+    desc { en "The on-chain NFT factories that mint this node's identity, the node NFT they minted, and the operator commands for acquire / stake / revoke." zh "铸造本节点身份的链上 NFT 工厂、已铸造的节点 NFT，以及 acquire / stake / revoke 的运维命令。" }
+    gate-title { en "Node factory" zh "节点工厂" }
+    gate-desc { en "Sign in with DID Wallet to view the chain factories and the node NFT." zh "使用 DID Wallet 登录后查看链上工厂与节点 NFT。" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    chain { en "Chain" zh "链" }
+    chain-adapter { en "Adapter" zh "适配器" }
+    chain-network { en "Network" zh "网络" }
+    chain-host { en "Chain host" zh "链地址" }
+    chain-token { en "Mint token (ABT)" zh "铸造代币（ABT）" }
+    chain-empty { en "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap" zh "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap" }
+    admin-only { en "The factory registry lives in config/ (admin-only), so this card stays empty unless you are signed in as the blocklet owner." zh "工厂登记表位于 config/（仅管理员可读），因此只有以 Blocklet 属主身份登录时这里才会有内容。" }
+    factories { en "Factories" zh "工厂" }
+    factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
+    factory-hub { en "Hub node factory" zh "Hub 节点工厂" }
+    factory-address { en "Factory address" zh "工厂地址" }
+    factory-moniker { en "Moniker" zh "标识" }
+    factory-issuer { en "Issuer wallet" zh "发行钱包" }
+    factory-stake { en "Stake per node (ABT)" zh "每个节点质押（ABT）" }
+    factory-capacity { en "Capacity (studios)" zh "容量（Studio 数）" }
+    factory-created { en "Created" zh "创建时间" }
+    node { en "Node NFT" zh "节点 NFT" }
+    node-empty { en "No node NFT recorded yet. Mint one: node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap" zh "还没有节点 NFT。铸造：node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap" }
+    node-role { en "Role" zh "角色" }
+    node-state { en "Lifecycle" zh "生命周期" }
+    node-active { en "Active (chain-verified)" zh "已激活（链上已验证）" }
+    node-asset { en "Asset address" zh "资产地址" }
+    node-stake { en "Stake address" zh "质押地址" }
+    node-owner { en "Owner" zh "所有者" }
+    node-claimable { en "Claimable at" zh "可取回时间" }
+    node-state-acquired { en "acquired — the NFT exists, the role is not staked yet" zh "acquired — NFT 已存在，角色尚未质押" }
+    node-state-staked { en "staked — the NFT is locked in the stake" zh "staked — NFT 已锁在质押中" }
+    node-state-revoking { en "revoking — waiting period running" zh "revoking — 等待期进行中" }
+    actions { en "Operator actions" zh "运维操作" }
+    actions-desc { en "The chain signs with the factory owner's key, which never reaches the browser: copy a command and run it on the node. Every step writes the result back into AFS, so this page shows the same truth as config/node-nft.json." zh "链上签名使用工厂主私钥，它不会下发到浏览器：复制命令在节点上执行。每一步都会把结果写回 AFS，因此本页与 config/node-nft.json 是同一事实。" }
+    act-acquire { en "Buy / mint" zh "购买 / 铸造" }
+    act-stake { en "Stake" zh "质押" }
+    act-revoke { en "Revoke (withdraw)" zh "撤回" }
+    act-claim { en "Claim back" zh "取回" }
+    act-status { en "Status" zh "状态" }
+    cmd-acquire { en "node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --endpoint <url> --region <region> --pk <key>" zh "node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --endpoint <url> --region <region> --pk <key>" }
+    cmd-stake { en "node scripts/arcblog-node-nft.mjs stake --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs stake --role studio --adapter ocap" }
+    cmd-revoke { en "node scripts/arcblog-node-nft.mjs revoke --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs revoke --role studio --adapter ocap" }
+    cmd-claim { en "node scripts/arcblog-node-nft.mjs claim --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs claim --role studio --adapter ocap" }
+    cmd-status { en "node scripts/arcblog-node-nft.mjs status --role studio" zh "node scripts/arcblog-node-nft.mjs status --role studio" }
+    explorer { en "Open in the chain explorer" zh "在链浏览器中打开" }
+    docs { en "Runbook: docs/ArcBlog-nft-factory.md" zh "运维手册：docs/ArcBlog-nft-factory.md" }
+  }
+  view gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dfactory&cancel_to=%2F%3Fpage%3Dfactory" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={overflowY: auto} {
+          view gap=xs {
+            h2 :title level=2
+            p :desc intent=muted
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={registry: "/instance/app/arcblog/config/nft-factories.json"} {
+            h3 :chain level=3 style={fontSize: "var(--type-body)"}
+            key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.registry.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.registry.network}"}, {label: "$t(factory.chain-host)", value: "${state.registry.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.registry.tokenId}", monospace: true, copyable: true}]
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            h3 :factories level=3 style={fontSize: "var(--type-body)"}
+            p :chain-empty intent=info scale=sm visible="!${state.registry.adapter}"
+            p :admin-only intent=muted scale=sm
+            grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))"} {
+              view gap=sm {
+                p :factory-studio scale=sm intent=muted
+                key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.registry.factories.studio.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.registry.factories.studio.moniker}"}, {label: "$t(factory.factory-issuer)", value: "${state.registry.factories.studio.issuer}", monospace: true, copyable: true}, {label: "$t(factory.factory-stake)", value: "${state.registry.factories.studio.stakeAmount}"}]
+              }
+              view gap=sm {
+                p :factory-hub scale=sm intent=muted
+                key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.registry.factories.hub.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.registry.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.registry.factories.hub.capacity}"}]
+              }
+            }
+            action -> navigate "https://beta.abtnetwork.io/explorer" variant=secondary label=:explorer style={borderRadius: "var(--radius-md, 8px)", alignSelf: flex-start}
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={nft: "/instance/app/arcblog/config/node-nft.json"} {
+            h3 :node level=3 style={fontSize: "var(--type-body)"}
+            p :node-empty intent=info scale=sm visible="!${state.nft.studio.assetId}"
+            key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-role)", value: "${state.nft.studio.role}"}, {label: "$t(factory.node-state)", value: "${state.nft.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.nft.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.nft.studio.stakeAddress}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.nft.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-claimable)", value: "${state.nft.studio.claimableAt}"}] visible="${state.nft.studio.assetId}"
+          }
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            h3 :actions level=3 style={fontSize: "var(--type-body)"}
+            p :actions-desc intent=muted scale=sm
+            key-value-list factory-actions dense=true fields=[{label: "$t(factory.act-acquire)", value: "$t(factory.cmd-acquire)", monospace: true, copyable: true}, {label: "$t(factory.act-stake)", value: "$t(factory.cmd-stake)", monospace: true, copyable: true}, {label: "$t(factory.act-revoke)", value: "$t(factory.cmd-revoke)", monospace: true, copyable: true}, {label: "$t(factory.act-claim)", value: "$t(factory.cmd-claim)", monospace: true, copyable: true}, {label: "$t(factory.act-status)", value: "$t(factory.cmd-status)", monospace: true, copyable: true}]
+            p :docs intent=muted scale=sm
+          }
+        }
+      }
+    }
+  }
+}
