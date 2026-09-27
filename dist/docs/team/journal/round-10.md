@@ -1,7 +1,7 @@
 # Round 10 — 收口两条 P3（BUG-016/017）+ 完成 §15.4 媒体管理界面（🟡 → ✅ 候选）+ UI 标准附录事实对齐
 
 - **日期**：2026-09-28（本地；Lead 裁定书 2026-09-27）
-- **Lead 提交**：<未提交，由 Lead 轮末填写>
+- **Lead 提交**：`58115c4` — *feat(console): media admin surface + hub write fidelity; correct §29.2*（41 个本轮产物路径；未跟踪的 `docs/dsh-workflow-and-ralph.md` 与其 dist 镜像未纳入）。**Lead 收口门**（按新门规，未跑 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`node scripts/arcblog-console-nav.mjs --check` pages 17、`arc blocklet build` 后源↔`dist` 一致、`.gate-lock` 未入库。**Lead 追加落笔**：`docs/arc-contracts.md` §29.2 更正（「既有记录写入一律被拒」改为条件性/与 daemon 相关，并给出 tree-merge 最小写入面 + 两次观测）、`docs/ArcBlog-feature-checklist.md`（§15.4 媒体管理界面 🟡→✅；✅80/🟡9/⬜9/⚪2，D 组 19/5；第 101/110 行备注 + 维护记录一行）
 - **清单变化**：**建议 ✅ 79→80 ｜ 🟡 10→9 ｜ ⬜ 9 ｜ ⚪ 2**（D 组 **18→19 ✅ / 6→5 🟡**）—— **前置已满足**：QA-005 已放行 REQ-009（`VERDICT=pass, BLOCKING=0`），媒体页四项能力按平台能力如实降级并写明；**PM 最终建议 = 第 102 行落 ✅ + 三条不阻断缺口登记**（上传行为受限未验证 / 空态未复跑 / `upload-note` 引用不可复现观测），严格口径可暂留 🟡 待 [REQ-011](../requirements/REQ-011-media-upload-observability-and-copy-hygiene.md)。**状态列由 Lead 落笔**（D18）
 - **轮次性质**：**🎯 长时目标的最后一轮自动续轮** —— 本轮结束后**自动续轮停止**，**R11 起需人工恢复**（人类说「继续 / resume」→ Lead `update_goal action=resume`；见 `backlog.md` 顶部 🛑 提示与本文件「目标收尾」节）
 
