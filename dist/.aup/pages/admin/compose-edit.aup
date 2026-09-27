@@ -27,7 +27,7 @@ page compose-edit {
   }
   view gap=lg style={height: "100vh", overflow: visible} {
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
-      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$session.authenticated" {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2
         p :gate-desc intent=info
         action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login

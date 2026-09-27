@@ -20,11 +20,15 @@ page hub {
     reject-msg { en "The relation becomes a removed tombstone (kept for audit). Either side may terminate." zh "关系将变为 removed（保留 Tombstone 以供审计）。任一方都可终止。" }
     reject-title { en "Terminate this relation?" zh "终止这条关系？" }
     rejected-ok { en "Relation terminated (tombstone kept)." zh "关系已终止（保留 Tombstone）。" }
+    label-direction { en "Direction" zh "方向" }
+    label-freshness { en "Freshness" zh "新鲜度" }
+    label-relation { en "Relation" zh "关系" }
     relations { en "Studio relations" zh "收录关系" }
     relations-empty { en "No relations yet. A Studio applies with: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有收录关系。Studio 申请：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
     relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
-    status-index { en "Index entry" zh "索引条目" }
-    status-registration { en "Registration" zh "注册记录" }
+    status-index { en "Status" zh "状态" }
+    status-note { en "The dot and the status text are read from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so relation / direction / freshness / status keep their machine values next to the local labels — docs/arc-contracts.md §28.8." zh "色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此 relation / direction / freshness / status 保留原始机器值，并与本地化标签同排显示——docs/arc-contracts.md §28.8。" }
+    status-registration { en "Status" zh "状态" }
     title { en "Hub console" zh "Hub 管理" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -126,22 +130,27 @@ page hub {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace} format=did title="${entry.content.hubDid}"
                       row gap=xs cross=center {
+                        p :label-relation scale=sm intent=muted
                         p "${entry.content.relation}" scale=sm
-                        p "${entry.content.direction}" scale=sm intent=muted
+                        p :label-direction scale=sm intent=muted
+                        p "${entry.content.direction}" scale=sm
                         p "●" scale=sm intent=muted title="${entry.content.status}"
                         p :status-registration scale=sm intent=muted
-                        p "${entry.content.freshness.state}" scale=sm intent=muted
+                        p "${entry.content.status}" scale=sm
+                        p :label-freshness scale=sm intent=muted
+                        p "${entry.content.freshness.state}" scale=sm
                         view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
                           time mode=display value="${entry.content.updatedAt}" timeMode=relative
                         }
                       }
                     }
-                    action variant=primary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
+                    action variant=secondary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
                     action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: removed, direction: "${entry.content.direction}", removedAt: "${generate.timeiso}", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge-title, message: :purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
                   }
                 }
                 p :relations-legend scale=sm intent=muted
+                p :status-note scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :cli-title level=3 style={fontSize: "var(--type-body)"}
@@ -159,6 +168,7 @@ page hub {
                     }
                     p "●" scale=sm intent=muted title="${entry.content.status}"
                     p :status-index scale=sm intent=muted style={flexGrow: 0}
+                    p "${entry.content.status}" scale=sm style={flexGrow: 0}
                     view style={fontSize: "var(--type-small)", color: "var(--color-dim)", flexGrow: 0} {
                       time mode=display value="${entry.content.indexedAt}" timeMode=relative
                     }

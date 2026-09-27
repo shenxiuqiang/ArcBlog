@@ -9,6 +9,7 @@
 ```
 journal/round-6.md
 journal/round-7.md
+journal/round-8.md
 ...
 ```
 
@@ -56,3 +57,4 @@ journal/round-7.md
 | --- | --- | --- | --- |
 | Round 6 | 补齐标签管理界面 + console 视觉一致性 | 放行（复验通过）；live 层未跑全量（用户指示只跑改动相关） | `4429f39` |
 | Round 7 | 控制台一致性收口（REQ-002）+ 界面标准事实对齐（REQ-003） | 放行（初验 pass / `BLOCKING=0`）；REQ-002 A10 部分不通过 → 5 条 BUG（P2×3 / P3×2）全部顺延 R8；清单计数不变 | `199105f` |
+| Round 8 | 收口 Round 7 的 5 条缺陷（REQ-004 Dev×3 缺陷 + QA §7-6；REQ-005 UI 文档×2 + §4.1 降级说明） | **放行**（QA `VERDICT=pass` / `BLOCKING=0`，[round-8.md](round-8.md)）；BUG-005（路径 B）/ BUG-006 / BUG-009 / BUG-007 / BUG-008 **全部收口**；D6 路径 A 探针判**不可行** → 采用路径 B；新增 BUG-010（P2）+ BUG-011（P3）**顺延 R9**；清单计数**建议不变**（Lead 落笔）。**过程事实**：workflow 的 QA 相位返回结构化结果时失败（返回 `null`），QA 产物已完整落盘、Lead 已核实 | 未提交（Lead 落笔） |

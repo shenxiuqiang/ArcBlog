@@ -7,6 +7,7 @@ page access {
     grant-reader { en "Reader" zh "读者" }
     grants-empty { en "Created automatically when a paid reading order settles." zh "付费阅读订单结算后自动生成。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    status-note { en "This page has no per-row status: a grant record exists only while the reader holds it and carries no status field." zh "该页没有逐行状态：授权记录只在读者持有期间存在，本身不含状态字段。" }
     title { en "Access grants" zh "访问授权" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -116,6 +117,7 @@ page access {
                   }
                 }
                 p :grants-empty scale=sm intent=muted
+                p :status-note scale=sm intent=muted
               }
             }
           }

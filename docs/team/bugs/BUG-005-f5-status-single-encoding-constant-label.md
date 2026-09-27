@@ -6,7 +6,7 @@
 | 严重级 | P2 |
 | 发现轮次 | round-7 |
 | 关联 REQ | REQ-002-console-consistency-fixes（§2.1 F5 / 验收标准 A10） |
-| 状态 | 待裁决 |
+| 状态 | **已修复（R8 路径 B）· QA 复验通过**（见文末「R8 复验」） |
 
 ## 复现命令与最小步骤
 
@@ -96,3 +96,20 @@ $ grep -rnoE '\$\{entry\.content\.(status|freshness)\}' .aup/pages/ | wc -l
 - `.aup/pages/admin/dashboard.aup:163-164`、`.aup/pages/ops/hub.aup:131-133`、`.aup/pages/ops/factory.aup:191-192`
 - 平台限制证据：`docs/arc-contracts.md` §28.1 补充实测（`$state.*`/`$entry.*` 不能用于 `visible`）；
   Dev 报告的「`$t(dynamic-key)` 运行期渲染字面量」**尚未写入 `docs/arc-contracts.md`**（见 D5），QA 无法独立复现（复现要改 `.aup`，QA 写范围外）
+
+## R8 复验（QA-003，2026-09-27）
+
+**结论：修复成立，路径 B 与 D6 第 2 条一致；HTML 文案不再把不同状态说成同一句话。**
+
+- 采用路径：**B**（本地化中性标签 + 原始状态值可见文本 + 色点 + 列表后常驻 dim 说明）。
+- 浏览器实测（admin，CDP 9333；原始输出见 [`../test-reports/round-8.md`](../test-reports/round-8.md) §3）：
+  - `?page=posts` 草稿区（QA 写入 1 条 `status=draft` 探针 + 既有 27 条 `deleted`）：逐行可见文本 `Status | draft` / `Status | deleted`，两两可区分；
+  - `?page=tags` 队列（QA 写入 4 条探针 intent：pending/done/noop/failed）：`Status | done` / `Status | failed` / `Status | noop` / `Status | pending`，四个互异字符串；
+  - `?page=dashboard` 订单行（QA 写入 paid/refunded 两条探针 order）：`Status | paid` / `Status | refunded`；
+  - `?page=hub`：`Relation | removed`、`Direction | studio`、`Status | registered|active`、`Freshness | offline`（本地化标签 + 原始值可见）；
+  - `?page=access`：无行，页面有常驻 dim 说明「该页没有逐行状态…」。
+  - 探针记录观察后已逐条删除（tags/intents、economy/orders、drafts 三个目录均回到"不存在"），`.gate-lock` 已释放。
+- 路径 A 复核（**不得**把推断当实测，故分栏写）：
+  - **静态复核**：运行时 bundle `aup.bc92de568433b0dc.js`（802,492 B，sha256 `bc92de56…aff6c1`）中 `i18n` 命中 **0**、locale 键（`wrapper.nav-console` 等）命中 **0** → i18n 不在客户端解析；`$entry` 命中 **0**；`visible` 求值器（`function Eu(e,t,r)` 反编译）只支持 ` || ` / ` && ` / 前缀 `!` / `$session.*` / `$state.*`，**无等值比较**；`arc dsl schema --json` 63 primitives / 12 aliases / 26 keywords 里 `valueMap|labelMap|statusMap|enumMap|labelField|presets|template` 全部命中 0。
+  - **运行期实测（QA 自建、不改源码）**：把 `$t(wrapper.nav-console)` 写进一条 `posts/` 记录的 `title`，`?page=dashboard` 与 `?page=posts` 都**原样渲染字面量** `$t(wrapper.nav-console)`（既未查 locale 也未报错）→ "运行期拼出来的 `$t()` token 不会被解析"这一条得到独立复现；观察后记录已删除。
+  - **受限未验证**：源码形式 `$t(posts.status-${entry.content.status})` 的探针页需要改 `.aup`（QA 写范围禁止），未独立复跑；另实测 `arc dsl validate` 对动态 key **不报错**（静默接受），故这属运行期解析属性而非校验期约束。未发现与 `arc-contracts.md` §28.8 冲突的证据。

@@ -15,14 +15,16 @@ page dashboard {
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     node { en "Node" zh "节点" }
-    node-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+    node-empty { en "If a value above is empty, run: node scripts/arcblog-node.mjs init" zh "若上方取值为空，请运行：node scripts/arcblog-node.mjs init" }
+    node-hint { en "Values come from node/profile.json and node/health.json." zh "取值来自 node/profile.json 与 node/health.json。" }
     q-ops { en "Operations" zh "运维" }
     q-settings { en "Appearance" zh "外观" }
     q-studio { en "Creator Studio" zh "创作者工作室" }
     q-write { en "Write a post" zh "写文章" }
     quick { en "Quick actions" zh "快捷操作" }
     roles-label { en "Roles" zh "角色" }
-    status-order { en "Order" zh "订单" }
+    status-note { en "The dot and the status text are read from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown verbatim — docs/arc-contracts.md §28.8." zh "色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原始状态值原样显示——docs/arc-contracts.md §28.8。" }
+    status-order { en "Status" zh "状态" }
     title { en "Dashboard" zh "仪表盘" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -117,7 +119,7 @@ page dashboard {
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
             view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="${state.nodeProfile}" {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={nodeProfile: "/instance/app/arcblog/node/profile.json", nodeHealth: "/instance/app/arcblog/node/health.json"} visible="${state.nodeProfile}" {
                 row gap=sm cross=center {
                   h3 "${state.nodeProfile.name}"
                   p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: monospace} format=did title="${state.nodeProfile.did}"
@@ -133,9 +135,8 @@ page dashboard {
                   p :capabilities-label scale=sm intent=muted
                   p "${state.nodeProfile.capabilities}" scale=sm
                 }
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="!${state.nodeProfile}" {
-                p :node-empty intent=info
+                p :node-hint scale=sm intent=muted
+                p :node-empty scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :content level=2 style={fontSize: "var(--type-body)"}
@@ -162,11 +163,13 @@ page dashboard {
                     p "${entry.content.amount} ${entry.content.asset}" scale=sm
                     p "●" scale=sm intent=muted title="${entry.content.status}"
                     p :status-order scale=sm intent=muted
+                    p "${entry.content.status}" scale=sm
                     view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
                       time mode=display value="${entry.content.createdAt}" timeMode=relative
                     }
                   }
                 }
+                p :status-note scale=sm intent=muted
                 p :economy-guide intent=muted scale=sm
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {

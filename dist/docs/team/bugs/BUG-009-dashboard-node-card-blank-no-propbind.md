@@ -6,7 +6,7 @@
 | 严重级 | P2 |
 | 发现轮次 | round-7 |
 | 关联 REQ | REQ-002-console-consistency-fixes（A11 / F8① 的观察面；缺陷本身**范围外、pre-existing**） |
-| 状态 | 待裁决 |
+| 状态 | **已修复（R8 路径①：补 propBind）· QA 复验通过；但 A4 字面判据「≥1 个 `did:key:` 元素」在本实例无法满足（待 Lead/PM 裁定，非实现缺陷）**（见文末「R8 复验」） |
 
 ## 复现命令与最小步骤
 
@@ -69,3 +69,22 @@ $ git show HEAD:.aup/pages/admin/dashboard.aup | grep -n 'propBind'
 
 - `.aup/pages/admin/dashboard.aup:118-140`（缺 `propBind`，却读 `${state.nodeProfile.*}` / `${state.nodeHealth.*}`；`visible="!${state.nodeProfile}"`）
 - 平台依据：`docs/arc-contracts.md` §28.1（`$state.*` 取反条件不成立）
+
+## R8 复验（QA-003，2026-09-27）
+
+**结论：卡片不再空白（走路径①补 `propBind`）；`visible="!${state.nodeProfile}"` 空态卡已删除。**
+
+- 静态复核：
+  ```text
+  $ grep -n propBind .aup/pages/admin/dashboard.aup
+  122: … propBind={nodeProfile: "/instance/app/arcblog/node/profile.json", nodeHealth: "/instance/app/arcblog/node/health.json"} visible="${state.nodeProfile}" {
+  $ grep -rn 'visible="!${state.nodeProfile}"' .aup/            # 0 命中
+  ```
+- 浏览器实测（admin，`?page=dashboard`，CDP 9333）卡片可见文本（逐字）：
+  ```text
+  ArcBlog | did:bloc…rcblog | v0.3.7 | ● | ok | Roles | basic | Capabilities | blog.read,blog.write,blog.publish
+  | Values come from node/profile.json and node/health.json.
+  | If a value above is empty, run: node scripts/arcblog-node.mjs init
+  ```
+  与实例/CLI 对照一致：`arc afs exec …read node/profile.json` → `name=ArcBlog, did=did:blocklet:arcblog, roles=["basic"], capabilities=["blog.read","blog.write","blog.publish"], version=0.3.7`；`node/health.json` → `status=ok`；`node scripts/arcblog-node.mjs check` → `ok:true, issues:[]`。
+- **A4 字面判据不满足（待裁定，非缺陷）**：REQ-004 §3 A4 路径①要求"卡内出现 ≥1 个 `did:key:` 元素"。本实例节点 DID 就是 `did:blocklet:arcblog`（blocklet 身份，`identity.json` 的 authMethod=blocklet），卡内按既有 `format=did` 惯例中间截断、完整值在 `title`（DOM：`text="did:bloc…rcblog"`、`title="did:blocklet:arcblog"`、宽 162px；`did:key:` 命中 0）。qa 无法在不改节点身份（超出写范围）的前提下满足该字面断言 → 请 Lead/PM 裁定按「真实 DID 中间截断 + `title` 全值」等价放行，或另建 key 身份后复验。

@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.2（2026-09-27：按 D1 裁定把 §2.1 / §2.3 / §2.5 / §2.6 / §8 / §9 对齐到已实现的 B′ 控制台；逐条 before/after 见 [docs/team/design/UI-002-admin-ui-design-alignment.md](team/design/UI-002-admin-ui-design-alignment.md)）
+**文档版本：** V1.3（2026-09-27：收口 §2.1 残余漂移——顶栏/滚动容器改写成实现事实、删掉与 17 页实现相矛盾的「侧栏无页脚」旧句；§2.6 / §9 附注改为可复现；§4.1 追加「平台受限 + 降级说明」。逐条 before/after 见 [docs/team/design/UI-003-ui-standard-residuals.md](team/design/UI-003-ui-standard-residuals.md)，上一轮见 [UI-002](team/design/UI-002-admin-ui-design-alignment.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -53,23 +53,23 @@
 │          │  页头：标题 + 一句话说明 + 主操作   │ │ 视口
 │ console- │───────────────────────────────────│ │ 高度
 │ nav      │                                   │ │ 100%
-│ 侧栏     │  console-scroll：唯一滚动区 ⇅ │ │
+│ 侧栏     │  内容列：唯一滚动区 ⇅        │ │
 │          │                                   │ │
 └──────────┴───────────────────────────────────┘ ▼
 ```
 
-页面整体锁定视口高度，**只有右侧 `console-scroll` 内部滚动**——详见 §2.3。
+页面整体锁定视口高度，**只有右侧内容列的滚动容器内部滚动**（`console-scroll` 只是本文档的**概念名**，实现里没有这个选择器）——滚动归属详见 §2.5，实现公式见 §8。
 
 | 项 | 标准 |
 | -- | ---- |
-| 顶栏 | 页面内 `view console-topbar`（`width: 100vw` + `margin-left: calc(50% - 50vw)`）承载 `app-header`，与控制台同宽贴边 |
-| 侧边栏样式 | **扁平、贴左边缘、与顶栏/视口底部零间距**：容器无边框无圆角无内边距（`padding: 0`、`gap: 0`），与右侧内容之间 1px 右分割线；**不渲染页脚**；菜单项无边框无圆角、左对齐满宽、左右内边距 `8px 20px`；项与项之间、分组之间各 1px 浅分割线 |
+| 顶栏 | 由 `.aup/wrapper.aup` 的 `view mode=shell` **一处**承载 `app-header`（所有页面共用，**不是**页面内的块）：容器 `width: 100vw` + `marginLeft: calc(50% - 50vw)`、高度钉死 `48px`；`mode=shell` 渲染为 `data-mode="shell"`，豁免运行时对 wrapper 直接子元素的 `--aup-content-max`(1200px) cap，因此真正满宽贴边（`arc-contracts.md` §27.5）。控制台页根 `height: calc(100vh - 48px)` 里的 `48px` 就是它的实测高度，改顶栏高度必须复测（§8） |
+| 侧边栏样式 | **扁平、贴左边缘、与顶栏/视口底部零间距**：容器无边框无圆角无内边距（`padding: 0`、`gap: 0`），与右侧内容之间 1px 右分割线；菜单项无边框无圆角、左对齐满宽、左右内边距 `8px 20px`；项与项之间、分组之间各 1px 浅分割线 |
 | 侧边栏宽度 | `clamp(200px, 15vw, 280px)` + `flexShrink: 0` —— 宽度随视口流式（取 clamp 的上下限），**不再写固定像素**；1803px 视口复测 270.44px（= 15vw，正是该 clamp 的计算值） |
 | 选中菜单项 | 深色实心块（`background: var(--color-text)`，文字 `var(--color-bg)`），**与未选中项共用同一左对齐内边距**（实测两者文字左缩进均为 20px）；不使用 `variant=primary`（它会居中标签造成位移） |
 | 分组名称（一级） | 独立背景带（`background: var(--color-bg)`）+ 文字左缩进 **20px**，与二级菜单形成层次 |
 | 菜单项（二级） | 文字左缩进 **32px**（比一级多 12px 的层级缩进），满宽、左对齐 |
 | 当前菜单项 | 深色实心块（内联 `background: var(--color-text)` + `color: var(--color-bg)`），与未选中项同一左对齐内边距；**不用** `variant=primary`（它居中标签） |
-| 侧栏页脚 | 控制台不渲染站点页脚，品牌/关于/RSS/版权收进侧栏底部（`marginTop: auto`） |
+| 侧栏页脚 | 控制台不渲染站点页脚（`app-footer`），品牌/关于/RSS/版权收进侧栏底部（容器 `marginTop: auto` + 顶部 1px 分割线），由 `scripts/console-nav.mjs` 生成进每个控制台页——是侧栏内唯一的站点级入口；「关于」`href="/?page=about"`（唯一无 `target` 的行）、「RSS」`href="/p/rss.xml"`（`target=_blank`） |
 | 内容区间距 | `gap` 使用间距刻度（§3.3），不用魔术数字 |
 
 ### 2.2 网格布局（右侧内容区）
@@ -159,8 +159,8 @@
 
 规则：
 
-* **页面固定，内容区滚动**：顶栏、console-nav 侧边栏、页头始终静止；长列表、长表单只在 `console-scroll` 内滚动。切换菜单、滚动列表时，导航和主操作的视觉位置永不移动。
-* **滚动区子项不得压缩**：`console-scroll` 的直接子项必须 `flexShrink: 0`，否则 flex 会把卡片压扁（文字被裁）而不是产生滚动（arc-contracts §21.2）。
+* **页面固定，内容区滚动**：顶栏、console-nav 侧边栏、页头始终静止；长列表、长表单只在右侧内容列的滚动容器内滚动（`console-scroll` 只是本文档的**概念名**，承载方式见 §8）。切换菜单、滚动列表时，导航和主操作的视觉位置永不移动。
+* **滚动区子项不得压缩**：内容列滚动容器的直接子项必须 `flexShrink: 0`，否则 flex 会把卡片压扁（文字被裁）而不是产生滚动（arc-contracts §21.2）。
 * **控制台不受站点列宽限制**：控制台内容 100% 满宽，不被 `--aup-content-max`（1200px）框住；公共站点保持原居中列。
 * **滚动条只有一条**：控制台页面禁止出现页面级纵向滚动条与内容区滚动条并存的"双滚动条"——看到双滚动条即视为布局缺陷。
 * **页头可固定**：内容区内的页头（标题 + 主操作）推荐固定在滚动视口顶部，长列表滚动时主操作保持可见；实现受限时允许页头随内容区一起滚动，但**禁止**页头脱离内容区悬浮。
@@ -204,7 +204,7 @@
   .pop()?.querySelectorAll('a:not([target])').length ?? 0
 ```
 
-期望 `0`。实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`；`?page=compose` 的页面级滚动容器里另有 wrapper 的 `app-header` 品牌链接（`href="/"`，属框架 chrome，不算内容区），上面的 `!el.querySelector('.aup-app-header')` 正是把它排除掉。
+期望 `0`。实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。**`!el.querySelector('.aup-app-header')` 不是可选项**：去掉它后 `?page=compose` 会变成 `2`，命中的两条都是**框架 chrome、不属于右侧内容区**——① wrapper 顶栏的品牌链接 `a.aup-app-header-brand-link` → `href="/"`；② 侧栏页脚的「关于」链接 `a.aup-action` → `href="/?page=about"`（REQ-002 F9 新增，见 §2.1「侧栏页脚」）。判定以「过滤后必须为 `0`」为准，不依赖这两条的条数（chrome 增减不影响结论）。对照页 `?page=posts` / `?page=tags` 带不带过滤都是 `0`（原始输出见 [BUG-008](team/bugs/BUG-008-admin-ui-design-section-9-note-not-reproducible.md)）。
 
 
 ## 3. 设计 Token
@@ -249,7 +249,7 @@ lg    32px    页面大区块之间
 
 **面板节点用 `view` 而非 `card`**：运行时的 `.aup-view[data-mode="card"]:hover` 会给卡片加 `translateY(-2px)` 上移（并恢复 hover 阴影），而运行时的样式清洗器会丢弃内联 `transform`/`translate`，无法在 AUP 里关掉。因此面板统一写成普通 `view` + 卡片 token（`--card-bg` / `--card-border` / `--radius-lg` / `padding`），外观与卡片一致但没有悬停位移。
 
-**卡片样式（审计后固化）**：`padding: 14px`、`gap=sm`(10px)、`radius: var(--radius-lg)`(10px)、`background` 填充 + **1px `var(--color-border)` 描边**、显式 `boxShadow: "none"`（运行时默认会叠一层 `0 1px 2px` 投影，控制台不要）；卡片自身 `margin: 0`，间距一律由容器 gap 控制（`console-scroll` gap=sm 或网格 gap 14px）。
+**卡片样式（审计后固化）**：`padding: 14px`、`gap=sm`(10px)、`radius: var(--radius-lg)`(10px)、`background` 填充 + **1px `var(--color-border)` 描边**、显式 `boxShadow: "none"`（运行时默认会叠一层 `0 1px 2px` 投影，控制台不要）；卡片自身 `margin: 0`，间距一律由容器 gap 控制（内容列滚动容器 gap=sm 或网格 gap 14px）。
 
 **控制台精修取值**：卡片 `padding: 14px` + `gap=sm`(10px)、内容区滚动间隔 `gap=sm`(10px)、`console-pane` 上下 `padding: 14px`。实测把卡片内边距从 20px 降到 14px、卡间距从 20px 降到 10px 即去掉"粗旷"感。
 
@@ -283,6 +283,13 @@ lg    32px    页面大区块之间
 
 * 状态点与文字必须同时出现（双编码）。
 * Error 状态必须附**具体失败项**：「同步失败：Hub 无响应（重试于 5 分钟前）」，而不是「失败」。
+
+**平台受限与降级说明（2026-09-27 立，随当前实现口径）**
+
+* **为什么不能「按记录值切换本地化文案」**：`$t()` 的 key 必须在**编译期**是常量——运行期拼出来的模板串（如 `$t(posts.status-${entry.content.status})`）会被**原样渲染成字面量**，既不查 locale 也不报错（`arc-contracts.md` §28.8，Round 7 探针实测；R8 会重跑探针复核，若与新证据出入以新证据为准）。同批实测还确定两条相邻限制：`visible` 只支持同步 `$session.*` 表达式（§28.1）、`afs-list.emptyText` 的四种写法全部无效（§28.6）。因此在当前平台上，「一行的文案随记录值切换」没有可用机制。
+* **降级口径（诚实优先于全本地化）**：一行状态 = **本地化中性标签** + **原始状态值以可见文本呈现** + **色点**。例：草稿区的 `deleted` 写成「草稿 · deleted」，而不是所有状态共用一句「In drafts」；hub 的 `relation` / `direction` / `freshness` 同口径，如 `Freshness: offline`、`Relation: inbound`（本地化标签 + 原始值可见）。
+* **三条硬边界**：① **不得**只把真实值放进 `title`（hover 才可见 ≈ 没有双编码）；② **不得**把**不同真实状态**断言成**同一句话**；③ 列表后必须有**常驻 dim 说明**，如实写出降级原因与平台限制（引用 §28.8 / §28.1 / §28.6）。
+* **口径修订（只改这一条）**：原「不得出现**裸英文枚举**」修订为「**不得出现『不同真实状态被同一句话断言』；原始枚举值可以可见，但必须有本地化上下文**」。上面第 284 行的要求（**状态点与文字必须同时出现**）**不变**——本次放宽的是「可见文本里能不能出现原始英文枚举」，**不是**「能不能只靠颜色编码」。
 
 ### 4.2 列表与卡片
 
@@ -411,7 +418,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 
 | 标准 | AUP 落地方式 |
 | ---- | ---- |
-| 控制台骨架一致 | 侧边栏（含扁平样式与侧栏页脚）由 `scripts/console-nav.mjs` 统一生成，`--check` 进测试门禁；顶栏由页面内的 `view console-topbar` 承载，公共页由各自页面承载 |
+| 控制台骨架一致 | 侧边栏（含扁平样式与侧栏页脚）由 `scripts/console-nav.mjs` 统一生成并投影进每个控制台页，`--check` 进测试门禁；顶栏由 `.aup/wrapper.aup` 的 `view mode=shell` **一处**承载（控制台与公共页共用，见 §2.1「顶栏」）——`console-topbar` / `console-scroll` 都只是本文档的**概念名**，实现里没有这两个选择器 |
 | 全高流式布局 | 页面根 `view style={height: "calc(100vh - 48px)", overflow: visible}`（`overflow` **必须**是 `visible`：`hidden` 会把全出血的顶栏与侧栏裁掉，`arc-contracts.md` §24）；其中 `row style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px"}` 承载侧栏 + 内容列，负下边距把侧栏底边压到视口底部且不产生外层滚动（`arc-contracts.md` §21.4）；内容列内 `view size={flex: 1} style={overflowY: auto}` 是唯一滚动容器。`48px` = wrapper 顶栏（`app-header`）的实测高度，平台没有"剩余高度"原语，顶栏高度改了必须复测（`arc-contracts.md` §21.2）。实现里**没有** `console-shell` / `console-pane` / `console-scroll` 这些选择器——它们只是本文档的**概念名**（`grep -rnE 'console-shell\|console-pane\|console-scroll' .aup/` 命中 0） |
 | 只用 token | safe-style 白名单：`background` 简写可用，`backgroundImage/backgroundPosition` 会被丢弃—— layered 背景写 `background: <color> url(...) center / cover no-repeat` |
 | 权限驱动显隐 | `visible=$session.authenticated`；异步数据用插值形式 `visible="${state.post.x}"`（表达式形式只求值一次） |
@@ -456,7 +463,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
   .pop()?.querySelectorAll('a:not([target])').length ?? 0
 ```
 
-实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`；其中 `?page=compose` 的页面级滚动容器里另有 wrapper 的 `app-header` 品牌链接（`href="/"`，框架 chrome，不算内容区），上面的过滤条件正是把它排除掉。
+实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。去掉 `!el.querySelector('.aup-app-header')` 后 `?page=compose` 为 `2`——命中的是框架 chrome 的两条链接（wrapper 顶栏品牌链接 `a.aup-app-header-brand-link` → `href="/"`；侧栏页脚「关于」链接 `a.aup-action` → `href="/?page=about"`），都不属于右侧内容区；判定以「过滤后必须为 `0`」为准，不依赖这两条的条数（原始输出见 [BUG-008](team/bugs/BUG-008-admin-ui-design-section-9-note-not-reproducible.md)）。
 
 ---
 

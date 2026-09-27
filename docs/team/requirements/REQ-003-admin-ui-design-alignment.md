@@ -145,7 +145,7 @@ npm test               # 仍 28/28（文档改动不得动到任何门禁产物�
 - **残余漂移（顺延 R8，本 REQ 续作）**：
   - **BUG-007（P3）**：§2.1 第 66 行「不渲染页脚」与第 72 行「侧栏页脚」自相矛盾，且 REQ-002 F9 已让 17 页渲染页脚 → 该句与实现事实相反；第 65 行 `console-topbar`、第 56/61 行 `console-scroll` 仍是实现里不存在的选择器（`.aup/` 命中 0）。
   - **BUG-008（P3）**：§9 附注（及 §2.6 第 199 行）写「无过滤时应命中 1」，实测 `?page=compose` 无过滤 = **2**（多出 REQ-002 F9 新增的侧栏「关于」链接）——断言结论（带过滤 = 0）不受影响，只是附注实测描述不准确、且依赖另一个 REQ 是否落地。
-  - 两条都落在 `docs/ArcBlog-admin-ui-design.md`，**需 Lead 沿用 R7 的临时扩展授权**（仅事实对齐）后由 UI 同批处理；见 backlog 排队 #4。
+  - 两条都落在 `docs/ArcBlog-admin-ui-design.md`，**需 Lead 沿用 R7 的临时扩展授权**（仅事实对齐）后由 UI 同批处理；见 backlog **Round 8** 小节 / [REQ-005](REQ-005-console-ui-standard-residual.md)（`task-8`）（原 R7 排队 #4 已在本轮重排中移出）。
 
 ## 4. 依赖
 
