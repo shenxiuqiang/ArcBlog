@@ -4,12 +4,42 @@ page agents {
     agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
     agent-expires { en "Expires" zh "到期" }
     agent-grants-empty { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "如何授权：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
-    desc { en "Time-boxed capability grants issued to agents." zh "发放给 Agent 的限时能力授权。" }
+    cmd-authorize { en "Grant (TTL required)" zh "授权（必须带 TTL）" }
+    cmd-revoke { en "Revoke" zh "撤销" }
+    declared-agents { en "Declared agent" zh "已声明 Agent" }
+    declared-budget { en "Budget" zh "预算" }
+    declared-checks { en "Policy check" zh "策略检查" }
+    declared-scopes { en "Declared scopes" zh "已声明范围" }
+    desc { en "What the agent surface can do to this node: the enforced policy, the declared tool catalogue, the grant records and the operator CLI that issues them." zh "Agent 面能对本节点做什么：强制策略、已声明工具目录、授权记录，以及签发它们的运营者 CLI。" }
     gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
     gate-title { en "Operations" zh "运维" }
+    grant-desc { en "Grants are addressed by sha256(agentDid).slice(0,16), and the AUP DSL has no hash primitive, so this page cannot sign or revoke one. Use the operator CLI: it requires an explicit expiry and keeps high-risk capabilities behind a second confirmation." zh "授权记录按 sha256(agentDid).slice(0,16) 寻址，而 AUP DSL 没有哈希原语，因此本页无法签发或撤销。请用运营者 CLI：它强制填写到期时间，高风险能力需要二次确认。" }
+    grant-forbidden { en "agent.admin is not grantable and cannot be granted: settle_payment, change_wallet and change_role never run from the agent surface (spec §130)." zh "agent.admin 不可授予：settle_payment、change_wallet、change_role 永不从 Agent 面执行（spec §130）。" }
+    grant-title { en "Authorize an agent (CLI)" zh "授权 Agent（CLI）" }
+    grants-desc { en "Records under config/agent-grants/ (admin-only). A write tool only runs while its grant is unexpired." zh "config/agent-grants/ 下的记录（仅管理员可读）。写工具仅在授权未过期时可执行。" }
+    grants-title { en "Current grants" zh "当前授权" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
-    title { en "Agent grants" zh "Agent 授权" }
+    policy-blocked { en "Blocked write ops" zh "被阻止的写操作" }
+    policy-default { en "Default-closed tools" zh "默认关闭工具" }
+    policy-desc { en "Enforced by scripts/arcblog-agent.mjs and audited by node scripts/arcblog-agent.mjs check. Read-only: this page has no switches." zh "由 scripts/arcblog-agent.mjs 强制执行、node scripts/arcblog-agent.mjs check 审计。只读：本页没有任何开关。" }
+    policy-never { en "Never exposed (prefixes)" zh "永不暴露（前缀）" }
+    policy-read { en "Read-only ops" zh "只读操作" }
+    policy-title { en "Policy & declaration (read-only)" zh "策略与声明（只读）" }
+    runtime-note { en "Spec §129: /mcp, /api/afs/rpc and llms.txt are provided by the ARC Runtime; ArcBlog only declares and audits them, so this page does not assert their runtime availability." zh "spec §129：/mcp、/api/afs/rpc 与 llms.txt 由 ARC Runtime 提供；ArcBlog 只声明与审计，本页不断言其运行期可用性。" }
+    status-available { en "available" zh "可用" }
+    status-closed { en "closed" zh "关闭" }
+    status-unavailable { en "unavailable" zh "不可用" }
+    studio-registry { en "no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)" zh "本平台版本没有跨节点 Studio 注册表（spec §71 属 POST-MVP 传输）" }
+    title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
+    tools-closed { en "Closed tools (6) — never exposed (spec §130)" zh "关闭工具（6）——永不暴露（spec §130）" }
+    tools-closed-note { en "Closed tools never run from the agent surface: orders / settlements / sales name buyers (admin-only, privacy); settle_payment, change_wallet and change_role are default-closed." zh "关闭工具永不从 Agent 面执行：订单 / 结算 / 销售会暴露买家（仅管理员，隐私）；settle_payment、change_wallet、change_role 默认关闭。" }
+    tools-desc { en "Every tool the agent surface declares, with the capability it needs and whether it can run today. Read tools are always on; write tools need a time-boxed grant; closed tools never run." zh "Agent 面声明的每个工具，含所需能力与当前可用状态。只读工具始终可用；写工具需要限时授权；关闭工具永不执行。" }
+    tools-legend { en "Status: available = runs today; unavailable = declared but the platform cannot serve it (reason inline)." zh "状态：可用 = 当前可执行；不可用 = 已声明但平台无法提供（原因见行内）。" }
+    tools-read { en "Read tools (9)" zh "只读工具（9）" }
+    tools-source { en "Source: node scripts/arcblog-agent.mjs tools — 19 tools (read 9 / write 4 / closed 6). Re-run the CLI to re-verify." zh "来源：node scripts/arcblog-agent.mjs tools —— 19 个工具（read 9 / write 4 / closed 6）。可重跑 CLI 复核。" }
+    tools-title { en "Declared tools (spec §130)" zh "已声明工具（spec §130）" }
+    tools-write { en "Write tools (4) — require a time-boxed grant" zh "写工具（4）——需要限时授权" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -98,12 +128,14 @@ page agents {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
               p :desc intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :grants-title level=3
+                p :grants-desc intent=muted
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view visible=$session.authenticated {
                   afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agent-grants-empty from "/instance/app/arcblog/config/agent-grants" {
@@ -120,6 +152,32 @@ page agents {
                 p :agent-grants-empty scale=sm intent=muted
                 p :agent-closed scale=sm intent=muted
                 p :mutations scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :policy-title level=3
+                p :policy-desc intent=muted
+                key-value-list agent-policy dense=true fields=[{label: "$t(agents.policy-read)", value: "read, list, stat, search", monospace: true}, {label: "$t(agents.policy-blocked)", value: "write, delete, exec, mount, unmount, create, update", monospace: true}, {label: "$t(agents.policy-never)", value: "/instance/app/arcblog/drafts, /instance/app/arcblog/page-drafts, /instance/app/arcblog/paid, /instance/app/arcblog/economy/orders, /instance/app/arcblog/economy/settlements, /instance/app/arcblog/economy/ledger, /instance/app/arcblog/economy/attributions, /instance/app/arcblog/economy/access-grants, /instance/app/arcblog/economy/refunds, /instance/app/arcblog/config/trusted-hubs, /blocklets", monospace: true}, {label: "$t(agents.policy-default)", value: "settle_payment, change_wallet, change_role", monospace: true}]
+                key-value-list agent-declaration dense=true fields=[{label: "$t(agents.declared-agents)", value: "arcblog-agent — agents/arcblog-agent (type ai, model gpt-5.5, instructions system.md)"}, {label: "$t(agents.declared-scopes)", value: "/instance/app/arcblog/posts/** · categories/** · node/** · economy/policies/** · economy/products/** — ops read, list, stat; maxDepth 2", monospace: true}, {label: "$t(agents.declared-budget)", value: "maxRounds 6 · totalTokens 64000", monospace: true}, {label: "$t(agents.declared-checks)", value: "node scripts/arcblog-agent.mjs check — ok true, failed [], 8 checks", monospace: true}]
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :tools-title level=3
+                p :tools-desc intent=muted
+                h3 :tools-read level=3 style={fontSize: "var(--type-body)"}
+                key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: list_products, value: "$t(agents.status-available) · agent.read"}, {label: get_policy, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}, {label: get_studio, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}]
+                h3 :tools-write level=3 style={fontSize: "var(--type-body)"}
+                key-value-list agent-tools-write dense=true fields=[{label: create_draft, value: "$t(agents.status-available) · agent.write"}, {label: update_draft, value: "$t(agents.status-available) · agent.write"}, {label: publish_post, value: "$t(agents.status-available) · agent.publish"}, {label: create_product, value: "$t(agents.status-available) · agent.economy"}]
+                h3 :tools-closed level=3 style={fontSize: "var(--type-body)"}
+                key-value-list agent-tools-closed dense=true fields=[{label: get_orders, value: "$t(agents.status-closed) · agent.economy"}, {label: get_settlements, value: "$t(agents.status-closed) · agent.economy"}, {label: get_sales, value: "$t(agents.status-closed) · agent.economy"}, {label: settle_payment, value: "$t(agents.status-closed) · agent.admin"}, {label: change_wallet, value: "$t(agents.status-closed) · agent.admin"}, {label: change_role, value: "$t(agents.status-closed) · agent.admin"}]
+                p :tools-legend scale=caption intent=muted
+                p :tools-closed-note scale=caption intent=muted
+                p :tools-source scale=caption intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :grant-title level=3
+                p :grant-desc intent=muted
+                key-value-list agent-grant-cmds dense=true fields=[{label: "$t(agents.cmd-authorize)", value: "node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30", monospace: true, copyable: true}, {label: "$t(agents.cmd-revoke)", value: "node scripts/arcblog-agent.mjs revoke --agent <did>", monospace: true, copyable: true}]
+                p :grant-forbidden scale=sm intent=muted
+                p :runtime-note scale=sm intent=muted
               }
             }
           }

@@ -166,9 +166,26 @@ page posts {
                         }
                       }
                     }
-                    action variant=secondary size=sm label=:detail style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/post-detail.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", status: "${entry.content.status}", category: "${entry.content.category}", tags: "${entry.content.tags}", authorName: "${entry.content.authorName}", summary: "${entry.content.summary}", updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:admin-archive confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: archived, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action variant=secondary size=sm label=:detail style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/post-detail.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", status: "${args.eStatus}", category: "${args.eCategory}", tags: "${args.eTags}", authorName: "${args.eAuthorName}", summary: "${args.eSummary}", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:admin-archive confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: archived, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish-title, message: :admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+                    input type=hidden name=eTitle value="${entry.content.title}"
+                    input type=hidden name=eSlug value="${entry.content.slug}"
+                    input type=hidden name=eSummary value="${entry.content.summary}"
+                    input type=hidden name=eBody value="${entry.content.body}"
+                    input type=hidden name=eCoverImage value="${entry.content.coverImage}"
+                    input type=hidden name=eTags value="${entry.content.tags}"
+                    input type=hidden name=eCategory value="${entry.content.category}"
+                    input type=hidden name=eSeoTitle value="${entry.content.seoTitle}"
+                    input type=hidden name=eSeoDescription value="${entry.content.seoDescription}"
+                    input type=hidden name=eOgTitle value="${entry.content.ogTitle}"
+                    input type=hidden name=eOgDescription value="${entry.content.ogDescription}"
+                    input type=hidden name=eOgImage value="${entry.content.ogImage}"
+                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
+                    input type=hidden name=eAuthorName value="${entry.content.authorName}"
+                    input type=hidden name=eStatus value="${entry.content.status}"
+                    input type=hidden name=ePublishedAt value="${entry.content.publishedAt}"
+                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
                   }
                 }
                 h3 :group-drafts level=3 style={fontSize: "var(--type-body)"}
@@ -186,11 +203,28 @@ page posts {
                         }
                       }
                     }
-                    action variant=secondary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                    action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: deleted, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${entry.content.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action variant=secondary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
                     view layout=inline href="/edit/${entry.content.slug}" target=_blank style={display: block, cursor: pointer, color: "var(--color-dim)"} {
                       p :edit scale=sm
                     }
+                    input type=hidden name=eTitle value="${entry.content.title}"
+                    input type=hidden name=eSlug value="${entry.content.slug}"
+                    input type=hidden name=eSummary value="${entry.content.summary}"
+                    input type=hidden name=eBody value="${entry.content.body}"
+                    input type=hidden name=eCoverImage value="${entry.content.coverImage}"
+                    input type=hidden name=eTags value="${entry.content.tags}"
+                    input type=hidden name=eCategory value="${entry.content.category}"
+                    input type=hidden name=eSeoTitle value="${entry.content.seoTitle}"
+                    input type=hidden name=eSeoDescription value="${entry.content.seoDescription}"
+                    input type=hidden name=eOgTitle value="${entry.content.ogTitle}"
+                    input type=hidden name=eOgDescription value="${entry.content.ogDescription}"
+                    input type=hidden name=eOgImage value="${entry.content.ogImage}"
+                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
+                    input type=hidden name=eAuthorName value="${entry.content.authorName}"
+                    input type=hidden name=ePublishedAt value="${entry.content.publishedAt}"
+                    input type=hidden name=eArchivedAt value="${entry.content.archivedAt}"
+                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
                   }
                 }
                 p :status-note scale=sm intent=muted

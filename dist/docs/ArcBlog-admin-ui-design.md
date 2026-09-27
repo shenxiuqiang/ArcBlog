@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.3（2026-09-27：收口 §2.1 残余漂移——顶栏/滚动容器改写成实现事实、删掉与 17 页实现相矛盾的「侧栏无页脚」旧句；§2.6 / §9 附注改为可复现；§4.1 追加「平台受限 + 降级说明」。逐条 before/after 见 [docs/team/design/UI-003-ui-standard-residuals.md](team/design/UI-003-ui-standard-residuals.md)，上一轮见 [UI-002](team/design/UI-002-admin-ui-design-alignment.md)）
+**文档版本：** V1.4（Round 9 · 2026-09-28 落盘（授权书 2026-09-27）：**BUG-011**——§2.6 / §9 末条断言限定视口（admin 会话、1803×908）并补「只针对内容列、候选容器数 ≥1」的等价断言（期望值 `0` 不变）；**U1**——§2.5 / §3.3 的 `console-pane` / `console-shell` 按 §8 既有范式标注为本文档的**概念名**；**U2**——§7 交叉引用改指 §2.5；**U3**——§2.6 重复的 RSS / `llms.txt` 行去重。逐条 before/after 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)，上一轮见 [UI-003](team/design/UI-003-ui-standard-residuals.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -152,10 +152,12 @@
 控制台页面是**应用，不是文档**：页面宽高 100% 流式铺满视口，页面本身固定不动，滚动只发生在它该发生的地方。
 
 ```text
-宽度   100% 流式：console-pane flex: 1 随视口伸缩，无固定页宽，无横向滚动
-高度   100% 锁定：console-shell 撑满视口剩余高度，页面不出现纵向滚动条
-滚动   单一归属：只有右侧 console-pane 内部纵向滚动（overflow-y: auto）
+宽度   100% 流式：console-pane（本文档的概念名，实现里没有这个选择器）flex: 1 随视口伸缩，无固定页宽，无横向滚动
+高度   100% 锁定：console-shell（本文档的概念名，实现里没有这个选择器）撑满视口剩余高度，页面不出现纵向滚动条
+滚动   单一归属：只有右侧 console-pane（本文档的概念名，实现里没有这个选择器）内部纵向滚动（overflow-y: auto）
 ```
+
+> 上一段代码块里的 `console-pane` / `console-shell` 与 §2.1 的 `console-scroll`、§8 的 `console-topbar` 同类：**都是本文档的概念名**，仓库里没有这些选择器（`grep -rnE 'console-pane|console-shell|console-scroll|console-topbar' .aup/ scripts/` 命中 `0`），真正的承载是 `.aup/wrapper.aup` 的 `view mode=shell` 顶栏 + 内容列 `view size={flex: 1} style={overflowY: auto}`（§8）。**标准口径（100% 流式 / 高度锁定 / 滚动单一归属）不变**，只是不再把这些名字读成实现。
 
 规则：
 
@@ -187,16 +189,15 @@
 | **写文章 / 外观设置** | 同上的整页切换（两者各自是真实页面） | `action -> page compose` / `-> page appearance` | 仪表盘「写文章」→ `?page=compose`，无新标签页 |
 | **记录绑定页面**：草稿编辑 `/edit/<slug>`、草稿预览 `/preview/<slug>`、阅读 `/posts/<slug>`、静态页 `/pages/<slug>` | **新标签页**（面板是静态 DSL，承载不了动态 slug；阅读本来就不该打断控制台） | `view href="…" target=_blank` | 帖子行"Hello ArcBlog"→ `target="_blank"` |
 | **非 HTML 资源**：RSS `/p/rss.xml`、`llms.txt` | **新标签页** | 同上 | 分发节 RSS / 文章索引均为 `target="_blank"` |
-| **非 HTML 资源**：RSS `/p/rss.xml`、`llms.txt` 等 | **新标签页** | 同上 | 分发页的 RSS 订阅 / 文章索引均为 `target="_blank"` |
 | **登录跳转**（gate 的 `/.well-known/service/login?return_to=…`） | **同标签页**（登录后回到控制台，属例外） | `action -> navigate "…"` | — |
 | **行内写操作**（归档 / 从公开移除 / 发布 / 删除 / 保存 / 授权 / 收录审批…） | **原地执行**，不跳转（不可逆操作带 confirm） | `action -> exec` | — |
 
 平台行为：给 `view href` 或 `action href` 加 `target=_blank` 时，运行时会自动补 `rel="noopener noreferrer"`（实测 DOM：`<a class="aup-action" href="/?page=compose" target="_blank" rel="noopener noreferrer">`）。
 
-**验收口径**：在任一控制台页面的**内容区滚动容器**里执行下面的断言，结果必须是 `0`——即右侧内容里不存在"会把控制台整页换掉"的链接。生成器已改为 id-less（`arc-contracts.md` §25.3），所以按"内容区滚动容器"定位，不能按某个 `data-aup-id` 取节点：
+**验收口径（执行前提：admin 会话、视口 1803×908）**：在任一控制台页面的**内容区滚动容器**里执行下面的断言，结果必须是 `0`——即右侧内容里不存在"会把控制台整页换掉"的链接。生成器已改为 id-less（`arc-contracts.md` §25.3），所以按"内容区滚动容器"定位，不能按某个 `data-aup-id` 取节点：
 
 ```js
-// 内容区滚动容器内的无 target 链接数 —— 期望 0
+// 内容区滚动容器内的无 target 链接数 —— 期望 0（原断言；对视口敏感，判定见下面的等价断言）
 [...document.querySelectorAll('*')]
   .filter(el => el.scrollHeight > el.clientHeight + 2
     && /auto|scroll/.test(getComputedStyle(el).overflowY)
@@ -204,7 +205,36 @@
   .pop()?.querySelectorAll('a:not([target])').length ?? 0
 ```
 
-期望 `0`。实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。**`!el.querySelector('.aup-app-header')` 不是可选项**：去掉它后 `?page=compose` 会变成 `2`，命中的两条都是**框架 chrome、不属于右侧内容区**——① wrapper 顶栏的品牌链接 `a.aup-app-header-brand-link` → `href="/"`；② 侧栏页脚的「关于」链接 `a.aup-action` → `href="/?page=about"`（REQ-002 F9 新增，见 §2.1「侧栏页脚」）。判定以「过滤后必须为 `0`」为准，不依赖这两条的条数（chrome 增减不影响结论）。对照页 `?page=posts` / `?page=tags` 带不带过滤都是 `0`（原始输出见 [BUG-008](team/bugs/BUG-008-admin-ui-design-section-9-note-not-reproducible.md)）。
+> **原断言为什么必须限定视口（BUG-011）**：它只排除"含 `.aup-app-header` 的容器"，再用 `.pop()` 取**最后一个**候选——候选集合与"取到哪个容器"都随视口变化。UI 自跑 CDP 探针（admin 会话，同一探针、只改视口，原始 JSON 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md) §2）实测两轮：
+>
+> * **BUG-010 修复前**（Dev 落盘 BUG-010 之前，2026-09-28 00:2x；Dev 的 `.aup/pages/admin/compose.aup` mtime = 2026-09-28 00:34，UI 复跑早于它；当时 `?page=compose` 尚无内容列滚动容器）：**1803×908** 下只有 1 个滚动容器且它包含 `.aup-app-header` → 过滤后候选集合**为空**、`.pop()` 为 `undefined`、`?? 0` 兜底给出 `0`（**空心通过**，根本没有检查过内容列）；**1512×765** 下滚动容器为 2 个，`.pop()` 取到侧栏容器（内含侧栏页脚「关于」链接 `href="/?page=about"`）→ 同一断言给 **1**。
+> * **BUG-010 修复后**（2026-09-28 00:3x，`?page=compose` 已有内容列）：`?page=compose` 两视口都变回 `0`（修复奏效），但同一条原断言在 **`?page=appearance`** 上重演同一缺陷——1803×908 → `0`（候选集合仍为空）、1512×765 → **1**。
+>
+> 两轮证据合起来说明：**这是原断言自身的缺陷（`0` / `1` 随视口漂移），不是某一页的偶发**——修好一个页面的容器结构，缺陷就换一个页面出现。因此原断言只在 1803×908 下可作参照，**不得单独作为验收依据**；判定一律用下面的等价断言。
+
+**等价断言（判定以此为准）——只针对内容列：`candidates` 必须 ≥ 1，且 `total` 必须为 `0`**。内容列 = `overflowY` 为 `auto|scroll` 的**布局容器**，并排除三类元素：① **框架顶栏**（`.aup-app-header` 的任何祖先容器）；② **侧栏**（含 `[data-active="true"]` 当前项的容器——侧栏与它的页脚链接同属一个容器）；③ `INPUT` / `TEXTAREA` / `SELECT` 这类 UA 默认 `overflowY: auto` 的**表单控件**（不排除的话，`?page=compose` 的正文 `textarea` 会被误当成内容列，又会得到一个空洞的 `0`）。`candidates ≥ 1` 是硬门槛：候选集合为空说明断言没找到内容列，结论无意义，**不得**像 `?? 0` 那样兜底成 `0` 而放行。**注意不能按"当前是否真的溢出"定位内容列**——内容短于一屏时（如 1803×908 的 `?page=dashboard`，内容列 724/724）`scrollHeight > clientHeight + 2` 不成立，候选会变成 0，验收将无法通过。
+
+```js
+// 只针对内容列的等价断言 —— 期望 total 0，且 candidates >= 1
+(() => {
+  const header = document.querySelector('.aup-app-header');
+  const activeNav = document.querySelector('[data-active="true"]');
+  const isFormControl = el => /^(INPUT|TEXTAREA|SELECT|OPTION)$/.test(el.tagName);
+  const contentColumns = [...document.querySelectorAll('*')].filter(el =>
+    /auto|scroll/.test(getComputedStyle(el).overflowY) && !isFormControl(el) &&
+    !(header && el.contains(header)) &&
+    !(activeNav && el.contains(activeNav)));
+  return {
+    candidates: contentColumns.length,        // 必须 >= 1，否则不算通过
+    linksPerColumn: contentColumns.map(el => el.querySelectorAll('a:not([target])').length),
+    total: contentColumns.reduce((n, el) => n + el.querySelectorAll('a:not([target])').length, 0), // 期望 0
+  };
+})()
+```
+
+期望 `0`。原断言实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。**更正（2026-09-28，BUG-010 修复后复跑，见 [UI-005](team/design/UI-005-bug014-measurement-note.md)）**：本条原先以「**`!el.querySelector('.aup-app-header')` 不是可选项**」立论，依据是去掉该过滤后 `?page=compose` 的计数变成非零（BUG-010 之前的旧测量为 `2`，命中的是框架 chrome 两条链接——wrapper 顶栏品牌链接 `a.aup-app-header-brand-link` → `href="/"`、侧栏页脚「关于」链接 `a.aup-action` → `href="/?page=about"`），那是 **BUG-010 之前**的旧测量（当时 `.pop()` 取到的是含 `.aup-app-header` 的整壳容器，那两条 chrome 链接在它里面）。BUG-010 修复后 `?page=compose` 已有独立内容列，同一探针复跑：**去掉该过滤后 1803×908 与 1512×765 都是 `0`**（1803×908：唯一滚动容器就是内容列 1471×744；1512×765：两个容器中 `.pop()` 取到的是内容列 1223×601，侧栏容器在前）——**该过滤项在 `?page=compose` 上已不再产生差异，不要再用"去掉过滤会变成非零"当论据**（它仍留在原断言里，语义是排除承载顶栏的页面级壳容器，并无害处）。原断言的视口漂移现改在 `?page=appearance` 上重现：1512×765 **带 / 不带过滤都是 `1`**（`.pop()` 命中侧栏容器，其页脚「关于」链接），1803×908 则无任何可滚动容器、`?? 0` 空心给出 `0`。因此**该过滤项只属于"仅 1803×908 可作参照"的原断言；期望值仍为 `0`，判定一律以等价断言为准，且不依赖任何一条 chrome 的条数**。对照页 `?page=posts` / `?page=tags` 带不带过滤都是 `0`（原始输出见 [BUG-008](team/bugs/BUG-008-admin-ui-design-section-9-note-not-reproducible.md)）。
+
+等价断言实测（**UI 自跑**，admin 会话，同一探针跑两视口，原始 JSON 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md) §2）：**BUG-010 修复后**（2026-09-28 00:3x）`?page=compose` / `?page=appearance` / `?page=posts` / `?page=tags` / `?page=dashboard` 在 1803×908 与 1512×765 下**全部**为 `candidates: 1, total: 0`——**两视口结论一致**（与同一状态下原断言在 `?page=appearance` 给出的 `0` / `1` 漂移形成对照）；**BUG-010 修复前**（2026-09-28 00:2x）`?page=compose` 两视口均为 `candidates: 0`，等价断言**不通过**（如实暴露"该页没有内容列"这一实现缺口，而不是像原断言那样兜底放行）。全部控制台页的等价断言复跑由 QA-004（`task-14`）在同一 admin 会话内执行。
 
 
 ## 3. 设计 Token
@@ -251,7 +281,7 @@ lg    32px    页面大区块之间
 
 **卡片样式（审计后固化）**：`padding: 14px`、`gap=sm`(10px)、`radius: var(--radius-lg)`(10px)、`background` 填充 + **1px `var(--color-border)` 描边**、显式 `boxShadow: "none"`（运行时默认会叠一层 `0 1px 2px` 投影，控制台不要）；卡片自身 `margin: 0`，间距一律由容器 gap 控制（内容列滚动容器 gap=sm 或网格 gap 14px）。
 
-**控制台精修取值**：卡片 `padding: 14px` + `gap=sm`(10px)、内容区滚动间隔 `gap=sm`(10px)、`console-pane` 上下 `padding: 14px`。实测把卡片内边距从 20px 降到 14px、卡间距从 20px 降到 10px 即去掉"粗旷"感。
+**控制台精修取值**：卡片 `padding: 14px` + `gap=sm`(10px)、内容区滚动间隔 `gap=sm`(10px)、`console-pane`（本文档的概念名，实现里没有这个选择器，承载方式见 §8）上下 `padding: 14px`。实测把卡片内边距从 20px 降到 14px、卡间距从 20px 降到 10px 即去掉"粗旷"感。
 
 禁止出现刻度外的裸数值（如 `margin: 13px`）。
 
@@ -405,7 +435,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 ## 7. 响应式与弹性
 
 * 桌面优先（后台是生产力工具）；窄屏时侧边栏折叠为顶部导航，内容区不横向滚动。
-* 滚动归属随断点切换：桌面为"页面固定 + 内容区内滚动"（§2.3）；折叠为单栏后恢复页面级整页滚动，禁止单栏内再嵌套滚动区域。
+* 滚动归属随断点切换：桌面为"页面固定 + 内容区内滚动"（§2.5）；折叠为单栏后恢复页面级整页滚动，禁止单栏内再嵌套滚动区域。
 * 列表在窄屏下降级为卡片堆叠，关键操作保持可见。
 * 中英文文案长度差异可达 2 倍：按钮与标签不得写死宽度，布局必须容忍文案换行。
 * 所有文案走 i18n key（页面作用域），禁止硬编码文案；导航文案集中在 wrapper 命名空间。
@@ -452,10 +482,10 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
   右侧内容里不存在会把控制台整页替换掉的链接（断言见本节末，期望 0）
 ```
 
-末条的可执行断言（在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
+末条的可执行断言（**执行前提：admin 会话、视口 1803×908**；在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
 
 ```js
-// 内容区滚动容器内的无 target 链接数 —— 期望 0
+// 内容区滚动容器内的无 target 链接数 —— 期望 0（原断言；对视口敏感，判定见下面的等价断言）
 [...document.querySelectorAll('*')]
   .filter(el => el.scrollHeight > el.clientHeight + 2
     && /auto|scroll/.test(getComputedStyle(el).overflowY)
@@ -463,7 +493,31 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
   .pop()?.querySelectorAll('a:not([target])').length ?? 0
 ```
 
-实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。去掉 `!el.querySelector('.aup-app-header')` 后 `?page=compose` 为 `2`——命中的是框架 chrome 的两条链接（wrapper 顶栏品牌链接 `a.aup-app-header-brand-link` → `href="/"`；侧栏页脚「关于」链接 `a.aup-action` → `href="/?page=about"`），都不属于右侧内容区；判定以「过滤后必须为 `0`」为准，不依赖这两条的条数（原始输出见 [BUG-008](team/bugs/BUG-008-admin-ui-design-section-9-note-not-reproducible.md)）。
+> **原断言对视口敏感（BUG-011）**：`.pop()` 取最后一个候选容器，候选集合随视口变化——BUG-010 修复前，1803×908 下 `?page=compose` 的候选集合为空、`?? 0` 兜底给出 `0`（空心通过），1512×765 下同一个页面 `.pop()` 取到侧栏容器（含页脚「关于」链接）→ 给 `1`；BUG-010 修复后（2026-09-28 00:3x）`?page=compose` 两视口都回到 `0`，但同一缺陷在 **`?page=appearance`** 上重演（1803×908 → `0`、1512×765 → `1`）——说明是**原断言自身**的问题，不是某一页的偶发。所以**判定以下面的等价断言为准**；原断言只在 1803×908 下可作参照。成因、两轮两视口原始 JSON 与完整的等价断言口径见 §2.6（本清单不重复）。
+
+**等价断言（判定以此为准）——只针对内容列：`candidates` 必须 ≥ 1，`total` 必须为 `0`**（排除框架顶栏 `.aup-app-header`、排除含侧栏当前项 `[data-active="true"]` 的容器、排除 UA 默认 `overflowY: auto` 的表单控件；理由与逐条实测见 §2.6）：
+
+```js
+// 只针对内容列的等价断言 —— 期望 total 0，且 candidates >= 1
+(() => {
+  const header = document.querySelector('.aup-app-header');
+  const activeNav = document.querySelector('[data-active="true"]');
+  const isFormControl = el => /^(INPUT|TEXTAREA|SELECT|OPTION)$/.test(el.tagName);
+  const contentColumns = [...document.querySelectorAll('*')].filter(el =>
+    /auto|scroll/.test(getComputedStyle(el).overflowY) && !isFormControl(el) &&
+    !(header && el.contains(header)) &&
+    !(activeNav && el.contains(activeNav)));
+  return {
+    candidates: contentColumns.length,        // 必须 >= 1，否则不算通过
+    linksPerColumn: contentColumns.map(el => el.querySelectorAll('a:not([target])').length),
+    total: contentColumns.reduce((n, el) => n + el.querySelectorAll('a:not([target])').length, 0), // 期望 0
+  };
+})()
+```
+
+原断言实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。**更正（2026-09-28，BUG-010 修复后复跑，见 [UI-005](team/design/UI-005-bug014-measurement-note.md)）**：原文把去掉 `!el.querySelector('.aup-app-header')` 后 `?page=compose` 的计数写作非零（BUG-010 之前的旧测量为 `2`，命中框架 chrome 两条链接），那是 BUG-010 之前的旧测量；修复后同一探针在 1803×908 与 1512×765 复跑，**去掉过滤后 `?page=compose` 均为 `0`**（`.pop()` 已直接命中内容列，该过滤项在 compose 上不产生差异），漂移改在 `?page=appearance` 上重现（1512×765 带 / 不带过滤均为 `1`，`.pop()` 命中侧栏容器）。命中项都不属于右侧内容区，**期望值仍为 `0`，判定以等价断言为准**（成因与两视口原始 JSON 见 §2.6）。
+
+等价断言实测（**UI 自跑**，admin 会话，两视口原始 JSON 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md) §2）：**BUG-010 修复后**（2026-09-28 00:3x）`?page=compose` / `?page=appearance` / `?page=posts` / `?page=tags` / `?page=dashboard` 在 1803×908 与 1512×765 下**全部**为 `candidates: 1, total: 0`；**BUG-010 修复前**（2026-09-28 00:2x）`?page=compose` 两视口均为 `candidates: 0`（该页当时没有内容列滚动容器，属 [BUG-010](team/bugs/BUG-010-compose-appearance-missing-content-scroll-container.md) 的实现缺口，断言此时**不通过**，而非旧的空心放行）。全部控制台页的复跑由 QA-004（`task-14`）在同一 admin 会话内执行。
 
 ---
 

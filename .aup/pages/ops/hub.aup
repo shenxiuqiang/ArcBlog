@@ -144,9 +144,21 @@ page hub {
                         }
                       }
                     }
-                    action variant=secondary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
-                    action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: removed, direction: "${entry.content.direction}", removedAt: "${generate.timeiso}", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
+                    action variant=secondary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/delete", args: {path: "${args.ePath}"}, afterSuccess: [{exec: "/.actions/write", args: {path: "${args.ePath}", content: {id: "${args.eId}", hubDid: "${args.eHubDid}", endpoint: "${args.eEndpoint}", status: "${args.eStatus}", relation: indexed, direction: "${args.eDirection}", removedAt: "", registeredAt: "${args.eRegisteredAt}", updatedAt: "${generate.timeiso}", sync: {status: "${args.eSyncStatus}", lastSync: "${args.eSyncLastSync}", lastVersion: "${args.eSyncLastVersion}", lastHash: "${args.eSyncLastHash}", lastError: "${args.eSyncLastError}"}}}}]}}
+                    action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/delete", args: {path: "${args.ePath}"}, afterSuccess: [{exec: "/.actions/write", args: {path: "${args.ePath}", content: {id: "${args.eId}", hubDid: "${args.eHubDid}", endpoint: "${args.eEndpoint}", status: "${args.eStatus}", relation: removed, direction: "${args.eDirection}", removedAt: "${generate.timeiso}", registeredAt: "${args.eRegisteredAt}", updatedAt: "${generate.timeiso}", sync: {status: "${args.eSyncStatus}", lastSync: "${args.eSyncLastSync}", lastVersion: "${args.eSyncLastVersion}", lastHash: "${args.eSyncLastHash}", lastError: "${args.eSyncLastError}"}}}}]}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge-title, message: :purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                    input type=hidden name=ePath value="${entry.path}"
+                    input type=hidden name=eId value="${entry.content.id}"
+                    input type=hidden name=eHubDid value="${entry.content.hubDid}"
+                    input type=hidden name=eEndpoint value="${entry.content.endpoint}"
+                    input type=hidden name=eStatus value="${entry.content.status}"
+                    input type=hidden name=eDirection value="${entry.content.direction}"
+                    input type=hidden name=eRegisteredAt value="${entry.content.registeredAt}"
+                    input type=hidden name=eSyncStatus value="${entry.content.sync.status}"
+                    input type=hidden name=eSyncLastSync value="${entry.content.sync.lastSync}"
+                    input type=hidden name=eSyncLastVersion value="${entry.content.sync.lastVersion}"
+                    input type=hidden name=eSyncLastHash value="${entry.content.sync.lastHash}"
+                    input type=hidden name=eSyncLastError value="${entry.content.sync.lastError}"
                   }
                 }
                 p :relations-legend scale=sm intent=muted

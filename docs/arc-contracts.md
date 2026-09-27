@@ -1453,3 +1453,49 @@ QA 用**独立数据面探针**（记录字段携带 `$t()` token，原样渲染
 源码级探针的**原始输出未留档**（探针页需改 `.aup`，超出 QA 写范围；R8 的探针页已删除以免常驻死页），
 故本节的证据等级是「两次独立测量一致、无源码级原始输出留档」。
 BUG-005 据此采用路径 B（本地化中性标签 + 原始值可见 + 色点 + 常驻 dim 说明），已由 QA 复验通过。
+
+---
+
+## 29. 行内写入的模板求值与写入授权（Round 9 实测）
+
+来源：Round 9 的 R9F 修复窗口（BUG-012 P1）。所有结论都由**真实按钮点击 + AFS 复核**得出，
+探针脚本只放 `/tmp`，实例已复原（见 `test-reports/round-9-reverify.md`）。
+
+### 29.1 `${entry.*}` 在 `exec` 的 `args` 里**不求值**；元素属性与 `input value=` 会求值
+
+- 反例（BUG-012 的原写法）：`events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}"}}}}`。
+  运行时把 `${args.slug}` 替换成行模板的**原始串** `${entry.content.slug}`（单层替换），
+  最终写出 `/instance/app/arcblog/posts/${entry.content.slug}.json`，记录字段全是字面量模板串
+  ——**同时弹出成功提示**（`Published.`）。这就是 BUG-012：公开 `posts/` 与 RSS 被污染。
+- 求值上下文只有 `args` + `generate`：`${entry.content.*}`、`${entry.path}`、`${entry.id}` 全部原样落库；
+  未解析的 `${args.*}` 会**坍缩成空串**（`content: {…}` 变成 `{}`）。
+- `$entry.content.*` 表达式形式、`content: "${entry.content}"` 整体形式同样不可用。
+- **可用写法（已端到端实测）**：把值先放进**每行隐藏输入**，再在 `args` 里读回来——
+  `input type=hidden value="${entry.content.slug}"`（**元素属性会做 entry 替换**）+ `args: {path: "…/posts/${args.eSlug}.json"}`。
+  客户端提交时会收集被点击按钮**所在行**的表单字段，所以每行放一组隐藏输入即可。
+- 只有 `path=`/`href=` 这类**属性**（例如 `-> exec "/.actions/delete" path="…/${entry.content.slug}.json"`）
+  一直是对的，是仓库里的正确先例（`posts.aup` 的 Remove from public）。
+
+### 29.2 页面对**已存在的**记录写入需要「可恢复的 authority sidecar」；CLI/root 授权的记录页面改不动
+
+- 同一路径的 `write` 目标已存在、且该记录由 **CLI/root** 写就时，页面写入被拒绝：
+  `Forbidden … network write target exists without a recoverable authority sidecar`。
+  已逐一实测的失败模式：`replace` / `create` / `update` / `tree-merge` / `patch`（`op:add`）全部拒绝；
+  `dedupBy: "slug"` 走集合路径则报 `network clients cannot write non-replicated instance paths`。
+- **豁免**：`/.actions/delete` 对任何记录都可用；写入**不存在的路径**（新建）也可用；
+  页面自建的记录（页面写入的 sidecar 可恢复）重写也可用。
+- 因此「就地更新 CLI 授权记录」的唯一可用组合是 **delete + 重写**（见 §29.3）。
+
+### 29.3 `afterSuccess: [{exec: …}]` 只在首个 exec **成功**后运行；`delete` 对不存在的路径会失败
+
+- 实测：`events={click: {exec: "/.actions/delete", args: {path: …}, afterSuccess: [{exec: "/.actions/write", …}]}}`
+  ——首个 exec 成功 → 链式 exec 执行；首个 exec 失败（目标不存在 → `Path not found`）→ **链不执行**。
+- 链式 exec 同样解析 `${args.*}`（隐藏输入那套照旧可用），并且**在 `confirm=` 弹窗确认之后**才运行。
+- 推论：delete+write 链能覆盖「目标可能存在」的软删除/改写，但**不能**用来做「存在则更新、不存在则新建」；
+  后者在平台没有单一写法（Round 9 对 `Archive`/`Detail` 保留了单次写 + 诚实报错）。
+
+### 29.4 教训：不要用 `title`/`toast` 判断写入成功
+
+BUG-012 三个动作都弹了成功提示而实际写到了字面量路径。**验收写入类行为必须复核 AFS 记录本身**
+（`arc afs exec … read` / `list`），并扫描是否存在含 `$` 或 `{` 的记录 id——这条现在是
+`test-reports/round-9-reverify.md` 的固定检查项。

@@ -93,7 +93,11 @@ page appearance {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           p :desc intent=muted
-          auto-surface "$t(appearance.title)" from "/instance/settings/arcblog"
+          view size={flex: 1} style={overflowY: auto} {
+            view style={flexShrink: 0} {
+              auto-surface "$t(appearance.title)" from "/instance/settings/arcblog"
+            }
+          }
         }
       }
     }
