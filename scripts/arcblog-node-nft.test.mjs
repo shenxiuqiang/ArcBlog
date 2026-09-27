@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rmSync, writeFileSync } from 'node:fs';
 
 // Node NFT factory + lifecycle (spec §8.1–§8.4), modelled on GLofter's
 // `create-*-node-nft-factory.ts` and the studio stake services.
@@ -315,5 +316,21 @@ test('factory payloads are JSON-safe (no raw control characters)', () => {
     const badInputs = Object.entries(inputs).filter(([, v]) => /[\u0000-\u001f]/.test(String(v))).map(([k]) => k);
     assert.deepEqual(badInputs, [], `${role} mint inputs carry control characters: ${badInputs.join(', ')}`);
     assert.equal(inputs.pk.includes('\n'), false, 'pk must be a single line');
+  }
+});
+
+// A private key must never be bound into the NFT (immutable on chain) or stored in
+// config/node-nft.json. `--pk node.key` did exactly that once, so it now fails closed.
+test('a private key is refused as --pk', () => {
+  const keyPath = `/tmp/arcblog-private-probe-${stamp}.key`;
+  writeFileSync(keyPath, '-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEINZQ04S+01QGi4McAqdQ5FUXyhDcpdYDcPi2fhTp4I8S\n-----END PRIVATE KEY-----\n');
+  try {
+    const res = cli(['acquire', '--role', 'studio', '--adapter', 'mock', '--pk', keyPath, '--json']);
+    assert.equal(res.status, 1, 'the CLI must reject a private key');
+    const out = json(res.stderr || res.stdout);
+    assert.equal(out.code, 'VALIDATION');
+    assert.match(out.error, /PUBLIC key|PRIVATE key/);
+  } finally {
+    rmSync(keyPath, { force: true });
   }
 });

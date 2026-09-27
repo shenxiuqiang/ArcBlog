@@ -143,3 +143,16 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 
 `?page=factory`（`pages/ops/factory.aup`，导航"经济 → 工厂"）展示：链配置、两个工厂（地址/标识/发行方/质押额，地址可复制）、节点 NFT 生命周期（state/asset/stake/owner/claimable）以及 5 条可复制的运维命令（acquire / stake / revoke / claim / status）。
 **签名私钥绝不下发浏览器**：页面只读 `config/nft-factories.json` 与 `config/node-nft.json`（admin-only，guest 会话按 §13 fail closed，页面给出明确提示），操作通过复制命令在节点上执行。
+
+### 7.4 事故与加固：`--pk` 曾把**私钥**写进 AFS
+
+实测 acquire 时把 `--pk` 指向了 `keygen` 生成的**私钥**文件，CLI 未做校验，于是私钥被：
+(a) 作为 `pk` 输入写进工厂模板 → **已进入链上 NFT 的不可变数据**；(b) 落进 `config/node-nft.json`。
+
+加固：
+
+* `resolvePublicKey()` 现在检到 `PRIVATE KEY` 立即 `VALIDATION` 失败（"must be a PUBLIC key"），并有测试 `a private key is refused as --pk` 守住；
+* 已把 AFS 记录里的 `pk` 换成同一密钥对的**公钥**、删除本机私钥文件；
+* 链上那份（测试链 `zjduiTqC…` 的 data.pk）无法撤回——该密钥只用于本次测试、未在别处复用，**仅测试链**，不要再使用。
+
+运维口径：`--pk` 只接受**公钥**（PEM 或十六进制），私钥永远不要写进 NFT 或 AFS。

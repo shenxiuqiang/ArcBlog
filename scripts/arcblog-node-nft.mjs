@@ -49,12 +49,24 @@ function saveNodeNft(state, instance, ifMatch) {
 function resolvePublicKey(opts, instance, profile) {
   const inline = optString(opts.pk).trim();
   if (inline) {
-    if (inline.includes('BEGIN PUBLIC KEY')) return inline;
-    try {
-      return readFileSync(inline, 'utf8');
-    } catch {
-      return inline; // a bare key string is accepted by the factory as-is
+    let value = inline;
+    if (!inline.includes('BEGIN PUBLIC KEY')) {
+      try {
+        value = readFileSync(inline, 'utf8');
+      } catch {
+        value = inline; // a bare key string is accepted by the factory as-is
+      }
     }
+    // A private key must never be bound into the NFT or stored in AFS: the NFT's
+    // data is immutable on chain and `config/node-nft.json` is a readable record.
+    // Passing `--pk node.key` (a PRIVATE key) did exactly that once — fail closed.
+    if (/PRIVATE KEY/.test(value)) {
+      fail(
+        'VALIDATION',
+        '--pk must be a PUBLIC key (§67): the value looks like a PRIVATE key — refusing to bind or store it',
+      );
+    }
+    return value;
   }
   const did = String(profile?.did ?? '').trim();
   const registered = did ? getSigningKey(did, instance) : null;
