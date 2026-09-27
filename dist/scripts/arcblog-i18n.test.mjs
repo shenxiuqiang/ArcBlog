@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,6 +20,20 @@ const aupDir = join(repoRoot, '.aup');
 
 function locale(name) {
   return JSON.parse(readFileSync(join(aupDir, 'locales', `${name}.json`), 'utf8'));
+}
+
+/**
+ * `arc dsl lint --json` payload. The command exits non-zero when it reports any
+ * issue, so stdout is read from the spawn result rather than letting a throw
+ * hide the diagnostics we want to inspect.
+ */
+function lintJson() {
+  const res = spawnSync('arc', ['dsl', 'lint', '--json'], { cwd: repoRoot, encoding: 'utf8' });
+  // The CLI renders this payload on stderr while exiting non-zero.
+  const text = `${res.stdout ?? ''}${res.stderr ?? ''}`;
+  const start = text.indexOf('{');
+  assert.ok(start >= 0, `arc dsl lint produced no JSON payload: ${text.slice(0, 200)}`);
+  return text.slice(start);
 }
 
 /** Every `$t(page.key)` reference in the generated artifacts. */
@@ -112,16 +126,25 @@ test('the wrapper declaration and its locale keys stay in step', () => {
 });
 
 test('no locale key is dead', () => {
-  // The wrapper test above only covers the wrapper namespace. `arc dsl generate`
-  // *appends* to the locale files and never prunes, so a page split or a namespace
-  // rename leaves unresolvable translations behind — the first prune removed 78 of
-  // them. scripts/arcblog-locales.mjs is the detector; --check exits non-zero and
-  // names the keys. Declare a key in an `i18n {}` block (or mention it literally
-  // in a source file) to keep it on purpose.
-  const res = execFileSync(
-    process.execPath,
-    [join(repoRoot, 'scripts', 'arcblog-locales.mjs'), '--check'],
-    { cwd: repoRoot, encoding: 'utf8' },
+  // Formerly delegated to the self-built scripts/arcblog-locales.mjs. That
+  // detector had a weak "literal mention" rule, so a key that appeared only in
+  // prose (a report in an untracked scratch dir, a line of CLAUDE.md) counted as
+  // live — it reported 0 dead while ARC's own linter saw 22. The platform now
+  // owns this check: `arc dsl lint` knows which keys the compiled app can
+  // actually resolve, including pages that live in `.aup/pages/*.aup`.
+  //
+  // Only the dead-key issue is asserted here. The same lint run also reports
+  // `format_changed` / `comment_dropped`, which cannot be satisfied while the
+  // DSL dialect drops comments (ArcBlock/arc#2760), so failing on those would
+  // make the suite permanently red.
+  // `arc dsl lint` exits non-zero whenever it reports ANY issue, including the
+  // comment/format ones that cannot be satisfied here, so capture the payload
+  // and inspect it instead of letting a non-zero status throw.
+  const payload = JSON.parse(lintJson());
+  const dead = (payload.issues ?? []).filter((issue) => issue.code === 'dead_locale_keys');
+  assert.deepEqual(
+    dead.map((issue) => `${issue.message}`),
+    [],
+    'arc dsl lint reports dead locale keys — run: arc dsl lint --fix',
   );
-  assert.match(res, /"ok": true/);
 });

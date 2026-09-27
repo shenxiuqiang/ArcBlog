@@ -1,0 +1,38 @@
+page author {
+  i18n {
+    did { en "DID" zh "DID" }
+    auth { en "Auth method" zh "认证方式" }
+    roles { en "Roles" zh "角色" }
+    stories { en "Stories" zh "文章" }
+    stories-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+  }
+  view page-root gap=lg {
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
+    view gap=lg propBind={profile: "/instance/app/arcblog/node/profile.json", identity: "/instance/app/arcblog/node/identity.json"} {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h1 "${state.profile.name}" level=1
+        p "${state.profile.description}" intent=muted
+        p :did scale=sm intent=muted
+        p "${state.profile.did}" scale=sm
+        p :auth scale=sm intent=muted
+        p "${state.identity.authMethod}" scale=sm
+        p :roles scale=sm intent=muted
+        p "${state.profile.roles}" scale=sm
+      }
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :stories level=2
+        afs-list author-posts layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty from "/instance/app/arcblog/posts" {
+          row authorPostRow role=item gap=xs style={background: "transparent", borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            view authorPostLink layout=inline href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
+              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+            }
+            p "${entry.content.summary}" scale=sm intent=muted
+          }
+        }
+      }
+    }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+  }
+}

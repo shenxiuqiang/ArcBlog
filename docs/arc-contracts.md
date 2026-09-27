@@ -695,13 +695,18 @@ ARC 自带示例里的权威注释（`assets/blocklets/launch-kit/blocklet.yaml:
 | **引用方式决定键是否被生成** | `label=:key` 会注册进 i18n 表；字面量 `$t(page.key)` 只是普通字符串。本轮修掉的 9 个"被引用但无声明"的键就是后者：4 个 `admin.*-ok` toast（本来手写在 locales 里）+ 5 个 heroes-admin 页面里写死的 `$t(admin.hero-*)` / `$t(admin.cat-*)`（页面拆分前的命名空间）→ 现改为在**所属页**的 `i18n {}` 块声明，于是全部转为生成物 |
 | **运行时不是 HTTP 取 locale** | AUP 是 WebSocket 驱动：`curl` 拿到的外壳（4KB）和 `aup.*.js`（800KB）里都**没有**任何 locale 文案，所以"线上文案对不对"只能在真实 DOM 里验（§12 的 `$t(...)` 字面量泄漏就是这么抓到的） |
 
-守卫（全部在 `npm test` 里）：
+守卫（保留在 `npm test` 里的部分）：
 
-1. `scripts/arcblog-i18n.test.mjs` —— 每个 `$t()` 引用都有 en/zh；en/zh 键集一致；wrapper 键既被引用也被声明；**无死键**（转调 `scripts/arcblog-locales.mjs --check`）。
-2. `scripts/arcblog-dsl-artifacts.test.mjs` —— `arc dsl generate --check`（漂移时退出码 5、点名 stale 文件），防"改了 `.aup` 没重新生成"。两条门禁都做了反证：植入一个假键 / 制造一次漂移，各自变红并点名。
-3. `node scripts/arcblog-locales.mjs [--check|--write]` —— 死键报告 / 门禁 / 清理（默认 dry-run，与 `arcblog-clean.mjs` 同风格）。
+1. `scripts/arcblog-i18n.test.mjs` —— 每个 `$t()` 引用都有 en/zh；en/zh 键集一致；wrapper 键既被引用也被声明；**无死键**（转调 `arc dsl lint --json`，只看 `dead_locale_keys`）。
+2. `arc dsl generate --check` —— 平台自带的漂移门禁（漂移时退出码 5、点名 stale 文件），防"改了 `.aup` 没重新生成"。
+3. `arc dsl lint` —— 平台自带的死键报告 / 清理（`--fix` 剪枝）。
 
-存活判定：一个键只要 (a) 在某个 `i18n {}` 块里声明，(b) 被 `$t()` 引用，或 (c) 在 `.aup/locales` 与 `dist/` 之外以完整 token 被提到，就算存活（匹配必须带 token 边界——`heroes-admin.hero-add` 里含有子串 `admin.hero-add`，只做 `includes` 会误判）。
+**已删除的自建工具（2026-09，回归官方工具链）：**
+
+- `scripts/arcblog-locales.mjs` —— 它的第 3 条存活规则（"在 `.aup/locales` 与 `dist/` 之外以完整 token 被提到"）把**散文提及**当成存活证据，于是只在某份 markdown 报告里出现过的键被判为活：它报 0 死键，而 `arc dsl lint` 报 22 个。改用 `arc dsl lint` 后清掉 21 个（387→366）。
+- `scripts/arcblog-dsl-artifacts.test.mjs` —— 纯 `arc dsl generate --check` 的包装，无增量。
+
+死键的完整判定现在由平台负责，不再需要 token 边界之类的自建规则——那正是 `arcblog-locales.mjs` 误判的来源（`heroes-admin.hero-add` 含子串 `admin.hero-add`，只做 `includes` 会误判）。
 
 想保留一个暂时没人引用的翻译 → 在所属页的 `i18n {}` 块里声明它，这是唯一被支持的"这个键是有意的"信号。
 
@@ -717,10 +722,10 @@ I21 把默认页 `posts` 改名为 `index` 时实测到的边界——两处残�
 | `generate --check` 对这类残留**不报警** | 残留在场时 `arc dsl generate --check` 仍输出 `nothing to change`、退出码 0 |
 | 残留产物会让死键守卫**瞎掉一部分** | 残留 `pages/posts.json` 里还写着 `$t(posts.feed)` / `$t(posts.feed-empty)` → 守卫先报 **10** 个死键；删掉该文件后才报完整的 **12** 个 |
 | `arc blocklet build` 不清理 `dist/` 里的旧产物 | 改名后 `dist/.aup/pages/posts.json`、`dist/.aup/man/posts.yaml` 仍在（build 只发布、不删除） |
-| `i18n` 命名空间随页面名走 | 12 个 `posts.*` 键全部变成 `index.*`（键值不变），旧键靠 `arcblog-locales.mjs --write` 清掉；总键数不变（243 → 12 出 12 进 → 243） |
+| `i18n` 命名空间随页面名走 | 12 个 `posts.*` 键全部变成 `index.*`（键值不变）；总键数不变（243 → 12 出 12 进 → 243） |
 | 页面名唯一被拒的情况是重名 | `Duplicate page "settings"`（app.aup:29:8）；`index`/`wrapper`/`app`/`page`/`default` 都能通过 validate —— **没有保留字表**，但别用 `wrapper`（会和手写的 `wrapper.*` 键撞命名空间） |
 
-改名清单（可复用）：`default <name>` → `page <name>` → **wrapper 的 `brand.src`**（最容易漏，§14b）→ `blocklet.yaml` binding 的 `page:` → `generate --write` → 手删 `.aup/pages/<old>.json` → 手改 `man/<old>.yaml` → `arcblog-locales.mjs --write` → 手删 `dist/` 里的对应产物 → rebuild + restart。对外 URL 不变：`/` 由 `default` 决定、`/posts` 由 binding 的 `path` 决定，两者都与页面名解耦。
+改名清单（可复用）：`default <name>` → `page <name>` → **wrapper 的 `brand.src`**（最容易漏，§14b）→ `blocklet.yaml` binding 的 `page:` → `generate --write` → 手删 `.aup/pages/<old>.json` → 手改 `man/<old>.yaml` → `arc dsl lint --fix` → 手删 `dist/` 里的对应产物 → rebuild + restart。对外 URL 不变：`/` 由 `default` 决定、`/posts` 由 binding 的 `path` 决定，两者都与页面名解耦。
 
 ## 19. 表单输入的插值：`state={value: "${...}"}` 不解析，`value="${...}"` 解析（实测）
 
@@ -1040,3 +1045,25 @@ footer.aup-app-footer
 | 顺序 | 品牌 → 标语 → 链接 → 版权 |
 | 窄屏 | `scrollWidth === clientWidth`，无横向溢出；链接行可换行不溢出 |
 | 代价 | 依赖平台 class 名（与 §21.4/§21.14 同类的"实测契约"）；平台改版需复测这四行 |
+
+## 22. 页面可以拆到 `.aup/pages/*.aup`（实测，beta.50）
+
+`app.aup` 不必是单文件。官方 AUP 文档的 page-discovery 一节里写着：
+
+> Pages may be defined inline, declared as an external tree/settings/scaffold, or discovered through a limited declaration such as `pages from "pages/*.aup"`.
+
+实测结论与两个硬约束：
+
+| 项 | 实测结果 |
+|---|---|
+| 指令 | `pages from "pages/*.aup"` —— **必须是 glob 文件模式**；写成目录 `pages from "./pages"` 会编译出一个指向目录的悬空条目（`"pages": {"tree": "./pages"}`），不是页面 |
+| 内联外部可混用 | 内联页仍编译为 `pages/<name>.json`；外部页注册为 `"tree": "pages/<name>.aup"`（**指向 DSL 源，不是 JSON**），loader 按需编译，`dist/` 里原样携带 `.aup` |
+| 外部页的根节点 | 必须**恰好一个**。`i18n {}` 不计入根节点，但多个 top-level `view` 需要包一层，否则 `AUP page DSL must contain exactly one root node` |
+| 外部页的页头 | **不能带标题**：`page about {` 对；`page about "About" {` 报 `text node missing required content` |
+| i18n | 外部页的 `i18n {}` 块照常合并进共享的 `.aup/locales/*.json`，键仍是 `page.key` |
+
+后果：9 个实体页面移入 `.aup/pages/`，`app.aup` 从 **1400 行降到 140 行**；15 个 legacy alias stub 留在 `app.aup`（它们本来就该是内联的 3 行）。拆完后 `arc dsl validate` / `generate --check` / `blocklet check` 全绿，locale 键数与拆分前一致。
+
+拆分会打断任何**只读 `app.aup` 的自建守卫**——本轮修了 `arcblog-console-nav.mjs`（侧栏生成器）与它的测试、`arcblog-hero-carousel.test.mjs`，都改成"先查内联、再查 `.aup/pages/<name>.aup`"的解析器。侧栏缩进要按页面位置区分：内联页在 `app.aup` 里嵌两层（6 空格），外部文件从第 0 列开始（2 空格）。
+
+平台缺陷（拆分暴露、但非拆分引入）：`arc dsl format` 对 4 个页面报 `content_dropped`（arc#2764）。反证：把**改动前的原始内联页**单独喂给 formatter，报同样的 7 个 token——与 `app.aup` 的 `comment_dropped`（arc#2760）一样是平台 bug，formatter 会拒绝改文件，所以数据安全，但 `format --check` 在本项目永远不可能绿。

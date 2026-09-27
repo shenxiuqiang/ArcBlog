@@ -396,7 +396,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 | 全高流式布局 | `row console-shell … style={height: "calc(100vh - 130px)"}` + `view console-pane … size={flex: 1} style={overflowY: "auto", height: "100%"}`。130px 是实测的页面 chrome 高度（页内 topbar 48 + 页面根 gap 30 + scroller gap 20 + 底部内边距 32），平台没有"剩余高度"原语，改版顶栏后需复测（arc-contracts §21.2） |
 | 只用 token | safe-style 白名单：`background` 简写可用，`backgroundImage/backgroundPosition` 会被丢弃—— layered 背景写 `background: <color> url(...) center / cover no-repeat` |
 | 权限驱动显隐 | `visible=$session.authenticated`；异步数据用插值形式 `visible="${state.post.x}"`（表达式形式只求值一次） |
-| i18n | key 页面作用域 + flat dotted 存储；`arcblog-locales.mjs --check` 防止死 key |
+| i18n | key 页面作用域 + flat dotted 存储；`arc dsl lint` 防止死 key |
 | 导航 | 列表 select 事件不能跳转——用 `view href` 链接 |
 | 明暗模式 | 由 theme bridge 统一驱动；页面不自行判断 mode |
 | 表单预填 | 用 `value="${state.x}"`（直接属性插值）；**不要** `state={value: "${...}"}`——嵌套对象 prop 不插值，会渲染字面量（arc-contracts §19） |

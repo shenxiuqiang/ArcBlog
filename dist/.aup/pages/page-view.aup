@@ -1,0 +1,28 @@
+page page-view {
+  i18n {
+    title { en "Page" zh "页面" }
+    not-found { en "Page not found." zh "页面不存在。" }
+    back { en "Back to latest stories" zh "返回最新文章" }
+  }
+  view page-root gap=lg {
+    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
+    view gap=lg propBind={page: "/instance/app/arcblog/pages/$params.slug.json"} {
+      row gap=sm {
+        view page-back href="/posts" style={cursor: "pointer", color: "var(--color-dim)"} {
+          p :back scale=sm
+        }
+      }
+      view gap=md visible="!$state.page" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :title level=2
+        p :not-found intent=muted
+      }
+      view page-article gap=md visible="$state.page" {
+        h1 page-title "${state.page.title}" level=1 scale=display
+        text page-body format=markdown content="${state.page.body}"
+      }
+    }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+  }
+}

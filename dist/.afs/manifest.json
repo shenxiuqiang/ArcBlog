@@ -10,27 +10,27 @@
     },
     {
       "path": ".aup/app.aup",
-      "size": 123425,
+      "size": 4270,
       "contentType": "application/octet-stream",
-      "sha256": "0e4f84a31d55f91e3282790d0870ff854113bafb307986751cada1436169d57e"
+      "sha256": "5634edbdc17e13e0e0c45348448c7bf24bfb7d4e02f0b225b958247e9d7159bd"
     },
     {
       "path": ".aup/app.json",
-      "size": 1712,
+      "size": 1703,
       "contentType": "application/json",
-      "sha256": "a348c52bd9f567fba52e9721a107cefa15f8eb5c2c8563ac5941617ece9fb9ac"
+      "sha256": "0f8c41053d94620f852b0711265c516a2a3bcea79ca29176db0a8fca2d624c0e"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 26050,
+      "size": 24695,
       "contentType": "application/json",
-      "sha256": "30f6d8d91a2235b837ebd8ee120142318404e853188a2c829e0fc06145270ed9"
+      "sha256": "1bbfd37ebcc2f275c44a437d813d194e8994d101ea829db071cb607a2bb18af3"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 25809,
+      "size": 24478,
       "contentType": "application/json",
-      "sha256": "07982e6c66c10a5d7eafbc3e037246dab8c15f18c6d578fd43e3be4f7a9c2f56"
+      "sha256": "b8508d581080d41d31b3327fecdac4362d429047431a816df39b5cb998cf61c9"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -189,6 +189,12 @@
       "sha256": "5f9cc506a1014298e0a80588bcc21228981b5ed09ad34d593330eab4ea7336c1"
     },
     {
+      "path": ".aup/pages/about.aup",
+      "size": 2245,
+      "contentType": "application/octet-stream",
+      "sha256": "5789b27dfe6ebb3fa2d890cb3717839029150ac01a20df467d5668ddbef84b83"
+    },
+    {
       "path": ".aup/pages/about.json",
       "size": 4987,
       "contentType": "application/json",
@@ -213,6 +219,12 @@
       "sha256": "77fd77c03dfd63209a65b7bb432756df44d5aba51d71dc241e44c8de794d40d4"
     },
     {
+      "path": ".aup/pages/author.aup",
+      "size": 2740,
+      "contentType": "application/octet-stream",
+      "sha256": "dd34b612e663f531d523b9fccd3d91a6c7707ccdb3312aa1a91116c1dd4f7842"
+    },
+    {
       "path": ".aup/pages/author.json",
       "size": 8652,
       "contentType": "application/json",
@@ -225,6 +237,12 @@
       "sha256": "d824f5e5657f89bdabf01a02b6238da0313bd51ada3675f5dd5bb2c0cd0f9f9b"
     },
     {
+      "path": ".aup/pages/compose-edit.aup",
+      "size": 7690,
+      "contentType": "application/octet-stream",
+      "sha256": "bfbdbce78ede9939a7dc3efbd285b7c526f47d6ae548bf266ef1790161949af3"
+    },
+    {
       "path": ".aup/pages/compose-edit.json",
       "size": 18450,
       "contentType": "application/json",
@@ -235,6 +253,12 @@
       "size": 311,
       "contentType": "application/json",
       "sha256": "fe5514f7bb2f8044deb34fee6ea856dbc0402fbffc303e114678b0351c2200c2"
+    },
+    {
+      "path": ".aup/pages/console.aup",
+      "size": 86996,
+      "contentType": "application/octet-stream",
+      "sha256": "c718bde5953879f325d575a47b5718ac4f6d1d6c1d841f029095469064ef53ed"
     },
     {
       "path": ".aup/pages/console.json",
@@ -267,6 +291,12 @@
       "sha256": "0b1d74e1d894f9bf8882780151f8b66dd4ed643b4e10c4242175457e26b44414"
     },
     {
+      "path": ".aup/pages/index.aup",
+      "size": 2983,
+      "contentType": "application/octet-stream",
+      "sha256": "6ee78905ebbd05d8fce04aa2eed06d1c476e9d9e8fe6cb110ef64d64cb315038"
+    },
+    {
       "path": ".aup/pages/index.json",
       "size": 9471,
       "contentType": "application/json",
@@ -283,6 +313,12 @@
       "size": 317,
       "contentType": "application/json",
       "sha256": "24822c272cd62b6a480e4c1a07805f17e4d99b26f9cb08c6e26662cc72bf99cd"
+    },
+    {
+      "path": ".aup/pages/page-view.aup",
+      "size": 1828,
+      "contentType": "application/octet-stream",
+      "sha256": "9689ed2d14b91408519ac1e6349ba19f3ac280b5ba92c74a211f1cddd95c41db"
     },
     {
       "path": ".aup/pages/page-view.json",
@@ -303,10 +339,22 @@
       "sha256": "e3c22f7ee6bc7ddec694276fe85d105dbae5e2d4db14d249b63957cbeb9f3b7b"
     },
     {
+      "path": ".aup/pages/preview.aup",
+      "size": 5796,
+      "contentType": "application/octet-stream",
+      "sha256": "e992a05fc67cb549adf238b59d2ff8035a42e1e0bfff947ab9e2a27c8beacc78"
+    },
+    {
       "path": ".aup/pages/preview.json",
       "size": 14432,
       "contentType": "application/json",
       "sha256": "43ba1404e2c4df1afbfc9344c8ba13814fc27c657bd009a8681a525f000240b3"
+    },
+    {
+      "path": ".aup/pages/reader.aup",
+      "size": 3107,
+      "contentType": "application/octet-stream",
+      "sha256": "3f556a6f15162c422218f153a2f7f7d06cc13dfd191ffedab4de2de9f40c569b"
     },
     {
       "path": ".aup/pages/reader.json",
@@ -327,6 +375,12 @@
       "sha256": "071035d4b8325c8afc1cb03dad14a14690c88ae4da8a4b968d67af6ed7d17537"
     },
     {
+      "path": ".aup/pages/store.aup",
+      "size": 3631,
+      "contentType": "application/octet-stream",
+      "sha256": "d6b65441c0ff5c71aa3585e5c803ea3b5992b56bf49fea17186aa9e706587942"
+    },
+    {
       "path": ".aup/pages/store.json",
       "size": 9409,
       "contentType": "application/json",
@@ -334,15 +388,15 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 1616,
+      "size": 1574,
       "contentType": "application/octet-stream",
-      "sha256": "7f990cd3c9f5eb32180397bcad35d370ac35fe30b3f88c90a4bf22ff1373b5e5"
+      "sha256": "4fc2354b4a5ad2aec25660438669b504094b4659b9d9df8be1514ca346cdc460"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 569,
+      "size": 575,
       "contentType": "application/json",
-      "sha256": "96a186c75af88936eab7696507d9e7417d76970d6c8d3178306123bb81f6dbc7"
+      "sha256": "a6aa937f063d5413eceb92fe1479987b97b2a44387290d7346e8d4346de54e92"
     },
     {
       "path": ".gitignore",
@@ -1264,27 +1318,27 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 21855,
+      "size": 23211,
       "contentType": "text/markdown",
-      "sha256": "ce336a605e2e9728615da5d93fa1304fe95f72e93174d08b4dbc5ad8e039a597"
+      "sha256": "987b3af9cfeae396984bed70a7730ec59cf6d0a063d75dc517ab200e52f11256"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 87142,
+      "size": 90789,
       "contentType": "text/markdown",
-      "sha256": "af6828a58ae3a54f353dd33766930920a5699e69395d7397bbaff84a6117cc82"
+      "sha256": "8db651860301815f2eb0fd394c60fcd8c6842fd1fcce331c13314214b9d25503"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 33345,
+      "size": 33330,
       "contentType": "text/markdown",
-      "sha256": "8ccd967e8a151ebd4810fbb45200684e5c1a246c02b5d9b57a62e3f539f9e606"
+      "sha256": "f771257f302d7a0874645d13d628541ea9f0e895774caf764eef7d0f74488c95"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 25098,
+      "size": 25685,
       "contentType": "text/markdown",
-      "sha256": "5e08f0e5330705355a66f32bdf243d96e0623cf4d97e0e877dfb017788bf5f3d"
+      "sha256": "60d3f96043f49b83d4ede1ce08a2ee2529ee4d886d57054621e15df8694aa7d7"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1510,15 +1564,15 @@
     },
     {
       "path": "scripts/arcblog-console-nav.mjs",
-      "size": 3747,
+      "size": 5203,
       "contentType": "text/javascript",
-      "sha256": "18750ae16de318f32e40fcafe1448dd4eca5393f186fc74c102350ac90a98b5f"
+      "sha256": "3239e99adc82cfc31bf40bb4e399f31759c97351590813842b876d9698bddfe8"
     },
     {
       "path": "scripts/arcblog-console-nav.test.mjs",
-      "size": 5124,
+      "size": 5434,
       "contentType": "text/javascript",
-      "sha256": "a207fd1e8dfec371f6729cf50794c294ab5229128c9cd6d521d2c9353ff0c9d3"
+      "sha256": "615716b3c1f8ee2581b5e3845e9fae7ddbb6ad5f1a3f8c7b4144b5097222da48"
     },
     {
       "path": "scripts/arcblog-content-hash.test.mjs",
@@ -1557,12 +1611,6 @@
       "sha256": "c5928265efad5500f960fd54046d448402387bda28d4916d4048e653c56356f3"
     },
     {
-      "path": "scripts/arcblog-dsl-artifacts.test.mjs",
-      "size": 1290,
-      "contentType": "text/javascript",
-      "sha256": "2063c52d225e5c15b02b40354be6c3866396b8989457d1b709faa80c33730325"
-    },
-    {
       "path": "scripts/arcblog-economy.mjs",
       "size": 25419,
       "contentType": "text/javascript",
@@ -1588,15 +1636,15 @@
     },
     {
       "path": "scripts/arcblog-hero-carousel.test.mjs",
-      "size": 2535,
+      "size": 2953,
       "contentType": "text/javascript",
-      "sha256": "731c744685f09e1bdad8757971cd7941014696b1ddcd785273e0db20e07c0177"
+      "sha256": "f8052adf7dc869ac88dfc9c1b5344f61ceccd4cd7188db391465cf0d041ab7e7"
     },
     {
       "path": "scripts/arcblog-i18n.test.mjs",
-      "size": 5048,
+      "size": 6259,
       "contentType": "text/javascript",
-      "sha256": "13277e070623accd6cd018501dbc6c6220afb8087d5b4bcdd0f5c67a9d705719"
+      "sha256": "0fbc1a0304ca0c31fd14cebb9bf958be38eb0e55d7d960ab81a277ec1e518c21"
     },
     {
       "path": "scripts/arcblog-lifecycle.mjs",
@@ -1609,12 +1657,6 @@
       "size": 3573,
       "contentType": "text/javascript",
       "sha256": "fc8f287db180fa130a572e0e67efcc7099637af51ceaf90a14e34cae1c20937b"
-    },
-    {
-      "path": "scripts/arcblog-locales.mjs",
-      "size": 6683,
-      "contentType": "text/javascript",
-      "sha256": "8dd8874a3e0e6e7f4a32b88e26d29729f4597b84ddde1e6a42e10b5ba468fdb7"
     },
     {
       "path": "scripts/arcblog-media.mjs",
@@ -1678,9 +1720,9 @@
     },
     {
       "path": "scripts/arcblog-permissions.test.mjs",
-      "size": 8285,
+      "size": 9464,
       "contentType": "text/javascript",
-      "sha256": "9741bade113bdbe701c1b063292d7788415930b45f80cb4d599087f2eb5f4708"
+      "sha256": "3e5f23a4786d9feaf8ee041d2ebb7b3dadbd75c24b558656cc3a8328397e66f5"
     },
     {
       "path": "scripts/arcblog-query-posts.mjs",

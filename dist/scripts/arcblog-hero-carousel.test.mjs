@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -40,7 +40,15 @@ test('the component is declared with a client script and the page wires it up', 
 });
 
 test('the home page embeds the carousel frame instead of the old slideshow', () => {
-  const app = readFileSync(join(repoRoot, '.aup/app.aup'), 'utf8');
+  // The home page (`index`) may be inline in `.aup/app.aup` or an external
+  // `.aup/pages/index.aup` source; scan every `.aup` source so a future split
+  // cannot silently hide the page from this guard.
+  const app = [
+    readFileSync(join(repoRoot, '.aup/app.aup'), 'utf8'),
+    ...readdirSync(join(repoRoot, '.aup/pages'))
+      .filter((name) => name.endsWith('.aup'))
+      .map((name) => readFileSync(join(repoRoot, '.aup/pages', name), 'utf8')),
+  ].join('\n');
   assert.match(app, /frame hero-carousel-frame src="\/p\/en\/hero-carousel\/"/);
   // The frame primitive has no `style` prop and its `autoHeight` did not take
   // effect, so sizing must go through the supported `aspectRatio`.

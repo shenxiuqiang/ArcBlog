@@ -1,0 +1,42 @@
+page store {
+  i18n {
+    title { en "Creator store" zh "创作者商店" }
+    desc { en "Digital goods published by this node. The creator sets the price; buying happens with a DID wallet." zh "本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。" }
+    products { en "Products" zh "商品" }
+    subscription { en "subscription" zh "订阅" }
+    empty { en "No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "还没有公开商品。添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
+    howto-title { en "How buying works" zh "购买流程" }
+    howto-desc { en "A purchase is an Order paid through the configured adapter; settlement then splits the amount (creator / Hub / protocol), and a paid article unlocks through an Access Grant. This page is the catalogue only — there is no checkout here." zh "购买即一笔订单，通过配置的支付适配器支付；随后结算按分成（创作者 / Hub / 协议）拆分，付费文章凭 Access Grant 解锁。本页只是商品目录，不含收银台。" }
+  }
+  view gap=lg {
+    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: console}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
+    view gap=lg {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :title level=2
+        p :desc intent=muted
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h3 :products level=3
+        afs-list layout=list itemStyle=row autoSelect=false clickMode=none subscribe=true showBreadcrumb=false showParent=false filter={field: "content.visibility", match: public} emptyText=:empty style={flexShrink: 0} from "/instance/app/arcblog/economy/products" {
+          row role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+            view gap=xs size={flex: 1} style={minWidth: 0} {
+              h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
+              row gap=xs cross=center {
+                p "${entry.content.priceAmount} ${entry.content.priceAsset}" scale=sm
+                p "${entry.content.type}" scale=sm intent=muted
+              }
+            }
+            p "content ${entry.content.contentId}" scale=sm intent=muted
+          }
+        }
+      }
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h3 :howto-title level=3
+        p :howto-desc intent=muted
+      }
+    }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+  }
+}

@@ -214,27 +214,53 @@ test('every replicated collection matches its declared readRole for a guest', as
 
 test('the replicated table itself keeps the private prefixes admin-only', () => {
   // Guards the source of truth, so a reviewed deletion shows up even when the
-  // daemon is down. These are the collections that name buyers, readers or secrets.
+  // daemon is down. Assert **path coverage**, not collection names: every
+  // private directory must be covered by an admin-only collection, and every
+  // public one by a guest collection — so merging or renaming a collection is
+  // fine as long as the effective permissions do not move.
   const collections = replicatedCollections();
-  const byName = Object.fromEntries(collections.map((c) => [c.name, c]));
-  for (const name of [
+  assert.ok(collections.length > 0, 'the replicated table must not be empty');
+  const covered = collections.map((c) => ({ ...c, dir: String(c.canonical).replace(/\/\*$/, '') }));
+  const covers = (dir) => covered.filter((c) => dir === c.dir || `${dir}/`.startsWith(`${c.dir}/`));
+
+  const privateDirs = [
     'drafts',
     'media',
+    'paid',
     'config',
-    'config-agent-grants',
-    'config-trusted-hubs',
-    'hub-registrations',
-    'economy-orders',
-    'economy-settlements',
-    'economy-ledger',
-    'economy-access-grants',
-    'economy-attributions',
-  ]) {
-    assert.ok(byName[name], `${name} is missing from the replicated table`);
-    assert.equal(byName[name].readRole, 'admin', `${name}.readRole must be admin`);
-    assert.equal(byName[name].minRole, 'admin', `${name}.minRole must be admin`);
+    'config/agent-grants',
+    'config/trusted-hubs',
+    'config/signing-keys',
+    'hub',
+    'hub/registrations',
+    'hub/index',
+    'page-drafts',
+    'economy/orders',
+    'economy/settlements',
+    'economy/ledger',
+    'economy/access-grants',
+    'economy/refunds',
+    'economy/attributions',
+  ];
+  for (const dir of privateDirs) {
+    const needle = `instance/app/arcblog/${dir}`;
+    const owners = covers(needle);
+    assert.ok(owners.length > 0, `${dir} is not covered by any replicated collection`);
+    for (const owner of owners) {
+      assert.equal(owner.readRole, 'admin', `${dir} is covered by ${owner.name} whose readRole is ${owner.readRole}`);
+      assert.equal(owner.minRole, 'admin', `${dir} is covered by ${owner.name} whose minRole is ${owner.minRole}`);
+    }
   }
-  for (const name of ['posts', 'heroes', 'node', 'categories']) {
-    assert.equal(byName[name]?.readRole, 'guest', `${name}.readRole should stay guest`);
+
+  // The public side is a coverage assertion too: these directories must stay
+  // readable to a guest through a guest collection (a page or agent reads them).
+  for (const dir of ['posts', 'heroes', 'node', 'categories', 'pages', 'economy/policies', 'economy/products']) {
+    const needle = `instance/app/arcblog/${dir}`;
+    const owners = covers(needle);
+    assert.ok(owners.length > 0, `${dir} must stay covered by a collection`);
+    assert.ok(
+      owners.some((owner) => owner.readRole === 'guest'),
+      `${dir} lost its guest-readable collection`,
+    );
   }
 });

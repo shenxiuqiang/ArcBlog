@@ -10,8 +10,32 @@
     "zh"
   ],
   "pages": {
+    "about": {
+      "tree": "pages/about.aup"
+    },
+    "author": {
+      "tree": "pages/author.aup"
+    },
+    "compose-edit": {
+      "tree": "pages/compose-edit.aup"
+    },
     "console": {
-      "tree": "pages/console.json"
+      "tree": "pages/console.aup"
+    },
+    "index": {
+      "tree": "pages/index.aup"
+    },
+    "page-view": {
+      "tree": "pages/page-view.aup"
+    },
+    "preview": {
+      "tree": "pages/preview.aup"
+    },
+    "reader": {
+      "tree": "pages/reader.aup"
+    },
+    "store": {
+      "tree": "pages/store.aup"
     },
     "dashboard": {
       "tree": "pages/dashboard.json"
@@ -57,30 +81,6 @@
     },
     "access-admin": {
       "tree": "pages/access-admin.json"
-    },
-    "index": {
-      "tree": "pages/index.json"
-    },
-    "compose-edit": {
-      "tree": "pages/compose-edit.json"
-    },
-    "reader": {
-      "tree": "pages/reader.json"
-    },
-    "preview": {
-      "tree": "pages/preview.json"
-    },
-    "about": {
-      "tree": "pages/about.json"
-    },
-    "store": {
-      "tree": "pages/store.json"
-    },
-    "page-view": {
-      "tree": "pages/page-view.json"
-    },
-    "author": {
-      "tree": "pages/author.json"
     }
   }
 }

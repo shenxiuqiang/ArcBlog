@@ -29,7 +29,7 @@ page wrapper {
   }
   view {
     slot content
-    frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
-    frame console-bridge-frame src="/p/en/console-bridge/" bridge=true overlay=true loading=eager sandbox="allow-top-navigation"
+    frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
+    frame src="/p/en/console-bridge/" bridge=true overlay=true loading=eager sandbox=allow-top-navigation
   }
 }

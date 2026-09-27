@@ -1,0 +1,82 @@
+page compose-edit {
+  i18n {
+    title { en "Edit post" zh "编辑文章" }
+    not-found { en "Draft not found." zh "草稿不存在。" }
+    back { en "Back to studio" zh "返回工作室" }
+    gate-title { en "Publish with your wallet" zh "用钱包发布" }
+    gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    meta { en "Metadata" zh "元数据" }
+    f-title { en "Title" zh "标题" }
+    f-slug { en "Slug" zh "Slug" }
+    slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
+    f-summary { en "Summary" zh "摘要" }
+    f-cover { en "Cover image URL" zh "封面图 URL" }
+    cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
+    f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+    category { en "Category" zh "分类" }
+    tags { en "Tags" zh "标签" }
+    save-draft { en "Save draft" zh "存草稿" }
+    publish-now { en "Publish" zh "发布" }
+    seo { en "SEO & social preview" zh "SEO 与社交分享预览" }
+    seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
+    images { en "Images" zh "图片" }
+    images-desc { en "Drop a cover or inline image here. Media is stored in the site file space; paste the resulting URL into Markdown: ![Alt text](URL)." zh "将封面或正文插图拖到这里。媒体文件保存在站点文件空间中；把生成的 URL 粘贴进 Markdown：![Alt text](URL)。" }
+    editing { en "Editing" zh "编辑中" }
+    publish-hint { en "Published. The draft copy is still in studio drafts — delete it there when done." zh "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。" }
+  }
+  view page-root gap=lg {
+    view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$session.authenticated" {
+        h2 :gate-title level=2
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
+      }
+      view gap=lg visible=$session.authenticated {
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {
+          h2 :title level=2
+          p :not-found intent=muted
+          action compose-edit-back href="/?page=console#admin" variant=ghost label=:back
+        }
+        view gap=lg visible=$state.post {
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            h3 "$t(compose-edit.editing)"
+            p "${state.post.slug}" intent=muted scale=caption
+          }
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            h3 :meta level=3
+            input type=text label=:f-title name=title required=true value="${state.post.title}"
+            input type=text label=:f-slug name=slug required=true value="${state.post.slug}"
+            p :slug-hint intent=muted scale=caption
+            input type=select label=:category name=category options=[technology, design, life] value="${state.post.category}"
+            input type=text label=:tags name=tags value="${state.post.tags}"
+            input type=text label=:f-summary name=summary value="${state.post.summary}"
+            input type=text label=:f-cover name=coverImage value="${state.post.coverImage}"
+            p :cover-hint intent=muted scale=caption
+          }
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            h3 :seo level=3
+            p :seo-desc intent=muted
+            input type=text label="SEO Title" name=seoTitle value="${state.post.seoTitle}"
+            input type=text label="SEO Description" name=seoDescription value="${state.post.seoDescription}"
+            input type=text label="OG Title" name=ogTitle value="${state.post.ogTitle}"
+            input type=text label="OG Description" name=ogDescription value="${state.post.ogDescription}"
+            input type=text label="OG Image" name=ogImage value="${state.post.ogImage}"
+          }
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            input type=textarea label=:f-body name=body required=true value="${state.post.body}"
+          }
+          row gap=sm {
+            action save-draft variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
+            action publish-now variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose-edit.publish-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
+          }
+          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+            h3 :images level=3
+            p :images-desc intent=muted
+          }
+          afs-dropzone
+        }
+      }
+    }
+  }
+}
