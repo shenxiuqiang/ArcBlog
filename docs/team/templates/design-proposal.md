@@ -70,7 +70,7 @@
 
 | # | 验收方式（可观察行为或截图路径） |
 | - | -------------------------------- |
-| 1 | <例如：控制台 15 页侧边栏当前行渲染 `data-active="true"` 且用 accent token> |
+| 1 | <例如：控制台侧边栏当前行渲染 `data-active="true"` 且用 accent token> |
 | 2 | <例如：截图存 `docs/team/design/screenshots/UI-003.png`> |
 
 ## 6. 验证命令（若已由 UI 实现）

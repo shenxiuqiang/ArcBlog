@@ -31,6 +31,10 @@ export const CONSOLE_MENU = [
     items: [
       { label: 'nav-heroes', page: 'heroes' },
       { label: 'nav-categories', page: 'categories' },
+      // spec §15.4 keeps the two governance objects apart: categories are the
+      // publish whitelist, tags are free-form words on posts. They are separate
+      // pages, never one table.
+      { label: 'nav-tags', page: 'tags' },
       { label: 'nav-seo', page: 'seo' },
       { label: 'nav-feeds', page: 'feeds' },
       { label: 'nav-appearance', page: 'appearance' },

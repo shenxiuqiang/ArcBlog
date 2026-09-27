@@ -51,6 +51,9 @@ const ADMIN_PATHS = [
   'economy/access-grants',
   'economy/attributions',
   'economy/refunds',
+  // §15.4: the console's tag projection + intent queue (derived from posts,
+  // which themselves stay behind drafts/ and posts/ rules).
+  'tags',
 ];
 
 const root = '/instance/app/arcblog';
@@ -241,6 +244,8 @@ test('the replicated table itself keeps the private prefixes admin-only', () => 
     'economy/access-grants',
     'economy/refunds',
     'economy/attributions',
+    // §15.4: the console's tag surface (projection + intent queue).
+    'tags',
   ];
   for (const dir of privateDirs) {
     const needle = `instance/app/arcblog/${dir}`;

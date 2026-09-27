@@ -33,12 +33,12 @@
 | A. 平台与架构基础 | 6 | 1 | 0 | 0 | 7 |
 | B. 角色 / NFT / 质押 | 10 | 0 | 0 | 1 | 11 |
 | C. 内容与发布 | 13 | 2 | 1 | 0 | 16 |
-| D. 管理后台 | 16 | 8 | 0 | 0 | 24 |
+| D. 管理后台 | 17 | 7 | 0 | 0 | 24 |
 | E. 经济系统 | 13 | 1 | 1 | 0 | 15 |
 | F. 网络与发现 | 11 | 0 | 1 | 0 | 12 |
 | G. Agent | 8 | 0 | 1 | 0 | 9 |
 | H. 未来（V2+） | 0 | 0 | 5 | 1 | 6 |
-| **合计** | **77** | **12** | **9** | **2** | **100** |
+| **合计** | **78** | **11** | **9** | **2** | **100** |
 
 ---
 
@@ -95,12 +95,12 @@
 
 | 功能 | 规格章节 | 状态 | 实现位置 / 备注 |
 | ---- | ---- | ---- | ---- |
-| 控制台外壳（左菜单 + 右内容，三组六页） | §15.2 | ✅ | `scripts/console-nav.mjs` 生成 + `--check` 漂移门禁 |
+| 控制台外壳（左菜单 + 右内容） | §15.2 | ✅ | `scripts/console-nav.mjs` 生成 + `--check` 漂移门禁；分组与页数以 `CONSOLE_SECTIONS.length` 为准（Round 6 后为 4 组 17 页） |
 | 概览 Dashboard | §15.3 | ✅ | `dashboard.json`（节点状态、最近文章、经济订单卡、Agent 授权卡、快捷操作） |
 | 文章管理（列表 + 生命周期操作） | §15.4 | ✅ | `admin.json`（已发布 / 草稿列表） |
 | 页面管理 | §15.4 | ✅ | `pages-admin` 控制台页（创建离线 → 上线/下线两步，与文章归档语义一致） |
 | 媒体管理界面 | §15.4 | 🟡 | `media-admin.json` 只读索引列表；上传、引用视图待补 |
-| 分类与标签管理界面 | §15.4 | 🟡 | 分类在 `heroes-admin.json`；标签管理界面缺失 |
+| 分类与标签管理界面 | §15.4 | ✅ | 分类在 `heroes-admin.json`；标签在 `?page=tags` 控制台页（Round 6）：投影列表 + 引用计数 + 被引用文章 + 重命名/合并表单（写 intent，由 `scripts/arcblog-tags.mjs apply\|watch` 执行，与 CLI `merge` 同一实现）；空态按平台受限降级为列表后常驻说明（arc-contracts §28.1/§28.6） |
 | 外观（主题 / Tone / Palette / Mode） | §15.5 | ✅ | `settings.json` + theme bridge（`.web/components/`）；新增 `scripts/arcblog-settings.mjs show\|set`（按记录自身 `options` 校验、fail closed、保留 label/scope/type 等字段）；**实测实时预览**：CLI 改 tone 后页面 `<html data-tone>` 无需刷新即跟随（bridge 的 `afs.subscribe`）；控制台外观页用运行时 auto-surface（管理员编辑面；guest 测试身份下显示 "No settings"，该面未在浏览器验证，见下） |
 | 首页与推荐位（Hero 轮播） | §15.5 | ✅ | `heroes-admin.json` + `.web/components/hero-carousel/` |
 | SEO 配置页 | §15.5 | ✅ | `seo-admin`（站点元数据写 node profile，文章级自动继承） |
@@ -195,6 +195,7 @@
 | 2026-09 | 实现轮次 3（续）：**角色退出的数据承诺**（§8.6，`--link-exit`：Hub Tombstone 联动 + 进行中订单报告）→ ✅70 / 🟡13 / ⬜15 / ⚪2。同一轮另两项：内容签名/Provenance（§65–§67）、Hub 离线语义（§75–§76） |
 | 2026-09 | 实现轮次 4：**外观设置可编排**（§15.5：`arcblog-settings.mjs show\|set` + 实测实时预览）与 **Creator Store 公开商店页**（§39：`/store` 商品目录 + 私有商品过滤 + 页脚入口）→ ✅72 / 🟡12 / ⬜14 / ⚪2。遗留：控制台内管理员编辑面（auto-surface）无法用 guest 测试身份验证 |
 | 2026-09 | 实现轮次 5：**B 组链上交互**（§8.1–§8.4）——参考 GLofter 设计 studio/hub 两座 NFT factory，实现 factory 规格 + 可插拔链适配器（mock 端到端 / ocap 按 GLofter 调用序列）+ acquire/stake/revoke/claim 与五态同步；新增 [ArcBlog-nft-factory.md](ArcBlog-nft-factory.md)。→ ✅77 / 🟡12 / ⬜9 / ⚪2。**待办**：真实链 `--adapter ocap` 需在有 ARC 依赖与资金钱包的环境做一次端到端演练（§8.1 “Factory 元数据读取与展示”的界面部分亦待补） |
+| 2026-09 | 实现轮次 6：**分类与标签管理界面 · 标签侧**（§15.4，`?page=tags`：投影列表 + 引用计数 + 重命名/合并 intent 队列 + 唯一 id/CONFLICT 守卫，与 CLI 同一改写实现）+ **控制台视觉走查与 Hero 可访问性**（UI-001：`.web/components/hero-carousel/style.css` 命中区 9→24px、焦点环 2px 白；13 条走查发现立为 REQ-002）→ ✅78 / 🟡11 / ⬜9 / ⚪2。QA 初验判不放行（BUG-002 P1 意图单槽静默覆盖），4 条 BUG 全部本轮修 + 复验放行（`test-reports/round-6{,-reverify}.md`）。**平台事实沉淀**：[arc-contracts.md](arc-contracts.md) §28 新增 8 条（`propBind` 首屏不解析、异步 `visible` 不可用于条件渲染、`emptyText` 四种写法全无效、`$session.*` 在 exec `content` 内不插值、新增 `replicated` 集合需 build+restart 等）。**裁定**：REQ-001 A11「空态卡仅无数据时出现」平台受限、按替代口径验收；REQ-002（F1–F13）顺延 Round 7；D1 设计标准漂移由 UI 在 Round 7 对齐 |
 | 2026-09 | 审计轮次 6：**控制台点击去向**（控制台页框架内切换、公共页/编辑器/资源新标签页，11 处 `target=_blank`，UI 标准 §2.6）+ **局部刷新机制**实测（列表订阅级 / 页内切页级可用；单记录 `propBind` 有首屏竞态，arc-contracts §21.11）。→ 状态计数不变 |
 | 2026-09 | 验证轮次 7：**AUP 交互式会话 / 节点级 patch 的实测**——平台确有 session+treeVersion 与 `create/update/remove/reorder`（官方参考 + 运行时实现），但本实例对非 `_root` 节点的 `-> set` 回复 `AUP node not found`（3 次尝试、2 种写法、2 条到达路径），页面切换会重建整页子树；结论与控制台取值写入 arc-contracts §21.12 与 UI 标准 §8。→ 状态计数不变 |
 | 2026-09 | 验证轮次 8（方案 3）：**单页内区域级就地切换可行性**——`view mode=tabs` 实测可达：切换零 WS 往返、侧栏/页签/面板/两个 `afs-list` DOM 全部复用、隐藏面板订阅继续刷新；`-> page` 仍会重建整页子树。取值：一事一页保深链 + 同节内子视图用页签。结论入 arc-contracts §21.13 与 UI 标准 §8。→ 状态计数不变 |

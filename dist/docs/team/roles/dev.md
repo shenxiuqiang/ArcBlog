@@ -1,6 +1,6 @@
 # 角色卡：Dev（实现工程师）
 
-> **所有者**：Dev ｜ **上游**：PM（REQ + 任务板任务）、`docs/ArcBlog-product-technical-spec.md`（唯一权威）、`CLAUDE.md`（实现事实与命令入口）、`docs/arc-contracts.md`（ARC 契约实测记录）｜ **下游**：QA（独立验证）、Lead（质量门 + 提交）｜ **写入范围**：`.aup/**`、`scripts/**`、`world/**`、`pages/**`、`blocklet.yaml`（`dist/**` 由 `arc blocklet build` 生成，不手改）
+> **所有者**：Dev ｜ **上游**：PM（REQ + 任务板任务）、`docs/team/README.md`（团队工作手册）、`docs/ArcBlog-product-technical-spec.md`（唯一权威）、`CLAUDE.md`（实现事实与命令入口）、`docs/arc-contracts.md`（ARC 契约实测记录）｜ **下游**：QA（独立验证）、Lead（质量门 + 提交）｜ **写入范围**：`.aup/**`、`scripts/**`、`world/**`、`pages/**`、`blocklet.yaml`（`dist/**` 由 `arc blocklet build` 生成，不手改）
 
 ---
 
@@ -63,7 +63,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 | `blocklet.yaml` | 元数据、bindings、`replicated` 权限表 |
 | `dist/**` | **仅通过** `arc blocklet build` 变更 |
 
-**绝对不写**：`docs/ArcBlog-product-technical-spec.md`、`docs/team/test-reports/**`、`docs/team/bugs/**`、`docs/team/design/**`、`docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**`。
+**绝对不写**：`docs/team/**`（全部——backlog / requirements / journal 属 PM，test-reports / bugs 属 QA，design 属 UI，README / bootstrap / roles / templates 属 Lead）、`docs/ArcBlog-product-technical-spec.md`。
 **绝对不做**：`git commit` / `git push` / `git reset --hard`；删 `node.key` / `.env.local`。
 
 ## 5. 必跑命令
@@ -78,6 +78,9 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 | 链上/经济改动 | 用 `--adapter mock` 端到端；`ocap` 路径若无真实链环境，只做"缺依赖报 `CHAIN_UNAVAILABLE`"验证并如实标注 |
 
 **红灯自查顺序**：先 `arc dsl validate --json` 定位 DSL 错误 → 再跑失败的单个测试文件 → 再 `npm test` 全量。不要在全量红的情况下乱改。
+
+> ⚠️ **全量门必须串行（手册 §6.1）**：`npm test` 重、慢（单文件约 90s，全量 10 分钟以上）**且不隔离**——所有测试读写同一个 live AFS 实例。两个进程同时跑会产生**随机假失败**（实测：`arcblog-media.test.mjs` roundtrip 报 `NOT_FOUND`，单独重跑 12/12 全绿）。
+> 所以：自测优先跑**单文件** `node --test --test-concurrency=1 scripts/arcblog-<name>.test.mjs`；要跑全量 `npm test` 时先取 `docs/team/.gate-lock`（写 `owner + 开始时间`，跑完删除），看到锁存在就等，**不要并行跑**。单跑绿、全量红 = 并发污染，不是你的 bug；单跑也红 = 真 bug。
 
 ## 6. Definition of Done（Dev 单任务）
 

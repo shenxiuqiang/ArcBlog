@@ -9,6 +9,7 @@ page wrapper {
     nav-media { en "Media" zh "媒体" }
     nav-agents { en "Agents" zh "Agent" }
     nav-categories { en "Categories" zh "分类" }
+    nav-tags { en "Tags" zh "标签" }
     nav-feeds { en "Feeds" zh "分发" }
     nav-policy { en "Policy" zh "分成策略" }
     nav-access { en "Access" zh "访问授权" }

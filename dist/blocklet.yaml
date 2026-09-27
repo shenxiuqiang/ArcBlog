@@ -101,6 +101,11 @@ networkRead:
   # spec §12 /content/categories: public taxonomy used by the reader filters.
   - path: /instance/app/arcblog/categories
     role: guest
+  # spec §15.4: the console's tag surface — a DERIVED projection (rebuildable
+  # from the posts at any time) plus this node's intent queue. Tags themselves
+  # stay on the post records, so there is no registry to expose: admin-only.
+  - path: /instance/app/arcblog/tags
+    role: admin
   # spec §12 /content/media: upload index; admin-only (it exposes upload paths).
   - path: /instance/app/arcblog/media
     role: admin
@@ -187,6 +192,16 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
+  # /arcblog/tags — the console's tag surface (spec §15.4). It holds ONLY the
+  # derived projection (index.json + items/) and the operator's intent queue
+  # (intents/): tags remain free-form fields on posts, and the projection is
+  # rebuildable with `node scripts/arcblog-tags.mjs project`. Admin-only, like
+  # every other console bookkeeping tree.
+  tags:
+    canonical: instance/app/arcblog/tags/*
+    copy: none
+    minRole: admin
+    readRole: admin
   # /arcblog/media — upload index, admin-only reads (spec §15.4).
   media:
     canonical: instance/app/arcblog/media/*

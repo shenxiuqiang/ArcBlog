@@ -1343,3 +1343,84 @@ locale 保持、内容正确、无 `SESSION INIT FAILED`。
 
 **规则**：跨"应用页面"的导航一律用**指向根路径的绝对 URL**（`href: "/?page=…"` 或 `-> navigate "/?page=…"`）；
 `-> page X` 只适合当前位置 path 已是 `/` 的场景（控制台侧栏就属于这种，实测 `/?page=media` 正常）。
+
+---
+
+## 28. 异步数据 / `afs-list` / 写 AFS 的七条实测事实（Round 6，2026-09-27）
+
+来源：REQ-001（`?page=tags`）实现与 QA 独立验证，admin 会话真实渲染 + `arc afs exec` 复读。
+本节每条都是**本轮新测到或本轮首次被 runtime 证实**的；与 §19/§20、`CLAUDE.md` 的既有注记互补。
+
+### 28.1 `propBind` 的数据在**首次加载**不解析，切页往返后才解析
+
+**症状**：页面用 `propBind={x: "…json"}` 拉记录、再用 `visible`/`visible=…` 条件渲染时，
+首屏条件不成立——**`visible="!${state.x}"` 这类"取反"条件永不显示**（首屏 `state.x` 尚未解析，
+取反恒为 true→非预期的另一支，或恒为 false→永不显示）；`visible="$state.x"`（表达式形式）只在求值那一刻算一次，
+之后永不恢复。这与 `CLAUDE.md`「`visible` on async data」的注记一致，本轮补上"**首次加载不解析**"这一层。
+
+**修法**：① 条件一律用**插值形式** `visible="${state.x}"`；② 需要"取反"语义时不要写 `!${…}`，
+改成在页面**状态初值**里维护一个显式的布尔量，或把两块互斥内容做成 `for`/有条件的两支；
+③ 依赖首屏就正确的判断，改用 `propBind` 之外的通道（如页级 `exec` 返回值）。
+
+**补充实测（同轮收口）**：能用于条件渲染的实际上只有**同步的 `$session.*`**。
+`$state.*` / `$entry.*`（异步）无论写成 `visible="${…}"`、`visible="$entry.content.count"` 还是 `!${…}`，
+都得不到"有数据才显示"的语义——`visible="$entry.content.count"` 恒真、`!${…}` 恒隐藏。
+**因此"空态卡若无数据才渲染"这类互斥在本平台不可实现**；正确的做法是让文案**恒定成立**
+（例如把空态卡换成列表后常驻的一句 dim 说明），而不是声明一个永远不成立的空状态。
+`?page=tags` 的最终实现即按此降级（BUG-001 裁决，见 `docs/team/bugs/BUG-001-*.md`）。
+
+**证据**：`?page=tags` 的空态卡与列表用互斥 `visible` 时，有 27 条标签的同时空态卡仍然渲染
+（`docs/team/bugs/BUG-001-*.md`）；`ops/factory.aup` 的 `!${state.summary.nodes.studio.svg}` 疑为同一模式（未单独复验）。
+
+### 28.2 `afs-list` 的空列表会**抢焦点**，页面一打开滚到底
+
+**症状**：页面里存在空的 `afs-list` 且它位于首屏之下时，渲染后浏览器把焦点/滚动带到它那里——
+实测页面 `scrollTop = 1898 / 1898`（滚到底部）。有数据的列表不会触发。
+
+**修法**：把空列表放到首屏之上（或首屏内），或给它一个非空的占位项；不要用"空列表在页面底部"的布局。
+
+**证据**：REQ-001 实现期实测（把队列区调序后 `scrollTop = 0`）。
+
+### 28.3 `afs-list` 的行模板必须声明 `role=item`
+
+行模板不带 `role=item` 时列表不把该模板当作条目渲染（症状：行内容不出现 / 结构错位）。
+实测加 `role=item` 后恢复。规则：`afs-list` 的每个直接子模板都显式写 `role=item`。
+
+### 28.4 `/.actions/write` 的 `content` 必须是 **JSON 字符串**
+
+`arc afs exec /blocklets/arcblog/.actions/write --args '{"path":"…","content":"{\"a\":1}"}'`：
+`content` 传对象会被拒或写入错误形状，**必须先 `JSON.stringify` 成字符串**再放进 `--args`。
+页面侧 `exec` 的 `content` 参数同理（模板里的对象字面量交给运行时序列化，CLI 侧要自己串）。
+
+### 28.5 新增 `replicated` 集合必须 `arc blocklet build` + `arc service restart` 才生效
+
+只改 `blocklet.yaml` 不 build/不重启，运行时按**旧 manifest** 判定权限。实测同一路径的拒绝理由在重启前后不同：
+
+| 时刻 | 游客写 `tags/**` 的拒绝理由 |
+| --- | --- |
+| 改 manifest 后、未重启 | `not a declared replicated collection` |
+| `arc blocklet build` + `arc service restart` 后 | `below readRole 'admin'`（fail closed，符合预期） |
+
+注意 `arc service restart` **不重新配置**（只按记录重启），改 `mounts` 一类 manifest 需要 `stop` + `start`。
+
+### 28.6 `emptyText` 完全不生效（`$t()` / `:key` / 纯字面量一律不渲染）
+
+`afs-list emptyText=:list-empty` 渲染出的是运行时默认英文 `No items to display`，
+而不是 locale 里声明的 `tags.list-empty`；`arc dsl lint` 也不会把它报成 dead（`.aup` 里有引用）。
+同轮收口时做了四种写法对照（含**纯字面量**），结论：**没有一种能改变空列表文案**，`emptyText` 目前形同不存在。
+→ 空状态指引只能放在**页级卡片 / 列表外的固定文案**里（§19/§20 已记，此处把"`:key` 简写"和"字面量"两条路径也一并否掉）。
+声明了却永不渲染的 `emptyText` 键属于"活着的死键"（lint 不报），不要为了好看而声明它们。
+
+**证据**：`docs/team/bugs/BUG-004-*.md`（空投影探针 + 复原）。
+
+### 28.7 `$session.*` 在 `exec` 的 `content` 内**不插值**，`$generate.*` 会插值（本轮 runtime 证实）
+
+同一条页面写入里：`requestedBy: "$session.did"` 落库为**字面量字符串** `"$session.did"`，
+而 `requestedAt: "${generate.timeiso}"` 正确落成 `2026-09-27T11:58:30.046Z`。
+`CLAUDE.md` 原先记的是"compose 表单写 `authorDid: "$session.did"` best-effort（是否插值未 runtime-verified）"——
+本轮把它证实了：**在 `exec` 的 `content` 里不要相信 `$session.*` 会被替换**。
+
+**证据**：`docs/team/bugs/BUG-003-*.md`。
+
+**规则**：审计字段（谁发起、谁署名）要么由**服务端/CLI**补齐，要么先在页面里取到真实值再写；
+不要让 `$session.*` 模板串直接落库。

@@ -202,7 +202,9 @@ body {
 .hero-carousel .ps-nav {
   left: auto;
   right: clamp(18px, 2.6vw, 30px);
-  bottom: clamp(18px, 2.6vw, 30px);
+  /* 7.5px = half of the dot button's extra height (24px target - 9px mark), so
+     enlarging the hit area does not move the visible mark off its baseline. */
+  bottom: calc(clamp(18px, 2.6vw, 30px) - 7.5px);
   transform: none;
   gap: 9px;
 }
@@ -228,19 +230,49 @@ body {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.hero-carousel .ps-nav__dot {
+/* The mark stays a hairline dot, but the *button* grows to a 24px target —
+   WCAG 2.5.8 asks for at least 24x24 CSS px and the engine ships 8px. The
+   negative margins keep the visual pitch (9px mark + 9px gap) unchanged, and
+   `.hero-carousel.photo-story` outranks the engine's `.photo-story--dark …`
+   dot rules that would otherwise repaint the button itself. */
+.hero-carousel.photo-story .ps-nav__dot {
+  width: 24px;
+  height: 24px;
+  margin: 0 -7.5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: relative;
+}
+
+.hero-carousel.photo-story .ps-nav__dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 7px;
   height: 7px;
-  border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.42);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
   background: transparent;
   transition: background 180ms ease, transform 180ms ease;
 }
 
-.hero-carousel .ps-nav__dot--active {
+.hero-carousel.photo-story .ps-nav__dot--active::after {
   background: #fff;
   border-color: #fff;
-  transform: scale(1.28);
+  transform: translate(-50%, -50%) scale(1.28);
+}
+
+/* The engine removes the ring from dots (`outline: none`) and leaves the arrows
+   with the 1px UA default; both controls need a keyboard-visible indicator that
+   reads on the dark scrim (WCAG 2.4.7). 0,3,0 outranks the engine's 0,1,0. */
+.hero-carousel .ps-nav__dot:focus-visible,
+.hero-carousel .ps-nav__arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 50%;
 }
 
 /* The engine draws this at 2px; scoped here so it reads as a hairline. */

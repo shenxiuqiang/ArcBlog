@@ -6,23 +6,23 @@
 
 ## 使用说明
 
-1. 复制「骨架」到 `docs/team/design/PROP-<nnn>-<slug>.md`（编号全局唯一、顺序递增、不复用）。
+1. 复制「骨架」到 `docs/team/design/UI-<nnn>-<slug>.md`（编号全局唯一、顺序递增、不复用）。
 2. **判断谁来实现**：纯表现层且落在 `.web/**` / `logo.svg` / 主题资源 → UI 自改；涉 `.aup/**`、`scripts/**`、`pages/**`、`world/**`、`blocklet.yaml`、`seed/**` → **必须交 PM 建 Dev 任务**，不自己动手。
 3. 「验收方式」必须是**可观察行为或截图路径**，不接受"更好看""更一致"。
 4. 若提案要求改动 `docs/ArcBlog-admin-ui-design.md` 的标准，必须在「方案」里显式写明并升级 Lead（UI 不单方面改标准）。
 5. 引用平台约束时给章节号（如 `arc-contracts.md` §23/§24/§25），避免提出无法实现的方案。
-6. 完成后 `send_message` 给 PM 一句：`PROP-<nnn> <标题>｜需 Dev: <路径>｜验收: <可观察行为>`。
+6. 完成后 `send_message` 给 PM 一句：`UI-<nnn> <标题>｜需 Dev: <路径>｜验收: <可观察行为>`。
 
 ---
 
 ## 骨架（可直接复制）
 
 ```markdown
-# PROP-<编号>: <一句话标题>
+# UI-<编号>: <一句话标题>
 
 | 字段 | 值 |
 | ---- | -- |
-| 提案号 | PROP-<编号> |
+| 提案号 | UI-<编号> |
 | 状态 | <草案 / 待 PM 派活 / 已派 Dev / 已实现 / 已否决> |
 | 提出轮次 | round-<n> |
 | 上游依据 | <spec §x / docs/ArcBlog-admin-ui-design.md §y / docs/share-cards.md / 现有文件> |
@@ -70,8 +70,8 @@
 
 | # | 验收方式（可观察行为或截图路径） |
 | - | -------------------------------- |
-| 1 | <例如：控制台 15 页侧边栏当前行渲染 `data-active="true"` 且用 accent token> |
-| 2 | <例如：截图存 `docs/team/design/screenshots/PROP-003.png`> |
+| 1 | <例如：控制台侧边栏当前行渲染 `data-active="true"` 且用 accent token> |
+| 2 | <例如：截图存 `docs/team/design/screenshots/UI-003.png`> |
 
 ## 6. 验证命令（若已由 UI 实现）
 
@@ -88,11 +88,11 @@ npm test
 ## 示例（填好的简短示例 · 演示用，非真实提案记录）
 
 ```markdown
-# PROP-003: Agent 工具页空状态与列表标准不一致
+# UI-003: Agent 工具页空状态与列表标准不一致
 
 | 字段 | 值 |
 | ---- | -- |
-| 提案号 | PROP-003 |
+| 提案号 | UI-003 |
 | 状态 | 待 PM 派活 |
 | 提出轮次 | round-6 |
 | 上游依据 | spec §15.8（Agent 能力与工具）、docs/ArcBlog-admin-ui-design.md §4.4 空状态 / §4.2 列表与卡片 |
@@ -130,7 +130,7 @@ admin 在控制台查看 Agent 能力与工具时，希望一眼知道当前有�
 | - | -------------------------------- |
 | 1 | `arc dsl validate --json` issues 为空；`npm test` 全绿（含死 locale key 门） |
 | 2 | 打开 `?page=agents` 无数据时显示中文指引卡片，而非运行期默认英文空文案 |
-| 3 | 截图存 `docs/team/design/screenshots/PROP-003.png` |
+| 3 | 截图存 `docs/team/design/screenshots/UI-003.png` |
 
 ## 6. 验证命令（若已由 UI 实现）
 

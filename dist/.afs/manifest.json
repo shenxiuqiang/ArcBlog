@@ -16,21 +16,21 @@
     },
     {
       "path": ".aup/app.json",
-      "size": 1666,
+      "size": 1723,
       "contentType": "application/json",
-      "sha256": "ce8690701833768cd34c51069b09ba0fae47a44ecf3143ec55789c3e87ecfa06"
+      "sha256": "3134d2f987206222d7f48a44347f99c80327808e616979e3f71f701a2f414a2a"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 25153,
+      "size": 27848,
       "contentType": "application/json",
-      "sha256": "f596e81d951d37664430bf2f1b80ae8f686906d3c998e565c6fa1c6c309c9ed5"
+      "sha256": "0f8375bfaf70ff3f865c6e5a047fecc3b91a219810033ae0f89c8de7c63a652a"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 24887,
+      "size": 27502,
       "contentType": "application/json",
-      "sha256": "571e688c790dba7ed20e7989f82a5875d866df54fefe9fc41400cf4b315c0ae7"
+      "sha256": "e187b5acbd546c4752671373af7d0857c47bbf756509952d9872b9e35f4c8737"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -202,9 +202,9 @@
     },
     {
       "path": ".aup/pages/admin/appearance.aup",
-      "size": 7132,
+      "size": 7417,
       "contentType": "application/octet-stream",
-      "sha256": "628803486e2ac0492f0a7923488c1cafaacde1656fe85aee719656dcb66e8572"
+      "sha256": "16937f5998d4096e08c06ca704dd0126eab670d1bc82a05c48ff1474e9d9c9e9"
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
@@ -214,27 +214,27 @@
     },
     {
       "path": ".aup/pages/admin/compose.aup",
-      "size": 12817,
+      "size": 13102,
       "contentType": "application/octet-stream",
-      "sha256": "e7fd5c60638ac5379de1357d6d4012148e673a593dc2ce101979e335bfae8df0"
+      "sha256": "a39ac055877de11d13c6cb5e35b14dc3f4100fc27e025cdbe91342df6e6e5ba3"
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 13562,
+      "size": 13847,
       "contentType": "application/octet-stream",
-      "sha256": "dd41af4c7c44ad3addad014ced9807bdb068d822fa115b200ac042078e619dd0"
+      "sha256": "fb5d9c99121add0b27a6cb2b43b05573ee61429439bc3cb42a6bccc02fe581d0"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 14400,
+      "size": 14685,
       "contentType": "application/octet-stream",
-      "sha256": "d66c7f6e77cb3e6ff7c97ee0a2eac6642b227319bfcc240dd91d6a4d701ddbb4"
+      "sha256": "6d072e2fbef41143974a9dc4741f69e0c0361e32b21a65103b3066bb2f3bbb44"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 19168,
+      "size": 19453,
       "contentType": "application/octet-stream",
-      "sha256": "83abddad1e65d7545e70c7d8d314729e544e0d6006efb31bfa43bc177ede8314"
+      "sha256": "2789f4ec011fff81c73ce034c4965ed184b65a52648f024809d83601dc39cb8d"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -250,15 +250,15 @@
     },
     {
       "path": ".aup/pages/economy/access.aup",
-      "size": 8516,
+      "size": 8801,
       "contentType": "application/octet-stream",
-      "sha256": "e821ef633718ce007ba8ac73fbea1ec6601990624d3254a370efa99ec92247cc"
+      "sha256": "10b2088701e3074fec43fac444462819f8d83c4afc5315b40f6f1a537a23d43b"
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 9761,
+      "size": 10046,
       "contentType": "application/octet-stream",
-      "sha256": "d373e60fa29c5151292a8ab1094d4efba70093b509543a0a7e79b7c262514575"
+      "sha256": "2b5670926206f53f89d3b98989157cbff4b5e335dc9d4195669125151d54c413"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -274,33 +274,33 @@
     },
     {
       "path": ".aup/pages/ops/agents.aup",
-      "size": 9586,
+      "size": 9871,
       "contentType": "application/octet-stream",
-      "sha256": "7a7425f6a81d1c01aab9e934ba55bd37c7607046e360d1da28c94fa3a5bff001"
+      "sha256": "78bce7422c8c16c0d95779c6ef9dbe720590376ae4d9a9b056f768a36bead263"
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 20282,
+      "size": 20567,
       "contentType": "application/octet-stream",
-      "sha256": "4bc5918630abf3de99e87aefe48b368aeaba455ae3e7dea2a858514ad7e1a134"
+      "sha256": "33331bcb946be8f40fcfa96f2bfa129b60bc15e53e56b2f343be720f17fbdaaa"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 14012,
+      "size": 14297,
       "contentType": "application/octet-stream",
-      "sha256": "7780e9ed6b1746775f6fe7af45cdb163e7da054781059fa502392105a3386f27"
+      "sha256": "529d771800b1c93cd9d744980645e42347a9422e6a600b852b8aed9bf630246b"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 8411,
+      "size": 8696,
       "contentType": "application/octet-stream",
-      "sha256": "ab9874e2ff62f0ccd677f87ff73fc7ad7c9f926586af001a3139ca3ea4daf25c"
+      "sha256": "a1197d2d89a4bbff1386398af36ecdc63ef8f5097971ba1bc6efebaf38d0e5be"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
-      "size": 11597,
+      "size": 11882,
       "contentType": "application/octet-stream",
-      "sha256": "8d6bb49914863b27da6b7b6ebca7f8c9c06da27168786af2c39c35bdb451a24f"
+      "sha256": "b3f1dc8c76596e6c05bb0d3849145c811d5a2d95144a9e7ba7386094367b4bdf"
     },
     {
       "path": ".aup/pages/page-view.aup",
@@ -340,27 +340,33 @@
     },
     {
       "path": ".aup/pages/site/categories.aup",
-      "size": 10189,
+      "size": 10474,
       "contentType": "application/octet-stream",
-      "sha256": "3eae1f02f5eedbaee9ceafcfe71cf4c99d3297a088f3a896332f0f508ba6320f"
+      "sha256": "88d8f43ac22ab2f609899d119e94e5c821b54dfb10eb5a9325db257531dad14e"
     },
     {
       "path": ".aup/pages/site/feeds.aup",
-      "size": 7987,
+      "size": 8272,
       "contentType": "application/octet-stream",
-      "sha256": "d9fbad31ef131771a57dfed5a67413fe1ebf62534c7451d3a47279ccee7b1495"
+      "sha256": "b97b57d546a5d6905bdf83fd3f03061aab90c883192ab961d6c4ec75bf11736b"
     },
     {
       "path": ".aup/pages/site/heroes.aup",
-      "size": 15393,
+      "size": 15678,
       "contentType": "application/octet-stream",
-      "sha256": "405b622f24293058bb68296dda252f8df4106f761b5fef14d6f7bfb55ed9e01d"
+      "sha256": "421b6a3fc10c64cdec1d164b791494ffc261fd0aed7f435e2c12e24276a2830b"
     },
     {
       "path": ".aup/pages/site/seo.aup",
-      "size": 9401,
+      "size": 9686,
       "contentType": "application/octet-stream",
-      "sha256": "dc51492e1826647760a9a45ea7cf7705a8431fafd3eed6cad83d4a713e1ecba3"
+      "sha256": "464202b6b0bb7bd83305291c5295712ac107ef2075eedb3c348af23b333ae1c4"
+    },
+    {
+      "path": ".aup/pages/site/tags.aup",
+      "size": 17440,
+      "contentType": "application/octet-stream",
+      "sha256": "64b2eb85c5ff1b214d0d44284cc7e11803160b06863e5f9fac849b34f1c9e47e"
     },
     {
       "path": ".aup/pages/store.aup",
@@ -376,9 +382,9 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 2072,
+      "size": 2111,
       "contentType": "application/octet-stream",
-      "sha256": "6f16423824b29b993c84b2807c17214593aeee6be609f1af1fd66d4f518bf3e6"
+      "sha256": "a1d019621432afc1d67a102f6e0a619dd65642ce1efcac461f821d70d7736cf6"
     },
     {
       "path": ".aup/wrapper.json",
@@ -496,9 +502,9 @@
     },
     {
       "path": ".web/components/hero-carousel/style.css",
-      "size": 8405,
+      "size": 9693,
       "contentType": "text/css",
-      "sha256": "6c4c45c34cd2f17134d1a5d489fee59dda26d391d82abcbc2b2778bdc41eb04e"
+      "sha256": "9602d472c4be08a8b525617b4f61eac800c252b61538456430e3d2919c2cdc37"
     },
     {
       "path": ".web/components/hero-carousel/vendor/photo-story.js",
@@ -1270,9 +1276,9 @@
     },
     {
       "path": "AGENTS.md",
-      "size": 2324,
+      "size": 2534,
       "contentType": "text/markdown",
-      "sha256": "cd100f80d1788d901e851b0293aec28141f2a8b23030fa32bc55560b3fa052a2"
+      "sha256": "f16e1d399a7b069183faec9c7dc0cb044a67c6be953916a3314910934e2df420"
     },
     {
       "path": "agents/arcblog-agent/agent.dsl",
@@ -1294,21 +1300,21 @@
     },
     {
       "path": "blocklet.yaml",
-      "size": 9765,
+      "size": 10516,
       "contentType": "text/yaml",
-      "sha256": "daad64471781b60af86378726ab13450f317f79e3266d32c4f1ab72be57275f8"
+      "sha256": "79ac9d3692b21cd580cad851c1da461531cdb94732b71ac0c85b1b712e6b9947"
     },
     {
       "path": "CLAUDE.md",
-      "size": 25830,
+      "size": 27605,
       "contentType": "text/markdown",
-      "sha256": "54c235334fa460417ae1b20f6b64228264ec75138a06ceb309d69f0a170091b8"
+      "sha256": "025004d27276733d1458bfdfa49ccb42099475134b9341813c25b36cfe6f3a85"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 112681,
+      "size": 120042,
       "contentType": "text/markdown",
-      "sha256": "87d74aa69f48f140e5f49505fda4dfff66d4649b3eb349eda624cfeb87bf6cc6"
+      "sha256": "d86ce1c04240d7cff6e6d79dc2aa10f6b5b68600fdb6fada4df91134b13c00e9"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1318,9 +1324,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 28363,
+      "size": 29779,
       "contentType": "text/markdown",
-      "sha256": "abc1ecc1d913e18a834fc72f692efff3fedceb2c2e5de10253a152cb04b1244b"
+      "sha256": "6cde3334e6be1e6a9b1b06647400f4a071596a742803e239703f77a789c912aa"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1345,6 +1351,12 @@
       "size": 23511,
       "contentType": "text/markdown",
       "sha256": "e0d584942424b1b617a6979c942ef631ae842745c277ffa7b8f68213a2573f5c"
+    },
+    {
+      "path": "docs/dsh-workflow-and-ralph.md",
+      "size": 9404,
+      "contentType": "text/markdown",
+      "sha256": "ebe884df932a78301539a4c0e86c7f987feca1db6295fde265b7062b72ea41bd"
     },
     {
       "path": "docs/error-codes.md",
@@ -1426,69 +1438,177 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 4405,
+      "size": 14425,
       "contentType": "text/markdown",
-      "sha256": "a7e3c27607ee4183a3a5e86dd450f2988cf9c57e676a952885acf5644647c329"
+      "sha256": "9d149a5c299e849096dd6bd8cbd5cb5f96592631a95ba23921abf48549c32823"
     },
     {
       "path": "docs/team/bootstrap.md",
-      "size": 2819,
+      "size": 10209,
       "contentType": "text/markdown",
-      "sha256": "5e1e1f0e84db3ccc4bc0936b82ae4f2566abe824d7e6ff6401a9276eb66d3fab"
+      "sha256": "464719d5793a2c7a17775a7323c4b7ddeed876b7c74e99ddfdadf4c661267676"
+    },
+    {
+      "path": "docs/team/bugs/BUG-001-tags-empty-card-and-two-primaries.md",
+      "size": 5068,
+      "contentType": "text/markdown",
+      "sha256": "133d8be3c41b9e528e5cdc3c1a2d4ca71b6e02b58c0e3c52231b733eed78f6e9"
+    },
+    {
+      "path": "docs/team/bugs/BUG-002-tags-intent-single-slot-overwrite.md",
+      "size": 6102,
+      "contentType": "text/markdown",
+      "sha256": "1be1c61bc9accc0d7ae091597ec30427486a522f218a18c71f4071a0e3422b61"
+    },
+    {
+      "path": "docs/team/bugs/BUG-003-tags-requestedby-literal-session-did.md",
+      "size": 3559,
+      "contentType": "text/markdown",
+      "sha256": "0a533618ca7eca86959347d054f74309163e2acdb7c998c24ad9ae8bb1e3bc7a"
+    },
+    {
+      "path": "docs/team/bugs/BUG-004-tags-emptytext-not-rendered.md",
+      "size": 3917,
+      "contentType": "text/markdown",
+      "sha256": "8a3cd13174b7f86d77028ee12cf175926611cb5c1080f1be69164ffc272d0893"
+    },
+    {
+      "path": "docs/team/design/review-console.md",
+      "size": 18928,
+      "contentType": "text/markdown",
+      "sha256": "dab81bd8c94a5b942bd9c0b7eedea5e783888639d403524ea0e217db419ff710"
+    },
+    {
+      "path": "docs/team/design/screenshots/UI-001-hero-dot-focus-after-zoom.png",
+      "size": 26685,
+      "contentType": "image/png",
+      "sha256": "b4d3775c3a16588dc538664587b6e318f6fd75cebc626d4adb0c21afcd9bf003"
+    },
+    {
+      "path": "docs/team/design/screenshots/UI-001-hero-dot-focus-after.png",
+      "size": 908840,
+      "contentType": "image/png",
+      "sha256": "2a317425c0772de65004800595ef8ea4b1a265fb89814cf353b3e8fcaf0a88fe"
+    },
+    {
+      "path": "docs/team/design/screenshots/UI-001-hero-dot-focus-before-zoom.png",
+      "size": 23490,
+      "contentType": "image/png",
+      "sha256": "4f07f1b3f32e38d6dbc1aa3b532959640a6939b1d9f12c376785fdd5c1ab3459"
+    },
+    {
+      "path": "docs/team/design/screenshots/UI-001-hero-dot-focus-before.png",
+      "size": 907041,
+      "contentType": "image/png",
+      "sha256": "ddbf4ea948e503229c22a98f112db92f1db1b46305241823e328898f92cc1592"
+    },
+    {
+      "path": "docs/team/design/UI-001-console-tokens-and-walkthrough.md",
+      "size": 33560,
+      "contentType": "text/markdown",
+      "sha256": "7b40e730e12436f10a4d9bb6c027bd8807d4d29511f2d3e3ae3be518e52605ee"
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 1578,
+      "size": 1593,
       "contentType": "text/markdown",
-      "sha256": "a0c40733307b8796665cc48cdaac3bc9fd1baa26c6b38ba3c6d8e49a643649e8"
+      "sha256": "11770ab7a1e52115a59f8322a811c9f0da94f61d6c605dbb77e2542f61bfe436"
+    },
+    {
+      "path": "docs/team/journal/round-6.md",
+      "size": 25171,
+      "contentType": "text/markdown",
+      "sha256": "99492883729b0dbcb74fdf7c0e714754475a8621fd0086c232bd8e1ff2f33190"
     },
     {
       "path": "docs/team/README.md",
-      "size": 9900,
+      "size": 13218,
       "contentType": "text/markdown",
-      "sha256": "a2ce0194c4124db9e0ac63c75de13868b2e5245b04b39265fed1c2b7fbf64c39"
+      "sha256": "b24eab58a09f2f04d364875995cc886a985ae8fd4e956492cb601b850859f189"
+    },
+    {
+      "path": "docs/team/requirements/REQ-001-tags-admin-ui.md",
+      "size": 16594,
+      "contentType": "text/markdown",
+      "sha256": "882f041acf913adad5e6bed30ad32ef33ea53fa0b0b6e840cdbc930011e18366"
+    },
+    {
+      "path": "docs/team/requirements/REQ-002-console-consistency-fixes.md",
+      "size": 15157,
+      "contentType": "text/markdown",
+      "sha256": "7f39aefa3c4a9b8402940791894b3cabd2840891efd7fe90820de772e2d3cab4"
     },
     {
       "path": "docs/team/roles/dev.md",
-      "size": 9927,
+      "size": 10670,
       "contentType": "text/markdown",
-      "sha256": "018571f119980993401e5d03e5745478e275d11ed73fc75495fa0dfd22f98ba5"
+      "sha256": "5a6c73c35e4681457d8631ac04b6b118858e036ca9c5f1731b31f4b1fe4ad789"
     },
     {
       "path": "docs/team/roles/pm.md",
-      "size": 10198,
+      "size": 11513,
       "contentType": "text/markdown",
-      "sha256": "bbe1199679d4243ab280de32a8ecf45b5404f3a592007ed67a02ce5c1fc9ba4b"
+      "sha256": "5031bab45087020a67c640e8605d261dcc2d851e0616cfe71ea1f6090aa1d969"
     },
     {
       "path": "docs/team/roles/qa.md",
-      "size": 9353,
+      "size": 9982,
       "contentType": "text/markdown",
-      "sha256": "0cc58d3f4be443b8b100a43bb1329e0a96b1bdf71f01c165a795957b11204751"
+      "sha256": "17b074586b26fa11fd1cca0bb5d8fe0080661266c12c9dce847e04b8a9a8e2de"
     },
     {
       "path": "docs/team/roles/ui.md",
-      "size": 10331,
+      "size": 10767,
       "contentType": "text/markdown",
-      "sha256": "419deb2d350c35b518d0eba288fd08b1efb04d139ab3f61c6f11b14ed0bcb6e4"
+      "sha256": "04141fb56404c1d78a9b23a15c6e2017644f192d8346ce3b35615f7f4b58666c"
     },
     {
       "path": "docs/team/templates/bug-report.md",
-      "size": 4797,
+      "size": 5021,
       "contentType": "text/markdown",
-      "sha256": "e63a014b5e0ce098a81c501da26882ef5977606525b17dc2e0279e06bbfc0528"
+      "sha256": "14dbce64e4a15fff53c9c3456534cb15006dbacf91d315cb5127cc2f7869901f"
     },
     {
       "path": "docs/team/templates/design-proposal.md",
-      "size": 6533,
+      "size": 6510,
       "contentType": "text/markdown",
-      "sha256": "fd8e30b020a6e23f96772bc8a120a1b3af71fe3fb98ae02c19e817f132149b73"
+      "sha256": "18b49f4675ff38f39f5f42d112a9607fd362f5ac30fcc321f5cc791e7803eca9"
     },
     {
       "path": "docs/team/templates/test-report.md",
-      "size": 6672,
+      "size": 6945,
       "contentType": "text/markdown",
-      "sha256": "95107b4376758860f68fd227d7a11323cfa420791bb6e7d5cccc26bebc7778d1"
+      "sha256": "d1bc658efb34f7ffe703ad8ec4ec2fd2b11f4a8bbb06043f6d9d367f468b0aba"
+    },
+    {
+      "path": "docs/team/test-reports/assets/round-6-reverify-single-primary.png",
+      "size": 130848,
+      "contentType": "image/png",
+      "sha256": "bcfa5f31ea1150bd903ab45d1e4ddfd7b0590145b44cafd980d01dbddd433850"
+    },
+    {
+      "path": "docs/team/test-reports/assets/round-6-tags-empty-card-with-data.png",
+      "size": 139399,
+      "contentType": "image/png",
+      "sha256": "d36f9545ff17befa6026307542786b9e8a7eafe73e372c20d8f3d94684dad02d"
+    },
+    {
+      "path": "docs/team/test-reports/assets/round-6-tags-two-primary.png",
+      "size": 147517,
+      "contentType": "image/png",
+      "sha256": "f354730b399557d9d76e85f6de9ecbbb5eaa63026485068ed2c350e7a136d8e9"
+    },
+    {
+      "path": "docs/team/test-reports/round-6-reverify.md",
+      "size": 19544,
+      "contentType": "text/markdown",
+      "sha256": "f8430734750f67c37f597e6bb4cd177510131d1eb0caa2cf6ac72c7faa6cb049"
+    },
+    {
+      "path": "docs/team/test-reports/round-6.md",
+      "size": 30495,
+      "contentType": "text/markdown",
+      "sha256": "9b8f4212d6aea6fb18974e3d5ea3087f41611826d78147fb39a33e7656e06b18"
     },
     {
       "path": "logo.svg",
@@ -1522,9 +1642,9 @@
     },
     {
       "path": "package.json",
-      "size": 371,
+      "size": 583,
       "contentType": "application/json",
-      "sha256": "b25b5ba9cd49e105985dc40d5b86e9324d6033541d2d2e5b34e4c5b2a6f8c268"
+      "sha256": "7ab12886b63051e7490340c784841553c3fb8482507ff4e65ce1d655f21867e8"
     },
     {
       "path": "pages/hero-carousel/layout.aup",
@@ -1624,9 +1744,9 @@
     },
     {
       "path": "scripts/arcblog-clean.test.mjs",
-      "size": 4107,
+      "size": 9624,
       "contentType": "text/javascript",
-      "sha256": "12815d927c83be52beedb3808dff754d8ca6fd454e388d2285f9744210ddda05"
+      "sha256": "5aec668f87ac186874945230e456e4adeb8d9b27dfe15a639b26339ae044a74b"
     },
     {
       "path": "scripts/arcblog-console-nav.mjs",
@@ -1636,9 +1756,9 @@
     },
     {
       "path": "scripts/arcblog-console-nav.test.mjs",
-      "size": 5419,
+      "size": 5598,
       "contentType": "text/javascript",
-      "sha256": "79b0a9cdce6d1aac870f1766248c01b185ed1984292288b5e8e58839e7278753"
+      "sha256": "30359633c806fc77088ab2bd3a1b68f73b4fccb0be3892e17e9f71e7a1fc7dfd"
     },
     {
       "path": "scripts/arcblog-content-hash.test.mjs",
@@ -1786,9 +1906,9 @@
     },
     {
       "path": "scripts/arcblog-permissions.test.mjs",
-      "size": 9464,
+      "size": 9695,
       "contentType": "text/javascript",
-      "sha256": "3e5f23a4786d9feaf8ee041d2ebb7b3dadbd75c24b558656cc3a8328397e66f5"
+      "sha256": "3847a54a154ab59f6f9a0f9a6aa6707a353ba87bb564bde635d541955ce6bf58"
     },
     {
       "path": "scripts/arcblog-query-posts.mjs",
@@ -1846,15 +1966,15 @@
     },
     {
       "path": "scripts/arcblog-tags.mjs",
-      "size": 3420,
+      "size": 19007,
       "contentType": "text/javascript",
-      "sha256": "2ab36688cbcc6572b3e1eacfba6671dc36967d959859bcd5a31b07d69afe298f"
+      "sha256": "aaf1b3bb298f79f1d82436717b1bb10b4e5a7c04047cd1d817b44b2efad38a99"
     },
     {
       "path": "scripts/arcblog-tags.test.mjs",
-      "size": 3463,
+      "size": 18118,
       "contentType": "text/javascript",
-      "sha256": "fa4a88fb3a4284124f589f3e435cd58567da8325b02d4b99f26e97d06ee3eb3c"
+      "sha256": "d90280454418e59c4f0757fa025c2d440b8a7e0d9cfde3beb05cfc08e0c5f630"
     },
     {
       "path": "scripts/arcblog-theme.test.mjs",
@@ -1870,9 +1990,9 @@
     },
     {
       "path": "scripts/console-nav.mjs",
-      "size": 7236,
+      "size": 7473,
       "contentType": "text/javascript",
-      "sha256": "7c27ead907e8e04f47e8331ac247db3936ac84732bf2028fd9a6c66557bac0e1"
+      "sha256": "d96e84971e65d918251547dcf161c1a6f252848709a8b1a32015c45e8d610f1d"
     },
     {
       "path": "scripts/lib/agents.mjs",
@@ -1984,9 +2104,9 @@
     },
     {
       "path": "scripts/run-tests.mjs",
-      "size": 2310,
+      "size": 4449,
       "contentType": "text/javascript",
-      "sha256": "bcfd4ce6efb7cbe644d4adb007f942e3d88548d5ff2f282e1a5bc50819756e28"
+      "sha256": "c020c79b399977631c79512ff3acf9d9012c91f692523b4e47f9f9383bdc3524"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

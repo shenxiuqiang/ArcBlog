@@ -1,0 +1,193 @@
+page tags {
+  i18n {
+    clear { en "Clear" zh "清除" }
+    clear-msg { en "Removes the record from the queue. Posts it already rewrote are unaffected." zh "从队列移除该记录。已被它改写的文章不受影响。" }
+    clear-title { en "Clear this intent?" zh "清除这条意图？" }
+    confirm-msg { en "Every post referencing the source tag is rewritten in place (version + content hash), on both the published and the draft side. The console queues it; the node's worker applies it." zh "所有引用源标签的文章都会被原位改写（版本 + 内容哈希），已发布与草稿两侧都会改。控制台只负责入队，由本机 worker 执行。" }
+    confirm-title { en "Queue this rename / merge?" zh "提交这次重命名 / 合并？" }
+    desc { en "Tags are free-form words on posts — there is no tag registry. Rename or merge to converge spelling variants; the counts below come from the same scan the CLI prints." zh "标签是挂在文章上的自由词，没有标签注册表。用重命名 / 合并收敛写法；下面的计数与 CLI 输出来自同一次扫描。" }
+    empty-body { en "A tag appears here as soon as a post carries one: add tags while writing, then press Refresh projection — the worker rebuilds this list from the posts. There is no tag registry." zh "有文章带上标签后，它就会出现在这份清单里：写作时给文章加标签，保存后点「刷新投影」，worker 会从文章重建清单。标签没有注册表。" }
+    empty-title { en "Where these tags come from" zh "这些标签从哪来" }
+    empty-write { en "Write a post" zh "写文章" }
+    enqueue-failed { en "Could not queue the intent — nothing was written. Sign in as the blocklet owner and try again." zh "意图入队失败 —— 没有写入任何记录。请以 Blocklet 属主身份登录后重试。" }
+    f-from { en "Tag" zh "标签" }
+    f-hint { en "Stored form is lowercase with underscores; spaces, capitals and hyphens are normalized when the worker executes." zh "落库形式为小写 + 下划线；空格、大写与连字符会在 worker 执行时规范化。" }
+    f-to { en "New name" zh "新名称" }
+    form-desc { en "A target that does not exist yet renames the tag; an existing target merges into it. Either way every referencing post is rewritten." zh "目标名不存在＝重命名，已存在＝合并；两种情况都会改写所有引用它的文章。" }
+    form-title { en "Rename or merge" zh "重命名 / 合并" }
+    gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
+    gate-title { en "Site" zh "站点" }
+    list-title { en "Tags in use" zh "使用中的标签" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    queue-desc { en "The console cannot rewrite posts itself, so the form only queues an intent. The worker applies it with the same code path as the CLI merge." zh "控制台本身不能改写文章，表单只负责入队。worker 会用与 CLI merge 完全相同的实现来执行。" }
+    queue-legend { en "queued = waiting for the worker · done = posts rewritten · noop = no article referenced the source tag, nothing written · failed = rejected, no post touched" zh "queued = 等待 worker · done = 已改写文章 · noop = 没有文章引用源标签，未写库 · failed = 被拒绝，未改动任何文章" }
+    queue-title { en "Intent queue" zh "意图队列" }
+    queued { en "Intent queued — the local worker applies it." zh "意图已入队 —— 由本机 worker 执行。" }
+    refs { en "references" zh "引用" }
+    refresh { en "Refresh projection" zh "刷新投影" }
+    refresh-hint { en "Counts and the timestamp come from a derived projection: Refresh queues an intent, and this node's worker rebuilds it from the posts (node scripts/arcblog-tags.mjs watch)." zh "计数与时间来自派生投影：点「刷新投影」会入队一条意图，由本机 worker 从文章重建（node scripts/arcblog-tags.mjs watch）。" }
+    snapshot { en "Projection generated at" zh "投影生成时间" }
+    snapshot-count { en "tags in use" zh "个使用中的标签" }
+    submit { en "Queue rename / merge" zh "提交重命名 / 合并" }
+    title { en "Tags" zh "标签" }
+    worker-hint { en "Worker: node scripts/arcblog-tags.mjs watch" zh "Worker：node scripts/arcblog-tags.mjs watch" }
+    worker-note { en "Queued actions are executed by the node's worker (node scripts/arcblog-tags.mjs watch), never by the browser." zh "入队的操作由本机 worker 执行（node scripts/arcblog-tags.mjs watch），浏览器不会直接改写文章。" }
+  }
+  view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
+    view style={gap: "0"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dtags&cancel_to=%2F%3Fpage%3Dtags" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-tags)" -> page tags active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              row gap=md cross=start {
+                view gap=xs size={flex: 1} style={minWidth: 0} {
+                  h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+                  p :desc intent=muted
+                }
+                row gap=sm cross=center {
+                  action -> page compose variant=secondary size=sm label=:empty-write style={borderRadius: "var(--radius-md, 8px)"}
+                  action variant=secondary size=sm label=:refresh onSuccessToast={intent: success, message: "$t(tags.queued)", duration: 2500} onErrorToast={intent: error, message: "$t(tags.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/tags/intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: refresh, from: "", to: "", rawFrom: "", rawTo: "", summary: "--", status: pending, message: "", migrated: 0, posts: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                }
+              }
+              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/snapshot" {
+                row gap=xs cross=center role=item {
+                  p :snapshot scale=caption intent=muted
+                  time mode=display value="${entry.content.generatedAt}" timeMode=relative
+                  p "${entry.content.generatedAt}" scale=caption intent=muted
+                  p :snapshot-count scale=caption intent=muted
+                  p "${entry.content.count}" scale=caption intent=muted
+                }
+              }
+              p :refresh-hint intent=muted scale=caption
+            }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+              p :queue-desc intent=muted scale=sm
+              p :queue-legend intent=muted scale=caption
+              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/intents" {
+                row gap=sm cross=center role=item {
+                  view gap=xs style={flex: "1 1 0%"} {
+                    p "${entry.content.action}" scale=lg
+                    p "${entry.content.summary}" scale=sm intent=muted
+                    p "${entry.content.status}" scale=sm intent=muted
+                    p "${entry.content.message}" scale=sm intent=muted
+                  }
+                  action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:clear confirm={title: :clear-title, message: :clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                }
+              }
+              p :worker-hint intent=muted scale=sm
+            }
+            view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :list-title level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/items" {
+                  row cross=center role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+                    view gap=xs style={flex: "1 1 0%", minWidth: 0} {
+                      h3 "${entry.content.tag}" style={fontSize: "var(--type-body)"}
+                      row gap=xs cross=center {
+                        p :refs scale=sm intent=muted
+                        p "${entry.content.count}" scale=sm intent=muted
+                      }
+                      p "${entry.content.refs}" scale=sm intent=muted
+                    }
+                  }
+                }
+                p :empty-title scale=sm intent=muted
+                p :empty-body scale=sm intent=muted
+              }
+              grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", alignItems: start, flexShrink: 0} {
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h3 :form-title level=3 style={fontSize: "var(--type-body)"}
+                  p :form-desc intent=muted scale=sm
+                  input type=text label=:f-from name=tagFrom required=true state={value: ""}
+                  input type=text label=:f-to name=tagTo required=true state={value: ""}
+                  p :f-hint intent=muted scale=caption
+                  row cross=start {
+                    action variant=primary label=:submit confirm={title: :confirm-title, message: :confirm-msg} onSuccessToast={intent: success, message: "$t(tags.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(tags.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/tags/intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: merge, from: "${args.tagFrom}", to: "${args.tagTo}", rawFrom: "${args.tagFrom}", rawTo: "${args.tagTo}", summary: "${args.tagFrom} → ${args.tagTo}", status: pending, message: "", migrated: 0, posts: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                  }
+                  p :worker-note intent=muted scale=sm
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -61,6 +61,9 @@
     "seo": {
       "tree": "pages/site/seo.aup"
     },
+    "tags": {
+      "tree": "pages/site/tags.aup"
+    },
     "agents": {
       "tree": "pages/ops/agents.aup"
     },

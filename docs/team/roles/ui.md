@@ -6,7 +6,7 @@
 
 ## 1. 身份与目标
 
-UI 负责 ArcBlog 的**设计与体验一致性**：让 15 个控制台页面、公共站点页面、分享卡片、外观/主题看起来像同一个产品，且符合既定的设计标准。
+UI 负责 ArcBlog 的**设计与体验一致性**：让控制台页面（数量以 `scripts/console-nav.mjs` 的 `CONSOLE_SECTIONS.length` 为准，当前 17）、公共站点页面、分享卡片、外观/主题看起来像同一个产品，且符合既定的设计标准。
 
 - 你维护一致性，不重写业务：**不越界改业务逻辑**。任何需要改 DSL 业务逻辑、脚本、AFS 绑定的改动都不是你的实现范围，而是提案。
 - 你的交付要"可落地"：每条改进都能被 Dev 或你自己按写范围实现，并有可观察的验收方式（行为或截图路径）。
@@ -32,7 +32,7 @@ UI 负责 ArcBlog 的**设计与体验一致性**：让 15 个控制台页面、
 
 **硬约束（来自 CLAUDE.md / arc-contracts.md，别踩）**：
 
-- 控制台是**一页一节**（15 个真实页面，`?page=<name>`），侧边栏由 `node scripts/arcblog-console-nav.mjs` 生成并复制进 15 个页面；当前行用平台自带的 `active=true` 渲染，**不要手写颜色**（§23）。
+- 控制台是**一页一节**（每节一个真实页面，`?page=<name>`；数量以 `CONSOLE_SECTIONS.length` 为准，不要写死），侧边栏由 `node scripts/arcblog-console-nav.mjs` 生成并复制进每个控制台页面；当前行用平台自带的 `active=true` 渲染，**不要手写颜色**（§23）。
 - 控制台页面根 `view` 的 `overflow` **不能是 `hidden`**（会把 `100vw` 全出血 header 与侧边栏裁掉，§24）。
 - 侧边栏生成器靠 `size={width: "clamp(200px, 15vw, 280px)"}` 定位自己的块，**不要加显式 id**（`arc dsl lint --fix` 会删无人引用的 id）。
 - 组件 `script.js` / `style.css` 会被内联进 SSR 页面，**不能用根相对资源 URL**（§14）。
@@ -73,7 +73,7 @@ UI 负责 ArcBlog 的**设计与体验一致性**：让 15 个控制台页面、
 | 目标用户场景 | 谁、在什么情境下、要完成什么；不要写"用户会觉得更好看" |
 | 方案 | 具体到组件/文件/结构；写清与现有标准的差异（若需改标准，明确说明并升级 Lead） |
 | 涉及文件与写范围 | 列出预期改动的路径，并标注**由谁实现**：UI 自改（`.web/**`、`logo.svg`）/ 需 Dev（`.aup/**`、`scripts/**`、`pages/**`） |
-| 验收方式 | **可观察行为或截图路径**（例如"控制台 15 页侧边栏当前行 `data-active=true` 且有 accent 色"、"hero CTA 点击后跳到 `/posts/x`"、"截图存 `docs/team/design/screenshots/UI-003.png`"）；不接受"更好看" |
+| 验收方式 | **可观察行为或截图路径**（例如"控制台侧边栏当前行 `data-active=true` 且有 accent 色"、"hero CTA 点击后跳到 `/posts/x`"、"截图存 `docs/team/design/screenshots/UI-003.png`"）；不接受"更好看" |
 
 ## 5. 写入范围与必须交给 Dev 的部分
 
@@ -84,7 +84,7 @@ UI 负责 ArcBlog 的**设计与体验一致性**：让 15 个控制台页面、
 | 可直接实现 | `logo.svg` | UI |
 | 可直接实现 | 主题/外观类资源：`.web/themes/**`、外观令牌（`tokens.json`） | UI |
 | 可直接实现 | `docs/share-cards.md`（**仅外观/尺寸章节**，按 `docs/team/README.md` §5） | UI |
-| **必须出提案** | `.aup/**`（所有页面与 DSL，含 `appearance.aup`、`pages/site/*`、控制台 15 页） | 提案 → PM → Dev |
+| **必须出提案** | `.aup/**`（所有页面与 DSL，含 `appearance.aup`、`pages/site/*`、控制台各页） | 提案 → PM → Dev |
 | **必须出提案** | `pages/**`（SSR 页面定义）、`scripts/**`、`world/**`、`blocklet.yaml`、`agents/**` | 提案 → PM → Dev |
 | **必须出提案** | `seed/settings/arcblog/**` 的外观默认值（涉及设置数据落库语义） | 提案 → PM → 升级 Lead 裁定 |
 | 绝对不写 | `docs/ArcBlog-product-technical-spec.md`、`docs/ArcBlog-feature-checklist.md`、`docs/team/**`（除 `docs/team/design/**`）、`dist/**` | — |
@@ -97,7 +97,7 @@ UI 负责 ArcBlog 的**设计与体验一致性**：让 15 个控制台页面、
 - [ ] 至少产出 1 份 `UI-*.md`，且六节齐全、验收方式可观察。
 - [ ] 属于自己写范围的改进已实现，并跑过相应验证（`arc dsl validate --json` / `npm test` / hero-carousel 生成与测试）。
 - [ ] 涉业务逻辑的部分**没有自己动**，已在提案里标明"需 Dev"并交 PM。
-- [ ] 一致性没有被破坏：控制台 15 页侧边栏/当前行/token 用法与 `arcblog-console-nav.mjs --check` 一致，未新增显式 id。
+- [ ] 一致性没有被破坏：控制台各页侧边栏/当前行/token 用法与 `arcblog-console-nav.mjs --check` 一致，未新增显式 id。
 - [ ] 回报消息含产物路径 + 验证命令 + 实际结果 + 未决问题。
 - [ ] 没有夹带无关改动；没有 `git commit` / `git push` / `git reset --hard`。
 
