@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.1
+**文档版本：** V1.2（2026-09-27：按 D1 裁定把 §2.1 / §2.3 / §2.5 / §2.6 / §8 / §9 对齐到已实现的 B′ 控制台；逐条 before/after 见 [docs/team/design/UI-002-admin-ui-design-alignment.md](team/design/UI-002-admin-ui-design-alignment.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -53,7 +53,7 @@
 │          │  页头：标题 + 一句话说明 + 主操作   │ │ 视口
 │ console- │───────────────────────────────────│ │ 高度
 │ nav      │                                   │ │ 100%
-│ 200px    │  console-scroll：唯一滚动区 ⇅ │ │
+│ 侧栏     │  console-scroll：唯一滚动区 ⇅ │ │
 │          │                                   │ │
 └──────────┴───────────────────────────────────┘ ▼
 ```
@@ -63,9 +63,8 @@
 | 项 | 标准 |
 | -- | ---- |
 | 顶栏 | 页面内 `view console-topbar`（`width: 100vw` + `margin-left: calc(50% - 50vw)`）承载 `app-header`，与控制台同宽贴边 |
-| 侧边栏宽度 | `200px`，`flexShrink: 0` |
 | 侧边栏样式 | **扁平、贴左边缘、与顶栏/视口底部零间距**：容器无边框无圆角无内边距（`padding: 0`、`gap: 0`），与右侧内容之间 1px 右分割线；**不渲染页脚**；菜单项无边框无圆角、左对齐满宽、左右内边距 `8px 20px`；项与项之间、分组之间各 1px 浅分割线 |
-| 侧边栏宽度 | `clamp(200px, 15vw, 280px)` —— 窄屏保底 200px，宽屏随视口增长（1722px 视口实测 258px） |
+| 侧边栏宽度 | `clamp(200px, 15vw, 280px)` + `flexShrink: 0` —— 宽度随视口流式（取 clamp 的上下限），**不再写固定像素**；1803px 视口复测 270.44px（= 15vw，正是该 clamp 的计算值） |
 | 选中菜单项 | 深色实心块（`background: var(--color-text)`，文字 `var(--color-bg)`），**与未选中项共用同一左对齐内边距**（实测两者文字左缩进均为 20px）；不使用 `variant=primary`（它会居中标签造成位移） |
 | 分组名称（一级） | 独立背景带（`background: var(--color-bg)`）+ 文字左缩进 **20px**，与二级菜单形成层次 |
 | 菜单项（二级） | 文字左缩进 **32px**（比一级多 12px 的层级缩进），满宽、左对齐 |
@@ -93,14 +92,14 @@
 * 网格只包裹**同质卡片**；若滚动区直接子元素里混有 `h2`/`h3` 标题或裸 `afs-list`，不做网格（标题会变成网格单元）——这类页面（admin、heroes-admin、categories-admin）保持整行。
 * 目前启用网格：dashboard（概览卡 2×2）、operations（健康 + 发现）、pages-admin、hub-admin、policy-admin（策略 + 商品）；其余页面每项内容各成一块，保持整行。
 
-### 2.3 控制台结构（单页 + hash 节）
+### 2.3 控制台结构（一节一页，`?page=<name>`）
 
-控制台是**一个 AUP 页面**（`?page=console`），左侧是节导航，右侧是节内容；URL 用 hash 保持深链，交互对齐 `.well-known/service/user#profile`：
+控制台**每个菜单节都是一个真实页面**：用 `?page=<name>` 直达，左侧侧栏被投影进**每一个**控制台页，右侧只放本节内容。深链就是 URL 本身——刷新、分享、书签都直接落到该页，不需要任何脚本或运行时状态来恢复视图。
 
-```
-/?page=console#admin
+```text
+/?page=posts
 ┌──────────────────────────────────────────────────────────┐
-│ 顶栏（app-header：品牌 / 主题 / 语言 / 用户菜单）            │
+│ 顶栏（app-header：品牌 / 主题 / 语言 / 用户菜单）100vw 满宽 │
 ├──────────────┬───────────────────────────────────────────┤
 │ 内容          │  你的工作室                                │
 │  仪表盘       │  在一个与钱包绑定的工作区中管理…             │
@@ -111,16 +110,18 @@
 └──────────────┴───────────────────────────────────────────┘
 ```
 
-* **15 个节 = 15 个页签面板**（`view console-sections mode=tabs`）：内容、帖子、页面、写文章、Hero、分类、SEO、分发、外观、运维、Hub、媒体、Agent、分成策略、访问授权。
-* **侧栏是导航、页签条隐藏**：侧栏项是 `action … href="#<section>"` 的 hash 链接；运行时生成的 tab 条由 console-bridge 用 CSS 隐藏，只当切换引擎用。
-* **切换是就地替换**：实测点击侧栏/页签时侧栏、页签容器、15 个面板与其内列表的 DOM **全部复用**，零网络往返、零整页重渲染（arc-contracts §21.14 坑 1：`hashchange` 会导致子树重建，因此 URL 用 `pushState` 更新）。
-* **URL 永远规范化**：无论从哪个入口进入控制台（`/?page=console`、文章/商店等绑定路由上的应用内换页、`/manage/seo`），桥都会用 `replaceState` 把 URL 改写成 `/?page=console&…​#<section>`——路径不带旧页面语义，分享与刷新都落到控制台。
-* **深链**：`?page=console#media-admin` 可直接打开、可分享、刷新后恢复；默认 landing 规范化为 `#dashboard`。节切换用 `replaceState`，**不进入浏览器历史**（运行时自身的历史处理会与 `pushState` 打架，arc-contracts §21.14.1）——后退按普通页面离开控制台。
-* **侧栏行必须铺满**：`action href` 渲染的 `<a>` 被运行时按行内布局（实测 258px 列里只有 91px），桥注入 `align-self:stretch` 才成为整行可点、整行高亮的菜单项。
-* **切面板不要点运行时的页签按钮**：那会触发 `tab-change` 上报并导致侧栏/面板子树重写（闪动）；桥直接切换 `data-active`（同一 DOM 契约）。
-* **悬停与选中必须同时定义**：悬停只改背景会把选中项变成"浅底 + 近白字"（不可读）。hover 规则要同时给文字色，并为选中态补 `:hover` 变体；两态对比度实测均 16.59:1（arc-contracts §21.14.1）。
-* **旧链接不失效**：15 个旧页名（`?page=admin` 等）与绑定路由 `/manage/seo` 各保留一个**极简别名页**，由 console-bridge 用 `sessionStorage` 交接后跳到对应 `#<section>`。
-* **右侧内容多时用节内页签**：节内可再放 `view mode=tabs`（桥只接管顶层 `console-sections`），用于"列表 + 详情"或多视图并列。
+* **一事一页**：节与分组由 `scripts/console-nav.mjs` 定义，数量以 `CONSOLE_SECTIONS.length`（组数以 `CONSOLE_MENU.length`）为准，**本文档不写死数字**；当前值用下面的命令读：
+
+  ```bash
+  node -e "import('./scripts/console-nav.mjs').then(m=>console.log('groups='+m.CONSOLE_MENU.length,'sections='+m.CONSOLE_SECTIONS.length))"
+  # → groups=4 sections=17
+  ```
+
+* **侧栏只定义一次，由生成器投影进每个控制台页**：菜单模型在 `scripts/console-nav.mjs`；`node scripts/arcblog-console-nav.mjs` 重建各页侧栏，`node scripts/arcblog-console-nav.mjs --check` 是漂移门禁（进 `npm test`）。AUP 没有可用的跨页片段机制（`arc-contracts.md` §22 / §25.2），所以共享外壳只能"生成 + 守卫"。
+* **切页是普通页面导航**：侧栏行是 `action "$t(wrapper.nav-*)" -> page <name>`，点击切到对应页面（同标签页内的整页替换，框架与 JS 上下文不重载）。跨节没有"就地换面板"这回事——那是 B′ 之前的形态。
+* **当前行用平台自带的 `active=true`**：生成器只给本页那一行写 `active=true`，运行时渲染为 `data-active="true"` + `aria-current="page"`，并由运行时样式表按 accent token 上色（`arc-contracts.md` §23）——不手写颜色，换主题自动跟随；生成器保证每页恰好一行（`scripts/arcblog-console-nav.mjs --check` + `scripts/arcblog-console-nav.test.mjs` 守住；2026-09-27 实测 17/17 页各 1 行）。
+* **菜单行用 `action -> page`，不用 `view href`**：`view href` 会被运行时插入「←」箭头且不铺满整行（`arc-contracts.md` §21.4）。
+* **单页内的区域级切换**：同一节内确有多个子视图（列表 + 详情、向导多步）时用 `view mode=tabs`（`arc-contracts.md` §21.13）；它不进入 URL，跨节分享仍然靠 `?page=<name>`。
 
 ### 2.35 页脚布局
 
@@ -163,9 +164,16 @@
 * **控制台不受站点列宽限制**：控制台内容 100% 满宽，不被 `--aup-content-max`（1200px）框住；公共站点保持原居中列。
 * **滚动条只有一条**：控制台页面禁止出现页面级纵向滚动条与内容区滚动条并存的"双滚动条"——看到双滚动条即视为布局缺陷。
 * **页头可固定**：内容区内的页头（标题 + 主操作）推荐固定在滚动视口顶部，长列表滚动时主操作保持可见；实现受限时允许页头随内容区一起滚动，但**禁止**页头脱离内容区悬浮。
-* **侧边栏不独立滚动**：菜单为四组十三项（见 §2.5），一屏可见；极端窄高下溢出时侧边栏自身滚动，不撑破页面。
+* **侧边栏不独立滚动**：菜单项数以 `scripts/console-nav.mjs` 的 `CONSOLE_SECTIONS.length` 为准（分组数以 `CONSOLE_MENU.length` 为准；**本文档不写死数字**，当前 4 组 17 项，一律以命令输出为准），一屏可见；极端窄高下溢出时侧边栏自身滚动（该容器 `overflowY: auto`），不撑破页面。
 * **宽屏不设上限留白**：内容区随视口拉宽，列表与表单利用全部可用宽度；只有长文阅读类内容（预览、正文）才限制最大行宽（约 72 字符）。
 * **窄屏例外**：侧边栏折叠为顶部导航后（§7），恢复页面级整页滚动——单栏布局里再嵌套内滚动区域只会制造嵌套滚动灾难。
+
+> 菜单口径的读取命令（改菜单只改 `scripts/console-nav.mjs`；**不要在文档里写死数字**）：
+>
+> ```bash
+> node -e "import('./scripts/console-nav.mjs').then(m=>console.log('groups='+m.CONSOLE_MENU.length,'sections='+m.CONSOLE_SECTIONS.length))"
+> # → groups=4 sections=17
+> ```
 
 ---
 
@@ -175,8 +183,8 @@
 
 | 目标类型 | 行为 | 写法 | 实测证据 |
 | --- | --- | --- | --- |
-| **控制台节**（15 个） | **就地替换面板**：侧栏、页签容器、其他面板、内层滚动位置都不动 | `action console-nav-<id> href="#<id>"`（或 `view href="#<id>"`） | 点侧栏"媒体"→ URL 变 `#media-admin`、面板就地切换、15 个面板与侧栏 DOM 全部同一对象（arc-contracts §21.14） |
-| **写文章 / 外观设置** | **就地替换面板**（已收进控制台，不再是独立页） | `action … href="#compose"` / `href="#appearance"` | 仪表盘"写文章"→ 切到写文章面板，无新标签页 |
+| **切换控制台节**（一节一页，节数以 §2.5 为准） | **整页替换**：侧栏与框架不动，右侧换成目标页内容（同标签页内，无文档重载） | `action "$t(wrapper.nav-*)" -> page <name>` | 点侧栏「媒体」→ URL 变 `?page=media`，右侧渲染该页；实测（2026-09-27，1803×908）17/17 页每页恰好 1 行 `data-active="true"` / `aria-current="page"` |
+| **写文章 / 外观设置** | 同上的整页切换（两者各自是真实页面） | `action -> page compose` / `-> page appearance` | 仪表盘「写文章」→ `?page=compose`，无新标签页 |
 | **记录绑定页面**：草稿编辑 `/edit/<slug>`、草稿预览 `/preview/<slug>`、阅读 `/posts/<slug>`、静态页 `/pages/<slug>` | **新标签页**（面板是静态 DSL，承载不了动态 slug；阅读本来就不该打断控制台） | `view href="…" target=_blank` | 帖子行"Hello ArcBlog"→ `target="_blank"` |
 | **非 HTML 资源**：RSS `/p/rss.xml`、`llms.txt` | **新标签页** | 同上 | 分发节 RSS / 文章索引均为 `target="_blank"` |
 | **非 HTML 资源**：RSS `/p/rss.xml`、`llms.txt` 等 | **新标签页** | 同上 | 分发页的 RSS 订阅 / 文章索引均为 `target="_blank"` |
@@ -185,7 +193,18 @@
 
 平台行为：给 `view href` 或 `action href` 加 `target=_blank` 时，运行时会自动补 `rel="noopener noreferrer"`（实测 DOM：`<a class="aup-action" href="/?page=compose" target="_blank" rel="noopener noreferrer">`）。
 
-**验收口径**：在任一控制台页面执行 `[...document.querySelectorAll('[data-aup-id="console-pane"] a')].filter((a) => !a.target)`，结果必须为空——即右侧内容里不存在"会把控制台整页换掉"的链接。
+**验收口径**：在任一控制台页面的**内容区滚动容器**里执行下面的断言，结果必须是 `0`——即右侧内容里不存在"会把控制台整页换掉"的链接。生成器已改为 id-less（`arc-contracts.md` §25.3），所以按"内容区滚动容器"定位，不能按某个 `data-aup-id` 取节点：
+
+```js
+// 内容区滚动容器内的无 target 链接数 —— 期望 0
+[...document.querySelectorAll('*')]
+  .filter(el => el.scrollHeight > el.clientHeight + 2
+    && /auto|scroll/.test(getComputedStyle(el).overflowY)
+    && !el.querySelector('.aup-app-header'))   // 排除承载框架顶栏的页面级滚动容器
+  .pop()?.querySelectorAll('a:not([target])').length ?? 0
+```
+
+期望 `0`。实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`；`?page=compose` 的页面级滚动容器里另有 wrapper 的 `app-header` 品牌链接（`href="/"`，属框架 chrome，不算内容区），上面的 `!el.querySelector('.aup-app-header')` 正是把它排除掉。
 
 
 ## 3. 设计 Token
@@ -393,7 +412,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 | 标准 | AUP 落地方式 |
 | ---- | ---- |
 | 控制台骨架一致 | 侧边栏（含扁平样式与侧栏页脚）由 `scripts/console-nav.mjs` 统一生成，`--check` 进测试门禁；顶栏由页面内的 `view console-topbar` 承载，公共页由各自页面承载 |
-| 全高流式布局 | `row console-shell … style={height: "calc(100vh - 130px)"}` + `view console-pane … size={flex: 1} style={overflowY: "auto", height: "100%"}`。130px 是实测的页面 chrome 高度（页内 topbar 48 + 页面根 gap 30 + scroller gap 20 + 底部内边距 32），平台没有"剩余高度"原语，改版顶栏后需复测（arc-contracts §21.2） |
+| 全高流式布局 | 页面根 `view style={height: "calc(100vh - 48px)", overflow: visible}`（`overflow` **必须**是 `visible`：`hidden` 会把全出血的顶栏与侧栏裁掉，`arc-contracts.md` §24）；其中 `row style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px"}` 承载侧栏 + 内容列，负下边距把侧栏底边压到视口底部且不产生外层滚动（`arc-contracts.md` §21.4）；内容列内 `view size={flex: 1} style={overflowY: auto}` 是唯一滚动容器。`48px` = wrapper 顶栏（`app-header`）的实测高度，平台没有"剩余高度"原语，顶栏高度改了必须复测（`arc-contracts.md` §21.2）。实现里**没有** `console-shell` / `console-pane` / `console-scroll` 这些选择器——它们只是本文档的**概念名**（`grep -rnE 'console-shell\|console-pane\|console-scroll' .aup/` 命中 0） |
 | 只用 token | safe-style 白名单：`background` 简写可用，`backgroundImage/backgroundPosition` 会被丢弃—— layered 背景写 `background: <color> url(...) center / cover no-repeat` |
 | 权限驱动显隐 | `visible=$session.authenticated`；异步数据用插值形式 `visible="${state.post.x}"`（表达式形式只求值一次） |
 | i18n | key 页面作用域 + flat dotted 存储；`arc dsl lint` 防止死 key |
@@ -423,8 +442,21 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 □ i18n：中英文布局都成立，无写死宽度
 □ 克制：没有为填满空间而存在的内容
 □ 点击去向（§2.6）：控制台页面框架内切换；公共/独立页面与非 HTML 资源新标签页；
-  右侧内容里不存在会把控制台整页替换掉的链接（`console-pane a` 全部有 target）
+  右侧内容里不存在会把控制台整页替换掉的链接（断言见本节末，期望 0）
 ```
+
+末条的可执行断言（在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
+
+```js
+// 内容区滚动容器内的无 target 链接数 —— 期望 0
+[...document.querySelectorAll('*')]
+  .filter(el => el.scrollHeight > el.clientHeight + 2
+    && /auto|scroll/.test(getComputedStyle(el).overflowY)
+    && !el.querySelector('.aup-app-header'))   // 排除承载框架顶栏的页面级滚动容器
+  .pop()?.querySelectorAll('a:not([target])').length ?? 0
+```
+
+实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`；其中 `?page=compose` 的页面级滚动容器里另有 wrapper 的 `app-header` 品牌链接（`href="/"`，框架 chrome，不算内容区），上面的过滤条件正是把它排除掉。
 
 ---
 

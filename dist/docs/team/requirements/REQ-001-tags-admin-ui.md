@@ -1,6 +1,6 @@
 # REQ-001 — 控制台标签管理界面（Taxonomy: Tags）
 
-**元信息**：REQ-001 ｜ 对应 spec 章节：**§15.4 内容 Content → 分类与标签 Taxonomy** ｜ checklist 行：第 103 行「分类与标签管理界面 🟡」（备注「分类在 `heroes-admin.json`；标签管理界面缺失」）｜ 优先级：**P1（Round 6 🟥）** ｜ 提出轮次：**Round 6** ｜ 负责角色：**Dev** ｜ 状态：已派发（REQ 任务 `task-1` PM；实现任务 `task-3` Dev；验证任务 `task-4` QA）
+**元信息**：REQ-001 ｜ 对应 spec 章节：**§15.4 内容 Content → 分类与标签 Taxonomy** ｜ checklist 行：第 103 行「分类与标签管理界面 🟡」（备注「分类在 `heroes-admin.json`；标签管理界面缺失」）｜ 优先级：**P1（Round 6 🟥）** ｜ 提出轮次：**Round 6** ｜ 负责角色：**Dev** ｜ 状态：**已交付并复验放行（Round 6，`test-reports/round-6-reverify.md` §9）**；Round 7 由 PM 完成 **A0/A4/A5 文案修订**（见 §3 开头注，结清 R7 排队 #1），实现与验收口径均未变
 
 ---
 
@@ -42,6 +42,8 @@
 ## 3. 验收标准
 
 > 每条都是**可直接复制粘贴的命令**或**可观察行为**。命令均在 `/Users/shenxiuqiang/workspace/ArcBlog` 下执行。界面条目以管理员身份访问 `http://arcblog.localhost/?page=tags`（若 Dev 的实际 URL 不同，必须在回报里写明）；匿名身份断言见 A10。
+>
+> **R7 文案修订（PM，2026-09-27）**：A0 / A4 / A5 的期望值修正为 lifecycle 的**真实**规范化与去重语义（依据 Round 6 QA 报告 `test-reports/round-6.md` §3-A0/§3-A4/§3-A5/§7.1；QA 两轮均按真实语义判通过）。**验收口径未变严也未变松**，只是文本不再误导后续复验——原文的 `req001_other` 与单篇双标签求和都不可能成立。
 
 **A0 数据准备（可复现探针）**
 
@@ -52,6 +54,7 @@ node scripts/arcblog-tags.mjs list
 ```
 
 期望：`list` 输出含 `{"tag":"req001_old","count":1}`——证明输入 `Req001 Old` 被规范化为 `req001_old`。
+> **R7 修订（PM，2026-09-27）**：同一批输入里的 `req001_other` 会被 lifecycle 的 `slugify()` **剥掉字面下划线**，实际落库为 `req001other`（不是 `req001_other`）——Round 6 QA 实测输出 `{"tag":"req001other","count":1}`（`test-reports/round-6.md` §3-A0 与 §7.1）。A4 的期望数组据此修正；这是 lifecycle 既有规范化行为，不是缺陷。
 
 **A1 主质量门**：`arc dsl validate --json` → 输出中 `"issues": []`（空数组）。
 
@@ -72,9 +75,11 @@ node scripts/arcblog-tags.mjs list
 arc afs exec /blocklets/arcblog/.actions/read --args '{"path":"/instance/app/arcblog/drafts/'"$SLUG"'.json"}' --json
 ```
 
-期望：`list` 不再含 `req001_old`、含 `req001_new`；记录里 `tags` 变为 `["req001_new","req001_other"]`，`version` 比操作前 +1，`contentHash` 与操作前不同——即与 `node scripts/arcblog-tags.mjs merge --from req001_old --to req001_new` 的结果一致。
+期望：`list` 不再含 `req001_old`、含 `req001_new`；记录里 `tags` 变为 `["req001_new","req001other"]`（**R7 修订**：原文写的 `req001_other` 不存在，见 A0 的规范化说明），`version` 比操作前 +1，`contentHash` 与操作前不同——即与 `node scripts/arcblog-tags.mjs merge --from req001_old --to req001_new` 的结果一致。
 
-**A5 合并可观察**：界面把 `req001_new` 合并到 `req001_other` 后，`list` 中 `req001_other.count` **等于**合并前两者计数之和，`req001_new` 消失；被引用文章同样 `version` +1。
+**A5 合并可观察（R7 修订，PM 2026-09-27）**：界面把 `req001_new` 合并到 `req001other` 后，`list` 中 `req001other.count` **等于**合并前两者计数之和，`req001_new` 消失；被引用文章同样 `version` +1。
+
+> **探针必须用两篇独立文章**（如 `a5_src` / `a5_dst` 各 1 篇）。原文的单篇双标签探针**不可能**满足「count = 两者之和」：同一篇文章同时带源标签与目标标签时，`mergeTag` 改写后的 tags 会去重（`[...new Set(...)]`），计数不相加（Round 6 QA 实测 1≠2）——那是去重的**正确行为**，不是缺陷。QA 已在 Round 6 用两篇独立文章把求和语义验成 `1+1=2`（`test-reports/round-6.md` §3-A5、§7.1）。
 
 **A6 空状态**
 

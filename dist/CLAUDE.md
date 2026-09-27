@@ -18,15 +18,17 @@ arc dsl validate --json   # validate all AUP DSL — must pass (primary quality 
 arc dsl generate --write  # regenerate app.json / pages/*.json / wrapper.json / locales from .aup sources
                           # (generate defaults to DRY-RUN — without --write nothing is written;
                           #  `--check` is the drift gate and runs inside npm test)
-npm test                  # FAST gate (~1s): the 6 suites that never write to the instance — it
+npm test                  # THE gate (~1s): the 6 suites that never write to the instance — it
                           # gates artifact drift (`arc dsl generate --check`), dead locale keys,
                           # the generated sidebar, the runtime-addressed ids, the theme contract and
                           # the guest permission matrix (HTTP reads only)
-npm run test:live         # the live suites (serial, ~13 min): they mutate the dev instance and are
-                          # cleaned up after a passing run (ARCBLOG_NO_CLEAN=1 keeps the residue;
-                          # npm run test:clean sweeps manually)
-npm run test:all          # fast + live (what `npm test` used to be)
-npm run test:file -- scripts/arcblog-media.test.mjs   # one file
+npm run test:live         # the live suites (serial, ~21 min measured in Round 7 2026-09-27): they
+                          # mutate the dev instance and are cleaned up after a passing run
+                          # (ARCBLOG_NO_CLEAN=1 keeps the residue; npm run test:clean sweeps
+                          # manually). NOT a routine gate — do not run it per round or per push
+                          # (user ruling 2026-09-27; see Quality gates)
+npm run test:all          # fast + live (deliberate, human-requested runs only)
+npm run test:file -- scripts/arcblog-media.test.mjs   # one file — the way to cover a single live path
 arc blocklet build        # regenerate dist/ from source (run after .aup changes, before committing)
 node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file
 
@@ -84,18 +86,33 @@ node --test scripts/arcblog-permissions.test.mjs   # guest permission matrix (no
 # add `--instance <name>` to target a named Arc instance
 ```
 
-## Quality gates (tiered)
+## Quality gates
 
-Before **every** commit: `arc dsl validate --json` and `npm test` — the **fast tier** (~1s, 28 tests,
-no instance writes; it still gates artifact drift and dead locale keys).
+**The gate is the fast tier.** Before every commit:
 
-Before **pushing** — or whenever the change touches a CLI, an AFS record, the chain adapter or a
-daemon route — run `npm run test:live`. That is the tier that has caught the real regressions
-(private-key leak, factory-registry clobbering, roles write conflict, stale SVG). `npm run test:all`
-runs both. Measured 2026-09-27: the live tier is ~13 min, of which ten tests are ~11 min (clean
-dry-run 87s, category remove/merge 111s, media refs 86s, hub index rebuild 71s, tag merge 52s…); the
-split exists so a UI or docs change does not pay that. A new test file counts as **live** unless it
-is added to `FAST_TESTS` in `scripts/run-tests.mjs`.
+```bash
+arc dsl validate --json   # issues must be []
+npm test                  # fast tier: ~1s, 28 tests, no instance writes
+arc blocklet build        # only when .aup changed — rebuilds dist/
+```
+
+**Do not run the full `npm run test:live` as a routine gate** (user ruling, 2026-09-27). It mutates
+the shared dev instance and takes ~21 min (measured in Round 7: 212 pass / 0 fail, 1236 s, 60 test
+records cleaned). It stays in the repo for deliberate, human-requested runs only
+(`npm run test:live` / `test:all`), and even then one process at a time (`.gate-lock` convention in
+`docs/team/README.md` §6.1).
+
+When a change touches a CLI, an AFS record, the chain adapter or a daemon route, cover it with the
+**targeted single file(s)** instead:
+
+```bash
+npm run test:file -- scripts/arcblog-media.test.mjs   # serial; write docs/team/.gate-lock first if
+                                                      # anyone else may run tests concurrently
+```
+
+That keeps the coverage that has caught the real regressions (private-key leak, factory-registry
+clobbering, roles write conflict, stale SVG) without paying for the whole tier. A new test file still
+counts as **live** unless it is added to `FAST_TESTS` in `scripts/run-tests.mjs`.
 
 ## Repository layout
 

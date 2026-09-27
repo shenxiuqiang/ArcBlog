@@ -87,6 +87,12 @@ page access {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
@@ -102,7 +108,10 @@ page access {
                     row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       p "${entry.content.contentId}" scale=sm
                       p :grant-reader scale=sm intent=muted
-                      p "${entry.content.readerDid}" scale=sm
+                      p "${entry.content.readerDid}" scale=sm format=did title="${entry.content.readerDid}"
+                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                        time mode=display value="${entry.content.grantedAt}" timeMode=relative
+                      }
                     }
                   }
                 }

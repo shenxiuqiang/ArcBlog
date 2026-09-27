@@ -55,6 +55,7 @@ page factory {
     queue-clear { en "Clear" zh "清除" }
     queue-clear-title { en "Clear this intent record?" zh "清除这条意图记录？" }
     queue-clear-msg { en "Removes the record from the queue. The chain transaction is unaffected." zh "从队列移除该记录。链上交易不受影响。" }
+    status-intent { en "Queued intent" zh "队列意图" }
     worker-hint { en "Worker: node scripts/arcblog-chain-worker.mjs watch" zh "Worker：node scripts/arcblog-chain-worker.mjs watch" }
     docs { en "Runbook: docs/ArcBlog-nft-factory.md" zh "运维手册：docs/ArcBlog-nft-factory.md" }
   }
@@ -136,6 +137,12 @@ page factory {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={overflowY: auto} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
           view gap=xs {
@@ -178,10 +185,17 @@ page factory {
                 h3 :queue level=3 style={fontSize: "var(--type-body)"}
                 p :queue-admin intent=muted scale=sm
                 afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:queue-empty autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
-                  row gap=sm cross=center {
+                  row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
-                      p "${entry.content.action} · ${entry.content.role}" scale=lg
-                      p "${entry.content.status} · ${entry.content.result.hash}" scale=sm intent=muted
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                        p :status-intent scale=sm
+                        p "${entry.content.role}" scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                        }
+                      }
+                      p "${entry.content.result.hash}" scale=sm intent=muted
                       p "${entry.content.error}" scale=sm intent=warning
                     }
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"

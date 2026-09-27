@@ -16,15 +16,18 @@
    要停手的是**不认识**的增量（你没写过的路径/文件）。判定方法：`git status --short` 里的路径逐个对得上本轮的 `write_scopes` 吗？对不上就问用户，**不要 `git add -A`**。
    （历史教训：曾发现「另一个工具」在写 `.aup/wrapper.aup` + `docs/arc-contracts.md` + `dist/`——事后确认那是 Lead 自己的并行会话。先认领再指控。）
 
-2. **质量门是两层，别为一个 1 秒的门上锁**（2026-09-27 起，见 [`CLAUDE.md`](../../CLAUDE.md)「Quality gates」）：
+2. **门只有一层：快层**（2026-09-27 用户裁定，见 [`CLAUDE.md`](../../CLAUDE.md)「Quality gates」）：
    ```bash
-   npm test            # 快层：6 文件 / 28 测试 / ~1.2s，**不写实例** → 每步都跑
-   npm run test:live   # live 层：22 文件 / 串行 / ~13 分钟，**写同一个实例** → 每轮收口跑一次
-   npm run test:all    # 两层都跑
-   npm run test:file -- scripts/arcblog-media.test.mjs    # 单文件（Dev 自测就用它）
+   arc dsl validate --json    # issues 必须为空
+   npm test                   # 快层：6 文件 / 28 测试 / ~1s，**不写实例** → 每步都跑，它就是门
+   npm run test:file -- scripts/arcblog-media.test.mjs   # 定向单文件（写实例，受 .gate-lock 保护）
    ```
-   `docs/team/.gate-lock` **只保护 live 层**（以及任何 `arc` / AFS 操作）；快层不需要锁，也不该因为它慢而被跳过。
-   新写的测试文件**默认算 live**，除非显式加进 `scripts/run-tests.mjs` 的 `FAST_TESTS`。
+   **不再跑全量 `npm run test:live`**：实测约 21 分钟且写共享实例（2026-09-27 Round 7：212 pass /
+   0 fail / 1236s / 清 60 条残留）。命令仍留在仓库里，**仅当你（人类）明确要求时**按需跑一次。
+   改动涉及 CLI / AFS 记录 / 链适配器 / daemon 路由时，**只定向单跑受影响的那一个文件**——覆盖率不掉，
+   时间从 21 分钟降到 1–2 分钟。
+   `docs/team/.gate-lock` 保护一切**写实例**的动作（定向单文件 + `arc` / AFS）；快层不需要锁，也不该因为
+   它慢而被跳过。新写的测试文件**默认算 live**（单跑），除非显式加进 `scripts/run-tests.mjs` 的 `FAST_TESTS`。
 
 3. **实例与门是活的**。开始前先跑一次，确认不是环境坏了：
    ```bash
@@ -59,13 +62,12 @@ docs/ArcBlog-feature-checklist.md、docs/team/bootstrap.md 的「高频踩坑」
 4. 跑一个 Round（以 backlog 当前「本轮」为准）：
    ① PM 规划（REQ + 验收标准）→ ② Lead/PM 派活 → ③ Dev/UI 并行实现 → ④ QA 独立验证 →
    ⑤ PM 裁决反馈 → ⑥ Lead 收口门 + 提交。
-5. 质量门（两层，别混）：
-   - 每个增量自测：`arc dsl validate --json` + `npm test`（快层，~1s，不写实例）；改了 .aup 再加
-     `arc blocklet build`。
-   - 每轮收口：先在 docs/team/.gate-lock 写一行 owner + 开始时间，再跑 `npm run test:live`
-     （~13 分钟，串行，新测试文件默认算 live）；绿了删锁，红了先**单跑失败的那个文件**——
-     单跑绿 = 并发假失败（确认锁是否被绕过），单跑红 = 真 bug 交回 Dev。锁期间其他成员不得调用
-     arc / AFS / 任何测试。
+5. 质量门（一层，别自找麻烦）：
+   - 每个增量自测：`arc dsl validate --json`（issues 为空）+ `npm test`（快层，~1s，不写实例）；改了
+     .aup 再加 `arc blocklet build`。
+   - **不跑全量 `npm run test:live`**（用户裁定 2026-09-27：不再作为门）。改动涉及 CLI / AFS 记录 /
+     链适配器 / daemon 路由时，只定向单跑受影响的文件：`npm run test:file -- scripts/<file>.test.mjs`
+     ——写实例，所以先在 `docs/team/.gate-lock` 写一行 owner + 开始时间，跑完删锁。
    - 提交只加本轮的产物路径，**绝不 `git add -A`**；提交信息写清「产物 + 验证命令 + 结果」。
 6. 每轮结束向我汇报：本轮交付、QA 结论（放行/不放行）、清单 ✅/🟡/⬜ 变化、commit、下轮计划、
    未决问题与需要我点头的事。
@@ -93,7 +95,8 @@ docs/ArcBlog-feature-checklist.md、docs/team/bootstrap.md 的「高频踩坑」
   arc dsl validate --json      # issues 必须为空
   npm test                     # 快层，~1s，不写实例（改了 .aup 再加 arc blocklet build）
   npm run test:file -- scripts/<相关的>.test.mjs   # 自测只跑单文件
-不要跑 npm run test:live —— 那是每轮收口的门，由 Lead/QA 在 docs/team/.gate-lock 下跑。
+不要跑 npm run test:live（用户裁定 2026-09-27：全量 live 层不再作为门，实测 ~21 分钟且写共享实例）。
+需要覆盖写实例的路径时只定向单跑那一个文件，并先在 docs/team/.gate-lock 写一行（跑完删锁）。
 
 研究纪律：不要臆造 ARC API（spec §150），先 arc <cmd> --help / explain / 读 docs/arc-contracts.md；
 平台不支持的能力写进 arc-contracts.md 并给降级路径。任何新增的 AFS 路径若被脚本/测试使用，
@@ -133,11 +136,53 @@ docs/ArcBlog-feature-checklist.md、docs/team/bootstrap.md 的「高频踩坑」
 
 ---
 
+## 精简轮次（默认节奏，2026-09-27 起）
+
+用户要求「缩短任务时间」，所以一轮的**默认形态**是：
+
+| 相位 | 谁 | 上限 | 产物 |
+| --- | --- | --- | --- |
+| ① 规划 | PM | 1 个 agent | backlog「本轮」表 + 每条一个 REQ（含可执行验收标准）+ `journal/round-N.md` 计划节 |
+| ② 实现 | Dev（1 个）+ UI（可选，写范围不重叠才并行） | 1–2 个 agent | 源码 + `dist/`（由 build 生成） |
+| ③ 验证 | QA | 1 个 agent | `test-reports/round-N.md`（+ 有缺陷才写 BUG） |
+| ④ 裁决 | PM | 1 个 agent | backlog 裁决 + journal 结果节 + 下轮候选 |
+
+硬约束：
+
+1. **一轮 4 个相位、最多 4 个 agent**；只有相位 ② 允许两个写者并行，且写范围必须完全不重叠。
+2. **不做全量 live 层**（见「启动前必须确认」第 2 条）：验证相位只跑快层 + 定向单文件（≤2 个）+ 必要的浏览器断言。
+3. **一个 REQ 一个交付物**：一轮最多开 2 条需求（写范围不重叠），贪多必然导致相位拖长。
+4. **浏览器断言只在验收标准真的需要 DOM 时做**；能用源码 + grep + 生成产物断言的，不启动浏览器。
+5. 相位之间**串行**：验证相位开始时，实现相位必须已全部结束（否则验证目标在 QA 脚下移动）。
+6. 收口 = Lead 跑一次快层 + `arc blocklet build`（改了 .aup）+ 只加本轮产物提交。**没有 13/21 分钟的收尾门。**
+
+## workflow 模式变体（把 4 个角色换成 workflow 子 agent）
+
+用户要求「用 workflow 模式跑 bootstrap」时，**不 spawn_teammate**，改用一个 workflow 脚本把上面 4 个相位串起来（脚本里的 `agent()` 就是四个角色）：
+
+```text
+phase ①  PM     → backlog/REQ/journal 计划（写 docs/team/**）
+phase ②  Dev + UI 并行（parallel；写范围不重叠：源码/构建产物 vs 设计文档）
+phase ③  QA     → 快层 + 定向单文件（.gate-lock）+ 浏览器尽力验证；报告 + BUG
+phase ④  PM     → 逐条裁决 BUG + journal 结果节 + 下轮候选
+条件   若 QA 判不放行且有阻断缺陷：Dev 修复 → QA 反向复验（仍是 1 个 agent 一次）
+return Lead 收口所需的事实（verdict / 剩余阻断 / 产物路径）
+```
+
+与 teammate 模式的差异（写进提示词，别指望子 agent 知道）：
+
+- 子 agent **没有** `team_task_*` 工具：任务板由 Lead 建好并在提示词里告知 task id 与 `write_scopes`，子 agent 只按 schema 回报。
+- 子 agent **没有持久记忆**：每个提示词必须自带工作目录、必读顺序、写入范围、禁止事项、质量门命令、报告格式。
+- 子 agent 返回 `null` = 该相位失败：脚本必须**显式失败或跳过**，不允许把 null 当作通过。
+- 轮末仍由 **Lead** 跑快层、更新 checklist、按 write_scopes 精确提交。
+
+---
+
 ## 变体
 
 **只跑一轮，不要自动续轮**：把第 1 步的长时目标去掉，改成"先只跑本轮，跑完停下等我确认"。
 
-**纯 UI / 文档轮（不碰 CLI、AFS、链）**：收口门可以只跑快层 + 浏览器验证，但要**显式**在轮次结论里写明"本轮未跑 live 层"，别默认大家知道。
+**纯 UI / 文档轮（不碰 CLI、AFS、链）**：收口门 = 快层 + 浏览器/静态复核；在轮次结论里**显式**写明「本轮未跑 live 层」（按新裁定，非纯文档轮也一样不跑全量 live）。
 
 **加一个角色**（例如「安全审计」）：复用 `docs/team/roles/qa.md` 的骨架新建角色卡 + 写入范围，再 `spawn_teammate` 一个新名字，并在任务板上给它建任务。**不要**让两个角色共用同一个写范围。
 

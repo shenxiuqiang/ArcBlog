@@ -2,12 +2,15 @@ page dashboard {
   i18n {
     agents { en "Agent grants" zh "Agent 授权" }
     agents-empty { en "No agent grants. Read-only tools are available by default; write tools need a grant." zh "还没有 Agent 授权。读工具默认可用；写工具需要授权。" }
+    agents-guide { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "授权方式：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
     capabilities-label { en "Capabilities" zh "能力" }
     content { en "Recent published" zh "最近发布" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+    content-guide { en "Write and publish from Write; the newest five stories appear here." zh "在「写文章」页撰写并发布；最新五篇会显示在这里。" }
     desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
     economy { en "Economy" zh "经济" }
     economy-empty { en "No orders yet. Products and tips appear here once readers pay." zh "还没有订单。读者付费后订单会出现在这里。" }
+    economy-guide { en "Products and tips appear here once a reader pays." zh "读者付费后，订单会出现在这里。" }
     gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
@@ -19,6 +22,7 @@ page dashboard {
     q-write { en "Write a post" zh "写文章" }
     quick { en "Quick actions" zh "快捷操作" }
     roles-label { en "Roles" zh "角色" }
+    status-order { en "Order" zh "订单" }
     title { en "Dashboard" zh "仪表盘" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -99,6 +103,12 @@ page dashboard {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
@@ -110,7 +120,7 @@ page dashboard {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="${state.nodeProfile}" {
                 row gap=sm cross=center {
                   h3 "${state.nodeProfile.name}"
-                  p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: monospace}
+                  p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: monospace} format=did title="${state.nodeProfile.did}"
                   p "v${state.nodeProfile.version}" scale=sm intent=muted
                   row gap=xs cross=center visible="${state.nodeHealth}" {
                     p "●" intent=success scale=sm
@@ -142,6 +152,7 @@ page dashboard {
                     }
                   }
                 }
+                p :content-guide intent=muted scale=sm
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :economy level=2 style={fontSize: "var(--type-body)"}
@@ -149,9 +160,14 @@ page dashboard {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     h3 "${entry.content.id}"
                     p "${entry.content.amount} ${entry.content.asset}" scale=sm
-                    p "${entry.content.status}" scale=sm intent=muted
+                    p "●" scale=sm intent=muted title="${entry.content.status}"
+                    p :status-order scale=sm intent=muted
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                      time mode=display value="${entry.content.createdAt}" timeMode=relative
+                    }
                   }
                 }
+                p :economy-guide intent=muted scale=sm
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :agents level=2 style={fontSize: "var(--type-body)"}
@@ -159,8 +175,12 @@ page dashboard {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     p "${entry.content.agentDid}" scale=sm style={fontFamily: monospace}
                     p "${entry.content.capabilities}" scale=sm intent=muted
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                      time mode=display value="${entry.content.grantedAt}" timeMode=relative
+                    }
                   }
                 }
+                p :agents-guide intent=muted scale=sm
               }
             }
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {

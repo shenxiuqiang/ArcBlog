@@ -23,6 +23,8 @@ page hub {
     relations { en "Studio relations" zh "收录关系" }
     relations-empty { en "No relations yet. A Studio applies with: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有收录关系。Studio 申请：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
     relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
+    status-index { en "Index entry" zh "索引条目" }
+    status-registration { en "Registration" zh "注册记录" }
     title { en "Hub console" zh "Hub 管理" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -103,6 +105,12 @@ page hub {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=xs {
@@ -114,14 +122,18 @@ page hub {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :relations level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:relations-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/registrations" {
-                  row gap=sm cross=center {
+                  row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
-                      p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace}
-                      row gap=xs {
+                      p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace} format=did title="${entry.content.hubDid}"
+                      row gap=xs cross=center {
                         p "${entry.content.relation}" scale=sm
                         p "${entry.content.direction}" scale=sm intent=muted
-                        p "${entry.content.status}" scale=sm intent=muted
+                        p "●" scale=sm intent=muted title="${entry.content.status}"
+                        p :status-registration scale=sm intent=muted
                         p "${entry.content.freshness.state}" scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        }
                       }
                     }
                     action variant=primary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
@@ -140,12 +152,16 @@ page hub {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :index-card level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:index-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/index" {
-                  row gap=sm cross=center {
+                  row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.title}" scale=lg
                       p "${entry.content.postId} · v${entry.content.version}" scale=sm intent=muted
                     }
-                    p "${entry.content.status}" scale=sm intent=muted style={flexGrow: 0}
+                    p "●" scale=sm intent=muted title="${entry.content.status}"
+                    p :status-index scale=sm intent=muted style={flexGrow: 0}
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)", flexGrow: 0} {
+                      time mode=display value="${entry.content.indexedAt}" timeMode=relative
+                    }
                   }
                 }
               }

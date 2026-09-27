@@ -61,8 +61,8 @@ arc service status && arc dsl validate --json && npm test     # 环境是活的�
 
 三条硬规则：
 
-1. **同一时刻只允许一个进程使用实例**：`npm run test:live` 运行期间，其他成员不得调用 `arc` / AFS / 任何测试。（快层 `npm test` 不写实例，不受这条限制。）
-2. 谁跑全量门，谁先在 `docs/team/.gate-lock` 写一行 `owner + 开始时间`，跑完删除；看到锁存在就等，不要并行跑。
+1. **同一时刻只允许一个进程使用实例**：任何写实例的测试（定向单文件，或人类明确要求的一次性 `npm run test:live`）运行期间，其他成员不得调用 `arc` / AFS / 任何测试。（快层 `npm test` 不写实例，不受这条限制。）
+2. 谁跑写实例的测试，谁先在 `docs/team/.gate-lock` 写一行 `owner + 开始时间`，跑完删除；看到锁存在就等，不要并行跑。
 3. 仓库里若有**非本团队的未提交改动**（另一个 agent 的半成品），先停下来问用户——**绝不要 `git add -A` 把它卷进本轮提交**。
 
 ### ① 计划（PM）
@@ -102,9 +102,10 @@ QA 独立重跑质量门，**不看 Dev 的自述结论**，按 REQ 的验收标
 
 ```bash
 arc dsl validate --json      # issues 必须为空
-npm test                     # 全绿（含 arc dsl generate --check 漂移门）
+npm test                     # 快层全绿（含 arc dsl generate --check 漂移门）
 arc blocklet build           # 改了 .aup 才需要
-git add -A && git commit -m "<type>(<scope>): 本轮净结果"
+git add <本轮产物路径>        # 只加本轮产物，绝不 git add -A
+git commit -m "<type>(<scope>): 本轮净结果"
 ```
 
 3. 更新 `docs/ArcBlog-feature-checklist.md` 状态 + 追加变更日志行（✅/🟡/⬜ 计数要准确）。
@@ -150,29 +151,35 @@ git add -A && git commit -m "<type>(<scope>): 本轮净结果"
 
 任何增量交付前必须全绿，**红仓库不允许交接**：
 
-质量门分两层（2026-09-27 起，权威说明见 [`CLAUDE.md`](../../CLAUDE.md)「Quality gates (tiered)」）：
+**门就是快层**（用户裁定 2026-09-27：不再跑全量 live 层，缩短轮次）：
 
 ```bash
 arc dsl validate --json     # 主质量门：issues 为空（每步都跑）
-npm test                    # 快层：6 文件 / 28 测试 / ~1.2s，**不写实例**（每步都跑）
+npm test                    # 快层：6 文件 / 28 测试 / ~1s，**不写实例**（每步都跑）
                             # 含：产物漂移门（arc dsl generate --check）+ 死 locale key 门
                             #     + 生成的侧栏 + 运行时寻址 id + 主题契约 + guest 权限矩阵
-npm run test:live           # live 层：22 文件 / 串行 / ~13 分钟，**写 live 实例**（每轮收口跑一次）
-npm run test:all            # 两层都跑
-npm run test:file -- scripts/arcblog-tags.test.mjs   # 单文件（Dev 自测只用这个）
 arc blocklet build          # 仅当改了 .aup 源码（重新生成 dist/）
+npm run test:file -- scripts/arcblog-tags.test.mjs   # 定向单文件（见下）
 ```
+
+**不再跑 `npm run test:live`**：全量 live 层写共享实例、实测约 21 分钟（2026-09-27 Round 7：
+212 pass / 0 fail / 1236s），不值得每轮支付。命令仍留在仓库里，仅供**人类明确要求**时按需执行
+（`npm run test:live` / `test:all`），且必须串行（§6.1）。
+
+**覆盖单条 live 路径的正确做法**：改动涉及 CLI / AFS 记录 / 链适配器 / daemon 路由时，只**定向单跑
+受影响的那个测试文件**（`npm run test:file -- scripts/<file>.test.mjs`），照样能抓住历史回归
+（私钥泄漏、factory 注册表被覆盖、roles 写冲突、SVG 陈旧）。
 
 失败即回滚自己的改动，然后在回报里写明"尝试了什么 / 失败在哪 / 现在的仓库状态"。
 
-### 6.1 live 层必须串行（实测教训）
+### 6.1 实例串行与定向 live 门（实测教训）
 
-- **快层（`npm test`）随时可跑**：~1.2s、不写实例，不需要锁，也不该因为"测试很慢"被跳过。
-- **live 层（`npm run test:live`）重、慢、且不隔离**：22 个文件里最大的几条单跑 50–110 秒（实测 `clean` 干跑 87s、`category remove/merge` 111s、`media refs` 86s、`hub index rebuild` 71s），全量约 13 分钟，会驱动真实 Chrome 与 live 实例。
-- 两个进程同时跑 → 互相污染 → 随机 `NOT_FOUND` / 断言失败，**看起来像真 bug，其实是并发假失败**。
-- 因此：**live 层每轮只跑一次**，由 Lead 或 QA 在 `.gate-lock` 保护下跑；锁只保护 live 层与 `arc`/AFS 操作。
-- 判断"真红还是假红"：**单独重跑失败的那个文件**（`npm run test:file -- scripts/<file>.test.mjs`）。单跑绿 = 并发污染；单跑红 = 真 bug，Dev 修。
-- 新写的测试文件**默认算 live**，除非显式加进 `scripts/run-tests.mjs` 的 `FAST_TESTS`（防止快层悄悄长出守护进程依赖）。
+- **快层（`npm test`）随时可跑**：~1s、不写实例，不需要锁，也不该因为"测试很慢"被跳过。
+- **定向单文件仍然写 live 实例**，所以它受 `.gate-lock` 保护：跑之前确认锁不存在，写一行
+  `owner + 开始时间`，跑完删除；锁期间其他成员不得调用 `arc` / AFS / 任何测试。
+- **两个进程同时动实例 → 互相污染** → 随机 `NOT_FOUND` / 断言失败，看起来像真 bug，其实是并发假失败。
+  判断"真红还是假红"：**单独重跑失败的那个文件**；单跑绿 = 并发污染，单跑红 = 真 bug，Dev 修。
+- 新写的测试文件**默认算 live**（单跑），除非显式加进 `scripts/run-tests.mjs` 的 `FAST_TESTS`。
 
 ---
 

@@ -2,17 +2,21 @@
 /**
  * Quality gate, split into two tiers.
  *
- *   npm test              # fast tier — seconds, never writes to the instance
- *   npm run test:live     # live tier — writes to the dev instance, ~10+ minutes
- *   npm run test:all      # both (what `npm test` used to be)
+ *   npm test              # fast tier — seconds, never writes to the instance (THE gate)
+ *   npm run test:live     # live tier — writes to the dev instance, ~20 minutes. NOT a routine
+ *                         # gate (user ruling 2026-09-27): run it only when a human asks, and
+ *                         # prefer one file — `npm run test:file -- scripts/<file>.test.mjs`
+ *   npm run test:all      # both (deliberate, human-requested runs only)
  *   node scripts/run-tests.mjs [fast|live|all]   # bare invocation defaults to `all`
  *
  * Why tiered (measured 2026-09-27): the live suites all mutate the same default
- * instance and run serially, and ten of them are ~11 of the ~13 minutes —
- * clean dry-run 87s, category remove/merge 111s, media refs 86s, hub index
- * rebuild 71s, tag merge 52s, node-NFT lifecycle 31s, paid publish 27s,
- * `--link-exit` 26s, refund 24s, hub attribution 21s. A UI or docs change should
- * not pay that; a change to the CLIs, AFS records or the chain adapter should.
+ * instance and run serially — a full run took 20.6 min in Round 7 (212 pass,
+ * 1236 s, 60 records cleaned; ten files are ~11 min: clean dry-run 87s,
+ * category remove/merge 111s, media refs 86s, hub index rebuild 71s, tag merge
+ * 52s, node-NFT lifecycle 31s, paid publish 27s, `--link-exit` 26s, refund 24s,
+ * hub attribution 21s). That price is no longer paid per round; a change to a
+ * CLI, an AFS record or the chain adapter is covered by running just the
+ * affected file(s) instead.
  *
  * The fast tier still carries the gates that catch real regressions here:
  * artifact drift (`arc dsl generate --check`) and dead locale keys
@@ -92,7 +96,12 @@ if (status !== 0) {
 }
 
 if (tier === 'fast') {
-  console.log('\nfast tier passed — run `npm run test:live` before pushing (or `npm run test:all`)');
+  console.log(
+    '\nfast tier passed — this is the gate. For a change to a CLI / AFS record / chain adapter,\n' +
+      'run just the affected file: `npm run test:file -- scripts/<file>.test.mjs` (serial, writes\n' +
+      'the dev instance — take docs/team/.gate-lock first). The full `npm run test:live` is no\n' +
+      'longer a routine gate (user ruling 2026-09-27).',
+  );
   process.exit(0);
 }
 

@@ -1,6 +1,6 @@
 # REQ-002 — 控制台一致性收口（UI-001 的 F1–F13）
 
-**元信息**：REQ-002 ｜ 对应 spec 章节：**§15.1 后台信息架构 / §15.2 控制台外壳**（页面级依据 `docs/ArcBlog-admin-ui-design.md` §2.4 / §3.3 / §4.1 / §4.3 / §4.4 / §5.1 / §5.3 / §9）｜ checklist 行：无独立行——这是 **D 组已 ✅ 页面的实现质量缺口**（D 组 16✅ / 8🟡），来源为 UI-001 走查 ｜ 优先级：**P1（Round 6 续作；`blocked_by task-3`，若轮末无空位则顺延 Round 7）** ｜ 提出轮次：**Round 6** ｜ 负责角色：**Dev** ｜ 状态：已派发（任务 `task-5`，`blocked_by task-3`）
+**元信息**：REQ-002 ｜ 对应 spec 章节：**§15.1 后台信息架构 / §15.2 控制台外壳**（页面级依据 `docs/ArcBlog-admin-ui-design.md` §2.4 / §3.3 / §4.1 / §4.3 / §4.4 / §5.1 / §5.3 / §9）｜ checklist 行：无独立行——这是 **D 组已 ✅ 页面的实现质量缺口**（D 组 16✅ / 8🟡），来源为 UI-001 走查 ｜ 优先级：**P1（Round 6 续作；`blocked_by task-3`，若轮末无空位则顺延 Round 7）** ｜ 提出轮次：**Round 6** ｜ 负责角色：**Dev** ｜ 状态：**已交付（Round 7，`task-2`）→ QA 放行（`test-reports/round-7.md`，A1–A17 中 16 条通过、A10 部分不通过）→ A10 的可变枚举部分拆出 BUG-005（P2）顺延 R8，见 [`REQ-004`](REQ-004-console-round7-defect-closure.md)；本轮结论见 §3.2**
 
 ---
 
@@ -72,8 +72,13 @@ npm run test:file -- scripts/arcblog-runtime-ids.test.mjs
 **A8 F9**：任一控制台页侧栏底部出现品牌 / 关于 / RSS / 版权行（`marginTop:auto` 顶到底）；`node scripts/arcblog-console-nav.mjs --check` 与 `npm test` 全绿；新行文案来自 `wrapper.*`（`.aup/wrapper.aup` 声明 + locale 文件有中英两条）。
 **A9 F10**：`?page=posts`（或其他列表页）每行出现相对时间文本（如 `3 days ago` / `3 天前`），且不存在因字段为空而渲染出的空 `time` 元素。
 **A10 F5**：`?page=posts` 的 `document.body.innerText` **不再出现裸** `published` / `archived` / `deleted`；行内同时有色点与本地化状态文字（双编码）；`?page=hub` 不再出现裸 `failed`，`?page=access` 不再出现裸 `paid`，`?page=tags` 不再出现裸 `noop` / `done`（状态与动作名各自的 i18n key 已声明在该页 `i18n {}`，`npm test` 的死 key 门为绿）。
+
+> **Round 7 口径修订（见 §3.2）**：「不再出现裸英文」应理解为「**不渲染数据里的原始枚举值**」，不是「不出现任何英文单词」——en locale 下 `Published` / `Drafts & archived` 就是标准文案（QA 按真实意图复核）。
+> **Round 7 结果**：本条的「裸枚举消失 + `status-*` 键声明」部分通过；但「本地化文字要能看出该行的状态」未达成（可变枚举退化成常量类别词）→ 拆出 **BUG-005（P2）**，顺延 R8 由 REQ-004 承接。
 **A11 F8①**：节点标识渲染为中间截断形式（保留头尾），完整值在 `title` 中可见。
 **A12 F7**：`?page=tags` 的 grid 容器 computed `grid-template-columns` 含 `520px`，`gap === "14px"`。
+
+> **Round 7 口径修订（见 §3.2）**：computed `grid-template-columns` **永远不会回显 `minmax()` 文本**（只给用后的 px 轨道），且该 grid 只有 1 个子项时 `auto-fit` 把第 2 条空轨道折叠为 `0px`（实测 `1470.56px 0px`）——原字面断言在任何浏览器都不可达。**等价口径**：源码配方 `gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))"`（静态复核）+ computed `gap === "14px"`（浏览器实测）。QA 按等价口径判通过。
 **A13 F12**：`?page=tags` 的源标签字段可从投影标签中选择（不是纯手输）——`searchable-dropdown` 经实测可用；若实测不可用，则保留 `input` 并同时满足：字段旁有「现有标签见右侧列表」提示，且输入不存在的标签时给出明确提示（REQ-001 A8）。**两条路径都必须在上报里写明选了哪条及实测证据。**
 **A14 F13**：`?page=tags` 队列行动作名字号 ≤ 同行 `status` 的字号（不再 `lg` 放大）。
 **A15 禁止项**：新增/改动页面无硬编码颜色：
@@ -87,6 +92,27 @@ npm run test:file -- scripts/arcblog-hero-carousel.test.mjs   # 4/4
 node scripts/arcblog-hero-carousel.mjs --check                # ok: true
 ```
 **A17 受限项（如实标注，不得推断为通过）**：控制台的**写入类**断言（行内 Publish/删除点击后落库、标签队列 worker 执行）本轮由 QA 按 REQ-001 口径处理；若 guest 测试身份无法验证管理员写入面，须写「受限未验证 + 原因」。
+
+### 3.1 Round 7 开工记录（2026-09-27，PM）
+
+- **日期**：2026-09-27（Round 7 开工）。
+- **开工依据**：Lead 2026-09-27 裁定「Round 6 不开工、本项顺延 Round 7」；随后 D4 裁定（gate 卡豁免 14px 正文密度口径）已并入本文件 §2.1 与 §3 A6，本 REQ 不再需要修订即可开工。Round 7 重新派发：**任务 `task-2`（Dev）**——Round 6 的 `task-5` 编号作废，§4「依赖」里出现的 `task-3` / `task-4` / `task-6` 均为 **Round 6 历史 id**（三者已 completed），勿与 Round 7 的同名编号混淆。
+- **依赖状态**：Round 7 规划任务 **`task-1`（PM 规划：backlog + 本记录 + REQ-003 + `journal/round-7.md`）已完成**；§4 列出的 Round 6 上游（`task-3` REQ-001 标签页、`task-4` QA 初验、`task-6` 4 条 BUG 修复）**均已 completed**，故本项在 Round 7 开工时无未满足依赖。
+- **串行约束（Round 7）**：Round 7 的 QA 任务 **`task-4`（QA-002，验收 REQ-002 + REQ-003）必须 `blocked_by task-2`（本项）与 `task-3`（REQ-003）**；**本项未 complete 之前 QA 不得开工**——Round 6 已证明本项写范围（`.aup/pages/**`、`scripts/console-nav.mjs`、`dist/**`）与 QA 的验证对象完全重叠，并行会让验证目标在 QA 脚下移动。QA 必须等本项交付、revision 冻结后再跑门。
+- **开工前必读**：F3 的 `afs-list.emptyText` 平台限制（字面量 / `$t()` / `:key` / 不写四种写法全部无效，`arc-contracts.md` §28.6）→ 只能走页级常驻 dim 说明；F6 以 D4 裁定为准（**gate 卡豁免**，只统一控制台内容卡）。
+
+### 3.2 Round 7 结果记录与口径修订（PM，2026-09-27 轮末）
+
+- **交付**：Dev `task-2` 完成（`.aup/pages/**` 18 页 + `.aup/wrapper.aup` + `.aup/locales/{en,zh}.json` + `scripts/console-nav.mjs` + 17 页侧栏重生成 + `dist/**`）。
+- **验收**：QA `task-4` 报告 [`test-reports/round-7.md`](../test-reports/round-7.md) §2.1，**放行**（`VERDICT=pass` / `BLOCKING=0`）。逐条结论与证据类型：
+  - **通过（浏览器实测）**：A2（无 cookie 访客）、A3、A4、A5、A7、A8、A9、A11、A12（等价口径）、A14。
+  - **通过（静态复核 / 静态门）**：A1、A6、A8、A10（部分）、A15、A16。
+  - **不通过（部分）**：**A10** —— 裸枚举不再作为文本、9 个 `status-*` 键已声明且死键门绿，但**可变枚举的本地化文字退化成常量类别词**（`posts` 26×`deleted` + 1×`draft` 全显示「In drafts」；`tags` pending/done/noop/failed 同一句；`dashboard` `paid`→「Order」；`hub` 三态同词且 `freshness` 仍裸英文；`access` 行无状态）→ 新增 **BUG-005（P2）**，**顺延 R8**，由 [`REQ-004`](REQ-004-console-round7-defect-closure.md) 承接。
+  - **受限未验证**：**A17**（本轮未真点行内 Publish / 删除；同一链路在 round-6 已由 QA 真实点击验证）→ 列入 R8 排队 #5。
+- **口径修订 1（A12）**：字面断言不可达（理由见 A12 下引文），自本轮起以「源码配方 + computed `gap`」为等价口径。**实现无缺陷**，不改代码。
+- **口径修订 2（A10）**：「不再出现裸英文」= 不渲染数据里的原始枚举值（理由见 A10 下引文）；en locale 下的标准英文文案不算违反。
+- **降级路径记录**：`F12/A13` 采用**降级路径**（保留 `input` + 「现有标签见右侧列表」+ 不存在标签的明确提示），首选 `searchable-dropdown` 的可行性仍未由 QA 独立复现（需改 `.aup`，QA 写范围外）→ 见报告 §8；两条提示是**常驻文案**，与输入无联动（平台无该能力）。
+- **不进入本轮的 A10 剩余部分**：REQ-002 的其余 16 条验收不再重开；BUG-005 的落点、验收与依赖在 REQ-004，**不得**在 REQ-002 里继续加码。
 
 ## 4. 依赖
 

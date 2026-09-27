@@ -33,17 +33,17 @@ page compose-edit {
         action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
       }
       view gap=lg visible=$session.authenticated {
-        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {
+        view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} visible="!$state.post" {
           h2 :title level=2
           p :not-found intent=muted
           action -> page posts variant=ghost label=:back
         }
         view gap=lg visible=$state.post {
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 "$t(compose-edit.editing)"
             p "${state.post.slug}" intent=muted scale=caption
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :meta level=3
             input type=text label=:f-title name=title required=true value="${state.post.title}"
             input type=text label=:f-slug name=slug required=true value="${state.post.slug}"
@@ -54,7 +54,7 @@ page compose-edit {
             input type=text label=:f-cover name=coverImage value="${state.post.coverImage}"
             p :cover-hint intent=muted scale=caption
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :seo level=3
             p :seo-desc intent=muted
             input type=text label="SEO Title" name=seoTitle value="${state.post.seoTitle}"
@@ -63,14 +63,14 @@ page compose-edit {
             input type=text label="OG Description" name=ogDescription value="${state.post.ogDescription}"
             input type=text label="OG Image" name=ogImage value="${state.post.ogImage}"
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             input type=textarea label=:f-body name=body required=true value="${state.post.body}"
           }
           row gap=sm {
             action variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
             action variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose-edit.publish-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :images level=3
             p :images-desc intent=muted
           }

@@ -4,6 +4,7 @@ page compose {
     checks { en "Pre-publish checks" zh "发布前检查" }
     checks-desc { en "Title and slug are required. Publishing is immediately public; drafts stay private until published. Saving an existing slug overwrites that record." zh "标题和 slug 必填。发布即公开；草稿在发布前保持私有。相同 slug 会覆盖已有记录。" }
     cover-hint { en "Shown as the card cover in the story list and at the top of the article. Upload via the Images panel below, then paste the URL here." zh "展示在文章列表的卡片封面和正文顶部。可先在下方图片面板上传，再把 URL 粘贴到这里。" }
+    desc { en "Write, check and publish a story. Drafts stay in the private drafts directory until you publish them." zh "撰写、检查并发布文章。草稿在发布前保存在私有草稿目录中。" }
     draft-saved { en "Draft saved — preview it from the studio." zh "草稿已保存——可在工作室预览。" }
     f-body { en "Body (Markdown)" zh "正文（Markdown）" }
     f-cover { en "Cover image URL" zh "封面图 URL" }
@@ -23,6 +24,7 @@ page compose {
     seo-desc { en "Optional: set seo title/description and OG title/description/image. Defaults fall back to post title, summary, and cover image." zh "可选：设置 SEO 标题/描述与 OG 标题/描述/图片。默认回退到文章标题、摘要和封面图。" }
     slug-hint { en "Lowercase letters, numbers and dashes; used in the URL /posts/<slug>." zh "小写字母、数字和连字符；用于 URL /posts/<slug>。" }
     tags { en "Tags" zh "标签" }
+    title { en "Write a post" zh "写文章" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -102,13 +104,21 @@ page compose {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+          p :desc intent=muted
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :checks level=3
             p :checks-desc intent=muted
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :meta level=3
             input type=text label=:f-title name=title required=true state={value: ""}
             input type=text label=:f-slug name=slug required=true state={value: ""}
@@ -119,7 +129,7 @@ page compose {
             input type=text label=:f-cover name=coverImage state={value: ""}
             p :cover-hint intent=muted scale=caption
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :seo level=3
             p :seo-desc intent=muted
             input type=text label="SEO Title" name=seoTitle state={value: ""}
@@ -128,14 +138,14 @@ page compose {
             input type=text label="OG Description" name=ogDescription state={value: ""}
             input type=text label="OG Image" name=ogImage state={value: ""}
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             input type=textarea label=:f-body name=body required=true state={value: ""}
           }
           row gap=sm {
             action variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: $session.did, authorName: $session.displayName, published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
             action variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: $session.did, authorName: $session.displayName, published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
           }
-          view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
             h3 :images level=3
             p :images-desc intent=muted
           }

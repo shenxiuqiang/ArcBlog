@@ -155,10 +155,32 @@ ${pad}  }`;
       );
     }
   }
+  // F9 (REQ-002): a fixed sidebar footer — brand / About / RSS / copyright.
+  // The console deliberately does not render the site footer (admin-ui-design
+  // §2.1), so these are the only site-level entry points inside it; `marginTop:
+  // auto` pins the block to the bottom of the sidebar column. The copy is
+  // wrapper-namespace (`$t(wrapper.footer-*)`) so it is hand-kept in
+  // `.aup/wrapper.aup` + `.aup/locales/*.json`, exactly like the menu labels.
+  // Links use plain `href`, not `-> page`: `?page=` switches would keep the
+  // current path on a bound route (§27.6), and the About page lives at `/?page=about`.
+  const footerStyle =
+    ' style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", ' +
+    'justifyContent: flex-start, flexShrink: 0}';
+  lines.push(
+    `${pad}  view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {`,
+  );
+  lines.push(
+    `${pad}    p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}`,
+  );
+  lines.push(`${pad}    action "$t(wrapper.footer-about)" href="/?page=about"${footerStyle}`);
+  lines.push(`${pad}    action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank${footerStyle}`);
+  lines.push(
+    `${pad}    p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}`,
+  );
+  lines.push(`${pad}  }`);
   lines.push(`${pad}}`);
   return lines;
 }
-
 /** Index of the line closing the block opened on `start` (brace matching). */
 export function blockEnd(lines, start) {
   let depth = 0;

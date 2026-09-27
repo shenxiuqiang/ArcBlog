@@ -26,8 +26,8 @@ page posts {
     content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
     deleted-ok { en "Record soft-deleted." zh "记录已软删除。" }
     edit { en "Edit" zh "编辑" }
-    gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
-    gate-title { en "Operations" zh "运维" }
+    gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
+    gate-title { en "Studio" zh "创作者工作室" }
     group-drafts { en "Drafts & archived" zh "草稿与归档" }
     group-published { en "Published" zh "已发布" }
     lifecycle { en "Lifecycle controls" zh "生命周期控制" }
@@ -35,6 +35,8 @@ page posts {
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     new-post { en "New post" zh "新建文章" }
     published-ok { en "Published." zh "已发布。" }
+    status-in-drafts { en "In drafts" zh "草稿区" }
+    status-published { en "Published" zh "已发布" }
     studio { en "Your studio" zh "你的工作室" }
     studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
     unpublished-ok { en "Removed from public." zh "已从公开移除。" }
@@ -117,6 +119,12 @@ page posts {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
@@ -149,8 +157,12 @@ page posts {
                     view layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
                       h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
                       row gap=xs cross=center {
-                        p "${entry.content.status}" scale=sm intent=muted
+                        p "●" scale=sm intent=success
+                        p :status-published scale=sm intent=muted
                         p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                        }
                       }
                     }
                     action variant=secondary size=sm label=:detail style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/post-detail.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", status: "${entry.content.status}", category: "${entry.content.category}", tags: "${entry.content.tags}", authorName: "${entry.content.authorName}", summary: "${entry.content.summary}", updatedAt: "${generate.timeiso}"}}}}
@@ -164,11 +176,15 @@ page posts {
                     view layout=inline href="/preview/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
                       h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
                       row gap=xs cross=center {
-                        p "${entry.content.status}" scale=sm intent=muted
+                        p "●" scale=sm intent=muted title="${entry.content.status}"
+                        p :status-in-drafts scale=sm intent=muted
                         p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        }
                       }
                     }
-                    action variant=primary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action variant=secondary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
                     action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: deleted, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${entry.content.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
                     view layout=inline href="/edit/${entry.content.slug}" target=_blank style={display: block, cursor: pointer, color: "var(--color-dim)"} {
                       p :edit scale=sm

@@ -29,6 +29,8 @@ page pages {
     online-list { en "Online" zh "已上线" }
     published-ok { en "Page is online." zh "页面已上线。" }
     removed-ok { en "Removed." zh "已移除。" }
+    status-offline { en "Offline" zh "已下线" }
+    status-online { en "Online" zh "已上线" }
     title { en "Pages" zh "页面" }
     view-page { en "View" zh "查看" }
   }
@@ -110,6 +112,12 @@ page pages {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=xs {
@@ -131,9 +139,16 @@ page pages {
               view gap=sm style={flexShrink: 0} {
                 h3 :online-list level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/pages" {
-                  row gap=sm cross=center {
+                  row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.title}" scale=lg
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=success
+                        p :status-online scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        }
+                      }
                       p "/pages/${entry.content.slug}" scale=sm intent=muted
                     }
                     view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0} {
@@ -148,12 +163,19 @@ page pages {
               view gap=sm style={flexShrink: 0} {
                 h3 :offline-list level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/page-drafts" {
-                  row gap=sm cross=center {
+                  row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.title}" scale=lg
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=muted
+                        p :status-offline scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        }
+                      }
                       p "${entry.content.slug}" scale=sm intent=muted
                     }
-                    action variant=primary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages-admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: online, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}}}}
+                    action variant=secondary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages-admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: online, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}}}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
                   }
                 }
