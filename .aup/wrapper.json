@@ -1,7 +1,83 @@
 {
   "id": "wrapper-view-1",
   "type": "view",
+  "props": {
+    "style": {
+      "gap": "0"
+    }
+  },
   "children": [
+    {
+      "id": "wrapper-view-1-view-1",
+      "type": "view",
+      "props": {
+        "mode": "shell",
+        "style": {
+          "width": "100vw",
+          "marginLeft": "calc(50% - 50vw)",
+          "height": "48px",
+          "minHeight": "48px",
+          "maxHeight": "48px",
+          "padding": "0"
+        }
+      },
+      "children": [
+        {
+          "id": "site-header",
+          "type": "app-header",
+          "props": {
+            "variant": "compact",
+            "brand": {
+              "title": "ArcBlog",
+              "src": "index"
+            },
+            "actions": [
+              {
+                "kind": "theme-toggle",
+                "icon": "sun",
+                "ariaLabel": "$t(wrapper.theme-label)"
+              },
+              {
+                "kind": "locale-switcher",
+                "locales": [
+                  "en",
+                  "zh"
+                ],
+                "labels": {
+                  "en": "EN",
+                  "zh": "中文"
+                }
+              },
+              {
+                "kind": "user-menu",
+                "items": [
+                  {
+                    "id": "console",
+                    "label": "$t(wrapper.nav-console)",
+                    "icon": "grid",
+                    "exec": "dashboard"
+                  }
+                ]
+              }
+            ]
+          },
+          "events": {
+            "user-menu-item": {
+              "target": "_root",
+              "set": {
+                "page": "$args.exec"
+              }
+            },
+            "nav-click": {
+              "target": "_root",
+              "set": {
+                "page": "$args.src"
+              }
+            }
+          }
+        }
+      ]
+    },
     {
       "$ref": "content"
     },

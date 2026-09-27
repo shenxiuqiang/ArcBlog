@@ -416,5 +416,13 @@
   "wrapper.nav-studio": "Studio",
   "wrapper.nav-write": "Write",
   "wrapper.tagline": "DID-native writing, Markdown-first publishing.",
-  "wrapper.theme-label": "Toggle theme"
+  "wrapper.theme-label": "Toggle theme",
+  "posts.detail": "Details",
+  "posts.detail-hint": "Pick a post to inspect it here — no page switch.",
+  "posts.detail-open": "Open the reader page",
+  "posts.detail-status": "Status",
+  "posts.detail-category": "Category",
+  "posts.detail-tags": "Tags",
+  "posts.detail-summary": "Summary",
+  "posts.detail-author": "Author"
 }

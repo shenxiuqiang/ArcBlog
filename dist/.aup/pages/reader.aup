@@ -7,9 +7,6 @@ page reader {
     paid-notice { en "This is a paid article. The full text is released after purchase — it is never shipped to your browser before that." zh "这是一篇付费文章。购买后才会下发全文——在此之前正文不会送达你的浏览器。" }
   }
   view gap=lg {
-    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
-      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
-    }
     view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
       breadcrumb items=[{label: "$t(reader.back)", href: "/posts"}, {label: "${state.post.title}"}]
       view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {

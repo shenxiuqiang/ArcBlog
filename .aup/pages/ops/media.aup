@@ -8,11 +8,8 @@ page media {
     media-empty { en "How to add one: node scripts/arcblog-media.mjs add" zh "如何添加：node scripts/arcblog-media.mjs add" }
     title { en "Media" zh "媒体" }
   }
-  view gap=lg style={height: "100vh", overflow: visible} {
+  view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
-      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
-        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
-      }
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=info

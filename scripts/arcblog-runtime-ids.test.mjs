@@ -31,20 +31,18 @@ function sources(dir = pagesDir, out = []) {
   return out;
 }
 
-test('every page header keeps the site-header id that nav-click fires from', () => {
-  const missing = [];
-  for (const path of sources()) {
-    const src = readFileSync(path, 'utf8');
-    if (!src.includes('app-header')) continue;
-    // A header that carries `src` renders a button emitting `nav-click`; the
-    // handler is addressed by this id, so both must be present together.
-    if (!/app-header site-header\b/.test(src)) missing.push(path);
-  }
+// The header lives ONCE, in the app wrapper (above the page slot): every page
+// used to carry an identical copy (23 of them), which is exactly the duplication
+// the wrapper removes. The id stays load-bearing — the brand button emits
+// `nav-click`, and the handler is addressed by `site-header`.
+test('the shared header lives once in the wrapper and keeps the site-header id', () => {
+  const wrapper = readFileSync(join(repoRoot, '.aup', 'wrapper.aup'), 'utf8');
+  assert.match(wrapper, /app-header site-header\b/, 'the wrapper header lost its `site-header` id');
+  const duplicates = sources().filter((path) => readFileSync(path, 'utf8').includes('app-header'));
   assert.deepEqual(
-    missing,
+    duplicates,
     [],
-    'app-header lost its `site-header` id (the logo/brand click stops working) — ' +
-      '`arc dsl lint --fix` strips it; re-add `app-header site-header …`',
+    'a page carries its own app-header again — it belongs in `.aup/wrapper.aup` only',
   );
 });
 

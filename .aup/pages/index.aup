@@ -4,9 +4,6 @@ page index {
     feed-empty { en "No published stories yet." zh "还没有已发布的文章。" }
   }
   view gap=lg {
-    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
-      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
-    }
     view gap=lg {
       frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel" sandbox=allow-top-navigation-by-user-activation
       h2 :feed level=2

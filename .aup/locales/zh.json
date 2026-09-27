@@ -416,5 +416,13 @@
   "wrapper.nav-studio": "工作室",
   "wrapper.nav-write": "写文章",
   "wrapper.tagline": "DID 原生写作，Markdown 优先发布。",
-  "wrapper.theme-label": "切换主题"
+  "wrapper.theme-label": "切换主题",
+  "posts.detail": "详情",
+  "posts.detail-hint": "选一篇文章在此查看详情——不切换页面。",
+  "posts.detail-open": "打开阅读页",
+  "posts.detail-status": "状态",
+  "posts.detail-category": "分类",
+  "posts.detail-tags": "标签",
+  "posts.detail-summary": "摘要",
+  "posts.detail-author": "作者"
 }

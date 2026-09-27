@@ -1,6 +1,14 @@
 page posts {
   i18n {
     admin-archive { en "Archive" zh "归档" }
+    detail { en "Details" zh "详情" }
+    detail-hint { en "Pick a post to inspect it here — no page switch." zh "选一篇文章在此查看详情——不切换页面。" }
+    detail-open { en "Open the reader page" zh "打开阅读页" }
+    detail-status { en "Status" zh "状态" }
+    detail-category { en "Category" zh "分类" }
+    detail-tags { en "Tags" zh "标签" }
+    detail-summary { en "Summary" zh "摘要" }
+    detail-author { en "Author" zh "作者" }
     admin-archive-msg { en "This writes an archived copy to private drafts. The public post stays live until you remove it from public." zh "这会在私有 drafts 中写入一份 archived 副本。公开文章会继续保留，直到你执行从公开移除。" }
     admin-archive-title { en "Archive this post?" zh "归档这篇文章？" }
     admin-delete { en "Delete" zh "删除" }
@@ -31,11 +39,8 @@ page posts {
     studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
     unpublished-ok { en "Removed from public." zh "已从公开移除。" }
   }
-  view gap=lg style={height: "100vh", overflow: visible} {
+  view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
-      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
-        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
-      }
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=info
@@ -119,6 +124,12 @@ page posts {
               action -> page compose variant=primary label=:new-post style={borderRadius: "var(--radius-md, 8px)"}
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={detail: "/instance/app/arcblog/node/post-detail.json"} {
+                h3 :detail level=3 style={fontSize: "var(--type-body)"}
+                p :detail-hint intent=muted scale=sm visible="!${state.detail.slug}"
+                key-value-list dense=true fields=[{label: "$t(posts.detail-status)", value: "${state.detail.status}"}, {label: "$t(posts.detail-category)", value: "${state.detail.category}"}, {label: "$t(posts.detail-tags)", value: "${state.detail.tags}", hideWhenEmpty: true}, {label: "$t(posts.detail-author)", value: "${state.detail.authorName}", hideWhenEmpty: true}, {label: "$t(posts.detail-summary)", value: "${state.detail.summary}", hideWhenEmpty: true}] visible="${state.detail.slug}"
+                action -> navigate "/posts/${state.postSlug}" variant=secondary size=sm label=:detail-open style={borderRadius: "var(--radius-md, 8px)", alignSelf: flex-start} visible="${state.postSlug}"
+              }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :lifecycle level=3 style={fontSize: "var(--type-body)"}
                 p :lifecycle-desc intent=muted
@@ -138,6 +149,7 @@ page posts {
                         p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
                       }
                     }
+                    action variant=secondary size=sm label=:detail style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/post-detail.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", status: "${entry.content.status}", category: "${entry.content.category}", tags: "${entry.content.tags}", authorName: "${entry.content.authorName}", summary: "${entry.content.summary}", updatedAt: "${generate.timeiso}"}}}}
                     action variant=secondary size=sm label=:admin-archive confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: archived, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish-title, message: :admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
                   }

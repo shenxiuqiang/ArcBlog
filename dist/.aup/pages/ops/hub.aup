@@ -25,11 +25,8 @@ page hub {
     relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
     title { en "Hub console" zh "Hub 管理" }
   }
-  view gap=lg style={height: "100vh", overflow: visible} {
+  view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
-      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
-        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
-      }
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=info
