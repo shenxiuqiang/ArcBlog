@@ -1320,3 +1320,26 @@ provider 缺 `package.json`（平台每个 provider 都带，我们补上后仍�
   所以"点击写入"这一步仍需属主会话验证，读取与渲染路径已通。
 
 **③ `arc blocklet run`** —— 尚未验证（下一轮）。
+
+### 27.6 从"绑定路由"页点菜单会得到错误 URL（已修）
+
+**症状**：在文章页（`/posts/<slug>`、`/pages/<slug>`、`/store` 等**绑定路由**）点 header 的「管理后台」，
+URL 变成 `/posts/<slug>?page=dashboard` —— 路径留在文章上，只改了查询串。品牌 logo 同理（`/posts/<slug>?page=index`）。
+
+**根因**：`-> page X` 与事件里的 `set {page: …}` 都是**对当前页面做 page 状态更新**，运行时只改查询串、保留当前 path
+（实测：切换后 `location.pathname` 不变，且**不重新加载**，JS 上下文存活）。
+
+**修法**（实测两种都成立，取更声明式的一种）：
+
+| 写法 | 实测结果 |
+| --- | --- |
+| `brand={… href: "/"}` | 渲染成 `<a href="/">`，点击**真实导航**到 `/` ✓ |
+| user-menu 项 `{… href: "/?page=dashboard"}` | 点击导航到 `/?page=dashboard`（运行时随后补回 `&locale=zh`）✓ |
+| `-> page X` / `set {page}` | 保留当前 path，只改查询串 ✗（绑定路由上 URL 错误） |
+
+因此 header 的两个入口都改为**绝对 href**：品牌 `href: "/"`、管理后台 `href: "/?page=dashboard"`。
+从文章页实测：菜单 → `/?page=dashboard&locale=zh`、品牌 → `/`、进入控制台后侧栏 → `/?page=media&locale=zh`，
+locale 保持、内容正确、无 `SESSION INIT FAILED`。
+
+**规则**：跨"应用页面"的导航一律用**指向根路径的绝对 URL**（`href: "/?page=…"` 或 `-> navigate "/?page=…"`）；
+`-> page X` 只适合当前位置 path 已是 `/` 的场景（控制台侧栏就属于这种，实测 `/?page=media` 正常）。

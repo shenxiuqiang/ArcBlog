@@ -29,7 +29,7 @@
             "variant": "compact",
             "brand": {
               "title": "ArcBlog",
-              "src": "index"
+              "href": "/"
             },
             "actions": [
               {
@@ -55,7 +55,7 @@
                     "id": "console",
                     "label": "$t(wrapper.nav-console)",
                     "icon": "grid",
-                    "exec": "dashboard"
+                    "href": "/?page=dashboard"
                   }
                 ]
               }

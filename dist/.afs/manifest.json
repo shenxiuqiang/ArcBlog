@@ -376,15 +376,15 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 2064,
+      "size": 2072,
       "contentType": "application/octet-stream",
-      "sha256": "964750e3e2a660a666f22a9f2eeb253a7b0b037f042fdeb676d73b518866f620"
+      "sha256": "6f16423824b29b993c84b2807c17214593aeee6be609f1af1fd66d4f518bf3e6"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 2128,
+      "size": 2132,
       "contentType": "application/json",
-      "sha256": "b6d9f7132b448a23821a640d79ac6e9088c7cfb23e7e90908febee3a3f06d79f"
+      "sha256": "8697d124b483449461d09337842c276b453c14fb56f945aa451e2a40d1bbc15a"
     },
     {
       "path": ".env.example",
@@ -1269,6 +1269,12 @@
       "sha256": "93a2bdb15618a10d8f81fb30368f7245c55da46523e05ff9e8a471d31e534b65"
     },
     {
+      "path": "AGENTS.md",
+      "size": 2324,
+      "contentType": "text/markdown",
+      "sha256": "cd100f80d1788d901e851b0293aec28141f2a8b23030fa32bc55560b3fa052a2"
+    },
+    {
       "path": "agents/arcblog-agent/agent.dsl",
       "size": 604,
       "contentType": "application/octet-stream",
@@ -1300,9 +1306,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 110491,
+      "size": 112681,
       "contentType": "text/markdown",
-      "sha256": "32c6225a91d0e72fe171580cb5f810ecbf9c6edbdb47af3ac3a29e687387dff2"
+      "sha256": "87d74aa69f48f140e5f49505fda4dfff66d4649b3eb349eda624cfeb87bf6cc6"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1417,6 +1423,72 @@
       "size": 1272,
       "contentType": "text/markdown",
       "sha256": "2e2ba1d889f0f1eb6b16cb2ffe6921362fcc3f1565ace11df71577884f6d1cfc"
+    },
+    {
+      "path": "docs/team/backlog.md",
+      "size": 4405,
+      "contentType": "text/markdown",
+      "sha256": "a7e3c27607ee4183a3a5e86dd450f2988cf9c57e676a952885acf5644647c329"
+    },
+    {
+      "path": "docs/team/bootstrap.md",
+      "size": 2819,
+      "contentType": "text/markdown",
+      "sha256": "5e1e1f0e84db3ccc4bc0936b82ae4f2566abe824d7e6ff6401a9276eb66d3fab"
+    },
+    {
+      "path": "docs/team/journal/README.md",
+      "size": 1578,
+      "contentType": "text/markdown",
+      "sha256": "a0c40733307b8796665cc48cdaac3bc9fd1baa26c6b38ba3c6d8e49a643649e8"
+    },
+    {
+      "path": "docs/team/README.md",
+      "size": 9900,
+      "contentType": "text/markdown",
+      "sha256": "a2ce0194c4124db9e0ac63c75de13868b2e5245b04b39265fed1c2b7fbf64c39"
+    },
+    {
+      "path": "docs/team/roles/dev.md",
+      "size": 9927,
+      "contentType": "text/markdown",
+      "sha256": "018571f119980993401e5d03e5745478e275d11ed73fc75495fa0dfd22f98ba5"
+    },
+    {
+      "path": "docs/team/roles/pm.md",
+      "size": 10198,
+      "contentType": "text/markdown",
+      "sha256": "bbe1199679d4243ab280de32a8ecf45b5404f3a592007ed67a02ce5c1fc9ba4b"
+    },
+    {
+      "path": "docs/team/roles/qa.md",
+      "size": 9353,
+      "contentType": "text/markdown",
+      "sha256": "0cc58d3f4be443b8b100a43bb1329e0a96b1bdf71f01c165a795957b11204751"
+    },
+    {
+      "path": "docs/team/roles/ui.md",
+      "size": 10331,
+      "contentType": "text/markdown",
+      "sha256": "419deb2d350c35b518d0eba288fd08b1efb04d139ab3f61c6f11b14ed0bcb6e4"
+    },
+    {
+      "path": "docs/team/templates/bug-report.md",
+      "size": 4797,
+      "contentType": "text/markdown",
+      "sha256": "e63a014b5e0ce098a81c501da26882ef5977606525b17dc2e0279e06bbfc0528"
+    },
+    {
+      "path": "docs/team/templates/design-proposal.md",
+      "size": 6533,
+      "contentType": "text/markdown",
+      "sha256": "fd8e30b020a6e23f96772bc8a120a1b3af71fe3fb98ae02c19e817f132149b73"
+    },
+    {
+      "path": "docs/team/templates/test-report.md",
+      "size": 6672,
+      "contentType": "text/markdown",
+      "sha256": "95107b4376758860f68fd227d7a11323cfa420791bb6e7d5cccc26bebc7778d1"
     },
     {
       "path": "logo.svg",
@@ -1756,9 +1828,9 @@
     },
     {
       "path": "scripts/arcblog-runtime-ids.test.mjs",
-      "size": 2648,
+      "size": 2791,
       "contentType": "text/javascript",
-      "sha256": "00d4b82470f93b27c2d88a7888a032c34c4169d002ae20f6d9a57561c1a6fb02"
+      "sha256": "ad9143dca20cf625f6fb77a7963e5be061b9ed35d03aa64f745c2cd68a0b0221"
     },
     {
       "path": "scripts/arcblog-settings.mjs",

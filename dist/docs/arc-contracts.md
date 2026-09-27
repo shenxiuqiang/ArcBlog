@@ -1296,3 +1296,27 @@ provider 缺 `package.json`（平台每个 provider 都带，我们补上后仍�
 教程的 `stats`/`card`/`table from "/..."` 是**示意写法**（它自己也标注了）；真实可用原语以 §25 的实测清单为准。
 另外它没覆盖一个我们踩到的约束：**共享侧栏无法高亮当前项**——平台的 `active` 只认字面 `true`，
 所以"当前菜单项"这一件事仍然只能靠按页生成（ArcBlog 现在就是这么做的）。
+
+### 27.5 实施进展（同日）
+
+**① header 收进 wrapper —— 已实施并实测**（23 份 → 1 份）：
+
+* 23 个页面里的 `app-header` 块全部删除（控制台 16 + 公共 7），header 移到 `.aup/wrapper.aup` 的 `slot content` **之上**；
+  控制台页根部高度从 `100vh` 改为 `calc(100vh - 48px)`（页面不再含 topbar），其余布局不动。
+* 关键点：wrapper 的直接子节点会被 `--aup-content-max` cap（实测 header 被压成 1136 宽、x=293），
+  **给 header 容器加 `mode=shell`** 即可豁免该规则（cap 规则排除 `[data-mode="shell"]`）；再把 shell 高度钉成 48px，使既有高度链自洽。
+* 实测几何（1722×1006 视口）：`.aup-app-header` 数量 **1**，`x=0 w=1722 h=48`；侧栏 `x=0, y=48, w=258, bottom=1006`（正好触底）；
+  `documentElement.scrollHeight=1006`（无页面滚动）；当前菜单项仍带 `data-active="true"`；首页/阅读页/商店页 header 同样单份全宽。
+
+**② 页内就地详情 —— 已实施在 `admin/posts`，并测出一条限制**：
+
+* `-> set <node> src|state|props` 生效（点击后节点就地变化、URL 不变），但 **`-> set` 的 args 不解析 `${entry.content.*}`**：
+  实测把字面量 `${entry.content.status}` 直接写进了 state（面板显示原始模板）。
+* 因此页内数据更新的正规形态是 **行内 `exec` 写 AFS → `propBind` 面板重渲染**（`exec` 的 args 会解析 `entry.*`，
+  且 AFS 写入会触发绑定节点重渲染，§21.x 已测）。`admin/posts` 现在就是这样：每行「详情」写 `node/post-detail.json`，
+  卡片 `propBind` 该记录；实测（CLI 写入同形记录后）面板显示 `状态 published / 分类 technology / 标签 did,markdown / 作者 / 摘要`，
+  「打开阅读页」链接随 `${state.detail.slug}` 出现，提示消失，**未切页**。
+* 权限边界：页面会话写 `node/` 需要 admin（`minRole: admin`）；guest 点击时写入被拒（记录仍不存在，fail-closed ✓），
+  所以"点击写入"这一步仍需属主会话验证，读取与渲染路径已通。
+
+**③ `arc blocklet run`** —— 尚未验证（下一轮）。

@@ -121,8 +121,13 @@ test('each console page gates on the session and shares the shell', () => {
     const src = readPage(page);
     assert.match(src, /visible="!\$session\.authenticated"/, `page ${page} has no signed-out gate card`);
     assert.match(src, /visible=\$session\.authenticated/, `page ${page} has no signed-in shell`);
-    // The header carries no explicit id any more (`arc dsl lint --fix` strips
-    // unreferenced ones), so match the primitive itself.
-    assert.match(src, /app-header\s/, `page ${page} is missing the site header`);
+    assert.doesNotMatch(
+      src,
+      /app-header/,
+      `page ${page} carries its own header — the header lives once in .aup/wrapper.aup`,
+    );
   }
+  // The shared header is what every page inherits, so it must exist there.
+  const wrapper = readFileSync(join(repoRoot, '.aup', 'wrapper.aup'), 'utf8');
+  assert.match(wrapper, /app-header site-header/, 'the wrapper lost the shared header');
 });
