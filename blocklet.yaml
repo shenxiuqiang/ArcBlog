@@ -68,7 +68,8 @@ sites:
       - id: seo-admin
         path: "/manage/seo"
         afs: "/instance/app/arcblog/node/profile.json"
-        page: seo-admin   # legacy alias page -> the console bridge redirects to #seo-admin
+        page: seo   # the console used to be one page per section; this route now
+                    # lands on the standalone `seo` page directly (no bridge).
       # spec §39: the public creator storefront — the product catalogue
       # (guest-readable, §50) rendered as its own page.
       - id: store

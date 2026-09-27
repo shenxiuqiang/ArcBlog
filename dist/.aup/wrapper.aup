@@ -25,11 +25,9 @@ page wrapper {
     nav-appearance { en "Appearance" zh "外观设置" }
     theme-label { en "Toggle theme" zh "切换主题" }
     tagline { en "DID-native writing, Markdown-first publishing." zh "DID 原生写作，Markdown 优先发布。" }
-    console-opening { en "Opening the management console…" zh "正在打开管理后台…" }
   }
   view {
     slot content
-    frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
-    frame src="/p/en/console-bridge/" bridge=true overlay=true loading=eager sandbox=allow-top-navigation
+    frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager
   }
 }

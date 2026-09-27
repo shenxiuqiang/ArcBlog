@@ -1,0 +1,165 @@
+page posts {
+  i18n {
+    admin-archive { en "Archive" zh "归档" }
+    admin-archive-msg { en "This writes an archived copy to private drafts. The public post stays live until you remove it from public." zh "这会在私有 drafts 中写入一份 archived 副本。公开文章会继续保留，直到你执行从公开移除。" }
+    admin-archive-title { en "Archive this post?" zh "归档这篇文章？" }
+    admin-delete { en "Delete" zh "删除" }
+    admin-delete-msg { en "The record stays in drafts with status deleted and can be republished later." zh "记录会以 deleted 状态保留在 drafts 中，后续仍可重新发布。" }
+    admin-delete-title { en "Soft-delete this record?" zh "软删除这条记录？" }
+    admin-publish { en "Publish" zh "发布" }
+    admin-publish-msg { en "This publishes the current draft record. Deleted records can be republished." zh "这会发布当前草稿记录。deleted 状态记录也可以重新发布。" }
+    admin-publish-title { en "Publish this draft record?" zh "发布这条草稿记录？" }
+    admin-unpublish { en "Remove from public" zh "从公开移除" }
+    admin-unpublish-msg { en "Archive first keeps a copy in drafts. Removing from public deletes the original from public posts." zh "请先归档以在 drafts 保留副本。从公开移除会删除公开 posts 中的原记录。" }
+    admin-unpublish-title { en "Remove this post from public?" zh "将这篇文章从公开移除？" }
+    appearance { en "Appearance settings" zh "外观设置" }
+    archived-ok { en "Archived copy saved to drafts." zh "已在 drafts 中保存归档副本。" }
+    content { en "Your content" zh "你的内容" }
+    content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
+    deleted-ok { en "Record soft-deleted." zh "记录已软删除。" }
+    edit { en "Edit" zh "编辑" }
+    gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+    gate-title { en "Operations" zh "运维" }
+    group-drafts { en "Drafts & archived" zh "草稿与归档" }
+    group-published { en "Published" zh "已发布" }
+    lifecycle { en "Lifecycle controls" zh "生命周期控制" }
+    lifecycle-desc { en "Archive copies a post to the private drafts directory; Remove from public takes it off the public feed. Drafts can be published or soft-deleted from the row actions." zh "归档会把文章复制到私有 drafts 目录；从公开移除会把它从公开 feed 下线。草稿可在行内操作中发布或软删除。" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    new-post { en "New post" zh "新建文章" }
+    published-ok { en "Published." zh "已发布。" }
+    studio { en "Your studio" zh "你的工作室" }
+    studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
+    unpublished-ok { en "Removed from public." zh "已从公开移除。" }
+  }
+  view page-root gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dposts&cancel_to=%2F%3Fpage%3Dposts" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
+            row gap=md cross=center style={justifyContent: space-between} {
+              view gap=xs {
+                h2 :studio level=2 style={fontSize: "var(--type-subheading)"}
+                p :studio-desc intent=muted
+              }
+              action -> page compose variant=primary label=:new-post style={borderRadius: "var(--radius-md, 8px)"}
+            }
+            view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :lifecycle level=3 style={fontSize: "var(--type-body)"}
+                p :lifecycle-desc intent=muted
+                row cross=start {
+                  action -> page appearance variant=secondary size=sm label=:appearance style={borderRadius: "var(--radius-md, 8px)"}
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h2 :content level=2 style={fontSize: "var(--type-body)"}
+                h3 :group-published level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty autoSelect=false clickMode=none style={flexShrink: 0} from "/instance/app/arcblog/posts" {
+                  row cross=start role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+                    view layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                      row gap=xs cross=center {
+                        p "${entry.content.status}" scale=sm intent=muted
+                        p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+                      }
+                    }
+                    action variant=secondary size=sm label=:admin-archive confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: archived, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish-title, message: :admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
+                h3 :group-drafts level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty autoSelect=false clickMode=none style={flexShrink: 0} from "/instance/app/arcblog/drafts" {
+                  row cross=start role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+                    view layout=inline href="/preview/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
+                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                      row gap=xs cross=center {
+                        p "${entry.content.status}" scale=sm intent=muted
+                        p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
+                      }
+                    }
+                    action variant=primary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: published, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${entry.content.slug}.json", content: {title: "${entry.content.title}", slug: "${entry.content.slug}", summary: "${entry.content.summary}", body: "${entry.content.body}", coverImage: "${entry.content.coverImage}", images: [], tags: "${entry.content.tags}", category: "${entry.content.category}", seoTitle: "${entry.content.seoTitle}", seoDescription: "${entry.content.seoDescription}", ogTitle: "${entry.content.ogTitle}", ogDescription: "${entry.content.ogDescription}", ogImage: "${entry.content.ogImage}", status: deleted, authorDid: "${entry.content.authorDid}", authorName: "${entry.content.authorName}", published: false, publishedAt: "${entry.content.publishedAt}", archivedAt: "${entry.content.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                    view layout=inline href="/edit/${entry.content.slug}" target=_blank style={display: block, cursor: pointer, color: "var(--color-dim)"} {
+                      p :edit scale=sm
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

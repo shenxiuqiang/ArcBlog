@@ -1067,3 +1067,62 @@ footer.aup-app-footer
 拆分会打断任何**只读 `app.aup` 的自建守卫**——本轮修了 `arcblog-console-nav.mjs`（侧栏生成器）与它的测试、`arcblog-hero-carousel.test.mjs`，都改成"先查内联、再查 `.aup/pages/<name>.aup`"的解析器。侧栏缩进要按页面位置区分：内联页在 `app.aup` 里嵌两层（6 空格），外部文件从第 0 列开始（2 空格）。
 
 平台缺陷（拆分暴露、但非拆分引入）：`arc dsl format` 对 4 个页面报 `content_dropped`（arc#2764）。反证：把**改动前的原始内联页**单独喂给 formatter，报同样的 7 个 token——与 `app.aup` 的 `comment_dropped`（arc#2760）一样是平台 bug，formatter 会拒绝改文件，所以数据安全，但 `format --check` 在本项目永远不可能绿。
+
+## 23. `action` 的 `active=true` 就是「当前项」的一等公民标记（实测，beta.50）
+
+B′ 把控制台从「单页 + hash 路由 + `console-bridge` 注入样式」改成「一节一页」后，选中态没人再负责：桥没了，而运行时的安全样式过滤会把 `action` 上的自定义 `background`/`color`/`fontWeight`/`justifyContent` 丢掉（同一个 `<button>` 上同样声明却能生效，所以不是 CSS 优先级问题）。试过两条路：
+
+| 候选 | 结果 |
+|---|---|
+| `variant=primary` | **无效**。样式只在 `[data-role="sidebar"] .aup-action[data-variant="primary"]` 下命中，而本项目的侧栏没有 `data-role="sidebar"` 祖先，属性被忽略 |
+| `view variant=nav-sidebar` 包一层 + 行上 `data-active` | **有效但代价大**：运行时规则确实上色（`--color-accent-bg` / `--color-accent`），但该 variant 自带 `flex: 0 0 min(220px, 24vw)`、`padding`、`gap`、`background: transparent`，实测侧栏由 269px 被压到 220px，且运行时还给 `:has(> [data-variant="nav-sidebar"])` 的父级注入 `100vw` 全出血与 `--aup-content-max` 放宽规则，牵动整页布局 |
+| **`active=true` 直接写在 `action` 上** | **采用**。见下 |
+
+`active=true` 是 AUP 自己的属性，实测编译后运行时在 DOM 上落下**两个**标记：
+
+```
+<button class="aup-action" data-aup-id="console-nav-media"
+        data-active="true" aria-current="page" …>
+```
+
+并由运行时样式表上色（`var(--color-accent-bg)` / `var(--color-accent)`），因此**换主题自动跟随**，无需在本项目里写任何颜色。关键实测数据（1796px 视口）：
+
+| 观测 | 值 |
+|---|---|
+| 行宽 / 高 | 268.39 / 34 px —— 与未选中行**完全相同** |
+| 文字对齐 | 仍 `text-align: center` + `padding-left: 32px`，视觉左对齐不变 |
+| 侧栏宽 | 269.39 → **269.39**（无变化） |
+| 每页选中行数 | 恰好 1 |
+
+
+**语法位置有坑**：`active=true` 必须写在 `-> page <name>` **之后**，写成 `action <id> "Label" active=true -> page x` 会报 `Expected "include", "partial", "import", "use", "for", or an AUP node type`。`arc dsl format` 也会把标记规范化到箭头之后，所以生成器（`scripts/console-nav.mjs`）必须产出同样的位置，否则 `arc dsl format` 与 `--check` 会互相打架、永远不收敛。
+
+守卫：`scripts/arcblog-console-nav.test.mjs` 增加 “each console page marks exactly its own row active”——断言每页恰好一个 `active=true` 且正是本页那一行（捕捉「一个都没标」和「标错行」两种静默失败）。
+
+## 24. `page-root` 的 `overflow: hidden` 会裁掉全出血的顶栏与侧栏（实测，beta.50）
+
+B′ 之后控制台出现「顶栏与侧栏整块消失、内容挤在中间一列」的现象，DOM 里节点都在、几何也对（顶栏 `y=0`、侧栏 `x=0`），截图却是空的。根因是**两条规则叠加**：
+
+1. 运行时把页面根的直接子元素统一 cap 住（§21.4 已记录）：
+   ```css
+   #aup-display.full-page #aup-root > .aup-view > :not([data-mode="panel"]) … {
+     max-width: var(--aup-content-max, 1280px);   /* 实测 1200px */
+     margin-left: auto !important; margin-right: auto !important;
+   }
+   ```
+   注意 `margin-left/right` 带 **`!important`**，所以**内联 `style` 无法覆盖它** —— 给 `page-root` 写 `width:100vw; marginLeft:calc(50% - 50vw)` 实测完全无效（计算值仍是 `width:1200px; marginLeft:298px`）。
+2. 而 `page-root` 自己带着 `overflow: hidden`（为 §甲「只让内容区滚动」加的），于是顶栏/侧栏用 `width:100vw; marginLeft:calc(50% - 50vw)` 逃逸出 1200px 列之后，被这个祖先**裁掉**。
+
+即：cap 让 `page-root` 变成 1200px 的居中列，`overflow: hidden` 再把逃逸出去的部分剪掉。
+
+**修法**：全出血必须发生在**更深一层**（§21.4 的结论），而 cap 只作用于「页面根的直接子元素」——所以只要**别在 cap 那一层裁剪**即可：`page-root` 保留 `height: "100vh"`，把 `overflow` 从 `hidden` 改成 `visible`。顶栏与侧栏本来就各自带 `width:100vw` 的逃逸，改完实测：
+
+| 观测 | 值（1796px 视口） |
+|---|---|
+| 顶栏宽 | 1796 = 视口宽 |
+| 侧栏 | `x=0`，底边 942 = 视口底 |
+| `page-root` | 仍是 1200px / `margin-left: 298px`（cap 未变，但不再裁剪） |
+| `document` 是否滚动 | **否**（`scrollHeight == innerHeight`）——§甲 的「只让内容区滚动」保住 |
+| 独立滚动容器 | 侧栏 `console-nav` 与内容列 `…-row-3-view-2-view-1-view-2` 两个，`window.scrollBy` 无效 |
+
+**踩坑记录**：本轮一度误判为 `active=true` 引起的布局崩坏，实际是上面这条既有缺陷；又一度用 `getElementById('page-root')` 断言「某页有、某页没有」，得出「lint --fix 只剥了一页」的错误结论——运行时只写 `data-aup-id`、**不写 DOM `id`**，所以 `getElementById` 从来看不到它，两次测量都该用 `[data-aup-id="page-root"]`。

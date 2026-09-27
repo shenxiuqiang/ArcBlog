@@ -1,0 +1,153 @@
+page hub {
+  i18n {
+    approve { en "Approve" zh "通过" }
+    approve-msg { en "The relation becomes indexed. Only meaningful for applied relations." zh "关系将变为 indexed。仅对 applied 状态的申请有意义。" }
+    approve-title { en "Approve this application?" zh "通过这条申请？" }
+    approved-ok { en "Approved — relation is indexed." zh "已通过——关系为 indexed。" }
+    cli-desc { en "Relation ids are derived from the Hub DID by hashing, which the UI cannot compute — add a Studio and rebuild the index with:" zh "收录记录的 id 由 Hub DID 哈希派生，界面无法计算——主动收录与索引重建请使用：" }
+    cli-title { en "Add & rebuild via CLI" zh "主动收录与索引重建（CLI）" }
+    desc { en "Studio ↔ Hub relations and the derived content index. Indexing is the Hub's sovereignty: it only ever carries metadata, never the source body." zh "Studio ↔ Hub 收录关系与派生内容索引。索引是 Hub 的主权行为：只承载元数据，永不承载原文。" }
+    gate-desc { en "Sign in with DID Wallet to curate Studios and the content index." zh "使用 DID Wallet 登录后管理 Studio 收录与内容索引。" }
+    gate-title { en "Hub console" zh "Hub 管理" }
+    index-card { en "Content index" zh "内容索引" }
+    index-empty { en "Index is empty. Rebuild: node scripts/arcblog-network.mjs hub index rebuild" zh "索引为空。重建：node scripts/arcblog-network.mjs hub index rebuild" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    purge { en "Purge" zh "彻底删除" }
+    purge-msg { en "Deletes the tombstone entirely. Prefer Terminate for auditability." zh "将记录彻底删除。为了可审计性，建议使用「终止」。" }
+    purge-title { en "Purge this record?" zh "彻底删除这条记录？" }
+    purged-ok { en "Record purged." zh "记录已删除。" }
+    reject { en "Terminate" zh "终止" }
+    reject-msg { en "The relation becomes a removed tombstone (kept for audit). Either side may terminate." zh "关系将变为 removed（保留 Tombstone 以供审计）。任一方都可终止。" }
+    reject-title { en "Terminate this relation?" zh "终止这条关系？" }
+    rejected-ok { en "Relation terminated (tombstone kept)." zh "关系已终止（保留 Tombstone）。" }
+    relations { en "Studio relations" zh "收录关系" }
+    relations-empty { en "No relations yet. A Studio applies with: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有收录关系。Studio 申请：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
+    relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
+    title { en "Hub console" zh "Hub 管理" }
+  }
+  view page-root gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dhub&cancel_to=%2F%3Fpage%3Dhub" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=xs {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :relations level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:relations-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/registrations" {
+                  row gap=sm cross=center {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace}
+                      row gap=xs {
+                        p "${entry.content.relation}" scale=sm
+                        p "${entry.content.direction}" scale=sm intent=muted
+                        p "${entry.content.status}" scale=sm intent=muted
+                        p "${entry.content.freshness.state}" scale=sm intent=muted
+                      }
+                    }
+                    action variant=primary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: indexed, direction: "${entry.content.direction}", removedAt: "", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
+                    action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${entry.path}", content: {id: "${entry.content.id}", hubDid: "${entry.content.hubDid}", endpoint: "${entry.content.endpoint}", status: "${entry.content.status}", relation: removed, direction: "${entry.content.direction}", removedAt: "${generate.timeiso}", registeredAt: "${entry.content.registeredAt}", updatedAt: "${generate.timeiso}", sync: "${entry.content.sync}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge-title, message: :purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
+                p :relations-legend scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :cli-title level=3 style={fontSize: "var(--type-body)"}
+                p :cli-desc intent=muted
+                p "node scripts/arcblog-network.mjs hub add --hub-did <did>" scale=sm style={fontFamily: monospace}
+                p "node scripts/arcblog-network.mjs hub index rebuild" scale=sm style={fontFamily: monospace}
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :index-card level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:index-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/index" {
+                  row gap=sm cross=center {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      p "${entry.content.title}" scale=lg
+                      p "${entry.content.postId} · v${entry.content.version}" scale=sm intent=muted
+                    }
+                    p "${entry.content.status}" scale=sm intent=muted style={flexGrow: 0}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

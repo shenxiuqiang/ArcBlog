@@ -16,12 +16,6 @@
     "author": {
       "tree": "pages/author.aup"
     },
-    "compose-edit": {
-      "tree": "pages/compose-edit.aup"
-    },
-    "console": {
-      "tree": "pages/console.aup"
-    },
     "index": {
       "tree": "pages/index.aup"
     },
@@ -37,50 +31,53 @@
     "store": {
       "tree": "pages/store.aup"
     },
-    "dashboard": {
-      "tree": "pages/dashboard.json"
+    "appearance": {
+      "tree": "pages/admin/appearance.aup"
     },
-    "admin": {
-      "tree": "pages/admin.json"
-    },
-    "pages-admin": {
-      "tree": "pages/pages-admin.json"
+    "compose-edit": {
+      "tree": "pages/admin/compose-edit.aup"
     },
     "compose": {
-      "tree": "pages/compose.json"
+      "tree": "pages/admin/compose.aup"
     },
-    "heroes-admin": {
-      "tree": "pages/heroes-admin.json"
+    "dashboard": {
+      "tree": "pages/admin/dashboard.aup"
     },
-    "categories-admin": {
-      "tree": "pages/categories-admin.json"
+    "pages": {
+      "tree": "pages/admin/pages.aup"
     },
-    "seo-admin": {
-      "tree": "pages/seo-admin.json"
+    "posts": {
+      "tree": "pages/admin/posts.aup"
     },
-    "feeds-admin": {
-      "tree": "pages/feeds-admin.json"
+    "categories": {
+      "tree": "pages/site/categories.aup"
     },
-    "settings": {
-      "tree": "pages/settings.json"
+    "feeds": {
+      "tree": "pages/site/feeds.aup"
+    },
+    "heroes": {
+      "tree": "pages/site/heroes.aup"
+    },
+    "seo": {
+      "tree": "pages/site/seo.aup"
+    },
+    "agents": {
+      "tree": "pages/ops/agents.aup"
+    },
+    "hub": {
+      "tree": "pages/ops/hub.aup"
+    },
+    "media": {
+      "tree": "pages/ops/media.aup"
     },
     "operations": {
-      "tree": "pages/operations.json"
+      "tree": "pages/ops/operations.aup"
     },
-    "hub-admin": {
-      "tree": "pages/hub-admin.json"
+    "access": {
+      "tree": "pages/economy/access.aup"
     },
-    "media-admin": {
-      "tree": "pages/media-admin.json"
-    },
-    "agent-admin": {
-      "tree": "pages/agent-admin.json"
-    },
-    "policy-admin": {
-      "tree": "pages/policy-admin.json"
-    },
-    "access-admin": {
-      "tree": "pages/access-admin.json"
+    "policy": {
+      "tree": "pages/economy/policy.aup"
     }
   }
 }

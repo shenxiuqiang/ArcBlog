@@ -1,0 +1,175 @@
+page dashboard {
+  i18n {
+    agents { en "Agent grants" zh "Agent 授权" }
+    agents-empty { en "No agent grants. Read-only tools are available by default; write tools need a grant." zh "还没有 Agent 授权。读工具默认可用；写工具需要授权。" }
+    capabilities-label { en "Capabilities" zh "能力" }
+    content { en "Recent published" zh "最近发布" }
+    content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
+    desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
+    economy { en "Economy" zh "经济" }
+    economy-empty { en "No orders yet. Products and tips appear here once readers pay." zh "还没有订单。读者付费后订单会出现在这里。" }
+    gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
+    gate-title { en "Dashboard" zh "仪表盘" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    node { en "Node" zh "节点" }
+    node-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+    q-ops { en "Operations" zh "运维" }
+    q-settings { en "Appearance" zh "外观" }
+    q-studio { en "Creator Studio" zh "创作者工作室" }
+    q-write { en "Write a post" zh "写文章" }
+    quick { en "Quick actions" zh "快捷操作" }
+    roles-label { en "Roles" zh "角色" }
+    title { en "Dashboard" zh "仪表盘" }
+  }
+  view page-root gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Ddashboard&cancel_to=%2F%3Fpage%3Ddashboard" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="${state.nodeProfile}" {
+                row gap=sm cross=center {
+                  h3 "${state.nodeProfile.name}"
+                  p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: monospace}
+                  p "v${state.nodeProfile.version}" scale=sm intent=muted
+                  row gap=xs cross=center visible="${state.nodeHealth}" {
+                    p "●" intent=success scale=sm
+                    p "${state.nodeHealth.status}" scale=sm
+                  }
+                }
+                row gap=sm cross=center {
+                  p :roles-label scale=sm intent=muted
+                  p "${state.nodeProfile.roles}" scale=sm
+                  p :capabilities-label scale=sm intent=muted
+                  p "${state.nodeProfile.capabilities}" scale=sm
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="!${state.nodeProfile}" {
+                p :node-empty intent=info
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h2 :content level=2 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:content-empty from "/instance/app/arcblog/posts" {
+                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    view layout=inline href="/posts/${entry.content.slug}" target=_blank style={display: block, textDecoration: none, color: inherit} {
+                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                    }
+                    row gap=xs cross=center {
+                      p "${entry.content.category}" scale=sm intent=muted
+                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                        time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                      }
+                    }
+                  }
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h2 :economy level=2 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:economy-empty from "/instance/app/arcblog/economy/orders" {
+                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    h3 "${entry.content.id}"
+                    p "${entry.content.amount} ${entry.content.asset}" scale=sm
+                    p "${entry.content.status}" scale=sm intent=muted
+                  }
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h2 :agents level=2 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:agents-empty from "/instance/app/arcblog/config/agent-grants" {
+                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    p "${entry.content.agentDid}" scale=sm style={fontFamily: monospace}
+                    p "${entry.content.capabilities}" scale=sm intent=muted
+                  }
+                }
+              }
+            }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h2 :quick level=2 style={fontSize: "var(--type-body)"}
+              row gap=sm {
+                action -> page compose variant=primary label=:q-write style={borderRadius: "var(--radius-md, 8px)"}
+                action -> page posts variant=secondary label=:q-studio style={borderRadius: "var(--radius-md, 8px)"}
+                action -> page operations variant=secondary label=:q-ops style={borderRadius: "var(--radius-md, 8px)"}
+                action -> page appearance variant=ghost label=:q-settings style={borderRadius: "var(--radius-md, 8px)"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

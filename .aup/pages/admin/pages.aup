@@ -1,0 +1,163 @@
+page pages {
+  i18n {
+    act-delete { en "Delete" zh "删除" }
+    act-delete-msg { en "Pages have no soft delete — this removes the record." zh "页面没有软删除——这将直接移除记录。" }
+    act-delete-title { en "Delete this page?" zh "删除这个页面？" }
+    act-offline { en "Take offline" zh "下线" }
+    act-offline-msg { en "Keeps an offline copy under page-drafts/; remove the public copy to complete." zh "会在 page-drafts/ 保留离线副本；移除公开副本后完成下线。" }
+    act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
+    act-publish { en "Bring online" zh "上线" }
+    act-publish-msg { en "Writes a public copy under pages/; delete the offline copy afterwards." zh "会向 pages/ 写入公开副本；随后请删除离线副本。" }
+    act-publish-title { en "Bring this page online?" zh "上线这个页面？" }
+    act-remove-public { en "Remove public copy" zh "移除公开副本" }
+    create { en "New page" zh "新建页面" }
+    create-offline { en "Create (offline)" zh "创建（离线）" }
+    created-ok { en "Page created offline. Bring it online when ready." zh "页面已创建（离线）。准备好后再上线。" }
+    desc { en "Standalone pages such as About. Two states only — online and offline; no post lifecycle, no RSS, no Hub indexing." zh "About 等独立页面。只有上线 / 下线两个状态——不复用文章生命周期，不进 RSS，不被 Hub 索引。" }
+    f-body { en "Body (Markdown)" zh "正文（Markdown）" }
+    f-slug { en "Slug" zh "别名" }
+    f-summary { en "Summary" zh "摘要" }
+    f-title { en "Title" zh "标题" }
+    gate-desc { en "Sign in with DID Wallet to manage standalone pages." zh "使用 DID Wallet 登录后管理独立页面。" }
+    gate-title { en "Pages" zh "页面" }
+    list-empty { en "No pages yet. Create your first page above." zh "还没有页面。在上方创建第一个页面。" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    offline-hint { en "Offline pages are admin-only. Bring one online when it is ready." zh "离线页面仅后台可见；准备好后点击「上线」。" }
+    offline-list { en "Offline" zh "已下线" }
+    offline-ok { en "Offline copy saved." zh "已保存离线副本。" }
+    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。" }
+    online-list { en "Online" zh "已上线" }
+    published-ok { en "Page is online." zh "页面已上线。" }
+    removed-ok { en "Removed." zh "已移除。" }
+    title { en "Pages" zh "页面" }
+    view-page { en "View" zh "查看" }
+  }
+  view page-root gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dpages&cancel_to=%2F%3Fpage%3Dpages" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=xs {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :create level=3 style={fontSize: "var(--type-body)"}
+                input type=text label=:f-slug name=slug required=true state={value: ""}
+                input type=text label=:f-title name=title required=true state={value: ""}
+                input type=text label=:f-summary name=summary state={value: ""}
+                input type=textarea label=:f-body name=body required=true state={value: ""}
+                row cross=start {
+                  action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages-admin.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                }
+              }
+              view gap=sm style={flexShrink: 0} {
+                h3 :online-list level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/pages" {
+                  row gap=sm cross=center {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      p "${entry.content.title}" scale=lg
+                      p "/pages/${entry.content.slug}" scale=sm intent=muted
+                    }
+                    view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0} {
+                      p :view-page scale=sm
+                    }
+                    action variant=secondary size=sm label=:act-offline confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.offline-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: offline, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-remove-public path="/instance/app/arcblog/pages/${entry.content.slug}.json" confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
+                p :online-hint scale=sm intent=muted
+              }
+              view gap=sm style={flexShrink: 0} {
+                h3 :offline-list level=3 style={fontSize: "var(--type-body)"}
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/page-drafts" {
+                  row gap=sm cross=center {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      p "${entry.content.title}" scale=lg
+                      p "${entry.content.slug}" scale=sm intent=muted
+                    }
+                    action variant=primary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages-admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${entry.content.slug}.json", content: {slug: "${entry.content.slug}", title: "${entry.content.title}", summary: "${entry.content.summary}", body: "${entry.content.body}", status: online, authorDid: "${entry.content.authorDid}", createdAt: "${entry.content.createdAt}", updatedAt: "${generate.timeiso}", version: "${entry.content.version}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
+                p :offline-hint scale=sm intent=muted
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

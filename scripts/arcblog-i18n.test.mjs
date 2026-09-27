@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { readFileSync, readdirSync } from 'node:fs';
+import { closeSync, openSync, readFileSync, readdirSync, statSync, unlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,9 +29,30 @@ function locale(name) {
  * hide the diagnostics we want to inspect.
  */
 function lintJson() {
-  const res = spawnSync('arc', ['dsl', 'lint', '--json'], { cwd: repoRoot, encoding: 'utf8' });
-  // The CLI renders this payload on stderr while exiting non-zero.
-  const text = `${res.stdout ?? ''}${res.stderr ?? ''}`;
+  // The payload outgrew the 64KB pipe buffer once the console split into 15
+  // pages (each `unreferenced_explicit_id` warning is a line), so stdout is
+  // redirected to a file: the CLI truncates a piped payload mid-string. This is
+  // the same workaround `scripts/lib/arc.mjs` uses (`runToFile`).
+  const file = join(tmpdir(), `arcblog-lint-${process.pid}-${Date.now()}.json`);
+  const fd = openSync(file, 'w');
+  try {
+    spawnSync('arc', ['dsl', 'lint', '--json'], {
+      cwd: repoRoot,
+      stdio: ['ignore', fd, 'pipe'],
+    });
+  } finally {
+    closeSync(fd);
+  }
+  let text;
+  try {
+    text = readFileSync(file, 'utf8');
+  } finally {
+    try {
+      unlinkSync(file);
+    } catch {
+      /* best effort */
+    }
+  }
   const start = text.indexOf('{');
   assert.ok(start >= 0, `arc dsl lint produced no JSON payload: ${text.slice(0, 200)}`);
   return text.slice(start);
@@ -101,12 +123,22 @@ test('the wrapper declaration and its locale keys stay in step', () => {
   // page can point at the wrapper namespace (the console sidebar labels do). The
   // runtime resolves `$t(wrapper.x)` against the shared locales either way, so
   // "dead key" means "referenced nowhere", not "not referenced by the wrapper".
+  //
+  // Console pages are `.aup` sources under nested directories and are not always
+  // materialised as JSON (`tree` can point straight at the DSL), so the scan walks
+  // `.aup/pages/` recursively and reads both `.aup` and `.json`.
+  const walk = (dir, out = []) => {
+    for (const entry of readdirSync(dir)) {
+      const path = join(dir, entry);
+      if (statSync(path).isDirectory()) walk(path, out);
+      else if (entry.endsWith('.json') || entry.endsWith('.aup')) out.push(path);
+    }
+    return out;
+  };
   const compiled = [
     join(aupDir, 'wrapper.json'),
     join(aupDir, 'app.json'),
-    ...readdirSync(join(aupDir, 'pages'))
-      .filter((name) => name.endsWith('.json'))
-      .map((name) => join(aupDir, 'pages', name)),
+    ...walk(join(aupDir, 'pages')),
   ]
     .map((path) => {
       try {

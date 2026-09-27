@@ -13,19 +13,19 @@ page preview {
     preview-delete-msg { en "The record stays in the archive with status deleted (soft delete)." zh "记录将以 deleted 状态保留（软删除）。" }
     deleted-ok { en "Draft deleted." zh "草稿已删除。" }
   }
-  view page-root gap=lg {
-    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
-      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: console}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+  view gap=lg {
+    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     }
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
-        view preview-back-studio visible=$session.authenticated {
-          action preview-back href="#admin" variant=ghost label=:back
+        view visible=$session.authenticated {
+          action -> page posts variant=ghost label=:back
         }
-        view preview-back-home href="/posts" style={cursor: pointer, color: "var(--color-dim)"} visible="!$session.authenticated" {
+        view href="/posts" style={cursor: pointer, color: "var(--color-dim)"} visible="!$session.authenticated" {
           p :back-home
         }
-        view preview-edit layout=inline href="/edit/${state.post.slug}" style={cursor: pointer, color: "var(--color-dim)"} visible=$state.post {
+        view layout=inline href="/edit/${state.post.slug}" style={cursor: pointer, color: "var(--color-dim)"} visible=$state.post {
           p :edit scale=sm
         }
       }
@@ -33,24 +33,24 @@ page preview {
         h2 :title level=2
         p :not-found intent=muted
       }
-      view preview-article gap=md visible=$state.post {
+      view gap=md visible=$state.post {
         row gap=sm {
-          action preview-publish variant=primary label=:preview-publish onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-          action preview-delete variant=destructive label=:preview-delete confirm={title: :preview-delete-title, message: :preview-delete-msg} onSuccessToast={intent: success, message: "$t(preview.deleted-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: deleted, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "${state.post.publishedAt}", archivedAt: "${state.post.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+          action variant=primary label=:preview-publish onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+          action variant=destructive label=:preview-delete confirm={title: :preview-delete-title, message: :preview-delete-msg} onSuccessToast={intent: success, message: "$t(preview.deleted-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: deleted, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "${state.post.publishedAt}", archivedAt: "${state.post.archivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
         }
         view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
           p :notice intent=info
         }
-        view preview-cover style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible=$state.post.coverImage {
+        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible=$state.post.coverImage {
           p " "
         }
-        h1 preview-title "${state.post.title}" scale=display
+        h1 "${state.post.title}" scale=display
         row gap=xs cross=center {
           p "${state.post.status}" scale=sm intent=muted
           p "${state.post.authorName}" scale=sm intent=muted
           p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
         }
-        p preview-body "${state.post.body}" format=markdown
+        p "${state.post.body}" format=markdown
       }
     }
     app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}

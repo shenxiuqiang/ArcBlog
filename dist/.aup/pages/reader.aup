@@ -6,25 +6,25 @@ page reader {
     paid-title { en "Paid content" zh "付费内容" }
     paid-notice { en "This is a paid article. The full text is released after purchase — it is never shipped to your browser before that." zh "这是一篇付费文章。购买后才会下发全文——在此之前正文不会送达你的浏览器。" }
   }
-  view page-root gap=lg {
-    view page-topbar style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
-      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: "grid", exec: "console"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+  view gap=lg {
+    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     }
     view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
       row gap=sm {
-        view reader-back href="/posts" style={cursor: "pointer", color: "var(--color-dim)"} {
+        view href="/posts" style={cursor: pointer, color: "var(--color-dim)"} {
           p :back scale=sm
         }
       }
-      view gap=md visible="!$state.post" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {
         h2 :title level=2
         p :not-found intent=muted
       }
-      view reader-article gap=md visible="$state.post" {
-        view reader-cover visible="${state.post.coverImage}" style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
-          text content=" "
+      view gap=md visible=$state.post {
+        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible="${state.post.coverImage}" {
+          p " "
         }
-        h1 reader-title "${state.post.title}" level=1 scale=display
+        h1 "${state.post.title}" scale=display
         row gap=xs cross=center {
           p "${state.post.authorName}" scale=sm intent=muted
           view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
@@ -32,14 +32,14 @@ page reader {
           }
           p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
         }
-        text reader-body format=markdown content="${state.post.body}"
-        view gap=md visible="${state.post.previewOnly}" style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        p "${state.post.body}" format=markdown
+        view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="${state.post.previewOnly}" {
           h3 :paid-title level=3
           p "${state.post.summary}"
           p :paid-notice intent=muted scale=sm
         }
       }
     }
-    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "RSS", href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 }

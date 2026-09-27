@@ -6,24 +6,13 @@
       "$ref": "content"
     },
     {
-      "id": "wrapper-view-1-frame-2",
+      "id": "theme-bridge-frame",
       "type": "frame",
       "props": {
         "src": "/p/en/theme-bridge/",
         "bridge": true,
         "overlay": true,
         "loading": "eager"
-      }
-    },
-    {
-      "id": "wrapper-view-1-frame-3",
-      "type": "frame",
-      "props": {
-        "src": "/p/en/console-bridge/",
-        "bridge": true,
-        "overlay": true,
-        "loading": "eager",
-        "sandbox": "allow-top-navigation"
       }
     }
   ]

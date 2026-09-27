@@ -1,0 +1,126 @@
+page categories {
+  i18n {
+    cat-add { en "Add category" zh "添加分类" }
+    cat-added { en "Category saved." zh "分类已保存。" }
+    cat-empty { en "No categories yet." zh "还没有分类。" }
+    cat-f-desc { en "Description" zh "描述" }
+    cat-f-name { en "Name" zh "名称" }
+    cat-f-slug { en "Slug" zh "标识（slug）" }
+    cat-remove { en "Remove" zh "删除" }
+    cat-remove-msg { en "Existing posts keep their category text, but the publish validator will reject it afterwards." zh "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。" }
+    cat-remove-title { en "Remove this category?" zh "删除该分类？" }
+    cat-removed { en "Category removed." zh "分类已删除。" }
+    cat-slug-hint { en "Lowercase letters, digits and hyphens, e.g. technology." zh "小写字母、数字与连字符，例如 technology。" }
+    desc { en "Taxonomy used by the publish validator and the public feed." zh "发布校验器与公开信息流使用的分类法。" }
+    gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
+    gate-title { en "Site" zh "站点" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    title { en "Categories" zh "分类" }
+  }
+  view page-root gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
+        app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      }
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=info
+        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcategories&cancel_to=%2F%3Fpage%3Dcategories" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+              p :desc intent=muted
+            }
+            view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:cat-empty from "/instance/app/arcblog/categories" {
+                  row cross=center role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
+                    view gap=xs size={flex: 1} style={minWidth: 0} {
+                      h3 "${entry.content.name}"
+                      p "${entry.content.slug}" scale=sm intent=muted
+                      p "${entry.content.description}" scale=sm intent=muted
+                    }
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:cat-remove path="/instance/app/arcblog/categories/${entry.content.slug}.json" confirm={title: :cat-remove-title, message: :cat-remove-msg} onSuccessToast={intent: success, message: "$t(heroes-admin.cat-removed)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
+                input type=text label=:cat-f-slug name=catSlug required=true state={value: ""}
+                p :cat-slug-hint intent=muted scale=caption
+                input type=text label=:cat-f-name name=catName required=true state={value: ""}
+                input type=text label=:cat-f-desc name=catDesc state={value: ""}
+                row cross=start {
+                  action variant=primary label=:cat-add onSuccessToast={intent: success, message: "$t(heroes-admin.cat-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/categories/${args.catSlug}.json", content: {slug: "${args.catSlug}", name: "${args.catName}", description: "${args.catDesc}", sort: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
