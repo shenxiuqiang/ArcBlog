@@ -1,7 +1,7 @@
 # Round 9 — 收口 BUG-010 / BUG-011 + U1–U3，并推进清单 §15.8「Agent 能力与工具页」（🟡 → ✅ 候选）
 
 - **日期**：2026-09-27 ～ **2026-09-28**（初验不放行 → PM 轮末裁决 → **R9F 修复窗口（2026-09-27）** → QA 复验放行）
-- **Lead 提交**：（留空，由 Lead 轮末填写 —— 本轮产物：backlog / REQ-006 §3.1 / REQ-007 §3.1 / **REQ-008** / journal/round-9.md / journal/README.md / REQ-006/007 本文件；提交前必须再 `arc blocklet build` 一次）
+- **Lead 提交**：`27baf36` — *fix(console): fix the inline-write path (BUG-012 P1) + Agent surface; close BUG-010/011/013/014*（55 个本轮产物路径；两个与本轮无关的未跟踪文件 `docs/dsh-workflow-and-ralph.md`、`dist/docs/dsh-workflow-and-ralph.md` 未纳入提交）。**Lead 收口门**（按新门规，未跑 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`node scripts/arcblog-console-nav.mjs --check` pages 17、`arc blocklet build` 后源↔`dist` 一致、`.gate-lock` 未入库。**Lead 追加落笔**：`docs/arc-contracts.md` §29（exec args 求值上下文 / 既有记录写入需 authority sidecar / `afterSuccess` 链语义 / 不能用 toast 判断写入成功）与 `docs/ArcBlog-feature-checklist.md`（§15.8 🟡→✅；✅79/🟡10/⬜9/⚪2，D 组 18/6；D 组五行备注 + 维护记录一行）
 - **清单变化（PM 建议，由 Lead 落笔）**：**✅ 78 → 79 ｜ 🟡 11 → 10 ｜ ⬜ 9 ｜ ⚪ 2**（第 116 行「Agent 能力与工具页」🟡 → ✅ **建议成立，前置 = BUG-013 修复复验** → **R9F 已满足，PM 最终建议 Lead 现在可落 ✅**）；第 98 行「控制台外壳」备注追加「Round 9 收口 BUG-010」；第 100/101/110 行备注追加 **R9F 修复 BUG-012 的结论**（原文「存在 BUG-012」已过时）。**PM 只给建议，实际落笔由 Lead**；明细见「checklist 建议」节与末尾 R9F 节。
 
 ## 计划（轮次开始时写）
