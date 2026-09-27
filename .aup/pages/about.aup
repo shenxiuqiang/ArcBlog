@@ -1,0 +1,26 @@
+page about {
+  i18n {
+    title { en "About ArcBlog" zh "关于 ArcBlog" }
+    desc { en "ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in the Arc file space." zh "ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。" }
+    lifecycle { en "Lifecycle" zh "生命周期" }
+    lifecycle-desc { en "Posts follow a draft → published → archived lifecycle with optimistic concurrency and a full audit trail. Soft deletes keep records recoverable." zh "文章遵循 草稿 → 发布 → 归档 的生命周期，带乐观并发控制和完整审计日志。软删除保证记录可恢复。" }
+    rss { en "Subscribe via RSS" zh "订阅 RSS" }
+  }
+  view gap=lg {
+    view style={margin: "0 calc(-1 * var(--page-gutter, 32px))"} {
+      app-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: console}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+    }
+    view gap=lg {
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h2 :title level=2
+        p :desc
+      }
+      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+        h3 :lifecycle level=3
+        p :lifecycle-desc intent=muted
+      }
+      action -> navigate "/p/rss.xml" variant=secondary label=:rss
+    }
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+  }
+}

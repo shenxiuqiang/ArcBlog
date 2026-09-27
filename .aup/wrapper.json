@@ -6,7 +6,7 @@
       "$ref": "content"
     },
     {
-      "id": "theme-bridge-frame",
+      "id": "wrapper-view-1-frame-2",
       "type": "frame",
       "props": {
         "src": "/p/en/theme-bridge/",
@@ -16,7 +16,7 @@
       }
     },
     {
-      "id": "console-bridge-frame",
+      "id": "wrapper-view-1-frame-3",
       "type": "frame",
       "props": {
         "src": "/p/en/console-bridge/",

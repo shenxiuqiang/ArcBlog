@@ -8,7 +8,7 @@
 // panels; this generator owns the single sidebar block inside it, so the menu
 // still lives in exactly one place.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,14 +17,35 @@ import { CONSOLE_PAGE, CONSOLE_SECTIONS, blockEnd, sidebarLines } from './consol
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const appPath = join(repoRoot, '.aup', 'app.aup');
 
+/**
+ * Source file that owns `page <name>`.
+ *
+ * Pages live either inline in `.aup/app.aup` or in `.aup/pages/<name>.aup`
+ * (discovered by `pages from "pages/*.aup"`). The sidebar belongs to the console
+ * page wherever that page is, so resolve the owner before syncing instead of
+ * assuming `app.aup`.
+ */
+function pageFile(appLines, page) {
+  const inline = appLines.some((line) => new RegExp(`^  page ${page}\\b`).test(line));
+  if (inline) return appPath;
+  const external = join(repoRoot, '.aup', 'pages', `${page}.aup`);
+  return existsSync(external) ? external : null;
+}
+
 /** Whitespace-insensitive comparison — `arc dsl format` may re-indent the block. */
 const normalize = (text) => text.replace(/[ \t]+/g, ' ').trim();
 
 /** Replace (or check) the console-nav block of one page. */
-function syncPage(lines, page, write) {
-  const pageStart = lines.findIndex((line) => new RegExp(`^  page ${page}\\b`).test(line));
-  if (pageStart < 0) throw new Error(`page ${page} not found in .aup/app.aup`);
-  const nextPage = lines.findIndex((line, i) => i > pageStart && /^  page \w/.test(line));
+function syncPage(lines, page, write, ownerPath = appPath) {
+  // An external `.aup/pages/<name>.aup` holds exactly one page and uses the
+  // untitled header form (`page console {`); an inline page uses `page x "T" {`.
+  const external = ownerPath !== appPath;
+  const header = external ? new RegExp(`^page ${page}\\b`) : new RegExp(`^  page ${page}\\b`);
+  const pageStart = lines.findIndex((line) => header.test(line));
+  if (pageStart < 0) throw new Error(`page ${page} not found in ${ownerPath}`);
+  const nextPage = external
+    ? lines.length
+    : lines.findIndex((line, i) => i > pageStart && /^  page \w/.test(line));
   const pageEnd = nextPage < 0 ? lines.length : nextPage;
 
   const start = lines.findIndex(
@@ -33,7 +54,9 @@ function syncPage(lines, page, write) {
   if (start < 0) throw new Error(`page ${page} has no console-nav block`);
   const end = blockEnd(lines, start);
 
-  const expected = sidebarLines(page, 6);
+  // Indent follows the page's own layout: inline pages sit two levels deep in
+  // app.aup, an external file starts the page at column 0.
+  const expected = sidebarLines(page, external ? 2 : 6);
   const actual = lines.slice(start, end + 1);
   if (write) {
     lines.splice(start, end - start + 1, ...expected);
@@ -48,10 +71,22 @@ function syncPage(lines, page, write) {
 function main() {
   const check = process.argv.includes('--check');
   const raw = readFileSync(appPath, 'utf8');
-  const lines = raw.split('\n');
+  const appLines = raw.split('\n');
 
   // The console is one page; also make sure no *other* page grew a sidebar.
-  const results = [syncPage(lines, CONSOLE_PAGE, !check)];
+  const owner = pageFile(appLines, CONSOLE_PAGE);
+  if (!owner) {
+    console.error(
+      JSON.stringify(
+        { ok: false, error: `page ${CONSOLE_PAGE} not found in .aup/app.aup or .aup/pages/${CONSOLE_PAGE}.aup` },
+        null,
+        2,
+      ),
+    );
+    process.exit(1);
+  }
+  const lines = owner === appPath ? appLines : readFileSync(owner, 'utf8').split('\n');
+  const results = [syncPage(lines, CONSOLE_PAGE, !check, owner)];
   // `\b` would also match `view console-nav-divider-*`; require a space.
   const strays = lines.filter((line) => /^\s*view console-nav\s/.test(line)).length;
   if (strays !== 1) {
@@ -85,7 +120,7 @@ function main() {
     return;
   }
 
-  writeFileSync(appPath, lines.join('\n'));
+  writeFileSync(owner, lines.join('\n'));
   console.log(
     JSON.stringify(
       {
