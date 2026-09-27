@@ -67,7 +67,9 @@ test('a console-shaped intent is drained through the adapter and recorded', asyn
       requestedBy: 'test',
       requestedAt: nowIso(),
       requestedVia: 'console',
-      args: { owner: 'mock-owner' },
+      // The acquire dialog's fields: the mint inputs must not depend on the
+      // live node profile, which the parallel node tests rewrite.
+      args: { owner: 'mock-owner', endpoint: 'https://arcblog.localhost', region: 'CN-BJ' },
       result: { assetId: '', stakeAddress: '', hash: '', lifecycle: '' },
       error: '',
     },

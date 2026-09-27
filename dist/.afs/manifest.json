@@ -1300,9 +1300,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 103925,
+      "size": 107519,
       "contentType": "text/markdown",
-      "sha256": "08ce30ece4b236214ad0b75432472b1fecfb45f4ac70ff6e487361d6468dea95"
+      "sha256": "88cfafbcc57da9f31c8e80881f3bacb9266655fdeca1cdc9ea441b1b3312ad74"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1540,9 +1540,9 @@
     },
     {
       "path": "scripts/arcblog-chain-worker.test.mjs",
-      "size": 4779,
+      "size": 4979,
       "contentType": "text/javascript",
-      "sha256": "a3d22c6a23462fcaeafce2ed92f442a17c80c7ae57538715a2bace2304ab55dc"
+      "sha256": "9fa36c22506abafb6bc65f0344bf04991c202aab7778295259c485e8a6f902e0"
     },
     {
       "path": "scripts/arcblog-clean.mjs",

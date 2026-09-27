@@ -1209,3 +1209,56 @@ view {
 并已出现在运行时 skill 目录中（无需写 `skills-lock.json`：那是外部 skill 的锁）。
 **以后动 `.aup` 之前先读 skill，不要再重新调研平台行为**；若出现与 skill 矛盾的新实测，按
 `references/verification.md` §6 的顺序同步更新。
+
+## 26. 按钮能不能直接执行服务端代码？能——用 provider 挂载（实测：机制成立，挂载未生效）
+
+**结论（先给答案）**：AUP 页面的 `action` 是**服务端派发**的（不是浏览器行为），所以按钮**可以**执行服务端代码；
+此前"ArcBlog 没有自定义 action 面，必须常驻 worker"的判断**是错的**——正确机制是 **blocklet provider 挂载**：
+
+```yaml
+# blocklet.yaml
+mounts:
+  - target: ./providers/chain     # 包内模块
+    path: /chain                  # 暴露成 /chain/...，action 在 /chain/.actions/<name>
+```
+```js
+// providers/chain/index.mjs —— 守护进程内加载的 AFSModule
+class ChainProvider {
+  onMount(root, mountPath) { this.root = root }       // 注入 AFS root（可读写 AFS）
+  async read(path) { /* 描述符 */ }
+  async list(path) { /* 子节点 */ }
+  async exec(path, args, options) {                   // 页面 exec 落到这里
+    const caller = options?.context?.caller           // { did, roles } —— 调用者身份
+    // Node 代码：可以 import('@ocap/client') 直接签名，无需任何外部进程
+  }
+}
+export default ChainProvider
+```
+
+**页面侧**（与 fixture 的用法一致）：`events={click: {exec: "/chain/.actions/<name>", args: {...}}}`。
+
+### 26.1 已实测到的证据
+
+* 在页面放一个 `exec "/chain/.actions/ping"` 的按钮，点击后**运行时确实派发**了 exec，守护进程回答：
+  `No module found for path: /chain/.actions/ping in namespace 'default'`
+  —— 即"按钮 → 服务端 exec"这条链路成立，失败点是**挂载没被加载**，不是"按钮不能执行"。
+* 平台自带的挂载是可解析的：`arc afs ls /pages` 正常（`dist/blocklet.dist.json` 里平台自己挂的 `{"module":"pages","target":"/pages"}`）。
+* `{module, target}` 是**已废弃**形态（daemon 明确 warn："deprecated: old mount format … Use { target, path } instead"），我们用的是文档形态 `{target, path}`。
+* 我们的挂载确实进了部署产物：`dist/blocklet.dist.json` 的 `mounts` 有 `{"target":"./providers/chain","path":"/chain"}`，
+  `providers/chain/index.mjs` 也在 `dist/.afs/manifest.json` 的 `files` 里。
+
+### 26.2 还没解决：挂载为何不被加载
+
+已排除：形态（`{target,path}` ✓）、导出（`export default class` + `onMount/read/list/exec` ✓）、
+provider 缺 `package.json`（平台每个 provider 都带，我们补上后仍不行 ✓）、
+只 `arc service restart`（该命令"does not reconfigure"）→ 已做完整 `arc service stop` + `start` 重配，仍报同一个错误。
+
+下一步要试的方向（按怀疑度排序）：
+
+1. **scope 差异**：我们的 app 是 `scope: app`，平台自带 provider 的宿主是 `scope: user`（`collections`）/其他；先确认哪些 scope 允许 mounts。
+2. **安装方式**：`arc blocklet instance deploy` 是"部署已发布的 dist 到本地 Pages"；dev 实例的页面实际由 `.route`（`source: .`, `handler: aup`）从源码提供，
+   守护进程的模块注册表里可能没有这个包的挂载条目——需要确认 mounts 是否只对"已安装/已发布"的 blocklet 生效。
+3. **对照实验**：把同一个 provider 挂到一个 `scope: user` 的最小 blocklet 上跑通，再逐步逼近我们的形态。
+
+**现状口径**：provider 是目标形态（去掉外部常驻进程），意图队列 + worker（§8）是当前可用的过渡实现；
+两者不冲突——provider 一旦挂载成功，按钮即可直接执行，worker 仅保留离线/队列语义。
