@@ -53,12 +53,15 @@ ArcBlog 的测试套件**不是隔离的**：`scripts/*.test.mjs` 直接读写**
 ```bash
 cd /Users/shenxiuqiang/workspace/ArcBlog
 git status --short                                            # 有别人的半成品增量吗？
-ps aux | grep -E "arc-darwin|node .*arcblog" | grep -v grep   # 有别的 agent / 实例在用实例吗？
+ps aux | grep -iE "arc-darwin|node .*arcblog|codex|claude|kimi|dsh" | grep -v grep   # 有别的写者吗？
+arc service status && arc dsl validate --json && npm test     # 环境是活的吗（快层 ~1s）
 ```
+
+> 注意：Lead 自己就是写者，轮次中间工作区**本来就该是脏的**。只有"认不出来的路径"才是停手信号——逐个对得上本轮 `write_scopes` 就继续。
 
 三条硬规则：
 
-1. **同一时刻只允许一个进程使用实例**：`npm test` 运行期间，其他成员不得调用 `arc` / AFS / `npm test`。
+1. **同一时刻只允许一个进程使用实例**：`npm run test:live` 运行期间，其他成员不得调用 `arc` / AFS / 任何测试。（快层 `npm test` 不写实例，不受这条限制。）
 2. 谁跑全量门，谁先在 `docs/team/.gate-lock` 写一行 `owner + 开始时间`，跑完删除；看到锁存在就等，不要并行跑。
 3. 仓库里若有**非本团队的未提交改动**（另一个 agent 的半成品），先停下来问用户——**绝不要 `git add -A` 把它卷进本轮提交**。
 
@@ -147,25 +150,29 @@ git add -A && git commit -m "<type>(<scope>): 本轮净结果"
 
 任何增量交付前必须全绿，**红仓库不允许交接**：
 
+质量门分两层（2026-09-27 起，权威说明见 [`CLAUDE.md`](../../CLAUDE.md)「Quality gates (tiered)」）：
+
 ```bash
-arc dsl validate --json     # 主质量门：issues 为空
-npm test                    # scripts/*.test.mjs + 产物漂移门 + 死 locale key 门
+arc dsl validate --json     # 主质量门：issues 为空（每步都跑）
+npm test                    # 快层：6 文件 / 28 测试 / ~1.2s，**不写实例**（每步都跑）
+                            # 含：产物漂移门（arc dsl generate --check）+ 死 locale key 门
+                            #     + 生成的侧栏 + 运行时寻址 id + 主题契约 + guest 权限矩阵
+npm run test:live           # live 层：22 文件 / 串行 / ~13 分钟，**写 live 实例**（每轮收口跑一次）
+npm run test:all            # 两层都跑
+npm run test:file -- scripts/arcblog-tags.test.mjs   # 单文件（Dev 自测只用这个）
 arc blocklet build          # 仅当改了 .aup 源码（重新生成 dist/）
 ```
 
 失败即回滚自己的改动，然后在回报里写明"尝试了什么 / 失败在哪 / 现在的仓库状态"。
 
-### 6.1 全量门必须串行（实测教训）
+### 6.1 live 层必须串行（实测教训）
 
-- `npm test` **重、慢、且不隔离**：单个测试文件约 90 秒（实测 `arcblog-media.test.mjs` 92s），全量约 10 分钟以上，会驱动真实 Chrome 与 live 实例。
+- **快层（`npm test`）随时可跑**：~1.2s、不写实例，不需要锁，也不该因为"测试很慢"被跳过。
+- **live 层（`npm run test:live`）重、慢、且不隔离**：22 个文件里最大的几条单跑 50–110 秒（实测 `clean` 干跑 87s、`category remove/merge` 111s、`media refs` 86s、`hub index rebuild` 71s），全量约 13 分钟，会驱动真实 Chrome 与 live 实例。
 - 两个进程同时跑 → 互相污染 → 随机 `NOT_FOUND` / 断言失败，**看起来像真 bug，其实是并发假失败**。
-- 因此：**全量 `npm test` 每轮只跑一次**，由 Lead 或 QA 在 `.gate-lock` 保护下跑；Dev 自测只跑**单文件**：
-
-```bash
-node --test --test-concurrency=1 scripts/arcblog-tags.test.mjs
-```
-
-- 判断"真红还是假红"：**单独重跑失败的那个文件**。单跑绿 = 并发污染；单跑红 = 真 bug，Dev 修。
+- 因此：**live 层每轮只跑一次**，由 Lead 或 QA 在 `.gate-lock` 保护下跑；锁只保护 live 层与 `arc`/AFS 操作。
+- 判断"真红还是假红"：**单独重跑失败的那个文件**（`npm run test:file -- scripts/<file>.test.mjs`）。单跑绿 = 并发污染；单跑红 = 真 bug，Dev 修。
+- 新写的测试文件**默认算 live**，除非显式加进 `scripts/run-tests.mjs` 的 `FAST_TESTS`（防止快层悄悄长出守护进程依赖）。
 
 ---
 
