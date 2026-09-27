@@ -1,7 +1,7 @@
 # Round 7 — 控制台一致性收口（REQ-002）+ 界面标准事实对齐（REQ-003）
 
 - **日期**：2026-09-27
-- **Lead 提交**：未提交（轮末由 Lead 填 commit sha）
+- **Lead 提交**：`199105f` — *fix(console): console consistency F1-F13 + UI-standard fact alignment; drop the routine live gate*（87 个本轮产物路径；两个与本轮无关的未跟踪文件 `docs/dsh-workflow-and-ralph.md`、`dist/docs/dsh-workflow-and-ralph.md` 未纳入提交）
 - **清单变化**：**✅ 78→78 ｜ 🟡 11→11 ｜ ⬜ 9→9 ｜ ⚪ 2→2（本轮不变）** —— 基线为 Round 7 开工时读自 [`ArcBlog-feature-checklist.md`](../../ArcBlog-feature-checklist.md) 总览（Round 6 的 tags 行已落 ✅，故 77/12 → 78/11）。本轮两项交付都不改状态列：REQ-002 是**已 ✅ 页面**的质量收口，REQ-003 只改文档。**建议（只写建议，checklist 由 Lead 落笔）**：状态列保持不变，仅在 D 组三行备注追加 Round 7 遗留 BUG 编号 —— 见下文「checklist 建议」节
 
 ## 计划（轮次开始时写）
