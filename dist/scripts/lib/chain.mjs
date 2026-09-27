@@ -47,6 +47,15 @@ export const FACTORY_REGISTRY_PATH =
   process.env.ARCBLOG_FACTORY_REGISTRY_PATH || '/instance/app/arcblog/config/nft-factories.json';
 export const NODE_NFT_STATE_PATH =
   process.env.ARCBLOG_NODE_NFT_STATE_PATH || '/instance/app/arcblog/config/node-nft.json';
+/**
+ * Guest-readable mirror of the factory + node-NFT facts.
+ *
+ * `config/*` is admin-only, so the console could not show the chain state to a
+ * signed-in non-owner. Everything mirrored here is already public (it is on the
+ * chain): addresses, tx hashes, lifecycle — never private keys.
+ */
+export const NODE_FACTORY_SUMMARY_PATH =
+  process.env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH || '/instance/app/arcblog/node/factories.json';
 export const DEFAULT_REVOKE_WAITING_PERIOD_DAYS = 30;
 // Mock wallets start with 100 ABT, expressed in minimal units like the chain does.
 export const MOCK_START_BALANCE = fromTokenToUnit('100', TOKEN_DECIMALS);
@@ -393,9 +402,17 @@ export async function createOcapChain(config, instance) {
   }
 
   const GraphQLClient = clientModule.default ?? clientModule.GraphQLClient;
-  const toStakeAddress = clientModule.toStakeAddress ?? ((...args) => {
-    throw new Error(`toStakeAddress unavailable: ${args.length}`);
-  });
+  // The SDK derives a stake address with `toStakeAddress(owner, factory, nonce)`
+  // from `@arcblock/did-util/cbor` (see @ocap/client/lib/extension.js) — NOT from
+  // `@ocap/client` itself, which is why revoke/claim previously fell back to a
+  // stale recorded address and the chain answered `Invalid itx: "address"`.
+  let toStakeAddress = null;
+  try {
+    const didUtil = await import('@arcblock/did-util/cbor');
+    toStakeAddress = didUtil.toStakeAddress ?? didUtil.default?.toStakeAddress ?? null;
+  } catch {
+    toStakeAddress = null;
+  }
   const bip39 = bip39Module.default ?? bip39Module;
   const fromAppDid = didExtModule.fromAppDid;
   const client = new GraphQLClient(config.chainHost);
@@ -571,7 +588,7 @@ export async function createOcapChain(config, instance) {
       const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? null;
       const factory =
         registry?.factories?.studio?.address || registry?.factories?.hub?.address || this.__factoryAddress || '';
-      if (!factory) return '';
+      if (!factory || typeof toStakeAddress !== 'function') return '';
       try {
         return toStakeAddress(ownerAddress, factory, '');
       } catch {

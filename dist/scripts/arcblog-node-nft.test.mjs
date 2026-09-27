@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rmSync, writeFileSync } from 'node:fs';
 
 // Node NFT factory + lifecycle (spec §8.1–§8.4), modelled on GLofter's
 // `create-*-node-nft-factory.ts` and the studio stake services.
@@ -28,6 +29,10 @@ const statePath = `/instance/app/arcblog/config/mock-chain-test-${stamp}.json`;
 // run once wiped the real beta registry, so every test run gets its own files.
 const registryPath = `/instance/app/arcblog/config/nft-factories-test-${stamp}.json`;
 const nftStatePath = `/instance/app/arcblog/config/node-nft-test-${stamp}.json`;
+const summaryPath = `/instance/app/arcblog/node/factories-test-${stamp}.json`;
+// The lifecycle also writes roles.json; sharing it with the roles suite produced
+// `CONFLICT_ERROR: Write conflict`.
+const rolesPath = `/instance/app/arcblog/config/roles-test-${stamp}.json`;
 
 const {
   ROLE_FACTORIES,
@@ -44,7 +49,7 @@ function run(script, args) {
   return spawnSync(process.execPath, [script, ...args], {
     encoding: 'utf8',
     cwd: repoRoot,
-    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath },
+    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath, ARCBLOG_NODE_FACTORY_SUMMARY_PATH: summaryPath, ARCBLOG_ROLES_PATH: rolesPath },
   });
 }
 const json = (text) => JSON.parse(text);
@@ -315,5 +320,21 @@ test('factory payloads are JSON-safe (no raw control characters)', () => {
     const badInputs = Object.entries(inputs).filter(([, v]) => /[\u0000-\u001f]/.test(String(v))).map(([k]) => k);
     assert.deepEqual(badInputs, [], `${role} mint inputs carry control characters: ${badInputs.join(', ')}`);
     assert.equal(inputs.pk.includes('\n'), false, 'pk must be a single line');
+  }
+});
+
+// A private key must never be bound into the NFT (immutable on chain) or stored in
+// config/node-nft.json. `--pk node.key` did exactly that once, so it now fails closed.
+test('a private key is refused as --pk', () => {
+  const keyPath = `/tmp/arcblog-private-probe-${stamp}.key`;
+  writeFileSync(keyPath, '-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEINZQ04S+01QGi4McAqdQ5FUXyhDcpdYDcPi2fhTp4I8S\n-----END PRIVATE KEY-----\n');
+  try {
+    const res = cli(['acquire', '--role', 'studio', '--adapter', 'mock', '--pk', keyPath, '--json']);
+    assert.equal(res.status, 1, 'the CLI must reject a private key');
+    const out = json(res.stderr || res.stdout);
+    assert.equal(out.code, 'VALIDATION');
+    assert.match(out.error, /PUBLIC key|PRIVATE key/);
+  } finally {
+    rmSync(keyPath, { force: true });
   }
 });

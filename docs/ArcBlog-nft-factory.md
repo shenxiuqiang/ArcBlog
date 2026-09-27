@@ -72,7 +72,7 @@ openChain(opts, instance, {now}) → adapter
 | factory 规格（模板/变量/hook/SVG/容量） | ✅ 已验证 | 9 个测试（结构、校验、公式、单位换算、模板渲染、mint 输入） |
 | §8.2–§8.4 全流程与等待期 | ✅ 已验证（mock 链） | live 测试：acquire → stake → revoke → 提前 claim 被拒 → 到期 claim 成功 → 资产回到所有者 |
 | AFS 与五态同步 | ✅ 已验证 | 同一测试断言 `config/node-nft.json` 与 `roles.json` 的 stakeState |
-| 真实链交易 | ✅ **已在 ABT Network beta 执行**（2026-09-27） | 见 §7：两个 factory 上链、一次真实 acquire（NFT 已存在）、stake 已上链；revoke/claim 仍有阻塞 |
+| 真实链交易 | ✅ **§8.1–§8.4 已在 ABT Network beta 全流程执行**（2026-09-27） | 见 §7：两个 factory 上链，acquire → stake → revoke → claim 四步均有 tx 哈希，NFT 已回到钱包 |
 
 因此：真实链能否跑通取决于部署环境的依赖与钱包，需要在有链的环境用 `--adapter ocap` 做一次端到端演练（见下）。
 
@@ -132,17 +132,38 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 
 另外修掉一个测试隔离缺陷：测试通过固定路径写**生产注册表** `config/nft-factories.json`，一次 mock 运行就把真链记录清空了。现在 `ARCBLOG_FACTORY_REGISTRY_PATH` / `ARCBLOG_NODE_NFT_STATE_PATH` 可覆盖，测试各用各的文件。
 
-### 7.2 未解：revoke / claim
+### 7.2 revoke / claim：曾阻塞，已定位并修复
 
-`revokeStake({assets, from: <stake address>, wallet})` 与 `claimStake` 都被链拒绝：
-`GraphQLError: Invalid itx: "address" Expected DID type info to match specified constraints`。
-已排除：`to` 误用（stake 的 receiver 是工厂，质押地址由链派生 ✓）、自造 `slashers`（已回退）、质押地址取错（已改为链派生地址 `zrjkV7pGy…`，`getStakeState` 能查到该地址的质押）。
-下一步：对比 GLofter `hub/api/src/routes/manage/node.ts` 的 revoke 调用与 `encodeRevokeStakeTx` 的地址类型编码，或在 SDK 侧打印 revoke itx 的 `address` 与链期望的类型常量。
+**症状**：`revokeStake` / `claimStake` 被链拒绝 `GraphQLError: Invalid itx: "address" Expected DID type info to match specified constraints`。
+
+**根因**：SDK 用 `toStakeAddress(sender, receiver, nonce)` 派生质押地址（`@ocap/client/lib/extension.js` 从 **`@arcblock/did-util/cbor`** 引入），而我们的适配器到 `@ocap/client` 上找同名导出 → 拿不到 → `stakeAddressFor()` 静默返回空 → CLI 回退到**记录里过期的地址**（工厂地址）→ 链报地址类型不符。
+（在此之前还排除了：`to` 误用、自造 `slashers`、版本偏斜——把 `@ocap/*` 对齐到 GLofter 钉的 1.30.10 后错误不变。）
+
+**修复**：`stakeAddressFor()` 改从 `@arcblock/did-util/cbor` 派生（该包已升为直接依赖）；CLI 的 revoke/claim 共用 `resolveStakeAddress()`（`--stake-address` > 链上派生 > 记录值）。
+修复后链上错误立即变成有意义的业务错误（"Can not revoke assets that are not locked in the stake"），随后全流程通过。
+
+### 7.2.1 真实链 §8.2–§8.4 证据（2026-09-27，beta）
+
+| 步骤 | tx / 结果 |
+| --- | --- |
+| acquire（购买/铸造 #4） | tx `955C7075223C9F9F4D67DA8ECAFFE8039EC1BD3346650C925C08E1C50FFA5039` → NFT `zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx`（`ArcBlogStudioNode #4`） |
+| stake（质押） | tx `826A69D24B9B7439BEC1F2FE492A28AC036A7A88656FF806C6AB85CB057624CF` → 质押地址 `zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5`（链派生，已写回 AFS） |
+| revoke（撤回） | tx `FC0DEED1CA288C9A2EA223E1D9E2D9416B8A4D8960981E18450300BC9B126FA9` → lifecycle `revoking` |
+| claim（取回） | tx `2C57DD3244E58BFA50EDF0C9EDF640FA56CCF175D0CB9910057DDBD8F8731E3C` → **NFT 回到钱包**（`getAssetState.owner == 工厂主钱包`），stake `assets: []` |
+
+（等待期在 `client.stake` 路径下为 0，因此 revoke 后可立即 claim；工厂主钱包 ABT 余额始终为 0，四步都不需要资金。）
 
 ### 7.3 控制台页面
 
 `?page=factory`（`pages/ops/factory.aup`，导航"经济 → 工厂"）展示：链配置、两个工厂（地址/标识/发行方/质押额，地址可复制）、节点 NFT 生命周期（state/asset/stake/owner/claimable）以及 5 条可复制的运维命令（acquire / stake / revoke / claim / status）。
-**签名私钥绝不下发浏览器**：页面只读 `config/nft-factories.json` 与 `config/node-nft.json`（admin-only，guest 会话按 §13 fail closed，页面给出明确提示），操作通过复制命令在节点上执行。
+**签名私钥绝不下发浏览器**：页面执行的是复制命令，签名在节点上完成。
+
+数据来源是**公开投影** `node/factories.json`（`node` 集合 guest 可读、admin 可写），由 CLI 在每次
+`factory create` / `acquire` / `stake` / `revoke` / `claim` 后自动写入：只含地址、tx 哈希与生命周期，
+**不含任何密钥材料**。权威记录仍在 `config/nft-factories.json` 与 `config/node-nft.json`（admin-only，
+guest 按 §13 fail closed）。
+因此任何已登录会话都能在后台看到：链（adapter/network/host/ABT）、两个工厂（地址/标识/发行方/质押额/容量）、
+节点 NFT（state/asset/stake/owner）以及**四步链上交易哈希 + explorer 链接**（浏览器实测，§7.2.1 的 tx 全部呈现）。
 
 ### 7.4 事故与加固：`--pk` 曾把**私钥**写进 AFS
 

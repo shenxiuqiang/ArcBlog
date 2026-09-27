@@ -29,6 +29,10 @@ const statePath = `/instance/app/arcblog/config/mock-chain-test-${stamp}.json`;
 // run once wiped the real beta registry, so every test run gets its own files.
 const registryPath = `/instance/app/arcblog/config/nft-factories-test-${stamp}.json`;
 const nftStatePath = `/instance/app/arcblog/config/node-nft-test-${stamp}.json`;
+const summaryPath = `/instance/app/arcblog/node/factories-test-${stamp}.json`;
+// The lifecycle also writes roles.json; sharing it with the roles suite produced
+// `CONFLICT_ERROR: Write conflict`.
+const rolesPath = `/instance/app/arcblog/config/roles-test-${stamp}.json`;
 
 const {
   ROLE_FACTORIES,
@@ -45,7 +49,7 @@ function run(script, args) {
   return spawnSync(process.execPath, [script, ...args], {
     encoding: 'utf8',
     cwd: repoRoot,
-    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath },
+    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath, ARCBLOG_NODE_FACTORY_SUMMARY_PATH: summaryPath, ARCBLOG_ROLES_PATH: rolesPath },
   });
 }
 const json = (text) => JSON.parse(text);

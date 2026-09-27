@@ -11,7 +11,12 @@ page factory {
     chain-host { en "Chain host" zh "链地址" }
     chain-token { en "Mint token (ABT)" zh "铸造代币（ABT）" }
     chain-empty { en "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap" zh "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap" }
-    admin-only { en "The factory registry lives in config/ (admin-only), so this card stays empty unless you are signed in as the blocklet owner." zh "工厂登记表位于 config/（仅管理员可读），因此只有以 Blocklet 属主身份登录时这里才会有内容。" }
+    projection { en "Read from the public projection node/factories.json; the authoritative per-node records stay in config/ (admin-only). No key material is mirrored." zh "数据来自公开投影 node/factories.json；权威的节点记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。" }
+    tx { en "On-chain transactions" zh "链上交易" }
+    tx-acquire { en "Acquire" zh "铸造" }
+    tx-stake { en "Stake" zh "质押" }
+    tx-revoke { en "Revoke" zh "撤回" }
+    tx-claim { en "Claim" zh "取回" }
     factories { en "Factories" zh "工厂" }
     factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
     factory-hub { en "Hub node factory" zh "Hub 节点工厂" }
@@ -131,30 +136,38 @@ page factory {
             h2 :title level=2
             p :desc intent=muted
           }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={registry: "/instance/app/arcblog/config/nft-factories.json"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
             h3 :chain level=3 style={fontSize: "var(--type-body)"}
-            key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.registry.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.registry.network}"}, {label: "$t(factory.chain-host)", value: "${state.registry.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.registry.tokenId}", monospace: true, copyable: true}]
+            key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}, {label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true}]
           }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
             h3 :factories level=3 style={fontSize: "var(--type-body)"}
-            p :chain-empty intent=info scale=sm visible="!${state.registry.adapter}"
-            p :admin-only intent=muted scale=sm
+            p :chain-empty intent=info scale=sm visible="!${state.summary.adapter}"
+            p :projection intent=muted scale=sm
             grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))"} {
               view gap=sm {
                 p :factory-studio scale=sm intent=muted
-                key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.registry.factories.studio.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.registry.factories.studio.moniker}"}, {label: "$t(factory.factory-issuer)", value: "${state.registry.factories.studio.issuer}", monospace: true, copyable: true}, {label: "$t(factory.factory-stake)", value: "${state.registry.factories.studio.stakeAmount}"}]
+                key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
               }
               view gap=sm {
                 p :factory-hub scale=sm intent=muted
-                key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.registry.factories.hub.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.registry.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.registry.factories.hub.capacity}"}]
+                key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.hub.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.summary.factories.hub.capacity}"}]
               }
             }
             action -> navigate "https://beta.abtnetwork.io/explorer" variant=secondary label=:explorer style={borderRadius: "var(--radius-md, 8px)", alignSelf: flex-start}
           }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={nft: "/instance/app/arcblog/config/node-nft.json"} {
+          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
             h3 :node level=3 style={fontSize: "var(--type-body)"}
-            p :node-empty intent=info scale=sm visible="!${state.nft.studio.assetId}"
-            key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-role)", value: "${state.nft.studio.role}"}, {label: "$t(factory.node-state)", value: "${state.nft.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.nft.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.nft.studio.stakeAddress}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.nft.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-claimable)", value: "${state.nft.studio.claimableAt}"}] visible="${state.nft.studio.assetId}"
+            p :node-empty intent=info scale=sm visible="!${state.summary.nodes.studio.assetId}"
+            key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-role)", value: "${state.summary.nodes.studio.role}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}"}] visible="${state.summary.nodes.studio.assetId}"
+            h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
+            key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
+            row factory-tx gap=sm visible="${state.summary.nodes.studio.acquireTx}" {
+              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.acquireTx}" variant=secondary label=:tx-acquire style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.acquireTx}"
+              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.stakeTx}" variant=secondary label=:tx-stake style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.stakeTx}"
+              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.revokeTx}" variant=secondary label=:tx-revoke style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.revokeTx}"
+              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.claimTx}" variant=secondary label=:tx-claim style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.claimTx}"
+            }
           }
           view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
             h3 :actions level=3 style={fontSize: "var(--type-body)"}

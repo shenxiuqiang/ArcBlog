@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 24448,
+      "size": 24640,
       "contentType": "application/json",
-      "sha256": "ec851c62d1ed00f2830b5a618705222164dfc2cd7fc784107ae132d20d9e0036"
+      "sha256": "e8cf5a779a5d7babbdd9903b03e798f05c8199463b31a1a1e3a9fe3f648fd0ff"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 24177,
+      "size": 24355,
       "contentType": "application/json",
-      "sha256": "7fd9dc9d53b0c4e59765be0befbf36673a472ebb4365220d08ad43c699add650"
+      "sha256": "65a66989b1396a184e0b6dd968e6d74d24e73e9b29ab62eac52ecc61e72684ad"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -280,9 +280,9 @@
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 16186,
+      "size": 18398,
       "contentType": "application/octet-stream",
-      "sha256": "bbc4091d472535253bd94a0b1020c1d3a2b57657b62d5932da4c0eaf2cf7bc08"
+      "sha256": "24d2b4db0efdc630d4ada39e42e14f0136a1a901674567b4300c0c3d122b5257"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
@@ -1288,9 +1288,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 25048,
+      "size": 25539,
       "contentType": "text/markdown",
-      "sha256": "44b7e7e53cbf14eabc86e77d55015de66b983b9bdf9ee9481bf694898bbd2a86"
+      "sha256": "782f315f981930240465ea120c654a459aa51682b54b7f8c5837f7f9696dae7c"
     },
     {
       "path": "docs/arc-contracts.md",
@@ -1306,15 +1306,15 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 27192,
+      "size": 27857,
       "contentType": "text/markdown",
-      "sha256": "a6c567fb42a65751952e8ae5bc6fc27f0864a4f192160183fbaecc5c17cd42ec"
+      "sha256": "42ef2f519a099f6b87bcce9f09658faaed2f71df0570637280e207dcc80e7e74"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
-      "size": 12690,
+      "size": 15474,
       "contentType": "text/markdown",
-      "sha256": "7998f8be144f090e2681f6f69043537f50d53cdb265904b9680122bff3e8e128"
+      "sha256": "f16da4904b91ff0198703a626e077317592f682059e7c1caba9e25679b2dfe3b"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1432,15 +1432,15 @@
     },
     {
       "path": "package-lock.json",
-      "size": 31298,
+      "size": 31339,
       "contentType": "application/json",
-      "sha256": "02e2be09ab560354d823704a2941c1060808131c9f01526592e1f52da6c68dcb"
+      "sha256": "2fe8bc833531f8dc042b7e17a8962d1ef6ccc07f850c5554c5673bc5d3ab1ac6"
     },
     {
       "path": "package.json",
-      "size": 334,
+      "size": 371,
       "contentType": "application/json",
-      "sha256": "d2d27ef93d02119d55bd1df62d1e6fedaecf38991073c65fd116d4968e811c63"
+      "sha256": "b25b5ba9cd49e105985dc40d5b86e9324d6033541d2d2e5b34e4c5b2a6f8c268"
     },
     {
       "path": "pages/hero-carousel/layout.aup",
@@ -1594,9 +1594,9 @@
     },
     {
       "path": "scripts/arcblog-factory.mjs",
-      "size": 12103,
+      "size": 13793,
       "contentType": "text/javascript",
-      "sha256": "e4462103cbbc3325b9e0a28a8c0ab2843ec7cc93c50d94cebdab31f86a4cff67"
+      "sha256": "6832b6e8bfae65025c85b13aef10bced34656bc3d78c0cab2f53885d7399126a"
     },
     {
       "path": "scripts/arcblog-hero-carousel.mjs",
@@ -1654,15 +1654,15 @@
     },
     {
       "path": "scripts/arcblog-node-nft.mjs",
-      "size": 15969,
+      "size": 18982,
       "contentType": "text/javascript",
-      "sha256": "da897ea50658f0599070d6673672aae8e019d4f4f2ad59222b410072040fb3f9"
+      "sha256": "b5989cecc0a6ea39da7ce6f79c7513e707df63711fdaa02be633db28b5333b55"
     },
     {
       "path": "scripts/arcblog-node-nft.test.mjs",
-      "size": 16420,
+      "size": 17641,
       "contentType": "text/javascript",
-      "sha256": "94128832a2d99a696155dddfb3af4adf3ab7f7c6d023335cad1ec3fb77373eac"
+      "sha256": "55136a5383bdbbddc1bdf13d27822ec9da1c3c6e469b16172896468e1dfa9576"
     },
     {
       "path": "scripts/arcblog-node.mjs",
@@ -1804,9 +1804,9 @@
     },
     {
       "path": "scripts/lib/chain.mjs",
-      "size": 26578,
+      "size": 27460,
       "contentType": "text/javascript",
-      "sha256": "08186be941bf3778e1afadfe245f7219e1858fad017410b5b24149b41d61dc9c"
+      "sha256": "9591f8761b41ea97f466e4940b854cc2bf7ab71228ff67162484de894cee6a7f"
     },
     {
       "path": "scripts/lib/content-hash.mjs",
@@ -1876,9 +1876,9 @@
     },
     {
       "path": "scripts/lib/roles.mjs",
-      "size": 10213,
+      "size": 10471,
       "contentType": "text/javascript",
-      "sha256": "2090104f9b7bfd2ce5567eae7731c8ee7a45ba4934f22467e6f7c1161890d490"
+      "sha256": "554005a44c8148db1986eee16d0a683dc3845da927d1e61f41d21b17b1d69edb"
     },
     {
       "path": "scripts/lib/util.mjs",

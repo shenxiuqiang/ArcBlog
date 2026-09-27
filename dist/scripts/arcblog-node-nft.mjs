@@ -25,6 +25,8 @@ import { readFileSync } from 'node:fs';
 import { ensure, fail, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import {
   DEFAULT_REVOKE_WAITING_PERIOD_DAYS,
+  FACTORY_REGISTRY_PATH,
+  NODE_FACTORY_SUMMARY_PATH,
   NODE_NFT_STATE_PATH,
   openChain,
   resolveChainOptions,
@@ -36,6 +38,59 @@ import { CHAIN_ROLES, getRoleConfig, putRoleLifecycle, roleStatus } from './lib/
 
 const NODE_PROFILE_PATH = '/instance/app/arcblog/node/profile.json';
 
+/**
+ * Mirror the chain facts any signed-in user may see into `node/factories.json`.
+ *
+ * The authoritative records stay in `config/` (admin-only); this is a projection
+ * so the console page works for every session. It carries no private material:
+ * addresses, tx hashes and lifecycle only.
+ */
+function publishNodeSummary(state, instance) {
+  const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? {};
+  const summary = {
+    adapter: registry.adapter ?? 'mock',
+    network: registry.network ?? '',
+    chainHost: registry.chainHost ?? '',
+    tokenId: registry.tokenId ?? '',
+    factories: {},
+    nodes: {},
+    updatedAt: nowIso(),
+  };
+  for (const [role, entry] of Object.entries(registry.factories ?? {})) {
+    summary.factories[role] = {
+      address: entry.address ?? '',
+      moniker: entry.moniker ?? '',
+      issuer: entry.issuer ?? '',
+      stakeAmount: entry.stakeAmount ?? '',
+      capacity: entry.capacity ?? '',
+      createdAt: entry.createdAt ?? '',
+    };
+  }
+  for (const [role, rec] of Object.entries(state?.roles ?? {})) {
+    summary.nodes[role] = {
+      state: rec.state ?? '',
+      assetId: rec.assetId ?? '',
+      stakeAddress: rec.stakeAddress ?? '',
+      owner: rec.owner ?? '',
+      endpoint: rec.endpoint ?? '',
+      region: rec.region ?? '',
+      stakeAmount: rec.stakeAmount ?? '',
+      capacity: rec.capacity ?? '',
+      acquireTx: rec.acquireTx ?? '',
+      stakeTx: rec.stakeTx ?? '',
+      revokeTx: rec.revokeTx ?? '',
+      claimTx: rec.claimTx ?? '',
+      acquiredAt: rec.acquiredAt ?? '',
+      stakedAt: rec.stakedAt ?? '',
+      revokedAt: rec.revokedAt ?? '',
+      claimedAt: rec.claimedAt ?? '',
+      claimableAt: rec.claimableAt ?? '',
+    };
+  }
+  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
+  return summary;
+}
+
 function readNodeNft(instance) {
   const stored = readJson(NODE_NFT_STATE_PATH, instance);
   return { state: stored?.value ?? { roles: {} }, ifMatch: stored?.ifMatch };
@@ -45,16 +100,48 @@ function saveNodeNft(state, instance, ifMatch) {
   writeJson(NODE_NFT_STATE_PATH, { ...state, updatedAt: nowIso() }, instance, ifMatch ?? undefined);
 }
 
+/**
+ * The stake address revoke/claim must address.
+ *
+ * The chain derives it (`toStakeAddress(owner, factory, '')`); a value recorded
+ * before that capture, or a mock value, must not be sent to the real chain — the
+ * chain answers `Invalid itx: "address" Expected DID type info to match`.
+ */
+function resolveStakeAddress(opts, chain, roleState) {
+  return (
+    optString(opts['stake-address']).trim() ||
+    (chain.adapter === 'ocap' ? chain.stakeAddressFor?.() || '' : '') ||
+    roleState.stakeAddress
+  );
+}
+
 /** The node's public key: `--pk`, else the §67 registered content-signing key. */
 function resolvePublicKey(opts, instance, profile) {
   const inline = optString(opts.pk).trim();
   if (inline) {
-    if (inline.includes('BEGIN PUBLIC KEY')) return inline;
-    try {
-      return readFileSync(inline, 'utf8');
-    } catch {
-      return inline; // a bare key string is accepted by the factory as-is
+    let value = inline;
+    if (!inline.includes('BEGIN PUBLIC KEY')) {
+      try {
+        value = readFileSync(inline, 'utf8');
+      } catch {
+        // A path that cannot be read must not silently become the key value
+        // (that is how a literal "/tmp/x.pub" ended up in an NFT's data).
+        if (/[/\\]/.test(inline) || /\.(pem|pub|key|crt)$/i.test(inline)) {
+          fail('VALIDATION', `--pk file not readable: ${inline}`);
+        }
+        value = inline; // a bare key/hex string is accepted as-is
+      }
     }
+    // A private key must never be bound into the NFT or stored in AFS: the NFT's
+    // data is immutable on chain and `config/node-nft.json` is a readable record.
+    // Passing `--pk node.key` (a PRIVATE key) did exactly that once — fail closed.
+    if (/PRIVATE KEY/.test(value)) {
+      fail(
+        'VALIDATION',
+        '--pk must be a PUBLIC key (§67): the value looks like a PRIVATE key — refusing to bind or store it',
+      );
+    }
+    return value;
   }
   const did = String(profile?.did ?? '').trim();
   const registered = did ? getSigningKey(did, instance) : null;
@@ -145,6 +232,7 @@ async function commandAcquire(opts, instance) {
   };
   const status = syncLifecycle(role, { state: 'acquired', assetId, stakeId: '' }, instance);
   saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
   console.log(
     JSON.stringify(
       { ok: true, action: 'node-nft-acquire', adapter: chain.adapter, network: chain.network, role, assetId, owner, stake: String(stakeAmount), capacity: role === 'hub' ? capacityForStake(Number(stakeAmount)) : undefined, hash: acquired.hash ?? '', lifecycle: status.stakeState },
@@ -204,6 +292,7 @@ async function commandStake(opts, instance) {
   };
   const status = syncLifecycle(role, { state: 'staked', assetId, stakeId: staked.stakeAddress }, instance);
   saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
   console.log(
     JSON.stringify(
       { ok: true, action: 'node-nft-stake', adapter: chain.adapter, role, assetId, stakeAddress: staked.stakeAddress, revokeWaitingPeriod: waitingPeriod, hash: staked.hash ?? '', lifecycle: status.stakeState },
@@ -217,13 +306,7 @@ async function commandRevoke(opts, instance) {
   const { role, chain, clock } = await roleContext(opts, instance);
   const stored = readNodeNft(instance);
   const roleState = stored.state.roles[role] ?? {};
-  // The chain derives the stake address (`toStakeAddress(owner, factory, '')`); a
-  // record written before that was captured is stale, so the derived value wins
-  // on the real adapter.
-  const stakeAddress =
-    optString(opts['stake-address']).trim() ||
-    (chain.adapter === 'ocap' ? chain.stakeAddressFor?.() || '' : '') ||
-    roleState.stakeAddress;
+  const stakeAddress = resolveStakeAddress(opts, chain, roleState);
   ensure(stakeAddress, `no ${role} stake recorded — stake the NFT first (§8.4 step 0)`);
   const assetId = assetForRole(opts, stored.state, role);
   const waitingPeriod = Number(roleState.revokeWaitingPeriod || DEFAULT_REVOKE_WAITING_PERIOD_DAYS);
@@ -245,6 +328,7 @@ async function commandRevoke(opts, instance) {
   };
   const status = syncLifecycle(role, { state: 'revoking', assetId, stakeId: stakeAddress, claimableAt }, instance);
   saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
   console.log(
     JSON.stringify(
       { ok: true, action: 'node-nft-revoke', adapter: chain.adapter, role, stakeAddress, revokedAssets: revoked.revokedAssets ?? [assetId], waitingPeriodDays: waitingPeriod, claimableAt, hash: revoked.hash ?? '', lifecycle: status.stakeState },
@@ -258,7 +342,7 @@ async function commandClaim(opts, instance) {
   const { role, chain, clock } = await roleContext(opts, instance);
   const stored = readNodeNft(instance);
   const roleState = stored.state.roles[role] ?? {};
-  const stakeAddress = optString(opts['stake-address']).trim() || roleState.stakeAddress;
+  const stakeAddress = resolveStakeAddress(opts, chain, roleState);
   ensure(stakeAddress, `no ${role} stake recorded — nothing to claim`);
 
   const claimed = await chain.claim({ stakeAddress, evidence: optString(opts.evidence).trim() || roleState.revokeTx });
@@ -283,6 +367,7 @@ async function commandClaim(opts, instance) {
   };
   const status = syncLifecycle(role, { state: 'acquired', assetId, stakeId: '' }, instance);
   saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
   console.log(
     JSON.stringify(
       { ok: true, action: 'node-nft-claim', adapter: chain.adapter, role, stakeAddress, claimedAssets: claimed.claimedAssets ?? [assetId], owner: claimed.owner ?? roleState.owner ?? '', hash: claimed.hash ?? '', lifecycle: status.stakeState },

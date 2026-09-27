@@ -22,7 +22,11 @@ import {
 } from './arc.mjs';
 import { BASE_CAPABILITIES, NODE_ROLES, ROLE_CAPABILITIES, capabilitiesForRoles } from './node-profile.mjs';
 
-export const ROLE_CONFIG_PATH = `${INSTANCE_ROOT}/config/roles.json`;
+// Overridable so live chain tests never share the production role record: the
+// node-NFT lifecycle writes `roles.json` too, and two writers produced
+// `CONFLICT_ERROR: Write conflict at /app/arcblog/config/roles.json`.
+export const ROLE_CONFIG_PATH =
+  process.env.ARCBLOG_ROLES_PATH || `${INSTANCE_ROOT}/config/roles.json`;
 
 /** Roles that require an on-chain asset + stake (spec §7.2/§7.3). */
 export const CHAIN_ROLES = ['studio', 'hub'];

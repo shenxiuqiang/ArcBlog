@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@arcblock/did-ext": "^1.30.24",
+    "@arcblock/did-util": "1.30.24",
     "@ocap/client": "^1.30.24",
     "@ocap/wallet": "^1.30.24",
     "bip39": "^3.1.0"

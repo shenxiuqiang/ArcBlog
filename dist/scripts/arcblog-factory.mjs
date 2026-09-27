@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { FACTORY_REGISTRY_PATH, openChain, resolveChainOptions } from './lib/chain.mjs';
+import { FACTORY_REGISTRY_PATH, NODE_FACTORY_SUMMARY_PATH, openChain, resolveChainOptions } from './lib/chain.mjs';
 import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, renderTemplate, validateNodeFactory } from './lib/nft-factory.mjs';
 
 function readRegistry(instance) {
@@ -23,8 +23,55 @@ function readRegistry(instance) {
   return { registry: stored?.value ?? { adapter: '', network: '', tokenId: '', factories: {} }, ifMatch: stored?.ifMatch };
 }
 
+/**
+ * Mirror the factory facts into the guest-readable `node/factories.json`: the
+ * console page must work for any signed-in session, while `config/*` stays
+ * admin-only. Addresses and lifecycle only — never key material.
+ */
+function publishFactorySummary(registry, instance) {
+  const nodeNft = readJson('/instance/app/arcblog/config/node-nft.json', instance)?.value ?? {};
+  const summary = {
+    adapter: registry.adapter ?? 'mock',
+    network: registry.network ?? '',
+    chainHost: registry.chainHost ?? '',
+    tokenId: registry.tokenId ?? '',
+    factories: {},
+    nodes: {},
+    updatedAt: new Date().toISOString(),
+  };
+  for (const [role, entry] of Object.entries(registry.factories ?? {})) {
+    summary.factories[role] = {
+      address: entry.address ?? '',
+      moniker: entry.moniker ?? '',
+      issuer: entry.issuer ?? '',
+      stakeAmount: entry.stakeAmount ?? '',
+      capacity: entry.capacity ?? '',
+      createdAt: entry.createdAt ?? '',
+    };
+  }
+  for (const [role, rec] of Object.entries(nodeNft.roles ?? {})) {
+    summary.nodes[role] = {
+      state: rec.state ?? '',
+      assetId: rec.assetId ?? '',
+      stakeAddress: rec.stakeAddress ?? '',
+      owner: rec.owner ?? '',
+      acquireTx: rec.acquireTx ?? '',
+      stakeTx: rec.stakeTx ?? '',
+      revokeTx: rec.revokeTx ?? '',
+      claimTx: rec.claimTx ?? '',
+      claimableAt: rec.claimableAt ?? '',
+      capacity: rec.capacity ?? '',
+      stakeAmount: rec.stakeAmount ?? '',
+      endpoint: rec.endpoint ?? '',
+      region: rec.region ?? '',
+    };
+  }
+  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
+}
+
 function saveRegistry(registry, instance, ifMatch) {
   writeJson(FACTORY_REGISTRY_PATH, { ...registry, updatedAt: new Date().toISOString() }, instance, ifMatch ?? undefined);
+  publishFactorySummary(registry, instance);
 }
 
 function commandSpec(opts) {
