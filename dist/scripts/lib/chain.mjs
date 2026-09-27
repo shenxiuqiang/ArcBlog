@@ -492,6 +492,8 @@ export async function createOcapChain(config, instance) {
         numMinted: state.numMinted ?? null,
         settlement: state.settlement ?? null,
         limit: state.limit ?? null,
+        // The SVG template the console renders with the NFT's data (GLofter parity).
+        displayContent: state.output?.display?.content ?? state.display?.content ?? '',
       };
     },
 

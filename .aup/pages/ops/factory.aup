@@ -1,22 +1,16 @@
 page factory {
   i18n {
-    title { en "Node factory" zh "节点工厂" }
-    desc { en "The on-chain NFT factories that mint this node's identity, the node NFT they minted, and the operator commands for acquire / stake / revoke." zh "铸造本节点身份的链上 NFT 工厂、已铸造的节点 NFT，以及 acquire / stake / revoke 的运维命令。" }
-    gate-title { en "Node factory" zh "节点工厂" }
-    gate-desc { en "Sign in with DID Wallet to view the chain factories and the node NFT." zh "使用 DID Wallet 登录后查看链上工厂与节点 NFT。" }
+    title { en "Node NFT" zh "节点 NFT" }
+    desc { en "The on-chain identity of this node: the SVG card it renders, the factories that mint it, and one-click buy / stake / revoke / claim." zh "本节点的链上身份：它渲染的 SVG 卡片、铸造它的工厂，以及一键购买 / 质押 / 撤回 / 取回。" }
+    gate-title { en "Node NFT" zh "节点 NFT" }
+    gate-desc { en "Sign in with DID Wallet to view the node NFT and operate it." zh "使用 DID Wallet 登录后查看并操作节点 NFT。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    chain { en "Chain" zh "链" }
+    projection { en "Read from the public projection node/factories.json; the authoritative records stay in config/ (admin-only). No key material is mirrored." zh "数据来自公开投影 node/factories.json；权威记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。" }
     chain-adapter { en "Adapter" zh "适配器" }
     chain-network { en "Network" zh "网络" }
     chain-host { en "Chain host" zh "链地址" }
     chain-token { en "Mint token (ABT)" zh "铸造代币（ABT）" }
     chain-empty { en "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap" zh "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap" }
-    projection { en "Read from the public projection node/factories.json; the authoritative per-node records stay in config/ (admin-only). No key material is mirrored." zh "数据来自公开投影 node/factories.json；权威的节点记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。" }
-    tx { en "On-chain transactions" zh "链上交易" }
-    tx-acquire { en "Acquire" zh "铸造" }
-    tx-stake { en "Stake" zh "质押" }
-    tx-revoke { en "Revoke" zh "撤回" }
-    tx-claim { en "Claim" zh "取回" }
     factories { en "Factories" zh "工厂" }
     factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
     factory-hub { en "Hub node factory" zh "Hub 节点工厂" }
@@ -25,32 +19,43 @@ page factory {
     factory-issuer { en "Issuer wallet" zh "发行钱包" }
     factory-stake { en "Stake per node (ABT)" zh "每个节点质押（ABT）" }
     factory-capacity { en "Capacity (studios)" zh "容量（Studio 数）" }
-    factory-created { en "Created" zh "创建时间" }
-    node { en "Node NFT" zh "节点 NFT" }
-    node-empty { en "No node NFT recorded yet. Mint one: node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap" zh "还没有节点 NFT。铸造：node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap" }
-    node-role { en "Role" zh "角色" }
+    node-empty { en "No node NFT yet — press Buy / mint below." zh "还没有节点 NFT —— 点下面的「购买 / 铸造」。" }
+    node-moniker { en "NFT" zh "NFT" }
     node-state { en "Lifecycle" zh "生命周期" }
-    node-active { en "Active (chain-verified)" zh "已激活（链上已验证）" }
     node-asset { en "Asset address" zh "资产地址" }
     node-stake { en "Stake address" zh "质押地址" }
     node-owner { en "Owner" zh "所有者" }
+    node-endpoint { en "Endpoint" zh "端点" }
+    node-region { en "Region" zh "区域" }
     node-claimable { en "Claimable at" zh "可取回时间" }
-    node-state-acquired { en "acquired — the NFT exists, the role is not staked yet" zh "acquired — NFT 已存在，角色尚未质押" }
-    node-state-staked { en "staked — the NFT is locked in the stake" zh "staked — NFT 已锁在质押中" }
-    node-state-revoking { en "revoking — waiting period running" zh "revoking — 等待期进行中" }
-    actions { en "Operator actions" zh "运维操作" }
-    actions-desc { en "The chain signs with the factory owner's key, which never reaches the browser: copy a command and run it on the node. Every step writes the result back into AFS, so this page shows the same truth as config/node-nft.json." zh "链上签名使用工厂主私钥，它不会下发到浏览器：复制命令在节点上执行。每一步都会把结果写回 AFS，因此本页与 config/node-nft.json 是同一事实。" }
+    node-svg { en "NFT card" zh "NFT 卡片" }
+    tx { en "On-chain transactions" zh "链上交易" }
+    tx-acquire { en "Acquire" zh "铸造" }
+    tx-stake { en "Stake" zh "质押" }
+    tx-revoke { en "Revoke" zh "撤回" }
+    tx-claim { en "Claim" zh "取回" }
+    actions { en "Actions" zh "操作" }
+    actions-desc { en "One click queues the intent; the node's chain worker signs it (the key never reaches the browser) and the queue below updates live." zh "点击即入队；由节点上的链 worker 签名执行（私钥永不下发浏览器），下方队列实时更新。" }
     act-acquire { en "Buy / mint" zh "购买 / 铸造" }
     act-stake { en "Stake" zh "质押" }
     act-revoke { en "Revoke (withdraw)" zh "撤回" }
     act-claim { en "Claim back" zh "取回" }
-    act-status { en "Status" zh "状态" }
-    cmd-acquire { en "node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --endpoint <url> --region <region> --pk <key>" zh "node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --endpoint <url> --region <region> --pk <key>" }
-    cmd-stake { en "node scripts/arcblog-node-nft.mjs stake --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs stake --role studio --adapter ocap" }
-    cmd-revoke { en "node scripts/arcblog-node-nft.mjs revoke --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs revoke --role studio --adapter ocap" }
-    cmd-claim { en "node scripts/arcblog-node-nft.mjs claim --role studio --adapter ocap" zh "node scripts/arcblog-node-nft.mjs claim --role studio --adapter ocap" }
-    cmd-status { en "node scripts/arcblog-node-nft.mjs status --role studio" zh "node scripts/arcblog-node-nft.mjs status --role studio" }
-    explorer { en "Open in the chain explorer" zh "在链浏览器中打开" }
+    confirm-acquire-title { en "Buy a node NFT?" zh "购买节点 NFT？" }
+    confirm-acquire-msg { en "The factory mints one Studio node NFT to this node's owner wallet, on chain, immediately." zh "工厂会立即在链上铸造一枚 Studio 节点 NFT 给本节点属主钱包。" }
+    confirm-stake-title { en "Stake the node NFT?" zh "质押节点 NFT？" }
+    confirm-stake-msg { en "The NFT locks into the factory stake and the role becomes staked (spec §8.3)." zh "NFT 将锁入工厂质押，角色进入 staked（§8.3）。" }
+    confirm-revoke-title { en "Revoke the stake?" zh "撤回质押？" }
+    confirm-revoke-msg { en "Assets leave the stake and a waiting period starts before the final claim (spec §8.4)." zh "资产将离开质押，并进入等待期，之后才能最终取回（§8.4）。" }
+    confirm-claim-title { en "Claim the stake back?" zh "取回质押？" }
+    confirm-claim-msg { en "The NFT returns to the owner wallet and the stake closes." zh "NFT 回到属主钱包，质押关闭。" }
+    intent-queued { en "Intent queued — watch the queue below." zh "意图已入队 —— 留意下方队列。" }
+    queue { en "Intent queue" zh "意图队列" }
+    queue-empty { en "No intent yet. Press an action above." zh "还没有意图。点上面的操作按钮。" }
+    queue-admin { en "The queue lives in config/ (admin-only): only the blocklet owner can queue or watch chain operations." zh "队列位于 config/（仅管理员）：只有 Blocklet 属主可以入队或查看链上操作。" }
+    queue-clear { en "Clear" zh "清除" }
+    queue-clear-title { en "Clear this intent record?" zh "清除这条意图记录？" }
+    queue-clear-msg { en "Removes the record from the queue. The chain transaction is unaffected." zh "从队列移除该记录。链上交易不受影响。" }
+    worker-hint { en "Worker: node scripts/arcblog-chain-worker.mjs watch" zh "Worker：node scripts/arcblog-chain-worker.mjs watch" }
     docs { en "Runbook: docs/ArcBlog-nft-factory.md" zh "运维手册：docs/ArcBlog-nft-factory.md" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
@@ -131,49 +136,58 @@ page factory {
           }
           action "$t(wrapper.nav-factory)" -> page factory active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
         }
-        view gap=md size={flex: 1} style={overflowY: auto} {
+        view gap=md size={flex: 1} style={overflowY: auto} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
           view gap=xs {
             h2 :title level=2
             p :desc intent=muted
-          }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
-            h3 :chain level=3 style={fontSize: "var(--type-body)"}
-            key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}, {label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true}]
-          }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
-            h3 :factories level=3 style={fontSize: "var(--type-body)"}
-            p :chain-empty intent=info scale=sm visible="!${state.summary.adapter}"
             p :projection intent=muted scale=sm
-            grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))"} {
-              view gap=sm {
+          }
+          grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", alignItems: start} {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :node-svg level=3 style={fontSize: "var(--type-body)"}
+              media factory-nft-svg src="${state.summary.nodes.studio.svg}" alt="$t(factory.node-svg)" style={borderRadius: "var(--radius-md, 8px)", width: "100%", maxWidth: "480px"} visible="${state.summary.nodes.studio.svg}"
+              p :node-empty intent=info scale=sm visible="!${state.summary.nodes.studio.svg}"
+              key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
+              h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
+              key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
+            }
+            view gap=sm {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :actions level=3 style={fontSize: "var(--type-body)"}
+                p :actions-desc intent=muted scale=sm
+                row gap=sm {
+                  action variant=primary label=:act-acquire confirm={title: :confirm-acquire-title, message: :confirm-acquire-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: acquire, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-stake confirm={title: :confirm-stake-title, message: :confirm-stake-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: stake, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-revoke confirm={title: :confirm-revoke-title, message: :confirm-revoke-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: revoke, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-claim confirm={title: :confirm-claim-title, message: :confirm-claim-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: claim, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                }
+                p :worker-hint intent=muted scale=sm
+                p :docs intent=muted scale=sm
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
+                h3 :factories level=3 style={fontSize: "var(--type-body)"}
+                p :chain-empty intent=info scale=sm visible="!${state.summary.adapter}"
+                key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}, {label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true}]
                 p :factory-studio scale=sm intent=muted
                 key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
-              }
-              view gap=sm {
                 p :factory-hub scale=sm intent=muted
                 key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.hub.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.summary.factories.hub.capacity}"}]
               }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :queue level=3 style={fontSize: "var(--type-body)"}
+                p :queue-admin intent=muted scale=sm
+                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:queue-empty autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+                  row gap=sm cross=center {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      p "${entry.content.action} · ${entry.content.role}" scale=lg
+                      p "${entry.content.status} · ${entry.content.result.hash}" scale=sm intent=muted
+                      p "${entry.content.error}" scale=sm intent=warning
+                    }
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                  }
+                }
+              }
             }
-            action -> navigate "https://beta.abtnetwork.io/explorer" variant=secondary label=:explorer style={borderRadius: "var(--radius-md, 8px)", alignSelf: flex-start}
-          }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
-            h3 :node level=3 style={fontSize: "var(--type-body)"}
-            p :node-empty intent=info scale=sm visible="!${state.summary.nodes.studio.assetId}"
-            key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-role)", value: "${state.summary.nodes.studio.role}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}"}] visible="${state.summary.nodes.studio.assetId}"
-            h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
-            key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
-            row factory-tx gap=sm visible="${state.summary.nodes.studio.acquireTx}" {
-              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.acquireTx}" variant=secondary label=:tx-acquire style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.acquireTx}"
-              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.stakeTx}" variant=secondary label=:tx-stake style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.stakeTx}"
-              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.revokeTx}" variant=secondary label=:tx-revoke style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.revokeTx}"
-              action -> navigate "https://beta.abtnetwork.io/explorer/txs/${state.summary.nodes.studio.claimTx}" variant=secondary label=:tx-claim style={borderRadius: "var(--radius-md, 8px)"} visible="${state.summary.nodes.studio.claimTx}"
-            }
-          }
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-            h3 :actions level=3 style={fontSize: "var(--type-body)"}
-            p :actions-desc intent=muted scale=sm
-            key-value-list factory-actions dense=true fields=[{label: "$t(factory.act-acquire)", value: "$t(factory.cmd-acquire)", monospace: true, copyable: true}, {label: "$t(factory.act-stake)", value: "$t(factory.cmd-stake)", monospace: true, copyable: true}, {label: "$t(factory.act-revoke)", value: "$t(factory.cmd-revoke)", monospace: true, copyable: true}, {label: "$t(factory.act-claim)", value: "$t(factory.cmd-claim)", monospace: true, copyable: true}, {label: "$t(factory.act-status)", value: "$t(factory.cmd-status)", monospace: true, copyable: true}]
-            p :docs intent=muted scale=sm
           }
         }
       }

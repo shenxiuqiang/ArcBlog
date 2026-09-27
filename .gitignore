@@ -39,3 +39,7 @@ auth.json
 # into dist/, so a stray one ends up tracked by a plain `git add -A`.
 .zshrc*
 *.bak-*
+# Local chain material (never commit keys)
+.env.local
+.node-pk.pem
+node.key

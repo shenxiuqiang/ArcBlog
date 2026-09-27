@@ -34,6 +34,9 @@ node scripts/arcblog-daily-report.mjs ...
 node scripts/arcblog-factory.mjs spec --role studio   # §8.1 factory payload (GLofter-compatible)
 node scripts/arcblog-factory.mjs create --role studio --adapter mock   # create it (mock|ocap)
 node scripts/arcblog-node-nft.mjs acquire|stake|revoke|claim|status --role studio|hub  # §8.2-§8.4 lifecycle
+node scripts/arcblog-chain-worker.mjs watch|run        # the console's node-NFT buttons only write an AFS
+                          # intent; this worker signs it on the chain (key stays on the node) and
+                          # refreshes node/factories.json (incl. the rendered NFT SVG)
 node scripts/arcblog-node.mjs check          # node profile/identity (spec §107-109)
 node scripts/arcblog-category.mjs list       # taxonomy (spec §12); usage/merge/remove --migrate-to (§15.4)
 node scripts/arcblog-tags.mjs list           # tag usage audit; merge renames across all posts

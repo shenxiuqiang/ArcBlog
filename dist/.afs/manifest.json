@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 24640,
+      "size": 24822,
       "contentType": "application/json",
-      "sha256": "e8cf5a779a5d7babbdd9903b03e798f05c8199463b31a1a1e3a9fe3f648fd0ff"
+      "sha256": "30eb7ef542d20239af51bcaf1bf08fae4f5fea0271b2a6220e67ad72d2074eec"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 24355,
+      "size": 24556,
       "contentType": "application/json",
-      "sha256": "65a66989b1396a184e0b6dd968e6d74d24e73e9b29ab62eac52ecc61e72684ad"
+      "sha256": "00adf1564231cbc3b27d70b69bd2bb19e4eb785ebc25376e3f60887f574af04f"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -280,9 +280,9 @@
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 18398,
+      "size": 20807,
       "contentType": "application/octet-stream",
-      "sha256": "24d2b4db0efdc630d4ada39e42e14f0136a1a901674567b4300c0c3d122b5257"
+      "sha256": "8b39783f13c321601f12f83603e59bc9d86ac3a110b4bdcec3a3b04ec54944e5"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
@@ -388,21 +388,27 @@
     },
     {
       "path": ".env.example",
-      "size": 478,
+      "size": 707,
       "contentType": "application/octet-stream",
-      "sha256": "190212f1e0a2f76a3895347970192dbfbf0b6f0677932d679cf6d8ecae2db047"
+      "sha256": "6254fbff3847f9f6d8e075f17bd1b580e2498270cf87f82014686a404337abf9"
     },
     {
       "path": ".env.local",
-      "size": 401,
+      "size": 499,
       "contentType": "application/octet-stream",
-      "sha256": "3de86bbeab281d8f66f1bdffb45a759e7a6995254847424df653bb6b1edda966"
+      "sha256": "98320672f04e9271fd94042f74df8605ba88befdb34e9719999f2700e7cf2bbb"
     },
     {
       "path": ".gitignore",
-      "size": 542,
+      "size": 618,
       "contentType": "application/octet-stream",
-      "sha256": "ce1d216c7616fa0ca2eee8d0794d6e01c43506b270c20e3fa0a4734087f77c80"
+      "sha256": "9c6e835e40c5cf8209aa2c541f452926aaa3fed19be544278f43227f4e54168b"
+    },
+    {
+      "path": ".node-pk.pem",
+      "size": 114,
+      "contentType": "application/octet-stream",
+      "sha256": "d1c3fb3f0ca84bc1a00991bcf8ca75cfeb026b3540eefc9c5073e67509a42019"
     },
     {
       "path": ".route/root",
@@ -1288,9 +1294,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 25539,
+      "size": 25830,
       "contentType": "text/markdown",
-      "sha256": "782f315f981930240465ea120c654a459aa51682b54b7f8c5837f7f9696dae7c"
+      "sha256": "54c235334fa460417ae1b20f6b64228264ec75138a06ceb309d69f0a170091b8"
     },
     {
       "path": "docs/arc-contracts.md",
@@ -1306,15 +1312,15 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 27857,
+      "size": 28363,
       "contentType": "text/markdown",
-      "sha256": "42ef2f519a099f6b87bcce9f09658faaed2f71df0570637280e207dcc80e7e74"
+      "sha256": "abc1ecc1d913e18a834fc72f692efff3fedceb2c2e5de10253a152cb04b1244b"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
-      "size": 15474,
+      "size": 19253,
       "contentType": "text/markdown",
-      "sha256": "f16da4904b91ff0198703a626e077317592f682059e7c1caba9e25679b2dfe3b"
+      "sha256": "1a036449caeed27c0e8ae766986aa64e7b5bf6c362bd2147120a7cccc7af64d1"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1431,6 +1437,12 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "path": "node.key",
+      "size": 119,
+      "contentType": "application/octet-stream",
+      "sha256": "2305e48729fe914aa9718832c2c77a0cccbecb9ba234daaa6bda198acd34195c"
+    },
+    {
       "path": "package-lock.json",
       "size": 31339,
       "contentType": "application/json",
@@ -1519,6 +1531,18 @@
       "size": 4880,
       "contentType": "text/javascript",
       "sha256": "c2c09c6616ceec5d32169265940c90b8172e80685cd4b705a67e2af0e7820dc9"
+    },
+    {
+      "path": "scripts/arcblog-chain-worker.mjs",
+      "size": 12250,
+      "contentType": "text/javascript",
+      "sha256": "71c4dc086627151625ea0267f5ac98a04ccacc4b682d169a250a246f8eff3e6a"
+    },
+    {
+      "path": "scripts/arcblog-chain-worker.test.mjs",
+      "size": 4779,
+      "contentType": "text/javascript",
+      "sha256": "a3d22c6a23462fcaeafce2ed92f442a17c80c7ae57538715a2bace2304ab55dc"
     },
     {
       "path": "scripts/arcblog-clean.mjs",
@@ -1804,9 +1828,9 @@
     },
     {
       "path": "scripts/lib/chain.mjs",
-      "size": 27460,
+      "size": 27634,
       "contentType": "text/javascript",
-      "sha256": "9591f8761b41ea97f466e4940b854cc2bf7ab71228ff67162484de894cee6a7f"
+      "sha256": "5fea27256ae934be16b6031acb76d486efa6394816c89a30c09d171cfb1da133"
     },
     {
       "path": "scripts/lib/content-hash.mjs",

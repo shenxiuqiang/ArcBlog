@@ -177,3 +177,53 @@ guest 按 §13 fail closed）。
 * 链上那份（测试链 `zjduiTqC…` 的 data.pk）无法撤回——该密钥只用于本次测试、未在别处复用，**仅测试链**，不要再使用。
 
 运维口径：`--pk` 只接受**公钥**（PEM 或十六进制），私钥永远不要写进 NFT 或 AFS。
+
+## 8. 控制台一键操作（GLofter 同级体验）
+
+GLofter 的 node-network UI 是 React + 自家 API：按钮直接调服务端接口，服务端持工厂主私钥签名。
+ArcBlog 没有自定义 HTTP API 面（AUP 拥有 `/`，Web Device 是预渲染站点），因此等价的实现是
+**AFS 意图队列 + 常驻 worker**——点击仍然是"一键"，只是签名发生在节点上：
+
+```text
+点击按钮 → AUP 写 /instance/app/arcblog/config/chain-intents/pending.json
+        → node scripts/arcblog-chain-worker.mjs（watch/run）签名并执行 CLI
+        → 结果写回同一条意图 + 刷新公开投影 node/factories.json
+        → 页面用 afs-list subscribe=true 实时看到 pending → done/failed 与 tx 哈希
+```
+
+### 8.1 页面（`?page=factory`，参照 GLofter 的 StudioNodeNFTCard）
+
+| 区块 | 内容 | GLofter 对应 |
+| --- | --- | --- |
+| NFT 卡片 | **链上渲染好的 SVG**（`media` 显示 base64 data URI，实测 480×300）、moniker、生命周期、资产/质押地址、端点/区域、可取回时间 | `StudioNodeSvgDisplay` + `NodeInfoDisplay` |
+| 交易 | 铸造 / 质押 / 撤回 / 取回四个 tx 哈希，可复制并带 explorer 按钮 | `StudioNodeAddressInfo` |
+| 工厂卡片 | 链（adapter/network/host/ABT）+ studio/hub 工厂（地址/标识/发行方/质押额/容量） | `FactoryInfo` |
+| 操作 | **购买 / 铸造、质押、撤回、取回** 四个按钮 + 平台内置 `confirm` 确认弹窗 + 成功 toast | `StudioNodeStakeActions` + `AcquireConfirmDialog` |
+| 队列 | 意图状态（pending/running/done/failed）、结果 tx、失败原因；可清除（不影响链上交易） | 无（ArcBlog 特有的异步面） |
+
+### 8.2 Worker 与运维
+
+```bash
+node scripts/arcblog-chain-worker.mjs watch            # 常驻（默认 3s 轮询），推荐
+node scripts/arcblog-chain-worker.mjs run              # 处理一次待办
+node scripts/arcblog-chain-worker.mjs enqueue --action stake --role studio   # 命令行入队（等价于点按钮）
+node scripts/arcblog-chain-worker.mjs refresh          # 只重渲染 NFT SVG
+```
+
+配置（`.env.local`，已 gitignore）：`ARCBLOG_CHAIN_*`（链）、`ARCBLOG_NODE_PK_FILE`（**公钥**文件，绝不私钥）、
+`ARCBLOG_NODE_REGION`（acquire 未指定区域时的默认值）、`ARCBLOG_NODE_OWNER`（mock 适配器需要的 owner）。
+
+### 8.3 边界与安全
+
+* **私钥永不下发浏览器**：页面只写意图，签名只在节点上发生；worker 的 `--pk` 只接受公钥（CLI 层也会拒绝私钥）。
+* **权限**：意图队列与操作用的是 `config/`（admin-only，guest 按 §13 fail closed，页面给出提示）；只读展示走公开投影。
+* **失败可解释**：不支持的意图、链上拒绝、缺 `--pk` 都会把 `code + error` 写回该条意图，队列里可见；done 的意图不会被重放。
+* **SVG 安全**：`renderNodeSvg()` 渲染后拒绝含 `<script>`/`javascript:` 的内容（GLofter 也做同样检查）。
+* 已知限制：AUP 表达式没有比较运算，因此按钮**无法按生命周期在 UI 上禁用**；点击非法步骤时由 CLI 兜底并给出原因。
+
+### 8.4 实测证据（2026-09-27）
+
+* **浏览器（guest 会话）**：SVG 正常显示（480×300）、节点信息、两个工厂、四个按钮、确认弹窗文案均正确；无 `SESSION INIT FAILED`。
+* **意图路径真链执行**：四个动作全部经"页面同形意图 → worker → 链"完成——
+  acquire `ABDBD742…`、stake `0C2D0498…`、revoke、claim `631F210A…`，最终投影 `state=acquired`、`hasSvg=true`。
+* 回归测试：`scripts/arcblog-chain-worker.test.mjs`（SVG 渲染与脚本拒绝、控制台同形意图的 drain、幂等不重放、非法动作拒绝）。
