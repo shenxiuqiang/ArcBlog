@@ -18,9 +18,15 @@ arc dsl validate --json   # validate all AUP DSL — must pass (primary quality 
 arc dsl generate --write  # regenerate app.json / pages/*.json / wrapper.json / locales from .aup sources
                           # (generate defaults to DRY-RUN — without --write nothing is written;
                           #  `--check` is the drift gate and runs inside npm test)
-npm test                  # run all script tests, then clear the residue they leave behind
-                          # (ARCBLOG_NO_CLEAN=1 keeps it; npm run test:clean sweeps manually)
-                          # also gates artifact drift (`arc dsl generate --check`) and dead locale keys
+npm test                  # FAST gate (~1s): the 6 suites that never write to the instance — it
+                          # gates artifact drift (`arc dsl generate --check`), dead locale keys,
+                          # the generated sidebar, the runtime-addressed ids, the theme contract and
+                          # the guest permission matrix (HTTP reads only)
+npm run test:live         # the live suites (serial, ~13 min): they mutate the dev instance and are
+                          # cleaned up after a passing run (ARCBLOG_NO_CLEAN=1 keeps the residue;
+                          # npm run test:clean sweeps manually)
+npm run test:all          # fast + live (what `npm test` used to be)
+npm run test:file -- scripts/arcblog-media.test.mjs   # one file
 arc blocklet build        # regenerate dist/ from source (run after .aup changes, before committing)
 node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file
 
@@ -75,9 +81,18 @@ node --test scripts/arcblog-permissions.test.mjs   # guest permission matrix (no
 # add `--instance <name>` to target a named Arc instance
 ```
 
-## Quality gates
+## Quality gates (tiered)
 
-Both must pass before committing: `arc dsl validate --json` and `npm test`.
+Before **every** commit: `arc dsl validate --json` and `npm test` — the **fast tier** (~1s, 28 tests,
+no instance writes; it still gates artifact drift and dead locale keys).
+
+Before **pushing** — or whenever the change touches a CLI, an AFS record, the chain adapter or a
+daemon route — run `npm run test:live`. That is the tier that has caught the real regressions
+(private-key leak, factory-registry clobbering, roles write conflict, stale SVG). `npm run test:all`
+runs both. Measured 2026-09-27: the live tier is ~13 min, of which ten tests are ~11 min (clean
+dry-run 87s, category remove/merge 111s, media refs 86s, hub index rebuild 71s, tag merge 52s…); the
+split exists so a UI or docs change does not pay that. A new test file counts as **live** unless it
+is added to `FAST_TESTS` in `scripts/run-tests.mjs`.
 
 ## Repository layout
 

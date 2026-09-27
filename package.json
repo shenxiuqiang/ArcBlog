@@ -3,8 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/run-tests.mjs",
-    "test:clean": "node scripts/arcblog-clean.mjs --confirm"
+    "test": "node scripts/run-tests.mjs fast",
+    "test:clean": "node scripts/arcblog-clean.mjs --confirm",
+    "test:unit": "node scripts/run-tests.mjs fast",
+    "test:live": "node scripts/run-tests.mjs live",
+    "test:all": "node scripts/run-tests.mjs all",
+    "test:file": "node --test --test-concurrency=1"
   },
   "dependencies": {
     "@arcblock/did-ext": "^1.30.24",
