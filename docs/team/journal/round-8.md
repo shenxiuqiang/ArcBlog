@@ -1,7 +1,7 @@
 # Round 8 — 收口 Round 7 的 5 条缺陷（控制台 Dev 3 条 + UI 文档 2 条）
 
 - **日期**：2026-09-27
-- **Lead 提交**：**未提交（轮次进行中）** —— 由 Lead 在轮末填写（格式参照 [`round-7.md`](round-7.md)）
+- **Lead 提交**：`edba506` — *fix(console): close the Round 7 defect set (BUG-005/006/009) and the UI-standard residuals*（29 个本轮产物路径；两个与本轮无关的未跟踪文件 `docs/dsh-workflow-and-ralph.md`、`dist/docs/dsh-workflow-and-ralph.md` 未纳入提交）。**Lead 收口门**（按新门规，未跑 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`node scripts/arcblog-console-nav.mjs --check` pages 17、`arc blocklet build` 后源↔`dist` 一致。**过程事实**：workflow 的 QA 相位返回 `null`（返回通道失败），Lead 以落盘报告末行 `VERDICT=pass, BLOCKING=0` 为准，并补跑了 PM 裁决相位（`workflow-3`）；`docs/team/bootstrap.md` 的 workflow 变体已补该恢复口径
 - **清单变化**：**建议不变：✅ 78 ｜ 🟡 11 ｜ ⬜ 9 ｜ ⚪ 2**（`docs/ArcBlog-feature-checklist.md` 第 41 行总览）——本轮是**已 ✅ 页面**的质量收口 + 纯文档对齐 + 一段平台受限说明，不改任何功能状态列。**PM 只给建议，实际落笔由 Lead**（见下方「checklist 建议」节）。
 
 ## 计划（轮次开始时写）
