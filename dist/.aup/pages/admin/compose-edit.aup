@@ -25,7 +25,7 @@ page compose-edit {
     editing { en "Editing" zh "编辑中" }
     publish-hint { en "Published. The draft copy is still in studio drafts — delete it there when done." zh "已发布。草稿副本仍保留在工作室草稿列表中，可随后删除。" }
   }
-  view page-root gap=lg style={height: "100vh", overflow: visible} {
+  view gap=lg style={height: "100vh", overflow: visible} {
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$session.authenticated" {
         h2 :gate-title level=2

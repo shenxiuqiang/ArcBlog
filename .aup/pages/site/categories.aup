@@ -17,7 +17,7 @@ page categories {
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     title { en "Categories" zh "分类" }
   }
-  view page-root gap=lg style={height: "100vh", overflow: visible} {
+  view gap=lg style={height: "100vh", overflow: visible} {
     view style={gap: "0"} {
       view style={width: "100vw", marginLeft: "calc(50% - 50vw)"} {
         app-header site-header variant=compact brand={title: ArcBlog, src: index} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, exec: dashboard}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
@@ -28,68 +28,68 @@ page categories {
         action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcategories&cancel_to=%2F%3Fpage%3Dcategories" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
-        view console-nav size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
           p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action console-nav-dashboard "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-posts style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-posts "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-pages style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-pages "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-compose style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-compose "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-nav-group-site-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action console-nav-heroes "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-categories style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-categories "$t(wrapper.nav-categories)" -> page categories active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-seo style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-categories)" -> page categories active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-seo "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-feeds style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-feeds "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-appearance style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-appearance "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-nav-group-ops-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action console-nav-operations "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-hub style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-hub "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-media style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-media "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-agents style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-agents "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-nav-group-economy-group style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action console-nav-policy "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view console-nav-divider-access style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action console-nav-access "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {

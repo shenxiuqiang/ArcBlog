@@ -54,7 +54,9 @@ test('every console page carries the canonical sidebar', () => {
 test('the sidebar exists exactly once per console page', () => {
   for (const page of CONSOLE_PAGES) {
     const src = readPage(page);
-    const navLines = src.split('\n').filter((line) => /^\s*view console-nav\s/.test(line));
+    // The sidebar has no explicit id (`arc dsl lint --fix` strips unreferenced
+    // ones), so it is identified by its own width marker.
+    const navLines = src.split('\n').filter((line) => /^\s*view\s+size=\{width: "clamp\(200px, 15vw, 280px\)"/.test(line));
     assert.equal(navLines.length, 1, `page ${page} must carry exactly one sidebar`);
   }
 });
@@ -64,11 +66,11 @@ test('every menu item switches to a declared page', () => {
     const src = readPage(page);
     for (const group of CONSOLE_MENU) {
       for (const item of group.items) {
-        // `action <id> "$t(wrapper.<label>)" -> page <name>` — a real page
-        // switch. Asserting `-> page <name>` (not `href="#…"`) is the point:
-        // B′ replaced the hash router with ordinary navigation.
+        // `action "$t(wrapper.<label>)" -> page <name>` — a real page switch.
+        // Asserting `-> page <name>` (not `href="#…"`) is the point: B′ replaced
+        // the hash router with ordinary navigation.
         assert.ok(
-          new RegExp(`action console-nav-${item.page}\\s+"\\$t\\(wrapper\\.[A-Za-z0-9_-]+\\)"[^\\n]*-> page ${item.page}\\b`).test(src),
+          new RegExp(`action\\s+"\\$t\\(wrapper\\.[A-Za-z0-9_-]+\\)"[^\\n]*-> page ${item.page}\\b`).test(src),
           `page ${page} is missing the menu item for ${item.page}`,
         );
       }
@@ -80,7 +82,7 @@ test('the sidebar is not a hash router any more', () => {
   for (const page of CONSOLE_PAGES) {
     const src = readPage(page);
     assert.ok(
-      !/action console-nav-[a-z-]+[^\n]*href="#/.test(src),
+      !/action\s+"[^"]*"[^\n]*href="#/.test(src),
       `page ${page} still uses a "#" hash link in the sidebar`,
     );
   }
@@ -95,7 +97,7 @@ test('the sidebar is not a hash router any more', () => {
 test('each console page marks exactly its own row active', () => {
   for (const page of CONSOLE_PAGES) {
     const src = readPage(page);
-    const marked = [...src.matchAll(/action console-nav-([a-z-]+)\s+"[^"]*" -> page [a-z-]+( active=true)?\s+style=/g)];
+    const marked = [...src.matchAll(/action\s+"[^"]*"\s+-> page ([a-z-]+)( active=true)?\s+style=/g)];
     assert.equal(marked.length, CONSOLE_PAGES.length, `page ${page} does not list every menu item`);
     const active = marked.filter((m) => m[2]).map((m) => m[1]);
     assert.deepEqual(active, [page], `page ${page} must mark exactly its own row active`);
@@ -119,6 +121,8 @@ test('each console page gates on the session and shares the shell', () => {
     const src = readPage(page);
     assert.match(src, /visible="!\$session\.authenticated"/, `page ${page} has no signed-out gate card`);
     assert.match(src, /visible=\$session\.authenticated/, `page ${page} has no signed-in shell`);
-    assert.match(src, /app-header site-header/, `page ${page} is missing the site header`);
+    // The header carries no explicit id any more (`arc dsl lint --fix` strips
+    // unreferenced ones), so match the primitive itself.
+    assert.match(src, /app-header\s/, `page ${page} is missing the site header`);
   }
 });

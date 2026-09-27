@@ -122,20 +122,20 @@ export function sidebarLines(active = CONSOLE_SECTIONS[0], indent = 4) {
   const activeMarker = ' active=true';
   // Safe-style drops `borderBottom`, so dividers are explicit 1px elements.
   // Ids must be unique app-wide, so each divider is keyed by the item above it.
-  const dividerFor = (key) => `${pad}  view console-nav-divider-${key} style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+  // No explicit ids: `arc dsl lint --fix` strips an id nothing references, and
+  // the generator anchors on the width marker instead (see arcblog-console-nav.mjs).
+  const dividerFor = () => `${pad}  view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
 ${pad}    p " "
 ${pad}  }`;
-  const lines = [
-    `${pad}view console-nav size={${size}} style={${style}} visible=$session.authenticated {`,
-  ];
+  const lines = [`${pad}view size={${size}} style={${style}} visible=$session.authenticated {`];
   let groupIndex = 0;
   for (const group of CONSOLE_MENU) {
-    if (groupIndex > 0) lines.push(dividerFor(`${group.group}-group`));
+    if (groupIndex > 0) lines.push(dividerFor());
     groupIndex += 1;
     lines.push(`${pad}  p "$t(wrapper.${group.group})" intent=muted scale=caption${groupStyle}`);
     let first = true;
     for (const item of group.items) {
-      if (!first) lines.push(dividerFor(item.page));
+      if (!first) lines.push(dividerFor());
       first = false;
       // Plain page switch: a stable `?page=<name>` deep link, no bridge needed.
       // The row for THIS page carries the runtime's active marker.
@@ -146,7 +146,7 @@ ${pad}  }`;
       // would put the formatter and the generator in a permanent loop.
       const marker = item.page === active ? activeMarker : '';
       lines.push(
-        `${pad}  action console-nav-${item.page} "$t(wrapper.${item.label})" -> page ${item.page}${marker}${actionStyle}`,
+        `${pad}  action "$t(wrapper.${item.label})" -> page ${item.page}${marker}${actionStyle}`,
       );
     }
   }

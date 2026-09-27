@@ -1126,3 +1126,78 @@ B′ 之后控制台出现「顶栏与侧栏整块消失、内容挤在中间一
 | 独立滚动容器 | 侧栏 `console-nav` 与内容列 `…-row-3-view-2-view-1-view-2` 两个，`window.scrollBy` 无效 |
 
 **踩坑记录**：本轮一度误判为 `active=true` 引起的布局崩坏，实际是上面这条既有缺陷；又一度用 `getElementById('page-root')` 断言「某页有、某页没有」，得出「lint --fix 只剥了一页」的错误结论——运行时只写 `data-aup-id`、**不写 DOM `id`**，所以 `getElementById` 从来看不到它，两次测量都该用 `[data-aup-id="page-root"]`。
+
+## 25. AUP DSL 能力实测：内置原语与片段机制（2026-09）
+
+`arc dsl schema --json` 报了 **63 个原语、12 个别名、26 个关键字、4 个 snippet**。文档清单不等于可用清单，所以逐个对着**线上运行时 bundle** 核验（有渲染器 `case"…"` 或样式类的才算实现）：
+
+* **本 surface 实现 54 个**：action / afs-dropzone / afs-list / afs-preview / afs-stat / agent / app-footer / app-header / auto-fire / auto-surface / block-revealer / breadcrumb / broadcast / calendar / canvas / chart / chat / chip / comments-surface / deck / editor / entity-overview / finance-chart / frame / hero-widget / input / key-value-list / map / media / moonphase / natal-chart / overlay / pagination / photo-story / post-editor / progress-bar-3d / scroll-explainer / searchable-dropdown / share-panel / surface / table / terminal / text / text-highlight / text-image-expand / ticker / time / tooltip / type-block / url-default / view / webgl-hero / wm / xeyes。
+* **9 个不在 bundle 里，禁止使用**：`blocklet-embed`、`camera-preview`、`connection-gate`、`explorer`、`globe`、`provider-card`、`rtc`、`skills`、`wm-surface`。
+
+### 25.1 `component` + `use` + `for`：可用（已实测）
+
+```aup
+component kv(label, value) {
+  row zz-kv-$label {          # 参数可以进 id，避免展开后 id 冲突
+    p "$label" scale=sm intent=muted
+    p "$value" scale=sm
+  }
+}
+view {
+  for item in [alpha, beta] { use kv($item, "VAL") }
+}
+```
+
+* 校验、编译、**运行时渲染**全部通过；两次展开得到 `zz-kv-alpha` / `zz-kv-beta`，文本与 prop 插值都正确。
+* **组件是页面局部的**：把组件声明放进被 `include` 的文件里，引用页会报 `Unknown component`（实测）。
+* 组件内的**字面 id 会随每次 `use` 重复**（报 `Duplicate id`）；要么省略 id，要么用 `$arg` 参数化。
+* `use comp(...) { 子节点 }` **不支持**（没有 slot）：组件不能包裹调用方的子节点。
+
+### 25.2 `include` / `partial` / `import`：解析通过，运行时不可用
+
+* `include "<相对路径>"` 只接受**另一个页面文件**（`page xxx { … }`），`.part` 之类非页面片段会被当成页面校验（`Expected "page"`）；它**能内联节点**（放两个根节点会报"必须恰好一个根节点"）。
+* 但线上渲染直接失败：`SESSION INIT FAILED — AUP INCLUDE REQUIRES RESOLVEINCLUDE: ../frag/site-header.aup`。即**守护进程没有实现 include 解析**（bundle 里也没有 `include` 处理）。
+* `partial` / `import` 同样只到解析层（`partial` 要字符串、`import` 要求页面），没有可用的运行时语义。
+* 结论：**跨页复用只能靠生成器**（本仓库的 `scripts/arcblog-console-nav.mjs` 正是因此存在）。§16 的"没有 include 原语"结论成立，但原因不是"关键字不存在"，而是"运行时解析器缺失"。
+
+### 25.3 已采纳的内置原语（本仓库第一批）
+
+| 位置 | 之前 | 现在 | 收益 |
+| --- | --- | --- | --- |
+| `ops/operations.aup` 节点健康卡 | 4 组 `p 标签` + `p 值` | `key-value-list dense=true fields=[{label, value, monospace, copyable}]` | 少 8 行手写节点，DID 获得**复制按钮**与等宽字体，仍保留 `<time>` 相对时间 |
+| 同页发现文档卡 | 5 个 `p` 横排 | `key-value-list … fields=[协议, 传输]` | 同上，标签/值对齐由平台保证 |
+| `reader.aup` 返回链接 | 手写 `view href` + `p :back` | `breadcrumb items=[{label, href}, {label: title}]` | 语义化 `<nav><ol>` + 末项 `aria-current` |
+| `reader.aup` 分类 | `p "${category}"` | `chip label="${category}" color=default` | 平台 chip 样式与 `data-color` |
+
+### 25.4 `arc dsl lint --fix` 会删掉"运行时才用得到"的 id（陷阱）
+
+`--fix` 把 `unreferenced_explicit_id`（"没有被页面事件引用"）的 id 全部删掉，一次清掉了 **~300 个**。但这条规则只看 **DSL 里的事件引用**，看不到运行时 JS 按 id 寻址的节点，于是它删掉了三个**载荷性** id，全量测试立刻红：
+
+| id | 谁在用 | 删掉的后果 |
+| --- | --- | --- |
+| `site-header` | `app-header` 的 brand 按钮 emit `nav-click`，事件目标就是这个 id | 每次点 logo/品牌报 `Node 'site-header' has no 'nav-click' event` |
+| `hero-carousel-frame` | 首页 hero 组件与验收测试按 id 寻址 | 组件挂不上、验收测试失败 |
+| `theme-bridge-frame`（wrapper 内） | 主题桥接 iframe 按 id/窗口寻址 | 主题桥接失效 |
+
+仓库里本来就有守卫 `scripts/arcblog-runtime-ids.test.mjs`（3 个用例），正是它把这次回归拦住了。**结论：不要无脑跑 `arc dsl lint --fix`**；若跑了，必须把这几个 id 加回来并重跑该守卫。现在仓库里保留 **24 条** `unreferenced_explicit_id` 警告，全部是这些运行时 id —— 这是有意为之，不是待办。
+
+（可安全清掉的是另一类：侧栏 15×15 行与分隔线的 id、`page-root`、各页 `console-nav*` —— 它们确实只被生成器用过，现在生成器已改为不输出 id。）
+
+`arc dsl lint --fix` 还顺手清掉了 **~300 个未被引用的显式 id**（`page-root`、`site-header`、每个 `console-nav-*` 行与分隔线），`arc dsl lint` 从"数百条警告"变为 `Passed DSL lint`。生成器因此改为**不输出 id**，并把锚点从 `view console-nav` 换成 `size={width: "clamp(200px, 15vw, 280px)"}` 这个自身产出的稳定标记（`arcblog-console-nav.mjs` 已实现）。
+
+### 25.5 下一批候选（已核验可用，按收益/风险排序）
+
+| 优先级 | 原语 / 机制 | 落点 | 收益 | 风险 |
+| --- | --- | --- | --- | --- |
+| P1 | `component` + `for` | 侧栏生成器：`component navRow(label, page, active)` + 15 条 `use` | 每页 15 行超长 inline style 变成 1 处样式 + 15 条短调用；行样式单点维护 | 低（生成器自持，`--check` 守得住） |
+| P1 | `searchable-dropdown` | `admin/compose.aup`、`admin/compose-edit.aup` 的分类选择 | 可搜索 + 键盘操作；比裸 `input` 好 | 低（表单语义需复核提交路径） |
+| P2 | `tooltip` | 各页 `intent=muted` 的一行行提示 | 把常驻说明收进悬浮提示，正文更干净 | 低 |
+| P2 | `chip` + `count` | 标签/分类使用量（与 `arcblog-tags.mjs list` 对齐） | 一眼看出标签热度 | 低 |
+| P2 | `table` / `afs-list columns` | `admin/posts`、`ops/media`、`economy/policy` 列表 | 表格式密集信息，少写 row 模板 | 中（`afs-list` 的 columns 布局需实测） |
+| P3 | `share-panel` | `site/seo.aup` + 阅读页 | 与 `docs/share-cards.md` 打通，平台自带分享面板 | 中（需确认 props） |
+| P3 | `chart` / `finance-chart` | `economy/policy.aup`（分成可视化）、`admin/dashboard.aup`（趋势） | 数据可视化 | 中（需要聚合数据源） |
+| P3 | `block-revealer` / `scroll-explainer` / `text-highlight` | `reader.aup` | 长文阅读体验 | 中（视觉验收成本） |
+| P4 | `comments-surface` | `reader.aup` | 评论（spec V2 项） | 中（需 AFS 评论存储契约） |
+| P4 | `entity-overview` / `afs-stat` / `afs-preview` | 节点档案、仪表盘 KPI | 平台级卡片与统计 | 中高（`afs-stat`/`afs-preview` 走的是 view 渲染器，props 契约未验） |
+
+**禁用清单**（bundle 里不存在，写了就是"发明 API"）：`blocklet-embed`、`camera-preview`、`connection-gate`、`explorer`、`globe`、`provider-card`、`rtc`、`skills`、`wm-surface`。
