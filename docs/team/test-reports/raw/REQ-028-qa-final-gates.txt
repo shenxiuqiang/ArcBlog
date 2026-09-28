@@ -1,0 +1,152 @@
+== date ==
+2026-09-28T12:12:57Z
+== arc --version ==
+2.0.0-beta.50 (c711b9aa) 2026-09-10
+== arc dsl validate --json ==
+{
+  "path": "/Users/shenxiuqiang/workspace/ArcBlog",
+  "ok": true,
+  "files": [
+    ".aup/app.aup",
+    ".aup/app.json",
+    ".aup/locales/en.json",
+    ".aup/locales/zh.json",
+    ".aup/pages/about.aup",
+    ".aup/pages/admin/appearance.aup",
+    ".aup/pages/admin/compose-edit.aup",
+    ".aup/pages/admin/compose.aup",
+    ".aup/pages/admin/dashboard.aup",
+    ".aup/pages/admin/diagnostics.aup",
+    ".aup/pages/admin/general.aup",
+    ".aup/pages/admin/pages.aup",
+    ".aup/pages/admin/posts.aup",
+    ".aup/pages/author.aup",
+    ".aup/pages/economy/access.aup",
+    ".aup/pages/economy/ledger.aup",
+    ".aup/pages/economy/orders.aup",
+    ".aup/pages/economy/policy.aup",
+    ".aup/pages/index.aup",
+    ".aup/pages/ops/agents.aup",
+    ".aup/pages/ops/factory.aup",
+    ".aup/pages/ops/hub.aup",
+    ".aup/pages/ops/media.aup",
+    ".aup/pages/ops/operations.aup",
+    ".aup/pages/page-view.aup",
+    ".aup/pages/preview.aup",
+    ".aup/pages/reader.aup",
+    ".aup/pages/saved.aup",
+    ".aup/pages/site/categories.aup",
+    ".aup/pages/site/feeds.aup",
+    ".aup/pages/site/heroes.aup",
+    ".aup/pages/site/seo.aup",
+    ".aup/pages/site/tags.aup",
+    ".aup/pages/store.aup",
+    ".aup/wrapper.aup",
+    ".aup/wrapper.json",
+    ".web/components/hero-carousel/component.dsl",
+    ".web/components/hero-carousel/manifest.json",
+    ".web/components/hero-carousel/render.js",
+    ".web/components/hero-carousel/style.css",
+    ".web/components/theme-bridge/component.dsl",
+    ".web/components/theme-bridge/manifest.json",
+    ".web/components/theme-bridge/render.js",
+    ".web/components/theme-bridge/style.css",
+    "agents/arcblog-agent/agent.dsl",
+    "agents/arcblog-agent/agent.json",
+    "pages/hero-carousel/layout.aup",
+    "pages/theme-bridge/layout.aup",
+    "pages/theme-bridge/seo/description",
+    "pages/theme-bridge/seo/title"
+  ],
+  "issues": []
+}
+validate_exit=0
+== arc dsl generate --check ==
+Would generate 0 file(s) (dry-run) — nothing to change
+  path: /Users/shenxiuqiang/workspace/ArcBlog
+  files: 7
+generate_exit=0
+== console-nav --check ==
+{
+  "ok": true,
+  "action": "check",
+  "pages": 21
+}
+nav_exit=0
+== diff -r .aup dist/.aup ==
+aup_diff_exit=0
+== diff -r .web dist/.web ==
+web_diff_exit=0
+== git diff -- blocklet.yaml ==
+blocklet_diff_exit=0
+== space list ==
+{
+  "groups": [
+    {
+      "role": "instance",
+      "userDid": "z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ",
+      "rootPath": "/Users/shenxiuqiang/.afs/spaces",
+      "apps": [
+        {
+          "did": "ArcBlog",
+          "fileCount": 995,
+          "totalSize": 376128
+        },
+        {
+          "did": "blocklet-manager",
+          "fileCount": 0,
+          "totalSize": 0
+        },
+        {
+          "did": "minimal-app",
+          "fileCount": 6,
+          "totalSize": 958
+        },
+        {
+          "did": "my-app",
+          "fileCount": 6,
+          "totalSize": 938
+        },
+        {
+          "did": "showcase-dsl",
+          "fileCount": 262,
+          "totalSize": 49015
+        }
+      ],
+      "total": 5
+    },
+    {
+      "role": "user",
+      "userDid": "z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ",
+      "rootPath": "/Users/shenxiuqiang/.afs/spaces",
+      "apps": [
+        {
+          "did": "ArcBlog",
+          "fileCount": 0,
+          "totalSize": 0
+        },
+        {
+          "did": "blocklet-manager",
+          "fileCount": 0,
+          "totalSize": 0
+        },
+        {
+          "did": "minimal-app",
+          "fileCount": 0,
+          "totalSize": 0
+        },
+        {
+          "did": "my-app",
+          "fileCount": 0,
+          "totalSize": 0
+        },
+        {
+          "did": "showcase-dsl",
+          "fileCount": 0,
+          "totalSize": 0
+        }
+      ],
+      "total": 5
+    }
+  ]
+}

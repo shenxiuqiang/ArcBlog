@@ -25,6 +25,7 @@ page wrapper {
     nav-about { en "About" zh "关于" }
     nav-store { en "Store" zh "商店" }
     nav-author { en "Author" zh "作者" }
+    nav-saved { en "Reading list" zh "阅读清单" }
     nav-write { en "Write" zh "写文章" }
     nav-appearance { en "Appearance" zh "外观设置" }
     nav-group-settings { en "Settings" zh "设置" }

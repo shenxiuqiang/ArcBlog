@@ -1,0 +1,33 @@
+arc space set <folder> <assignment>
+
+Set a declaration on an EXISTING layout=files DID Space, e.g. `arc space set
+<dir> external-writes=none` (folder-query-freshness §3.1)
+
+Options:
+      --json        Output in JSON format  [boolean]
+      --view        Output view format (json is equivalent to --json). llm is
+                    accepted globally; commands without an llm renderer fail
+                    closed (declare ⇒ execute; arc#6037). [string] [choices:
+                    "default", "llm", "human", "json"] [default: "default"]
+      --home        Instance root — to pick which instance, use --instance. Used
+                    by `arc service start` (create) and `arc did init`
+                    (identity). In `--standalone`, sets DID Space and configDir;
+                    mounts come from a cwd-walk of `.afs-config/config.toml`,
+                    not from --home. [string]
+  -i, --instance    Named local ARC instance this command operates against (see
+                    `arc service list`). Omit for the default instance. [string]
+      --folder      Claimed folder to update (must already be layout=files — see
+                    `arc space init`) [string] [required]
+      --assignment  <key>=<value>. `external-writes=none` — this folder is under
+                    exclusive (e.g. daemon) management; query answers straight
+                    from the index, no disk scan. `external-writes=possible` —
+                    the folder can still be hand-edited; query gates on a disk
+                    re-scan before every answer (§3.2). Idempotent and
+                    reversible either direction; every other key already in
+                    .did-space/config is preserved untouched. [string]
+                    [required]
+  -v, --version     Show version number  [boolean]
+
+Examples:
+  arc space set ./my-space external-writes=none
+      Declare a folder as exclusively daemon-managed

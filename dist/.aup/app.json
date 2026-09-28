@@ -28,6 +28,9 @@
     "reader": {
       "tree": "pages/reader.aup"
     },
+    "saved": {
+      "tree": "pages/saved.aup"
+    },
     "store": {
       "tree": "pages/store.aup"
     },

@@ -1,0 +1,96 @@
+{
+  "role": "guest",
+  "base": "http://arcblog.localhost:4939",
+  "results": [
+    {
+      "label": "guest list /user",
+      "role": "guest",
+      "type": "list",
+      "path": "/user",
+      "status": 404,
+      "error": "Path not found: /user",
+      "ok": false
+    },
+    {
+      "label": "guest read /user/arcblog/bookmarks/hello-arcblog.json",
+      "role": "guest",
+      "type": "read",
+      "path": "/user/arcblog/bookmarks/hello-arcblog.json",
+      "status": 404,
+      "error": "Path not found: /user/arcblog/bookmarks/hello-arcblog.json",
+      "ok": false
+    },
+    {
+      "label": "guest read ROOT-scope A private record",
+      "role": "guest",
+      "type": "read",
+      "path": "/blocklets/arcblog/users/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP/arcblog/bookmarks/hello-arcblog.json",
+      "status": 403,
+      "error": "Forbidden at /blocklets/arcblog/users/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP/arcblog/bookmarks/hello-arcblog.json: network clients cannot read base paths; declare a networkRead rule or use an overlay",
+      "ok": false
+    },
+    {
+      "label": "guest list ROOT-scope A bookmarks dir",
+      "role": "guest",
+      "type": "list",
+      "path": "/blocklets/arcblog/users/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP/arcblog/bookmarks",
+      "status": 403,
+      "error": "Forbidden at /blocklets/arcblog/users/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP/arcblog/bookmarks: network clients cannot list base paths; declare a networkRead rule or use an overlay",
+      "ok": false
+    },
+    {
+      "label": "guest list ROOT-scope users dir",
+      "role": "guest",
+      "type": "list",
+      "path": "/blocklets/arcblog/users",
+      "status": 403,
+      "error": "Forbidden at /blocklets/arcblog/users: network clients cannot list base paths; declare a networkRead rule or use an overlay",
+      "ok": false
+    },
+    {
+      "label": "guest read ROOT-scope B record (nonexistent)",
+      "role": "guest",
+      "type": "read",
+      "path": "/blocklets/arcblog/users/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/arcblog/bookmarks/hello-arcblog.json",
+      "status": 403,
+      "error": "Forbidden at /blocklets/arcblog/users/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/arcblog/bookmarks/hello-arcblog.json: network clients cannot read base paths; declare a networkRead rule or use an overlay",
+      "ok": false
+    },
+    {
+      "label": "guest list declared admin path (config)",
+      "role": "guest",
+      "type": "list",
+      "path": "/instance/app/arcblog/config",
+      "status": 403,
+      "error": "Forbidden at /instance/app/arcblog/config: role 'guest' is below readRole 'admin'",
+      "ok": false
+    },
+    {
+      "label": "guest list undeclared path",
+      "role": "guest",
+      "type": "list",
+      "path": "/instance/app/arcblog/not-a-declared-collection",
+      "status": 403,
+      "error": "Forbidden at /instance/app/arcblog/not-a-declared-collection: path is not a declared replicated collection; network reads are not permitted here",
+      "ok": false
+    },
+    {
+      "label": "guest write undeclared instance path",
+      "role": "guest",
+      "type": "write",
+      "path": "/instance/app/arcblog/not-a-declared-collection/qa.json",
+      "status": 401,
+      "error": "Authentication required for write/delete",
+      "ok": false
+    },
+    {
+      "label": "guest write posts (guest-readable prefix)",
+      "role": "guest",
+      "type": "write",
+      "path": "/instance/app/arcblog/posts/__qa-probe.json",
+      "status": 401,
+      "error": "Authentication required for write/delete",
+      "ok": false
+    }
+  ]
+}

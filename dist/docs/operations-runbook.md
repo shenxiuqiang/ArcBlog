@@ -368,6 +368,85 @@ What it pins:
 Response contract it relies on: 200 = allowed, 404 `AFS_NOT_FOUND` = allowed but
 the path is missing (not a denial), 403 = denied.
 
+### The user scope (`/user`) is a different authorization model
+
+`/user` is **not** covered by `blocklet.yaml` at all, and nothing in this runbook
+should try to declare it. Measured (REQ-028, ARC 2.0.0-beta.50):
+
+- `/user` is the session's **caller-scoped projection** of this blocklet's user
+  fragment. For the caller `did:key:z…` it is the *same directory* as
+  `/blocklets/arcblog/users/z…/arcblog/`, which on disk is
+  `~/.afs/spaces/<caller-did>/blocklets/arcblog/user/`.
+- Authorization comes from the **session**, not from a `replicated` collection:
+  a signed-in caller can read/write/delete its own `/user` with **zero**
+  `blocklet.yaml` change, while a signed-out caller gets `404 AFS_NOT_FOUND` for
+  `/user` (the path does not exist for it) and another DID resolves the same AFS
+  path to its own, different directory.
+- `arc afs` runs **without** an AUP session, so the CLI cannot address `/user`
+  (`No module found for path: /user/…`). Address the fragment **by DID** instead:
+
+```bash
+# both print the same directory, from the two sides
+arc space path did:blocklet:arcblog --scope user     # /spaces/<did>/blocklets/arcblog/user
+arc afs ls /blocklets/arcblog/users/<did>/arcblog/bookmarks
+node scripts/arcblog-bookmarks.mjs list --user <did>
+node scripts/arcblog-bookmarks.mjs where --user <did>
+```
+
+- A **page** reaches it through the session: `afs-list from "/user/arcblog/…"`
+  and `exec "/.actions/write"` with a `/user/…` path. This is what
+  `?page=saved` (the reading list) does.
+- `arc space list --scope user` counts the **instance owner's** user scope only
+  (`userDid =` the local daemon owner), so a write made by a *different* signed-in
+  DID does **not** move that counter. Measure those writes by DID, as above.
+- **Production prerequisite:** `AFS_DID_SPACE_SCOPE_SECRET` is unset on this
+  daemon, so scope directories are plaintext (`de-identification is OFF`). It is a
+  **daemon** environment variable — ArcBlog cannot set it; it is registered as a
+  prerequisite and surfaced as the `de-identification` doctor warning. Do not turn
+  on `AFS_DID_SPACE_REQUIRE_DEID` before the secret exists.
+
+## Folder-backed DID Spaces (content import / offline backup)
+
+`arc space init` claims a plain folder as a `layout=files` DID Space. Keep the
+folder **outside the repository** (or gitignored) — `.did-space/` is a ledger, not
+content, and it must never be committed.
+
+```bash
+# 1) claim a folder and import a Markdown tree into it
+arc space init /srv/arcblog-import
+cp -R ./markdown-export/* /srv/arcblog-import/
+arc space repair --folder /srv/arcblog-import     # rebuild the ledger from disk
+arc space check  --folder /srv/arcblog-import     # exit 0 = ledger and disk agree
+
+# 2) declare who may write the folder (idempotent, reversible)
+arc space set /srv/arcblog-import external-writes=none       # daemon-managed
+arc space set /srv/arcblog-import external-writes=possible   # hand-editable again
+
+# 3) preview a mirror export — "--from"/"--to" are BOTH required
+arc space sync --from /srv/arcblog-import --to /backup/arcblog --mirror --dry-run
+# 4) only after reading the diff: additive is the safe direction (nothing deleted)
+arc space sync --from /srv/arcblog-import --to /backup/arcblog
+arc space sync --from /srv/arcblog-import --to /backup/arcblog --dry-run --verify
+```
+
+Rules measured in REQ-028:
+
+- **AFS records are the source of truth.** `dist/` is rebuildable
+  (`arc blocklet build`), so copying `dist/` is not a backup.
+- **`--mirror` deletes destination-only files.** Additive is the default; always
+  `--dry-run` first. On a shared instance, never run `--mirror` or
+  `arc space rm` without the operator asking for it (`arc space rm` defaults to
+  `--scope user`).
+- **A hand-edited folder fails closed.** `sync` refuses with exit 5:
+  `index has diverged from disk in 1 directory … (missing-in-index)` until you
+  either `arc space repair --folder <dir>` or pass `--full` to read both trees
+  directly. `arc space check --folder` is the read-only way to see it coming.
+- **`arc space init` on a folder that already has files leaves the ledger empty**
+  (`missing-in-index`, `check --folder` exits 1). Run `repair --folder --index`;
+  it is additive and prints `Added / Modified / Deleted / Unchanged`.
+- Keep `node.key` and `.env.local` in a separate **offline** copy: they are not
+  AFS records, and losing them loses the node identity / chain credentials.
+
 ## What is editable where
 
 | Surface | UI | CLI |
@@ -381,6 +460,7 @@ the path is missing (not a denial), 403 = denied.
 | Network (discovery / health / Hubs) | read-only (Operations) | ✅ `arcblog-network.mjs` |
 | Economy (policy / products / grants / orders) | read-only (Operations) | ✅ `arcblog-economy.mjs` |
 | Agent grants | read-only (Operations) | ✅ `arcblog-agent.mjs authorize` |
+| Reading list (per-reader `/user` scope) | ✅ `?page=saved` (list + add) | ✅ `arcblog-bookmarks.mjs` (list / add / remove, addressed by reader DID) |
 
 Value-bearing mutations (settlement, wallets, roles, payments) are deliberately CLI-only:
 they need a DID session and a human decision, the same reasoning that keeps

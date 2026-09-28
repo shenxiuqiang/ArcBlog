@@ -1,0 +1,6 @@
+Repaired index for /tmp/qa-r16-space/src (layout=files)
+Added:     2
+Modified:  0
+Deleted:   0
+Unchanged: 0
+Duration:  1ms

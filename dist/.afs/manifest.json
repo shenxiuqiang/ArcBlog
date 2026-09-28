@@ -16,21 +16,21 @@
     },
     {
       "path": ".aup/app.json",
-      "size": 1987,
+      "size": 2041,
       "contentType": "application/json",
-      "sha256": "715d391a4feb91d17c0cecb944b4f2cf1f8145be18b5a2facebc4bd0f50646ba"
+      "sha256": "f17f32ebd41d21b1dd58371383fca11d0e9fd9512bbd9bcb6a9d6ad12e336edf"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 64489,
+      "size": 68393,
       "contentType": "application/json",
-      "sha256": "17a3eb969705b1bbc2d2172f466165d328bdd54521b72647bd832b49ac4ec062"
+      "sha256": "210794e712f6739fafd4cb6f8c431d56b9d9083d384ea359b7ab6f1d8ea62b06"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 62289,
+      "size": 66156,
       "contentType": "application/json",
-      "sha256": "ba5797027e55aeebd1019ad3ff461893330219b798a062fce9e99fe297d326c1"
+      "sha256": "6477d68db675270e388344cc53fd0036682b5d66ae7e1f9f998071e0b4a962a0"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -226,9 +226,9 @@
     },
     {
       "path": ".aup/pages/admin/diagnostics.aup",
-      "size": 31773,
+      "size": 35526,
       "contentType": "application/octet-stream",
-      "sha256": "a57ee26d9b266fb4429f35ad2b661f8eb665638cb36796ebb59a4cdeb90d5b0c"
+      "sha256": "bdf977622f59d14a261a8f9cdbe66664c6d26ebc2939b3b5f53e20f9dabf8224"
     },
     {
       "path": ".aup/pages/admin/general.aup",
@@ -286,9 +286,9 @@
     },
     {
       "path": ".aup/pages/index.aup",
-      "size": 2368,
+      "size": 2424,
       "contentType": "application/octet-stream",
-      "sha256": "404f3921c0b5c931b301f2110d3444d39a713575831e6e9417705a58fe145d1e"
+      "sha256": "11c857dbe66149255b18a4c0cb6a895461380fc20022a1c43e4f4bc3c073d672"
     },
     {
       "path": ".aup/pages/index.json",
@@ -352,15 +352,21 @@
     },
     {
       "path": ".aup/pages/reader.aup",
-      "size": 2396,
+      "size": 2452,
       "contentType": "application/octet-stream",
-      "sha256": "6a6abd1eb23e021b3da87d99c96d32a5268cbd0e544c1453a81789cc5b05fdad"
+      "sha256": "979f3ae36c41ec0a87f62262c53c69ae9ad14c9a031ae0aebdb5e4ea120dc9eb"
     },
     {
       "path": ".aup/pages/reader.json",
       "size": 9353,
       "contentType": "application/json",
       "sha256": "4b8988486465b12e8503af860898d6322af687d108ca9348e5c2efa3b5b3371f"
+    },
+    {
+      "path": ".aup/pages/saved.aup",
+      "size": 7830,
+      "contentType": "application/octet-stream",
+      "sha256": "2c2731d36450934734ebd31cb2ca1c40fb3e931347d468ff8f23ca068a629664"
     },
     {
       "path": ".aup/pages/site/categories.aup",
@@ -406,9 +412,9 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 2527,
+      "size": 2581,
       "contentType": "application/octet-stream",
-      "sha256": "4e3ca188c22f0c5040fc1c9bba1ec442e65cf4a4bd2ac846775f823712c366ec"
+      "sha256": "088633ee1dc5893591aafc9c322801a33874ea463afe5d9776a107059a5b87c6"
     },
     {
       "path": ".aup/wrapper.json",
@@ -1336,9 +1342,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 138422,
+      "size": 141892,
       "contentType": "text/markdown",
-      "sha256": "20c4cd80ca439ae74c51df62906783174e9179b5d0ae3caedad6fbe3515d4279"
+      "sha256": "70269685137a8386b3da7cb83627fe7bb07dda81d3b3217a724da5cc445aa080"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1348,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 60482,
+      "size": 62540,
       "contentType": "text/markdown",
-      "sha256": "34958f5bf995d1a2a149cddd947d1405762da1d7c849d686de423df2983fed3f"
+      "sha256": "01de6591e9f876293c4e16e0957a51658ed63a258bd62cb3cf64e4afaac934dc"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1420,9 +1426,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 24298,
+      "size": 28881,
       "contentType": "text/markdown",
-      "sha256": "00ad185d3ae977aaa710ee0583b0662e28a3293ab004e6e3aab1b75a3d6e3dc3"
+      "sha256": "b9a6c18b0ae00c5e48b8b1b090bc6941f55815041fcc2e216128a7cca80b566a"
     },
     {
       "path": "docs/persistence.md",
@@ -1462,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 533441,
+      "size": 576605,
       "contentType": "text/markdown",
-      "sha256": "bdd22163f1df7856ed2d955abc804d159ec7ce3b4d567c14c8934116ed53a802"
+      "sha256": "1a0fc058f6151bfad9cd92867d40f92ba1670d958853e99be5de3bd62e805151"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1699,6 +1705,18 @@
       "size": 4755,
       "contentType": "text/markdown",
       "sha256": "4e44efb4045f937c22a444254dbf9978b90bd849e0f462a35e18a4234a384631"
+    },
+    {
+      "path": "docs/team/bugs/BUG-039-bare-root-replays-last-page.md",
+      "size": 4944,
+      "contentType": "text/markdown",
+      "sha256": "11d37c2852e12a68a69e44915e616adfd85702837592064f51174a7f09f24440"
+    },
+    {
+      "path": "docs/team/bugs/BUG-040-req028-dev-report-evidence-drift.md",
+      "size": 4020,
+      "contentType": "text/markdown",
+      "sha256": "86de124cd6f2398c6ea051604f5626aba3868297bb07888083553e8d9f37d9cb"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2398,9 +2416,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 30112,
+      "size": 34144,
       "contentType": "text/markdown",
-      "sha256": "df14a4ef448dc661d6eb4e1a5de45655a7b501d03fb74a91c0944f3ac25b56f0"
+      "sha256": "813b0ed422448091e361efbd06262094151e924ca438cb71715e0ceda274207e"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2437,6 +2455,12 @@
       "size": 29563,
       "contentType": "text/markdown",
       "sha256": "f26c6da55813e5738da4fa37a6a6c2516e53ee424439ce55e4cebb2de5f4d224"
+    },
+    {
+      "path": "docs/team/journal/round-16.md",
+      "size": 38349,
+      "contentType": "text/markdown",
+      "sha256": "71fff02f5ede0661d9c42d894604ef2b00f8fd52d685cb685d0b8008c17886b5"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -2617,6 +2641,18 @@
       "size": 50812,
       "contentType": "text/markdown",
       "sha256": "774da05e1a1a0cc706bd1d880485879cbd8b20c4b821be322021292ae171d8f0"
+    },
+    {
+      "path": "docs/team/requirements/REQ-028-arc-space-integration.md",
+      "size": 55443,
+      "contentType": "text/markdown",
+      "sha256": "bb4d217f88b2e73e0684cec00765ee212be292c72f022c3e2baf824111d5ed80"
+    },
+    {
+      "path": "docs/team/requirements/REQ-028-dev-report.md",
+      "size": 43826,
+      "contentType": "text/markdown",
+      "sha256": "5182413dccdf8bd8881b5806e8da910696dfce81918a864f486fc886de309765"
     },
     {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
@@ -3027,6 +3063,258 @@
       "sha256": "0c7028978c39dc801658a403f9a11becc82519d2781d2b6a797cd42e6eea966d"
     },
     {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-browser.json",
+      "size": 2666,
+      "contentType": "application/json",
+      "sha256": "96887048d3c72741484c97cb017e4af94a316fdb8430d0dcffa08537a9d54b57"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-browser.mjs",
+      "size": 10027,
+      "contentType": "text/javascript",
+      "sha256": "881063f1bc834e99750508097bb3d2af3ea85eadba33d2e2532f16e65b76e677"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c1-check-before.json",
+      "size": 657,
+      "contentType": "application/json",
+      "sha256": "bbc835f68c7f16db47756f24cbee980de7fe3893d0f2c5a103d32ecfc472453e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c1-init.txt",
+      "size": 305,
+      "contentType": "text/plain",
+      "sha256": "7f08fb39f052a1529a689b3dd54a9d4d119f353f3d1b8c1f9aaf397811ae47a8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c2-check-after.json",
+      "size": 152,
+      "contentType": "application/json",
+      "sha256": "8f524145b0ad05e63d222db7f72260b7fa8e60d359ef1502f37bf83c949c99d1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c2-repair.txt",
+      "size": 123,
+      "contentType": "text/plain",
+      "sha256": "493a116c94ae699c9beaf340f8fe567be364a3ba997eefcda4e4c9d82a00c4bc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c3-set-none.txt",
+      "size": 65,
+      "contentType": "text/plain",
+      "sha256": "fc045b6a696cc50d895609e29a9e343e7f56824f4bfecf268f1fc58fb24ac3c2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c3-set-possible.txt",
+      "size": 69,
+      "contentType": "text/plain",
+      "sha256": "30d9682181de03d4366e5aed64f6756775afc430bf027c0d234af262e228d2dc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c4-additive.txt",
+      "size": 405,
+      "contentType": "text/plain",
+      "sha256": "2c90ec20d0a4450e3b34f66d3180cd07ab7fe018bd97e27263cdc4bfdd51a0d2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c4-additive2.txt",
+      "size": 528,
+      "contentType": "text/plain",
+      "sha256": "991be0f72eaa891c3bc326c53d859654100fa6cfc564773addc89f905612de89"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c4-dst-repair.txt",
+      "size": 123,
+      "contentType": "text/plain",
+      "sha256": "a1fa7a23ffe759b3b192747fb2f6c39265beb6be18586bb4381e19d5eb5c0874"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c4-mirror-dryrun.txt",
+      "size": 612,
+      "contentType": "text/plain",
+      "sha256": "cb7bd7ecd451dc87cde5a5c96fa150cf75b436ef1dcb5c251f9039d29122cdf8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c4-verify.txt",
+      "size": 546,
+      "contentType": "text/plain",
+      "sha256": "e1562f78dbd9188d58e1f8dcf930eb7860bcc126079ca9d7a6d446dd6045a634"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c5-set-help.txt",
+      "size": 1942,
+      "contentType": "text/plain",
+      "sha256": "336da66ec44c0cec91b3b37f5f4eb5f31c40a342d271e4aee83f57cd32389a52"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-c5-sync-help.txt",
+      "size": 3908,
+      "contentType": "text/plain",
+      "sha256": "3ed729a3d5a3fe1486d3b49f5d5ac2ba56641619c4e3df9226594f08a178a85a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-diag-en.json",
+      "size": 1426,
+      "contentType": "application/json",
+      "sha256": "b038a1695e0d006778eb19e82c2e8ba1ba70c845c78ad3d99b3687414454d2ad"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-diag-en.mjs",
+      "size": 3924,
+      "contentType": "text/javascript",
+      "sha256": "4dd636299a4f9bbbfd4173218f67c4dc5a1e42b5691bbe100847ed32f0ea2a02"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-final-gates.txt",
+      "size": 3868,
+      "contentType": "text/plain",
+      "sha256": "a6254367de449ae10986c6ba3704979a35764ba9f18c3eceb7a160d69996438d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-footer.json",
+      "size": 518,
+      "contentType": "application/json",
+      "sha256": "aee1688ff5b9cf8d2b39f8b43ec221b3e7148bd937484f62af8765d8fbd8c726"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-footer.mjs",
+      "size": 3527,
+      "contentType": "text/javascript",
+      "sha256": "f8bca2496bf240d9ef725c6ddce85654c78a8a17b425e4c4aa075db373d4ceb2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-home-route-ss.json",
+      "size": 1228,
+      "contentType": "application/json",
+      "sha256": "6e549729dda673c258f5cf55caf15907ec837cca544f6a88efc3dc8b50a06f07"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-home-route-ss.mjs",
+      "size": 2820,
+      "contentType": "text/javascript",
+      "sha256": "2d37de6a5c4be40e1dc70fbaa7c6682c61f330fe9f747b9bfaaa10e28d5af36a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-home-route.json",
+      "size": 7908,
+      "contentType": "application/json",
+      "sha256": "2c5fb31031147d301b8c0b6722b0baa63d6540fa4a418738849559b2a518b8d5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-home-route.mjs",
+      "size": 3801,
+      "contentType": "text/javascript",
+      "sha256": "1fa98b13db57601007efe4668f1d82a30ee304e3e152624a6716c8b14e7aec29"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-instance-s0.json",
+      "size": 2122,
+      "contentType": "application/json",
+      "sha256": "f90a4ab23ca0b342d951db6efdb451ef18c06d0f39f655fd38f1131f282cde3d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-instance-s1.json",
+      "size": 2122,
+      "contentType": "application/json",
+      "sha256": "f90a4ab23ca0b342d951db6efdb451ef18c06d0f39f655fd38f1131f282cde3d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-instance-s2.json",
+      "size": 2122,
+      "contentType": "application/json",
+      "sha256": "f90a4ab23ca0b342d951db6efdb451ef18c06d0f39f655fd38f1131f282cde3d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-npmtest.txt",
+      "size": 2458,
+      "contentType": "text/plain",
+      "sha256": "dffa6cb2da78f83888049b0e79d2bc3493124cd9c13df1eb268a86c1432d753a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-public-s0.txt",
+      "size": 90,
+      "contentType": "text/plain",
+      "sha256": "b15dab1cb68a6c6afe999314d1f0a71f41195b6adbc1947ee76c254811d18712"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-public-s1.txt",
+      "size": 90,
+      "contentType": "text/plain",
+      "sha256": "b15dab1cb68a6c6afe999314d1f0a71f41195b6adbc1947ee76c254811d18712"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-public-s2.txt",
+      "size": 90,
+      "contentType": "text/plain",
+      "sha256": "b15dab1cb68a6c6afe999314d1f0a71f41195b6adbc1947ee76c254811d18712"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-recon.mjs",
+      "size": 2980,
+      "contentType": "text/javascript",
+      "sha256": "11083fe4a286b64e65441d35ba08542f438bfdbb57335574fa92a9b813418d33"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-rpc-admin.json",
+      "size": 3648,
+      "contentType": "application/json",
+      "sha256": "9a46fd4d4037301beea6e461493c0ccd796bede45bff5be88dc8b92884b329e4"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-rpc-admin.mjs",
+      "size": 1656,
+      "contentType": "text/javascript",
+      "sha256": "d1881bd688a090a14b63bc3df8786be582947b9fbeaf7419bdda6eacc5b57152"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-rpc-guest.json",
+      "size": 3577,
+      "contentType": "application/json",
+      "sha256": "33f66a0d4bffed925a62a8443e2da1f225dfa33f7abda91f13fd46bbe484ca98"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-rpc.mjs",
+      "size": 3001,
+      "contentType": "text/javascript",
+      "sha256": "61299cc0029be8a5581fe8cf3f9457cfb81572d625347a511593b658a114a853"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-session-delete.json",
+      "size": 769,
+      "contentType": "application/json",
+      "sha256": "43e8d0b91d2973d898a6d5427d639037edcb90f28f4338b52e242864e7a0fc03"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-session-delete.mjs",
+      "size": 4347,
+      "contentType": "text/javascript",
+      "sha256": "160e8dc7f3fc19ce7942af30307fe3f18f4ad1619d63268e94669df8836b8a89"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-sweep.json",
+      "size": 18476,
+      "contentType": "application/json",
+      "sha256": "bcd17c40d682d2128f7d87cf9a83e21bff4934c47f1c837a48b0238a2a64979b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-sweep.mjs",
+      "size": 6406,
+      "contentType": "text/javascript",
+      "sha256": "1df1e2a6a11531618f2308ff9e58ba51dfcc3cd11beeab152fdacdc129bdbc15"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-userlist.json",
+      "size": 1923,
+      "contentType": "application/json",
+      "sha256": "e0b5bbedb403ff80764e5dad9d10d6f1d2381bd18d42573f43e6783c35381ce9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-028-qa-userlist.mjs",
+      "size": 3848,
+      "contentType": "text/javascript",
+      "sha256": "10c9890782af5c2ab8d77503c7af4656d60d32f05923649e1f6c2ac5b1852055"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -3085,6 +3373,12 @@
       "size": 34070,
       "contentType": "text/markdown",
       "sha256": "a73cbf349c2ca7c121d1d8525dfc275d98c68aa0fd4cd7c0cb49fa24207ad40c"
+    },
+    {
+      "path": "docs/team/test-reports/round-16.md",
+      "size": 40404,
+      "contentType": "text/markdown",
+      "sha256": "c0278997504e4754c510605c3235af7a7af615addfcc3a4dda5dd078fa1a6bff"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -3223,6 +3517,12 @@
       "size": 1594,
       "contentType": "text/javascript",
       "sha256": "34841412c92a9f76954f477c54aa68b2e672bb3a3ac613bb889555d18751f0d1"
+    },
+    {
+      "path": "scripts/arcblog-bookmarks.mjs",
+      "size": 6316,
+      "contentType": "text/javascript",
+      "sha256": "5b856bb3bdf32b201c16c9c05df23826cbe22b7e96a5db9f1db3fc4cd8fa3f4d"
     },
     {
       "path": "scripts/arcblog-category.mjs",
@@ -3661,6 +3961,12 @@
       "size": 285,
       "contentType": "text/yaml",
       "sha256": "7789d395856ea35b27a56b46913b14b382296e34585ce84c6dd294298d397ea1"
+    },
+    {
+      "path": "world/bookmark.yaml",
+      "size": 1096,
+      "contentType": "text/yaml",
+      "sha256": "e0d1775797d143782062832742ef21c3eaa8eea07c734397a44da11e78c7e7ed"
     },
     {
       "path": "world/category.yaml",

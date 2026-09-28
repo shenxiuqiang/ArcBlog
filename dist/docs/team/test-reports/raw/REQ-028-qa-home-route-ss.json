@@ -1,0 +1,34 @@
+{
+  "before": {
+    "href": "http://arcblog.localhost:4939/?locale=zh",
+    "h2": "最新发布",
+    "bodyHead": "ArcBlog 最新发布 Hello ArcBlog Technology · 10 days ago A tour of the node: DID-nati",
+    "ssKeys": [
+      "afs:web:session:http://arcblog.localhost:4939:bl:arcblog"
+    ]
+  },
+  "onSaved": {
+    "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+    "h2": "阅读清单",
+    "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录",
+    "ssKeys": [
+      "afs:web:session:http://arcblog.localhost:4939:bl:arcblog"
+    ]
+  },
+  "backHome": {
+    "href": "http://arcblog.localhost:4939/?locale=zh&page=saved",
+    "h2": "阅读清单",
+    "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录",
+    "ssKeys": [
+      "afs:web:session:http://arcblog.localhost:4939:bl:arcblog"
+    ]
+  },
+  "afterClear": {
+    "href": "http://arcblog.localhost:4939/",
+    "h2": "Latest published",
+    "bodyHead": "ArcBlog Latest published Hello ArcBlog Technology · 10 days ago A tour of the no",
+    "ssKeys": [
+      "afs:web:session:http://arcblog.localhost:4939:bl:arcblog"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+Scanning source 2 files, destination 1 (4ms)
+Comparing (1ms)
+Syncing 2/3 (0ms)
+Total: 5ms
+/tmp/qa-r16-space/src ⇢ (dry-run) /tmp/qa-r16-space/dst
+Base path: /
+Mode:      mirror (deletes destination-only files)
+
+Engine:    manifest — works between any two endpoints
+  not changelog: not a device↔cloud topology
+  not cursor: source declares external-writes="possible"
+  (--view human explains each in full)
+File list: source snapshot, destination scan (Operation not supported: paginated snapshot)
+
+Added:     2
+Modified:  0
+Deleted:   1
+Unchanged: 0
+
+Transferred: 0 files
+Verified:    no
+Duration:    24ms

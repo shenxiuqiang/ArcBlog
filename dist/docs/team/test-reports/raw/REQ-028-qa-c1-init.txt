@@ -1,0 +1,7 @@
+Initialized DID Space at /tmp/qa-r16-space/src (layout=files, externalWrites=possible)
+total 8
+drwxr-xr-x@ 3 shenxiang  wheel   96  9月 28 20:07 .
+drwxr-xr-x@ 5 shenxiang  wheel  160  9月 28 20:07 ..
+-rw-r--r--@ 1 shenxiang  wheel   45  9月 28 20:07 config
+layout = "files"
+externalWrites = "possible"

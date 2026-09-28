@@ -30,7 +30,7 @@
 
 | 分组 | ✅ | 🟡 | ⬜ | ⚪ | 小计 |
 | ---- | -- | -- | -- | -- | ---- |
-| A. 平台与架构基础 | 6 | 1 | 0 | 0 | 7 |
+| A. 平台与架构基础 | 7 | 0 | 0 | 0 | 7 |
 | B. 角色 / NFT / 质押 | 10 | 0 | 0 | 1 | 11 |
 | C. 内容与发布 | 13 | 2 | 1 | 0 | 16 |
 | D. 管理后台 | 20 | 4 | 3 | 0 | 27 |
@@ -38,7 +38,7 @@
 | F. 网络与发现 | 11 | 0 | 2 | 0 | 13 |
 | G. Agent | 8 | 0 | 1 | 0 | 9 |
 | H. 未来（V2+） | 0 | 0 | 5 | 1 | 6 |
-| **合计** | **81** | **8** | **13** | **2** | **104** |
+| **合计** | **82** | **7** | **13** | **2** | **104** |
 
 ---
 
@@ -49,7 +49,7 @@
 | Blocklet Package / Instance 模型 | §78–§81 | ✅ | `blocklet.yaml`、`dist/` |
 | AFS 资源模型与权限边界 | §12–§13 | ✅ | `world/*.yaml` 21 个 schema（`ls world/*.yaml \| wc -l`）；`blocklet.yaml` replicated 权限表 |
 | Identity / DID / Session | §3 | ✅ | `$session.authenticated` 登录卡 + 页面级授权 |
-| DID Space 用户数据 | §5.2、§83 | 🟡 | 草稿/私域目前由 instance 空间目录边界承载；用户作用域 `/user` 数据待落地 |
+| DID Space 用户数据 | §5.2、§83 | ✅ | 【Round 16 收口】`/user` 是**会话投影**，真实登录会话内 list/read/write/delete **四能力可达**，且**按调用者天然隔离**（同一路径对不同 DID 解析成不同目录；实测 A 写 → B 读 `[]`/`NOT_FOUND`、guest `404` 且 DOM 零泄漏）；**`blocklet.yaml` 零改动**（授权来自 session，不是 `replicated`）。试点：`?page=saved` 阅读清单写入 `/user/arcblog/bookmarks/<slug>.json` + CLI 对偶 `scripts/arcblog-bookmarks.mjs`（`list/add/remove/where`，按 DID 寻址；CLI 无 `/user` 会话视图 → `where` 同时打印 session/cli 路径）。另有 folder-backed space 运维通道（`init/check/repair/set` + `sync --dry-run`/additive/`--verify`，破坏性命令仅 dry-run）。**缺口登记**：① §83 五棵树只落 1 个面（drafts/private/preferences/agent/payment 未落地，属主动裁剪非平台不支持）；② `AFS_DID_SPACE_SCOPE_SECRET` 仍 unset ⇒ scope 目录明文，属**生产前置条件**（daemon 变量，blocklet 不可设）；③ 页面不提供行内直删（AUP 整页 `required` 校验会阻断本页其它 action），删除走 CLI；④ `/user` 并发写/`ifMatch` 语义未测 |
 | AUP 管理后台框架 | §14 | ✅ | `.aup/`（app.aup + 25 个页面文件：17 个控制台页 + 公共页；`ls .aup/pages/*.aup .aup/pages/*/*.aup \| wc -l`） |
 | Web Device 公共站点 | §17–§18 | ✅ | `pages/`、`.web/`、`.route/` |
 | Public Site 与 Admin 分离 | §127–§128 | ✅ | 公共页 SSR（`/.route/web`），后台 AUP |
@@ -225,3 +225,4 @@
 | 2026-09 | 收口轮次 14 + 修复窗口 R14F（人类恢复；自动续轮 7/8→8/8）：**REQ-017（Dev）**——新增 `?page/orders`（六问可答、链上哈希只取真实来源）与 `?page=ledger`（append-only + 确定性 id）+ **CLI `ledger list --type`**（真过滤 + fail-closed）+ BUG-029（`hub --help` 补 refresh）；**REQ-018/R14F（UI）**——21 控制台页 + 4 公共页 × en/zh × 1803×908/1512×765 共 **168 次采集**的 UI 全面走查（边距/间距/**文案溢出与重叠**/一致性/简洁性/可用性）：UI 自修 2 条（平台 copy/QR 命中区 18→24、页脚链接 17→28.8）+ 出 13 条 `.aup` 修复清单（P1×3/P2×7/P3×2）；Dev 落地 **12/13**（含 BUG-030 orders/ledger 接平台 time、BUG-031 及同族 5 处 gate 文案、D-01 general Save 60→29px、顶栏/页脚品牌回首页 `/?page=index`、hub 关系行溢出 131/255→0、orders/ledger 开局滚到底→0、posts 按钮 1440→176px、tags 滚动列 93→428px、文本链接命中区 <24→25px）；QA-010 复验 **VERDICT=pass / BLOCKING=0**（100/100 采集 docOver=0、真实「文本×控件」相交仅 1 处、门 7 条全绿、实例基线复原）。→ 第 113/114 行 🟡→✅：**✅81 / 🟡8 / ⬜13 / ⚪2 = 104 行**（D 组 20✅/4🟡）。新增 P2×3（BUG-033 pages View 链接 0 宽压住按钮 / BUG-034 hub@1512 残留 92 / BUG-035 factory@1512 哈希 133）与 P3×1（BUG-032）= 全 R15。平台事实：§29.8（style 转发白名单 67 键、action 路径丢 alignSelf、`itemStyle=row` 的 `flex:1 1 0%` 与页内 flexGrow:0 冲突）。**新增用户需求待开工**：REQ-019 控制台按钮化（去「复制命令」主路径）、REQ-020 顶栏与内容间距、REQ-021 订单链上查询 + 退款链上转账（先调研）|
 | 2026-09 | 需求轮次 15（自动续轮 9/14）：**REQ-020/020a（UI）**——顶栏与内容间距实测 0 → **公共页 0→20px**（`pageview` 3→23），控制台 21 页保持 0（共享壳体方案经干跑证伪：全局 padding 会让控制台的运行时滚动容器从 908 变 928 = 新增整页滚动条）；实现为 bridge CSS 的 1 条 `:has()` 规则（`padding-top` + 等量负 `margin-bottom`，高度中性），116 run 改前后 `documentElement` 溢出**逐值不变**、SPA 站内跳转在两类页面间正确生效/撤销，`≤` 不支持 `:has()` 时自动回落。**REQ-023（Dev）**——链环境变量化落地（`CHAIN_PRESETS`：beta/TBA 与 main/ABT，显式 env 覆盖、fail-closed、文档两套示例、CLAUDE.md「Chain environment」）。**REQ-024（Dev）**——Factory 模板：公钥类字段默认不展示（折进「高级」）+ 长哈希单列 → **BUG-035 闭环**。**REQ-025（调研）**——472 行分成调研：官方文档证明链上支持 factory `mint` hook + `transferToken` 强制分账（Blocklet Store 先例），并与 AFS 结算层做方案对比；GLofter 源码取不到已如实登记（404）。QA-011 独立验证 **VERDICT=pass / BLOCKING=0**；新增 P3：BUG-037（NFT SVG 占位）/ BUG-038（Factory 文档漂移）。→ 本轮无状态迁移：**✅81 / 🟡8 / ⬜13 / ⚪2 = 104 行**（D 组 20/4）|
 | 2026-09 | 工具链（非清单行）：**REQ-027 版权文案收敛**（用户报：`© 2026 ArcBlog` 在 7 个 `.aup` 页面 + `.aup/wrapper.aup` 共 8 处硬编码、年份写死）。**动态年份实测做不到** —— 逐条否决 8 种写法（6 个 `${generate.*}` 写在 prop、`${generate.timeiso}` 写在文本节点、`${generate.*}` 回填进 `$t()` 的 locale 值，全部原样输出），平台只暴露 `generate.{id,timeiso,uuid}` 且 `app-footer` 的 `copyright` 只做 `String()`+`textContent`、无日期入口。**收敛做到**：8 处渲染点统一为同一个键 `$t(wrapper.footer-copyright)`，值只维护在 `.aup/locales/{en,zh}.json:475` → 年份改动面 **10 行/10 文件 → 2 行/2 文件**（压到 1 行需改 `scripts/**`、拆掉 en/zh 键集合一致的门禁，不做）。同时实测两条平台事实并沉淀进 `arc-contracts.md` **§31**：`wrapper.aup` 的 `i18n{}` 块运行期不生效（`wrapper.*` 运行期只读 locales）；locale 存在同 tab sessionStorage（单 tab 内 zh→en 切不回去，QA 需每语言新 context）。REQ-026 页脚几何零回退（119.14px、右下两行右对齐）。QA 独立复验 **VERDICT=pass / BLOCKING=0** |
+| 2026-09 | 精简轮次 16（自动续轮 11/14）：**REQ-028 对接 ARC Space（DID Space）** —— A 段实测 `/user` 可达 + 按调用者隔离 + guest 被拒，且 `blocklet.yaml` **零改动**（授权来自 session）；B 段试点 `?page=saved` 阅读清单（页面按钮 → `/user/arcblog/bookmarks/`，CLI 对偶 `arcblog-bookmarks.mjs`）；C 段 folder-backed space + `arc space sync`（`--mirror`/`rm` 只跑 dry-run，手改目的端 fail-closed 需 `repair` 或 `--full`）；QA-012 **VERDICT=pass / BLOCKING=0**；平台边界判定 = **能力上线（部分上线）** + 4 条子边界（CLI 无 `/user` 视图；平台仅 guest/admin 两档角色；反标识未开＝明文目录；`arc space check --json` 已 ~511KB 且退出码按通道不同）；新 BUG-039（P2 裸根 `/` 重放上一页 → R17）/ BUG-040（P3 证据漂移 → 本轮内联闭环）。**第 52 行 🟡→✅：✅82 / 🟡7 / ⬜13 / ⚪2 = 104**（A 组 7✅/0🟡）|

@@ -1,0 +1,26 @@
+{
+  "slug": "qa-r16-mul7cag2",
+  "admin": {
+    "context": "BEEA24C3C347F1FB3C86F4A949A67B6C",
+    "cookieSet": true,
+    "identity": "{\"href\":\"http://arcblog.localhost:4939/?page=saved&locale=zh\",\"caller\":\"z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP\",\"authed\":false}",
+    "dom": "{\"inputs\":[{\"name\":\"bSlug\",\"type\":\"text\",\"placeholder\":\"\",\"required\":true,\"id\":\"aup-input-saved-view-1-view-2-view-4-input-3\"},{\"name\":\"bTitle\",\"type\":\"text\",\"placeholder\":\"\",\"required\":false,\"id\":\"aup-input-saved-view-1-view-2-view-4-input-5\"}],\"buttons\":[\"EN\",\"中文\",\"▾\",\"用户中心\",\"管理控制台\",\"管理后台\",\"退出登录\",\"加入阅读清单\"],\"rowSlugs\":[\"已收藏文章\",\"hello-arcblog\",\"命令（复制后执行）\",\"新增收藏\"],\"hasGate\":false}",
+    "listUser": "{\"ok\":false,\"err\":\"(r.entries || r || []).map is not a function\"}",
+    "listBookmarks": "{\"ok\":false,\"err\":\"(r.entries || r || []).map is not a function\"}",
+    "readPilot": "{\"ok\":true,\"content\":\"{\\n  \\\"slug\\\": \\\"hello-arcblog\\\",\\n  \\\"title\\\": \\\"Hello ArcBlog\\\",\\n  \\\"addedAt\\\": \\\"2026-09-28T11:57:56.880Z\\\"\\n}\"}",
+    "readOldResidue": "{\"ok\":true,\"content\":\"{\\\"t\\\":1}\"}",
+    "click": "{\"ok\":true,\"clicked\":\"加入阅读清单\",\"inputCount\":2,\"slugName\":\"bSlug\"}",
+    "readMyRecord": "{\"ok\":true,\"content\":\"{\\n  \\\"slug\\\": \\\"qa-r16-mul7cag2\\\",\\n  \\\"title\\\": \\\"QA R16 probe\\\",\\n  \\\"addedAt\\\": \\\"2026-09-28T12:06:47.608Z\\\"\\n}\",\"meta\":{\"size\":99,\"version\":\"1790597207615.7983-157242368-99\",\"mimeType\":\"application/json\"}}",
+    "listAfterAdd": "{\"ok\":false,\"err\":\"(r.entries || r || []).map is not a function\"}",
+    "afterReload": "{\"caller\":\"z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP\",\"rows\":[\"已收藏文章\",\"hello-arcblog\",\"qa-r16-mul7cag2\",\"命令（复制后执行）\",\"新增收藏\"],\"hasSlug\":true,\"hasTitle\":true}",
+    "consoleErrors": "[]"
+  },
+  "guest": {
+    "context": "C02446C1E208A95C0E411FDF38AAAF23",
+    "identity": "{\"href\":\"http://arcblog.localhost:4939/?page=saved&locale=zh\",\"caller\":null,\"hasAfs\":true}",
+    "listUser": "{\"ok\":false,\"err\":\"Path not found: /user\"}",
+    "readPilot": "{\"ok\":false,\"err\":\"Path not found: /user/arcblog/bookmarks/hello-arcblog.json\"}",
+    "leak": "{\"leaksSlug\":false,\"leaksTitle\":false,\"leaksQaSlug\":false,\"hasGate\":true,\"bodyHead\":\"ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录\"}"
+  },
+  "teardown": "targets closed, contexts disposed"
+}

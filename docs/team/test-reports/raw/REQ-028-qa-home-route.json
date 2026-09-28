@@ -1,0 +1,207 @@
+[
+  {
+    "scenario": "A: direct / in a fresh tab",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh",
+          "h1": null,
+          "h2": "最新发布",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 最新发布 Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifec"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "B: /?page=saved then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=saved",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "C: /?page=dashboard then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=dashboard",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=dashboard&locale=zh",
+          "h1": null,
+          "h2": "仪表盘",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 仪表盘 使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。 使用 DID Wallet 登录"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=dashboard",
+          "h1": null,
+          "h2": "仪表盘",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 仪表盘 使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。 使用 DID Wallet 登录"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "D: /?page=about then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=about",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=about&locale=zh",
+          "h1": null,
+          "h2": "关于 ArcBlog",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=about",
+          "h1": null,
+          "h2": "关于 ArcBlog",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "E: /?page=saved then /?page=about then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=about",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=about&locale=zh",
+          "h1": null,
+          "h2": "关于 ArcBlog",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=about",
+          "h1": null,
+          "h2": "关于 ArcBlog",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "F: / then /?page=saved then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh",
+          "h1": null,
+          "h2": "最新发布",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 最新发布 Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifec"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=saved",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      }
+    ]
+  },
+  {
+    "scenario": "G: / then /?page=saved then /posts/hello-arcblog then /",
+    "steps": [
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh",
+          "h1": null,
+          "h2": "最新发布",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 最新发布 Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifec"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+          "h1": null,
+          "h2": "阅读清单",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 阅读清单 使用 DID Wallet 登录后维护私有阅读清单。 使用 DID Wallet 登录"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/posts/hello-arcblog",
+        "after": {
+          "href": "http://arcblog.localhost:4939/posts/hello-arcblog?locale=zh",
+          "h1": "Hello ArcBlog",
+          "h2": "What it is",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 返回最新文章 / Hello ArcBlog Hello ArcBlog Demo 10 days ago technology Hello ArcBlog ArcBlog is a DID-native publishin"
+        }
+      },
+      {
+        "navigateTo": "http://arcblog.localhost:4939/",
+        "after": {
+          "href": "http://arcblog.localhost:4939/?locale=zh&page=reader",
+          "h1": "Hello ArcBlog",
+          "h2": "What it is",
+          "hasSidebar": false,
+          "bodyHead": "ArcBlog 返回最新文章 / Hello ArcBlog Hello ArcBlog Demo 10 days ago technology Hello ArcBlog ArcBlog is a DID-native publishin"
+        }
+      }
+    ]
+  }
+]

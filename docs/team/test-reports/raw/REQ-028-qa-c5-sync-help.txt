@@ -1,0 +1,61 @@
+arc space sync
+
+Move data between two subtrees — local folders and/or remote hosts. Makes --to
+converge toward --from. Additive unless --mirror.
+
+Options:
+      --json             Output in JSON format  [boolean]
+      --view             Output view format (json is equivalent to --json). llm
+                         is accepted globally; commands without an llm renderer
+                         fail closed (declare ⇒ execute; arc#6037). [string]
+                         [choices: "default", "llm", "human", "json"] [default:
+                         "default"]
+      --home             Instance root — to pick which instance, use --instance.
+                         Used by `arc service start` (create) and `arc did init`
+                         (identity). In `--standalone`, sets DID Space and
+                         configDir; mounts come from a cwd-walk of
+                         `.afs-config/config.toml`, not from --home. [string]
+  -i, --instance         Named local ARC instance this command operates against
+                         (see `arc service list`). Omit for the default
+                         instance. [string]
+      --from             Source: a local folder, or https://<host>[/<sub>]
+                         [string] [required]
+      --to               Destination: a local folder, or https://<host>[/<sub>]
+                         [string] [required]
+      --mirror           Delete destination-only files (default: additive,
+                         nothing is removed) [boolean] [default: false]
+      --dry-run          Report the differences without writing anything
+                         [boolean] [default: false]
+      --engine           Force an engine. 'auto' negotiates the strongest one
+                         both ends support. A named engine that is unavailable
+                         is an ERROR — never a silent downgrade. [string]
+                         [choices: "auto", "changelog", "cursor", "manifest"]
+                         [default: "auto"]
+      --verify           After syncing, recompute every destination file's CID
+                         against the source. Combined with --dry-run it ASSERTS
+                         the destination already matches (non-zero exit if not)
+                         — the check `space copy --check` used to perform.
+                         [boolean] [default: false]
+      --full             Ignore recorded state and re-read everything: no
+                         cursor, and no reading either end's index — both trees
+                         are walked directly. The first sync into a destination
+                         is full either way; use this to rebuild a destination
+                         you no longer trust, or to sync a claimed folder that
+                         is deliberately written outside AFS (whose index is
+                         expected to lag, and which otherwise fails with an
+                         index-diverged error). [boolean] [default: false]
+      --init             Claim a folder destination as layout=files (default
+                         when the source is claimed) [boolean] [default: false]
+      --external-writes  Query-freshness declaration for a claimed destination
+                         (folder-query-freshness §3.1). Only consulted when the
+                         destination is actually claimed. [string] [choices:
+                         "none", "possible"] [default: "possible"]
+      --token            Access token for a remote endpoint (alternative to
+                         browser auth) [string]
+      --browser          Open a browser for the auth flow (use --no-browser with
+                         --token for unattended runs) [boolean] [default: true]
+  -v, --version          Show version number  [boolean]
+
+Examples:
+  arc space sync --from ./a --to ./b --dry-run
+      Preview a sync without writing

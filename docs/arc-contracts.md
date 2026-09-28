@@ -247,6 +247,9 @@ arc space check --json
 本机报告 69,403 字节；`arc space check --json | …` 只收到 65,536 字节，`JSON.parse` 直接失败
 （重定向到文件则完整）。Node 的 `spawnSync` 也是管道，同样受影响。因此
 `scripts/lib/doctor.mjs` 的 `space-layout` **只读退出码，不解析 stdout**。
+**2026-09-28（Round 16）复核**：该报告已涨到 **~511,030 字节**（实例内容变多），管道截断问题更严重；
+且**退出码按通道不同** —— AUP `exec` 包装的失败常常是 `exit 0`（错误在响应体里），而
+`arc afs write --path …` 一类是 `exit 5`。**判断「是否被拒」不能只看退出码**，要读原始响应/HTTP 状态。
 
 **(b) 退出码非 0 未必是布局问题——本机是索引漂移。**
 实测本机 `status=1`，但 `missingRoots / needsMigration / unreadable` 全为空，
@@ -1632,3 +1635,34 @@ tokenId / tokenDecimals`。选择顺序（**实测**）：显式 `ARCBLOG_CHAIN_
    `scripts/arcblog-i18n.test.mjs`（在 `npm test` 内）硬性要求 **en 与 zh 的键集合逐字节相同**，
    一个键至少要写 **2 行**（en 一行、zh 一行，值可相同）。想压到 1 行必须改 `scripts/**`，
    等于拆掉那条门禁，不建议。
+
+### 4.2 `/user` 是**会话投影**，不是路径授权：可达性、隔离与三条子边界（Round 16 实测）
+
+为对接 ARC Space（DID Space）做了完整探针（真实登录会话 + 另一 DID + 无 cookie），结论如下。
+
+**(1) `/user` 在真实登录会话内四能力全通**：`list` / `read` / `write` / `delete` 都成功，且三个视图指向同一份数据 ——
+`/user/arcblog/bookmarks/<slug>.json` ≡ `/blocklets/arcblog/users/<caller-did>/arcblog/bookmarks/<slug>.json`
+≡ `~/.afs/spaces/<caller-did>/blocklets/arcblog/user/arcblog/bookmarks/<slug>.json`（`createdAt` 逐字一致）。
+
+**(2) 隔离由 session 作用域本身保证，不需要任何 `blocklet.yaml` 声明**：同一个路径字符串对不同 DID 解析成
+**不同目录**。实测 A（会话 DID）写入后：B（另一个真实 DID）`list /user` → `[]`、`read` → `NOT_FOUND`、
+自己的 scope 为空目录；无 cookie guest → `/user` 返回 `Path not found`，隔离 context 的 DOM 里
+`leaksSlug/leaksTitle` 均为 false。**`blocklet.yaml` 零改动**（`replicated` 没有 user-scope 的 canonical 形态，
+而授权来自 session）——所以「为了用 `/user` 去放宽权限表」是错误做法。
+
+**(3) 三条子边界（都会误导实现，务必区分「平台不做」与「通道不做」）**
+- **CLI 通道没有 `/user` 视图**：`arc afs ls /user` → `No data found`（exit 1）；`arc afs exec …/.actions/{list,read,write}`
+  对 `/user` 分别得到 `[]` / `NOT_FOUND` / `No module found for path`；`arc afs write --path /user/…` → exit 5。
+  原因不是「平台不支持 `/user`」，而是 `arc afs` 没有 AUP 会话（`arc afs explain /user` 报 `TYPE unknown`）。
+  → ArcBlog 的解法是按 **DID 寻址**（`scripts/arcblog-bookmarks.mjs --user <did>`，`where` 同时打印 session 与 cli 路径）。
+- **平台只有 guest / admin 两档角色**（§13），「只有本人可读自己的 `/user`」**无法声明**；隔离来自作用域本身。
+  因此**不要**把 `networkRead` 前缀挂在私有父路径上给 guest。
+- **`AFS_DID_SPACE_SCOPE_SECRET` unset ⇒ scope 反标识关闭、目录明文**（每次 `arc space *` 都会 stderr 告警）。
+  它是 **daemon 环境变量**，blocklet 既不能设置、也不应替 daemon 打开 `AFS_DID_SPACE_REQUIRE_DEID`
+  → 登记为**生产前置条件**，不得写成「已修复明文目录」。
+
+**(4) 附带发现的 AUP 运行时事实（与 DID Space 无关但同轮踩到）**：**AUP 的服务端校验是「整页」的** ——
+提交任意一个 `action` 时会校验本页**所有**输入，一个空的 `required` 字段会阻断本页**其它所有** action
+（原始证据：`POST /api/aup/event` 的 `validation_failed` 载荷 + daemon `[aup-validation] … blocked submit`）。
+所以「列表 + 行内删除」同页共存时，删除动作会被同页表单的空值卡死；ArcBlog 的处理是列表页只做列举/新增、
+删除交给 CLI（与 `?page=categories` 的既有诚实形态一致），而不是伪装成能点。

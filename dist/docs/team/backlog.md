@@ -17,6 +17,10 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
+> ✅ **Round 16 已收官（PM 裁决写回，2026-09-28）—— 放行（QA-012 [round-16.md](test-reports/round-16.md) 末行 `VERDICT=pass, BLOCKING=0`；阻断 **0**，无未裁决 P0/P1）**：**主项 [REQ-028](requirements/REQ-028-arc-space-integration.md) 对接 ARC Space（DID Space）交付并放行**——**A 段探针**证明 **`/user` 在真实已登录会话内可达（list/read/write/delete 四能力全 OK）、按调用者天然隔离（A 的 `/user` 对 B 与 guest 不可见·不可读）、guest 被拒（404）**，且 **`blocklet.yaml` 零改动**（授权来自 **session**，不是 `replicated`）；**B 段**落**一个真实试点** = `?page=saved` 阅读清单（页面写入 + `scripts/arcblog-bookmarks.mjs`，记录真落 `/user/arcblog/bookmarks/`，三视图逐字一致）；**C 段** folder-backed space + `arc space sync` 运维通道实测（`init`/`set` 可逆/`--mirror --dry-run`/**additive 真跑**/`repair` fail-closed），**`--mirror` 与 `rm` 从未真跑**（L-R16-3）。**平台边界判定（L-R16-5 口径）= 不是平台边界，是「能力上线（部分上线：§83 五棵树只落 1 个面）」**；登记 **4 条子边界**（PB-1 CLI 无 `/user` 视图 / PB-2 平台仅 guest·admin 两档故按调用者隔离不可声明 / PB-3 `AFS_DID_SPACE_SCOPE_SECRET` unset ⇒ 明文目录属**生产前置** / PB-4 `arc space check --json` ~511 KB + **退出码按通道不同**）。**门全绿**：validate issues=[]、`npm test` **28/28**、build Published **680**、`console-nav --check` **pages 21**、`generate --check` 0 漂移、`.aup`/`.web` 双 diff 空、权限矩阵 **6/6**（`.gate-lock` 下）。**新增 2 条 BUG**：[BUG-039](bugs/BUG-039-bare-root-replays-last-page.md)（**P2** 裸根 `/` 重放本会话最后一次 `?page=`；范围外/既有）→ 裁「**下一轮修（R17-1，先探针）**」；[BUG-040](bugs/BUG-040-req028-dev-report-evidence-drift.md)（**P3** Dev 报告两处证据漂移）→ 裁「**本轮修（PM 内联勘误，docs-only）→ 已闭环**」。**checklist 建议（Lead 落笔）**：第 **52** 行「DID Space 用户数据」**🟡→✅**（附 3 条缺口登记：仅落一个面 / scope secret 生产前置 / 页面不提供直删）→ **✅ 81→82 ｜ 🟡 8→7 ｜ ⬜ 13 ｜ ⚪ 2 = 104**（**A 组 6✅1🟡 → 7✅0🟡**，D 组不变 20/4/3）。详见下方「**本轮：Round 16**」+「**缺陷（🐞）— Round 16 QA 新增**」。
+>
+> 🗂️ R16 规划横幅（`task-67` 轮初原文，保留备查；终态以上方 ✅ 条为准）：本轮主项 = [REQ-028](requirements/REQ-028-arc-space-integration.md) 对接 ARC Space（DID Space）；**先探针后实现**（**L-R16-2**）——用户作用域（`/user`）**探针** → 落**一个真实试点** → **folder-backed space + `arc space sync` 运维通道**（**L-R16-1**）。**任务板（Lead）**：**`task-66`（Dev）** / **`task-68`（QA，`blocked_by task-66`）** / **`task-67`（PM 规划）**。**安全红线**：`blocklet.yaml` 权限表 = **安全敏感写入**（任何声明改动必须先在 `docs/team/.gate-lock` 下落锁 + **定向**跑 `npm run test:file -- scripts/arcblog-permissions.test.mjs`（基线 6/6）+ 实测**跨用户隔离**（A 的 `/user` 对 B 不可见/不可读）与**未声明路径被拒**（fail-closed））；**破坏性命令只允许 dry-run**（`arc space sync --mirror`、`arc space rm` **不得在共享 dev 实例上真跑**；⚠️ `arc space rm` 的**默认 `--scope` 是 `user`**）；探针写入的用户空间记录与临时目录**要清理或如实登记**（**L-R16-3**）。**平台事实（以实测为准）**：本机 daemon `2.0.0-beta.50 (c711b9aa)`（Lead 口径文档版本 = `beta.48/28`，PM 未复现）；`arc space list` 的 `groups[].role` = `instance|user`，`ArcBlog` 在 **instance 995 文件 / user 0 文件**；`arc space path … --scope user` → `/spaces/<instanceDid>/blocklets/arcblog/user`，但裸 shell `arc afs ls /user` = `No data found`、`explain` = `TYPE unknown`（**能力必须在运行期核验**，`arc-contracts §1`）；**`AFS_DID_SPACE_SCOPE_SECRET unset` ⇒ scope 反标识关闭、目录明文**（如实登记 + 评估 ArcBlog 侧是否要求，**L-R16-4**）；**文档明确「路径不是授权决定」**——授权来自 `replicated.<collection>.readRole/minRole` 的**声明**，`networkRead` 只是**前缀增补**，**未声明路径默认拒绝**（`arc-contracts §13`）。**若探针证明 `/user` 在本平台/授权下不可达 → 如实登记为「平台边界」+ 给降级方案（session / instance 存储），不得假装实现（L-R16-5）**。**本轮不做**：**REQ-021 / REQ-019 / REQ-022 / BUG-036 / BUG-037 / BUG-038 → R17**（**L-R16-6**）。**门**：`arc dsl validate --json`（issues=[]）+ `npm test`（**28/28**）+ `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check` + `diff -r .aup dist/.aup`（改 `.web` 再加 `diff -r .web dist/.web`）；**禁止跑全量 `npm run test:live`**；**浏览器单 tab 纪律**（复用同一标签页 `Page.navigate` 换页；**locale 存在同 tab sessionStorage → 每语言 / 每身份用新 context 才能切干净**）。详见下方「**本轮：Round 16**」+ [REQ-028](requirements/REQ-028-arc-space-integration.md) + [journal/round-16.md](journal/round-16.md)。
+>
 > ✅ **Round 15 已收官（PM `task-64` 裁决写回，2026-09-28）—— 放行（QA-011 [round-15.md](test-reports/round-15.md) 末行 `VERDICT=pass, BLOCKING=0`，`P0=0 / P1=0`）**：**四项全部交付**——① **REQ-020 + REQ-020a（UI）**：公共页**内容侧等效间距 20px**（四组恒等；`padding-top:20px` + 同元素 `margin-bottom:-20px` 高度中性补偿，QA 独立复现 ON/OFF 滚动几何逐值相同）、**控制台 21 页保持 `gap=0` 并交出反证**（注入全局 padding → 运行时滚动容器 `908/908 → 928/908`、壳底越界、侧栏底边破坏）；② **REQ-023（Dev）链环境变量化**：`ARCBLOG_CHAIN_ENV=beta|main` 只填默认值、显式 env 覆盖、**三件套（`network`+`chainHost`+`tokenId`）fail-closed**、`config/roles.json` 为唯一 record 级回退、**页面/DSL 零链地址与代币符号**（`.aup`+`dist/.aup` 的 `ABT`/`0x…`/`mnemonic` 命中 **0**）、mock 旧语义**逐字节不变**；③ **REQ-024（Dev）Factory 模板收敛**：单列结构（`minmax(0,1fr)`）+ 高级折叠、**公钥类默认不展示**、**保留 copyable**、**不用 allowlist**、四组零溢出 → **[BUG-035](bugs/BUG-035-factory-1512-hash-overflow.md) 6 个溢出值（133/121/120/112/62/119）全部归零、闭环**；④ **REQ-025（研究）只读取证**：实际交付 = [ROYALTY 分册](requirements/REQ-025-nft-royalty-research.md)（官方 URL HTTP 200 + 80 处 `文件:行号` + GLofter 404 复现 + 零真实链交易），**链事实分册无独立报告（口径漂移，已如实登记）**。**门 7 条全绿** + 定向 live node-nft **15/15** / roles **18/18**（持锁串行）+ 单 tab 自证 + 实例基线复原。**新增 3 条 BUG（[BUG-036](bugs/BUG-036-cold-load-projection-values-empty.md) P2 / [BUG-037](bugs/BUG-037-factory-nft-svg-placeholder.md) P3 / [BUG-038](bugs/BUG-038-nft-factory-doc-chain-env-drift.md) P3，全部范围外/既有）→ 均裁「下一轮修（R16-2 / R16-5 / R16-6）」**；无未裁决 P0/P1。**checklist 建议：状态列不变（✅81 / 🟡8 / ⬜13 / ⚪2 = 104）+ 第 64 行（§8.1）备注补「hooks ✅ 单收款人全额入厂 / 链上分账 ⬜ 未实现」+ 维护记录一行**，由 Lead 落笔。详见下方「**本轮：Round 15**」+「**缺陷（🐞）— Round 15 QA 新增**」+「**Round 15 交付结果 + Round 16 路线**」。
 >
 > 🗂️ **R15 规划横幅（`task-62` 轮初原文，保留备查；终态以上方 ✅ 条为准）**：R14F 收官后（QA-010 放行、`BLOCKING=0`；checklist 第 113 + 114 行已落 ✅ → **✅81 / 🟡8 / ⬜13 / ⚪2 = 104**），Lead 建 R15 任务板 **`task-54` / `task-56`（UI）/ `task-58` / `task-59`（Dev）/ `task-60`（研究）/ `task-62`（PM 规划）/ `task-63`（QA）/ `task-64`（PM 裁决）**，并下发 **L-R15-1…L-R15-5**。**本轮四项 = ① [REQ-020](requirements/REQ-020-toolbar-content-spacing-public.md) + [REQ-020a](requirements/REQ-020a-console-spacing-model.md) 顶栏与内容间距（UI；**先探针后落笔**、公共页加**内容侧等效间距**、控制台页按 `calc(100vh - 48px)` 滚动模型**保持或给安全等效证据**）② [REQ-023](requirements/REQ-023-chain-environment-externalization.md) 链环境变量化（Dev；**唯一来源 = env 或 `config/roles.json`**、`ARCBLOG_CHAIN_ENV=beta|main` **只填默认值**、缺三件套 **fail-closed**、页面/DSL **零具体链地址与代币符号**）③ [REQ-024](requirements/REQ-024-factory-template-display-convergence.md) Factory 模板展示收敛（Dev；**D34 = 单列 + 收敛字段**、公钥类默认不展示/折进「高级」、**保留一键复制**、**不用 allowlist**、**四组视口零溢出 → 关 BUG-035**）④ [REQ-025](requirements/REQ-025-chain-and-factory-facts-research.md) 链与工厂事实**只读**调研（**官方 URL + 仓库 `文件:行号`**、**零真实链交易**）**。**写者串行（L-R15-5）**：UI 先做完 build/restart → Dev 再动手（两者都写 `dist/**`）；**研究只写 docs，可与 UI 并行**。**门**：`arc dsl validate --json`（issues=[]）+ `npm test`（28/28）+ `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check` + `diff -r .aup dist/.aup`（改了 `.web` 再加 `diff -r .web dist/.web`）；**不跑全量 live**；触及 CLI → `.gate-lock` + 定向单跑；**浏览器单 tab**。**承继未派发**：[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（R15-11）/ [BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)（R15-12）仍在排队；[BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md)（P3，口径 **D32** 待 Lead）；**BUG-035 已并入 REQ-024**。详见下方「**本轮：Round 15**」。
@@ -985,6 +989,184 @@ $ git status --short docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature
 
 ---
 
+## 本轮：Round 16 ｜ **精简轮** — 对接 ARC Space（DID Space）：`/user` 作用域探针 → 一个真实试点 → folder-backed space + `arc space sync` 运维通道
+
+> **轮次性质**：**精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 11/14**（`max_goal_rounds=14`；**Lead 口径**——PM 未独立复核 goal 计数器）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）；本小节即 **`task-67`** 的产物，轮末裁决由 PM 执行。
+> **任务板（Lead）**：**`task-66`（Dev）** ／ **`task-68`（QA，`blocked_by task-66`）** ／ **`task-67`（PM 规划）**。**REQ ↔ task 的逐条对应以 Lead 任务书为准**；PM 按 Lead 口径登记：**REQ-028 → `task-66`（Dev）· `task-68`（QA）**。
+> **门规（照此执行）**：门 = `arc dsl validate --json`（**issues=[]**）+ `npm test`（**28/28**，~1s，不写实例）+ **`arc blocklet build`**（改了 `.aup` / `.web`）+ `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `arc dsl generate --check`（无漂移）+ `diff -r .aup dist/.aup`（改了 `.web` 再加 **`diff -r .web dist/.web`**）。**禁止跑全量 `npm run test:live`**；**不新增测试文件**（新文件默认 live，会破坏快层 28/28 基线）；**不动 `FAST_TESTS`**。**写实例前先写 `docs/team/.gate-lock`**（一行 `owner + 时间`）、跑完删锁；**改了 `blocklet.yaml` 权限表 → 必须定向单跑** `npm run test:file -- scripts/arcblog-permissions.test.mjs`（基线 **6/6**）。**浏览器单 tab 纪律**：复用同一标签页（`Page.navigate` 换页）；**locale 存在同 tab sessionStorage → 每语言 / 每身份用新 context**（A 段跨用户隔离尤其如此）。
+
+**目标（可验收）**：
+
+1. **A 段 —— 探针（先探针后实现，L-R16-2）**：在**真实已登录 session** 内核验 `/user` 作用域的 **list / read / write / delete** 四能力 + **fail-closed**（未声明路径被拒）+ **跨用户隔离**（A 的 `/user` 对 B 不可见/不可读）；每条结论附**原始命令 + 原始输出**；探针记录**逐条清理或如实登记**（含 2026-09-20 的旧残留）。
+2. **B 段 —— 落一个真实试点**：A 段证明可达后，**只选一个**用户私有数据面（PM 倾向 **P1 用户偏好 `/user/preferences/arcblog.json`**，因其**不需要动权限表**；Dev 可推翻但须附理由），做到「写入 → AFS 用户作用域出现记录 → 读回一致」，三类证据 = `arc afs read` 原始 JSON + 页面 DOM 值 + `fileCount` 前后。
+3. **C 段 —— folder-backed space + `arc space sync` 运维通道**：`arc space init <dir>` → `arc space set <folder> external-writes=…` → **只跑 `sync --dry-run`**（L-R16-3）→ 命令与真实 `--help` **逐字对齐**，说明与 `?page=diagnostics` 已有命令面的关系。
+
+**入选理由**：R15 已收官（QA-011 `VERDICT=pass, BLOCKING=0`；checklist ✅81/🟡8/⬜13/⚪2）→ 仓库**无未裁决 P0/P1**；且 **L-R16-1 指名本轮主项 = REQ-028**。**来源可定位**：checklist 第 **52** 行「DID Space 用户数据」（§5.2、§83，**现 🟡**，原文「草稿/私域目前由 instance 空间目录边界承载；**用户作用域 `/user` 数据待落地**」）+ spec **§5.2 / §82 / §83 / §85** + PM 实测「`role: user` 下 `ArcBlog` fileCount = **0**；`blocklet.yaml` **零条 `/user` 声明**」。**写范围可分**：本轮只有 **Dev 一个写源码/实例的批次**（`task-66`），PM 只写 docs（`task-67`）→ 无重叠；QA（`task-68`）**串行等 Dev 定稿**。
+
+| ID | 需求 | 规格 | 角色 | 状态 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| **REQ-028** | **对接 ARC Space（DID Space）**：A 段 `/user` 作用域**探针**（list/read/write/delete + fail-closed + **跨用户隔离**）→ B 段**一个真实试点** → C 段 **folder-backed space + `arc space sync` 运维通道**；探针失败即**平台边界 + 降级**，**不得假装实现** | **§5.2**（`/instance` vs DID Space 两个世界）／**§82**／**§83**（`/user` 树、登出不可见）／**§85**；`arc-contracts` **§0/§1/§4/§13**；`persistence.md:29-33`；**§114–§115**（fail closed）；**§150**（不臆造 ARC API） | **Dev** | ✅ **完成（QA-012 放行）** | REQ：[REQ-028](requirements/REQ-028-arc-space-integration.md)（含 §1 背景 + §3 A/B/C 验收 + §4 降级判定 + §6 写范围 + §7 预留结果）。**任务**：`task-66`（Dev，A→B→C **同 owner 串行**）→ `task-68`（QA，`blocked_by task-66`）。**写范围**：`.aup/**`、`scripts/**`、`world/**`、`pages/**`、**`blocklet.yaml`（安全敏感；仅 G1–G4 通过时）**、`dist/**`（build）、`docs/team/.gate-lock`（临时）。**关键约束**：**先探针后落笔**；`arc blocklet build` 放在**最后一次写盘之后**；**`--mirror` / `rm` 只 dry-run**；**不改 spec / checklist 状态列 / `arc-contracts.md`**（Lead 落笔）；**不设 `AFS_DID_SPACE_SCOPE_SECRET`、不打开 `AFS_DID_SPACE_REQUIRE_DEID`**；探针 `req028-` 前缀 + 逐条清理 |
+| **QA-012** | Round 16 独立验证：REQ-028 的 A/B/C/G/E 各条（自跑门、自造探针、**不采信 Dev 自述**） | REQ-028 §3 全文 | **QA** | ✅ **完成（放行，`BLOCKING=0`）** | **任务**：`task-68`。**写范围**：`docs/team/test-reports/round-16.md`、`docs/team/test-reports/raw/REQ-028-*`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时）。**必须**：负面用例（未声明路径被拒 / 越权读另一用户路径）；**证据三类分开标注**；**不跑全量 live**；单 tab 纪律自证；实例**基线复原**（探针逐条清理） |
+
+> **本轮未派发、仍在排队（不代表裁决失效）**：**BUG-033 → R16-3（建议优先）**、**BUG-036 → R16-2（先做最小平台实验）**、**BUG-034 → R16-4**、**REQ-021 阶段一调研 → R16-1**、**BUG-037 → R16-5（先定链载荷口径）**、**BUG-038 → R16-6（先授权写范围）**、**REQ-019 → R16-8**、**REQ-022「双节点台」→ R16-9（口径待 Lead）**、**BUG-032 → R16-10（口径 D32 待批）**、**UI-012 订正 → R16-11（docs-only）**、**R16-12 承继候选**（设置-角色与能力 §15.9 / 商品管理 §15.7 / 策略与账户 §15.7 / Dashboard 网络概览 §15.3 / REQ-011 / Hub Topics §52·§73 / SEO-OG §126 / §111 调度探针）。**本轮 L-R16-6 明确不做** REQ-021 / REQ-019 / REQ-022 / BUG-036 / BUG-037 / BUG-038 → **R17**；其余项的排期见下方「Round 15 交付结果 + Round 16 路线」②（**编号不重排**）。**⚠️ 收官说明（PM 2026-09-28）**：本条的 **R16-n 编号已被下方「排队（🟨）」的 R16 轮末重排取代** → 统一为 **R17-1…R17-14**（`R16-1→R17-8`、`R16-2→R17-3`、`R16-3→R17-2`、`R16-4→R17-4`、`R16-5→R17-5`、`R16-6→R17-6`、`R16-8→R17-9`、`R16-9→R17-10`、`R16-10→R17-7`、`R16-11→R17-12`、`R16-12→R17-13`；新增 `R17-1` BUG-039 / `R17-11` 试点回归 / `R17-14` §83 其余四棵树），**以排队区为准**。
+
+> **PM 侧配套任务（同一轮，不在上表内）**：**`task-67`** = 本轮规划（本小节 + [REQ-028](requirements/REQ-028-arc-space-integration.md) 新建 + [journal/round-16.md](journal/round-16.md) 计划节）— ✅ **已完成**；**轮末 PM 裁决** = QA 报告后逐条裁决新 BUG + 平台边界判定（[REQ-028 §4](requirements/REQ-028-arc-space-integration.md)）+ checklist 第 52 行建议 + 写回本文件 / journal / REQ §7 — ✅ **已完成（2026-09-28）**：三条终态行已置 ✅、🐞 区已逐条裁决（BUG-039 → R17-1 / BUG-040 → 本轮内联闭环）、平台边界判定 = **能力上线（部分上线）**、[journal/round-16.md](journal/round-16.md) 结果节与 [REQ-028 §7.2/§7.3](requirements/REQ-028-arc-space-integration.md) 已回填。**PM 本轮零实例写入、零 build、零 `team_task_*`**。
+
+### 本轮裁定（Lead 2026-09-28，Round 16 生效；**照此执行**）
+
+| # | 裁定 | 摘要 | 落点 |
+| - | ---- | ---- | ---- |
+| **L-R16-1** | **本轮主项** | **REQ-028 对接 ARC Space（DID Space）**：用户作用域（`/user`）**探针** → 落**一个真实试点** → **folder-backed space + `arc space sync` 运维通道** | [REQ-028](requirements/REQ-028-arc-space-integration.md) §2/§3；`task-66` |
+| **L-R16-2** | **先探针后实现 + 权限表安全门** | **`blocklet.yaml` 权限表是安全敏感写入**：任何声明改动必须在 **`docs/team/.gate-lock`** 下**定向**跑 `npm run test:file -- scripts/arcblog-permissions.test.mjs`（基线 6/6），并且必须实测**跨用户隔离**（A 的 `/user` 对 B 不可见/不可读）与**未声明路径被拒**（fail-closed） | [REQ-028](requirements/REQ-028-arc-space-integration.md) §3.1 A4/A5 + §3.4 G1–G4 |
+| **L-R16-3** | **破坏性命令只允许 dry-run** | `arc space sync --mirror`、`arc space rm` **不得在共享 dev 实例上真跑**（⚠️ `rm` 默认 `--scope user`）；探针写入的用户空间记录与临时目录**要清理或如实登记** | [REQ-028](requirements/REQ-028-arc-space-integration.md) §2.2.4 / §3.3 C3 / A6 / C5 |
+| **L-R16-4** | **平台事实以实测为准** | 文档版本 `arc 2.0.0-beta.48/28` vs 本机 daemon **`2.0.0-beta.50`**；文档明确「**路径不是授权决定**」（授权来自 `replicated` 声明，`networkRead` 只是前缀增补，未声明默认拒绝）；**`AFS_DID_SPACE_SCOPE_SECRET unset`**（scope 反标识关闭、目录明文）**必须如实登记**并评估是否要在 ArcBlog 侧要求 | [REQ-028](requirements/REQ-028-arc-space-integration.md) §1.1 F6/F8/F9 + §3.5 E1/E2 |
+| **L-R16-5** | **探针失败的诚实口径** | 若探针证明 `/user` 在本平台/授权下**不可达**：如实登记为**平台边界** + 给**降级方案**（session / instance 存储），**不得假装实现**；PM 裁决时按「平台边界」而非「Dev 未完成」计 | [REQ-028](requirements/REQ-028-arc-space-integration.md) §4.1 / §4.3 |
+| **L-R16-6** | **本轮不做** | **REQ-021 / REQ-019 / REQ-022 / BUG-036 / BUG-037 / BUG-038 → R17** | [REQ-028](requirements/REQ-028-arc-space-integration.md) §2.2.7；本小节上方「未派发」条 |
+
+**写范围冲突矩阵（R16 派活必须照此）**
+
+| 批次 | 成员 / 任务 | 本轮写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A（先）** | Dev / `task-66`（REQ-028 A+B+C） | `.aup/**`、`scripts/**`、`world/**`、`pages/**`、**`blocklet.yaml`（安全敏感：仅 G1–G4 通过时）**、`dist/**`（build）、`docs/team/.gate-lock`（临时） | **先探针后落笔**；**同 owner 内 A→B→C 串行**；`arc blocklet build` **晚于自己最后一次写盘**；**`--mirror` / `rm` 只 dry-run**；探针 `req028-` 前缀 + 逐条清理 + 基线复原 |
+| **B（后）** | QA / `task-68`（QA-012） | `docs/team/test-reports/round-16.md`、`docs/team/test-reports/raw/REQ-028-*`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时） | **`blocked_by task-66`**（验证对象不得在脚下移动）；**自跑门、不采信自述**；自造探针先落锁 → 逐条清理 → **基线复原**；**不跑全量 live**；**单 tab 纪律自证**；三类证据分开标注 |
+| **C** | PM / `task-67` + 轮末裁决 | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划（本小节）+ 轮末逐条裁决；**不调用 `team_task_*`**；不写源码 / `blocklet.yaml` / 构建产物 / checklist 状态列 |
+
+**本轮明确不做（防蔓延）**
+
+1. **不做真实链 / 资金动作**（不发交易、不转账、不 `acquire·stake·revoke·claim`、不部署）。
+2. **不跑全量 `npm run test:live`**；**不新增测试文件**；**不动 `FAST_TESTS`**。
+3. **不改 spec**、**不改 checklist 状态列**、**不改 `docs/arc-contracts.md`**（Lead 落笔）、**不改 `world/**` 记录形态**（除非试点确需新 schema 并在 §7 写明）。
+4. **不真跑破坏性命令**（L-R16-3）：`arc space sync --mirror`、`arc space rm` **一律不做**（`rm` 默认 `--scope user`，风险最高）。
+5. **不动环境级配置**：不设置 `AFS_DID_SPACE_SCOPE_SECRET`、**不打开 `AFS_DID_SPACE_REQUIRE_DEID=true`**（`persistence.md:33`）；不读 / 不打印 `.env.local`、`node.key`；**不删** `node.key` / `.env.local`。
+6. **不做全量用户数据面**：§83 的 `/user/{drafts,private,preferences,agent,payment}` **只落一个试点**，其余交 R17 逐棵立项。
+7. **不为了「看起来完成了」而伪造**：不伪造 AFS 记录；不把裸 shell `TYPE unknown` 当「平台不支持」；不把 `--dry-run` 写成「已演练」；不把 `404 NOT_FOUND` 当拒绝。
+8. **不越界写**：PM 不写源码；Dev 不写 `docs/team/backlog.md` / `requirements/**` / `journal/**` / `test-reports/**`；QA 不改源码。
+9. **不 `git commit` / `git push` / `git reset --hard` / `git add -A`**；不把 `docs/dsh-workflow-and-ralph.md` 与其 `dist` 镜像当本轮产物。
+10. 浏览器**只开一个标签页**（复用 `Page.navigate`），结束关闭自己开的 target；**每语言 / 每身份用新 context**。
+
+**平台事实（PM 与 Lead 本轮实测，完整证据见 [REQ-028 §1.1](requirements/REQ-028-arc-space-integration.md)）**
+
+| # | 事实 | 实测命令与输出 | 等级 |
+| - | ---- | -------------- | ---- |
+| **F1** | `arc space path` 的两个作用域根是**同层级兄弟目录** | `--scope instance` → `/spaces/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/blocklets/arcblog/system`；`--scope user` → `…/blocklets/arcblog/user` | ✅ PM 已复核 |
+| **F2** | `arc space list --json` 按 **`groups[].role` = `instance\|user`** 分组 | `instance`：`ArcBlog` **995 文件 / 376,128 字节**；`user`：`ArcBlog` **0 / 0**；`rootPath=/Users/shenxiuqiang/.afs/spaces` | ✅ PM 已复核（**用户作用域从未使用**） |
+| **F3** | `/instance` 与 `/user` **不是 root mount**（session 投影） | `arc afs ls /user` → `ERROR: No data found for path: /user`；`arc afs explain /user` → `TYPE unknown / SIDE EFFECTS - none`；与 `arc-contracts §1:32-38` 逐字一致（**能力必须运行期核验**） | ✅ PM 已复核 |
+| **F4** | 每用户 blocklet 片段**磁盘上已存在**，含一条**旧探针残留** | `arc afs ls /blocklets/arcblog/users` → `…/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP`；`…/arcblog-probe/x.json` = `{"t":1}`，`MODIFIED=2026-09-20T07:16:08.756Z`（**非本轮产物**） | ✅ PM 已复核 |
+| **F5** | `blocklet.yaml` 权限表**只覆盖 `/instance`**，**零条 `/user` 声明** | `networkRead`（`:87` 起）全为 `/instance/app/arcblog/…`；`replicated`（`:160` 起）`canonical` 全为 `instance/app/arcblog/…` | ✅ PM 已复核 |
+| **F6** | `AFS_DID_SPACE_SCOPE_SECRET` **未设置** → scope **反标识关闭、目录明文** | `arc space list` / `arc space check` stderr：`AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories). Set the secret to enable; set AFS_DID_SPACE_REQUIRE_DEID=true to enforce.` | ✅ PM 已复核（另见 `arc-contracts §0:19-21`、`persistence.md:33`） |
+| **F7** | **已有 doctor / diagnostics 对接** | `scripts/arcblog-doctor.mjs:86-97`（跑 `space check` + `space list --json`）；`scripts/lib/doctor.mjs:199/:219/:238`（`space-layout` 只读退出码 / `space-app` 消费 `groups[]` / `de-identification` grep stderr）；`.aup/pages/admin/diagnostics.aup:218/:234`（命令面，含 `sync --dry-run`） | ✅ PM 已复核 |
+| **F8** | 本机 daemon **`2.0.0-beta.50 (c711b9aa)`**；**文档版本 Lead 口径 = `beta.48/28`** | `arc --version` / `arc service status` → `2.0.0-beta.50`；`grep -rn "2\.0\.0-beta\.4[0-9]" .agents/ node_modules/ dist/` → **0 命中** | ⚠️ 运行时 ✅ 已复核；**文档版本 PM 未复现** → **冲突时以实测为准** |
+| **F9** | 文档明确「**路径不是授权决定**」 | `arc-contracts §13`：授权 = `replicated.<collection>.readRole/minRole`；`networkRead` 是**前缀增补**（不能收回权限）；未声明路径 → `Forbidden: path is not a declared replicated collection…`；`diagnostics.aup:33` 原文「本平台只给本应用两档角色：guest 与 admin……收权只能通过『记录所在目录前缀』表达」 | ✅ PM 已复核（原文逐字） |
+
+**PM 轮初只读复核门（2026-09-28，R16；未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ ls docs/team/.gate-lock     → No such file or directory                              [exit=1]（无人在写实例）
+$ git status --short          → ?? dist/docs/dsh-workflow-and-ralph.md
+                                ?? docs/dsh-workflow-and-ralph.md
+                                （**非本轮产物**，R12 起既有；Lead 不得 `git add -A` 卷入）
+$ arc dsl validate --json     → "issues": []                                            [exit=0]
+$ npm test                    → pass 28 / fail 0 / duration_ms 1089.804125              [exit=0]
+$ arc --version               → 2.0.0-beta.50 (c711b9aa) 2026-09-10
+$ arc space list --json       → groups=[{role:"instance", ArcBlog 995/376128},
+                                        {role:"user", ArcBlog 0/0}]；rootPath=/Users/shenxiuqiang/.afs/spaces
+$ arc space path did:blocklet:arcblog --scope user --json
+                              → {"appDid":"arcblog","scope":"user",
+                                 "path":"/spaces/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/blocklets/arcblog/user"}
+$ arc afs ls /user            → ERROR: No data found for path: /user
+$ arc afs explain /user       → PATH /user ｜ TYPE unknown ｜ SIDE EFFECTS - none
+$ arc afs ls /blocklets/arcblog/users
+                              → /blocklets/arcblog/users/z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP
+$ arc afs read …/arcblog-probe/x.json → {"t":1}（stat: MODIFIED=2026-09-20T07:16:08.756Z）
+$ arc space check             → exit=1（JSON 重定向才完整）；layouts.roots=[…/spaces, …/work]；missingRoots=[]
+                                ← 非 0 = **既有索引漂移**（arc-contracts §4.1(b)），非本轮引入
+$ arc space sync --help       → --from/--to 必填、--mirror 删除目的端、--dry-run 只报差异
+$ arc space rm   --help       → ⚠️ **默认 `--scope user`**
+$ grep -rn "2\.0\.0-beta\.4[0-9]" .agents/ node_modules/ dist/ → 0 命中
+$ sed -n '87,230p' blocklet.yaml → networkRead / replicated 全为 instance/app/arcblog/…（**零 /user 声明**）
+```
+
+> **checklist 第 52 行**（§5.2、§83，现 🟡「……用户作用域 `/user` 数据待落地」）是本轮唯一候选状态变更行：**🟡→✅ 仅在 B 段真实试点落地时**；若判「平台边界」则**保持 🟡 + 备注补降级口径**（[REQ-028 §4.3](requirements/REQ-028-arc-space-integration.md)）。**落笔由 Lead 执行**（PM 本轮零编辑 checklist）。
+
+**Round 16 结论（PM 轮末，2026-09-28）—— 交付通过 + QA-012 放行（`VERDICT=pass, BLOCKING=0`）**
+
+> **三行终态**：**REQ-028 ✅（完成，QA-012 放行）** ／ **QA-012 ✅（放行，阻断 0）** ／ **PM `task-67` + 轮末裁决 ✅（本轮写回）**。
+
+1. **交付**：A 段探针（`/user` 四能力 + fail-closed + 跨用户隔离）、B 段一个真实试点（`?page=saved` 阅读清单 + `arcblog-bookmarks.mjs`）、C 段 folder-backed space + `arc space sync` 运维通道**三段全部达成**；G 段（权限表安全门）**未触发**（`blocklet.yaml` 零改动）；E 段平台事实**如实登记**（无一处粉饰）。
+2. **平台边界判定（L-R16-5）= 不是平台边界，是「能力上线（部分上线）」**：`/user` 实测**可达**且**可隔离** → §4.1 的 D1/D2/D3 三条**全部不成立**，**不需要降级方案**；**不存在**用「平台边界」掩盖的「我们没做」项。上线范围**诚实记为部分上线**：§83 五棵树（`drafts/private/preferences/agent/payment`）**只落地 1 个面**（阅读清单），其余四棵是 REQ §2.1 的**主动范围裁剪**（非平台不支持）→ 逐棵进 R17 候选（一次一棵）。另有 **4 条子边界 PB-1…PB-4**（见下方 🐞 区判定表），均附原始证据 + 机制，交 Lead 落 `arc-contracts.md`。
+3. **新增缺陷逐条裁决**：**BUG-039（P2）→ 下一轮修（R17-1，先探针后落笔）**；**BUG-040（P3）→ 本轮修（PM 内联勘误，docs-only）→ 已闭环**；**无「不修」**，**无 P0/P1**。
+4. **QA 报告 §7 的 8 条受限未验证 + §6 差异登记 + §5.4 构建观察** → **逐条裁决，无一条挂着**（见下方 🐞 区两个子表）。
+5. **门（PM 轮末只读复核，真实输出）**：`arc dsl validate --json` → `"issues": []`；`npm test` → **28 pass / 0 fail**（`duration_ms 1018.6`，fast tier passed）；`node scripts/arcblog-console-nav.mjs --check` → `{"ok":true,"action":"check","pages":21}`；`arc dsl generate --check` → `Would generate 0 file(s) — nothing to change`；`diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` → **无输出**（exit 0）；`ls docs/team/.gate-lock` → `No such file or directory`（锁已由 QA 收尾删除，**未入库**）。**PM 本轮未写实例、未加锁、未跑任何 live 文件、未 `arc blocklet build`**。
+6. **checklist 建议（只建议，Lead 落笔）**：第 **52** 行 🟡→✅ + 3 条缺口登记 + 维护记录一行 → **✅ 82 / 🟡 7 / ⬜ 13 / ⚪ 2 = 104**（A 组 7/0/0/0；D 组不变）；**可选**顺手订正第 **53** 行的页面计数（实测 30 个页面文件 / 21 个控制台页）。原文见 [REQ-028 §7.3(c)](requirements/REQ-028-arc-space-integration.md)。
+7. **Lead 落笔项**：`arc-contracts.md` 新增 §4.2（`/user` 会话投影）+ 更新 §4.1(a) 的 `check --json` 体积 + §13 增补｜checklist 第 52 行｜`docs/operations-runbook.md`（Dev 已写、QA 已逐字核对与 `--help` 一致，**建议保留**）｜**轮末 `arc blocklet build` 必须晚于 PM/QA 最后一次写盘**（本轮 PM 只写 `docs/team/**`，其 `dist/docs/team/**` 镜像需 Lead 再 build 带入）；**严禁 `git add -A`**（`docs/dsh-workflow-and-ralph.md` 与其 `dist` 镜像**非本轮产物**）。
+8. **过程事实（如实登记）**：① QA 为 `/user` 探针写入了 4 条 `qa-r16-*` 记录并**逐条删除**（`find` 复证），Dev 的 `req028-*` 两条亦清零；**旧残留** `/user/arcblog-probe/x.json`（2026-09-20，非本轮产物）与**试点记录** `hello-arcblog.json` **保留并登记**；② `arc space check` 退出码非 0 属**既有索引漂移**（`arc-contracts §4.1(b)`），**非本轮回归**；③ Dev 的 `/tmp/req028-evidence/`（31 文件）仍在 `/tmp`，属临时目录、不在仓库、Dev 已声明不依赖 → 不影响提交；④ QA 早期 build 曾把 `.gate-lock` 复制进 `dist/`，删锁后**收尾 build 已自动清除**（`ls dist/docs/team/.gate-lock` → `No such file or directory`）。
+
+---
+
+## 缺陷（🐞）— Round 16 QA 新增，PM 已逐条裁决（2026-09-28）
+
+> **大前提**：QA-012 判 **放行**（[round-16.md](test-reports/round-16.md) 末行 **`VERDICT=pass, BLOCKING=0`**，**阻断 0**；无未裁决 P0/P1）。门全绿：validate issues `[]` / `npm test` **28/28** / build Published **680** / `console-nav --check` **pages 21** / `generate --check` 0 漂移 / `.aup` + `.web` 双 diff 空；**权限矩阵在 `.gate-lock` 下 6/6**（`blocklet.yaml` **零改动** → G 段未触发）。
+> **裁决口径**（[`roles/pm.md`](roles/pm.md) §6.2）：三选一（本轮修 / 下一轮修 / 不修 + 理由 + spec 章节 + 落点）。**本轮无修复窗口**（Lead 任务板只有 `task-66` / `task-68` / `task-67`；**PM 不调用 `team_task_*`**，开窗由 Lead 定）→ 需改源码 / `.aup` 的项一律「**下一轮修（R17-n）**」；**PM 写范围内的 docs-only 勘误 = 本轮修（内联，先例 R10 / R12）**。
+> **证据分级**：下表「依据」列全部来自 QA-012 **自跑**（原始输出落 `docs/team/test-reports/raw/REQ-028-qa-*`）。
+
+### (1) 平台边界 / 我们没做 —— PM 判定（L-R16-5 口径）
+
+| # | 判定 | 依据（原始证据 + 机制） | 处置 / 落点 |
+| - | ---- | ---------------------- | ----------- |
+| **主项** | ✅ **不是平台边界 = 能力上线（部分上线）** | `/user` 在真实会话内 **list/read/write/delete 全 OK**（`window.afs`，A5-①）；**跨用户隔离成立**（A=200 / B=另一真实 DID `[]`+`NOT_FOUND` / C=guest `404`+DOM 零泄漏）；`blocklet.yaml` **零改动**即成立 → §4.1 的 **D1/D2/D3 全部不成立** | checklist 第 **52** 行 🟡→✅（建议）；**明确记为「部分上线」**：§83 五棵树只落 **1** 个面 |
+| **N-项** | ✅ **无「我们没做」被掩盖的项** | A/B/C/G/E 五段逐条有结论、无「未测」遗漏；§4.2 的六类反模式（探针未跑 / 隔离未跑 / 声明未落锁 / 破坏性真跑 / 证据顶替 / 口径错判）**逐条对照，零命中** | — |
+| **PB-1** | ⚠️ **子边界**：CLI 通道无 `/user` 视图 | `arc afs ls /user` → `No data found`（**exit 1**）；`exec …/.actions/{list,read,write}` → `[]` / `NOT_FOUND` / `No module found for path`；`arc afs write --path /user/…` → **exit 5**（exec 包装 **exit 0**）。机制：**`arc afs` 无 AUP 会话**，而 `/user` 是会话投影（`explain /user` = `TYPE unknown / none`，与 `arc-contracts §1` 一致）——**不是「平台不支持 `/user`」** | ArcBlog 侧已落地：`scripts/arcblog-bookmarks.mjs` 按 DID 寻址（`where` 同时打印 `cliPath`/`sessionPath`）；**Lead** 落 `arc-contracts §4.2` |
+| **PB-2** | ⚠️ **子边界**：平台只有 guest / admin 两档，「只有本人可读自己的 `/user`」**不可声明** | A/B/C 三侧实测 + `sites[].bindings` 无 role 字段（`arc-contracts §13`）。机制：隔离由 **session 作用域本身**保证（同一路径对不同 DID 解析成不同目录），`replicated` **无 user-scope canonical 形态** | **零声明 = 正确的最小选择**（不是缺口）：按 L-R16-2 的 **G4「无非改不可证据 → 不允许改」**；`networkRead` 是前缀增补，绝不能把 guest 挂在私有父前缀上 |
+| **PB-3** | ⚠️ **子边界**：`AFS_DID_SPACE_SCOPE_SECRET` unset ⇒ scope 反标识关闭、**目录明文** | 每次 `arc space *` 的 stderr 逐字；诊断页 EN 卡含 `PLAINTEXT` + `AFS_DID_SPACE_REQUIRE_DEID`。机制：**daemon 环境变量**，blocklet 不能设置、也不能替 daemon 开 `REQUIRE_DEID`（`persistence.md:33`） | 登记为**生产前置条件**（doctor `de-identification` warn + runbook 两段 + `?page=diagnostics` 卡）；**不得写成「我们已修复明文目录」** |
+| **PB-4** | ⚠️ **子边界 / 判据**：`arc space check --json` 已 **~511 KB**（64 KB 管道截断）+ **退出码按通道不同** | `check --json` → **511,030 B**（`arc-contracts §4.1(a)` 的 69,403 B 已过时）；`exec` 包装失败 **exit 0** vs `arc afs write` **exit 5** | `scripts/lib/doctor.mjs:199` 保持「**只读退出码**」；判定「是否被拒」**不得只看退出码**（要读原文 / HTTP 状态）——**Lead** 落 `arc-contracts` |
+
+### (2) 新增 BUG 逐条裁决
+
+| BUG | 级别 | 标题 | 裁决 | 理由 + spec / 标准章节 | 落点 / 依赖 |
+| --- | ---- | ---- | ---- | --------------------- | ----------- |
+| **[BUG-039](bugs/BUG-039-bare-root-replays-last-page.md)** | **P2** | 裸根 `/` 在**同一标签页**重放本会话最后一次 `?page=<x>`（`saved` / `dashboard` / `about` / `reader` 均复现；`sessionStorage.clear()` 后回首页） | 🟥 **下一轮修（R17-1）**，**先探针后落笔** | **范围外 / 既有平台行为**（REQ-028 未引入；站内入口全带显式 `?page=`，`wrapper.aup` 品牌链接 `/?page=index` 是现存绕过）。**不判「不修」**：受影响入口 = 「URL 栏直入根域 / 外部指向 `/` 的书签」，用户会停在上一页（含新增 `?page=saved` 登录门）→ 值得一次最小探针。**机制未证实前不得改页面**：`page`/`locale` 存在 AUP 会话（`sessionStorage` 单句柄），无请求级钩子可见 → **探测不可表达即转平台边界**（Lead 落 `arc-contracts.md`）+ 保留绕过 | **R17-1**：Dev 最小平台实验（`.aup/wrapper.aup` ± 根路由）；`.aup` 变更**不写实例 → 无需 `.gate-lock`**；**不阻断 checklist 第 52 行** |
+| **[BUG-040](bugs/BUG-040-req028-dev-report-evidence-drift.md)** | **P3** | REQ-028 Dev 报告两处「原始输出」与现场不符：① 试点记录 `addedAt` 引用 `11:48:48.273Z`（现场 `11:57:56.880Z`）；② CLI 写 `/user` 失败的退出码统一写 **exit 5**（`.actions/write` exec 包装实为 **exit 0**） | ✅ **本轮修（PM 内联勘误，docs-only）→ 已闭环** | 结论本身被 QA 独立复现为真（`/user` 可达、CLI 不可寻址），漂移只在**证据引用值**；报告在 **PM 写范围**（`docs/team/requirements/**`）内，且错误退出码会被抄进 `arc-contracts.md` 候选条目（dev-report §6 第 4 条）→ 会污染平台事实。**先例**：R10 PM 内联修订 REQ-009 §3.1、R12 O6 内联订正 REQ-014 文件名。**做法** = 新增 **§0.1 勘误块**（初稿值保留追溯）+ 逐处更正内联引用值，**不重写叙事、不动源码 / 测试** | **本轮已完成**：`REQ-028-dev-report.md` §0.1（新增）+ §1.2（`write` 行 / 结论段 / §2.6 引用）/ §2.2（三处 `addedAt`）/ §4 E3 / §6 第 4 条；`REQ-028 §7.1` 两处同步更正。**零源码 / 零 `.aup` / 零实例写入** |
+
+**结论**：Round 16 新缺陷 **2 条** → **1 条本轮闭环（BUG-040）**、**1 条下一轮修（BUG-039 → R17-1）**；**P0 = 0 / P1 = 0**。
+
+### (3) QA round-16 §7 八条受限未验证 —— PM 逐条裁决（不允许挂着）
+
+| # | 项 | 裁决 | 说明 / 落点 |
+| - | -- | ---- | ----------- |
+| **1** | **两个真实浏览器登录会话对打**（A5 完整形态） | **不修（环境缺口，如实登记）** | 本机只有一个 `login_token`（`Storage.getCookies` 全量扫描仅一条）；QA 的 B 侧是「**另一个真实 DID 的 CLI caller**」+「无 cookie 隔离 context」→ **比 REQ 允许的 guest 退化路径更强**，满足 L-R16-2 的实质要求，但**不等于两个真会话**，**不升级为已验证**。→ R17 可选复验（`REQ-028-qa-rpc-admin.mjs` 换 cookie 即可），**不单独立项** |
+| **2** | 远程端点 `arc space sync --from/--to https://<host>` | **不修（受限登记）** | 需要第二台 daemon；本轮只授权临时目录。**只声明 `--help` 有端点形态，不声称演练过** → 与 **R17 的 REQ-022（双节点 Studio/Hub 测试台）同源**，届时若具条件再验 |
+| **3** | 页面逐元素视觉复核（对比度 / 命中区 / 暗色模式） | **不修（非本精简轮目标）** | 本轮为**精简轮、非 UI 轮**；QA 已验渲染字符串 / 结构 / 零硬编码色。→ 登记为 **R17 UI 轮候选**（按 `ArcBlog-admin-ui-design.md` §9 逐条过） |
+| **4** | 试点能力的**自动化回归** | 🟥 **下一轮修（R17-11）** | REQ §2.2.2 本轮明确**不新增测试文件**（新文件默认 live，会破坏快层 28/28）。→ R17 补一条（可把 `scripts/arcblog-bookmarks.mjs` 的关键路径并入既有快层文件，或新增文件并加入 `FAST_TESTS`）——**基线 28→29 需 Lead 同意** |
+| **5** | `AFS_DID_SPACE_SCOPE_SECRET` / `REQUIRE_DEID` | **不修（故意不做，登记）** | REQ §2.2.5 明确不做；daemon 环境变量。→ 作为**生产前置条件**登记（PB-3）；**不得**替 daemon 设置 |
+| **6** | Dev 的 `/tmp/req028-evidence/`（31 文件）仍在 `/tmp` | **不修（不属仓库，登记）** | 临时目录、非仓库产物、Dev 已声明不依赖其存活 → 不影响提交；由 Dev / Lead 决定是否顺手清理 |
+| **7** | `/user` 并发写 / `ifMatch` 语义 | **不修（范围外，登记候选）** | 本轮范围外；`world/bookmark.yaml` 未声明乐观锁。→ **仅在出现多写者场景时**再验（不进 R17 派工，登记为 ⬜ 候选） |
+| **8** | `?page=saved` 页面行内直删 | **不修（本轮范围 = 只做一个面；登记 R17 候选）** | 实测约束：AUP **整页 `required` 校验**会阻断本页其他 action（Dev 报告 §2.5 / QA §3.9）→ Dev 已给 CLI 替代（`arcblog-bookmarks.mjs remove`）并在页面明示。**要页面 CRUD 需拆页或改动作形态** → R17 候选（若用户需要） |
+
+### (4) QA round-16 §6 差异登记 + §5.4 构建观察 —— PM 处置
+
+| # | 项 | PM 处置 |
+| - | -- | ------- |
+| **D-1** | `arc space check --json` 体积 511,030 B（Dev 与 QA 一致；`arc-contracts §4.1(a)` 的 69,403 B 已过时） | **非缺陷**：写入 Lead 落笔项（更新 `arc-contracts §4.1(a)`）；**doctor「只读退出码」的做法保持** |
+| **D-2** | 构建文件数 634→635（Dev）vs **636→680**（QA 两次 build） | **非缺陷**：数字随写入增长（QA 收尾 build 含本报告 + raw 证据），**以最后一次为准**；Lead 轮末再 build 会产生新数字 |
+| **D-3** | 试点记录 `addedAt` / exec 通道退出码 | **= BUG-040** → 已裁「本轮修（PM 内联勘误）」并**闭环** |
+| **D-4** | 诊断页 `CALLER-SCOPED` EN true / zh 为「按调用者分区」（同一 key 的 zh 文案） | **非缺陷**：同一 key 的正常本地化，**不立项** |
+| **D-5** | §5.4 `arc blocklet build` 告警：`/p/{en,zh}/search/` 预渲染无 `.web-cache/` 产物（**平台内建 SSR 路由**，线上 HTTP 200） | **不修 / 不新立 BUG**（QA 已判既有告警，避免 BUG 通胀；与 R11 起既有、与本轮改动无关）→ **登记候选**：若 Lead 要求「零告警」，另立 backlog 项（需平台侧修） |
+| **D-6** | QA 早期 build 曾把 `docs/team/.gate-lock` 复制进 `dist/` | **已自证清除**：删锁后收尾 build 自动清除（`ls dist/docs/team/.gate-lock` → `No such file or directory`）→ **Lead 轮末 build 后请再确认一次**（提交里不得有锁文件副本） |
+
+### (5) 探针写入与临时目录残留 —— PM 处置
+
+| 项 | 事实 | PM 处置 |
+| - | ---- | ------- |
+| QA 探针 `qa-r16-*`（4 条） | `remove` 输出 + `find` 复证**已全部删除** | ✅ 无需动作 |
+| Dev 探针 `req028-*`（2 条） | `arc afs ls …/arcblog` → 只剩 `bookmarks` | ✅ 无需动作 |
+| **旧残留** `/user/arcblog-probe/x.json`（2026-09-20，`{"t":1}`） | 两轮报告均已**如实登记**为**非本轮产物** | **保留 + 登记**（不删除）；由 Lead 决定是否另行清理 |
+| **试点记录** `hello-arcblog.json` | 保留并登记（QA 可复验；删除命令已写进页面 / CLI） | **保留 + 登记** ✅ |
+| `/tmp/qa-r16-space`（QA） | `rm -rf` + `ls` 自证不存在 | ✅ 无需动作 |
+| `/tmp/req028-space-{src,dst}`（Dev） | 已不存在 | ✅ 无需动作 |
+| `/tmp/req028-evidence/`（Dev，31 文件） | **仍存在**，属临时目录、不在仓库、Dev 已声明不依赖 | **不修（登记）**；**不进提交** |
+
+---
+
 ## 缺陷（🐞）— Round 15 QA 新增，PM 已逐条裁决（2026-09-28）
 
 > **大前提**：QA-011 判 **放行**（[round-15.md](test-reports/round-15.md) 末行 **`VERDICT=pass, BLOCKING=0`**，**`P0=0 / P1=0`**）——门 **7 条全绿**（validate issues `[]`、`npm test` **28/28**、`build` Published 574/575、`.aup`+`.web` 双向 `diff` IDENTICAL、`console-nav --check` **pages 21**、`generate --check` 0 漂移、`lint` 0 error / 34 warning）；**定向 live node-nft 15/15 + roles 18/18**（持锁串行）；21/21 控制台页 + 8 公共页 × 4 组回归；单 tab 自证；实例基线复原（`clean --confirm` 6 条 → `found 0`、`.gate-lock` 已删）。
@@ -1814,6 +1996,8 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 > **R14F 轮末重排（PM，2026-09-28）**：① **BUG-030（P1）→ 已修 · 闭环**（Lead 开 R14F，QA-010 复验通过）→ **原 R15-1 消项**；**BUG-031 / QA O-2 / O-3 / D-01 / R15-D 同批收口**（**R15-C / R15-D 消项**）。② **BUG-032（P3）仍未修**（QA 复测等号形式 `exit=0`）→ **R15-2**（**不新开排队号**，避免两处计数漂移，同 R11/R13/R14 做法；**口径 D32 待 Lead/用户**）。③ **新增 3 条 P2**（QA-010 独立发现的溢出/重叠残留）→ **R15-11**（BUG-033，`?page=pages` 真实文本×按钮重叠，**建议优先**）/ **R15-12**（BUG-034，hub@1512 over 92）/ **R15-13**（BUG-035，factory@1512 over 133；修法 **D34**）；**另增 R15-14**（UI-012 判据与计数订正，docs-only）= 一并从 UI-012 的未修/待订正项转来，**不新开排队号**（同 R14 做法）。④ **R15-A 降级为可选**（UI-012 的 sweep 已覆盖 orders/ledger 的溢出/重叠/命中区，仅缺 UI-011 §2.2 式逐项偏差表，建议并入 R15-14）。⑤ **R15-B（UI-011 骨架建议采纳）**仍需 **Lead 决策**。⑥ **#16（REQ-011 媒体上传可观测性）= R15-7**；**#5/#6/#7/#8/#9/#10/#12 状态无变化**。⑦ 本轮**未开工任何 🟥 项**（R14F 任务板由 Lead 派发，PM 不调用 `team_task_*`）。
 >
 > **R15 轮末重排（PM，2026-09-28）**：① **R15 四项全部交付并放行**（见「本轮：Round 15」结论）；**BUG-035 已由 REQ-024 闭环**（原 **R15-13 消项**）。② **BUG-033 / BUG-034 仍未修**（本轮**未派发**）→ **R16-3 / R16-4**（**不新开排队号**，编号沿用 R15-11/12 的项，避免两处计数漂移，同 R11/R13/R14 做法）。③ **BUG-032（P3）仍未修** → **R16-10**（口径 **D32** 待 Lead/用户）。④ **R15-14（UI-012 判据/计数订正，docs-only）未派发** → **R16-11**。⑤ **新增 3 条**（本轮 QA 新发现）：**BUG-036（P2）→ R16-2** / **BUG-037（P3）→ R16-5** / **BUG-038（P3）→ R16-6**（**均不占排队号**）。⑥ **新增用户需求待写 REQ**：**REQ-019**（按钮化第一批，→ R16-8）、**REQ-021**（订单链上查询 + 退款链上转账，阶段一调研，**依赖 REQ-023 的 env（已交付）**，→ R16-1）、**REQ-022**（双节点台，**仓库零命中 → 口径待 Lead 确认**，→ R16-9）；**REQ-020 已由 R15 交付**。⑦ **R15 承继候选（R15-3…R15-10 / R15-A / R15-B）保持候选**，见「Round 15 交付结果 + Round 16 路线」② **R16-12**；**C-04 / C-07 / C-14 仍待用户批准**（对应三项前提不变）。⑧ **#16（REQ-011 媒体上传可观测性）**、**#5/#6/#7/#8/#9/#10/#12** 状态无变化。⑨ 本轮**未开工任何 🟥 项**（R15 任务板由 Lead 派发，PM 不调用 `team_task_*`）。
+
+> **R16 轮末重排（PM，2026-09-28）**：① **[REQ-028](requirements/REQ-028-arc-space-integration.md) 已交付并放行**（QA-012 `VERDICT=pass, BLOCKING=0`，阻断 0）；**BUG-040（P3）本轮内联闭环**；**BUG-039（P2）新开 → R17-1**（先探针后落笔，探测不可表达即转平台边界）。② **L-R16-6 明确推到 R17 的六项**（REQ-021 / REQ-019 / REQ-022 / BUG-036 / BUG-037 / BUG-038）**与原 R16 未派发项一并重排为 R17-1…R17-14**（**不新开排队号**，同 R11/R13/R14/R15 做法，避免两处计数漂移）：**R17-1** BUG-039（P2 裸根 `/` 重放上一页，先探针）｜**R17-2** BUG-033（P2 `?page=pages` `View` 0 宽压 `Take offline`，**建议优先**）｜**R17-3** BUG-036（P2 冷启动投影值 `—`，**先做最小平台实验**）｜**R17-4** BUG-034（P2 hub@1512 溢出 92）｜**R17-5** BUG-037（P3，**先由 Lead 定链载荷口径**）｜**R17-6** BUG-038（P3，**需 Lead 授权写范围**）｜**R17-7** BUG-032（P3，**口径 D32**）｜**R17-8** REQ-021 阶段一调研（订单链上查询 + 退款链上转账；**只读、零真实链交易**；依赖 REQ-023 env ✅）｜**R17-9** REQ-019 控制台按钮化第一批（**批次范围 + UI-011 §6 骨架采纳 = Lead 决策 R15-B**）｜**R17-10** REQ-022「双节点 Studio/Hub 测试台」（**口径方向由用户 R16 轮末指令给出；具体范围 / 写范围 / 验收标准待 Lead 书面确认**——真跑需要第二台 daemon，与 QA §7-2 的远程端点受限项同源）｜**R17-11** REQ-028 试点能力的自动化回归（REQ §7-4；**基线 28→29 需 Lead 同意**）｜**R17-12** UI-012 判据与计数订正（docs-only）｜**R17-13** R15/R16 承继候选（设置-角色与能力 §15.9 / 商品管理 §15.7 / 策略与账户 §15.7 / Dashboard 网络概览 §15.3 / REQ-011 媒体上传可观测性 / Hub Topics §52·§73 / SEO-OG §126 / §111 调度探针）。③ **REQ-028 的四棵未落地 `/user` 树**（`drafts/private/preferences/agent/payment`）→ **R17-14 候选（一次一棵、不打包）**，**已明确记为主动范围裁剪、不是平台不支持**。④ **#16（REQ-011 媒体上传可观测性）**、**#5/#6/#7/#8/#9/#10/#12** 状态无变化。⑤ 本轮**未开工任何 🟥 项**（R16 任务板由 Lead 派发，PM 不调用 `team_task_*`）。
 
 **写范围冲突矩阵（R10 派活必须照此）**
 
