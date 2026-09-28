@@ -162,6 +162,17 @@ mnemonic is still required by the adapter itself (`CHAIN_UNAVAILABLE`), and it
 must come from the environment (`.env.local`, gitignored) — never from a record,
 page or log.
 
+> **Measured 2026-09-28 (REQ-021 phase 1, read-only):** setting
+> `ARCBLOG_CHAIN_ENV=beta` **alone is not enough** on this instance — the preset
+> only fills defaults, and `config/roles.json` here still carries
+> `network: "arcblock"`, so the record/preset disagreement fails closed with
+> `VALIDATION: ARCBLOG_CHAIN_ENV=beta conflicts with config/roles.json
+> (network=arcblock)`. Pass the value explicitly (`--network beta` or
+> `ARCBLOG_CHAIN_NETWORK=beta`, both of which win over the record), or re-run
+> `node scripts/arcblog-roles.mjs init --network beta` so record and preset agree.
+> Without any explicit value the triple resolves to `network=arcblock` with an
+> empty `chainHost`/`tokenId`, i.e. it also refuses.
+
 The preset's values are documented in `scripts/lib/chain.mjs`
 (`CHAIN_PRESETS`): `@ocap/client`'s documented GraphQL endpoint and the official
 ArcBlock token reference

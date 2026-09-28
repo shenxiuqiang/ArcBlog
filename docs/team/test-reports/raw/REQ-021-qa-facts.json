@@ -1,0 +1,1354 @@
+{
+  "errors": {},
+  "calls": [
+    "getChainInfo",
+    "getAccountState",
+    "getAccountTokens",
+    "getTokenState",
+    "listFactories"
+  ],
+  "chainInfo": {
+    "code": "OK",
+    "info": {
+      "address": "987bcab01b929eb2c07877b224215c92",
+      "appHash": "64713721c18b3dac79a377e50525b315",
+      "blockHash": "d41d8cd98f00b204e9800998ecf8427e",
+      "blockHeight": "0",
+      "blockTime": "",
+      "consensusVersion": "@ocap/statedb-dolt v1.20.2",
+      "id": "987bcab01b929eb2c07877b224215c92",
+      "moniker": "beta",
+      "network": "beta",
+      "supportedTxs": [
+        "fg:t:transfer",
+        "fg:t:transfer_v2",
+        "fg:t:transfer_v3",
+        "fg:t:exchange_v2",
+        "fg:t:account_migrate",
+        "fg:t:delegate",
+        "fg:t:revoke_delegate",
+        "fg:t:create_asset",
+        "fg:t:update_asset",
+        "fg:t:consume_asset",
+        "fg:t:create_factory",
+        "fg:t:acquire_asset_v2",
+        "fg:t:acquire_asset_v3",
+        "fg:t:mint_asset",
+        "fg:t:create_token",
+        "fg:t:deposit_token_v2",
+        "fg:t:withdraw_token_v2",
+        "fg:t:stake",
+        "fg:t:revoke_stake",
+        "fg:t:claim_stake",
+        "fg:t:slash_stake",
+        "fg:t:return_stake",
+        "fg:t:create_rollup",
+        "fg:t:update_rollup",
+        "fg:t:pause_rollup",
+        "fg:t:close_rollup",
+        "fg:t:resume_rollup",
+        "fg:t:join_rollup",
+        "fg:t:leave_rollup",
+        "fg:t:create_rollup_block",
+        "fg:t:migrate_rollup",
+        "fg:t:claim_block_reward",
+        "fg:t:create_token_factory",
+        "fg:t:update_token_factory",
+        "fg:t:mint_token",
+        "fg:t:burn_token"
+      ],
+      "synced": true,
+      "totalTxs": "406296",
+      "version": "1.30.23",
+      "votingPower": "10",
+      "forgeAppsVersion": []
+    }
+  },
+  "accountState": {
+    "code": "OK",
+    "state": {
+      "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+      "balance": null,
+      "gasBalance": null,
+      "issuer": null,
+      "migratedFrom": [],
+      "migratedTo": [],
+      "moniker": "z1WmC5-C398a",
+      "nonce": "1790498079479",
+      "numAssets": null,
+      "numTxs": null,
+      "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+      "context": {
+        "genesisTime": "2025-11-15T04:33:21.515Z",
+        "renaissanceTime": "2026-09-27T08:34:39.783Z",
+        "genesisTx": {
+          "code": "OK",
+          "hash": "31FB31CBF44BD288A3B78A30F11CE8D99FE859FD4152B20743380D49E88B07D3",
+          "height": "0",
+          "index": 0,
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1brLeSwLw6SnxPqs7ChHJgZtzwUy5XdC3L",
+          "time": "2025-11-15T04:33:21.515Z",
+          "receipts": [
+            {
+              "address": "z1brLeSwLw6SnxPqs7ChHJgZtzwUy5XdC3L",
+              "changes": [
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-3589600000000000"
+                },
+                {
+                  "action": "gas",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-2047200000000000"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "3589600000000000"
+                }
+              ]
+            },
+            {
+              "address": "z1i13c9Yo8Fs4ATQQh63fPxg92drBuYavhs",
+              "changes": [
+                {
+                  "action": "gas",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "2047200000000000"
+                }
+              ]
+            }
+          ],
+          "tags": null,
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": "",
+            "from": "z1brLeSwLw6SnxPqs7ChHJgZtzwUy5XdC3L",
+            "gasFee": "2047200000000000",
+            "gasPaid": "2047200000000000",
+            "itxJson": {
+              "_type": "TransferV2Tx",
+              "assets": [],
+              "data": null,
+              "encoded_value": "CiN6MVdtQzVvaThncDE2Z2tONzhxQjM3cHplVXFWRENDMzk4YSI5CiV6MzVuNlVvSFNpOU1FRDR1YVF5Nm96RmdLUGFaajJVS3J1ckJHEhAzNTg5NjAwMDAwMDAwMDAw",
+              "to": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "tokens": [
+                {
+                  "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "3589600000000000"
+                }
+              ],
+              "type_url": "fg:t:transfer_v2"
+            },
+            "nonce": "1763181201302",
+            "pk": "pbnUazgs7ZA72mFigjujtaW_3MAsYRVxdy9tmF2GWho",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "ADB_1TVz9xE0-K0DVgFIrhPaRkzM-4g0tJ8tLdXSZETDZMrWyRx_2t6aosMwL7CIXj-tzsc-God8l08ba-Q0Cw",
+            "signatures": []
+          }
+        },
+        "renaissanceTx": {
+          "code": "OK",
+          "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+          "height": "0",
+          "index": 0,
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:39.783Z",
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tags": null,
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "data": null,
+              "encoded_value": null,
+              "evidence": {
+                "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66"
+              },
+              "type_url": "fg:t:claim_stake"
+            },
+            "nonce": "1790498079479",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "c2KPhSbdRjT1-6KTcaWARkMCPStFBZoWPVKmyEuGwJVG8obcSPxIv1sX8th5jaQ4ndy8So7nZTSighZs7RBLCQ",
+            "signatures": []
+          }
+        }
+      },
+      "data": null,
+      "tokens": [
+        {
+          "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+          "decimal": 18,
+          "symbol": "TBA",
+          "unit": "arc",
+          "value": "16154907215234937951"
+        }
+      ],
+      "type": null
+    }
+  },
+  "accountTokens": {
+    "code": "OK",
+    "tokens": [
+      {
+        "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+        "balance": "16154907215234937951",
+        "decimal": 18,
+        "symbol": "TBA"
+      }
+    ]
+  },
+  "tokenState": {
+    "code": "OK",
+    "state": {
+      "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+      "decimal": 18,
+      "description": "Token on ArcBlock Test Chain",
+      "icon": "",
+      "initialSupply": null,
+      "issuer": "z1mNzTCZcezD4kw8xBiQHUWV6P3iYbmRmVV",
+      "maxTotalSupply": null,
+      "minters": null,
+      "name": "BetaChainToken",
+      "spenders": null,
+      "symbol": "TBA",
+      "tokenFactoryAddress": null,
+      "totalSupply": "1000000000000000000000000000",
+      "type": null,
+      "unit": "arc",
+      "website": "https://www.arcblock.io",
+      "context": {
+        "genesisTime": "2021-08-04T14:36:40.281Z",
+        "renaissanceTime": "2021-08-04T14:36:40.281Z",
+        "genesisTx": {
+          "code": null,
+          "hash": null,
+          "height": null,
+          "index": null,
+          "receiver": null,
+          "sender": null,
+          "time": null,
+          "receipts": null,
+          "tags": null,
+          "tokenSymbols": null,
+          "tx": null
+        },
+        "renaissanceTx": {
+          "code": null,
+          "hash": null,
+          "height": null,
+          "index": null,
+          "receiver": null,
+          "sender": null,
+          "time": null,
+          "receipts": null,
+          "tags": null,
+          "tokenSymbols": null,
+          "tx": null
+        }
+      },
+      "data": null,
+      "foreignToken": {
+        "chainId": 4,
+        "chainName": "rinkeby",
+        "chainType": "eth",
+        "contractAddress": "0x1FdA4185e4d9125a1E75d2FFa0881d907d24942a",
+        "type": "erc20"
+      },
+      "metadata": {
+        "typeUrl": "json",
+        "value": "{\"communityUrl\":\"https://community.arcblock.io\",\"issuer\":\"ArcBlock\"}"
+      }
+    }
+  },
+  "factoriesByOwner": {
+    "code": "OK",
+    "factories": [
+      {
+        "address": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+        "balance": null,
+        "description": "Non-fungible asset representing a Studio node in the ArcBlog network. Each NFT establishes on-chain studio identity and records the node metadata ArcBlog publishes in its node profile.",
+        "genesisTime": "2026-09-27T06:41:11.903Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "ArcBlog Studio Node",
+        "numMinted": 5,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-09-27T08:32:05.166Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"pk\":\"{{data.pk}}\",\"name\":\"{{data.name}}\",\"roles\":\"{{data.roles}}\",\"stake\":\"{{data.stake}}\",\"region\":\"{{data.region}}\",\"endpoint\":\"{{data.endpoint}}\",\"description\":\"{{data.description}}\",\"nodeVersion\":\"{{data.nodeVersion}}\",\"capabilities\":\"{{data.capabilities}}\",\"protocolVersion\":\"{{data.protocolVersion}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "name",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "description",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "stake",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "roles",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "capabilities",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "protocolVersion",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "nodeVersion",
+              "required": false,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "ArcBlogStudioNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "ArcBlogStudioNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"capabilities\":\"{{input.capabilities}}\",\"description\":\"{{input.description}}\",\"endpoint\":\"{{input.endpoint}}\",\"name\":\"{{input.name}}\",\"nodeVersion\":\"{{input.nodeVersion}}\",\"owner\":\"{{ctx.owner}}\",\"pk\":\"{{input.pk}}\",\"protocolVersion\":\"{{input.protocolVersion}}\",\"region\":\"{{input.region}}\",\"roles\":\"{{input.roles}}\",\"stake\":\"{{input.stake}}\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 480 300\" width=\"480\" height=\"300\" role=\"img\" aria-label=\"ArcBlog Studio Node\"> <rect width=\"480\" height=\"300\" rx=\"18\" fill=\"#0b1020\"/> <rect x=\"1\" y=\"1\" width=\"478\" height=\"298\" rx=\"17\" fill=\"none\" stroke=\"#2563eb\" stroke-width=\"2\"/> <text x=\"32\" y=\"58\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" letter-spacing=\"2\" fill=\"#2563eb\">ARCBLOG</text> <text x=\"32\" y=\"96\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"26\" font-weight=\"600\" fill=\"#f8fafc\">{{data.name}}</text> <text x=\"32\" y=\"132\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">{{data.endpoint}}</text> <text x=\"32\" y=\"158\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">region {{data.region}}</text> <text x=\"32\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">stake</text> <text x=\"32\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.stake}} ABT</text> <text x=\"248\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">owner</text> <text x=\"248\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.owner}}</text> <text x=\"32\" y=\"268\" font-family=\"ui-monospace, SFMono-Regular, monospace\" font-size=\"11\" fill=\"#475569\">pk {{data.pk}}</text> </svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": []
+      },
+      {
+        "address": "z3CtHrCfeZZQ8jah7rv9tuXsciDyKPzw2xjC8",
+        "balance": null,
+        "description": "Non-fungible asset representing a Hub node in the ArcBlog network. Each NFT establishes on-chain node identity and records the hub metadata: capacity, pricing tiers and the rules it enforces.",
+        "genesisTime": "2026-09-27T06:41:14.296Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "ArcBlog Hub Node",
+        "numMinted": 0,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-09-27T06:41:14.296Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"pk\":\"{{data.pk}}\",\"name\":\"{{data.name}}\",\"rules\":\"{{data.rules}}\",\"stake\":\"{{data.stake}}\",\"region\":\"{{data.region}}\",\"pricing\":{\"pro\":\"{{data.pricing.pro}}\",\"basic\":\"{{data.pricing.basic}}\",\"premium\":\"{{data.pricing.premium}}\",\"enterprise\":\"{{data.pricing.enterprise}}\"},\"capacity\":\"{{data.capacity}}\",\"endpoint\":\"{{data.endpoint}}\",\"description\":\"{{data.description}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "name",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "description",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "stake",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "rules",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pricing",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "capacity",
+              "required": false,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "ArcBlogHubNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "ArcBlogHubNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"pk\":\"{{input.pk}}\",\"name\":\"{{input.name}}\",\"owner\":\"{{ctx.owner}}\",\"rules\":\"Comply with local laws and regulations; Prohibit pornographic, violent and false information; Ensure original works or authorized use; Violations result in rejection of the application.\",\"stake\":\"{{input.stake}}\",\"region\":\"{{input.region}}\",\"pricing\":{\"pro\":\"0.2\",\"basic\":\"0.1\",\"premium\":\"0.3\",\"enterprise\":\"0.4\"},\"capacity\":\"{{input.capacity}}\",\"endpoint\":\"{{input.endpoint}}\",\"description\":\"{{input.description}}\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 480 300\" width=\"480\" height=\"300\" role=\"img\" aria-label=\"ArcBlog Hub Node\"> <rect width=\"480\" height=\"300\" rx=\"18\" fill=\"#0b1020\"/> <rect x=\"1\" y=\"1\" width=\"478\" height=\"298\" rx=\"17\" fill=\"none\" stroke=\"#0f766e\" stroke-width=\"2\"/> <text x=\"32\" y=\"58\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" letter-spacing=\"2\" fill=\"#0f766e\">ARCBLOG</text> <text x=\"32\" y=\"96\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"26\" font-weight=\"600\" fill=\"#f8fafc\">{{data.name}}</text> <text x=\"32\" y=\"132\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">{{data.endpoint}}</text> <text x=\"32\" y=\"158\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">region {{data.region}}</text> <text x=\"32\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">stake</text> <text x=\"32\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.stake}} ABT</text> <text x=\"248\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">capacity</text> <text x=\"248\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.capacity}} studios</text> <text x=\"32\" y=\"268\" font-family=\"ui-monospace, SFMono-Regular, monospace\" font-size=\"11\" fill=\"#475569\">pk {{data.pk}}</text> </svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtGVPUEFW2uoRW9duqRBFjDtWZ68auXjx9R",
+        "balance": null,
+        "description": "Non-fungible asset representing a Hub node in the ArcBlog network. Each NFT establishes on-chain node identity and records the hub metadata: capacity, pricing tiers and the rules it enforces.",
+        "genesisTime": "2026-09-27T06:38:01.780Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "ArcBlog Hub Node",
+        "numMinted": 0,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-09-27T06:38:01.780Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"pk\":\"{{data.pk}}\",\"name\":\"{{data.name}}\",\"rules\":\"{{data.rules}}\",\"stake\":\"{{data.stake}}\",\"region\":\"{{data.region}}\",\"pricing\":{\"pro\":\"{{data.pricing.pro}}\",\"basic\":\"{{data.pricing.basic}}\",\"premium\":\"{{data.pricing.premium}}\",\"enterprise\":\"{{data.pricing.enterprise}}\"},\"capacity\":\"{{data.capacity}}\",\"endpoint\":\"{{data.endpoint}}\",\"description\":\"{{data.description}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "name",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "description",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "stake",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "rules",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pricing",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "capacity",
+              "required": false,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "ArcBlogHubNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "ArcBlogHubNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"pk\":\"{{input.pk}}\",\"name\":\"{{input.name}}\",\"owner\":\"{{ctx.owner}}\",\"rules\":\"Comply with local laws and regulations; Prohibit pornographic, violent and false information; Ensure original works or authorized use; Violations result in rejection of the application.\",\"stake\":\"{{input.stake}}\",\"region\":\"{{input.region}}\",\"pricing\":{\"pro\":\"0.2\",\"basic\":\"0.1\",\"premium\":\"0.3\",\"enterprise\":\"0.4\"},\"capacity\":\"{{input.capacity}}\",\"endpoint\":\"{{input.endpoint}}\",\"description\":\"{{input.description}}\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 480 300\" width=\"480\" height=\"300\" role=\"img\" aria-label=\"ArcBlog Hub Node\">\n  <rect width=\"480\" height=\"300\" rx=\"18\" fill=\"#0b1020\"/>\n  <rect x=\"1\" y=\"1\" width=\"478\" height=\"298\" rx=\"17\" fill=\"none\" stroke=\"#0f766e\" stroke-width=\"2\"/>\n  <text x=\"32\" y=\"58\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" letter-spacing=\"2\" fill=\"#0f766e\">ARCBLOG</text>\n  <text x=\"32\" y=\"96\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"26\" font-weight=\"600\" fill=\"#f8fafc\">{{data.name}}</text>\n  <text x=\"32\" y=\"132\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">{{data.endpoint}}</text>\n  <text x=\"32\" y=\"158\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">region {{data.region}}</text>\n  <text x=\"32\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">stake</text>\n  <text x=\"32\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.stake}} ABT</text>\n  <text x=\"248\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">capacity</text>\n  <text x=\"248\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.capacity}} studios</text>\n  <text x=\"32\" y=\"268\" font-family=\"ui-monospace, SFMono-Regular, monospace\" font-size=\"11\" fill=\"#475569\">pk {{data.pk}}</text>\n</svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtCfWjwFymuitLwL5NGho63fobqNKtKPih5",
+        "balance": null,
+        "description": "Non-fungible asset representing a Studio node in the ArcBlog network. Each NFT establishes on-chain studio identity and records the node metadata ArcBlog publishes in its node profile.",
+        "genesisTime": "2026-09-27T06:36:07.305Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "ArcBlog Studio Node",
+        "numMinted": 0,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-09-27T06:36:07.305Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"pk\":\"{{data.pk}}\",\"name\":\"{{data.name}}\",\"roles\":\"{{data.roles}}\",\"stake\":\"{{data.stake}}\",\"region\":\"{{data.region}}\",\"endpoint\":\"{{data.endpoint}}\",\"description\":\"{{data.description}}\",\"nodeVersion\":\"{{data.nodeVersion}}\",\"capabilities\":\"{{data.capabilities}}\",\"protocolVersion\":\"{{data.protocolVersion}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "name",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "description",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "stake",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "roles",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "capabilities",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "protocolVersion",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "nodeVersion",
+              "required": false,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "ArcBlogStudioNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "ArcBlogStudioNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"pk\":\"{{input.pk}}\",\"name\":\"{{input.name}}\",\"owner\":\"{{ctx.owner}}\",\"roles\":\"{{input.roles}}\",\"stake\":\"{{input.stake}}\",\"region\":\"{{input.region}}\",\"endpoint\":\"{{input.endpoint}}\",\"description\":\"{{input.description}}\",\"nodeVersion\":\"{{input.nodeVersion}}\",\"capabilities\":\"{{input.capabilities}}\",\"protocolVersion\":\"{{input.protocolVersion}}\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 480 300\" width=\"480\" height=\"300\" role=\"img\" aria-label=\"ArcBlog Studio Node\">\n  <rect width=\"480\" height=\"300\" rx=\"18\" fill=\"#0b1020\"/>\n  <rect x=\"1\" y=\"1\" width=\"478\" height=\"298\" rx=\"17\" fill=\"none\" stroke=\"#2563eb\" stroke-width=\"2\"/>\n  <text x=\"32\" y=\"58\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" letter-spacing=\"2\" fill=\"#2563eb\">ARCBLOG</text>\n  <text x=\"32\" y=\"96\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"26\" font-weight=\"600\" fill=\"#f8fafc\">{{data.name}}</text>\n  <text x=\"32\" y=\"132\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">{{data.endpoint}}</text>\n  <text x=\"32\" y=\"158\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"13\" fill=\"#94a3b8\">region {{data.region}}</text>\n  <text x=\"32\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">stake</text>\n  <text x=\"32\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.stake}} ABT</text>\n  <text x=\"248\" y=\"206\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"12\" fill=\"#64748b\">owner</text>\n  <text x=\"248\" y=\"228\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-size=\"18\" fill=\"#f8fafc\">{{data.owner}}</text>\n  <text x=\"32\" y=\"268\" font-family=\"ui-monospace, SFMono-Regular, monospace\" font-size=\"11\" fill=\"#475569\">pk {{data.pk}}</text>\n</svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtEusZCF1YV7QuRFYAyenJnyGdpX2pPAN5f",
+        "balance": null,
+        "description": "DIDMail Domain Mailbox Alias NFT Factory",
+        "genesisTime": "2026-09-15T09:39:23.016Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "DIDMail Alias",
+        "numMinted": 0,
+        "owner": "0x73AEAc8Be08298fD383152335A182E3e307Eb95a",
+        "renaissanceTime": "2026-09-15T09:39:23.016Z",
+        "settlement": "periodic",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{}"
+        },
+        "display": null,
+        "hooks": [],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "aliasHash",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "encryptedAlias",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "domain",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "serverEndpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "expiresAt",
+              "required": true,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "DidMailAlias#{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "DIDMailAliasNFT"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"aliasHash\":\"{{input.aliasHash}}\",\"encryptedAlias\":\"{{input.encryptedAlias}}\",\"domain\":\"{{input.domain}}\",\"serverEndpoint\":\"{{input.serverEndpoint}}\",\"expiresAt\":\"{{input.expiresAt}}\"}"
+          },
+          "display": null,
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtGa8fbpereCscW3EZYsd2pEKyHLT37TZwV",
+        "balance": null,
+        "description": "Purchase ABT Node t2.small instance for 1 month",
+        "genesisTime": "2023-03-21T11:42:44.955Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "NodePurchaseFactory",
+        "numMinted": 66,
+        "owner": "zNKXAEjKYXEnf2hf18NjTQsa1JajA9gJ3haY",
+        "renaissanceTime": "2026-04-29T15:49:07.389Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"type\":\"t2.small\",\"period\":\"1 month\",\"owner\":\"zNKXAEjKYXEnf2hf18NjTQsa1JajA9gJ3haY\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n3WVTnN7KrR4gXn3szR6oneVefkBBx78Fc', 'zNKXAEjKYXEnf2hf18NjTQsa1JajA9gJ3haY', '5000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n3WVTnN7KrR4gXn3szR6oneVefkBBx78Fc",
+              "decimal": 18,
+              "symbol": "PLAY3",
+              "unit": "p",
+              "value": "5000000000000000000"
+            }
+          ],
+          "variables": []
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "NodePurchaseNFT",
+          "parent": "{{ctx.factory}}",
+          "readonly": true,
+          "tags": [],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "vc",
+            "value": "{\"@context\":\"https://schema.arcblock.io/v0.1/context.jsonld\",\"credentialStatus\":{\"id\":\"https://playground.staging.arcblock.io/api/nft/status\",\"scope\":\"public\",\"type\":\"NFTStatusList2021\"},\"credentialSubject\":{\"display\":{\"content\":\"https://playground.staging.arcblock.io/api/nft/display\",\"type\":\"url\"},\"id\":\"{{ctx.owner}}\",\"purchased\":{\"abtnode\":{\"description\":\"{{input.description}}\",\"name\":\"{{input.name}}\",\"period\":\"{{data.period}}\",\"type\":\"{{data.type}}\"}}},\"id\":\"{{input.id}}\",\"issuanceDate\":\"{{input.issuanceDate}}\",\"issuer\":{\"id\":\"{{ctx.issuer.id}}\",\"name\":\"{{ctx.issuer.name}}\",\"pk\":\"{{ctx.issuer.pk}}\"},\"proof\":{\"created\":\"{{input.issuanceDate}}\",\"jws\":\"{{input.signature}}\",\"proofPurpose\":\"assertionMethod\",\"type\":\"{{input.proofType}}\"},\"type\":[\"VerifiableCredential\",\"PurchaseCredential\",\"NFTTicket\",\"NodePurchaseCredential\"]}"
+          },
+          "display": null,
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtC3NqdsUCMkENcaGeK9fUfF8Af5sGxtZM6",
+        "balance": null,
+        "description": "This is a factory to mint assets that have various test case for vc endpoints",
+        "genesisTime": "2023-03-21T11:42:47.221Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "EndpointTestVCFactory",
+        "numMinted": 28,
+        "owner": "zNKXAEjKYXEnf2hf18NjTQsa1JajA9gJ3haY",
+        "renaissanceTime": "2026-04-29T15:33:35.538Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'zNKXAEjKYXEnf2hf18NjTQsa1JajA9gJ3haY', '5000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "5000000000000000000"
+            }
+          ],
+          "variables": []
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "EndpointTestVC",
+          "parent": "{{ctx.factory}}",
+          "readonly": true,
+          "tags": [],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "vc",
+            "value": "{\"@context\":\"https://schema.arcblock.io/v0.1/context.jsonld\",\"credentialStatus\":{\"id\":\"https://playground.staging.arcblock.io/api/did/vc-private-status/token\",\"scope\":\"private\",\"type\":\"NFTStatusList2021\"},\"credentialSubject\":{\"display\":{\"content\":\"https://playground.staging.arcblock.io/api/nft/display\",\"type\":\"url\"},\"id\":\"{{ctx.owner}}\"},\"id\":\"{{input.id}}\",\"issuanceDate\":\"{{input.issuanceDate}}\",\"issuer\":{\"id\":\"{{ctx.issuer.id}}\",\"name\":\"{{ctx.issuer.name}}\",\"pk\":\"{{ctx.issuer.pk}}\"},\"proof\":{\"created\":\"{{input.issuanceDate}}\",\"jws\":\"{{input.signature}}\",\"proofPurpose\":\"assertionMethod\",\"type\":\"{{input.proofType}}\"},\"type\":[\"VerifiableCredential\",\"NFTBadge\",\"EndpointTestCredential\"]}"
+          },
+          "display": null,
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtDRaACrsL4cw3n73Ai3eRN7bzZrAPdXoB6",
+        "balance": null,
+        "description": "Non-fungible asset representing a Hub node in the GLofter network. Each NFT establishes on-chain node identity and records essential node metadata.",
+        "genesisTime": "2026-04-10T06:28:00.402Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "GLofter Hub Node",
+        "numMinted": 0,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-04-10T06:28:00.402Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"endpoint\":\"{{data.endpoint}}\",\"region\":\"{{data.region}}\",\"hubPk\":\"{{data.hubPk}}\",\"pricing\":{\"basic\":\"{{data.pricing.basic}}\",\"pro\":\"{{data.pricing.pro}}\",\"premium\":\"{{data.pricing.premium}}\",\"enterprise\":\"{{data.pricing.enterprise}}\"},\"stake\":\"{{data.stake}}\",\"capacity\":\"{{data.capacity}}\",\"rules\":\"{{data.rules}}\",\"owner\":\"{{data.owner}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "GLofterHubNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "GLofterHubNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"endpoint\":\"{{input.endpoint}}\",\"region\":\"{{input.region}}\",\"owner\":\"{{ctx.owner}}\",\"pk\":\"{{input.pk}}\",\"pricing\":{\"basic\":\"0.1\",\"pro\":\"0.2\",\"premium\":\"0.3\",\"enterprise\":\"0.4\"},\"stake\":\"1\",\"capacity\":\"1000\",\"rules\":\"Comply with local laws and regulations; Prohibit pornographic, violent, false information and other illegal content; Ensure original works or authorized use; Violations will result in rejection of application.\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 315\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><defs><linearGradient id=\"a\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#0f1419\"/><stop offset=\"50%\" stop-color=\"#1a1f3a\"/><stop offset=\"100%\" stop-color=\"#0f1419\"/></linearGradient><linearGradient id=\"b\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#fff\"/><stop offset=\"100%\" stop-color=\"#7c9dff\"/></linearGradient><filter id=\"c\"><feGaussianBlur result=\"blur\" stdDeviation=\"3\"/><feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><rect width=\"500\" height=\"315\" fill=\"url(#a)\" rx=\"12\"/><text x=\"25\" y=\"22\" fill=\"#9fb7ff\" font-size=\"9\" font-weight=\"bold\" opacity=\".7\">GLofter Hub Node</text><text x=\"250\" y=\"70\" fill=\"url(#b)\" filter=\"url(#c)\" font-size=\"32\" font-weight=\"bold\" text-anchor=\"middle\">GLofter Hub Node #{{ctx.id}}</text><path stroke=\"#3b4a6b\" d=\"M25 90h450\" opacity=\".5\"/><text x=\"25\" y=\"110\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">Endpoint:</text><text x=\"25\" y=\"126\" fill=\"#cbd5e1\" font-size=\"11\">{{data.endpoint}}</text><text x=\"325\" y=\"110\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">Region:</text><text x=\"385\" y=\"110\" fill=\"#cbd5e1\" font-size=\"11\">{{data.region}}</text><path stroke=\"#3b4a6b\" d=\"M25 140h450\" opacity=\".4\"/><text x=\"25\" y=\"160\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Pricing:</text><text x=\"25\" y=\"176\" fill=\"#cbd5e1\" font-size=\"11\">\n    <tspan>Basic: {{data.pricing.basic}}</tspan>\n    <tspan dx=\"8\">|</tspan>\n    <tspan dx=\"8\">Pro: {{data.pricing.pro}}</tspan>\n    <tspan dx=\"8\">|</tspan>\n    <tspan dx=\"8\">Premium: {{data.pricing.premium}}</tspan>\n    <tspan dx=\"8\">|</tspan>\n    <tspan dx=\"8\">Enterprise: {{data.pricing.enterprise}}</tspan>\n  </text><text x=\"325\" y=\"160\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Stake:</text><text x=\"385\" y=\"160\" fill=\"#cbd5e1\" font-size=\"11\">{{data.stake}}</text><path stroke=\"#3b4a6b\" d=\"M25 190h450\" opacity=\".4\"/><text x=\"25\" y=\"210\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Rules:</text><foreignObject width=\"450\" height=\"60\" x=\"25\" y=\"219\" style=\"overflow:visible\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"color:#cbd5e1;font-size:11px;font-family:sans-serif;line-height:1.4;word-wrap:break-word;white-space:normal\">{{data.rules}}</div></foreignObject><text x=\"325\" y=\"210\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Capacity:</text><text x=\"385\" y=\"210\" fill=\"#cbd5e1\" font-size=\"11\">{{data.capacity}}</text><text x=\"250\" y=\"300\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".6\" text-anchor=\"middle\">GLofter HUB Network</text></svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": [
+          {
+            "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+            "balance": "0",
+            "decimal": 18,
+            "symbol": "TBA",
+            "unit": "arc"
+          }
+        ]
+      },
+      {
+        "address": "z3CtQAHVphDUvgxKDigv9oi2Jsnw2d5X8CMnZ",
+        "balance": null,
+        "description": "Non-fungible asset representing a Hub node in the GLofter network. Each NFT establishes on-chain node identity and records essential node metadata.",
+        "genesisTime": "2026-03-05T13:19:13.880Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "GLofter Hub Node",
+        "numMinted": 2,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-04-05T05:06:15.611Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"endpoint\":\"{{data.endpoint}}\",\"region\":\"{{data.region}}\",\"hubPk\":\"{{data.hubPk}}\",\"pricing\":{\"basic\":\"{{data.pricing.basic}}\",\"pro\":\"{{data.pricing.pro}}\",\"premium\":\"{{data.pricing.premium}}\",\"enterprise\":\"{{data.pricing.enterprise}}\"},\"stake\":\"{{data.stake}}\",\"capacity\":\"{{data.capacity}}\",\"rules\":\"{{data.rules}}\",\"owner\":\"{{data.owner}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "GLofterHubNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "GLofterHubNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"capacity\":\"1000\",\"endpoint\":\"{{input.endpoint}}\",\"owner\":\"{{ctx.owner}}\",\"pk\":\"{{input.pk}}\",\"pricing\":{\"basic\":\"0.1\",\"enterprise\":\"0.4\",\"premium\":\"0.3\",\"pro\":\"0.2\"},\"region\":\"{{input.region}}\",\"rules\":\"Comply with local laws and regulations; Prohibit pornographic, violent, false information and other illegal content; Ensure original works or authorized use; Violations will result in rejection of application.\",\"stake\":\"1\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 315\"><defs><linearGradient id=\"bg\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#0f1419\"/><stop offset=\"50%\" stop-color=\"#1a1f3a\"/><stop offset=\"100%\" stop-color=\"#0f1419\"/></linearGradient><linearGradient id=\"text\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#fff\"/><stop offset=\"100%\" stop-color=\"#7c9dff\"/></linearGradient><filter id=\"glow\"><feGaussianBlur stdDeviation=\"3\" result=\"blur\"/><feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><rect width=\"500\" height=\"315\" fill=\"url(#bg)\" rx=\"12\"/><text x=\"25\" y=\"22\" font-weight=\"bold\" font-size=\"9\" fill=\"#9fb7ff\" opacity=\".7\">GLofter Hub Node</text><text x=\"250\" y=\"70\" font-size=\"32\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"url(#text)\" filter=\"url(#glow)\">GLofter Hub Node #{{ctx.id}}</text><path stroke=\"#3b4a6b\" opacity=\".5\" d=\"M25 90h450\"/><text x=\"25\" y=\"110\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".8\" font-weight=\"500\">Endpoint:</text><text x=\"25\" y=\"126\" font-size=\"11\" fill=\"#cbd5e1\">{{data.endpoint}}</text><text x=\"325\" y=\"110\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".8\" font-weight=\"500\">Region:</text><text x=\"385\" y=\"110\" font-size=\"11\" fill=\"#cbd5e1\">{{data.region}}</text><path stroke=\"#3b4a6b\" opacity=\".4\" d=\"M25 140h450\"/><text x=\"25\" y=\"160\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".9\" font-weight=\"bold\">Pricing:</text><text x=\"25\" y=\"176\" font-size=\"11\" fill=\"#cbd5e1\"><tspan>Basic: {{data.pricing.basic}}</tspan><tspan dx=\"8\">|</tspan><tspan dx=\"8\">Pro: {{data.pricing.pro}}</tspan><tspan dx=\"8\">|</tspan><tspan dx=\"8\">Premium: {{data.pricing.premium}}</tspan><tspan dx=\"8\">|</tspan><tspan dx=\"8\">Enterprise: {{data.pricing.enterprise}}</tspan></text><text x=\"325\" y=\"160\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".9\" font-weight=\"bold\">Stake:</text><text x=\"385\" y=\"160\" font-size=\"11\" fill=\"#cbd5e1\">{{data.stake}}</text><path stroke=\"#3b4a6b\" opacity=\".4\" d=\"M25 190h450\"/><text x=\"25\" y=\"210\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".9\" font-weight=\"bold\">Rules:</text><foreignObject x=\"25\" y=\"219\" width=\"450\" height=\"60\" style=\"overflow: visible;\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"color: #cbd5e1; font-size: 11px; font-family: sans-serif; line-height: 1.4; word-wrap: break-word; white-space: normal;\">{{data.rules}}</div></foreignObject><text x=\"325\" y=\"210\" font-size=\"12\" fill=\"#9fb7ff\" opacity=\".9\" font-weight=\"bold\">Capacity:</text><text x=\"385\" y=\"210\" font-size=\"11\" fill=\"#cbd5e1\">{{data.capacity}}</text><text x=\"250\" y=\"300\" font-size=\"12\" text-anchor=\"middle\" fill=\"#9fb7ff\" opacity=\".6\" font-weight=\"bold\">GLofter HUB Network</text></svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": []
+      },
+      {
+        "address": "z3CtT54huq3zkC1obunr1P7XB4ZoRKKBzYWkn",
+        "balance": null,
+        "description": "Non-fungible asset representing a Studio node in the GLofter network. Each NFT establishes on-chain studio identity and records essential studio metadata.",
+        "genesisTime": "2026-03-05T13:22:16.808Z",
+        "lastSettlement": "",
+        "limit": null,
+        "name": "GLofter Studio Node",
+        "numMinted": 2,
+        "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+        "renaissanceTime": "2026-03-30T08:04:31.133Z",
+        "settlement": "instant",
+        "trustedIssuers": [],
+        "data": {
+          "typeUrl": "json",
+          "value": "{\"name\":\"{{data.name}}\",\"description\":\"{{data.description}}\",\"endpoint\":\"{{data.endpoint}}\",\"region\":\"{{data.region}}\",\"stake\":\"{{data.stake}}\",\"type\":\"{{data.type}}\",\"city\":\"{{data.city}}\",\"specialties\":\"{{data.specialties}}\",\"priceDisplay\":\"{{data.priceDisplay}}\",\"currencyCode\":\"{{data.currencyCode}}\",\"owner\":\"{{data.owner}}\",\"pk\":\"{{data.pk}}\"}"
+        },
+        "display": null,
+        "hooks": [
+          {
+            "hook": "transferToken('z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a', '1000000000000000000');",
+            "name": "mint",
+            "type": "contract"
+          }
+        ],
+        "input": {
+          "assets": [],
+          "value": "0",
+          "tokens": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc",
+              "value": "1000000000000000000"
+            }
+          ],
+          "variables": [
+            {
+              "description": "",
+              "name": "endpoint",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "region",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "name",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "description",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "stake",
+              "required": true,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "type",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "city",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "specialties",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "priceDisplay",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "currencyCode",
+              "required": false,
+              "value": null
+            },
+            {
+              "description": "",
+              "name": "pk",
+              "required": true,
+              "value": null
+            }
+          ]
+        },
+        "output": {
+          "address": null,
+          "issuer": "{{ctx.issuer.id}}",
+          "moniker": "GLofterStudioNode #{{ctx.id}}",
+          "parent": "{{ctx.factory}}",
+          "readonly": false,
+          "tags": [
+            "GLofterStudioNode"
+          ],
+          "transferrable": true,
+          "ttl": 0,
+          "data": {
+            "typeUrl": "json",
+            "value": "{\"city\":\"{{input.city}}\",\"currencyCode\":\"{{input.currencyCode}}\",\"description\":\"{{input.description}}\",\"endpoint\":\"{{input.endpoint}}\",\"name\":\"{{input.name}}\",\"owner\":\"{{ctx.owner}}\",\"pk\":\"{{input.pk}}\",\"priceDisplay\":\"{{input.priceDisplay}}\",\"region\":\"{{input.region}}\",\"specialties\":\"{{input.specialties}}\",\"stake\":\"{{input.stake}}\",\"type\":\"{{input.type}}\"}"
+          },
+          "display": {
+            "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\" viewBox=\"0 0 500 315\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><defs><linearGradient id=\"a\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#0f1419\"/><stop offset=\"50%\" stop-color=\"#1a1f3a\"/><stop offset=\"100%\" stop-color=\"#0f1419\"/></linearGradient><linearGradient id=\"b\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#fff\"/><stop offset=\"100%\" stop-color=\"#7c9dff\"/></linearGradient><filter id=\"c\"><feGaussianBlur result=\"blur\" stdDeviation=\"3\"/><feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><rect width=\"500\" height=\"315\" fill=\"url(#a)\" rx=\"12\"/><text x=\"25\" y=\"22\" fill=\"#9fb7ff\" font-size=\"9\" font-weight=\"bold\" opacity=\".7\">GLofter Studio Node</text><text x=\"250\" y=\"70\" fill=\"url(#b)\" filter=\"url(#c)\" font-size=\"32\" font-weight=\"bold\" text-anchor=\"middle\">GLofter Studio #{{ctx.id}}</text><path stroke=\"#3b4a6b\" d=\"M25 90h450\" opacity=\".5\"/><text x=\"25\" y=\"106\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">Name:</text><text x=\"25\" y=\"122\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">{{data.name}}</text><text x=\"325\" y=\"106\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">Type:</text><text x=\"385\" y=\"106\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">{{data.type}}</text><path stroke=\"#3b4a6b\" d=\"M25 132h450\" opacity=\".4\"/><text x=\"25\" y=\"148\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">Endpoint:</text><text x=\"25\" y=\"164\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">{{data.endpoint}}</text><text x=\"325\" y=\"148\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"500\" opacity=\".8\">City:</text><text x=\"385\" y=\"148\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">{{data.city}}</text><path stroke=\"#3b4a6b\" d=\"M25 174h450\" opacity=\".4\"/><text x=\"25\" y=\"190\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Specialties:</text><foreignObject width=\"275\" height=\"24\" x=\"25\" y=\"199\" style=\"overflow:visible\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"color:#cbd5e1;font-size:11px;font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif;line-height:1.4;word-wrap:break-word;white-space:normal\">{{#data.specialties}}\n        {{#.}}<span style=\"display:inline-block;background:rgba(159,183,255,.2);padding:2px 6px;margin:2px;border-radius:4px\">{{.}}</span>{{/.}}\n      {{/data.specialties}}\n      {{^data.specialties}}N/A{{/data.specialties}}</div></foreignObject><text x=\"325\" y=\"190\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Price:</text><text x=\"385\" y=\"190\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">\n    {{#data.priceDisplay}}{{data.priceDisplay}}{{/data.priceDisplay}}\n    {{^data.priceDisplay}}\n      {{#data.priceRange}}{{min}} - {{max}} {{currency}}{{/data.priceRange}}\n      {{^data.priceRange}}{{#data.pricingFrom}}From {{data.pricingFrom}} {{data.currencyCode}}{{/data.pricingFrom}}{{^data.pricingFrom}}N/A{{/data.pricingFrom}}{{/data.priceRange}}\n    {{/data.priceDisplay}}\n  </text><path stroke=\"#3b4a6b\" d=\"M25 222h450\" opacity=\".4\"/><text x=\"25\" y=\"238\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Description:</text><foreignObject width=\"450\" height=\"50\" x=\"25\" y=\"247\" style=\"overflow:visible\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"color:#cbd5e1;font-size:11px;font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif;line-height:1.4;word-wrap:break-word;white-space:normal\">{{data.description}}</div></foreignObject><text x=\"325\" y=\"238\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".9\">Stake:</text><text x=\"385\" y=\"238\" fill=\"#cbd5e1\" font-size=\"11\" style=\"font-family:&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,&quot;Noto Sans CJK SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;WenQuanYi Micro Hei&quot;,sans-serif\">{{data.stake}} ABT</text><text x=\"250\" y=\"300\" fill=\"#9fb7ff\" font-size=\"12\" font-weight=\"bold\" opacity=\".6\" text-anchor=\"middle\">GLofter Studio Network</text></svg>",
+            "type": "svg"
+          },
+          "endpoint": null
+        },
+        "tokens": []
+      }
+    ],
+    "page": {
+      "cursor": "10",
+      "next": true,
+      "total": 5517
+    }
+  }
+}

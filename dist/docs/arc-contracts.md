@@ -1666,3 +1666,51 @@ tokenId / tokenDecimals`。选择顺序（**实测**）：显式 `ARCBLOG_CHAIN_
 （原始证据：`POST /api/aup/event` 的 `validation_failed` 载荷 + daemon `[aup-validation] … blocked submit`）。
 所以「列表 + 行内删除」同页共存时，删除动作会被同页表单的空值卡死；ArcBlog 的处理是列表页只做列举/新增、
 删除交给 CLI（与 `?page=categories` 的既有诚实形态一致），而不是伪装成能点。
+
+---
+
+## 32. 链上**只读**能力面与「今天的链上事实」（Round 17 实测，beta 链）
+
+为回答「订单操作是否应查链、退款是否应发起链上转账」，用 `@ocap/client@1.30.24` 对 **beta** 做了完整只读探针（**零交易、零资金**，QA 独立复核）。
+
+**(1) 运行时 API 面（不要凭印象写方法名）**：`client.getQueries()` = **40** 个只读 query；
+`client.getMutations()` = **`['sendTx']`**（唯一写入口）；`client.getTxSendMethods()` = **38** 个 `send*Tx`
+（Round 17 的 Dev 报告曾写 26，被 QA 的 BUG-041 纠正；引数字前先跑一次）。
+类型文件 `node_modules/@ocap/client/lib/node.d.ts`：读侧约 :451-490、`sendTx` :491、`transfer` :108。
+
+**(2) 按哈希查交易：`getTx(hash)`**。4 个来自 `node/factories.json` 的真实 beta 哈希全部命中且字段完整
+（`hash/sender/receiver/time/code/tokenSymbols/receipts`）。**关键反例**：**未知哈希不报错**，返回
+`{ code: 'OK', info: null }` —— 所以「交易是否存在」必须判 **`info != null`**，绝不能拿「调用成功」当证据。
+
+**(3) 余额要读 `getAccountTokens`**：`getAccountState()[addr].state.balance` 是 **`null`**；
+代币余额在 `getAccountTokens(addr)`（实测 `16154907215234937951`，decimal 18 → 16.1549… TBA）。
+节点钱包地址可由助记词派生，且与记录里的 `issuer` 一致（自洽校验）。
+
+**(4) beta 链没有确认深度**：`getChainInfo` 返回 `blockHeight: '0'`、`network: 'beta'`、`moniker: 'beta'`、
+`consensusVersion: '@ocap/statedb-dolt v1.20.2'` → **任何「等待 N 个确认」的设计在此链上不可实现**，
+订单状态机只能用 `pending → verified`（依据 `info != null` + 字段比对），不能显示「已确认 N 次」。
+
+**(5) 对账可用，但注意过滤器的坑**：`listTransactions` 支持 `accountFilter.accounts` /
+`addressFilter{sender,direction}` / `typeFilter.types`，可分页（实测窗口 total 188、按类型 transfer 659）；
+但 **`listFactories({owner})` 不按 owner 过滤**（会返回他人 factory）——消费方必须自己按 `owner` 过滤。
+
+**(6) 写侧只做类型层核验**：`transfer` 是**广播**（`extension.js:831-865` → `sendTransferV2Tx`）。
+REQ-021 阶段一只读，**未调用任何 `send*` 方法**；真实发送路径、gas/fee、以及**链上 `memo` 能否回读**都
+仍是「受限未验证」（QA 抽样 18 笔真实 transfer 的 `itxJson` 里**没有 `data` 键**，因此不能声称「可按 memo 回找」）。
+
+**(7) fail-closed 三条实测**：缺三件套 → `VALIDATION`（`network/chainHost/tokenId is missing`）；
+`ARCBLOG_CHAIN_ENV=beta` 与 `config/roles.json`（`network: arcblock`）**冲突** → `VALIDATION`（拒绝混环境）；
+三件套齐但无助记词 → `CHAIN_UNAVAILABLE`（生产 CLI `exit 1`）。**mock/manual 永远不得声称「链上已验证」。**
+
+**(8) 今天仓库的链上事实 = 声明式**：`scripts/arcblog-economy.mjs` 的 `ADAPTERS` 仅 `none|manual`（:51）；
+`settlement`/`ledger`/`refund` 的 `transactionHash` 恒为 `''`（`scripts/lib/economy.mjs:239/268/387`）；
+`world/order.yaml` 与 `world/refund.yaml` **都没有 `transactionHash` 字段**；`order pay` 只是自己写
+`status: paid` + 操作者手填 `paymentRef`（`arcblog-economy.mjs:198-212`）；结算只看 `status`（`:209`）；
+实例里 `economy/ledger/` 目录**不存在**，而 `economy/settlements/*` 里已有 `status: 'settled'` +
+`transactionHash: ''` 的记录 → **「已结算」目前完全是声明式的**。幂等键是**两键**：
+`<orderId>:<type>`（`:258`）与 `<orderId>:refund:<type>`（`:376`，`:382` 冲正）。
+
+**(9) 投影文件会混事实**：`node/factories.json` 的**文件头** `adapter: 'ocap'`，但 **`nodes.hub` 分支是 mock 残留**
+（`owner: '0xhubowner'`、`assetId: '0xa5ed65ce…'`、`acquireTx: '0xte32482c…'` —— 该哈希在链上 `getTx` 返回
+`info: null`），而 `nodes.studio` 是真链哈希。**任何按文件头 `adapter` 决定是否查链的消费者，都会把模拟事实当链上事实**
+（今天没有页面渲染 hub，故未暴露；已在 BUG-043 立项）。

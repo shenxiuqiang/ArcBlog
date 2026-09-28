@@ -1,0 +1,1981 @@
+{
+  "probe": "QA-R17 independent read-only chain audit",
+  "endpoint": {
+    "host": "https://beta.abtnetwork.io/api/",
+    "tokenId": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+    "mnemonicPresent": true
+  },
+  "nodeWallet": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+  "round17WindowStart": "2026-09-28T00:00:00.000Z",
+  "results": {
+    "chainInfo": {
+      "code": "OK",
+      "info": {
+        "address": "987bcab01b929eb2c07877b224215c92",
+        "appHash": "3834ee9b1e86c942f471766eebdac59b",
+        "blockHash": "d41d8cd98f00b204e9800998ecf8427e",
+        "blockHeight": "0",
+        "blockTime": "",
+        "consensusVersion": "@ocap/statedb-dolt v1.20.2",
+        "id": "987bcab01b929eb2c07877b224215c92",
+        "moniker": "beta",
+        "network": "beta",
+        "supportedTxs": [
+          "fg:t:transfer",
+          "fg:t:transfer_v2",
+          "fg:t:transfer_v3",
+          "fg:t:exchange_v2",
+          "fg:t:account_migrate",
+          "fg:t:delegate",
+          "fg:t:revoke_delegate",
+          "fg:t:create_asset",
+          "fg:t:update_asset",
+          "fg:t:consume_asset",
+          "fg:t:create_factory",
+          "fg:t:acquire_asset_v2",
+          "fg:t:acquire_asset_v3",
+          "fg:t:mint_asset",
+          "fg:t:create_token",
+          "fg:t:deposit_token_v2",
+          "fg:t:withdraw_token_v2",
+          "fg:t:stake",
+          "fg:t:revoke_stake",
+          "fg:t:claim_stake",
+          "fg:t:slash_stake",
+          "fg:t:return_stake",
+          "fg:t:create_rollup",
+          "fg:t:update_rollup",
+          "fg:t:pause_rollup",
+          "fg:t:close_rollup",
+          "fg:t:resume_rollup",
+          "fg:t:join_rollup",
+          "fg:t:leave_rollup",
+          "fg:t:create_rollup_block",
+          "fg:t:migrate_rollup",
+          "fg:t:claim_block_reward",
+          "fg:t:create_token_factory",
+          "fg:t:update_token_factory",
+          "fg:t:mint_token",
+          "fg:t:burn_token"
+        ],
+        "synced": true,
+        "totalTxs": "406296",
+        "version": "1.30.23",
+        "votingPower": "10",
+        "forgeAppsVersion": []
+      }
+    },
+    "nodeAccountTxs_p1": {
+      "code": "OK",
+      "page": {
+        "cursor": "10",
+        "next": true,
+        "total": 188
+      },
+      "transactions": [
+        {
+          "code": "OK",
+          "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:39.783Z",
+          "type": "claim_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:claim_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "evidence": {
+                "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66"
+              }
+            },
+            "nonce": "1790498079479",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "c2KPhSbdRjT1-6KTcaWARkMCPStFBZoWPVKmyEuGwJVG8obcSPxIv1sX8th5jaQ4ndy8So7nZTSighZs7RBLCQ",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:29.413Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790498069093",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "rn3FSC6fFVlsW2Sgat3Yh6D95xst2CJPBWDC8IKpDU0YR-OY1BSLFTVfEOfHmzpDrgBLXzAdQaRwb2YkxsTdAg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:34:11.662Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790498051359",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "Ti_mYVaBuqEMN87z4xwkemuJg0GmSeDWE0UKp6QWO_fTP-iAhALHRmMqlCiAYHRKzF8gRQFxcLrxtzIqXYV9BA",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "pBH62EweaJnYBvMG5B3hueqpgrcQONmmEpAWmxflU6fjoM7x9WsAFu/wiBATzFfkA23DWchqWDJyzbw73TBqCw==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:32:05.166Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPUBLICKEY-----MCowBQYDK2VwAyEA+7k5VbOQZHtqllVo+xsWj36EkbnpVeZEk7SW5NJGpv4=-----ENDPUBLICKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790497924748",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "TBFi5C_m23Eh2puqloqrmJRVMo4H9SduJV8hnXXwGyxY8vhg9XEXO_09LNRLlN-POE6cDZzQaovRFWrh_rZ5Dw",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "2C57DD3244E58BFA50EDF0C9EDF640FA56CCF175D0CB9910057DDBD8F8731E3C",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T07:26:57.671Z",
+          "type": "claim_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:claim_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "evidence": {
+                "hash": "FC0DEED1CA288C9A2EA223E1D9E2D9416B8A4D8960981E18450300BC9B126FA9"
+              }
+            },
+            "nonce": "1790494016698",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "-rca85hlkA1Um4lg7HEqadPVHMk7vStubIkXLLax8Y_eykqwCgNmoxPIiqpX2wYnC2ENs2LK6CyXwXCrjDNtDA",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "FC0DEED1CA288C9A2EA223E1D9E2D9416B8A4D8960981E18450300BC9B126FA9",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T07:26:50.609Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790494010273",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "PJWy7xLRlpz1Xow2dpSYhoJI4WLjNOiMfBqVcJpPTJsdXdJlnG4OcmLpX5JPmNKFRyclwAk8k29C7oVQwwfDDQ",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "826A69D24B9B7439BEC1F2FE492A28AC036A7A88656FF806C6AB85CB057624CF",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:42.602Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790494002279",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "hXOcVGyTDA7roH2SJL4vRZlKr3V8qc03yuflCMFw_WhSr5fnlIv88LkrtnxuS_2rxD9QJbtmEDGZnhTjhgBkCQ",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "SpV+VTlUg6dlj7DssZICUcKOcF1n8nH727sDCYUS+n5xbhr/u6h4qdvc6HLargt41oi0sNkVSBAb/OjvJGnWAg==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "955C7075223C9F9F4D67DA8ECAFFE8039EC1BD3346650C925C08E1C50FFA5039",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:38.076Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPUBLICKEY-----MCowBQYDK2VwAyEAzbdYLnlS/102Esaoae4f5t2Nnm9dvy/to4NbfgVOSuU=-----ENDPUBLICKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790493997758",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "y1G8ADMr3Dz5KA050b0HTjR-WNDWZD10Si0fUkm8_bWCTZ9C5CLhny31-DWWw8N6a97O1oaw91C_fU9NVg-ECA",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "36600ACF1738E8CB2D0319B51F04C1F80649C26010E2662D1D2E6532E1FE8B92",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:24.079Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdxC4MDGDQrscNz7Y47Z3D8ZQGbcLjULC7c",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2097300000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdxC4MDGDQrscNz7Y47Z3D8ZQGbcLjULC7c",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "/tmp/arcblog-pk.pub",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790493983762",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "ZfzZ1nnB4uPY4ahjzKxPiLN7YqNSjY6npnKG0OUqhIQYx7o-zoSvhRZ2m3WzE0cxHMtb_Bo2Tns5o-HhjK_iCw",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "4CABE2CE8EEF1B7E764CB44F29A731448DADA50539B1361575B3FF8319FC8637",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T07:25:24.847Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790493924522",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "28A7u593w-nVmAtv5CbG3uvd1pfFT61JGrCj7XkZxj4EAEtyO5XxxQn2Sz43NGMtnlzcc8K4ozuWy5fJ0yMfBg",
+            "signatures": []
+          }
+        }
+      ]
+    },
+    "nodeAccountTxs_p1_timeFiltered": {
+      "code": "OK",
+      "page": {
+        "cursor": "0",
+        "next": false,
+        "total": 0
+      },
+      "transactions": []
+    },
+    "nodeOutgoingTransfers": {
+      "code": "OK",
+      "page": {
+        "cursor": "10",
+        "next": true,
+        "total": 14
+      },
+      "transactions": [
+        {
+          "code": "OK",
+          "hash": "0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:34:11.662Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790498051359",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "Ti_mYVaBuqEMN87z4xwkemuJg0GmSeDWE0UKp6QWO_fTP-iAhALHRmMqlCiAYHRKzF8gRQFxcLrxtzIqXYV9BA",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "pBH62EweaJnYBvMG5B3hueqpgrcQONmmEpAWmxflU6fjoM7x9WsAFu/wiBATzFfkA23DWchqWDJyzbw73TBqCw==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:32:05.166Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPUBLICKEY-----MCowBQYDK2VwAyEA+7k5VbOQZHtqllVo+xsWj36EkbnpVeZEk7SW5NJGpv4=-----ENDPUBLICKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790497924748",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "TBFi5C_m23Eh2puqloqrmJRVMo4H9SduJV8hnXXwGyxY8vhg9XEXO_09LNRLlN-POE6cDZzQaovRFWrh_rZ5Dw",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "826A69D24B9B7439BEC1F2FE492A28AC036A7A88656FF806C6AB85CB057624CF",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:42.602Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790494002279",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "hXOcVGyTDA7roH2SJL4vRZlKr3V8qc03yuflCMFw_WhSr5fnlIv88LkrtnxuS_2rxD9QJbtmEDGZnhTjhgBkCQ",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "SpV+VTlUg6dlj7DssZICUcKOcF1n8nH727sDCYUS+n5xbhr/u6h4qdvc6HLargt41oi0sNkVSBAb/OjvJGnWAg==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "955C7075223C9F9F4D67DA8ECAFFE8039EC1BD3346650C925C08E1C50FFA5039",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:38.076Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdySPSWFfzZmUkC12N5zKpGob4gihw3pjAx",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPUBLICKEY-----MCowBQYDK2VwAyEAzbdYLnlS/102Esaoae4f5t2Nnm9dvy/to4NbfgVOSuU=-----ENDPUBLICKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790493997758",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "y1G8ADMr3Dz5KA050b0HTjR-WNDWZD10Si0fUkm8_bWCTZ9C5CLhny31-DWWw8N6a97O1oaw91C_fU9NVg-ECA",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "36600ACF1738E8CB2D0319B51F04C1F80649C26010E2662D1D2E6532E1FE8B92",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T07:26:24.079Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdxC4MDGDQrscNz7Y47Z3D8ZQGbcLjULC7c",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2097300000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdxC4MDGDQrscNz7Y47Z3D8ZQGbcLjULC7c",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "/tmp/arcblog-pk.pub",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790493983762",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "ZfzZ1nnB4uPY4ahjzKxPiLN7YqNSjY6npnKG0OUqhIQYx7o-zoSvhRZ2m3WzE0cxHMtb_Bo2Tns5o-HhjK_iCw",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "BFFA472DB920A7D9C7CDA8A1C851825F703DF5B76B871CFDB47AA4BB6531231A",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T06:44:43.922Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2080800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790491483623",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "l_n3wKKnpKFzka1y-pEi3_HXEF7nonnffKh4ezBlTFX20YE_ULdCBoJLRhkxCnRXUT28RP6BeDhXHq_8rK6fAQ",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "094GxgmSZ8W0eboQ2Lvmed+EwvtU3YRJ1lyTKzNobSca/CoM4XpiKo5vshEjnlyiqIj6w4omCeYmDf4BW+xNAg==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "A809E20EC1BC5601F839ADAF23552A2F18F2938A2423F17A73769C897B174D5F",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T06:44:36.497Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106700000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPRIVATEKEY-----MC4CAQAwBQYDK2VwBCIEINZQ04S+01QGi4McAqdQ5FUXyhDcpdYDcPi2fhTp4I8S-----ENDPRIVATEKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790491476202",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "6H5bhYvWbrc5KV2iGVBs6ID5Fk3lOweKRIRy2_N6FdS3DN0Gubn6BaKc7nQ6AHHDxcNI99cd6blX1tt2smk2Bg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "67A1637899FF3731D1A5C1B0D50570EDED23C137E76A84C4FEDD19EF238E8B7B",
+          "receiver": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T06:44:13.330Z",
+          "type": "acquire_asset_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "mint",
+                  "target": "zjdyVNyUVBnCtywxdUsbi6vEtymnaLJw6bun",
+                  "value": "1"
+                },
+                {
+                  "action": "consume",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-1000000000000000000"
+                },
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "1000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2106700000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "AcquireAssetV2Tx",
+              "encoded_value": null,
+              "type_url": "fg:t:acquire_asset_v2",
+              "factory": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "address": "zjdyVNyUVBnCtywxdUsbi6vEtymnaLJw6bun",
+              "assets": [],
+              "variables": [
+                {
+                  "name": "endpoint",
+                  "value": "https://arcblog.localhost",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "region",
+                  "value": "CN-BJ",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "name",
+                  "value": "ArcBlog",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "description",
+                  "value": "A DID-native publishing space for readable Markdown posts and images.",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "stake",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "pk",
+                  "value": "-----BEGINPRIVATEKEY-----MC4CAQAwBQYDK2VwBCIEINZQ04S+01QGi4McAqdQ5FUXyhDcpdYDcPi2fhTp4I8S-----ENDPRIVATEKEY-----",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "roles",
+                  "value": "basic",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "capabilities",
+                  "value": "blog.read,blog.write,blog.publish",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "protocolVersion",
+                  "value": "1",
+                  "description": "",
+                  "required": false
+                },
+                {
+                  "name": "nodeVersion",
+                  "value": "0.3.7",
+                  "description": "",
+                  "required": false
+                }
+              ],
+              "issuer": {
+                "id": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "pk": "zAY6zZNvvoB9EkjRyGMqk59AK2sRLses45WGaiTYyi1zh",
+                "name": "z1WmC5-C398a"
+              }
+            },
+            "nonce": "1790491453032",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "d2DbJ77JbIBQ_Hr3azgxKXGMcb3v5v2saByxcPYO85eJBwVL4QWlkBmbdID7BYhvdxkru6t7Wlk6kBBA7BDnBg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "7E314B1A23D49E4A118E421F270EC59CECBCDE6EACB1968D06BB8A280938621D",
+          "receiver": "",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2025-12-05T13:55:57.643Z",
+          "type": "slash_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjoS8Vabmzu5f9aD8vchMFpJHYCLGT9UFCC",
+              "changes": [
+                {
+                  "action": "slash",
+                  "target": "zjduXHzLmjQHHHsqPuwMZbTkGPcGtk1BgcwU",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1TxtDTvR8Jnh68NHNqPed8TUVMfPcyJH5P",
+              "changes": [
+                {
+                  "action": "slash",
+                  "target": "zjduXHzLmjQHHHsqPuwMZbTkGPcGtk1BgcwU",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": "",
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1071300000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "SlashStakeTx",
+              "encoded_value": "CiR6cmpvUzhWYWJtenU1ZjlhRDh2Y2hNRnBKSFlDTEdUOVVGQ0MSSwojejFUeHREVHZSOEpuaDY4TkhOcVBlZDhUVVZNZlBjeUpINVAaJHpqZHVYSHpMbWpRSEhIc3FQdXdNWmJUa0dQY0d0azFCZ2N3VRoSU2xhc2ggc3Rha2UgYXNzZXRz",
+              "type_url": "fg:t:slash_stake",
+              "address": "zrjoS8Vabmzu5f9aD8vchMFpJHYCLGT9UFCC",
+              "outputs": [
+                {
+                  "owner": "z1TxtDTvR8Jnh68NHNqPed8TUVMfPcyJH5P",
+                  "tokens": [],
+                  "assets": [
+                    "zjduXHzLmjQHHHsqPuwMZbTkGPcGtk1BgcwU"
+                  ]
+                }
+              ],
+              "message": "Slash stake assets"
+            },
+            "nonce": "1764942957300",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "8qRjNWbWXjcFfyNyyuBR08sXv_JMwys--HbRHap-vVVNc1Vk4CAUL_jGL1rlhlP0ButliwaYnwvgEfA8hhGVBw",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "315B7A4C8E14C9AE44B7E19EE085F78BA9A84B251C735F797B6C07E8FFFE214E",
+          "receiver": "zNKsYb6aPkV3FUX512GpLZJ7UJjCiwK8rWUR",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2025-12-05T13:18:40.816Z",
+          "type": "transfer_v2",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "-2000000000000000000"
+                }
+              ]
+            },
+            {
+              "address": "zNKsYb6aPkV3FUX512GpLZJ7UJjCiwK8rWUR",
+              "changes": [
+                {
+                  "action": "transfer",
+                  "target": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "2000000000000000000"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": "",
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2047600000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "TransferV2Tx",
+              "encoded_value": "CiR6TktzWWI2YVBrVjNGVVg1MTJHcExaSjdVSmpDaXdLOHJXVVIiPAolejM1bjZVb0hTaTlNRUQ0dWFReTZvekZnS1BhWmoyVUtydXJCRxITMjAwMDAwMDAwMDAwMDAwMDAwMA==",
+              "type_url": "fg:t:transfer_v2",
+              "to": "zNKsYb6aPkV3FUX512GpLZJ7UJjCiwK8rWUR",
+              "assets": [],
+              "tokens": [
+                {
+                  "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+                  "value": "2000000000000000000"
+                }
+              ]
+            },
+            "nonce": "1764940721079",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "-6t6K8bdCCc2AUuC0OkuQRVJIAV8ah3-ATga11BXykbtW4DY33J926wgCqryOZBRlXQFxqw4ahOjGiej1JHaDA",
+            "signatures": []
+          }
+        }
+      ]
+    },
+    "allTransfersSinceRoundStart": {
+      "code": "OK",
+      "page": {
+        "cursor": "0",
+        "next": false,
+        "total": 0
+      },
+      "transactions": []
+    },
+    "balance": {
+      "code": "OK",
+      "tokens": [
+        {
+          "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+          "balance": "16154907215234937951",
+          "decimal": 18,
+          "symbol": "TBA"
+        }
+      ]
+    }
+  },
+  "errors": {},
+  "clientCallInventory": [
+    "getChainInfo",
+    "listTransactions",
+    "listTransactions",
+    "listTransactions",
+    "listTransactions",
+    "getAccountTokens"
+  ]
+}

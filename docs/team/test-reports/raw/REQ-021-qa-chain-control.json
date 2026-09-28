@@ -1,0 +1,652 @@
+{
+  "controls": {
+    "C1_nodeAccount_since_2026-09-27": {
+      "code": "OK",
+      "page": {
+        "cursor": "3",
+        "next": true,
+        "total": 17
+      },
+      "transactions": [
+        {
+          "code": "OK",
+          "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:39.783Z",
+          "type": "claim_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:claim_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "evidence": {
+                "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66"
+              }
+            },
+            "nonce": "1790498079479",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "c2KPhSbdRjT1-6KTcaWARkMCPStFBZoWPVKmyEuGwJVG8obcSPxIv1sX8th5jaQ4ndy8So7nZTSighZs7RBLCQ",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:29.413Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790498069093",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "rn3FSC6fFVlsW2Sgat3Yh6D95xst2CJPBWDC8IKpDU0YR-OY1BSLFTVfEOfHmzpDrgBLXzAdQaRwb2YkxsTdAg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:34:11.662Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790498051359",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "Ti_mYVaBuqEMN87z4xwkemuJg0GmSeDWE0UKp6QWO_fTP-iAhALHRmMqlCiAYHRKzF8gRQFxcLrxtzIqXYV9BA",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "pBH62EweaJnYBvMG5B3hueqpgrcQONmmEpAWmxflU6fjoM7x9WsAFu/wiBATzFfkA23DWchqWDJyzbw73TBqCw==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "C2_nodeAccount_since_2026-09-01": {
+      "code": "OK",
+      "page": {
+        "cursor": "3",
+        "next": true,
+        "total": 17
+      },
+      "transactions": [
+        {
+          "code": "OK",
+          "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:39.783Z",
+          "type": "claim_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:claim_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "evidence": {
+                "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66"
+              }
+            },
+            "nonce": "1790498079479",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "c2KPhSbdRjT1-6KTcaWARkMCPStFBZoWPVKmyEuGwJVG8obcSPxIv1sX8th5jaQ4ndy8So7nZTSighZs7RBLCQ",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:29.413Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790498069093",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "rn3FSC6fFVlsW2Sgat3Yh6D95xst2CJPBWDC8IKpDU0YR-OY1BSLFTVfEOfHmzpDrgBLXzAdQaRwb2YkxsTdAg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:34:11.662Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790498051359",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "Ti_mYVaBuqEMN87z4xwkemuJg0GmSeDWE0UKp6QWO_fTP-iAhALHRmMqlCiAYHRKzF8gRQFxcLrxtzIqXYV9BA",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "pBH62EweaJnYBvMG5B3hueqpgrcQONmmEpAWmxflU6fjoM7x9WsAFu/wiBATzFfkA23DWchqWDJyzbw73TBqCw==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "C3_nodeAccount_no_timeFilter": {
+      "code": "OK",
+      "page": {
+        "cursor": "3",
+        "next": true,
+        "total": 188
+      },
+      "transactions": [
+        {
+          "code": "OK",
+          "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:39.783Z",
+          "type": "claim_stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "claim",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "2069100000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "ClaimStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:claim_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "evidence": {
+                "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66"
+              }
+            },
+            "nonce": "1790498079479",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "c2KPhSbdRjT1-6KTcaWARkMCPStFBZoWPVKmyEuGwJVG8obcSPxIv1sX8th5jaQ4ndy8So7nZTSighZs7RBLCQ",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66",
+          "receiver": "",
+          "sender": "",
+          "time": "2026-09-27T08:34:29.413Z",
+          "type": "revoke_stake",
+          "valid": true,
+          "receipts": [],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1050400000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "RevokeStakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:revoke_stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "outputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ]
+            },
+            "nonce": "1790498069093",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "rn3FSC6fFVlsW2Sgat3Yh6D95xst2CJPBWDC8IKpDU0YR-OY1BSLFTVfEOfHmzpDrgBLXzAdQaRwb2YkxsTdAg",
+            "signatures": []
+          }
+        },
+        {
+          "code": "OK",
+          "hash": "0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46",
+          "receiver": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+          "sender": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+          "time": "2026-09-27T08:34:11.662Z",
+          "type": "stake",
+          "valid": true,
+          "receipts": [
+            {
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+              "changes": [
+                {
+                  "action": "stake",
+                  "target": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+                  "value": "-1"
+                }
+              ]
+            }
+          ],
+          "tokenSymbols": [
+            {
+              "address": "z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG",
+              "balance": null,
+              "decimal": 18,
+              "symbol": "TBA",
+              "unit": "arc"
+            }
+          ],
+          "tx": {
+            "chainId": "beta",
+            "delegator": null,
+            "from": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+            "gasFee": "1090800000000000",
+            "gasPaid": "0",
+            "itxJson": {
+              "_type": "StakeTx",
+              "encoded_value": null,
+              "type_url": "fg:t:stake",
+              "address": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+              "receiver": "z3CtDhCcWubEnuypCFpBpSvquamJTduBc2DGo",
+              "inputs": [
+                {
+                  "owner": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                  "tokens": [],
+                  "assets": [
+                    "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas"
+                  ]
+                }
+              ],
+              "locked": false,
+              "message": "https://arcblog.localhost",
+              "revokeWaitingPeriod": 0,
+              "slashers": [],
+              "nonce": ""
+            },
+            "nonce": "1790498051359",
+            "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o",
+            "receiver": null,
+            "sender": null,
+            "serviceFee": "0",
+            "signature": "Ti_mYVaBuqEMN87z4xwkemuJg0GmSeDWE0UKp6QWO_fTP-iAhALHRmMqlCiAYHRKzF8gRQFxcLrxtzIqXYV9BA",
+            "signatures": [
+              {
+                "delegator": null,
+                "pk": "jbD2iQLZ1TsEZKK3ZEov3vofd5RCJhiIb1QA0wnEc1o=",
+                "signature": "pBH62EweaJnYBvMG5B3hueqpgrcQONmmEpAWmxflU6fjoM7x9WsAFu/wiBATzFfkA23DWchqWDJyzbw73TBqCw==",
+                "signer": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+                "data": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "C4_chainTransfers_since_2026-09-27": {
+      "code": "OK",
+      "page": {
+        "cursor": "0",
+        "next": false,
+        "total": 0
+      },
+      "transactions": []
+    },
+    "C5_chainTransfers_since_2026-09-01": {
+      "code": "OK",
+      "page": {
+        "cursor": "0",
+        "next": false,
+        "total": 0
+      },
+      "transactions": []
+    },
+    "C6_nodeAccount_since_2026-09-28": {
+      "code": "OK",
+      "page": {
+        "cursor": "0",
+        "next": false,
+        "total": 0
+      },
+      "transactions": []
+    }
+  },
+  "errors": {},
+  "clientCallInventory": [
+    "listTransactions",
+    "listTransactions",
+    "listTransactions",
+    "listTransactions",
+    "listTransactions",
+    "listTransactions"
+  ]
+}

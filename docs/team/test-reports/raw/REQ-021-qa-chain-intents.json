@@ -1,0 +1,178 @@
+{
+  "intent-mujk7d7z-2hv8.json": {
+    "ifMatch": "1790497877508.9182-156775643-445",
+    "meta": {
+      "size": 445,
+      "version": "1790497877508.9182-156775643-445",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "intent-mujk7d7z-2hv8",
+      "action": "acquire",
+      "role": "studio",
+      "status": "failed",
+      "requestedBy": "cli",
+      "requestedAt": "2026-09-27T08:31:13.583Z",
+      "requestedVia": "cli",
+      "startedAt": "2026-09-27T08:31:14.675Z",
+      "updatedAt": "2026-09-27T08:31:17.171Z",
+      "finishedAt": "2026-09-27T08:31:16.766Z",
+      "error": "VALIDATION a public key is required: pass --pk <pem|file> or register one with `publish --sign-key` (§67)"
+    }
+  },
+  "intent-mujk7tb0-asgd.json": {
+    "ifMatch": "1790497899538.7874-156775719-518",
+    "meta": {
+      "size": 518,
+      "version": "1790497899538.7874-156775719-518",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "intent-mujk7tb0-asgd",
+      "action": "acquire",
+      "role": "studio",
+      "status": "failed",
+      "requestedBy": "cli",
+      "requestedAt": "2026-09-27T08:31:34.428Z",
+      "requestedVia": "cli",
+      "startedAt": "2026-09-27T08:31:35.744Z",
+      "updatedAt": "2026-09-27T08:31:39.218Z",
+      "finishedAt": "2026-09-27T08:31:38.825Z",
+      "error": "RUNTIME_ERROR GraphQLError: Invalid itx: \"variablesList.value\" Invalid length: Expected >=1 but received 0; \"variablesList.1.value\" Invalid length: Expected >=1 but received 0"
+    }
+  },
+  "intent-mujk8d8h-3lis.json": {
+    "ifMatch": "1790497928088.2402-156775919-543",
+    "meta": {
+      "size": 543,
+      "version": "1790497928088.2402-156775919-543",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "intent-mujk8d8h-3lis",
+      "action": "acquire",
+      "role": "studio",
+      "status": "done",
+      "requestedBy": "cli",
+      "requestedAt": "2026-09-27T08:32:00.257Z",
+      "requestedVia": "cli",
+      "startedAt": "2026-09-27T08:32:01.884Z",
+      "updatedAt": "2026-09-27T08:32:07.770Z",
+      "finishedAt": "2026-09-27T08:32:07.445Z",
+      "result": {
+        "assetId": "zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas",
+        "stakeAddress": "",
+        "hash": "ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D",
+        "lifecycle": "acquired"
+      },
+      "error": ""
+    }
+  },
+  "intent-mujkc8nv-7e3r.json": {
+    "ifMatch": "1790498105838.158-156778415-418",
+    "meta": {
+      "size": 418,
+      "version": "1790498105838.158-156778415-418",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "intent-mujkc8nv-7e3r",
+      "action": "acquire",
+      "role": "studio",
+      "status": "failed",
+      "requestedBy": "test",
+      "requestedAt": "2026-09-27T08:35:00.955Z",
+      "requestedVia": "cli",
+      "startedAt": "2026-09-27T08:35:03.213Z",
+      "updatedAt": "2026-09-27T08:35:05.521Z",
+      "finishedAt": "2026-09-27T08:35:05.193Z",
+      "error": "VALIDATION --owner <address> is required when the adapter has no wallet (mock)"
+    }
+  },
+  "intent-mujkccy6-r1nd.json": {
+    "ifMatch": "1790498106826.4126-156778441-195",
+    "meta": {
+      "size": 195,
+      "version": "1790498106826.4126-156778441-195",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "intent-mujkccy6-r1nd",
+      "action": "acquire",
+      "role": "studio",
+      "status": "pending",
+      "requestedBy": "cli",
+      "requestedAt": "2026-09-27T08:35:06.510Z",
+      "requestedVia": "cli"
+    }
+  },
+  "pending.json": {
+    "ifMatch": "1790498082297.1587-156778143-550",
+    "meta": {
+      "size": 550,
+      "version": "1790498082297.1587-156778143-550",
+      "mimeType": "application/json"
+    },
+    "value": {
+      "id": "pending",
+      "action": "claim",
+      "role": "studio",
+      "status": "done",
+      "requestedBy": "console",
+      "requestedAt": "2026-09-27T08:34:35.267Z",
+      "requestedVia": "console",
+      "args": {},
+      "result": {
+        "assetId": "",
+        "stakeAddress": "zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5",
+        "hash": "631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0",
+        "lifecycle": "acquired"
+      },
+      "error": "",
+      "startedAt": "2026-09-27T08:34:37.275Z",
+      "updatedAt": "2026-09-27T08:34:41.896Z",
+      "finishedAt": "2026-09-27T08:34:41.523Z"
+    }
+  },
+  "settlement:tip-1790161886.json": {
+    "ifMatch": "1790161892794.233-155468970-390",
+    "value": {
+      "orderId": "tip-1790161886",
+      "orderKind": "tip",
+      "creatorDid": "did:key:zAlice",
+      "hubDid": "did:key:zHub",
+      "asset": "USDC",
+      "amount": "3",
+      "creatorAmount": "2.4",
+      "hubAmount": "0.45",
+      "protocolAmount": "0.15",
+      "policyVersion": "v1",
+      "status": "settled",
+      "transactionHash": "",
+      "createdAt": "2026-09-23T11:11:30.386Z",
+      "updatedAt": "2026-09-23T11:11:30.386Z"
+    }
+  },
+  "settlement:unattr2-order-1790162193.json": {
+    "ifMatch": "1790162215305.218-155470616-491",
+    "value": {
+      "orderId": "unattr2-order-1790162193",
+      "orderKind": "purchase",
+      "contentId": "some-other-content",
+      "creatorDid": "did:key:zAlice",
+      "hubDid": "did:key:zHubA",
+      "hubShareWithheld": true,
+      "attributionId": "",
+      "asset": "USDC",
+      "amount": "10",
+      "creatorAmount": "9.5",
+      "hubAmount": "0",
+      "protocolAmount": "0.5",
+      "policyVersion": "v1",
+      "status": "settled",
+      "transactionHash": "",
+      "createdAt": "2026-09-23T11:16:53.266Z",
+      "updatedAt": "2026-09-23T11:16:53.266Z"
+    }
+  }
+}

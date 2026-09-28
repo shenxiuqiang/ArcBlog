@@ -1342,9 +1342,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 141892,
+      "size": 146118,
       "contentType": "text/markdown",
-      "sha256": "70269685137a8386b3da7cb83627fe7bb07dda81d3b3217a724da5cc445aa080"
+      "sha256": "ddb372afbbb5ddbe31dcfa7714ac8e6b1d7211f24bd4ec5664ca77544fb6792c"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1354,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 62540,
+      "size": 66233,
       "contentType": "text/markdown",
-      "sha256": "01de6591e9f876293c4e16e0957a51658ed63a258bd62cb3cf64e4afaac934dc"
+      "sha256": "1bc9943a807a70101e250700394f2e14c4402d09e11123df65401b2c198f2f66"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1426,9 +1426,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 28881,
+      "size": 29606,
       "contentType": "text/markdown",
-      "sha256": "b9a6c18b0ae00c5e48b8b1b090bc6941f55815041fcc2e216128a7cca80b566a"
+      "sha256": "c65e19e36e2c7ca62ec4d3ee23377d93d1588787d7d3358cb80a8a9acc792d6c"
     },
     {
       "path": "docs/persistence.md",
@@ -1468,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 576605,
+      "size": 635473,
       "contentType": "text/markdown",
-      "sha256": "1a0fc058f6151bfad9cd92867d40f92ba1670d958853e99be5de3bd62e805151"
+      "sha256": "a2502c92470f8fdbcbcbf814c7a65c91af39e9f4e37b8a6032ca3e11356cb9f6"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1717,6 +1717,30 @@
       "size": 4020,
       "contentType": "text/markdown",
       "sha256": "86de124cd6f2398c6ea051604f5626aba3868297bb07888083553e8d9f37d9cb"
+    },
+    {
+      "path": "docs/team/bugs/BUG-041-send-tx-methods-count-wrong.md",
+      "size": 4903,
+      "contentType": "text/markdown",
+      "sha256": "a002a3d794efe894f7da91bf064bb1a85a480885425613edce944e0e90955fea"
+    },
+    {
+      "path": "docs/team/bugs/BUG-042-memo-readback-claimed-measured.md",
+      "size": 6299,
+      "contentType": "text/markdown",
+      "sha256": "b9728b0a5702da18f3b7a34a212439499ec225233f2b7c740e5013c5e029c1de"
+    },
+    {
+      "path": "docs/team/bugs/BUG-043-factories-json-mock-under-ocap.md",
+      "size": 5683,
+      "contentType": "text/markdown",
+      "sha256": "86f99675943618e84106f021811c7c6caf5eadd0ed7aa0df9c75e5f6ad65c300"
+    },
+    {
+      "path": "docs/team/bugs/BUG-044-req021-line-citation-nits.md",
+      "size": 3572,
+      "contentType": "text/markdown",
+      "sha256": "4123431b675166d802dfffd7045b9dc9b1dc97ffd7e7714ce3f872607158fef2"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2416,9 +2440,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 34135,
+      "size": 38392,
       "contentType": "text/markdown",
-      "sha256": "9c22e4a495fe92b74d027a74d36c466468a299ea1439e9ab427c25b6459b10d1"
+      "sha256": "b2067a0a61b9615f2037576b0f78391b4d6907da035eae1af5756b79c26fa97b"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2461,6 +2485,12 @@
       "size": 39314,
       "contentType": "text/markdown",
       "sha256": "2a116a04014904bcfd4e3a6392d4d4b9fecda4c7cc72716abd1b3d90b1db83bf"
+    },
+    {
+      "path": "docs/team/journal/round-17.md",
+      "size": 35776,
+      "contentType": "text/markdown",
+      "sha256": "e41e1881e323b5f1d60ed1d066b9a8a6f90541e45bd60c133df82c5ce876c5c1"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -2619,6 +2649,12 @@
       "sha256": "c6dbe4d0cce5461898fb07294e546f927b200aba3d966de31e6935feedca4ab1"
     },
     {
+      "path": "docs/team/requirements/REQ-021-chain-backed-orders.md",
+      "size": 88360,
+      "contentType": "text/markdown",
+      "sha256": "9a3a0a8e4eb294b91a20eeae0c7ac5a38c9dd4ac2958d151e38756f08461174b"
+    },
+    {
       "path": "docs/team/requirements/REQ-023-chain-environment-externalization.md",
       "size": 23421,
       "contentType": "text/markdown",
@@ -2725,6 +2761,156 @@
       "size": 147517,
       "contentType": "image/png",
       "sha256": "f354730b399557d9d76e85f6de9ecbbb5eaa63026485068ed2c350e7a136d8e9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/BUG-039-qa-probe.mjs",
+      "size": 4804,
+      "contentType": "text/javascript",
+      "sha256": "c5739548cb8605714b54e4bf23359c2f41d3c4a5a026b17e3df2d1f141eed473"
+    },
+    {
+      "path": "docs/team/test-reports/raw/BUG-039-qa-repro.json",
+      "size": 4977,
+      "contentType": "application/json",
+      "sha256": "c6ef4de197416504bbfbe5a3294047f8d75883ea2d23946702e12fc88b6fa221"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-afs-audit.json",
+      "size": 14541,
+      "contentType": "application/json",
+      "sha256": "066b6bbe9617e400d2de2ce9d76578899808d657c7bcdec43f498aadd3c4b94b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-api-surface.json",
+      "size": 1978,
+      "contentType": "application/json",
+      "sha256": "a60065bf0a8769cce11a40b82ff3fe93edce4dc4b288c7e384301aff921a6f3a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-chain-audit.json",
+      "size": 68165,
+      "contentType": "application/json",
+      "sha256": "f78b091d9ba43e18716c3df73cd934326ad6727023a6d1ed973357fc4c8449bd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-chain-control.json",
+      "size": 21374,
+      "contentType": "application/json",
+      "sha256": "b37d47aa66f9c568a6d76611e09696a539bc2fb70a79397ee50da4399d440d93"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-chain-control2.json",
+      "size": 42628,
+      "contentType": "application/json",
+      "sha256": "feaa842a9630b813f00d6c9d13287055d883be7d314eeecab1f8cf12502c8763"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-chain-intents.json",
+      "size": 5608,
+      "contentType": "application/json",
+      "sha256": "97d14ed0effe68faa5f9bf2b6798c0c6e420fff4f4294407dd42812723e0d0d5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-facts.json",
+      "size": 64863,
+      "contentType": "application/json",
+      "sha256": "ad2f032b308fddb60988985bc2206aea7b0b06fd591f64c77fb0f09a301c331e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-failclosed.json",
+      "size": 1443,
+      "contentType": "application/json",
+      "sha256": "ad004442f68dc7b81ba7b63c52a893cf499371d7143c5bc72537087631bfcff3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-gate1-validate.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-gate2-npmtest.txt",
+      "size": 2444,
+      "contentType": "text/plain",
+      "sha256": "1161cc68d54cdf4ee35bf35866a16a0bce5e310a7a29936e5f437a8709d9a7dd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-gettx.json",
+      "size": 4909,
+      "contentType": "application/json",
+      "sha256": "e06f1d189eb62819bea878566c78c5feb8beaac22dfe4f8992f8adfbd34382e2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-itx-shape.json",
+      "size": 3368,
+      "contentType": "application/json",
+      "sha256": "702174e5dcfc4ea02553e9b6496b21d1bc119cb171ff75a5f70ca42e60e4d035"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-memo-readback.json",
+      "size": 8217,
+      "contentType": "application/json",
+      "sha256": "28853ec77827d73c36f73f23ae2aa04951826c3c1690b1e6e1272bde58703a45"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-afs-read.mjs",
+      "size": 1758,
+      "contentType": "text/javascript",
+      "sha256": "f462a13e8029fa91a8a16b2e902140d5ac818a9b674c084ef8380548db838bf2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-api-surface.mjs",
+      "size": 1008,
+      "contentType": "text/javascript",
+      "sha256": "9bf928a9dad674a3d2a0cc87db4b2e8c325ddd029d5ba3cfd1f873a4441e8510"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-chain-control.mjs",
+      "size": 2594,
+      "contentType": "text/javascript",
+      "sha256": "faad38a690d4e7c8f3eba3d4a8a12fcd6a8c6bab2d01d8a7fbb1c72e95845067"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-chain.mjs",
+      "size": 3509,
+      "contentType": "text/javascript",
+      "sha256": "27951518c74eba19ad7c169599ed473e67b6016b18150852ecd5e75860d91c4a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-factorystate.mjs",
+      "size": 1035,
+      "contentType": "text/javascript",
+      "sha256": "67b8b73c1070b1e69b01f3a18a06dc2bf83a3fd1c8d492ac50a9c18dd0d76e70"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-facts.mjs",
+      "size": 1566,
+      "contentType": "text/javascript",
+      "sha256": "4a583510095a10438b627575eac984f0b271d8e07f4704e0a4a75243f5613849"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-failclosed.mjs",
+      "size": 2405,
+      "contentType": "text/javascript",
+      "sha256": "676504895164c4ae89e6cd8a59559253d307d121cc612001ae9384acc3766b5b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-gettx.mjs",
+      "size": 2080,
+      "contentType": "text/javascript",
+      "sha256": "2cec2ce39a348f2b44a14c1129eb73887a173e5beb21aff0fdbc28b334aa2127"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-itx-shape.mjs",
+      "size": 1853,
+      "contentType": "text/javascript",
+      "sha256": "438102a82c4196e41c526ae0d8291685afd1f4cf9ad13c9f54e6c390da7be540"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-021-qa-probe-memo-readback.mjs",
+      "size": 1654,
+      "contentType": "text/javascript",
+      "sha256": "c9e525238729dbd69cd2fc239bf71d2202eaefa95fc2b872416cea6de66760a7"
     },
     {
       "path": "docs/team/test-reports/raw/REQ-026-npmtest.txt",
@@ -3379,6 +3565,12 @@
       "size": 40404,
       "contentType": "text/markdown",
       "sha256": "c0278997504e4754c510605c3235af7a7af615addfcc3a4dda5dd078fa1a6bff"
+    },
+    {
+      "path": "docs/team/test-reports/round-17.md",
+      "size": 40696,
+      "contentType": "text/markdown",
+      "sha256": "2d352c63e1366a681e56064191c29e8de8c80579529149004d921c770bd8f72b"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",

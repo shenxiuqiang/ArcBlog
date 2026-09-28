@@ -1,0 +1,35 @@
+{
+  "a_emptyTriple": {
+    "issues": [
+      "network is missing",
+      "chainHost is missing",
+      "tokenId is missing"
+    ],
+    "hint": "--adapter ocap needs the chain triple (network/chainHost/tokenId): network is missing; chainHost is missing; tokenId is missing. Set ARCBLOG_CHAIN_ENV=beta|main to fill the defaults, or pass --network / --chain-host / --token-id (or the matching ARCBLOG_CHAIN_* env) explicitly — see docs/operations-runbook.md \"Chain environment\"."
+  },
+  "b_completeTriple": {
+    "issues": []
+  },
+  "recordNetwork": "arcblock",
+  "conflict": {
+    "threw": true,
+    "code": "VALIDATION",
+    "message": "ARCBLOG_CHAIN_ENV=beta conflicts with config/roles.json (network=arcblock): pass the value explicitly (--network / ARCBLOG_CHAIN_NETWORK) or re-run node scripts/arcblog-roles.mjs init --network beta"
+  },
+  "noExplicit": {
+    "resolved": {
+      "network": "arcblock",
+      "chainHost": "",
+      "tokenId": ""
+    },
+    "issues": [
+      "chainHost is missing",
+      "tokenId is missing"
+    ]
+  },
+  "missingMnemonic": {
+    "threw": true,
+    "code": "CHAIN_UNAVAILABLE",
+    "message": "the real chain adapter needs the ARC libraries and a funded wallet: missing ARCBLOG_CHAIN_MNEMONIC (factory owner mnemonic). Install them (npm i @ocap/client @ocap/wallet @arcblock/did-ext bip39) and set ARCBLOG_CHAIN_HOST / ARCBLOG_CHAIN_TOKEN_ID / ARCBLOG_CHAIN_MNEMONIC, or use --adapter mock for "
+  }
+}
