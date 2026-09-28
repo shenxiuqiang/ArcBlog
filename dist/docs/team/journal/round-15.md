@@ -176,3 +176,19 @@ $ python3 逐行统计 checklist → ✅81 / 🟡8 / ⬜13 / ⚪2 = 104（总览
 
 - **平台事实入库（Lead 写范围）**：① 冷启动 `propBind` 时序（BUG-036，待实验）；② `.aup-media` 对 `data:` URI 渲染为占位符（BUG-037）；③ NFT Factory hooks 的三条硬限制 + 创建后不可变 + 我方「单收款人全额入厂」现状（[REQ-025 ROYALTY §8](../requirements/REQ-025-nft-royalty-research.md) 的 `arc-contracts §30` 候选草稿）。
 - **流程候选**：① 「`test:file` 跑完补一次 `arcblog-clean.mjs --confirm`」写进 `CLAUDE.md`「Quality gates」（F-2，R14 O-5 同条）；② `config/roles.json` 是否纳入 `clean` / 测试复原流程（F-3）；③ REQ/任务书里的测试文件名**以 `ls scripts/*.test.mjs` 现取**为准（F-1）。
+
+---
+
+## 追加窗口（用户点名项）：REQ-027 版权文案收敛 — 提交 `4bf61e9`
+
+**用户报**：`© 2026 ArcBlog` 在 7 个 `.aup` 页面 + `.aup/wrapper.aup` 共 8 处硬编码，年份写死 2026；要求收敛成一处，「如能动态取时间就动态取时间」。
+
+| 项 | 结论 | 证据 |
+| --- | --- | --- |
+| 动态年份 | **做不到**（8 种写法实测全被否决） | 6 个 `${generate.*}` 写 prop、`${generate.timeiso}` 写文本节点、`${generate.*}` 回填 `$t()` 的 locale 值 → 页面一律显示字面 `${generate.x}`；平台资产只用 `generate.{id,timeiso,uuid}`；`aup.*.js`（802,492 B）`timeiso` 0 命中；`app-footer` 渲染器对 `copyright` 只做 `String()` + `textContent` |
+| 收敛 | **做到** | 8 处渲染点统一 `bottomBar={copyright: "$t(wrapper.footer-copyright)"}`（`$t()` 在 prop 里被解析且随 locale 变化，已用 per-locale marker 证明）；值只在 `.aup/locales/{en,zh}.json:475` |
+| 年份改动面 | 10 行/10 文件 → **2 行/2 文件** | 压到 1 行需改 `scripts/**`（`arcblog-i18n.test.mjs` 硬要求 en/zh 键集合一致，删 zh 行 → 2 条测试红 + lint 34→35），不做 |
+| 顺带纠正 | `wrapper.aup` 的 `i18n{}` 块**运行期不生效** | 打 marker 后页面不变、只改 locales 立刻生效；`arc dsl generate` 受管 7 文件无 wrapper→locales 桥 → 删掉那行无效声明并修正 CLAUDE.md |
+| QA | **pass / BLOCKING=0** | 28 公共组合 + 侧栏 20 组合（en/zh × 1803×908/1512×765）文案正确、页脚 119.14px、两行右对齐 Δ=0、无溢出；`npm test` 28/28（含死键门） |
+
+平台事实沉淀：`docs/arc-contracts.md` **§31**（`$t()` 在 prop 可用 / `${generate.*}` 在 prop 与文本节点都不插值 / `wrapper.*` 运行期只读 locales / locale 存在同 tab sessionStorage → QA 语言相关测试须每语言新 context）。
