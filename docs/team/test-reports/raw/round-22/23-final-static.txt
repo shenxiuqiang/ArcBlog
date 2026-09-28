@@ -1,0 +1,35 @@
+### proper exit codes
+validate exit=0
+issues: []
+generate --check exit=0
+console-nav --check exit=0
+
+### new test assertions added (economy.test.mjs diff, test names + key asserts)
++test('CLI flags: --k=v equals --k v, and an unknown flag fails closed', () => {
++  assert.deepEqual(
++  assert.deepEqual(
++  assert.equal(equalsInvalid.status, 1, 'equals form must not exit 0');
++  assert.equal(failure.code, 'VALIDATION');
++  assert.match(failure.error, /unknown ledger type: payment/);
++  for (const type of LEDGER_TYPES) assert.match(failure.error, new RegExp(type));
++    assert.equal(res.status, 1, `${args.join(' ')} must not exit 0`);
++    assert.equal(json(res.stderr).code, 'VALIDATION');
++    assert.match(json(res.stderr).error, /unknown flag/);
++  assert.deepEqual(
++  assert.ok(orderEquals.entries.length > 0, 'the newest order must have ledger entries');
++  assert.equal(limitOne.count, Math.min(1, full.entries.length));
++  assert.deepEqual(
++  assert.equal(all.status, 0);
++  assert.equal(json(all.stdout).truncated, false);
++  assert.equal(run(['ledger', 'list']).stdout, run(['ledger', 'list', '--limit', '20']).stdout);
++  assert.equal(help.status, 0);
++  assert.match(help.stdout, /--k v and --k=v are equivalent/);
++  assert.match(help.stdout, /unknown flag fails closed/);
++test('every flag-parsing CLI fails closed on an unknown flag', () => {
++    assert.equal(res.status, 1, `${name} ${args.join(' ')} must fail closed`);
++    assert.match(`${res.stdout}${res.stderr}`, /unknown flag: --nope/, `${name} must name the flag`);
++    assert.match(`${res.stdout}${res.stderr}`, /VALIDATION/, `${name} must report VALIDATION`);
++test('the CLI flag registry covers every flag the CLIs actually read (drift guard)', () => {
++    (name) => /^arcblog-.*\.mjs$/.test(name) && !name.endsWith('.test.mjs'),
++  assert.deepEqual(gaps, [], 'every flag a CLI reads must be in the registry');
++  assert.ok(registered >= 20, `expected the whole CLI surface, saw ${registered}`);

@@ -6,30 +6,11 @@ import { dirname, join } from 'node:path';
 import { allowedCategorySlugs, validateCategorySlug } from './lib/categories.mjs';
 import { contentHashFor } from './lib/content-hash.mjs';
 import { putSigningKey, signPostContent } from './lib/content-sign.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const AUDIT_SCRIPT = join(__dirname, 'arcblog-audit.mjs');
-
-function parseArgs(argv) {
-  const out = { _: [] };
-  for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
-    if (!token.startsWith('--')) {
-      out._.push(token);
-      continue;
-    }
-    const key = token.slice(2);
-    const next = argv[i + 1];
-    if (!next || next.startsWith('--')) {
-      out[key] = true;
-      continue;
-    }
-    out[key] = next;
-    i += 1;
-  }
-  return out;
-}
 
 function nowIso() {
   return new Date().toISOString();
@@ -571,6 +552,7 @@ function commandDelete({ slug, instance }) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog lifecycle helper
 
 Usage:
@@ -618,7 +600,7 @@ Options:
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
 
   try {

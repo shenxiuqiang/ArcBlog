@@ -1,0 +1,1400 @@
+{
+  "regression": {
+    "dashboard": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 27,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "posts": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 127,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "pages": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 26,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "compose": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 25,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "heroes": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 27,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "categories": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 31,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "tags": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 26,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "seo": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 24,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "feeds": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "appearance": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "operations": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "hub": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 43,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "media": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 25,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "agents": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "orders": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "policy": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "access": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "ledger": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "factory": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 34,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "general": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 34,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    },
+    "diagnostics": {
+      "lang": "en",
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionInitFailed": false,
+      "loginGate": false,
+      "navActions": 23,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds |"
+    }
+  },
+  "bug033": {
+    "en_1803x908": {
+      "lang": "en",
+      "rows": 1,
+      "items": [
+        {
+          "text": "View",
+          "href": "/pages/page-test-1790504571866",
+          "w": 30.92,
+          "h": 19.19,
+          "cw": 31,
+          "sw": 31,
+          "over": 0,
+          "flex": "0 1 auto",
+          "flexBasis": "auto",
+          "flexGrow": "0",
+          "hit": []
+        }
+      ],
+      "hitCount": 0,
+      "docOver": 0
+    },
+    "en_1512x765": {
+      "lang": "en",
+      "rows": 1,
+      "items": [
+        {
+          "text": "View",
+          "href": "/pages/page-test-1790504571866",
+          "w": 30.92,
+          "h": 19.19,
+          "cw": 31,
+          "sw": 31,
+          "over": 0,
+          "flex": "0 1 auto",
+          "flexBasis": "auto",
+          "flexGrow": "0",
+          "hit": []
+        }
+      ],
+      "hitCount": 0,
+      "docOver": 0
+    },
+    "zh_1803x908": {
+      "lang": "zh",
+      "rows": 1,
+      "items": [
+        {
+          "text": "查看",
+          "href": "/pages/page-test-1790504571866",
+          "w": 25.61,
+          "h": 19.19,
+          "cw": 26,
+          "sw": 26,
+          "over": 0,
+          "flex": "0 1 auto",
+          "flexBasis": "auto",
+          "flexGrow": "0",
+          "hit": []
+        }
+      ],
+      "hitCount": 0,
+      "docOver": 0
+    },
+    "zh_1512x765": {
+      "lang": "zh",
+      "rows": 1,
+      "items": [
+        {
+          "text": "查看",
+          "href": "/pages/page-test-1790504571866",
+          "w": 25.61,
+          "h": 19.19,
+          "cw": 26,
+          "sw": 26,
+          "over": 0,
+          "flex": "0 1 auto",
+          "flexBasis": "auto",
+          "flexGrow": "0",
+          "hit": []
+        }
+      ],
+      "hitCount": 0,
+      "docOver": 0
+    }
+  },
+  "bug034": {
+    "en_1803x908": {
+      "lang": "en",
+      "itemW": 698.28,
+      "rows": 12,
+      "kvCount": 30,
+      "kv": [
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        }
+      ],
+      "overflowCount": 2,
+      "maxOver": 334,
+      "worst": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1136,
+          "sw": 1470,
+          "over": 334
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1200,
+          "sw": 1502,
+          "over": 302
+        }
+      ],
+      "hitCount": 0,
+      "hits": [],
+      "docOver": 0
+    },
+    "en_1512x765": {
+      "lang": "en",
+      "itemW": 574.59,
+      "rows": 12,
+      "kvCount": 30,
+      "kv": [
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        }
+      ],
+      "overflowCount": 2,
+      "maxOver": 188,
+      "worst": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1136,
+          "sw": 1324,
+          "over": 188
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1200,
+          "sw": 1356,
+          "over": 156
+        }
+      ],
+      "hitCount": 0,
+      "hits": [],
+      "docOver": 0
+    },
+    "zh_1803x908": {
+      "lang": "zh",
+      "itemW": 698.28,
+      "rows": 12,
+      "kvCount": 30,
+      "kv": [
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        },
+        {
+          "w": 698.28,
+          "cw": 698,
+          "sw": 698,
+          "over": 0
+        }
+      ],
+      "overflowCount": 2,
+      "maxOver": 334,
+      "worst": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1136,
+          "sw": 1470,
+          "over": 334
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1200,
+          "sw": 1502,
+          "over": 302
+        }
+      ],
+      "hitCount": 0,
+      "hits": [],
+      "docOver": 0
+    },
+    "zh_1512x765": {
+      "lang": "zh",
+      "itemW": 574.59,
+      "rows": 12,
+      "kvCount": 30,
+      "kv": [
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        },
+        {
+          "w": 574.59,
+          "cw": 575,
+          "sw": 575,
+          "over": 0
+        }
+      ],
+      "overflowCount": 2,
+      "maxOver": 188,
+      "worst": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1136,
+          "sw": 1324,
+          "over": 188
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "cw": 1200,
+          "sw": 1356,
+          "over": 156
+        }
+      ],
+      "hitCount": 0,
+      "hits": [],
+      "docOver": 0
+    }
+  },
+  "bug036": {
+    "factory_cold_en": {
+      "lang": "en",
+      "kvCount": 18,
+      "kvs": [
+        "NFT ArcBlogStudioNode #5",
+        "Lifecycle acquired",
+        "Endpoint https://arcblog.localhost",
+        "Region CN-BJ",
+        "Adapter ocap",
+        "Network beta",
+        "Moniker ArcBlogStudioNode",
+        "Stake per node 1",
+        "Moniker ArcBlogHubNode",
+        "Capacity (studios) 1000",
+        "Node studio adapter ocap — chain facts, each hash verifiable on chain",
+        "Node hub adapter mock — SIMULATION, not chain truth",
+        "Node studio · adapter ocap",
+        "Node hub · adapter mock",
+        "Node studio · fact kind not simulated — real chain adapter",
+        "Node hub · fact kind SIMULATED — mock adapter, never chain truth",
+        "Studio node factory adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))",
+        "Hub node factory adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))"
+      ],
+      "dashCount": 11,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [
+        "simulated",
+        "simulated",
+        "simulated",
+        "SIMULATED"
+      ],
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng9IjE3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPiA8dGV4dCB4PSIzMiIgeT0iNTgiIGZ",
+      "mediaImg": true,
+      "mediaInnerLen": 0,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | "
+    },
+    "factory_reload_en": {
+      "lang": "en",
+      "kvCount": 18,
+      "kvs": [
+        "NFT ArcBlogStudioNode #5",
+        "Lifecycle acquired",
+        "Endpoint https://arcblog.localhost",
+        "Region CN-BJ",
+        "Adapter ocap",
+        "Network beta",
+        "Moniker ArcBlogStudioNode",
+        "Stake per node 1",
+        "Moniker ArcBlogHubNode",
+        "Capacity (studios) 1000",
+        "Node studio adapter ocap — chain facts, each hash verifiable on chain",
+        "Node hub adapter mock — SIMULATION, not chain truth",
+        "Node studio · adapter ocap",
+        "Node hub · adapter mock",
+        "Node studio · fact kind not simulated — real chain adapter",
+        "Node hub · fact kind SIMULATED — mock adapter, never chain truth",
+        "Studio node factory adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))",
+        "Hub node factory adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))"
+      ],
+      "dashCount": 11,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [
+        "simulated",
+        "simulated",
+        "simulated",
+        "SIMULATED"
+      ],
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng9IjE3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPiA8dGV4dCB4PSIzMiIgeT0iNTgiIGZ",
+      "mediaImg": true,
+      "mediaInnerLen": 0,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | "
+    },
+    "operations_cold_en": {
+      "lang": "en",
+      "kvCount": 5,
+      "kvs": [
+        "Status ok",
+        "Blocklet version 0.3.7",
+        "DID did:blocklet:arcblog",
+        "Protocol arcblog",
+        "Transport afs,mcp"
+      ],
+      "dashCount": 1,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [],
+      "mediaHTML": null,
+      "mediaImg": null,
+      "mediaInnerLen": null,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | "
+    },
+    "operations_reload_en": {
+      "lang": "en",
+      "kvCount": 5,
+      "kvs": [
+        "Status ok",
+        "Blocklet version 0.3.7",
+        "DID did:blocklet:arcblog",
+        "Protocol arcblog",
+        "Transport afs,mcp"
+      ],
+      "dashCount": 1,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [],
+      "mediaHTML": null,
+      "mediaImg": null,
+      "mediaInnerLen": null,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | "
+    },
+    "factory_cold_zh": {
+      "lang": "zh",
+      "kvCount": 18,
+      "kvs": [
+        "NFT ArcBlogStudioNode #5",
+        "生命周期 acquired",
+        "端点 https://arcblog.localhost",
+        "区域 CN-BJ",
+        "适配器 ocap",
+        "网络 beta",
+        "标识 ArcBlogStudioNode",
+        "每个节点质押 1",
+        "标识 ArcBlogHubNode",
+        "容量（Studio 数） 1000",
+        "节点 studio adapter ocap — chain facts, each hash verifiable on chain",
+        "节点 hub adapter mock — SIMULATION, not chain truth",
+        "节点 studio · 适配器 ocap",
+        "节点 hub · 适配器 mock",
+        "节点 studio · 事实类型 not simulated — real chain adapter",
+        "节点 hub · 事实类型 SIMULATED — mock adapter, never chain truth",
+        "Studio 节点工厂 adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))",
+        "Hub 节点工厂 adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))"
+      ],
+      "dashCount": 17,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [
+        "模拟",
+        "simulated",
+        "模拟",
+        "simulated",
+        "SIMULATED"
+      ],
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng9IjE3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPiA8dGV4dCB4PSIzMiIgeT0iNTgiIGZ",
+      "mediaImg": true,
+      "mediaInnerLen": 0,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | 内容 | 仪表盘 | 工作室 | 页面 | 写文章 | 站点 | Hero | 分类 | 标签 | SEO | 分发 | 外观设置 | 运营 | 运维 | Hub 管理 | 媒体 | Agent | 经济 | 订单 | 分成策略 | 访问授权 | 结算与账本 | 工厂 | 设置 | 通用 | 诊断与维护 | ArcBlog | 关于 | RSS 订阅 | © 2026 "
+    },
+    "factory_reload_zh": {
+      "lang": "zh",
+      "kvCount": 18,
+      "kvs": [
+        "NFT ArcBlogStudioNode #5",
+        "生命周期 acquired",
+        "端点 https://arcblog.localhost",
+        "区域 CN-BJ",
+        "适配器 ocap",
+        "网络 beta",
+        "标识 ArcBlogStudioNode",
+        "每个节点质押 1",
+        "标识 ArcBlogHubNode",
+        "容量（Studio 数） 1000",
+        "节点 studio adapter ocap — chain facts, each hash verifiable on chain",
+        "节点 hub adapter mock — SIMULATION, not chain truth",
+        "节点 studio · 适配器 ocap",
+        "节点 hub · 适配器 mock",
+        "节点 studio · 事实类型 not simulated — real chain adapter",
+        "节点 hub · 事实类型 SIMULATED — mock adapter, never chain truth",
+        "Studio 节点工厂 adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))",
+        "Hub 节点工厂 adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))"
+      ],
+      "dashCount": 17,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [
+        "模拟",
+        "simulated",
+        "模拟",
+        "simulated",
+        "SIMULATED"
+      ],
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng9IjE3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPiA8dGV4dCB4PSIzMiIgeT0iNTgiIGZ",
+      "mediaImg": true,
+      "mediaInnerLen": 0,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | 内容 | 仪表盘 | 工作室 | 页面 | 写文章 | 站点 | Hero | 分类 | 标签 | SEO | 分发 | 外观设置 | 运营 | 运维 | Hub 管理 | 媒体 | Agent | 经济 | 订单 | 分成策略 | 访问授权 | 结算与账本 | 工厂 | 设置 | 通用 | 诊断与维护 | ArcBlog | 关于 | RSS 订阅 | © 2026 "
+    },
+    "operations_cold_zh": {
+      "lang": "zh",
+      "kvCount": 5,
+      "kvs": [
+        "状态 ok",
+        "Blocklet 版本 0.3.7",
+        "DID did:blocklet:arcblog",
+        "协议 arcblog",
+        "传输 afs,mcp"
+      ],
+      "dashCount": 3,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [],
+      "mediaHTML": null,
+      "mediaImg": null,
+      "mediaInnerLen": null,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | 内容 | 仪表盘 | 工作室 | 页面 | 写文章 | 站点 | Hero | 分类 | 标签 | SEO | 分发 | 外观设置 | 运营 | 运维 | Hub 管理 | 媒体 | Agent | 经济 | 订单 | 分成策略 | 访问授权 | 结算与账本 | 工厂 | 设置 | 通用 | 诊断与维护 | ArcBlog | 关于 | RSS 订阅 | © 2026 "
+    },
+    "operations_reload_zh": {
+      "lang": "zh",
+      "kvCount": 5,
+      "kvs": [
+        "状态 ok",
+        "Blocklet 版本 0.3.7",
+        "DID did:blocklet:arcblog",
+        "协议 arcblog",
+        "传输 afs,mcp"
+      ],
+      "dashCount": 3,
+      "loadingOrUnavailable": true,
+      "simulatedWords": [],
+      "mediaHTML": null,
+      "mediaImg": null,
+      "mediaInnerLen": null,
+      "docOver": 0,
+      "head": "ArcBlog | ▾ | 内容 | 仪表盘 | 工作室 | 页面 | 写文章 | 站点 | Hero | 分类 | 标签 | SEO | 分发 | 外观设置 | 运营 | 运维 | Hub 管理 | 媒体 | Agent | 经济 | 订单 | 分成策略 | 访问授权 | 结算与账本 | 工厂 | 设置 | 通用 | 诊断与维护 | ArcBlog | 关于 | RSS 订阅 | © 2026 "
+    }
+  },
+  "bug037": {
+    "factory_cold_en": {
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng",
+      "mediaImg": true,
+      "sim": [
+        "simulated",
+        "simulated",
+        "simulated",
+        "SIMULATED"
+      ],
+      "notChain": false
+    },
+    "factory_cold_zh": {
+      "mediaHTML": "<div class=\"aup-media\" data-aup-id=\"factory-nft-svg\"><img src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgMzAwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjMwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBcmNCbG9nIFN0dWRpbyBOb2RlIj4gPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSIzMDAiIHJ4PSIxOCIgZmlsbD0iIzBiMTAyMCIvPiA8cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iNDc4IiBoZWlnaHQ9IjI5OCIgcng",
+      "mediaImg": true,
+      "sim": [
+        "模拟",
+        "simulated",
+        "模拟",
+        "simulated",
+        "SIMULATED"
+      ],
+      "notChain": false
+    }
+  },
+  "bug057": {
+    "needle": "add: a hub did is required (hubDid) — no data changed",
+    "count": 1,
+    "hasSuffixTwice": false
+  },
+  "viewport": {
+    "w": 1803,
+    "h": 908
+  }
+}

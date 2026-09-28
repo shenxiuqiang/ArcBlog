@@ -111,14 +111,26 @@ export const ROLE_FACTORIES = {
  * `output.data.value` block uses. Self-contained (no fonts, no external refs) so
  * the chain can render it without network access — same intent as GLofter's
  * `buildNodeSVG()` / `buildStudioNodeSVG()`.
+ *
+ * `simulated: true` (BUG-037) stamps a **visible** "not on chain / simulated"
+ * banner on the card. A `mock` adapter, or the offline `factory svg` sample,
+ * must never present a fabricated card as if it were a chain record — while all
+ * the evidence fields (`pk`, stake, capacity, owner) stay exactly where they are.
+ * The default (`false`) keeps the on-chain payload byte-identical (REQ-023 A5).
  */
-export function buildNodeSVG(role) {
+export function buildNodeSVG(role, { simulated = false } = {}) {
   const spec = ROLE_FACTORIES[role];
   if (!spec) throw new Error(`unknown node role: ${role}`);
   const accent = role === 'studio' ? '#2563eb' : '#0f766e';
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="${spec.name}">
+  const label = simulated ? `${spec.name} — not on chain / simulated` : spec.name;
+  const banner = simulated
+    ? `
+  <rect x="0" y="0" width="480" height="30" rx="15" fill="#f59e0b" fill-opacity="0.16"/>
+  <text x="240" y="20" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="1" fill="#f59e0b">未上链 / NOT ON CHAIN — SIMULATED</text>`
+    : '';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="${label}">
   <rect width="480" height="300" rx="18" fill="#0b1020"/>
-  <rect x="1" y="1" width="478" height="298" rx="17" fill="none" stroke="${accent}" stroke-width="2"/>
+  <rect x="1" y="1" width="478" height="298" rx="17" fill="none" stroke="${accent}" stroke-width="2"/>${banner}
   <text x="32" y="58" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" letter-spacing="2" fill="${accent}">ARCBLOG</text>
   <text x="32" y="96" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26" font-weight="600" fill="#f8fafc">{{data.name}}</text>
   <text x="32" y="132" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#94a3b8">{{data.endpoint}}</text>
@@ -145,8 +157,10 @@ export function buildNodeSVG(role) {
  * @param {string} [input.stakeAmount]  ABT to stake (also the mint price basis)
  * @param {{basic:string,pro:string,premium:string,enterprise:string}} [input.pricing] hub tiers
  * @param {string} [input.rules]        hub rules text
+ * @param {boolean} [input.simulated]   mark the SVG card "not on chain / simulated"
+ *                                      (mock adapter, offline sample) — BUG-037
  */
-export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmount = DEFAULT_STAKE_AMOUNT, pricing, rules } = {}) {
+export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmount = DEFAULT_STAKE_AMOUNT, pricing, rules, simulated = false } = {}) {
   const spec = ROLE_FACTORIES[role];
   if (!spec) throw new Error(`unknown node role: ${role} (use studio|hub)`);
   if (!tokenAddress) throw new Error('tokenAddress is required (the ABT token used to mint)');
@@ -213,7 +227,7 @@ export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmoun
     output: {
       moniker: `${spec.moniker} #{{ctx.id}}`,
       data: { type: 'json', value: dataValue },
-      display: { type: 'svg', content: buildNodeSVG(role) },
+      display: { type: 'svg', content: buildNodeSVG(role, { simulated }) },
       readonly: false,
       transferrable: true,
       parent: '{{ctx.factory}}',

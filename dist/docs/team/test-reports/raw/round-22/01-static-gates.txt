@@ -1,0 +1,39 @@
+### arc dsl validate --json
+    ".aup/pages/store.aup",
+    ".aup/wrapper.aup",
+    ".aup/wrapper.json",
+    ".web/components/hero-carousel/component.dsl",
+    ".web/components/hero-carousel/manifest.json",
+    ".web/components/hero-carousel/render.js",
+    ".web/components/hero-carousel/style.css",
+    ".web/components/theme-bridge/component.dsl",
+    ".web/components/theme-bridge/manifest.json",
+    ".web/components/theme-bridge/render.js",
+    ".web/components/theme-bridge/style.css",
+    "agents/arcblog-agent/agent.dsl",
+    "agents/arcblog-agent/agent.json",
+    "pages/hero-carousel/layout.aup",
+    "pages/theme-bridge/layout.aup",
+    "pages/theme-bridge/seo/description",
+    "pages/theme-bridge/seo/title"
+  ],
+  "issues": []
+}
+exit=0
+
+### arc dsl generate --check
+Would generate 0 file(s) (dry-run) — nothing to change
+  path: /Users/shenxiuqiang/workspace/ArcBlog
+  files: 7
+exit=0
+
+### console-nav --check
+{
+  "ok": true,
+  "action": "check",
+  "pages": 21
+}
+exit=0
+
+### parseArgs grep
+grep_exit=1

@@ -25,6 +25,7 @@ import {
   remove,
   resolveInstance,
 } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
 
 /**
@@ -106,6 +107,7 @@ export function findTestRecords(instance, dirs = CLEAN_DIRS) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`Remove test residue from a development instance
 
 Usage:
@@ -120,7 +122,7 @@ ${CLEAN_DIRS.map((dir) => `  ${INSTANCE_ROOT}/${dir}`).join('\n')}
 }
 
 export function main(argv = process.argv.slice(2)) {
-  const args = parseArgs(argv);
+  const args = parseCliArgs(argv, import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {

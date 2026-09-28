@@ -18,6 +18,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { fail, list, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { PAGES_DIR, PAGE_DRAFTS_DIR, buildPage, ensureValidPage, pagePath } from './lib/pages.mjs';
 import { slugify } from './lib/util.mjs';
 
@@ -140,6 +141,7 @@ function commandShow(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog static pages (spec §15.4)
 
 Usage:
@@ -157,7 +159,7 @@ Storage: ${PAGES_DIR} (guest) / ${PAGE_DRAFTS_DIR} (admin).
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {

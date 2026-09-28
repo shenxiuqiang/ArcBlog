@@ -1,0 +1,452 @@
+{
+  "ok": true,
+  "action": "chain-reconcile",
+  "generatedAt": "2026-09-28T21:15:50.493Z",
+  "chain": {
+    "adapter": "mock",
+    "chainHost": "",
+    "network": "mock",
+    "simulated": true,
+    "queried": false,
+    "skippedReason": "--adapter mock: this adapter carries simulated / operator-declared facts, not a chain — the chain is not queried and nothing can be reported as verified"
+  },
+  "resources": {
+    "orders": {
+      "path": "/instance/app/arcblog/economy/orders",
+      "count": 66
+    },
+    "settlements": {
+      "path": "/instance/app/arcblog/economy/settlements",
+      "count": 38
+    }
+  },
+  "totals": {
+    "verified": 0,
+    "mismatch": 0,
+    "not-on-chain": 0,
+    "no-hash": 20,
+    "total": 20,
+    "countsConsistent": true
+  },
+  "note": "showing the newest 20 of 38 settlement record(s); use --limit <n> or --all",
+  "rows": [
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790621501147.json",
+      "id": "econ-test-type-order-1790621501147",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790622072420.json",
+      "id": "econ-test-type-order-1790622072420",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790622841580.json",
+      "id": "econ-test-type-order-1790622841580",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790627861081.json",
+      "id": "econ-test-type-order-1790627861081",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790629016802.json",
+      "id": "econ-test-type-order-1790629016802",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/econ-test-type-order-1790629647845.json",
+      "id": "econ-test-type-order-1790629647845",
+      "hash": "",
+      "expected": {
+        "amount": "2.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zTypeFilter"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790621445652.json",
+      "id": "ledger-order-1790621445652",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790621995166.json",
+      "id": "ledger-order-1790621995166",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790622746053.json",
+      "id": "ledger-order-1790622746053",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790627750761.json",
+      "id": "ledger-order-1790627750761",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790628890558.json",
+      "id": "ledger-order-1790628890558",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/ledger-order-1790629506603.json",
+      "id": "ledger-order-1790629506603",
+      "hash": "",
+      "expected": {
+        "amount": "4.000000",
+        "asset": "USDC",
+        "receiver": "did:key:zLedger"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790621934038.json",
+      "id": "p1-verify-order-1790621934038",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790622125070.json",
+      "id": "p1-verify-order-1790622125070",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790622910831.json",
+      "id": "p1-verify-order-1790622910831",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790627944106.json",
+      "id": "p1-verify-order-1790627944106",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790629114709.json",
+      "id": "p1-verify-order-1790629114709",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/p1-verify-order-1790629759627.json",
+      "id": "p1-verify-order-1790629759627",
+      "hash": "",
+      "expected": {
+        "amount": "2",
+        "asset": "USDC",
+        "receiver": "did:key:zP1Creator"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/tip-1790161886.json",
+      "id": "tip-1790161886",
+      "hash": "",
+      "expected": {
+        "amount": "3",
+        "asset": "USDC",
+        "receiver": "did:key:zAlice"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    },
+    {
+      "kind": "settlement",
+      "path": "/instance/app/arcblog/economy/settlements/unattr2-order-1790162193.json",
+      "id": "unattr2-order-1790162193",
+      "hash": "",
+      "expected": {
+        "amount": "10",
+        "asset": "USDC",
+        "receiver": "did:key:zAlice"
+      },
+      "synthetic": false,
+      "category": "no-hash",
+      "queried": false,
+      "basis": [
+        "info != null"
+      ],
+      "findings": [],
+      "values": {},
+      "message": "the record carries no transaction hash"
+    }
+  ],
+  "changedRecords": [],
+  "readOnly": {
+    "methods": [],
+    "violations": [],
+    "writePath": "none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)"
+  },
+  "fingerprint": {
+    "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+    "tokens": null,
+    "nonce": "",
+    "captured": false,
+    "note": "不适用 + 原因: the chain was not queried (simulated adapter) — no balance / nonce was read, and no write path exists — equal: null, compared: false (nothing was read, so nothing was compared)",
+    "before": null,
+    "after": null,
+    "compared": false,
+    "equal": null
+  },
+  "exitCode": 0
+}

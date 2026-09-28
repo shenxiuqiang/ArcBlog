@@ -924,5 +924,7 @@
   "hub.confirm-rebuild-msg": "入队一条意图。随后由本机 worker 执行全量索引扫描——可能需要数十秒，并会 upsert 或写入墓碑。",
   "hub.confirm-rebuild-title": "重建内容索引？",
   "hub.confirm-register-msg": "入队一条意图：由本机 worker 向该 Hub 提交申请（通过前 relation 保持 applied）。本页自身不写收录关系。",
-  "hub.confirm-register-title": "提交这条申请？"
+  "hub.confirm-register-title": "提交这条申请？",
+  "factory.render-timing": "首屏提示：本平台在首次渲染之后才完成投影绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。展开高级详情或刷新一次即可绑定（2026-09-28 实测：不做任何操作不会自行恢复）。",
+  "operations.render-timing": "首屏提示：本平台在首次渲染之后才完成健康 / 发现投影的绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。刷新一次即可绑定（2026-09-28 实测）。"
 }

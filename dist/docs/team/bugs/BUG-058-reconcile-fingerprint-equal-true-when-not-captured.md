@@ -72,3 +72,39 @@ $ ARCBLOG_CHAIN_ENV=beta node scripts/arcblog-economy.mjs settlement reconcile -
 ## 疑似文件
 
 - `scripts/arcblog-economy.mjs`（`chainFingerprint()` 返回的 `captured:false` 分支 + `buildReport()` 里的 `const equal = …`；**线索，不是结论**）
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；mock + beta 只读两态）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/11-bug058-mock.txt`、`b58-mock-reconcile.json`、`b58-ocap-reconcile.json`。
+
+**结论：已修复（P3 关闭）** —— 「空真」路径消除，抓取态语义正确，只读零链写。
+
+```text
+# ① mock（默认）settlement reconcile --json
+{"captured":false,"equal":null,"compared":false,"before":null,"after":null,
+ "note":"… the chain was not queried (simulated adapter) — no balance / nonce was read … equal: null, compared: false (nothing was read, so nothing was compared)",
+ "changedRecords":0,"readOnly":{"methods":[],"violations":[],"writePath":"none (READ_ONLY_METHODS whitelist …)"}}
+
+# ② order verify --id … --json（默认 mock）—— 同形
+{"captured":false,"equal":null,"compared":false,"before":null,"after":null}
+
+# ③ ARCBLOG_CHAIN_ENV=beta settlement reconcile --adapter ocap --json
+{"captured":true,"equal":true,"compared":true,
+ "nonceBefore":"1790498079479","nonceAfter":"1790498079479",
+ "note":"account z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a tokens+nonce before/after identical: true (nonce 1790498079479)",
+ "changedRecords":0,
+ "readOnly":{"methods":["getAccountTokens","getAccountState"],"violations":[]}}
+
+# ④ before/after 形状（B58-3）
+before = {"tokens":[{"address":"z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG","balance":"16154907215234937951","decimal":18,"symbol":"TBA"}],
+          "nonce":"1790498079479"}     ← 真 token 列表，不再是被比较的响应包装
+```
+
+- B58-1 未抓取不再「空真」：**通过**（`captured:false` ⇒ `equal:null` + `compared:false`；两条命令都验证）。
+- B58-2 已抓取不回归且零链写：**通过**（`captured:true` / `equal:true` / nonce 前后相同；调用清单只有 2 个读方法、`violations:[]`）。
+- B58-3 字段形状诚实：**通过**（`before/after = {tokens:[…], nonce}`）。
+- B58-4 不改分类与退出码：**通过**（mock/ocap 两次 exit 0；`changedRecords:0`；`.gate-lock` 下 `arcblog-economy.test.mjs` **43/43**）。
+- B58-5 零链写自证：**通过**（只读 guard 生效、无 `send*`、nonce/余额逐值不变、`world/**` 与 `node/factories.json` 未被本命令改写）。
+- **受限**：`order verify --adapter ocap` 分支未单跑（与 `settlement reconcile` 共用同一 `chainFingerprint` 代码路径，本轮只覆盖了后者）。

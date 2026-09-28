@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   FACTORY_REGISTRY_PATH,
   NODE_FACTORY_SUMMARY_PATH,
@@ -174,6 +175,9 @@ function pickPricing(opts) {
 function commandSvg(opts) {
   const role = optString(opts.role).trim() || 'studio';
   ensure(ROLE_FACTORIES[role], `--role must be one of: ${Object.keys(ROLE_FACTORIES).join(', ')}`);
+  // BUG-037: this command renders a *sample* from placeholder data (`0xsample`,
+  // `zSamplePublicKey`), so the card must say so instead of impersonating a chain
+  // record. The unmarked template is still available via `factory spec`.
   const factory = buildNodeFactory({
     role,
     tokenAddress: '0xsample',
@@ -181,6 +185,7 @@ function commandSvg(opts) {
     stakeAmount: optString(opts.stake).trim() || DEFAULT_STAKE_AMOUNT,
     pricing: pickPricing(opts),
     rules: optString(opts.rules).trim() || undefined,
+    simulated: true,
   });
   const sample = {
     data: {
@@ -204,7 +209,7 @@ function commandSvg(opts) {
   const out = optString(opts.out).trim();
   if (out) {
     writeFileSync(out, svg, 'utf8');
-    console.log(JSON.stringify({ ok: true, role, out, bytes: svg.length }, null, 2));
+    console.log(JSON.stringify({ ok: true, role, out, bytes: svg.length, simulated: true }, null, 2));
     return;
   }
   process.stdout.write(svg);
@@ -231,6 +236,10 @@ async function commandCreate(opts, instance) {
     stakeAmount: optString(opts.stake).trim() || DEFAULT_STAKE_AMOUNT,
     pricing: pickPricing(opts),
     rules: optString(opts.rules).trim() || undefined,
+    // BUG-037: only a real chain may show an unqualified NFT card. A mock factory
+    // mints nothing, so its SVG says "未上链 / NOT ON CHAIN — SIMULATED" out loud
+    // (all evidence fields stay put — nothing is hidden, nothing is invented).
+    simulated: config.adapter !== 'ocap',
   });
   factory.arcblog.issuerAddress = issuerAddress;
 
@@ -337,6 +346,7 @@ function commandShow(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog node NFT factories (spec §8.1)
 
 Usage:
@@ -373,7 +383,7 @@ Chain environment (switching chains = changing env, never code):
 
 const argv = process.argv.slice(2);
 const command = argv[0];
-const opts = parseArgs(argv.slice(1));
+const opts = parseCliArgs(argv.slice(1), import.meta.url);
 
 try {
   const instance = resolveInstance(opts);

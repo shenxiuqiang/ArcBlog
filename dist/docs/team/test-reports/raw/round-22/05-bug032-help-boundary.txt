@@ -1,0 +1,48 @@
+### illegal type: stdout vs stderr (both forms)
+--- node scripts/arcblog-economy.mjs ledger list --type=payment
+[exit=1] stdout<<>>
+stderr<<{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown ledger type: payment (use creator_share|hub_share|protocol_fee|refund)"
+}>>
+--- node scripts/arcblog-economy.mjs ledger list --type payment
+[exit=1] stdout<<>>
+stderr<<{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown ledger type: payment (use creator_share|hub_share|protocol_fee|refund)"
+}>>
+
+### --help boundary across CLIs
+arcblog-agent.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-attribution.mjs                    exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-audit.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-bookmarks.mjs                      exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-category.mjs                       exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-chain-worker.mjs                   exit=1   syntaxNote=0 first=file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:103
+arcblog-clean.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-console-nav.mjs                    exit=0   syntaxNote=0 first={
+arcblog-daily-report.mjs                   exit=0   syntaxNote=0 first={
+arcblog-doctor.mjs                         exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-economy.mjs                        exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-factory.mjs                        exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-hero-carousel.mjs                  exit=0   syntaxNote=0 first={
+arcblog-lifecycle.mjs                      exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-media.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-network.mjs                        exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-node-nft.mjs                       exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-node.mjs                           exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-pages.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-query-posts.mjs                    exit=0   syntaxNote=0 first={
+arcblog-roles.mjs                          exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-rss.mjs                            exit=0   syntaxNote=0 first=<?xml version="1.0" encoding="UTF-8"?>
+arcblog-settings.mjs                       exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-tags.mjs                           exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+arcblog-ui-budget.mjs                      exit=0   syntaxNote=0 first=page                 blocks cards nest ctrl styles i18n tech   over-budget
+arcblog-verify.mjs                         exit=0   syntaxNote=1 first=Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+
+### helpers with FLAG_SYNTAX_NOTE / parseCliArgs
+      19
+      27
+      19

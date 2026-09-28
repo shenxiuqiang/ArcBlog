@@ -69,3 +69,32 @@ COLD/RELOAD /?page=orders       相等（35 行，9 行真为空）
 ## 负面/对照证据
 
 同一冷条件下的 `?page=diagnostics` / `?page=general` / `?page=hub` / `?page=orders` cold 与 reload **逐值相同** → 该现象不是「冷启动所有页面都空」，而是上述两页特有的绑定时序问题。
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；admin 单 tab，CDP **新 target 直载** wait 4.4s vs 同页 reload）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/13-cdp.json`、`14-cdp-focus.json`。探针：`raw/round-22/qa-r22-cdp.mjs`、`qa-r22-cdp-focus.mjs`。
+
+**结论：缺陷已按 Lead 裁定的「诚实呈现」分支收口（P2 关闭），但「平台边界」结论在页面级冷载不可复现 → 另立 [BUG-062](BUG-062-bug036-platform-boundary-not-reproducible.md)（P3，证据口径）。**
+
+```text
+# 新 target 直载 ?page=factory（wait 4400ms）
+en_cold  kvCount 18  ["NFT ArcBlogStudioNode #5","Lifecycle acquired","Endpoint https://arcblog.localhost",
+                      "Adapter ocap","Network beta","Moniker ArcBlogStudioNode","Stake per node 1",
+                      "Moniker ArcBlogHubNode","Capacity (studios) 1000", …]
+en_reload 与 en_cold 逐值相同；loadingOrUnavailable=true（诚实提示在页上）；dashOnly=false（不是「全 —」）
+zh_cold / zh_reload 同样：18 行真值（“生命周期 acquired / 适配器 ocap / 网络 beta”…）
+
+# 新 target 直载 ?page=operations（wait 4400ms）
+en_cold  kvCount 5  ["Status ok","Blocklet version 0.3.7","DID did:blocklet:arcblog","Protocol arcblog","Transport afs,mcp"]
+en_reload 相同；dashValues=0
+zh_cold / zh_reload 相同（“状态 ok …”）
+```
+
+- B36-2「若判平台边界 → 诚实呈现」：**通过** —— 冷载首屏出现明确措辞（`factory.render-timing` / `operations.render-timing`，en「not bound yet / unavailable」、zh「尚未绑定 / 暂不可用」），且数值区不是只显示 `—`（`dashOnly=false`）。
+- B36-3「若判能修 → 冷载即真值」：**亦成立** —— 同上，cold == reload 且字段有真值。
+- B36-4 零假条件：**通过** —— `git diff -U0` 的 `.aup` 新增行中 `visible` 命中 **0**（未用假条件伪装加载态）。
+- B36-5 热态零回归：**通过** —— `?page=factory` 队列卡仍在、`?page=factory` 内容面无新增溢出（`docOver=0`，仅平台壳层 2 处既有 `.aup-view` 裁切）、`?page=operations` kv 行数 5 未减少。
+- B36-6 交 Lead 材料：Dev 已给实验输出；**QA 独立复测与「五通道冷载全空且不自恢复」不一致**（见 BUG-062），落 `arc-contracts.md` 前需重新措辞。
+- **受限**：本复验是「页面级冷载 + 已热 daemon」；**daemon 重启后的首次加载**未复测（会打断当前 GUI 会话），故不能据此否认重启级现象，也不能据此断言平台必然首屏有值。

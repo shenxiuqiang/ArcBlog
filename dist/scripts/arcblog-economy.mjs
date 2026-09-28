@@ -13,6 +13,7 @@
 // unconfigured instance cannot silently accept a payment claim (spec §44).
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT, list, nowIso, remove } from './lib/arc.mjs';
 import { findVerifiedAttribution } from './lib/attribution.mjs';
 import { scanPosts } from './lib/content-scan.mjs';
@@ -629,11 +630,15 @@ async function chainFingerprint(chain, instance, { capture = false } = {}) {
     };
   }
   if (!capture) return { address, tokens: null, nonce: '', captured: false, note: 'not captured' };
-  const tokens = await chain.client.getAccountTokens({ address });
+  const rawTokens = await chain.client.getAccountTokens({ address });
+  // `getAccountTokens` answers `{code, tokens:[…]}` (@ocap/client
+  // ResponseGetAccountTokens); BUG-058: the report used to keep that whole
+  // envelope, so `fingerprint.tokens` was an object, not the balance list.
+  const tokens = Array.isArray(rawTokens) ? rawTokens : (rawTokens?.tokens ?? rawTokens?.state ?? rawTokens ?? null);
   const state = await chain.client.getAccountState({ address });
   return {
     address,
-    tokens: tokens?.state ?? tokens ?? null,
+    tokens,
     nonce: String(state?.state?.nonce ?? state?.nonce ?? ''),
     captured: true,
     note: 'captured',
@@ -679,10 +684,23 @@ function expectationFor(settlement, order) {
 function buildReport(chain, rows, { instance, before, after, note = '', resources = null }) {
   const totals = summarize(rows);
   const methods = [...new Set(chain.calls)];
-  const equal = JSON.stringify(before?.tokens ?? null) === JSON.stringify(after?.tokens ?? null) && String(before?.nonce ?? '') === String(after?.nonce ?? '');
-  const fingerprintNote = !before?.captured
-    ? before?.note ?? 'no fingerprint'
-    : `account ${before.address} tokens+nonce before/after identical: ${equal} (nonce ${before.nonce || '(empty)'})`;
+  // BUG-058: a fingerprint that was NOT captured has nothing to compare, so the
+  // machine field must say so (`equal: null` + `compared: false`) instead of the
+  // vacuous `JSON.stringify(null) === JSON.stringify(null)` → `equal: true`,
+  // which read like "we compared and they matched". When both snapshots exist,
+  // `before`/`after` carry exactly the values that were compared (token list +
+  // nonce), not the SDK response envelope.
+  const compared = Boolean(before?.captured && after?.captured);
+  const snapshot = (fp) => ({ tokens: fp?.tokens ?? null, nonce: String(fp?.nonce ?? '') });
+  const beforeSnapshot = compared ? snapshot(before) : null;
+  const afterSnapshot = compared ? snapshot(after) : null;
+  const equal = compared
+    ? JSON.stringify(beforeSnapshot.tokens) === JSON.stringify(afterSnapshot.tokens) &&
+      beforeSnapshot.nonce === afterSnapshot.nonce
+    : null;
+  const fingerprintNote = !compared
+    ? `${before?.note ?? 'no fingerprint'} — equal: null, compared: false (nothing was read, so nothing was compared)`
+    : `account ${before.address} tokens+nonce before/after identical: ${equal} (nonce ${beforeSnapshot.nonce || '(empty)'})`;
   const ordersCount = resources?.orders?.count ?? null;
   const settlementsCount = resources?.settlements?.count ?? null;
   const emptyNote =
@@ -712,7 +730,14 @@ function buildReport(chain, rows, { instance, before, after, note = '', resource
       violations: chain.violations,
       writePath: 'none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)',
     },
-    fingerprint: { ...before, before: before?.tokens ?? null, after: after?.tokens ?? null, equal, note: fingerprintNote },
+    fingerprint: {
+      ...before,
+      before: beforeSnapshot,
+      after: afterSnapshot,
+      compared,
+      equal,
+      note: fingerprintNote,
+    },
     // Exit-code semantics (V4, decided here and documented in --help):
     //   0 = a report was produced (even with mismatch rows, or 0 records)
     //   1 = the command could not run (validation / CHAIN_UNAVAILABLE / NOT_FOUND)
@@ -830,6 +855,7 @@ async function commandSettlementReconcile(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog economy (spec §25–§92) — Phase 8 / MVP-3
 
 Usage:
@@ -882,7 +908,7 @@ produced (including 0 records or mismatch rows), 1 = the command could not run
 }
 
 (async function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd, sub] = args._;
   const instance = resolveInstance(args);
   try {

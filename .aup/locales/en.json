@@ -924,5 +924,7 @@
   "hub.confirm-rebuild-msg": "Queues ONE intent. The local worker then runs the FULL index scan — expect tens of seconds, and it may upsert or tombstone entries.",
   "hub.confirm-rebuild-title": "Rebuild the content index?",
   "hub.confirm-register-msg": "Queues ONE intent: the local worker applies to this Hub (relation applied until the Hub approves). This page writes no relation itself.",
-  "hub.confirm-register-title": "Apply to this Hub?"
+  "hub.confirm-register-title": "Apply to this Hub?",
+  "factory.render-timing": "First-load note: on this platform the projection is bound AFTER the first render, so on a cold visit every field below can read the empty placeholder — that means \"not bound yet / unavailable\", never \"the record is empty\". Expand the advanced details or reload once to bind it (measured 2026-09-28: no channel recovers on its own).",
+  "operations.render-timing": "First-load note: on this platform the health / discovery projections are bound AFTER the first render, so a cold visit can show the empty placeholder for every field below — read that as \"not bound yet / unavailable\", never as \"the record is empty\". Reload once to bind it (measured 2026-09-28)."
 }

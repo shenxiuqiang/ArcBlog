@@ -1,0 +1,26 @@
+### cleanup B57 render probe intent qa-r22-b57-render-1790630382
+{"path":"/instance/app/arcblog/config/hub-intents/qa-r22-b57-render-1790630382.json"}
+NOT_FOUND exec Path not found: /app/arcblog/config/hub-intents/qa-r22-b57-render-1790630382.json
+
+### BUG-033 static
+173:                    view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0, flexBasis: auto} {
+
+### BUG-034 static: no break-style keys (must be 0)
+0
+grep_exit=1
+
+### BUG-033/036/037 zero new visible (git diff added lines only)
+0
+
+### positional / mixed-form regression
+mixed forms: {"count":1,"totalCount":12,"types":["refund"]}
+{
+  "ok": true,
+double-dash exit=0
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/categories",
+  "count": 3,
+  "categories": [
+    {
+      "slug": "techn

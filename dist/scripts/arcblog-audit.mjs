@@ -1,29 +1,10 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
   return String(value);
-}
-
-function parseArgs(argv) {
-  const out = { _: [] };
-  for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
-    if (!token.startsWith('--')) {
-      out._.push(token);
-      continue;
-    }
-    const key = token.slice(2);
-    const next = argv[i + 1];
-    if (!next || next.startsWith('--')) {
-      out[key] = true;
-      continue;
-    }
-    out[key] = next;
-    i += 1;
-  }
-  return out;
 }
 
 function nowIso() {
@@ -93,6 +74,7 @@ function commandRead(opts) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog audit helper
 
 Usage:
@@ -102,7 +84,7 @@ Usage:
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   try {
     if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') return help();

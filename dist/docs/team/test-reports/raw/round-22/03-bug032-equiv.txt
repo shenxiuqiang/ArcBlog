@@ -1,0 +1,175 @@
+
+### B32-1a ledger list --type=refund --json
+$ node scripts/arcblog-economy.mjs ledger list --type=refund --json
+[exit=0]
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/economy/ledger",
+  "count": 10,
+  "totalCount": 10,
+  "truncated": false,
+  "total": "50",
+  "hint": "",
+  "entries": [
+    {
+      "id": "econ-test-rf-order-1790621456673:refund:creator_share",
+      "orderId": "econ-test-rf-order-1790621456673",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "did:key:zEconCreator",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790621456673:creator_share",
+      "asset": "USDC",
+      "amount": "9.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T18:51:05.536Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790621456673:refund:protocol_fee",
+      "orderId": "econ-test-rf-order-1790621456673",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "protocol",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790621456673:protocol_fee",
+      "asset": "USDC",
+      "amount": "0.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T18:51:05.536Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790622006111:refund:creator_share",
+      "orderId": "econ-test-rf-order-1790622006111",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "did:key:zEconCreator",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790622006111:creator_share",
+      "asset": "USDC",
+      "amount": "9.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T19:00:16.420Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790622006111:refund:protocol_fee",
+      "orderId": "econ-test-rf-order-1790622006111",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "protocol",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790622006111:protocol_fee",
+      "asset": "USDC",
+      "amount": "0.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T19:00:16.420Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790622757396:refund:creator_share",
+      "orderId": "econ-test-rf-order-1790622757396",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "did:key:zEconCreator",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790622757396:creator_share",
+      "asset": "USDC",
+      "amount": "9.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T19:12:49.437Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790622757396:refund:protocol_fee",
+      "orderId": "econ-test-rf-order-1790622757396",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "protocol",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790622757396:protocol_fee",
+      "asset": "USDC",
+      "amount": "0.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T19:12:49.437Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790627761790:refund:creator_share",
+      "orderId": "econ-test-rf-order-1790627761790",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "did:key:zEconCreator",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790627761790:creator_share",
+      "asset": "USDC",
+      "amount": "9.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T20:36:15.211Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790627761790:refund:protocol_fee",
+      "orderId": "econ-test-rf-order-1790627761790",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "protocol",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790627761790:protocol_fee",
+      "asset": "USDC",
+      "amount": "0.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T20:36:15.211Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790628901693:refund:creator_share",
+      "orderId": "econ-test-rf-order-1790628901693",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "did:key:zEconCreator",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790628901693:creator_share",
+      "asset": "USDC",
+      "amount": "9.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T20:55:16.848Z"
+    },
+    {
+      "id": "econ-test-rf-order-1790628901693:refund:protocol_fee",
+      "orderId": "econ-test-rf-order-1790628901693",
+      "orderKind": "purchase",
+      "type": "refund",
+      "from": "protocol",
+      "to": "did:key:zEconReader",
+      "reverses": "econ-test-rf-order-1790628901693:protocol_fee",
+      "asset": "USDC",
+      "amount": "0.5",
+      "status": "reversed",
+      "policyVersion": "v1",
+      "transactionHash": "",
+      "createdAt": "2026-09-28T20:55:16.848Z"
+    }
+  ]
+}
+
+### B32-1b ledger list --type refund --json
+$ node scripts/arcblog-economy.mjs ledger list --type refund --json
+[exit=0]
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/economy/ledger",
+  "count": 10,
+  "totalCount": 10,
+  "truncated": false,

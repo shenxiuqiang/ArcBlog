@@ -19,6 +19,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CONSOLE_PAGES, blockEnd, sidebarLines } from './console-nav.mjs';
+import { parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pagesDir = join(repoRoot, '.aup', 'pages');
@@ -83,7 +84,8 @@ function fail(payload) {
 }
 
 function main() {
-  const check = process.argv.includes('--check');
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  const check = Boolean(args.check);
   const sources = pageSources();
   const results = [];
 

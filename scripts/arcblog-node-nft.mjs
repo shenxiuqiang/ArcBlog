@@ -23,6 +23,7 @@
 import { readFileSync } from 'node:fs';
 
 import { ensure, fail, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   DEFAULT_REVOKE_WAITING_PERIOD_DAYS,
   FACTORY_REGISTRY_PATH,
@@ -499,6 +500,7 @@ function commandBackfill(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog node NFT lifecycle (spec §8.2–§8.4)
 
 Usage:
@@ -538,7 +540,7 @@ Chain environment (switching chains = changing env, never code):
 
 const argv = process.argv.slice(2);
 const command = argv[0];
-const opts = parseArgs(argv.slice(1));
+const opts = parseCliArgs(argv.slice(1), import.meta.url);
 
 try {
   const instance = resolveInstance(opts);

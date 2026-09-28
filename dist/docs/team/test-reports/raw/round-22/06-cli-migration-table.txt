@@ -1,0 +1,29 @@
+FILE                           parseCliArgs  parseArgs   newparseArgs helpHandler
+arcblog-agent.mjs              1             0           0         1        
+arcblog-attribution.mjs        1             0           0         1        
+arcblog-audit.mjs              1             0           0         1        
+arcblog-bookmarks.mjs          1             0           0         1        
+arcblog-category.mjs           1             0           0         1        
+arcblog-chain-worker.mjs       1             0           0         0        
+arcblog-clean.mjs              1             0           0         1        
+arcblog-console-nav.mjs        1             0           0         0        
+arcblog-daily-report.mjs       1             0           0         0        
+arcblog-doctor.mjs             1             0           0         2        
+arcblog-economy.mjs            1             0           0         1        
+arcblog-factory.mjs            1             0           0         1        
+arcblog-hero-carousel.mjs      1             0           0         0        
+arcblog-lifecycle.mjs          1             0           0         1        
+arcblog-media.mjs              1             0           0         1        
+arcblog-network.mjs            1             0           0         1        
+arcblog-node-nft.mjs           1             0           0         1        
+arcblog-node.mjs               1             0           0         1        
+arcblog-pages.mjs              1             0           0         1        
+arcblog-query-posts.mjs        1             0           0         0        
+arcblog-roles.mjs              1             0           0         1        
+arcblog-rss.mjs                1             0           0         0        
+arcblog-settings.mjs           1             0           0         1        
+arcblog-tags.mjs               1             0           0         1        
+arcblog-ui-budget.mjs          1             0           0         0        
+arcblog-verify.mjs             1             0           0         1        
+
+### files that still call the raw shared parseArgs (not parseCliArgs)

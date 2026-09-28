@@ -1,0 +1,111 @@
+{
+  "type=refund  vs  type refund": {
+    "a": {
+      "exit": 0,
+      "ok": true,
+      "count": 10,
+      "totalCount": 10,
+      "truncated": false,
+      "types": [
+        "refund"
+      ]
+    },
+    "b": {
+      "exit": 0,
+      "ok": true,
+      "count": 10,
+      "totalCount": 10,
+      "truncated": false,
+      "types": [
+        "refund"
+      ]
+    },
+    "byteIdentical": true,
+    "sameExit": true,
+    "sameCode": true
+  },
+  "limit=1  vs  limit 1": {
+    "a": {
+      "exit": 0,
+      "ok": true,
+      "count": 1,
+      "totalCount": 70,
+      "truncated": true,
+      "types": [
+        "protocol_fee"
+      ]
+    },
+    "b": {
+      "exit": 0,
+      "ok": true,
+      "count": 1,
+      "totalCount": 70,
+      "truncated": true,
+      "types": [
+        "protocol_fee"
+      ]
+    },
+    "byteIdentical": true,
+    "sameExit": true,
+    "sameCode": true
+  },
+  "order=p1-verify-order-1790622125070  vs  order p1-verify-order-1790622125070": {
+    "a": {
+      "exit": 0,
+      "ok": true,
+      "count": 2,
+      "types": [
+        "creator_share",
+        "protocol_fee"
+      ]
+    },
+    "b": {
+      "exit": 0,
+      "ok": true,
+      "count": 2,
+      "types": [
+        "creator_share",
+        "protocol_fee"
+      ]
+    },
+    "byteIdentical": true,
+    "sameExit": true,
+    "sameCode": true
+  },
+  "type=payment  vs  type payment (illegal)": {
+    "a": {
+      "exit": 1,
+      "raw": ""
+    },
+    "b": {
+      "exit": 1,
+      "raw": ""
+    },
+    "byteIdentical": true,
+    "sameExit": true,
+    "sameCode": true
+  },
+  "all vs all (single)": {
+    "exit": 0,
+    "ok": true,
+    "count": 70,
+    "totalCount": 70,
+    "truncated": false,
+    "types": [
+      "creator_share",
+      "protocol_fee",
+      "refund"
+    ]
+  },
+  "no filter (single)": {
+    "exit": 0,
+    "ok": true,
+    "count": 20,
+    "totalCount": 70,
+    "truncated": true,
+    "types": [
+      "creator_share",
+      "protocol_fee"
+    ]
+  }
+}

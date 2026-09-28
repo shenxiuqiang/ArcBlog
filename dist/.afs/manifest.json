@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 80606,
+      "size": 81309,
       "contentType": "application/json",
-      "sha256": "451791423a2ddc2750471c075e97b105ff263e9bd232f2d924b350f21cd73636"
+      "sha256": "b32dd1ea4e8656b979c9e3004cc7a490434af05c31f063b36aedc0306585b5aa"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 77913,
+      "size": 78594,
       "contentType": "application/json",
-      "sha256": "e6e9d576168c577b2feb195c206ea409f64d6c5a7c130cf3bb6a8c95e310db38"
+      "sha256": "3720436686b9c74fbb57168fee66bfb30aebe93ab027332ff0c5181fa71a6a75"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -238,9 +238,9 @@
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 19387,
+      "size": 19404,
       "contentType": "application/octet-stream",
-      "sha256": "7baa8f62f39ac1f0c7e3def5378b49f8edbc5fb8b44a3094db8acfa33322f128"
+      "sha256": "07b9899ea4b076be706c64feee3ad56e152abf1a7d439261d7ecf0a98b37bf56"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
@@ -304,15 +304,15 @@
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 30291,
+      "size": 31042,
       "contentType": "application/octet-stream",
-      "sha256": "3a2816907bc603d25fdc5264d26ba661102a551cfa40cea053e9e000920027e8"
+      "sha256": "0170186117807268992ec6fc136ee2dd0044e796605b2651ce75bd37eeb5cac9"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 36320,
+      "size": 36958,
       "contentType": "application/octet-stream",
-      "sha256": "971157761eadbf2930ef83b879ecc4f3c2920cc45b55533665c7f3d95ae1e060"
+      "sha256": "aa9733970a762f089f3157f57374513dfe8f0ecc307197c33bb3fc35c746072a"
     },
     {
       "path": ".aup/pages/ops/media.aup",
@@ -322,9 +322,9 @@
     },
     {
       "path": ".aup/pages/ops/operations.aup",
-      "size": 13969,
+      "size": 14644,
       "contentType": "application/octet-stream",
-      "sha256": "bc50be39528f449fd6e560b0921b989473b60a7e5f8f838d1262d75dafaac0d3"
+      "sha256": "1ed54f75e36f4a1749af27608a3f77343344b541f6a518bbb3a949a4e2ef6cff"
     },
     {
       "path": ".aup/pages/page-view.aup",
@@ -1342,9 +1342,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 165594,
+      "size": 168256,
       "contentType": "text/markdown",
-      "sha256": "992ce7f933a3410e05cf9a8fa61e3a1089c27608fa545c895bd2ee25ee1b1593"
+      "sha256": "5cb0168fa6d46bd928d4a3ae2e42054086c031a56062d7fa85369eb790d6c588"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1354,15 +1354,15 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 78300,
+      "size": 79960,
       "contentType": "text/markdown",
-      "sha256": "f06f0f27ff9b79da629d7f91a4c94a9fb8d2827d937a9c9e07dc9ff9766a1bee"
+      "sha256": "19b7a8cdaf5c1b237fb6b1f33b1c7c79a1686ca7ea9c10eb4fe3a829b660ab52"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
-      "size": 19253,
+      "size": 21897,
       "contentType": "text/markdown",
-      "sha256": "1a036449caeed27c0e8ae766986aa64e7b5bf6c362bd2147120a7cccc7af64d1"
+      "sha256": "c59a5ea67bcb6369bfb6ed6618a058e48ef4d134bdaaf5cd47dbc0ddbf247a5d"
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
@@ -1468,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 930381,
+      "size": 984962,
       "contentType": "text/markdown",
-      "sha256": "447f21e8fc7ff74e86581ec214036e5b88b0e878b9c485184efee840a1c8daf8"
+      "sha256": "75b3367675eb92fa6a9958000249d4c93a5e9b1bf6384c7b5c2fea2fe76faa33"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1666,21 +1666,21 @@
     },
     {
       "path": "docs/team/bugs/BUG-032-ledger-type-equals-form-silently-ignored.md",
-      "size": 5349,
+      "size": 8645,
       "contentType": "text/markdown",
-      "sha256": "0b85d4275f917dd52495f391528c95201e18dc945bf333cc450158ff94843735"
+      "sha256": "ef66497c63aa98bf8643edffd977dcea8e9a12ff96507bf2f447d783e810a0c4"
     },
     {
       "path": "docs/team/bugs/BUG-033-pages-view-link-collapses-to-zero-width.md",
-      "size": 4051,
+      "size": 6501,
       "contentType": "text/markdown",
-      "sha256": "406bc964130df5769158e66764f5ea49f220f89a2a724148806a7510afcec262"
+      "sha256": "77bf879739b72ab1384b614b3195493636206c5a38012c91620e5287b57e620e"
     },
     {
       "path": "docs/team/bugs/BUG-034-hub-relations-overflow-1512.md",
-      "size": 3899,
+      "size": 5983,
       "contentType": "text/markdown",
-      "sha256": "e7cab634cb7cf8eb6eb00e3f155ca65452d0884787761d9a93b52212697e2575"
+      "sha256": "6bb0247baa4f0787089932b8d759ab46cf1b882182aa50ff42759301f486cfcc"
     },
     {
       "path": "docs/team/bugs/BUG-035-factory-1512-hash-overflow.md",
@@ -1690,21 +1690,21 @@
     },
     {
       "path": "docs/team/bugs/BUG-036-cold-load-projection-values-empty.md",
-      "size": 5567,
+      "size": 8168,
       "contentType": "text/markdown",
-      "sha256": "89a5d25565fd39c89eaf08e1fd67d94c9e809143f1086f17f59f80c9e4ab595e"
+      "sha256": "85d634dc5360033f0041f14aeca6d191e60d88685c6660883bb46dfd34061fca"
     },
     {
       "path": "docs/team/bugs/BUG-037-factory-nft-svg-placeholder.md",
-      "size": 4222,
+      "size": 7300,
       "contentType": "text/markdown",
-      "sha256": "d4622026e389487c69807dc2bdacbcf83277ec3f55aa3c1df446a253f015d3a6"
+      "sha256": "28b5a5011872d86d1aa0e0ba330f08ca7677fef79c2f7029ab5785d77da6af7c"
     },
     {
       "path": "docs/team/bugs/BUG-038-nft-factory-doc-chain-env-drift.md",
-      "size": 4755,
+      "size": 7679,
       "contentType": "text/markdown",
-      "sha256": "4e44efb4045f937c22a444254dbf9978b90bd849e0f462a35e18a4234a384631"
+      "sha256": "1e150c6660342ac0bd62fe0670950b9bb85376d65396273a92cd2b8fe4ff9761"
     },
     {
       "path": "docs/team/bugs/BUG-039-bare-root-replays-last-page.md",
@@ -1816,21 +1816,39 @@
     },
     {
       "path": "docs/team/bugs/BUG-057-hub-intent-message-duplicated-no-data-changed.md",
-      "size": 4032,
+      "size": 6458,
       "contentType": "text/markdown",
-      "sha256": "f544ee3fd69b2e9dcbe37329478397f49f76a5f74114500d5ae45927c3b66fce"
+      "sha256": "f5b7aab1057cdf292e2a78eb759755320b7942003761cad10e461d7f2d9a170e"
     },
     {
       "path": "docs/team/bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md",
-      "size": 4461,
+      "size": 6913,
       "contentType": "text/markdown",
-      "sha256": "9d92fb852116967102d41bd1e2d23f4667cd2855286cf639d79ab8a0eb08cd07"
+      "sha256": "406fad5a2f2e5dabbe9e59634ffdd0ef42eb15a088d76db79a6807894e7a796c"
     },
     {
       "path": "docs/team/bugs/BUG-059-hub-ui-budget-ctrl-over-standard.md",
       "size": 4334,
       "contentType": "text/markdown",
       "sha256": "b12bc2833cd68b6ae92913073a6b958f8968f034e617cec950906c0171f18f0b"
+    },
+    {
+      "path": "docs/team/bugs/BUG-060-four-clis-help-surface-not-synced.md",
+      "size": 3129,
+      "contentType": "text/markdown",
+      "sha256": "66ea561307339bdd84301f149b62a0be6f852d6998431969375c2e16f4f7481b"
+    },
+    {
+      "path": "docs/team/bugs/BUG-061-media-data-uri-platform-claim-falsified.md",
+      "size": 3155,
+      "contentType": "text/markdown",
+      "sha256": "50057b5408c05e36825e982b53fbade794afcbbf0bb1f6f2ae39ca7105441159"
+    },
+    {
+      "path": "docs/team/bugs/BUG-062-bug036-platform-boundary-not-reproducible.md",
+      "size": 3641,
+      "contentType": "text/markdown",
+      "sha256": "33e84e64b9696147dc80c8805b933618f43fa9d332e32e512eb9532c53f9d2db"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2542,9 +2560,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 63154,
+      "size": 71332,
       "contentType": "text/markdown",
-      "sha256": "e46480d0b05a3cdb3871223a47e13703fba5448a2bd27915cc5cd0614d10a2eb"
+      "sha256": "27daeca576ac4869eb97aac1c059a052d349e660b2d6adf35f409a154ee2e16d"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2617,6 +2635,12 @@
       "size": 45956,
       "contentType": "text/markdown",
       "sha256": "4c7e6c290b4e96fd410d16317c70be039e952a71707da44a42d92aa9737a15a7"
+    },
+    {
+      "path": "docs/team/journal/round-22.md",
+      "size": 70099,
+      "contentType": "text/markdown",
+      "sha256": "02c3d0ec54155e79fe999cad209fb06db7a1eb4f36a01fa78b7d668787cf5776"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -2917,6 +2941,12 @@
       "size": 43826,
       "contentType": "text/markdown",
       "sha256": "5182413dccdf8bd8881b5806e8da910696dfce81918a864f486fc886de309765"
+    },
+    {
+      "path": "docs/team/requirements/REQ-029-round22-defect-closure.md",
+      "size": 43904,
+      "contentType": "text/markdown",
+      "sha256": "d4c5251747e2c281443f560e7d26ffe207c659640d5d071f20650324f98a8413"
     },
     {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
@@ -4719,6 +4749,222 @@
       "sha256": "d292f5587c4ed0291135a0f63418ce564f1c4720f33fcd2adeae9d4c82f7d3db"
     },
     {
+      "path": "docs/team/test-reports/raw/round-22/01-static-gates.txt",
+      "size": 1019,
+      "contentType": "text/plain",
+      "sha256": "a1c5c8a30499f63b6ca4f129bc01f075b75cdb1ae1e07f2d2e153847791ccba4"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/02-bug032-static-cli.txt",
+      "size": 9104,
+      "contentType": "text/plain",
+      "sha256": "665d7a4334dbc542f71f592c1bfc38f5beca6cf589d69fc13d630dcd276c6f93"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/03-bug032-equiv.txt",
+      "size": 5561,
+      "contentType": "text/plain",
+      "sha256": "66baad1455655373cf707181722251eae7adcc01621d75a474ee24de246d6996"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/04-bug032-equiv-result.json",
+      "size": 1949,
+      "contentType": "application/json",
+      "sha256": "68f8e4f2afbee36b6881768a25d2f768de4517688062734b000d9f8fc3f051c3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/05-bug032-help-boundary.txt",
+      "size": 4363,
+      "contentType": "text/plain",
+      "sha256": "5012a14b8b97eae0731800e6e268b53183c25e7dbad9b3e180cd08ce1ac5d736"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/06-cli-migration-table.txt",
+      "size": 2155,
+      "contentType": "text/plain",
+      "sha256": "4029280cb3b545c3a363167536e908b6c088b0641fa97c0e29a2929bbf213802"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/07-npm-test.txt",
+      "size": 1355,
+      "contentType": "text/plain",
+      "sha256": "546cf39f9191ad449ff00359e6a49609277f103de40479f3eac09f1a661bc959"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/08-targeted-live.txt",
+      "size": 2480,
+      "contentType": "text/plain",
+      "sha256": "b0ed1b6f9854e2121726dcc7c6446f0afde894ee038d8a5935d8841f8fe8b264"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/09-bug038-doc.txt",
+      "size": 7409,
+      "contentType": "text/plain",
+      "sha256": "8c59873f562575a33c99d0357cce3c3c838a95949a8accdefc52164d0d062bcc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/10-bug037.txt",
+      "size": 1331,
+      "contentType": "text/plain",
+      "sha256": "9cc5d4f4f19e8aca5da89b5c2bc4eea6ebd48d33e9a9a56292e89de60e7b9e5e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/11-bug058-mock.txt",
+      "size": 716,
+      "contentType": "text/plain",
+      "sha256": "9778ef0fb31ce93696f5ee80d4e9f8d3c47feec8ddf538c0e47bbebdea6ff2c7"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/12-bug057-probe.txt",
+      "size": 2755,
+      "contentType": "text/plain",
+      "sha256": "4f73f1a10658fa8d1a744e776f8355f4937aa8342a7f29855c48492a47c0e2d4"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/13-cdp.json",
+      "size": 36427,
+      "contentType": "application/json",
+      "sha256": "80b1a9f9430eeb45bca149ea1c18517506c3c7e54fcdc63d3b987dcfdaf8b62b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/14-cdp-focus.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/14-cdp-focus.json",
+      "size": 1710,
+      "contentType": "application/json",
+      "sha256": "8297fbd0e002deb14c401fbc9164f223902a5c861155468a2cd02f0cdbf42bd2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/15-zero-chain-write.txt",
+      "size": 1011,
+      "contentType": "text/plain",
+      "sha256": "c47812a41e5853b04dd8e1960735dc5d987d23050d6974d2e46cb2a0ebe8aaf7"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/16-pages-navigation.txt",
+      "size": 826,
+      "contentType": "text/plain",
+      "sha256": "09046ec9569c43ea83c8cec69c81b65b8470785a6e616ccbcbef845e30c6bc37"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/17-static-and-cleanup.txt",
+      "size": 835,
+      "contentType": "text/plain",
+      "sha256": "ac505501c8a8b01a8d76f1bbccc8f440a2ef5ed765017b38e9a59ca2e86bca98"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/18-build-and-diff.txt",
+      "size": 1311,
+      "contentType": "text/plain",
+      "sha256": "e853b48541310f6dc14d88e31630c09514e7b210a68b464cfb5be2128e51ce05"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/19-dist-after-build.txt",
+      "size": 2362,
+      "contentType": "text/plain",
+      "sha256": "1186593ecf38eb25c9eb6583cacdcdcc554c2ae9004b3b0ad0f27b867a7396d2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/20-factory-overflow.txt",
+      "size": 1077,
+      "contentType": "text/plain",
+      "sha256": "85eeb4fc5eaf2d325cca0d3df330bb452473144a68e8194c6fe11a8276fa0bce"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/21-cleanup-selfproof.txt",
+      "size": 2273,
+      "contentType": "text/plain",
+      "sha256": "08c03f8817a3e9d30d3be13d442451dfe7c233f2c8530f8b9e0f902b209fc996"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/22-help-gaps.txt",
+      "size": 1226,
+      "contentType": "text/plain",
+      "sha256": "a300175ead36ff9d881d0a647766d22634b1b647c415411be992d56c8a2327ca"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/23-final-static.txt",
+      "size": 1983,
+      "contentType": "text/plain",
+      "sha256": "0c301e8a4440e4310f8d5ba1555ce1332a25aa9aefe1bfa974ae2ccacd0ae445"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/b57-expected-message.txt",
+      "size": 55,
+      "contentType": "text/plain",
+      "sha256": "51d0035784bdafb570a24f5f06911ce80e60b7cdd80059c3e3b500fa07fc4c20"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/b57-render-intent-id.txt",
+      "size": 29,
+      "contentType": "text/plain",
+      "sha256": "d1b5bb38c0247348e1c1d287eb0e42e99eee19126e39380d81dabf7cd90f4e05"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/b58-mock-reconcile.json",
+      "size": 12423,
+      "contentType": "application/json",
+      "sha256": "3053dedba6aa1c6b974b82b6c72c568919a4596ef1d3ea71f801edfdfde6cfbf"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/b58-ocap-reconcile.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/b58-ocap-reconcile.json",
+      "size": 12920,
+      "contentType": "application/json",
+      "sha256": "2be59d6adeb5224de64cb22aa9f0385208fec4a3f539a48e8eaabad6eeaa0ebe"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/head-nft-factory.mjs",
+      "size": 16540,
+      "contentType": "text/javascript",
+      "sha256": "baf8cd9a23c93859d13537a666cde82fb13f3b5e029bfbe041cb1deab744ae96"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/qa-bug032-equiv.mjs",
+      "size": 2365,
+      "contentType": "text/javascript",
+      "sha256": "870eb720b89cda748e153d3c8193705e0a6630be8da9333c74becee999c0627b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/qa-bug037-svg.mjs",
+      "size": 2178,
+      "contentType": "text/javascript",
+      "sha256": "01441787b40cc44c75562b30e246b86e48a8c8c63f418d980f98966f3b447d7c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/qa-bug057-probe.sh",
+      "size": 5140,
+      "contentType": "application/octet-stream",
+      "sha256": "f8a495f989911543dc91dd01ff575dbda3d9a7a0f49a7645526e5941c3cb143e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/qa-r22-cdp-focus.mjs",
+      "size": 5323,
+      "contentType": "text/javascript",
+      "sha256": "79ee649da7e545723f071ae63ea0b2741b17be4ea8a74806925c806065007e29"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/qa-r22-cdp.mjs",
+      "size": 10539,
+      "contentType": "text/javascript",
+      "sha256": "0c690617a059f4f4e2457f38fda6333cbf8da2658165ff4a654ec84b760f8907"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-22/validate-out.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -4819,6 +5065,12 @@
       "size": 37536,
       "contentType": "text/markdown",
       "sha256": "49d607ae54012924c72072586bbc96bff7eb5c3387392324ee5d3aa51c1935cc"
+    },
+    {
+      "path": "docs/team/test-reports/round-22.md",
+      "size": 21761,
+      "contentType": "text/markdown",
+      "sha256": "a448b2eab8217de08de0c47bdbfbb1b6aa1ef44391a7854fe08e3ca898250520"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -4924,9 +5176,9 @@
     },
     {
       "path": "scripts/arcblog-agent.mjs",
-      "size": 15185,
+      "size": 15308,
       "contentType": "text/javascript",
-      "sha256": "0b47ae29cb969cec8e39019e4e39f9acde612d6eb890ceb587a6795ca6a63e82"
+      "sha256": "e73ca30e112bbd20f0e56b61391aaf495902fdc14dd83b13b09286e867c49e45"
     },
     {
       "path": "scripts/arcblog-agent.test.mjs",
@@ -4936,9 +5188,9 @@
     },
     {
       "path": "scripts/arcblog-attribution.mjs",
-      "size": 6639,
+      "size": 6762,
       "contentType": "text/javascript",
-      "sha256": "c466e977a388fd8cdcf28e8aa8c9f288ba9343847df0952347120cfd844d8343"
+      "sha256": "105355f5f97ae782c5d81d0a39104b56f632fcb463e7b70e76c9d42f067d02d7"
     },
     {
       "path": "scripts/arcblog-attribution.test.mjs",
@@ -4948,9 +5200,9 @@
     },
     {
       "path": "scripts/arcblog-audit.mjs",
-      "size": 3375,
+      "size": 3089,
       "contentType": "text/javascript",
-      "sha256": "c562aaf0708ed2052da60082eb929c42d2de9863ff179cbd21e7fc5203f8a16b"
+      "sha256": "ba0f2a25b7887bffc773964aa3e1f694aa5032d856f95d27ec562824b88c2d32"
     },
     {
       "path": "scripts/arcblog-audit.test.mjs",
@@ -4960,15 +5212,15 @@
     },
     {
       "path": "scripts/arcblog-bookmarks.mjs",
-      "size": 6316,
+      "size": 6439,
       "contentType": "text/javascript",
-      "sha256": "5b856bb3bdf32b201c16c9c05df23826cbe22b7e96a5db9f1db3fc4cd8fa3f4d"
+      "sha256": "f2535931034fb3cc07d54440c6440dfbc7b0a6a28b90c8431cb2462039eb1179"
     },
     {
       "path": "scripts/arcblog-category.mjs",
-      "size": 24460,
+      "size": 24583,
       "contentType": "text/javascript",
-      "sha256": "71770228bee664ee7225f639ebfc7c9963249d720bb37f2ec8f0205267436588"
+      "sha256": "2b9603d25f8bb0a07c420587b008136726c12ceaab389bb55ff5e547ca32dfa6"
     },
     {
       "path": "scripts/arcblog-category.test.mjs",
@@ -4978,9 +5230,9 @@
     },
     {
       "path": "scripts/arcblog-chain-worker.mjs",
-      "size": 18508,
+      "size": 18580,
       "contentType": "text/javascript",
-      "sha256": "ad93cdef93c085ce7dba2f1d670e0efebc191695794445a80ad97381766a9934"
+      "sha256": "3d9c3f812dbe453210663fc49f356df39d35b122030b2f47a7adfdf17bcaacda"
     },
     {
       "path": "scripts/arcblog-chain-worker.test.mjs",
@@ -4990,9 +5242,9 @@
     },
     {
       "path": "scripts/arcblog-clean.mjs",
-      "size": 6273,
+      "size": 6396,
       "contentType": "text/javascript",
-      "sha256": "dafeb0d209161a94903bde5e11a7933ef4dcbb9f552d0ca272d06227fec6f855"
+      "sha256": "484abe54ae7df407ffc10d2cfb6988e82b34ee35a23c233647d9849b92a96d1a"
     },
     {
       "path": "scripts/arcblog-clean.test.mjs",
@@ -5002,9 +5254,9 @@
     },
     {
       "path": "scripts/arcblog-console-nav.mjs",
-      "size": 4963,
+      "size": 5071,
       "contentType": "text/javascript",
-      "sha256": "0a645569dedf89b90916bffa2ad4d18ed6a99a5c0cdc0e8aacbdd3cdddf2b093"
+      "sha256": "19a788088c04c0aecbd4fcdf81865d3fcbcc23b939304c32cb820c3e2e7466cb"
     },
     {
       "path": "scripts/arcblog-console-nav.test.mjs",
@@ -5026,9 +5278,9 @@
     },
     {
       "path": "scripts/arcblog-daily-report.mjs",
-      "size": 3837,
+      "size": 3500,
       "contentType": "text/javascript",
-      "sha256": "5a8b906e933abc292fc41fa2c75670ded5785582295cf8a63b92c3b044b1c164"
+      "sha256": "edc9f6e9f30aa2236a0611314d9c13b8fc20a2649086fa2a09499eeca212c850"
     },
     {
       "path": "scripts/arcblog-daily-report.test.mjs",
@@ -5038,9 +5290,9 @@
     },
     {
       "path": "scripts/arcblog-doctor.mjs",
-      "size": 8477,
+      "size": 8600,
       "contentType": "text/javascript",
-      "sha256": "0ef866a2ccebd7745105e0787c0a40e82565d481bf46933cebe7fadcb9a41a47"
+      "sha256": "b40512477acc48e3737fe443efcec4947442a18c0e05f6ef647370b55aa6bb66"
     },
     {
       "path": "scripts/arcblog-doctor.test.mjs",
@@ -5050,27 +5302,27 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 42773,
+      "size": 44063,
       "contentType": "text/javascript",
-      "sha256": "a4760373add78f504b69bc60bfb31abaf4e2992ba9d185d3b9c8e01fb5fa4deb"
+      "sha256": "181308d4d557a104c709930a510ba6ff76a4812991acc07a1491a25523f9afb3"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 40748,
+      "size": 46792,
       "contentType": "text/javascript",
-      "sha256": "15aa8284172232a6c94053c3b45412640d686143f884c6bfc4534333963f65ac"
+      "sha256": "68a843749b0797401c4e908239be9b23ff9ac5a6b531f7ebbce822acbcb869b3"
     },
     {
       "path": "scripts/arcblog-factory.mjs",
-      "size": 16941,
+      "size": 17635,
       "contentType": "text/javascript",
-      "sha256": "5edfcecdf77253e74a60c8c4a13442ac018048423753faed2d26590227b9239c"
+      "sha256": "f911583e0d14d8ba286d1f43e02d61dd349e758ed4246a3555bab14d42af09d3"
     },
     {
       "path": "scripts/arcblog-hero-carousel.mjs",
-      "size": 2482,
+      "size": 2590,
       "contentType": "text/javascript",
-      "sha256": "6104cdf4bdd7c0db33085f962b6b554fb9c9fef9199cc4b6f9e935d04aaaba84"
+      "sha256": "16cbde8ad567cf2893faf8f9841d831ee2413b57fae2058e206c365720f5eaa2"
     },
     {
       "path": "scripts/arcblog-hero-carousel.test.mjs",
@@ -5086,9 +5338,9 @@
     },
     {
       "path": "scripts/arcblog-lifecycle.mjs",
-      "size": 26150,
+      "size": 25864,
       "contentType": "text/javascript",
-      "sha256": "803df55bc8604245f2d16667751140471a06e3f7248125dfca8100c9bfaf0f05"
+      "sha256": "0e6a7ff2becfaa3b914a89d684b147824c6e534cbcfef2397fef2b9bd83231b2"
     },
     {
       "path": "scripts/arcblog-lifecycle.test.mjs",
@@ -5098,9 +5350,9 @@
     },
     {
       "path": "scripts/arcblog-media.mjs",
-      "size": 27910,
+      "size": 28033,
       "contentType": "text/javascript",
-      "sha256": "cdcb47a65b5de81a27ce1e9e7f0696373dd497320682240b816fd31212974795"
+      "sha256": "7219f788ae984111195ea3aad45dffe82ff1637f7c51f01aff074c4694840624"
     },
     {
       "path": "scripts/arcblog-media.test.mjs",
@@ -5110,9 +5362,9 @@
     },
     {
       "path": "scripts/arcblog-network.mjs",
-      "size": 36422,
+      "size": 37314,
       "contentType": "text/javascript",
-      "sha256": "9a4254d0c16ce0dc1b0e1d81ef8175bf8afde1df2bbd6549b56eeb8c3266a9d4"
+      "sha256": "0ac26393beccd0250f49600481126d66aa9cdc085d41db3a9f8d659bbcd16171"
     },
     {
       "path": "scripts/arcblog-network.test.mjs",
@@ -5122,9 +5374,9 @@
     },
     {
       "path": "scripts/arcblog-node-nft.mjs",
-      "size": 22638,
+      "size": 22761,
       "contentType": "text/javascript",
-      "sha256": "d8197b57cf3533a84ad20755fa2f0da2c6a37c64b86ead04b3dfaec040dbf833"
+      "sha256": "89580fa4d2e59bd52d1c0fa251fb2a6551931f8c8ea6e4f3a3e518eb933a0ade"
     },
     {
       "path": "scripts/arcblog-node-nft.test.mjs",
@@ -5134,9 +5386,9 @@
     },
     {
       "path": "scripts/arcblog-node.mjs",
-      "size": 9033,
+      "size": 9156,
       "contentType": "text/javascript",
-      "sha256": "492de5b7cdf293fce82eaaabc83df94fb292821fa8e08225e0687d4b65818e1c"
+      "sha256": "98754a6eba677c4495bdf88337b9af9064098419a59f023dffb63f1d4d484e8a"
     },
     {
       "path": "scripts/arcblog-node.test.mjs",
@@ -5146,9 +5398,9 @@
     },
     {
       "path": "scripts/arcblog-pages.mjs",
-      "size": 7942,
+      "size": 8065,
       "contentType": "text/javascript",
-      "sha256": "f9bc5c3768a51b65b8c561cdd3fcf5e11b29f13a81a0cd56e0d62c70c7b249a5"
+      "sha256": "65fca6e30cbdb7aa853b5f57756f5f688a71e471e65f03a9990d5f5224841de6"
     },
     {
       "path": "scripts/arcblog-pages.test.mjs",
@@ -5164,9 +5416,9 @@
     },
     {
       "path": "scripts/arcblog-query-posts.mjs",
-      "size": 6987,
+      "size": 6650,
       "contentType": "text/javascript",
-      "sha256": "6c636f6c2abd97bdedd6830d1634f1ca8a03a3d0f973a24b1549c1e72e6983eb"
+      "sha256": "a31ca72d9edd45c95716166628eea596817886cb52085067bd11b8a6b4ff8917"
     },
     {
       "path": "scripts/arcblog-query-posts.test.mjs",
@@ -5176,9 +5428,9 @@
     },
     {
       "path": "scripts/arcblog-roles.mjs",
-      "size": 9141,
+      "size": 9264,
       "contentType": "text/javascript",
-      "sha256": "6ae9471aa3e231508046f6ace5eb65cbe7402b29a98fcea05832f6c8f1e75e36"
+      "sha256": "b02a6f03db26bdbf29a9ebc90e6828c1f363e3be7d37e9a6f3efa4a6526ef9db"
     },
     {
       "path": "scripts/arcblog-roles.test.mjs",
@@ -5188,9 +5440,9 @@
     },
     {
       "path": "scripts/arcblog-rss.mjs",
-      "size": 8284,
+      "size": 7947,
       "contentType": "text/javascript",
-      "sha256": "e376afccdbf8db8aa6da2caac7b8e8a9dd274c66773defdc4c6123e3deca9c8e"
+      "sha256": "3264406d7ec6c667bc31c87ecba2e7cf054c71a0229d6690732c2b7ec08668db"
     },
     {
       "path": "scripts/arcblog-rss.test.mjs",
@@ -5206,9 +5458,9 @@
     },
     {
       "path": "scripts/arcblog-settings.mjs",
-      "size": 10321,
+      "size": 10444,
       "contentType": "text/javascript",
-      "sha256": "7460dda8ca9cda304623bfe130db17c73884f6abcab18daad95b220b5c70225d"
+      "sha256": "962d5d9430f2cc8f05b574003533f45bd2bae69d3eab1afc4f4ea8d5d908f240"
     },
     {
       "path": "scripts/arcblog-settings.test.mjs",
@@ -5218,9 +5470,9 @@
     },
     {
       "path": "scripts/arcblog-tags.mjs",
-      "size": 22868,
+      "size": 22991,
       "contentType": "text/javascript",
-      "sha256": "83dfb7850f2a813ebcd07d92825b4a80c3ef100aca58503cf618ea12fb53ceb7"
+      "sha256": "b77914ecd22bfed3efa342a03f4a3820b0703f815c5e55b1552d085d20af2307"
     },
     {
       "path": "scripts/arcblog-tags.test.mjs",
@@ -5236,9 +5488,9 @@
     },
     {
       "path": "scripts/arcblog-ui-budget.mjs",
-      "size": 12753,
+      "size": 12824,
       "contentType": "text/javascript",
-      "sha256": "b1d26338f0bc2abd1ff7c1270282c58467100a97cebca8e78420d3074e66222f"
+      "sha256": "10f155bbcfa5d03319a0a4d1f3d3b9922b374df7310b9cc64819c30831a0db13"
     },
     {
       "path": "scripts/arcblog-ui-budget.test.mjs",
@@ -5248,9 +5500,9 @@
     },
     {
       "path": "scripts/arcblog-verify.mjs",
-      "size": 7639,
+      "size": 7764,
       "contentType": "text/javascript",
-      "sha256": "43ec695cabebd6c82a4056d362dcd256bacabfd1537ce42a90fa7059dac5da17"
+      "sha256": "449372c0bd30e2ba961d098608f7ca14a9f9a54af86a566a7c4e45a57c45a3c7"
     },
     {
       "path": "scripts/console-nav.mjs",
@@ -5266,9 +5518,9 @@
     },
     {
       "path": "scripts/lib/arc.mjs",
-      "size": 13495,
+      "size": 15157,
       "contentType": "text/javascript",
-      "sha256": "6c16049db653c8b08416a0fba899174b23fc6b0b44da3161853ce39903d8ed44"
+      "sha256": "27db620d72ebd11db2ab182c0dbd749b3476ab674fea217f5aa078ed12c22281"
     },
     {
       "path": "scripts/lib/attribution.mjs",
@@ -5284,15 +5536,21 @@
     },
     {
       "path": "scripts/lib/chain-orders.mjs",
-      "size": 15559,
+      "size": 15849,
       "contentType": "text/javascript",
-      "sha256": "d1cd224ffe1abfd0d498652123994af27983fc2637054fd3f966a0544609788e"
+      "sha256": "35dfea97e793c27e23e2e9c3e1891307ef532fd5416b00edb8c6a355ad4e4f37"
     },
     {
       "path": "scripts/lib/chain.mjs",
       "size": 38322,
       "contentType": "text/javascript",
       "sha256": "5f327cd02d768a5d14b192e3617f7cda3a4a28c70d2d9ed4ec3b8c72dac5115e"
+    },
+    {
+      "path": "scripts/lib/cli-flags.mjs",
+      "size": 6971,
+      "contentType": "text/javascript",
+      "sha256": "c38d542abae5d1c257f8b0eb25b1add1381a5c62ddab7146cf78643c6b474544"
     },
     {
       "path": "scripts/lib/content-hash.mjs",
@@ -5356,9 +5614,9 @@
     },
     {
       "path": "scripts/lib/nft-factory.mjs",
-      "size": 16540,
+      "size": 17610,
       "contentType": "text/javascript",
-      "sha256": "baf8cd9a23c93859d13537a666cde82fb13f3b5e029bfbe041cb1deab744ae96"
+      "sha256": "73337457a1c78383cee32d42ca6f40b1ad6b1c4205d09baa294dd18a46db6cef"
     },
     {
       "path": "scripts/lib/node-attribution.mjs",
@@ -5400,7 +5658,7 @@
       "path": "scripts/ui-budget-baseline.json",
       "size": 2937,
       "contentType": "application/json",
-      "sha256": "2632a4fa7e66f8d95eb15c6a6dbb063e4ac6899e5c62ed494ab99df921e060aa"
+      "sha256": "feaeea3a53301854edac15fbfd97412295a3bc0718ef4770a0ce2b561556c7b9"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

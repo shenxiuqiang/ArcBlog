@@ -42,6 +42,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CONSOLE_SECTIONS } from './console-nav.mjs';
+import { parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASELINE_PATH = join(repoRoot, 'scripts', 'ui-budget-baseline.json');
@@ -271,10 +272,10 @@ function regressionsAgainstBaseline(report, baseline) {
 }
 
 function main() {
-  const args = process.argv.slice(2);
-  const json = args.includes('--json');
-  const strict = args.includes('--strict');
-  const writeBaseline = args.includes('--write-baseline');
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  const json = Boolean(args.json);
+  const strict = Boolean(args.strict);
+  const writeBaseline = Boolean(args['write-baseline']);
   const report = checkBudget(repoRoot);
 
   if (writeBaseline) {

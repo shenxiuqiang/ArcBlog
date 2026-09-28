@@ -36,6 +36,7 @@ import {
   remove,
   writeJson,
 } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { scanPosts, rewritePost, writePost } from './lib/content-scan.mjs';
 import { INTENT_STATUS, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import {
@@ -512,6 +513,7 @@ function commandWatch(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog categories (spec §12 /arcblog/content/categories)
 
 Usage:
@@ -556,7 +558,7 @@ fallback while the resource is empty.
 // (same guard as scripts/arcblog-tags.mjs and scripts/arcblog-chain-worker.mjs).
 if (process.argv[1] && process.argv[1].endsWith('arcblog-category.mjs')) {
   (function main() {
-    const args = parseArgs(process.argv.slice(2));
+    const args = parseCliArgs(process.argv.slice(2), import.meta.url);
     const [cmd] = args._;
     const instance = resolveInstance(args);
     try {

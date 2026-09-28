@@ -1,0 +1,151 @@
+
+### B32-7 economy --help
+$ node scripts/arcblog-economy.mjs --help
+[exit=0]
+Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+ArcBlog economy (spec §25–§92) — Phase 8 / MVP-3
+
+Usage:
+  node scripts/arcblog-economy.mjs policy init [--version v1] [--creator 0.80] [--hub 0.15]
+                                              [--protocol 0.05] [--payment-adapter none|manual] [--update]
+  node scripts/arcblog-economy.mjs policy show
+  node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> [--type article] \
+                                              --price-amount <n> [--price-asset USDC] [--content-id <id>] [--update]
+                                              # --type subscription --period-days 30 (spec §38, manual renewal)
+  node scripts/arcblog-economy.mjs product list | product show --id <id>
+  node scripts/arcblog-economy.mjs product remove --id <id>   # refused while orders reference it (spec §50)
+  node scripts/arcblog-economy.mjs order create --id <id> --product-id <id> [--buyer-did <did>] [--hub-did <did>]
+  node scripts/arcblog-economy.mjs order list
+  node scripts/arcblog-economy.mjs order show --id <id>
+  node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
+  node scripts/arcblog-economy.mjs order refund --id <id> [--reason <text>]
+  node scripts/arcblog-economy.mjs order verify [--id <orderId>|--order <orderId>] [--tx-hash <hash>] [--json]
+  node scripts/arcblog-economy.mjs order verify --tx-hash <hash> [--expect-amount <n>] [--expect-asset <asset>] \
+                                              [--expect-receiver <addr>] [--json]   # SYNTHETIC mismatch probe
+  node scripts/arcblog-economy.mjs settlement reconcile [--order <orderId>] [--all] [--limit <n>] [--json]
+  node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
+  node scripts/arcblog-economy.mjs settle --order <id>
+  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--type <t>] [--limit <n>|--all]
+                                              # --type <t>: creator_share|hub_share|protocol_fee|refund (spec §91)
+  node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
+  node scripts/arcblog-economy.mjs access read --content <id> --reader <did>   # paid full text (spec §86)
+  node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]
+
+Resources live under /instance/app/arcblog/economy. Payment and settlement are separate phases
+(spec §89); the ledger is append-only (spec §92) and the split always sums back
+to the order amount exactly. Paying a purchase of content also writes an Access
+Grant (spec §37/§88); a tip never does (spec §36).
+
+Read-only reconciliation (REQ-021 stage-2 P1, spec §44/§89–§92): `order verify`
+and `settlement reconcile` classify every target into exactly four states —
+verified | mismatch | not-on-chain | no-hash — from the record's
+transactionHash, using getTx alone and judging existence by `info != null`
+(an unknown hash answers code "OK" with info null). They NEVER write a record and
+NEVER send a transaction: the client is wrapped in the READ_ONLY_METHODS
+whitelist (scripts/lib/chain-orders.mjs) and a `send*` call is refused with
+READ_ONLY_GUARD. `mismatch` only marks the difference — it never rewrites the
+chain fact or the order amount. Under --adapter mock / manual (or a record that
+declares a simulated adapter) nothing is queried and every result reads
+"未上链 / 待验证" — a simulation is never reported as verified. Use
+`--adapter ocap` plus ARCBLOG_CHAIN_ENV=beta|main (or --chain-host) for real
+read-only queries; no mnemonic is needed or read. Exit codes: 0 = a report was
+produced (including 0 records or mismatch rows), 1 = the command could not run
+(VALIDATION / CHAIN_UNAVAILABLE / NOT_FOUND).
+
+### B32-4a ledger list --nope
+$ node scripts/arcblog-economy.mjs ledger list --nope
+[exit=1]
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown flag: --nope — Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1)."
+}
+
+### B32-4b media list --nope
+$ node scripts/arcblog-media.mjs list --nope
+[exit=1]
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown flag: --nope — Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1)."
+}
+
+### B32-4c network hub list --nope
+$ node scripts/arcblog-network.mjs hub list --nope
+[exit=1]
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown flag: --nope — Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1)."
+}
+
+### B32-3a ledger list --type=payment (illegal equals)
+$ node scripts/arcblog-economy.mjs ledger list --type=payment
+[exit=1]
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown ledger type: payment (use creator_share|hub_share|protocol_fee|refund)"
+}
+
+### B32-3b ledger list --type payment (illegal space)
+$ node scripts/arcblog-economy.mjs ledger list --type payment
+[exit=1]
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown ledger type: payment (use creator_share|hub_share|protocol_fee|refund)"
+}
+
+### B32-4d economy --help exit
+$ node scripts/arcblog-economy.mjs --help
+[exit=0]
+Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).
+ArcBlog economy (spec §25–§92) — Phase 8 / MVP-3
+
+Usage:
+  node scripts/arcblog-economy.mjs policy init [--version v1] [--creator 0.80] [--hub 0.15]
+                                              [--protocol 0.05] [--payment-adapter none|manual] [--update]
+  node scripts/arcblog-economy.mjs policy show
+  node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> [--type article] \
+                                              --price-amount <n> [--price-asset USDC] [--content-id <id>] [--update]
+                                              # --type subscription --period-days 30 (spec §38, manual renewal)
+  node scripts/arcblog-economy.mjs product list | product show --id <id>
+  node scripts/arcblog-economy.mjs product remove --id <id>   # refused while orders reference it (spec §50)
+  node scripts/arcblog-economy.mjs order create --id <id> --product-id <id> [--buyer-did <did>] [--hub-did <did>]
+  node scripts/arcblog-economy.mjs order list
+  node scripts/arcblog-economy.mjs order show --id <id>
+  node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
+  node scripts/arcblog-economy.mjs order refund --id <id> [--reason <text>]
+  node scripts/arcblog-economy.mjs order verify [--id <orderId>|--order <orderId>] [--tx-hash <hash>] [--json]
+  node scripts/arcblog-economy.mjs order verify --tx-hash <hash> [--expect-amount <n>] [--expect-asset <asset>] \
+                                              [--expect-receiver <addr>] [--json]   # SYNTHETIC mismatch probe
+  node scripts/arcblog-economy.mjs settlement reconcile [--order <orderId>] [--all] [--limit <n>] [--json]
+  node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
+  node scripts/arcblog-economy.mjs settle --order <id>
+  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--type <t>] [--limit <n>|--all]
+                                              # --type <t>: creator_share|hub_share|protocol_fee|refund (spec §91)
+  node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
+  node scripts/arcblog-economy.mjs access read --content <id> --reader <did>   # paid full text (spec §86)
+  node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]
+
+Resources live under /instance/app/arcblog/economy. Payment and settlement are separate phases
+(spec §89); the ledger is append-only (spec §92) and the split always sums back
+to the order amount exactly. Paying a purchase of content also writes an Access
+Grant (spec §37/§88); a tip never does (spec §36).
+
+Read-only reconciliation (REQ-021 stage-2 P1, spec §44/§89–§92): `order verify`
+and `settlement reconcile` classify every target into exactly four states —
+verified | mismatch | not-on-chain | no-hash — from the record's
+transactionHash, using getTx alone and judging existence by `info != null`
+(an unknown hash answers code "OK" with info null). They NEVER write a record and
+NEVER send a transaction: the client is wrapped in the READ_ONLY_METHODS
+whitelist (scripts/lib/chain-orders.mjs) and a `send*` call is refused with
+READ_ONLY_GUARD. `mismatch` only marks the difference — it never rewrites the
+chain fact or the order amount. Under --adapter mock / manual (or a record that
+declares a simulated adapter) nothing is queried and every result reads
+"未上链 / 待验证" — a simulation is never reported as verified. Use
+`--adapter ocap` plus ARCBLOG_CHAIN_ENV=beta|main (or --chain-host) for real
+read-only queries; no mnemonic is needed or read. Exit codes: 0 = a report was
+produced (including 0 records or mismatch rows), 1 = the command could not run
+(VALIDATION / CHAIN_UNAVAILABLE / NOT_FOUND).

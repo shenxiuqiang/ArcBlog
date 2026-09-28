@@ -29,6 +29,7 @@
 // working after a CLI edit.
 
 import { fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   GENERAL_DIR,
   GENERAL_FIELDS,
@@ -197,6 +198,7 @@ function generalSet(opts, instance) {
 
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog settings (spec §15.5 appearance, §15.9 general)
 
 Usage:
@@ -237,7 +239,7 @@ Options:
 
 const argv = process.argv.slice(2);
 const command = argv[0];
-const opts = parseArgs(argv.slice(1));
+const opts = parseCliArgs(argv.slice(1), import.meta.url);
 
 try {
   if (!command || command === 'help' || command === '--help' || command === '-h') {

@@ -61,3 +61,35 @@ REQ-024 §2.1.6：NFT SVG 卡保留「图示能力」——即链上渲染的 SV
 ## 备注（与 REQ-024 A2 的关系）
 
 QA 据此判定 REQ-024 §3.3 A2 的「默认视图不出现 PK / PEM」= **通过**，但通过原因是**平台占位符**，而不是字段收敛策略；`key-value-list` 层面的收敛（advanced 折叠）本身也通过（见 round-15 报告 §4.2 三态表）。
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；静态 in-process + admin 单 tab 运行期）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/10-bug037.txt`、`13-cdp.json`、`14-cdp-focus.json`。探针：`raw/round-22/qa-bug037-svg.mjs`、`qa-r22-cdp.mjs`。
+
+**结论：核心裁定「不得伪造链上事实」已满足（P3 关闭）；但本 bug 的「平台边界」结论被实测证伪 → 另立 [BUG-061](BUG-061-media-data-uri-platform-claim-falsified.md)（P3）。**
+
+```text
+# 静态（in-process，HEAD 版本 vs 当前版本逐字节对比）
+defaultSVG_identical: {studio:true, hub:true}         # REQ-023 A5「默认模板逐字节不变」成立
+defaultFactory_identical: {studio:true}
+simulatedBanner: {hasChineseBanner:true, hasNotOnChain:true,
+                  ariaLabelFlagged:true, differsFromDefault:true}
+evidenceFields: pk / stake / endpoint / owner 在 simulated 与默认模板中都保留（{{data.pk}} 等原样）
+factorySimulatedSVG.containsBanner: true
+$ node scripts/arcblog-factory.mjs svg --role studio | grep -o '未上链 / NOT ON CHAIN — SIMULATED'  → 命中
+$ node scripts/arcblog-factory.mjs spec --role studio | grep -c 'NOT ON CHAIN'                       → 0（未标记模板保持）
+
+# 运行期（?page=factory，en/zh，1803）
+[data-aup-id="factory-nft-svg"] → <div class="aup-media" …><img src="data:image/svg+xml;base64,PHN2…"></div>
+img.naturalWidth=480 / naturalHeight=300 / complete=true / alt="NFT card"
+页面文本 simulated 命中：["simulated","simulated","simulated","SIMULATED"]（承载 = 既有 truth 卡 simulatedLabel
+「SIMULATED — mock adapter, never chain truth」）；页面文本中 "NOT ON CHAIN" = 0
+```
+
+- B37-1 占位显式表达「未上链 / simulated」：**部分通过** —— 页面上确有明确的 SIMULATED/mock 语义（`factory-truth-nodes` 的 `simulatedLabel`，en+zh），但那是**既有**（BUG-043/046 口径）承载；**本轮新增的 SVG 横幅在运行期页面里看不到**（live projection 的 `nodes.hub.svg` 是改动前生成的，且卡上渲染的是 `nodes.studio.svg` = ocap 真链卡）。横幅本身已由 in-process 对比证明存在且默认模板零变化。
+- B37-2 不伪造链上事实：**通过** —— 全页无「已上链 / chain-verified / verified」指向该 SVG 的断言；mock 节点仍有 `simulatedLabel`。
+- B37-3 证据性字段零删除：**通过** —— 默认模板与 HEAD 逐字节相同，`simulated` 只**追加**横幅与 aria-label；`pk`/`stake`/`endpoint`/`owner` 字段保留。
+- B37-4 平台边界登记：**不通过（结论被证伪）** —— 实测 `media` **会**渲染 `data:image/svg+xml;base64`（见 [BUG-061](BUG-061-media-data-uri-platform-claim-falsified.md)）。**不得**把「media 不接受 data URI」写进 `arc-contracts.md`。
+- **受限未验证**：`factory create --adapter mock` 的运行期路径未跑（会覆写 live `config/nft-factories.json`），故「mock 卡在控制台上真的显示横幅」只有 in-process + `svg` 样例两条等价证据。

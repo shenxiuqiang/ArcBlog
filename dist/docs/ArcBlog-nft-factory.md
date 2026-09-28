@@ -23,7 +23,7 @@
 | `name` | ArcBlog Studio Node | ArcBlog Hub Node | GLofter Studio/Hub Node |
 | `moniker` / `output.tags` | `ArcBlogStudioNode` | `ArcBlogHubNode` | `GLofterStudioNode` / `GLofterHubNode` |
 | `settlement` / `limit` | `instant` / `0` | 同 | 同 |
-| `input.tokens` | 1 ABT（`fromTokenToUnit(1, 18)`） | 同 | 同 |
+| `input.tokens` | 1 个所选链的原生代币（`fromTokenToUnit(1, 18)`） | 同 | 同 |
 | `input.variables` | `endpoint*` `region*` `name*` `stake*` `pk*` + `description` `roles` `capabilities` `protocolVersion` `nodeVersion` | `endpoint*` `region*` `pk*` `stake*` + `name` `description` `capacity` | 同结构（GLofter studio 另有 `city/specialties/priceDisplay`，ArcBlog 无此业务字段） |
 | `output.data.value.owner` | `{{ctx.owner}}`（节点 DID） | 同 | 同 |
 | `output.data.value.pk` | `{{input.pk}}`（节点公钥） | 同 | 同 |
@@ -33,7 +33,7 @@
 | `output.readonly` / `transferrable` | `false` / `true` | 同 | 同 |
 | `hooks[0]` | `{type: contract, name: mint, hook: transferToken('<token>','<issuer>','<value>')}` | 同 | 同 |
 
-**容量公式（与 GLofter 共享）**：`capacity = min(ceil(1442.695 × ln(stake + 1)), 10000)`（1 ABT ≈ 1000 studios，上限 10000），实现见 `capacityForStake`。
+**容量公式（与 GLofter 共享）**：`capacity = min(ceil(1442.695 × ln(stake + 1)), 10000)`（1 个代币 ≈ 1000 studios，上限 10000），实现见 `capacityForStake`。
 
 **设计取舍**：hub 的价格档与规章是**工厂条款**（创建时确定，链上恒定），不随每次 mint 变化；容量随质押量变化，因此作为 mint 输入。这与 GLofter 的 `defaultPricing` / `defaultRules` / `calculateCapacity` 用法一致。
 
@@ -61,9 +61,21 @@ openChain(opts, instance, {now}) → adapter
 ```
 
 * **mock 的时钟可控**：`--now <iso>` 推进模拟时钟（仅 mock），用于验证等待期；真实适配器下传 `--now` 会直接报 `VALIDATION`。
-* **mock 的余额**：每个钱包初始 100 ABT（最小单位），mint 扣除 1 ABT，余额不足报 `INSUFFICIENT_BALANCE`（并说明差额）。
+* **mock 的余额**：每个钱包初始 100 个代币（最小单位），mint 扣除 1 个代币，余额不足报 `INSUFFICIENT_BALANCE`（并说明差额）。mock 账本里的符号只用于本地演练，与任何真实链无关。
 * **可隔离**：`ARCBLOG_MOCK_STATE_PATH` 指向别的账本文件，测试与并行开发互不干扰；`arcblog-factory.mjs reset` 清空账本与工厂登记。
-* **真实链前置条件**（未满足即 `CHAIN_UNAVAILABLE`）：`@ocap/client`、`@ocap/wallet`、`@arcblock/did-ext`、`bip39`，以及 `ARCBLOG_CHAIN_HOST`、`ARCBLOG_CHAIN_TOKEN_ID`、`ARCBLOG_CHAIN_MNEMONIC`（工厂主钱包助记词）。
+* **真实链前置条件**（两级，都**不写任何东西**）：
+  1. **三件套 = `network` + `chainHost` + `tokenId`**（`REAL_CHAIN_REQUIRED`，`scripts/lib/chain.mjs`）。取值优先级：CLI flag ＞ 显式 `ARCBLOG_CHAIN_{NETWORK,HOST,TOKEN_ID}` ＞ `config/roles.json`（仅 `network`）＞ `ARCBLOG_CHAIN_ENV=beta|main` 预设。**缺任一项 → exit 1 且 `code: VALIDATION`**，错误里逐项列出缺什么（`--chain-id` / `--token-decimals` **不是**三件套成员）。
+  2. **依赖 + 钱包**：`@ocap/client`、`@ocap/wallet`、`@arcblock/did-ext`、`bip39` 与工厂主钱包助记词 `ARCBLOG_CHAIN_MNEMONIC`（或 `.env.local`）——三件套齐了但这一级缺，才是 **`CHAIN_UNAVAILABLE`**。
+  > 实测（2026-09-28）：`node scripts/arcblog-factory.mjs create --role studio --adapter ocap --chain-id 1` → `{"ok":false,"code":"VALIDATION","error":"--adapter ocap needs the chain triple (network/chainHost/tokenId): network is missing; chainHost is missing; tokenId is missing. …"}`，exit 1、零写入。**不是** `CHAIN_UNAVAILABLE`（BUG-038 D1/D2）。
+
+### 4.1 链环境口径：由**环境**决定，代码里只有预设、没有硬编码
+
+| 规则 | 事实 |
+| --- | --- |
+| 切链 = 改环境 | `ARCBLOG_CHAIN_ENV=beta|main` 只填**默认值**；显式 `ARCBLOG_CHAIN_HOST|NETWORK|CHAIN_ID|TOKEN_ID|TOKEN_DECIMALS` 与 CLI flag 逐项覆盖（`CHAIN_PRESETS`，`scripts/lib/chain.mjs`）。代码里没有第二个链地址常量。 |
+| 代币符号只是**示例** | **beta 链原生代币是 TBA**、**main 链才是 ABT**（[Understanding Tokens](https://www.arcblock.io/en/docs/blockchain/understanding-tokens/)，地址与 `CHAIN_PRESETS.tokenId` 逐字一致）。本文档中出现的 `TBA` / `ABT` 只作示例，不作为默认值。 |
+| 不一致即 fail closed | `config/roles.json` 的 `network` 与所选预设冲突 → `VALIDATION`，绝不混用两个环境。 |
+| 页面/DSL 零链事实 | `.aup/**` 与 `dist/.aup/**` 不含链地址、代币符号或助记词（命中 0）；控制台只读公开投影 `node/factories.json`。 |
 
 ## 5. 诚实说明：本仓库验证到什么程度
 
@@ -98,18 +110,23 @@ node scripts/arcblog-node-nft.mjs claim  --role studio --adapter mock \
 
 # 3) 真实链（需先安装依赖并配置环境）
 npm i @ocap/client @ocap/wallet @arcblock/did-ext bip39
-export ARCBLOG_CHAIN_HOST=https://chain.example.com
-export ARCBLOG_CHAIN_TOKEN_ID=0x...ABT
+# 三件套 network + chainHost + tokenId 必须齐（缺任一 → VALIDATION，见 §4.1）。
+# 一步给全 = 选预设；切链只改这一行（beta 链代币为 TBA、main 链为 ABT，都只是示例）：
+export ARCBLOG_CHAIN_ENV=beta
+# 也可以逐项显式覆盖（优先级：flag ＞ 显式 env ＞ config/roles.json ＞ 预设）：
+#   export ARCBLOG_CHAIN_NETWORK=beta
+#   export ARCBLOG_CHAIN_HOST=https://beta.abtnetwork.io/api/
+#   export ARCBLOG_CHAIN_TOKEN_ID=z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG
 export ARCBLOG_CHAIN_MNEMONIC='factory owner mnemonic'
-node scripts/arcblog-factory.mjs create --role studio --adapter ocap --chain-id 1
-node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0x... --pk <pem>
+node scripts/arcblog-factory.mjs create --role studio --adapter ocap    # --chain-id 不是三件套成员
+node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner <wallet address> --pk <pem>
 ```
 
 `node/identity.json` 与 §67 内容签名共用同一把公钥：`acquire --pk` 省略时会自动取 `config/signing-keys/` 里登记的节点公钥（`publish --sign-key` 时写入），保证链上身份与内容签名是同一个 key。
 
 ## 7. 真实链实测（ABT Network beta，2026-09-27）
 
-链：`https://beta.abtnetwork.io/api/`（`CHAIN_ID=beta`，ABT 资产地址 `z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG`），
+链：`https://beta.abtnetwork.io/api/`（`CHAIN_ID=beta`，beta 链原生代币 **TBA**——**不是 ABT**，ABT 是 main 链的原生代币；资产地址 `z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG`，见 §4.1），
 工厂主钱包按 GLofter 的 `WalletUtil`（`fromAppDid('', 0x+seed, 'arcblock', 0)`）从助记词派生：
 `z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a`。依懒通过 `npm i @ocap/client @ocap/wallet @arcblock/did-ext bip39`
 装入本仓库（`package.json` 因此首次有了 dependencies；`.env.local` 存 `ARCBLOG_CHAIN_*`，已 gitignore）。
@@ -120,7 +137,7 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 | Hub 工厂 | `z3CtHrCfeZZQ8jah7rv9tuXsciDyKPzw2xjC8`（tx `73E7976991CF5BFB…`，`ArcBlogHubNode`） |
 | 真实 acquire | tx `A809E20E…`（`acquire_asset_v2`）铸出 NFT `zjduiTqCMRFtDtapZru4Yxyg88RuHBmP3WrW` |
 | 真实 stake | 资产进入质押地址 `zrjkV7pGytzgKst8SoYEtfZ6hHXzVoyPQue5`（`getStakeState` 可查，sender=工厂主钱包，receiver=工厂） |
-| 余额 | 工厂主钱包 ABT 余额为 **0**，工厂创建与 acquire 仍然成功——**建厂/铸造本身不需要资金**（只有工厂声明的 token 输入需要，实测未阻断） |
+| 余额 | 工厂主钱包的 beta 链代币（TBA）余额为 **0**，工厂创建与 acquire 仍然成功——**建厂/铸造本身不需要资金**（只有工厂声明的 token 输入需要，实测未阻断） |
 | revoke / claim | ❌ 仍阻塞：`Invalid itx: "address" Expected DID type info to match specified constraints`（见下方"未解"） |
 
 ### 7.1 真实链暴露并修掉的 4 个缺陷（都是"只写未跑"的代码）
@@ -151,7 +168,7 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 | revoke（撤回） | tx `FC0DEED1CA288C9A2EA223E1D9E2D9416B8A4D8960981E18450300BC9B126FA9` → lifecycle `revoking` |
 | claim（取回） | tx `2C57DD3244E58BFA50EDF0C9EDF640FA56CCF175D0CB9910057DDBD8F8731E3C` → **NFT 回到钱包**（`getAssetState.owner == 工厂主钱包`），stake `assets: []` |
 
-（等待期在 `client.stake` 路径下为 0，因此 revoke 后可立即 claim；工厂主钱包 ABT 余额始终为 0，四步都不需要资金。）
+（等待期在 `client.stake` 路径下为 0，因此 revoke 后可立即 claim；工厂主钱包的 beta 链代币（TBA）余额始终为 0，四步都不需要资金。）
 
 ### 7.3 控制台页面
 
@@ -162,7 +179,7 @@ node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap --owner 0
 `factory create` / `acquire` / `stake` / `revoke` / `claim` 后自动写入：只含地址、tx 哈希与生命周期，
 **不含任何密钥材料**。权威记录仍在 `config/nft-factories.json` 与 `config/node-nft.json`（admin-only，
 guest 按 §13 fail closed）。
-因此任何已登录会话都能在后台看到：链（adapter/network/host/ABT）、两个工厂（地址/标识/发行方/质押额/容量）、
+因此任何已登录会话都能在后台看到：链（adapter/network/host/代币地址）、两个工厂（地址/标识/发行方/质押额/容量）、
 节点 NFT（state/asset/stake/owner）以及**四步链上交易哈希 + explorer 链接**（浏览器实测，§7.2.1 的 tx 全部呈现）。
 
 ### 7.4 事故与加固：`--pk` 曾把**私钥**写进 AFS
@@ -197,7 +214,7 @@ ArcBlog 没有自定义 HTTP API 面（AUP 拥有 `/`，Web Device 是预渲染�
 | --- | --- | --- |
 | NFT 卡片 | **链上渲染好的 SVG**（`media` 显示 base64 data URI，实测 480×300）、moniker、生命周期、资产/质押地址、端点/区域、可取回时间 | `StudioNodeSvgDisplay` + `NodeInfoDisplay` |
 | 交易 | 铸造 / 质押 / 撤回 / 取回四个 tx 哈希，可复制并带 explorer 按钮 | `StudioNodeAddressInfo` |
-| 工厂卡片 | 链（adapter/network/host/ABT）+ studio/hub 工厂（地址/标识/发行方/质押额/容量） | `FactoryInfo` |
+| 工厂卡片 | 链（adapter/network/host/代币地址——页面只显示地址，不写代币符号）+ studio/hub 工厂（地址/标识/发行方/质押额/容量） | `FactoryInfo` |
 | 操作 | **购买 / 铸造、质押、撤回、取回** 四个按钮 + 平台内置 `confirm` 确认弹窗 + 成功 toast | `StudioNodeStakeActions` + `AcquireConfirmDialog` |
 | 队列 | 意图状态（pending/running/done/failed）、结果 tx、失败原因；可清除（不影响链上交易） | 无（ArcBlog 特有的异步面） |
 

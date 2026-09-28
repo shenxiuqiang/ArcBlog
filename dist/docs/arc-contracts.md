@@ -1922,3 +1922,33 @@ Studio 的 registration 记录**只有 `sync.*` 与 `updatedAt` 变化**（其�
 
 **(5) 记账卫生（本轮踩到）**：持 `docs/team/.gate-lock` 期间跑 `arc blocklet build` 会把临时锁文件镜像到
 `dist/docs/team/.gate-lock`。**提交前必须删掉该镜像**，否则会把"正在跑测试"的临时状态带进仓库。
+
+---
+
+## 37. CLI flag 契约（D32）与两条**被证伪/不可复现**的平台候选（Round 22 收口轮）
+
+**(1) CLI flag 契约（全仓统一，D32）**：`--k v` 与 `--k=v` **完全等价**；
+**未知 flag 一律 fail-closed**（`{ok:false, code:'VALIDATION'}` + `exit 1`，并打印允许值集合）；
+`--help` 输出统一语法说明。实现 = `scripts/lib/cli-flags.mjs` 中央注册表（+ 漂移守卫测试），
+26 个 CLI 全部改走 `parseCliArgs`，此前散落的 4 份本地 `parseArgs` 副本已删除。
+既有语义（`--order/--limit/--all` 等）逐字节未变（无 flag 的输出 == `--limit 20`）。
+**已知缺口**：`chain-worker` 无 help 面；`rss` / `query-posts` / `daily-report` 的 `--help` 不生效（BUG-060）。
+
+**(2) `media` **会**渲染 `data:` URI —— 不要照抄"平台不接受"的旧说法（BUG-061，已证伪）**。
+实测 `?page=factory` 的 `[data-aup-id=factory-nft-svg]` 内 `<img>` 渲染
+`src="data:image/svg+xml;base64,…"`，且 `naturalWidth=480 / naturalHeight=300 / complete=true`。
+所以"换成 `data:` URI 就只剩 placeholder"的说法**不成立**；那个 placeholder 更可能来自**空 `src`**
+（冷载阶段投影为空 —— 与 §21.11 同族，属**推断**而非已证事实）。**任何文档/结论都不得写成"平台不支持 data: URI"。**
+
+**(3) "propBind 冷载必然为空"**不可无条件断言（BUG-062，页面级不可复现）**。
+Dev 在 scratch 页测得五通道（text 模板 / 单值 prop / 数组字面量 / 嵌套 propBind / media src+visible）
+在冷载 9.6s 内全空且不自恢复；但 QA 用**新 target 直载 4.4s** 得到 factory 18 行、operations 5 行**全为真值**
+且 `cold == reload`。⇒ 该现象**依赖前置条件**（推测与 daemon 重启后首个 `/instance` 读有关，本轮未测），
+**只能写成"偶发首载时序"并附复现条件，不能写成"平台无法保证首屏有值"**。
+ArcBlog 侧的处理保持 BUG-036 的收口：页面加**常驻说明**把「—」读作「尚未绑定 / 暂不可用」，不与数据状态矛盾。
+
+**(4) `afs-list` 行内元素塌成 0 宽的官方解法再次验证（§29.8 的补充证据）**：
+`itemStyle=row` 给行子元素 `flex: 1 1 0%`，页内只写 `flexGrow: 0` 会让元素**宽度归零**（实测
+`cw=0 / sw=31`，并压住相邻按钮 20.92×16）；加 **`flexBasis: "auto"`** 后恢复
+（`cw=31 / sw=31 / over=0`，与相邻控件 bounding box 零相交）。同理，把行内 action **移出该行**到内容列下方
+是消除长哈希/多控件溢出的可靠结构改法（关系行四组视口由 over 179/118/55 降到 0）。

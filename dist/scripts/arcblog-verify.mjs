@@ -18,6 +18,7 @@
 import { readFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, resolveInstance } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { contentHashFor } from './lib/content-hash.mjs';
 import { getSigningKey, signingKeyPath, validateContentSignature, verifyPostContent } from './lib/content-sign.mjs';
 import { list as arcList, readJson, remove } from './lib/arc.mjs';
@@ -150,9 +151,10 @@ function commandKeys(opts) {
 function main() {
   const argv = process.argv.slice(2);
   const command = argv[0];
-  const opts = parseArgs(argv.slice(1));
+  const opts = parseCliArgs(argv.slice(1), import.meta.url);
 
   if (!command || command === 'help' || command === '--help' || command === '-h') {
+    console.log(FLAG_SYNTAX_NOTE);
     console.log(`ArcBlog provenance verification (spec §65–§67)
 
 Usage:

@@ -1,0 +1,61 @@
+### dist lock mirror check
+ls: dist/docs/team/.gate-lock: No such file or directory
+ls: docs/team/.gate-lock: No such file or directory
+
+### dist changed/untracked list
+ M dist/.afs/manifest.json
+ M dist/.aup/locales/en.json
+ M dist/.aup/locales/zh.json
+ M dist/.aup/pages/admin/pages.aup
+ M dist/.aup/pages/ops/factory.aup
+ M dist/.aup/pages/ops/hub.aup
+ M dist/.aup/pages/ops/operations.aup
+ M dist/docs/ArcBlog-nft-factory.md
+ M dist/docs/team/backlog.md
+ M dist/docs/team/journal/README.md
+ M dist/scripts/arcblog-agent.mjs
+ M dist/scripts/arcblog-attribution.mjs
+ M dist/scripts/arcblog-audit.mjs
+ M dist/scripts/arcblog-bookmarks.mjs
+ M dist/scripts/arcblog-category.mjs
+ M dist/scripts/arcblog-chain-worker.mjs
+ M dist/scripts/arcblog-clean.mjs
+ M dist/scripts/arcblog-console-nav.mjs
+ M dist/scripts/arcblog-daily-report.mjs
+ M dist/scripts/arcblog-doctor.mjs
+ M dist/scripts/arcblog-economy.mjs
+ M dist/scripts/arcblog-economy.test.mjs
+ M dist/scripts/arcblog-factory.mjs
+ M dist/scripts/arcblog-hero-carousel.mjs
+ M dist/scripts/arcblog-lifecycle.mjs
+ M dist/scripts/arcblog-media.mjs
+ M dist/scripts/arcblog-network.mjs
+ M dist/scripts/arcblog-node-nft.mjs
+ M dist/scripts/arcblog-node.mjs
+ M dist/scripts/arcblog-pages.mjs
+ M dist/scripts/arcblog-query-posts.mjs
+ M dist/scripts/arcblog-roles.mjs
+ M dist/scripts/arcblog-rss.mjs
+ M dist/scripts/arcblog-settings.mjs
+ M dist/scripts/arcblog-tags.mjs
+ M dist/scripts/arcblog-ui-budget.mjs
+ M dist/scripts/arcblog-verify.mjs
+ M dist/scripts/lib/arc.mjs
+ M dist/scripts/lib/chain-orders.mjs
+ M dist/scripts/lib/nft-factory.mjs
+ M dist/scripts/ui-budget-baseline.json
+?? dist/docs/dsh-workflow-and-ralph.md
+?? dist/docs/team/journal/round-22.md
+?? dist/docs/team/requirements/REQ-029-round22-defect-closure.md
+?? dist/docs/team/test-reports/raw/round-22/
+?? dist/scripts/lib/cli-flags.mjs
+
+### which dist file got the +174 lines? (diff stat sorted)
+ dist/.afs/manifest.json                | 356 +++++++++++++++++++++++++--------
+ dist/docs/team/backlog.md              | 171 ++++++++++++++++
+ dist/scripts/arcblog-economy.test.mjs  | 131 ++++++++++++
+ dist/scripts/lib/arc.mjs               |  45 ++++-
+ dist/docs/ArcBlog-nft-factory.md       |  43 ++--
+ dist/scripts/arcblog-economy.mjs       |  42 +++-
+ dist/scripts/lib/nft-factory.mjs       |  24 ++-
+ dist/scripts/arcblog-network.mjs       |  24 ++-

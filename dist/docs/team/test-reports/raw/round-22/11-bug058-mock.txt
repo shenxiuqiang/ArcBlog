@@ -1,0 +1,20 @@
+### B58-1a settlement reconcile (mock, default) --json
+exit=0
+{
+ "ok": true,
+ "captured": false,
+ "equal": null,
+ "compared": false,
+ "before": null,
+ "after": null,
+ "note": "不适用 + 原因: the chain was not queried (simulated adapter) — no balance / nonce was read, and no write path exists — equal: null, compared: false (nothing was read, so nothing was compared)",
+ "changedRecords": 0,
+ "methods": {
+  "methods": [],
+  "violations": [],
+  "writePath": "none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)"
+ }
+}
+
+### B58-1b order verify --id (needs an order id) --json
+order ids: ["econ-test-fc-order-1790621430746","econ-test-fc-order-1790621977307","econ-test-fc-order-1790622723993"]

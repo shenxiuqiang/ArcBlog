@@ -24,6 +24,7 @@
 // not by a `replicated` collection (REQ-028 A probe).
 
 import { fail, list, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 /** Base58btc DID (no 0 O I l) — `did:key:z…` bodies are `z…`. */
 const DID_RE = /^z[1-9A-HJ-NP-Za-km-z]{20,}$/;
@@ -125,6 +126,7 @@ function commandWhere(opts) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog reading list (REQ-028 pilot) — the CLI half of ?page=saved
 
 Usage:
@@ -143,7 +145,7 @@ declared for the user scope: the session authorizes it (REQ-028).
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {

@@ -68,3 +68,34 @@ TOTAL_ZERO=2        # 全 21 控制台页中唯一一处零宽塌陷
 ## 建议修法（由 Dev 裁定，QA 不改源码）
 
 把 `flexGrow: 0` 换成 `flexBasis: auto`（保留 `flexGrow: 0` 或一并保留），或给该链接加 `minWidth`；两种写法都在 67 键 style 白名单内（见 BUG-035 的平台证据）。
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；admin 单 tab，CDP 新 target + `Page.navigate`）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/13-cdp.json`、`16-pages-navigation.txt`、`17-static-and-cleanup.txt`。探针：`raw/round-22/qa-r22-cdp.mjs`。
+
+**结论：已修复（P2 关闭）**。
+
+```text
+$ grep -n "flexGrow\|flexBasis\|minWidth" .aup/pages/admin/pages.aup
+173:  … style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0, flexBasis: auto} {
+
+# 运行期（?page=pages，1 行；四组视口）—— w/h 为 bounding box，cw/sw 为 client/scroll
+en_1803x908  View  w=30.92 h=19.19  cw=31 sw=31 over=0  flexBasis="auto" flexGrow="0"  hitCount=0  docOver=0
+en_1512x765  View  w=30.92 h=19.19  cw=31 sw=31 over=0                                      hitCount=0  docOver=0
+zh_1803x908  查看  w=25.61 h=19.19  cw=26 sw=26 over=0                                      hitCount=0  docOver=0
+zh_1512x765  查看  w=25.61 h=19.19  cw=26 sw=26 over=0                                      hitCount=0  docOver=0
+
+# 行仍可导航（真实用户手势 Input.dispatchMouseEvent mousePressed/mouseReleased）
+link href="/pages/page-test-1790504571866" target="_blank"
+→ 新 target: http://arcblog.localhost:4939/pages/page-test-1790504571866 (title ArcBlog)
+→ 同 tab 直载该 href: head "ArcBlog | Back to latest stories | Test Page | hello page | …"，notFound=false
+```
+
+- B33-1 静态修法：**通过**（`flexBasis: auto` 落在 :173，`flexGrow: 0` 保留）。
+- B33-2 `cw > 0` 且 `sw ≤ cw`：**通过**（修前基线 `w=0 / cw=0 / sw=31 / over=31`）。
+- B33-3 文本 × 控件零相交：**通过**（四组 `hitCount=0`；修前 `Take offline` 相交 20.92×16）。
+- B33-4 行仍可导航：**通过**（见上，真实点击开页 + 同 tab 渲染成功）。**21 页回归**：每页 `[data-active="true"]` 恰 1、`SESSION INIT FAILED` 0 次、`docOver` 0（`13-cdp.json`）。
+- **残留观测（不属本轮验收口径，不阻断）**：命中盒 30.92×19.19（en）/ 25.61×19.19（zh），高度 19.19 < `docs/ArcBlog-admin-ui-design.md` §4.3 的 24×24 建议值 —— 平台行内链接 line-box 高度，未在本轮处理。
+- **受限未验证**：未执行破坏性行内动作的真实写点击（`Take offline`）—— 实例上只有 1 条 live 页面记录，点击会改写它；本轮只做静态复核（`exec`/`confirm` 属性逐字未动）+ DSL 校验。

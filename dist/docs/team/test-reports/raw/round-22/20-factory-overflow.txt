@@ -1,0 +1,65 @@
+{
+  "en_1512": {
+    "overflowCount": 2,
+    "maxOver": 188,
+    "worst": [
+      {
+        "cls": "aup-view",
+        "cw": 1136,
+        "sw": 1324,
+        "over": 188
+      },
+      {
+        "cls": "aup-view",
+        "cw": 1200,
+        "sw": 1356,
+        "over": 156
+      }
+    ],
+    "docOver": 0,
+    "kvRows": 16,
+    "queueTextPresent": true
+  },
+  "zh_1512": {
+    "overflowCount": 2,
+    "maxOver": 188,
+    "worst": [
+      {
+        "cls": "aup-view",
+        "cw": 1136,
+        "sw": 1324,
+        "over": 188
+      },
+      {
+        "cls": "aup-view",
+        "cw": 1200,
+        "sw": 1356,
+        "over": 156
+      }
+    ],
+    "docOver": 0,
+    "kvRows": 18,
+    "queueTextPresent": true
+  },
+  "en_1803": {
+    "overflowCount": 2,
+    "maxOver": 334,
+    "worst": [
+      {
+        "cls": "aup-view",
+        "cw": 1136,
+        "sw": 1470,
+        "over": 334
+      },
+      {
+        "cls": "aup-view",
+        "cw": 1200,
+        "sw": 1502,
+        "over": 302
+      }
+    ],
+    "docOver": 0,
+    "kvRows": 18,
+    "queueTextPresent": true
+  }
+}

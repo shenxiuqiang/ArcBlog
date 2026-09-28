@@ -394,5 +394,8 @@ export function formatReport(report) {
       `changedRecords=${report.changedRecords.length} writePath=${report.readOnly.writePath}`,
   );
   lines.push(`fingerprint: ${report.fingerprint.note}`);
+  // BUG-058: the human mode states the machine fields too, so the two modes
+  // cannot drift (`equal` is null — not "true" — when nothing was compared).
+  lines.push(`fingerprint compared: ${report.fingerprint.compared === true}  equal: ${JSON.stringify(report.fingerprint.equal)}`);
   return lines.join('\n');
 }

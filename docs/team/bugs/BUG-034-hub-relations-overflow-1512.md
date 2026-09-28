@@ -61,3 +61,29 @@ kvChain: .aup-kv-row  w=276.84 cw=277 sw=277 over=0  grid="140px 120.844px"
 ① 页内：把 3 个 action（或至少 purge）移出关系行、单独成行（与 UI-012-05 的拆行同思路），使内容列拿到全宽；或
 ② 缩短 `hub-row-cmds` 的展示值（页面不伪造命令 → 不可取）；或
 ③ 若确认为平台限制，需补平台侧证据后再 allowlist（当前 QA 判定：平台固有性不成立）。
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；admin 单 tab，CDP）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/13-cdp.json`、`14-cdp-focus.json`。探针：`raw/round-22/qa-r22-cdp.mjs`、`qa-r22-cdp-focus.mjs`。**修前基线对照**：Dev 的只读探针输出 `/tmp/dev-r22-geom-baseline.json`（QA 用它做「有无新增溢出」的对照，不作为验收依据）。
+
+**结论：已修复（P2 关闭）** —— 结构改法落地，四组视口关系行溢出全 0。
+
+```text
+# 静态：3 个 action 从行内移到内容列下方的 row gap=sm cross=center（.aup/pages/ops/hub.aup）
+$ grep -c "wordBreak\|overflowWrap\|whiteSpace\|textOverflow" .aup/pages/ops/hub.aup
+0                    # 未新增断行类 style 键（arc-contracts §29.8）；grep_exit=1
+
+# 运行期（?page=hub；12 行 / 30 条 .aup-kv-row）
+en_1803  itemW=698.28  kv over=[0×30]  kvMax=0  docOver=0
+en_1512  itemW=574.59  kv over=[0×30]  kvMax=0  docOver=0
+zh_1803  itemW=698.28  kv over=[0×30]  kvMax=0  docOver=0
+zh_1512  itemW=574.59  kv over=[0×30]  kvMax=0  docOver=0
+文本 × action 相交 hitCount=0（四组）
+```
+
+- B34-1 只能改结构：**通过**（结构移行 + 断行类键 0 命中）。
+- B34-2 溢出归零：**通过**（修前 en/1512 kv over 最大 92、zh/1512 31、1803 0 → 现全 0）。
+- B34-4 无新溢出 / 无横向滚动：**通过**（`docOver=0`，四组无横向滚动；页面壳层仍有 2 处 `.aup-view` `cw=1136/sw=1324 over=188`（1512）、`cw=1200/sw=1356 over=156`，与修前基线 `dev-r22-geom-baseline.json` 的 cw/sw/over **逐值相同** → 属既有平台壳层裁切，`overflowX: visible`，非本轮引入、非 scroller）。
+- B34-3 三动作仍可用且真写数据：**受限未验证** —— 未做 approve/reject/purge 的真实写点击（会改写 live 收录关系记录）。静态复核：三条 `exec`（tree-merge ×2、`/.actions/delete` ×1）与 `confirm` 文案逐字保留，`arc dsl validate --json` `issues: []`。建议 Lead/Dev 决定是否在隔离实例补一次点击取证。

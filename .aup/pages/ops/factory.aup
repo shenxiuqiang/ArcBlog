@@ -6,6 +6,7 @@ page factory {
     gate-desc { en "Sign in with DID Wallet to view the node NFT and operate it." zh "使用 DID Wallet 登录后查看并操作节点 NFT。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     projection { en "Read from the public projection node/factories.json; the authoritative records stay in config/ (admin-only). No key material is mirrored." zh "数据来自公开投影 node/factories.json；权威记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。" }
+    render-timing { en "First-load note: on this platform the projection is bound AFTER the first render, so on a cold visit every field below can read the empty placeholder — that means \"not bound yet / unavailable\", never \"the record is empty\". Expand the advanced details or reload once to bind it (measured 2026-09-28: no channel recovers on its own)." zh "首屏提示：本平台在首次渲染之后才完成投影绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。展开高级详情或刷新一次即可绑定（2026-09-28 实测：不做任何操作不会自行恢复）。" }
     chain-adapter { en "Adapter" zh "适配器" }
     chain-network { en "Network" zh "网络" }
     chain-host { en "Chain host" zh "链地址" }
@@ -182,6 +183,7 @@ page factory {
             h2 :title level=2 style={fontSize: "var(--type-subheading)"}
             p :desc intent=muted
             p :projection intent=muted scale=sm
+            p :render-timing intent=muted scale=sm
           }
           grid gap=md style={gridTemplateColumns: "minmax(0, 1fr)", alignItems: start} {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {

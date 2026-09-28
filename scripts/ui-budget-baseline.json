@@ -95,7 +95,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 15,
-    "i18n": 20,
+    "i18n": 21,
     "tech": 7
   },
   "hub": {
@@ -167,7 +167,7 @@
     "nested": 0,
     "ctrl": 7,
     "styles": 26,
-    "i18n": 72,
+    "i18n": 73,
     "tech": 12
   },
   "general": {

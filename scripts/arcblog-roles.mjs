@@ -12,6 +12,7 @@
 // chain role while `chainVerification` is false.
 
 import { fail, list, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
 import {
   CHAIN_ROLES,
@@ -173,6 +174,7 @@ function commandState(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog role engine (spec §9/§10/§11)
 
 Usage:
@@ -202,7 +204,7 @@ with --chain-verification unset every chain role reports active=false.
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {

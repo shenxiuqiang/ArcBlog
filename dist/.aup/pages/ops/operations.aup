@@ -1,6 +1,7 @@
 page operations {
   i18n {
     desc { en "Live state of this node: health, discovery, Hubs, economy, media and agent grants." zh "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。" }
+    render-timing { en "First-load note: on this platform the health / discovery projections are bound AFTER the first render, so a cold visit can show the empty placeholder for every field below — read that as \"not bound yet / unavailable\", never as \"the record is empty\". Reload once to bind it (measured 2026-09-28)." zh "首屏提示：本平台在首次渲染之后才完成健康 / 发现投影的绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。刷新一次即可绑定（2026-09-28 实测）。" }
     discovery { en "Discovery document" zh "发现文档" }
     discovery-empty { en "How to publish it: node scripts/arcblog-network.mjs discovery publish" zh "如何发布：node scripts/arcblog-network.mjs discovery publish" }
     discovery-generated { en "Generated" zh "生成于" }
@@ -130,6 +131,7 @@ page operations {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
               p :desc intent=muted
+              p :render-timing intent=muted scale=sm
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {

@@ -18,16 +18,55 @@ import { join } from 'node:path';
 export const BLOCKLET_ACTIONS = '/blocklets/arcblog/.actions';
 export const INSTANCE_ROOT = '/instance/app/arcblog';
 
-/** Parse `--key value` / `--flag` argv into `{ _: [...], key: value }` (repo convention). */
-export function parseArgs(argv) {
+/**
+ * Flags every ArcBlog CLI accepts no matter what it does.
+ *
+ * `help` (usage), `instance` (target a named Arc instance) and `json`
+ * (machine-readable output) are cross-cutting surfaces, so the per-CLI registry
+ * in `scripts/lib/cli-flags.mjs` never has to repeat them.
+ */
+export const BASE_FLAGS = ['help', 'instance', 'json'];
+
+/** One sentence every CLI's `--help` carries, so the syntax cannot drift. */
+export const FLAG_SYNTAX_NOTE =
+  'Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).';
+
+/**
+ * Parse `--key value` / `--key=value` / `--flag` argv into `{ _: [...], key: value }`
+ * (repo convention). `--` ends flag parsing; everything after it is positional.
+ *
+ * Two guarantees, both D32 / BUG-032:
+ * - `--key=value` is *the same option* as `--key value` (before this it became a
+ *   single unknown key `key=value`, so `--type=payment` silently ran unfiltered).
+ * - when `options.known` (an array of flag names) is given the parser is
+ *   **strict**: any other flag is rejected with `VALIDATION`. A typo can no
+ *   longer be silently ignored, which is what made the fail-closed `--type`
+ *   check bypassable from a second spelling.
+ */
+export function parseArgs(argv, options = {}) {
+  const known = options.known ? new Set([...BASE_FLAGS, ...options.known]) : null;
   const out = { _: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
+    if (token === '--') {
+      out._.push(...argv.slice(i + 1));
+      break;
+    }
     if (!token.startsWith('--')) {
       out._.push(token);
       continue;
     }
-    const key = token.slice(2);
+    const body = token.slice(2);
+    const eq = body.indexOf('=');
+    const key = eq === -1 ? body : body.slice(0, eq);
+    if (!key) fail('VALIDATION', `invalid flag "${token}" — ${FLAG_SYNTAX_NOTE}`);
+    if (known && !known.has(key)) {
+      fail('VALIDATION', `unknown flag: --${key} — ${FLAG_SYNTAX_NOTE}`);
+    }
+    if (eq !== -1) {
+      out[key] = body.slice(eq + 1);
+      continue;
+    }
     const next = argv[i + 1];
     if (!next || next.startsWith('--')) {
       out[key] = true;

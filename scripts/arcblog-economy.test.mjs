@@ -1,8 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { BASE_FLAGS } from './lib/arc.mjs';
+import { CHAIN_FLAGS, SCRIPT_FLAGS }
+  from './lib/cli-flags.mjs';
 
 import {
   buildAccessGrant,
@@ -803,4 +808,130 @@ test('order verify needs a target, fails closed on a missing order, and document
   assert.match(help.stdout, /settlement reconcile/);
   assert.match(help.stdout, /READ_ONLY_METHODS/);
   assert.match(help.stdout, /Exit codes: 0 = a report was/);
+});
+
+// --- CLI flag contract (D32 / BUG-032) ----------------------------------------
+// `--k=v` used to be one unknown key (`type=payment`), which the CLI never
+// consumed: the fail-closed `--type` check was bypassable from that spelling and
+// the command exited 0 with an unfiltered ledger. Two properties pin it shut:
+// the equals form is *the same option* as the space form, and no typo survives.
+
+test('CLI flags: --k=v equals --k v, and an unknown flag fails closed', () => {
+  const full = json(run(['ledger', 'list', '--all']).stdout);
+
+  // --type=<v> filters exactly like --type <v>
+  const equalsValid = json(run(['ledger', 'list', '--all', '--type=refund']).stdout);
+  const spaceValid = json(run(['ledger', 'list', '--all', '--type', 'refund']).stdout);
+  assert.deepEqual(
+    equalsValid.entries.map((entry) => entry.id),
+    spaceValid.entries.map((entry) => entry.id),
+    '--type=refund and --type refund must return the same entries',
+  );
+  assert.deepEqual(
+    equalsValid.entries.map((entry) => entry.id),
+    full.entries.filter((entry) => entry.type === 'refund').map((entry) => entry.id),
+  );
+
+  // --type=<bad> fails closed exactly like --type <bad>
+  const equalsInvalid = run(['ledger', 'list', '--type=payment']);
+  assert.equal(equalsInvalid.status, 1, 'equals form must not exit 0');
+  const failure = json(equalsInvalid.stderr);
+  assert.equal(failure.code, 'VALIDATION');
+  assert.match(failure.error, /unknown ledger type: payment/);
+  for (const type of LEDGER_TYPES) assert.match(failure.error, new RegExp(type));
+
+  // an unknown flag (typo, or an invented one) is never ignored
+  for (const args of [
+    ['ledger', 'list', '--typ', 'refund'],
+    ['ledger', 'list', '--order-by=x'],
+    ['ledger', 'list', '--no-such-flag'],
+  ]) {
+    const res = run(args);
+    assert.equal(res.status, 1, `${args.join(' ')} must not exit 0`);
+    assert.equal(json(res.stderr).code, 'VALIDATION');
+    assert.match(json(res.stderr).error, /unknown flag/);
+  }
+
+  // --order / --limit / --all keep their meaning, in both spellings
+  const orderId = full.entries[full.entries.length - 1].orderId;
+  const orderEquals = json(run(['ledger', 'list', '--all', `--order=${orderId}`]).stdout);
+  const orderSpace = json(run(['ledger', 'list', '--all', '--order', orderId]).stdout);
+  assert.deepEqual(
+    orderEquals.entries.map((entry) => entry.id),
+    orderSpace.entries.map((entry) => entry.id),
+  );
+  assert.ok(orderEquals.entries.length > 0, 'the newest order must have ledger entries');
+
+  const limitOne = json(run(['ledger', 'list', '--limit=1']).stdout);
+  assert.equal(limitOne.count, Math.min(1, full.entries.length));
+  assert.deepEqual(
+    limitOne.entries.map((entry) => entry.id),
+    json(run(['ledger', 'list', '--limit', '1']).stdout).entries.map((entry) => entry.id),
+  );
+  const all = run(['ledger', 'list', '--all']);
+  assert.equal(all.status, 0);
+  assert.equal(json(all.stdout).truncated, false);
+  assert.equal(run(['ledger', 'list']).stdout, run(['ledger', 'list', '--limit', '20']).stdout);
+
+  // --help states the syntax, so the contract is not only in this file
+  const help = run(['--help']);
+  assert.equal(help.status, 0);
+  assert.match(help.stdout, /--k v and --k=v are equivalent/);
+  assert.match(help.stdout, /unknown flag fails closed/);
+});
+
+test('every flag-parsing CLI fails closed on an unknown flag', () => {
+  const probes = [
+    ['arcblog-tags.mjs', ['list', '--nope']],
+    ['arcblog-pages.mjs', ['list', '--nope']],
+    ['arcblog-media.mjs', ['list', '--nope']],
+    ['arcblog-network.mjs', ['health', '--nope']],
+    ['arcblog-roles.mjs', ['status', '--nope']],
+    ['arcblog-node.mjs', ['show', '--nope']],
+    ['arcblog-bookmarks.mjs', ['list', '--nope']],
+    ['arcblog-category.mjs', ['list', '--nope']],
+    ['arcblog-factory.mjs', ['show', '--nope']],
+    ['arcblog-node-nft.mjs', ['status', '--nope']],
+    ['arcblog-settings.mjs', ['show', '--nope']],
+    ['arcblog-verify.mjs', ['keys', '--nope']],
+  ];
+  for (const [name, args] of probes) {
+    const res = spawnSync(process.execPath, [join(repoRoot, 'scripts', name), ...args], {
+      encoding: 'utf8',
+      cwd: repoRoot,
+      env: { ...process.env },
+    });
+    assert.equal(res.status, 1, `${name} ${args.join(' ')} must fail closed`);
+    assert.match(`${res.stdout}${res.stderr}`, /unknown flag: --nope/, `${name} must name the flag`);
+    assert.match(`${res.stdout}${res.stderr}`, /VALIDATION/, `${name} must report VALIDATION`);
+  }
+});
+
+test('the CLI flag registry covers every flag the CLIs actually read (drift guard)', () => {
+  const files = readdirSync(join(repoRoot, 'scripts')).filter(
+    (name) => /^arcblog-.*\.mjs$/.test(name) && !name.endsWith('.test.mjs'),
+  );
+  const gaps = [];
+  let registered = 0;
+  for (const file of files) {
+    const source = readFileSync(join(repoRoot, 'scripts', file), 'utf8');
+    if (!source.includes('parseCliArgs(')) continue;
+    registered += 1;
+    if (!SCRIPT_FLAGS[file]) {
+      gaps.push(`${file}: not registered in scripts/lib/cli-flags.mjs`);
+      continue;
+    }
+    const known = new Set([...SCRIPT_FLAGS[file], ...CHAIN_FLAGS, ...BASE_FLAGS]);
+    const used = new Set();
+    for (const m of source.matchAll(/\b(?:opts|args)\.([A-Za-z_][A-Za-z0-9_-]*)/g)) used.add(m[1]);
+    for (const m of source.matchAll(/\b(?:opts|args)\[['"]([^'"]+)['"]\]/g)) used.add(m[1]);
+    for (const m of source.matchAll(/\brequired\(\s*(?:opts|args),\s*['"]([^'"]+)['"]/g)) used.add(m[1]);
+    for (const m of source.matchAll(/--([a-zA-Z][a-zA-Z0-9-]*)/g)) used.add(m[1]);
+    for (const key of used) {
+      if (key === '_' || key === 'expect-' || known.has(key)) continue;
+      gaps.push(`${file}: --${key}`);
+    }
+  }
+  assert.deepEqual(gaps, [], 'every flag a CLI reads must be in the registry');
+  assert.ok(registered >= 20, `expected the whole CLI surface, saw ${registered}`);
 });

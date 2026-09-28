@@ -103,3 +103,25 @@ $ head -c 200 /tmp/r14f/bug032.json
 ```
 
 **结论**：等号形式 **exit 0 且未按 type 过滤**（返回全部 14 条）→ 缺口仍在，**未修复、未在本轮范围**（`scripts/lib/arc.mjs` 的 `parseArgs` 属全 CLI 通用机制）。空格形式的 fail-closed（`payment`/`bogus`/缺值 → exit≠0 + `VALIDATION` + 允许值集合）已由 R15-D 的新测试用例在 `.gate-lock` 下独立跑绿（`test:file economy` 30/30）。
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；**不采信 Dev 自述**）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/02-bug032-static-cli.txt`、`04-bug032-equiv-result.json`、`05-bug032-help-boundary.txt`、`06-cli-migration-table.txt`、`07-npm-test.txt`、`08-targeted-live.txt`。
+
+**结论：已修复（P3 关闭）** —— 等号形式等价、未知 flag fail-closed、`--order/--limit/--all` 语义未变、全 CLI 单一实现，四项均独立复现。
+
+| 判据 | QA 实测（原始命令 → 真实输出） | 结论 |
+| --- | --- | --- |
+| B32-1 等号 ≡ 空格 | `--type=refund` 与 `--type refund` **逐字节相同**（`byteIdentical:true`）；`--limit=1` ≡ `--limit 1`（count 1 / totalCount 70 / truncated true）；`--order=<id>` ≡ `--order <id>`（count 2 / 无 totalCount） | 通过 |
+| B32-2 合法值真被消费 | `--type=refund` → `count 10 / totalCount 10`，`entries[].type` 集合 = `["refund"]`（修前 = 未过滤全量） | 通过 |
+| B32-3 非法值两种写法同码 | `--type=payment` 与 `--type payment` → 均 exit 1、均 **stderr** 输出 `{"ok":false,"code":"VALIDATION","error":"unknown ledger type: payment (use creator_share\|hub_share\|protocol_fee\|refund)"}`，逐字节相同 | 通过 |
+| B32-4 未知 flag fail-closed | `ledger list --nope` / `arcblog-media.mjs list --nope` / `arcblog-network.mjs hub list --nope` → 三个 CLI 全 exit 1 + `unknown flag: --nope — Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).`；`--help` 仍 exit 0（19 个有 help 的 CLI） | 通过（1 个例外见 BUG-060） |
+| B32-5 单一实现 | `grep -rn "^function parseArgs" scripts/` → **0 命中（grep_exit=1）**；26 个 CLI 全部调用 `parseCliArgs`（`scripts/lib/cli-flags.mjs`），共享实现 `scripts/lib/arc.mjs:46` | 通过 |
+| B32-6 既有语义零变更 | `--limit 1`≡`--limit=1`→count 1；`--all`→count 70 = totalCount 70 / truncated false；`--order <id>`≡`--order=<id>`→count 2；无 flag 默认 = `--limit 20`（count 20 / truncated true，测试内断言 `run(['ledger','list']) === run(['ledger','list','--limit','20'])`） | 通过（绝对计数 42→70 是测试残渣增长，语义未变） |
+| B32-7 `--help` 同步 | `arcblog-economy.mjs --help` 首行 = `Flags: --k v and --k=v are equivalent; an unknown flag fails closed (VALIDATION, exit 1).`；**19 个** CLI 输出同一句（`grep -l FLAG_SYNTAX_NOTE scripts/*.mjs` = 19） | 部分通过（4 个既有缺口 → BUG-060） |
+| B32-8 定向用例 | `.gate-lock` 下 `npm run test:file -- scripts/arcblog-economy.test.mjs` → **43/43 全绿**（基线 40 → 43，仅追加）；新增断言含：`--k=v` 等价、非法值两写法同码、每个 flag CLI 未知 flag fail-closed、flag 注册表漂移门、`--help` 文案 | 通过 |
+| B32-9 门 + 回归 | `arc dsl validate --json` → `issues: []` exit 0；`npm test` → **35/35**；`arcblog-network.test.mjs` **24/24** | 通过 |
+
+**残留（非阻断，登记为 BUG-060）**：`scripts/arcblog-chain-worker.mjs --help` → exit 1 + 裸 `VALIDATION` 栈（HEAD 版本同行为，非本轮回归）；`arcblog-rss.mjs` / `arcblog-query-posts.mjs` / `arcblog-daily-report.mjs` 忽略 `--help` 直接跑业务（exit 0）。

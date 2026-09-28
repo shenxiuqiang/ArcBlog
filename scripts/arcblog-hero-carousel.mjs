@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const componentDir = join(repoRoot, '.web', 'components', 'hero-carousel');
@@ -33,7 +34,8 @@ export function composeScript() {
 }
 
 function main() {
-  const check = process.argv.includes('--check');
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  const check = Boolean(args.check);
   const expected = composeScript();
   if (check) {
     let actual = '';

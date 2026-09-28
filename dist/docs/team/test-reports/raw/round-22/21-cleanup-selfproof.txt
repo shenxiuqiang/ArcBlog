@@ -1,0 +1,82 @@
+### node scripts/arcblog-clean.mjs (dry run, no --confirm)
+{
+ "ok": true,
+ "confirm": false,
+ "found": 452,
+ "removed": 0,
+ "dirsScanned": 20,
+ "byPrefix": {
+  "econ-test-": 210,
+  "ledger-order-": 24,
+  "ledger-product-": 6,
+  "chain-intents-worker-": 15,
+  "mock-worker-": 16,
+  "nft-factories-test-": 22,
+  "nft-factories-worker-": 16,
+  "node-nft-test-": 22,
+  "node-nft-worker-": 14,
+  "roles-test-": 13,
+  "roles-worker-": 14,
+  "factories-test-": 13,
+  "factories-worker-": 16,
+  "hub-idx-test-": 6,
+  "paid-test-": 1,
+  "sign-test-": 1,
+  "cat-test-": 16,
+  "sign-keys-": 27
+ }
+}
+
+### lock self-proof
+ls: dist/docs/team/.gate-lock: No such file or directory
+ls: docs/team/.gate-lock: No such file or directory
+
+### chain-intent record still present (unchanged sha-ish)
+present, bytes 732 sha fef80b4f026e7521
+
+### git status summary (repo)
+ M .aup/locales/en.json
+ M .aup/locales/zh.json
+ M .aup/pages/admin/pages.aup
+ M .aup/pages/ops/factory.aup
+ M .aup/pages/ops/hub.aup
+ M .aup/pages/ops/operations.aup
+ M docs/ArcBlog-nft-factory.md
+ M docs/team/backlog.md
+ M docs/team/journal/README.md
+ M scripts/arcblog-agent.mjs
+ M scripts/arcblog-attribution.mjs
+ M scripts/arcblog-audit.mjs
+ M scripts/arcblog-bookmarks.mjs
+ M scripts/arcblog-category.mjs
+ M scripts/arcblog-chain-worker.mjs
+ M scripts/arcblog-clean.mjs
+ M scripts/arcblog-console-nav.mjs
+ M scripts/arcblog-daily-report.mjs
+ M scripts/arcblog-doctor.mjs
+ M scripts/arcblog-economy.mjs
+ M scripts/arcblog-economy.test.mjs
+ M scripts/arcblog-factory.mjs
+ M scripts/arcblog-hero-carousel.mjs
+ M scripts/arcblog-lifecycle.mjs
+ M scripts/arcblog-media.mjs
+ M scripts/arcblog-network.mjs
+ M scripts/arcblog-node-nft.mjs
+ M scripts/arcblog-node.mjs
+ M scripts/arcblog-pages.mjs
+ M scripts/arcblog-query-posts.mjs
+ M scripts/arcblog-roles.mjs
+ M scripts/arcblog-rss.mjs
+ M scripts/arcblog-settings.mjs
+ M scripts/arcblog-tags.mjs
+ M scripts/arcblog-ui-budget.mjs
+ M scripts/arcblog-verify.mjs
+ M scripts/lib/arc.mjs
+ M scripts/lib/chain-orders.mjs
+ M scripts/lib/nft-factory.mjs
+ M scripts/ui-budget-baseline.json
+?? docs/dsh-workflow-and-ralph.md
+?? docs/team/journal/round-22.md
+?? docs/team/requirements/REQ-029-round22-defect-closure.md
+?? docs/team/test-reports/raw/round-22/
+?? scripts/lib/cli-flags.mjs

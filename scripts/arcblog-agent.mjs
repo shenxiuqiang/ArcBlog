@@ -15,6 +15,7 @@ import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
 import { INSTANCE_ROOT, ensure, fail, list, optString, parseArgs, queryRecords, readJson, remove, resolveInstance, whereAll, whereEq } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   AGENT_CAPABILITIES,
   AGENT_GRANTS_DIR,
@@ -334,6 +335,7 @@ function commandTools(opts) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog Agent Access (spec §59–§62, §129–§130)
 
 Usage:
@@ -365,7 +367,7 @@ ArcBlog does not implement its own protocol (spec §129).
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   try {
     if (!cmd || args.help || cmd === 'help' || cmd === '-h') return help();

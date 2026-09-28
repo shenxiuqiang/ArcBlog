@@ -29,6 +29,7 @@
 // surfaces (`/mcp`, AFS RPC, llms.txt) already expose.
 
 import { ensure, fail, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT, list, nowIso } from './lib/arc.mjs';
 import { INTENT_STATUS, isInFlightStatus, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import {
@@ -82,6 +83,9 @@ export const HUB_INTENTS_DIR = String(
 
 /** The three console actions this queue carries. Approve/Reject/Purge do NOT go through it. */
 export const HUB_INTENT_ACTIONS = Object.freeze(['register', 'add', 'indexRebuild']);
+
+/** The terminal reason every rejected hub intent carries exactly once (BUG-057). */
+const NO_DATA_CHANGED = 'no data changed';
 
 /**
  * Console-level DID shape guard (REQ-019 §12 H2② — a NEW rule, not a CLI one).
@@ -472,6 +476,21 @@ export function validateIntent(intent) {
   return { action, hubDid, endpoint: String(intent.endpoint ?? '').trim(), update: truthyFlag(intent.update) };
 }
 
+/**
+ * Append the terminal "no data changed" reason **once**.
+ *
+ * The thrown message may already carry it (the empty-DID guard in
+ * `validateIntent` does), and appending blindly produced
+ * `… — no data changed — no data changed` in the rejected record's `message`,
+ * which `?page=hub` renders verbatim (BUG-057). Classification, exit code and
+ * the zero-write semantics are untouched — only the duplicated suffix is gone.
+ */
+function withNoDataChanged(message) {
+  const text = String(message ?? '').trim();
+  if (!text) return NO_DATA_CHANGED;
+  return text.includes(NO_DATA_CHANGED) ? text : `${text} — ${NO_DATA_CHANGED}`;
+}
+
 /** Field names whose value really differs between two records. */
 function changedFields(before, after) {
   const keys = new Set([...Object.keys(before ?? {}), ...Object.keys(after ?? {})]);
@@ -564,7 +583,7 @@ export function applyIntent(instance, intent) {
     next.code = err.code || 'RUNTIME_ERROR';
     next.changed = [];
     next.elapsedMs = null;
-    next.message = `${err.message} — no data changed`;
+    next.message = withNoDataChanged(err.message);
   }
   next.updatedAt = nowIso();
   writeJson(recordPath, next, instance);
@@ -681,6 +700,7 @@ function commandHubWatch(opts, instance) {
 
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog node network layer (spec §68–§74, §109–§113)
 
 Usage:
@@ -739,7 +759,7 @@ runtime's Agent Access surfaces expose. Hub statuses: ${HUB_STATUSES.join('|')}.
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd, sub] = args._;
   const instance = resolveInstance(args);
   try {

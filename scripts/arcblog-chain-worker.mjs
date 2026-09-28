@@ -23,6 +23,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { parseCliArgs } from './lib/cli-flags.mjs';
 import { NODE_NFT_STATE_PATH, nodeAdapterOf, openChain, resolveChainOptions } from './lib/chain.mjs';
 import { INTENT_STATUS, isInFlightStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
@@ -296,7 +297,7 @@ function newIntentId() {
 async function main() {
   const argv = process.argv.slice(2);
   const command = argv[0] ?? 'run';
-  const opts = parseArgs(argv.slice(1));
+  const opts = parseCliArgs(argv.slice(1), import.meta.url);
   const instance = resolveInstance(opts);
   loadLocalEnv();
 

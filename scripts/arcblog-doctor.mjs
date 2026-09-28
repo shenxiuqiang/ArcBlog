@@ -19,6 +19,7 @@ import {
   resolveInstance,
   writeJson,
 } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { listCategories } from './lib/categories.mjs';
 import { blockletIdentifiers } from './lib/manifest.mjs';
 import {
@@ -99,6 +100,7 @@ function gather(instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog instance doctor (spec §149 Phase 5)
 
 Usage:
@@ -181,7 +183,7 @@ function testCounts(instance) {
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {

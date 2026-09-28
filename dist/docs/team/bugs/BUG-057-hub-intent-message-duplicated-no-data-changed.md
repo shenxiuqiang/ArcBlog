@@ -79,3 +79,40 @@ $ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/con
 ## 疑似文件
 
 - `scripts/arcblog-network.mjs`（`validateIntent` 的空 DID 文案 + `applyIntent` 的 `catch` 追加逻辑；**线索，不是结论**）
+
+---
+
+## QA Round 22 独立复验（task-93，2026-09-29；**自建 intent、AFS 为准、自清场**）
+
+> 原始输出：`docs/team/test-reports/raw/round-22/12-bug057-probe.txt`、`13-cdp.json`。探针：`raw/round-22/qa-bug057-probe.sh`（独立 id 前缀 `qa-r22-b57-*`，跑完逐条删除）。
+> 静态：`scripts/arcblog-network.mjs` 新增 `withNoDataChanged()`（幂等后缀）+ `NO_DATA_CHANGED`，`:467` 文案不再追加、`applyIntent` 的 `catch` 改走该函数；`sed -n '583,589p'` 显示 `next.message = withNoDataChanged(err.message);`。
+
+**结论：已修复（P3 关闭）**。
+
+```text
+# ① 空 DID 意图（我自己的 id）→ apply → 读终态记录
+$ arc afs exec /blocklets/arcblog/.actions/read --args '{"path":"…/hub-intents/qa-r22-b57-empty-<ts>.json"}'
+{"status":"rejected","code":"VALIDATION","changed":[],"elapsedMs":null,
+ "suffixCount":1,"message":"add: a hub did is required (hubDid) — no data changed"}     ← 修前 = 2 次
+
+# ② 畸形 DID
+{"status":"rejected","code":"VALIDATION","suffixCount":1,
+ "message":"register: hub did \"not-a-did\" is not a recognizable DID — … — no data changed"}
+
+# ③ 重复登记
+dup1 {"status":"applied","suffixCount":0}
+dup2 {"status":"rejected","code":"CONFLICT","suffixCount":1,
+      "message":"hub already registered: did:key:zQA22DupProbe… — pass update to overwrite (CLI: --update); no data changed"}
+
+# ④ hub/registrations 前后逐字节对比：diff -r 为空（唯一差异是我自建的合成登记，已在下一步删除）
+# ⑤ 清场自证：4 条 intent 全部 read → NOT_FOUND；合成登记 delete → 登记数回到 5（与原值一致）
+
+# ⑥ 页面渲染（CDP ?page=hub en，独立造一条 rejected 意图后测量）
+{"needle":"add: a hub did is required (hubDid) — no data changed","count":1,"hasSuffixTwice":false}
+```
+
+- B57-1 根因修法（静态）：**通过**（`withNoDataChanged` 幂等，两者不叠加）。
+- B57-2 运行期 + 零改动：**通过**（suffixCount 1；`changed:[]`；registrations 逐字节不变）。
+- B57-3 对照不回归：**通过**（畸形 DID `VALIDATION`、重复登记 `CONFLICT`，各 1 次后缀）。
+- B57-4 页面可见文案：**通过**（页面文本中该 message 恰出现 1 次，无 `no data changed — no data changed`）。
+- B57-5 定向单跑：**通过**（`.gate-lock` 下 `arcblog-network.test.mjs` **24/24**，基线未降）。

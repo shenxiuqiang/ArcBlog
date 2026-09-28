@@ -1,29 +1,10 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
+import { parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
   return String(value);
-}
-
-function parseArgs(argv) {
-  const out = { _: [] };
-  for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
-    if (!token.startsWith('--')) {
-      out._.push(token);
-      continue;
-    }
-    const key = token.slice(2);
-    const next = argv[i + 1];
-    if (!next || next.startsWith('--')) {
-      out[key] = true;
-      continue;
-    }
-    out[key] = next;
-    i += 1;
-  }
-  return out;
 }
 
 function arcAfs(args, instance) {
@@ -182,7 +163,7 @@ function dirsForStatus(status) {
 }
 
 function main() {
-  const opts = parseArgs(process.argv.slice(2));
+  const opts = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [status] = opts._;
   const limit = Number(opts.limit || 20);
   const instance = optString(opts.instance);

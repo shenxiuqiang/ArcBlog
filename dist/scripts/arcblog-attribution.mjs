@@ -20,6 +20,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, resolveInstance } from './lib/arc.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   ATTRIBUTIONS_DIR,
   TRUSTED_HUBS_DIR,
@@ -127,6 +128,7 @@ function commandAttributions(opts, instance) {
 }
 
 function help() {
+  console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog Hub attribution (spec §30–§33)
 
 Usage:
@@ -145,7 +147,7 @@ hub share only when a verified attribution exists for the order's content + hub.
 }
 
 (function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);
   try {
