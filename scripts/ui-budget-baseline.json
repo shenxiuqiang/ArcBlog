@@ -1,0 +1,200 @@
+{
+  "dashboard": {
+    "blocks": 2,
+    "cards": 6,
+    "nested": 0,
+    "ctrl": 4,
+    "styles": 29,
+    "i18n": 26,
+    "tech": 9
+  },
+  "posts": {
+    "blocks": 1,
+    "cards": 3,
+    "nested": 0,
+    "ctrl": 42,
+    "styles": 34,
+    "i18n": 42,
+    "tech": 13
+  },
+  "pages": {
+    "blocks": 2,
+    "cards": 1,
+    "nested": 0,
+    "ctrl": 21,
+    "styles": 20,
+    "i18n": 33,
+    "tech": 7
+  },
+  "compose": {
+    "blocks": 3,
+    "cards": 5,
+    "nested": 0,
+    "ctrl": 14,
+    "styles": 16,
+    "i18n": 25,
+    "tech": 2
+  },
+  "heroes": {
+    "blocks": 1,
+    "cards": 5,
+    "nested": 0,
+    "ctrl": 13,
+    "styles": 27,
+    "i18n": 27,
+    "tech": 4
+  },
+  "categories": {
+    "blocks": 1,
+    "cards": 5,
+    "nested": 0,
+    "ctrl": 11,
+    "styles": 26,
+    "i18n": 56,
+    "tech": 17
+  },
+  "tags": {
+    "blocks": 1,
+    "cards": 4,
+    "nested": 0,
+    "ctrl": 6,
+    "styles": 24,
+    "i18n": 36,
+    "tech": 11
+  },
+  "seo": {
+    "blocks": 2,
+    "cards": 2,
+    "nested": 0,
+    "ctrl": 5,
+    "styles": 8,
+    "i18n": 13,
+    "tech": 3
+  },
+  "feeds": {
+    "blocks": 2,
+    "cards": 1,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 6,
+    "i18n": 9,
+    "tech": 0
+  },
+  "appearance": {
+    "blocks": 2,
+    "cards": 0,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 3,
+    "i18n": 5,
+    "tech": 0
+  },
+  "operations": {
+    "blocks": 1,
+    "cards": 4,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 15,
+    "i18n": 20,
+    "tech": 7
+  },
+  "hub": {
+    "blocks": 2,
+    "cards": 4,
+    "nested": 0,
+    "ctrl": 4,
+    "styles": 21,
+    "i18n": 45,
+    "tech": 15
+  },
+  "media": {
+    "blocks": 1,
+    "cards": 6,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 27,
+    "i18n": 27,
+    "tech": 10
+  },
+  "agents": {
+    "blocks": 1,
+    "cards": 5,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 19,
+    "i18n": 40,
+    "tech": 21
+  },
+  "orders": {
+    "blocks": 1,
+    "cards": 5,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 21,
+    "i18n": 58,
+    "tech": 16
+  },
+  "policy": {
+    "blocks": 1,
+    "cards": 3,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 12,
+    "i18n": 12,
+    "tech": 6
+  },
+  "access": {
+    "blocks": 1,
+    "cards": 2,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 8,
+    "i18n": 9,
+    "tech": 1
+  },
+  "ledger": {
+    "blocks": 1,
+    "cards": 6,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 21,
+    "i18n": 47,
+    "tech": 16
+  },
+  "factory": {
+    "blocks": 3,
+    "cards": 6,
+    "nested": 0,
+    "ctrl": 7,
+    "styles": 26,
+    "i18n": 72,
+    "tech": 12
+  },
+  "general": {
+    "blocks": 2,
+    "cards": 4,
+    "nested": 0,
+    "ctrl": 11,
+    "styles": 30,
+    "i18n": 45,
+    "tech": 20
+  },
+  "diagnostics": {
+    "blocks": 2,
+    "cards": 10,
+    "nested": 0,
+    "ctrl": 0,
+    "styles": 31,
+    "i18n": 72,
+    "tech": 27
+  },
+  "compose-edit": {
+    "blocks": 1,
+    "cards": 7,
+    "nested": 0,
+    "ctrl": 16,
+    "styles": 11,
+    "i18n": 24,
+    "tech": 3
+  }
+}
