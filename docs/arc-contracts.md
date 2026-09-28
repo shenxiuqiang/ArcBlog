@@ -1602,3 +1602,33 @@ tokenId / tokenDecimals`。选择顺序（**实测**）：显式 `ARCBLOG_CHAIN_
 **可用写法**：只在公共页生效（bridge CSS 用 `#aup-display:has(.aup-app-footer…)` 限定）并做成
 **高度中性** —— `padding-top: 20px` 配 `margin-bottom: -20px`，改前后 `documentElement` 的
 `scrollWidth/scrollHeight` 逐值不变；控制台页一行都不受影响。
+
+---
+
+## 31. `$t()` / `${generate.*}` / `wrapper.*` 在 prop 与文本节点里的真实行为（Round 15 / REQ-027 实测）
+
+为把页脚版权收敛成一处，逐条实测了「页面里能不能动态取时间」，结论对**所有 prop** 都适用：
+
+1. **`$t(wrapper.*)` 在 prop 里会被解析**（daemon 侧），并随 locale 变化：`bottomBar={copyright: "$t(wrapper.footer-copyright)"}`
+   渲染出 locale 里的值，给 en/zh 写不同 marker 时确实渲染出不同文本（不是巧合）。
+   → 因此 **i18n 是唯一可用的「一处改、多处生效」机制**。
+2. **`${generate.*}` 在 prop 与文本节点里都原样输出**。实测 8 种写法全部失败：把
+   `${generate.timeiso}` / `${generate.year}` / `${generate.date}` / `${generate.timestamp}` / `${generate.uuid}`
+   写在 prop、写在文本节点、或回填进 `$t()` 的 locale 值 —— 页面上一律显示字面 `${generate.x}`。
+   平台实际只在自身资产里用到 `generate.{id,timeiso,uuid}`；`arc dsl validate` 对**任意** `generate.*` 名字
+   都放行（静态门禁无法区分存在与否），所以「名字不存在」与「存在但不插值」在页面上表现相同。
+   运行时证据：`aup.*.js`（802,492 B）里 `timeiso` 0 次命中；`app-footer` 的渲染器对 `copyright` 只做
+   `String(t.copyright)` + `textContent=a`，**没有日期格式化入口**（footer 只读 brand/columns/social/bottomBar）。
+   → **页面上没有可用的时间原语**；需要动态年份只能靠平台新增能力。
+3. **`wrapper.aup` 里的 `i18n {}` 块在运行期不生效**：`wrapper.*` 的运行期唯一来源是
+   `.aup/locales/{en,zh}.json`。给 `wrapper.aup` 的键打 marker 后页面渲染不变，只改 locales 立刻生效
+   （`arc dsl generate` 受管的 7 个文件里没有「wrapper.aup → locales」这条桥）。
+4. **locale 存在同一 tab 的 sessionStorage**（AFS web session 键）：`?locale=<已存的另一种语言>` 会被
+   URL 归一化丢掉，单 tab 内在 zh 之后切不回 en（`Network.clearBrowserCookies` 与
+   `Storage.clearDataForOrigin` 都清不掉，只有在同源中性页 `/robots.txt` 里 `sessionStorage.clear()` 才有效）。
+   **QA 实测语言相关行为时要每个视口/语言用全新 context**，否则会把「请求 en 实际渲染 zh」当成缺陷
+   （REQ-027 首版探针就踩过这个坑）。
+5. 由此推论：**多语言文案的单一来源 = locales 里的一个键**，而因为
+   `scripts/arcblog-i18n.test.mjs`（在 `npm test` 内）硬性要求 **en 与 zh 的键集合逐字节相同**，
+   一个键至少要写 **2 行**（en 一行、zh 一行，值可相同）。想压到 1 行必须改 `scripts/**`，
+   等于拆掉那条门禁，不建议。

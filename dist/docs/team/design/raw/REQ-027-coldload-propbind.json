@@ -1,0 +1,209 @@
+{
+  "meta": {
+    "req": "REQ-027",
+    "tag": "propbind",
+    "url": "http://arcblog.localhost:4939/?page=about&locale=en",
+    "samples": 30,
+    "stepMs": 80,
+    "targetId": "E2F6AC4547A6C1B9469317ABE6F508A0",
+    "startedAt": "2026-09-28T10:52:34.967Z",
+    "chrome": "Chrome/153.0.8010.54"
+  },
+  "summary": {
+    "firstNonEmptyAtMs": 162,
+    "distinctValues": [
+      null,
+      "PB[]PB"
+    ],
+    "everEmptyAfterFirstPaint": 0,
+    "everLiteralTemplate": false
+  },
+  "timeline": [
+    {
+      "t": 80,
+      "ready": "interactive",
+      "barText": null,
+      "footerH": null
+    },
+    {
+      "t": 162,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 231
+    },
+    {
+      "t": 244,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 326,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 409,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 491,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 573,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 655,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 738,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 820,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 901,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 984,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1066,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1148,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1229,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1311,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1393,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1475,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1558,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1640,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1723,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1804,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1887,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 1970,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2051,
+      "ready": "interactive",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2133,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2215,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2298,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2380,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 2463,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    },
+    {
+      "t": 3966,
+      "ready": "complete",
+      "barText": "PB[]PB",
+      "footerH": 119.14
+    }
+  ]
+}

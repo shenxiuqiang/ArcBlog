@@ -1,0 +1,953 @@
+{
+  "meta": {
+    "req": "REQ-027",
+    "tag": "E-propbind-tvalue",
+    "origin": "http://arcblog.localhost:4939",
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "viewports": [
+      "1803x908"
+    ],
+    "pages": [
+      {
+        "label": "index",
+        "path": "/"
+      },
+      {
+        "label": "about",
+        "path": "/?page=about"
+      },
+      {
+        "label": "store",
+        "path": "/store"
+      },
+      {
+        "label": "author",
+        "path": "/?page=author"
+      }
+    ],
+    "waitMs": 3200,
+    "targetId": "EC7B1C77CB2C27B86C779D9F57C6798B",
+    "pagesBefore": 2,
+    "startedAt": "2026-09-28T10:50:12.530Z",
+    "chrome": "Chrome/153.0.8010.54",
+    "consoleErrors": [],
+    "pagesAfter": 3
+  },
+  "runs": [
+    {
+      "viewport": "1803x908",
+      "locale": "en",
+      "page": "index",
+      "path": "/",
+      "url": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 1295.38,
+        "top": 1295.38,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 1414.52
+      },
+      "bottomBarTextContent": "A ${generate.timeiso} Z",
+      "bottomBarInnerText": "A ${generate.timeiso} Z",
+      "copyrightTextContent": "A ${generate.timeiso} Z",
+      "copyrightInnerText": "A ${generate.timeiso} Z",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">A ${generate.timeiso} Z</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">A ${generate.timeiso} Z</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1302.81,
+        "y": 1376.52,
+        "top": 1376.52,
+        "left": 1302.81,
+        "w": 142.69,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 1394.52
+      },
+      "copyBox": {
+        "x": 1302.81,
+        "y": 1376.52,
+        "top": 1376.52,
+        "left": 1302.81,
+        "w": 142.69,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 1394.52
+      },
+      "columnsBox": {
+        "x": 1236.05,
+        "y": 1343.72,
+        "top": 1343.72,
+        "left": 1236.05,
+        "w": 209.45,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 1372.52
+      },
+      "linkUnion": {
+        "top": 1343.72,
+        "bottom": 1372.52,
+        "left": 1236.05,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": true,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID-native writing, Markdown-first publishing."
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "About"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Store"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Author"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "A ${generate.timeiso} Z"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "A ${generate.timeiso} Z",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "en",
+      "page": "about",
+      "path": "/?page=about",
+      "url": "http://arcblog.localhost:4939/?page=about",
+      "lang": "en",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 424.27,
+        "top": 424.27,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 543.41
+      },
+      "bottomBarTextContent": "PB[ArcBlog]PB",
+      "bottomBarInnerText": "PB[ArcBlog]PB",
+      "copyrightTextContent": "PB[ArcBlog]PB",
+      "copyrightInnerText": "PB[ArcBlog]PB",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">PB[ArcBlog]PB</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">PB[ArcBlog]PB</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1356.22,
+        "y": 505.41,
+        "top": 505.41,
+        "left": 1356.22,
+        "w": 89.28,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 523.41
+      },
+      "copyBox": {
+        "x": 1356.22,
+        "y": 505.41,
+        "top": 505.41,
+        "left": 1356.22,
+        "w": 89.28,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 523.41
+      },
+      "columnsBox": {
+        "x": 1236.05,
+        "y": 472.61,
+        "top": 472.61,
+        "left": 1236.05,
+        "w": 209.45,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 501.41
+      },
+      "linkUnion": {
+        "top": 472.61,
+        "bottom": 501.41,
+        "left": 1236.05,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": false,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID-native writing, Markdown-first publishing."
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "About"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Store"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Author"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "PB[ArcBlog]PB"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "PB[ArcBlog]PB",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "en",
+      "page": "store",
+      "path": "/store",
+      "url": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 622.16,
+        "top": 622.16,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 741.3
+      },
+      "bottomBarTextContent": "RAW[]RAW",
+      "bottomBarInnerText": "RAW[]RAW",
+      "copyrightTextContent": "RAW[]RAW",
+      "copyrightInnerText": "RAW[]RAW",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">RAW[]RAW</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">RAW[]RAW</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1377.55,
+        "y": 703.3,
+        "top": 703.3,
+        "left": 1377.55,
+        "w": 67.95,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 721.3
+      },
+      "copyBox": {
+        "x": 1377.55,
+        "y": 703.3,
+        "top": 703.3,
+        "left": 1377.55,
+        "w": 67.95,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 721.3
+      },
+      "columnsBox": {
+        "x": 1236.05,
+        "y": 670.5,
+        "top": 670.5,
+        "left": 1236.05,
+        "w": 209.45,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 699.3
+      },
+      "linkUnion": {
+        "top": 670.5,
+        "bottom": 699.3,
+        "left": 1236.05,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": false,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID-native writing, Markdown-first publishing."
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "About"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Store"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Author"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "RAW[]RAW"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "RAW[]RAW",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "en",
+      "page": "author",
+      "path": "/?page=author",
+      "url": "http://arcblog.localhost:4939/?page=author",
+      "lang": "en",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 791.59,
+        "top": 791.59,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 910.73
+      },
+      "bottomBarTextContent": "A ${generate.year} Z",
+      "bottomBarInnerText": "A ${generate.year} Z",
+      "copyrightTextContent": "A ${generate.year} Z",
+      "copyrightInnerText": "A ${generate.year} Z",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">A ${generate.year} Z</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">A ${generate.year} Z</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1323.48,
+        "y": 872.73,
+        "top": 872.73,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 890.73
+      },
+      "copyBox": {
+        "x": 1323.48,
+        "y": 872.73,
+        "top": 872.73,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 890.73
+      },
+      "columnsBox": {
+        "x": 1236.05,
+        "y": 839.94,
+        "top": 839.94,
+        "left": 1236.05,
+        "w": 209.45,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 868.73
+      },
+      "linkUnion": {
+        "top": 839.94,
+        "bottom": 868.73,
+        "left": 1236.05,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": true,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID-native writing, Markdown-first publishing."
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "About"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Store"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "Author"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "A ${generate.year} Z"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "A ${generate.year} Z",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "zh",
+      "page": "index",
+      "path": "/",
+      "url": "http://arcblog.localhost:4939/?locale=zh",
+      "lang": "zh",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 1295.38,
+        "top": 1295.38,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 1414.52
+      },
+      "bottomBarTextContent": "A ${generate.year} Z",
+      "bottomBarInnerText": "A ${generate.year} Z",
+      "copyrightTextContent": "A ${generate.year} Z",
+      "copyrightInnerText": "A ${generate.year} Z",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">A ${generate.year} Z</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">A ${generate.year} Z</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1323.48,
+        "y": 1376.52,
+        "top": 1376.52,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 1394.52
+      },
+      "copyBox": {
+        "x": 1323.48,
+        "y": 1376.52,
+        "top": 1376.52,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 1394.52
+      },
+      "columnsBox": {
+        "x": 1280.56,
+        "y": 1343.72,
+        "top": 1343.72,
+        "left": 1280.56,
+        "w": 164.94,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 1372.52
+      },
+      "linkUnion": {
+        "top": 1343.72,
+        "bottom": 1372.52,
+        "left": 1280.56,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": true,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID 原生写作，Markdown 优先发布。"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "关于"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "商店"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "作者"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "A ${generate.year} Z"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "A ${generate.year} Z",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "zh",
+      "page": "about",
+      "path": "/?page=about",
+      "url": "http://arcblog.localhost:4939/?page=about&locale=zh",
+      "lang": "zh",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 426.27,
+        "top": 426.27,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 545.41
+      },
+      "bottomBarTextContent": "PB[ArcBlog]PB",
+      "bottomBarInnerText": "PB[ArcBlog]PB",
+      "copyrightTextContent": "PB[ArcBlog]PB",
+      "copyrightInnerText": "PB[ArcBlog]PB",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">PB[ArcBlog]PB</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">PB[ArcBlog]PB</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1356.22,
+        "y": 507.41,
+        "top": 507.41,
+        "left": 1356.22,
+        "w": 89.28,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 525.41
+      },
+      "copyBox": {
+        "x": 1356.22,
+        "y": 507.41,
+        "top": 507.41,
+        "left": 1356.22,
+        "w": 89.28,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 525.41
+      },
+      "columnsBox": {
+        "x": 1280.56,
+        "y": 474.61,
+        "top": 474.61,
+        "left": 1280.56,
+        "w": 164.94,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 503.41
+      },
+      "linkUnion": {
+        "top": 474.61,
+        "bottom": 503.41,
+        "left": 1280.56,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": false,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID 原生写作，Markdown 优先发布。"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "关于"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "商店"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "作者"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "PB[ArcBlog]PB"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "PB[ArcBlog]PB",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "zh",
+      "page": "store",
+      "path": "/store",
+      "url": "http://arcblog.localhost:4939/store?locale=zh",
+      "lang": "zh",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 599.66,
+        "top": 599.66,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 718.8
+      },
+      "bottomBarTextContent": "RAW[]RAW",
+      "bottomBarInnerText": "RAW[]RAW",
+      "copyrightTextContent": "RAW[]RAW",
+      "copyrightInnerText": "RAW[]RAW",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">RAW[]RAW</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">RAW[]RAW</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1377.55,
+        "y": 680.8,
+        "top": 680.8,
+        "left": 1377.55,
+        "w": 67.95,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 698.8
+      },
+      "copyBox": {
+        "x": 1377.55,
+        "y": 680.8,
+        "top": 680.8,
+        "left": 1377.55,
+        "w": 67.95,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 698.8
+      },
+      "columnsBox": {
+        "x": 1280.56,
+        "y": 648,
+        "top": 648,
+        "left": 1280.56,
+        "w": 164.94,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 676.8
+      },
+      "linkUnion": {
+        "top": 648,
+        "bottom": 676.8,
+        "left": 1280.56,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": false,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID 原生写作，Markdown 优先发布。"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "关于"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "商店"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "作者"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "RAW[]RAW"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "RAW[]RAW",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    },
+    {
+      "viewport": "1803x908",
+      "locale": "zh",
+      "page": "author",
+      "path": "/?page=author",
+      "url": "http://arcblog.localhost:4939/?page=author&locale=zh",
+      "lang": "zh",
+      "vp": "1803x908",
+      "sessionFailed": false,
+      "footerPresent": true,
+      "footerH": 119.14,
+      "footerBox": {
+        "x": 333.5,
+        "y": 791.59,
+        "top": 791.59,
+        "left": 333.5,
+        "w": 1136,
+        "h": 119.14,
+        "right": 1469.5,
+        "bottom": 910.73
+      },
+      "bottomBarTextContent": "A ${generate.year} Z",
+      "bottomBarInnerText": "A ${generate.year} Z",
+      "copyrightTextContent": "A ${generate.year} Z",
+      "copyrightInnerText": "A ${generate.year} Z",
+      "copyrightExists": true,
+      "copyrightOuterHTML": "<p class=\"aup-footer-copyright\">A ${generate.year} Z</p>",
+      "barHTML": "<div class=\"aup-footer-bottom-bar\"><p class=\"aup-footer-copyright\">A ${generate.year} Z</p></div>",
+      "deepestCopyrightText": null,
+      "barBox": {
+        "x": 1323.48,
+        "y": 872.73,
+        "top": 872.73,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 890.73
+      },
+      "copyBox": {
+        "x": 1323.48,
+        "y": 872.73,
+        "top": 872.73,
+        "left": 1323.48,
+        "w": 122.02,
+        "h": 18,
+        "right": 1445.5,
+        "bottom": 890.73
+      },
+      "columnsBox": {
+        "x": 1280.56,
+        "y": 839.94,
+        "top": 839.94,
+        "left": 1280.56,
+        "w": 164.94,
+        "h": 28.8,
+        "right": 1445.5,
+        "bottom": 868.73
+      },
+      "linkUnion": {
+        "top": 839.94,
+        "bottom": 868.73,
+        "left": 1280.56,
+        "right": 1445.5
+      },
+      "footerContentRight": 1445.5,
+      "hasDollarBrace": true,
+      "hasDollarT": false,
+      "footerTexts": [
+        {
+          "cls": "aup-footer-brand-title",
+          "tag": "DIV",
+          "text": "ArcBlog"
+        },
+        {
+          "cls": "aup-footer-brand-tagline",
+          "tag": "DIV",
+          "text": "DID 原生写作，Markdown 优先发布。"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "关于"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "商店"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "作者"
+        },
+        {
+          "cls": "aup-footer-link",
+          "tag": "A",
+          "text": "RSS"
+        },
+        {
+          "cls": "aup-footer-copyright",
+          "tag": "P",
+          "text": "A ${generate.year} Z"
+        }
+      ],
+      "sideFooterCopyright": {
+        "text": "A ${generate.year} Z",
+        "cls": "aup-footer-copyright"
+      },
+      "bodyOverflowX": {
+        "de_sw": 1803,
+        "de_cw": 1803
+      }
+    }
+  ]
+}

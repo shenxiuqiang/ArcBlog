@@ -336,7 +336,7 @@
           }
         ],
         "bottomBar": {
-          "copyright": "© 2026 ArcBlog"
+          "copyright": "$t(wrapper.footer-copyright)"
         }
       }
     }

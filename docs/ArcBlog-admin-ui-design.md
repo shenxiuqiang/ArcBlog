@@ -127,6 +127,8 @@
 
 公共页页脚（`app-footer`）的固定排版：**横线在页脚顶边**（不是内容与版权之间），随后是「品牌 + 标语」在左；**右侧是一块右对齐的两行**——第 1 行站点链接（About / Store / Author / RSS），第 2 行 `© 2026 ArcBlog`，两行右边缘与页脚内容右边缘对齐（`REQ-026` / UI-013：页脚总高 **139.14px → 119.14px**，省掉原来那条全宽版权底栏行；实现在 theme-bridge 的 `CHROME_CSS`：`.aup-app-footer` 用 `display:grid` 两行两列，`.aup-footer-top{display:contents}` 让链接块成为网格项；`≤640px` 回退平台堆叠布局）。
 
+> **版权文案只有一个来源（REQ-027 / UI-015，2026-09-28）**：7 个公共页 + 控制台侧栏页脚共 8 处渲染点**一律**写 `bottomBar={copyright: "$t(wrapper.footer-copyright)"}`（侧栏由 `scripts/console-nav.mjs` 生成），**不再各页硬编码**；键值只在 `.aup/locales/{en,zh}.json` 的 `wrapper.footer-copyright` 维护（平台 `app-footer` 渲染器对 `copyright` 只做 `String()`/`textContent`，`$t()` 由 daemon 侧解析——实测见 [UI-015](team/design/UI-015-copyright-single-source.md)）。**不要**在 `wrapper.aup`/页面里再写一份年份：`wrapper.aup` 的 i18n 块在运行期不生效，写了也改不动页面。放弃动态年份的原因（`${generate.*}` 在所有渲染位置都原样输出、`propBind` 冷加载投影为空）与复验数值同见 UI-015。
+
 | 规则 | 落地方式 |
 | --- | --- |
 | 横线在顶边、内部无横线 | 覆盖 `.aup-app-footer` 的 `border-top` 与 `.aup-footer-bottom-bar` 的 `border-top` |
