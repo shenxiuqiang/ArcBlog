@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "req": "REQ-026",
+    "kind": "regression",
+    "origin": "http://arcblog.localhost:4939",
+    "auth": true,
+    "startedAt": "2026-09-28T07:45:49.074Z",
+    "finishedAt": "2026-09-28T07:45:58.772Z"
+  },
+  "pages": {
+    "posts": {
+      "url": "http://arcblog.localhost:4939/?page=posts",
+      "lang": "en",
+      "chromeStylePresent": true,
+      "cssHasV3": true,
+      "cssHasCopyQr": true,
+      "cssHasFooterLinkPad": true,
+      "cssHasFooterTopEdge": true,
+      "cssText": ".aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}.aup-footer-bottom-bar{border-top:0;padding-top:0}.aup-footer-columns[data-count=\"1\"]{grid-template-columns:auto;justify-items:end}.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}.aup-app-footer:not(.aup-build-info-footer){flex-direction:row;flex-wrap:wrap;align-items:flex-start}.aup-footer-top{flex:1 1 auto;min-width:0}.aup-footer-bottom-bar{padding-top:4px}.aup-action[data-variant=\"destructive\"]{color:var(--color-text)}.aup-action[data-variant=\"destructive\"]:not(:hover) .aup-icon-svg{color:var(--color-error)}.aup-action[data-variant=\"destructive\"]:hover{color:var(--color-surface)}.aup-copy-btn,.aup-qr-btn{min-width:24px;min-height:24px;display:inline-flex;align-items:center;justify-content:center}.aup-footer-link{display:inline-block;padding:4px 0}",
+      "destructive": {
+        "count": 30,
+        "color": "rgb(26, 26, 31)",
+        "borderTopColor": "rgb(197, 48, 48)",
+        "backgroundColor": "color(srgb 0.772549 0.188235 0.188235 / 0.12)",
+        "variant": "destructive",
+        "h": 29,
+        "iconColor": "rgb(197, 48, 48)"
+      },
+      "copyQr": {
+        "count": 0,
+        "minW": null,
+        "minH": null,
+        "classes": []
+      },
+      "footer": {
+        "present": false
+      }
+    },
+    "categories": {
+      "url": "http://arcblog.localhost:4939/?page=categories",
+      "lang": "en",
+      "chromeStylePresent": true,
+      "cssHasV3": true,
+      "cssHasCopyQr": true,
+      "cssHasFooterLinkPad": true,
+      "cssHasFooterTopEdge": true,
+      "cssText": ".aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}.aup-footer-bottom-bar{border-top:0;padding-top:0}.aup-footer-columns[data-count=\"1\"]{grid-template-columns:auto;justify-items:end}.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}.aup-app-footer:not(.aup-build-info-footer){flex-direction:row;flex-wrap:wrap;align-items:flex-start}.aup-footer-top{flex:1 1 auto;min-width:0}.aup-footer-bottom-bar{padding-top:4px}.aup-action[data-variant=\"destructive\"]{color:var(--color-text)}.aup-action[data-variant=\"destructive\"]:not(:hover) .aup-icon-svg{color:var(--color-error)}.aup-action[data-variant=\"destructive\"]:hover{color:var(--color-surface)}.aup-copy-btn,.aup-qr-btn{min-width:24px;min-height:24px;display:inline-flex;align-items:center;justify-content:center}.aup-footer-link{display:inline-block;padding:4px 0}",
+      "destructive": {
+        "count": 0,
+        "color": null,
+        "borderTopColor": null,
+        "backgroundColor": null,
+        "variant": null,
+        "h": null,
+        "iconColor": null
+      },
+      "copyQr": {
+        "count": 17,
+        "minW": 24,
+        "minH": 24,
+        "classes": [
+          "aup-copy-btn"
+        ]
+      },
+      "footer": {
+        "present": false
+      }
+    },
+    "hub": {
+      "url": "http://arcblog.localhost:4939/?page=hub",
+      "lang": "en",
+      "chromeStylePresent": true,
+      "cssHasV3": true,
+      "cssHasCopyQr": true,
+      "cssHasFooterLinkPad": true,
+      "cssHasFooterTopEdge": true,
+      "cssText": ".aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}.aup-footer-bottom-bar{border-top:0;padding-top:0}.aup-footer-columns[data-count=\"1\"]{grid-template-columns:auto;justify-items:end}.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}.aup-app-footer:not(.aup-build-info-footer){flex-direction:row;flex-wrap:wrap;align-items:flex-start}.aup-footer-top{flex:1 1 auto;min-width:0}.aup-footer-bottom-bar{padding-top:4px}.aup-action[data-variant=\"destructive\"]{color:var(--color-text)}.aup-action[data-variant=\"destructive\"]:not(:hover) .aup-icon-svg{color:var(--color-error)}.aup-action[data-variant=\"destructive\"]:hover{color:var(--color-surface)}.aup-copy-btn,.aup-qr-btn{min-width:24px;min-height:24px;display:inline-flex;align-items:center;justify-content:center}.aup-footer-link{display:inline-block;padding:4px 0}",
+      "destructive": {
+        "count": 4,
+        "color": "rgb(26, 26, 31)",
+        "borderTopColor": "rgb(197, 48, 48)",
+        "backgroundColor": "color(srgb 0.772549 0.188235 0.188235 / 0.12)",
+        "variant": "destructive",
+        "h": 29,
+        "iconColor": "rgb(197, 48, 48)"
+      },
+      "copyQr": {
+        "count": 21,
+        "minW": 24,
+        "minH": 24,
+        "classes": [
+          "aup-copy-btn",
+          "aup-qr-btn"
+        ]
+      },
+      "footer": {
+        "present": false
+      }
+    }
+  }
+}

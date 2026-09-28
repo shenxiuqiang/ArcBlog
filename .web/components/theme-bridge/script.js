@@ -55,6 +55,22 @@
     '.aup-footer-bottom-bar{border-top:0;padding-top:0}',
     '.aup-footer-columns[data-count="1"]{grid-template-columns:auto;justify-items:end}',
     '.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}',
+    // REQ-026 (task-61, corrected口径): the © line must be a SECOND row *under* the link row
+    // and both rows must end on the footer's content right edge (右下角). The platform DOM has
+    // no right-hand group container — `footer.aup-app-footer > .aup-footer-top > [brand, columns]`
+    // plus `.aup-footer-bottom-bar` — so `.aup-footer-top` is dissolved with `display:contents`
+    // and its two children join the footer's own grid: brand in column 1, the link column in
+    // column 2 / row 1 (bottom-aligned) and the © bar in column 2 / row 2. `row-gap:4px`
+    // replaces the platform's 24px row gap, so the footer measures 139.14px -> 119.14px
+    // (measured 2026-09-28, UI-013 v2). The previous single-row flex version (97.14px) put the
+    // © on the links' line and is deliberately gone. `:not(.aup-build-info-footer)` keeps the
+    // platform's fixed build-info footer out. REVERT = delete this one line (the platform's
+    // column layout comes straight back). No `!important`.
+    '.aup-app-footer:not(.aup-build-info-footer){display:grid;grid-template-columns:1fr auto;align-items:start;row-gap:4px}.aup-footer-top{display:contents}.aup-footer-columns{grid-column:2;grid-row:1;align-self:end;justify-self:end}.aup-footer-bottom-bar{grid-column:2;grid-row:2;justify-self:end}',
+    // ≤640px: the platform stacks the footer, and the 1fr/auto grid above would have to fit the
+    // brand (min-width:240px) next to the 209px link column. Hand the narrow breakpoint back to
+    // the platform's own column layout; revert = delete this line too.
+    '@media(max-width:640px){.aup-app-footer:not(.aup-build-info-footer){display:flex;flex-direction:column;gap:16px}.aup-footer-top{display:flex}.aup-footer-columns{grid-column:auto;grid-row:auto;align-self:auto;justify-self:auto}.aup-footer-bottom-bar{grid-column:auto;grid-row:auto;justify-self:auto}}',
     // V3 / WCAG 2.1 AA (UI-009 §3.A-ii, approved by L-R13-1): the platform's
     // destructive variant paints text+border+icon all in --color-error, which
     // lands at 3.99:1 rest / 3.64:1 hover on the 12% tint. Keep the red on the

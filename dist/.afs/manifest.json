@@ -556,9 +556,9 @@
     },
     {
       "path": ".web/components/theme-bridge/script.js",
-      "size": 12315,
+      "size": 14207,
       "contentType": "text/javascript",
-      "sha256": "8a02ceebc43379853bcaa46961eaa585999a81237787fcd1966ce63e87294559"
+      "sha256": "affc859e66b71a0dcfdf1db06c344ee37ecfe480d88553d57497477155f4bc8b"
     },
     {
       "path": ".web/components/theme-bridge/style.css",
@@ -1336,15 +1336,15 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 132772,
+      "size": 133815,
       "contentType": "text/markdown",
-      "sha256": "c2d80d498b031dcfe1d1d18894eaba2e61f443edb653adfb32cf9951e7e3695b"
+      "sha256": "7b224315ecbaca3e0f10e42d65d10906a7c93e1dd0c7566e8b0d222b0e14964d"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 64512,
+      "size": 64935,
       "contentType": "text/markdown",
-      "sha256": "b42f93ae4b3defa9f2b7e98bdec24543aa000f6b0cce9e59521981b434802c37"
+      "sha256": "289cdf7dd6e93d57f272753d59903955d5da5cbaca7aaeba10b668a45a3e1d58"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
@@ -1683,6 +1683,132 @@
       "sha256": "64622996d0bc32658ef095f22efc7d09c78949b6585ee8c8e0f62e33d725ada1"
     },
     {
+      "path": "docs/team/design/raw/REQ-026-after-guest-7pages.json",
+      "size": 84014,
+      "contentType": "application/json",
+      "sha256": "9d95f773ae6b0073bd45863230ab9338134975f7270ce78e84135396a1a1615f"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-after-guest.json",
+      "size": 188542,
+      "contentType": "application/json",
+      "sha256": "b2976e04b540843c3aba5a0b62076d97e93756e183fb4f27e9102359b80dfc8c"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-after.json",
+      "size": 328936,
+      "contentType": "application/json",
+      "sha256": "db41a2145e83fc087bb383692a22eff607d35a140dc3631697b034c1000bcdee"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-before.json",
+      "size": 328519,
+      "contentType": "application/json",
+      "sha256": "9874a85a8658beeef02382dd790f56d0cc4f00a8d80de830179fd82ffa3e1da3"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-compare.mjs",
+      "size": 2605,
+      "contentType": "text/javascript",
+      "sha256": "041a560645afb296b97dac2a88a6cd7c33df4d1167d8f8ca5309ff9da7522bc0"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-mobile-390.json",
+      "size": 13201,
+      "contentType": "application/json",
+      "sha256": "b2248e8c7d7b41f87af938969a5fad1538ccfd1a524372d818301a783213d402"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-probe.mjs",
+      "size": 16852,
+      "contentType": "text/javascript",
+      "sha256": "1c4d6348b55beb656c996fea0794388140e31544bc9df577860db0c637f389ce"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-regression.json",
+      "size": 5035,
+      "contentType": "application/json",
+      "sha256": "5c65b2f4184cad8e168b6a0ea690d7f3bcc3c481c5b4e8db3bc965b98b916696"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-regression.mjs",
+      "size": 6894,
+      "contentType": "text/javascript",
+      "sha256": "3a9fc7b825fe524afcc671f928476627825b03d6eedcec8e171c03b7bb98fa73"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026-shot.mjs",
+      "size": 4309,
+      "contentType": "text/javascript",
+      "sha256": "43183c85eb4c718c5506b9dbb2cacb509de273f157d1ccc5a286765793de2124"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-after-guest-7pages.json",
+      "size": 90374,
+      "contentType": "application/json",
+      "sha256": "c409e31e8337b2bb01b720efc53f8c06e730b77f60d1ab31634a3af463067c29"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-after.json",
+      "size": 354414,
+      "contentType": "application/json",
+      "sha256": "fe32a08c03803d51f194d9fc36a30c49f77499952567ecf67cb9c61e32702739"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-before.json",
+      "size": 365842,
+      "contentType": "application/json",
+      "sha256": "b96463a1e7d57a9732d8c69142f245487a900d271619f11df461f91d3ebce87e"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-buildinfo.json",
+      "size": 3313,
+      "contentType": "application/json",
+      "sha256": "33073ccdea4929b70964ae680d0aae9422499b6e8efb289bdacda94f330742ce"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-buildinfo.mjs",
+      "size": 8186,
+      "contentType": "text/javascript",
+      "sha256": "2a5616d552966b0c01df1454d25fa3f439c25d872b3429aaf960a6260cb42eca"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-compare.mjs",
+      "size": 3490,
+      "contentType": "text/javascript",
+      "sha256": "e41f2f487a16d0abcd3f31e853d51685b61aa85b9954be55c40d0fe7b1cad220"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-final.json",
+      "size": 14273,
+      "contentType": "application/json",
+      "sha256": "a46cea9686fe48327bb6c01a6935d36fda9fcaf9b3ba0bf662c2ea7d5a238eea"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-mobile-390.json",
+      "size": 14525,
+      "contentType": "application/json",
+      "sha256": "ef1c58116b71125f26f028bc8c2c3d62afe61839245764857c39d1ddd8e873ef"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-probe.mjs",
+      "size": 18029,
+      "contentType": "text/javascript",
+      "sha256": "ddf8e3062280bdf9b0bb62db8b070c94b5eac6115ce7d58ae87891b8672a624e"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-regression.json",
+      "size": 4142,
+      "contentType": "application/json",
+      "sha256": "1a7109632fcf9840182ce16296d18ccca54f8c4f0953585f4d828382d44d4e3e"
+    },
+    {
+      "path": "docs/team/design/raw/REQ-026b-regression.mjs",
+      "size": 9494,
+      "contentType": "text/javascript",
+      "sha256": "c539d9637115143e8a1b814620e735094bbcfb8a8e37f8869af24295025f4caf"
+    },
+    {
       "path": "docs/team/design/raw/UI-007-admin.json",
       "size": 376894,
       "contentType": "application/json",
@@ -1887,6 +2013,36 @@
       "sha256": "dab81bd8c94a5b942bd9c0b7eedea5e783888639d403524ea0e217db419ff710"
     },
     {
+      "path": "docs/team/design/screenshots/REQ-026-before-1803-en.png",
+      "size": 61023,
+      "contentType": "image/png",
+      "sha256": "ebe7b47deea2d1601ac5126f76f53d9fde4412180748fc142c6c03df1f7bad5a"
+    },
+    {
+      "path": "docs/team/design/screenshots/REQ-026-v1after-1512-zh.png",
+      "size": 54492,
+      "contentType": "image/png",
+      "sha256": "9847ae0965226838b1151f9076dee2ea381caee37399746f49d31746a78246a6"
+    },
+    {
+      "path": "docs/team/design/screenshots/REQ-026-v1after-1803-en.png",
+      "size": 57630,
+      "contentType": "image/png",
+      "sha256": "73195b30da0b9031842e2805c20c90fe4acc7972d176c82f6ae6de1fc5cb3182"
+    },
+    {
+      "path": "docs/team/design/screenshots/REQ-026b-after-1512-zh.png",
+      "size": 54394,
+      "contentType": "image/png",
+      "sha256": "9d15d8b7c909b16a86751323cf0460c3291999b6872357babab950760522898f"
+    },
+    {
+      "path": "docs/team/design/screenshots/REQ-026b-after-1803-en.png",
+      "size": 58134,
+      "contentType": "image/png",
+      "sha256": "e19acbabeb12f82c1f5e18b3f492c273ed905f33c2664a565c35e288a3299ec6"
+    },
+    {
       "path": "docs/team/design/screenshots/UI-001-hero-dot-focus-after-zoom.png",
       "size": 26685,
       "contentType": "image/png",
@@ -1987,6 +2143,12 @@
       "size": 27658,
       "contentType": "text/markdown",
       "sha256": "7dc9ebcc5bf71cf1f6a9005cc71b15a97a7267f97d00b2c556b0d35e7785a12a"
+    },
+    {
+      "path": "docs/team/design/UI-013-footer-bottom-right.md",
+      "size": 24961,
+      "contentType": "text/markdown",
+      "sha256": "eff61a3ac088fe4473158d89ec49ece783a9cf0141b1c94b3975240eb78436c8"
     },
     {
       "path": "docs/team/journal/README.md",
@@ -2239,6 +2401,138 @@
       "size": 147517,
       "contentType": "image/png",
       "sha256": "f354730b399557d9d76e85f6de9ecbbb5eaa63026485068ed2c350e7a136d8e9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-npmtest.txt",
+      "size": 2449,
+      "contentType": "text/plain",
+      "sha256": "05d58cfe9e661e7a0d48cb692e0b69848a8655684df4786fa8c15a77a46efbe3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-reverify-probe.log",
+      "size": 4845,
+      "contentType": "text/plain",
+      "sha256": "9777452d2cfa7c7254767dd2c0c7ae7d1f755b797994ce0e20f171fc766423fd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-reverify-probe.mjs",
+      "size": 22471,
+      "contentType": "text/javascript",
+      "sha256": "862a18aac487f512953e4c3677e427703e59ca77469234ca30c2a55ab43b6c0e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-reverify-v1.json",
+      "size": 194515,
+      "contentType": "application/json",
+      "sha256": "e8524e7e254b178e9a43b8f2b5f959cf863669e03e105f9fe9ad4efb132ef650"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-reverify.json",
+      "size": 194515,
+      "contentType": "application/json",
+      "sha256": "e8524e7e254b178e9a43b8f2b5f959cf863669e03e105f9fe9ad4efb132ef650"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-validate.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026-validate.json",
+      "size": 1849,
+      "contentType": "application/json",
+      "sha256": "9a9006d6175094f9a543bb850c363e8e7bdce1820b8ae4c2f9c53fd5eae20777"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-git-evidence.txt",
+      "size": 3545,
+      "contentType": "text/plain",
+      "sha256": "fd90e8e456d43db2b86e6b9dcb9746f660699d6fb53f907ae162e956b4de94c4"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-npmtest.txt",
+      "size": 2447,
+      "contentType": "text/plain",
+      "sha256": "3cbdecefb17d3a1a9b2830e2ff43a02fd7ad53b63b8929168736f8ec8ab819de"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-assert.txt",
+      "size": 363,
+      "contentType": "text/plain",
+      "sha256": "9099bbce668a69dc09d14a9ce909b9167f8058c59444548f7639cc719a9ef4cd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-footer-1512-zh.png",
+      "size": 52932,
+      "contentType": "image/png",
+      "sha256": "09b370ad8632da6fb0794ed86aaa8f39f4a3502625221fb6273b06b20c46dfc1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-footer-1803-en.png",
+      "size": 56382,
+      "contentType": "image/png",
+      "sha256": "beb1407fedfb88b648a2d1623355b66390b8cb60a10baa7a4f9ee9fe9b82fa64"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-hover.log",
+      "size": 940,
+      "contentType": "text/plain",
+      "sha256": "54ccaf9e227776d203200d3db9fc9786f0cf8b1a6f93b423e741f5c5f452d81f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-hover.mjs",
+      "size": 4610,
+      "contentType": "text/javascript",
+      "sha256": "1a51f6e0f9e632fc3c0fb7309fa3aaa885808d5e104f8990b8094e8f43cbc438"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-reverify.json",
+      "size": 246433,
+      "contentType": "application/json",
+      "sha256": "619d9ac39c93cf06974aadfc88e96fdb8e5c7f38bfe0a88eac06bfa47ccf762f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-reverify.log",
+      "size": 10526,
+      "contentType": "text/plain",
+      "sha256": "8a2b8066032575e4df077b259586ca2fb6442a2f4c26991750a1802d778084dc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-reverify.mjs",
+      "size": 28210,
+      "contentType": "text/javascript",
+      "sha256": "c0d781a9759b46abd00254fa03148759149e3727ba6087c0a0da905613b2ac39"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-shot.log",
+      "size": 854,
+      "contentType": "text/plain",
+      "sha256": "9c79556f6638cd6f3e8882e68215e6d1a43377a59deb34423046df32ffecfc85"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-shot.mjs",
+      "size": 3970,
+      "contentType": "text/javascript",
+      "sha256": "b4d934ec427256622da9013bfa58ba24882e89425df3e425dd50062e3caa324d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-qa-summary.txt",
+      "size": 5650,
+      "contentType": "text/plain",
+      "sha256": "020ce8b0ba10af58cbbb09bb39049443ee8f2e43a9382ee2cff6e37389c21f8b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/REQ-026b-validate.json",
+      "size": 1849,
+      "contentType": "application/json",
+      "sha256": "9a9006d6175094f9a543bb850c363e8e7bdce1820b8ae4c2f9c53fd5eae20777"
+    },
+    {
+      "path": "docs/team/test-reports/REQ-026-reverify.md",
+      "size": 16070,
+      "contentType": "text/markdown",
+      "sha256": "3c9d7ceca90670aed4874bd80fc2d82e424d8b7c31f49c8a35e1ec7ae72c08d1"
     },
     {
       "path": "docs/team/test-reports/round-10.md",

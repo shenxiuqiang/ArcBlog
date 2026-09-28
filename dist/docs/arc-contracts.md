@@ -1012,6 +1012,19 @@ view probe-tabs mode=tabs {
 
 ### 21.15 页脚排版：分割线在顶边、链接横排（平台 CSS 覆盖）
 
+**2026-09-28 更新（REQ-026 / UI-013）**：版权行不再独占全宽底栏，改为**右侧两块两行**（链接行 + `©` 行，均右对齐）。实现从 v1 的一条 flex 规则换成 grid（`CHROME_CSS` 内，删 2 行即可回退）：
+
+```
+.aup-app-footer:not(.aup-build-info-footer){display:grid;grid-template-columns:1fr auto;align-items:start;row-gap:4px}
+.aup-footer-top{display:contents}
+.aup-footer-columns{grid-column:2;grid-row:1;align-self:end;justify-self:end}
+.aup-footer-bottom-bar{grid-column:2;grid-row:2;justify-self:end}
+```
+
+真实 DOM 里 links 是 `.aup-footer-top` 的**孙节点**，所以必须 `display:contents` 才能让它与品牌一起成为 footer 的网格项。
+实测：页脚高 **139.14px → 119.14px**；链接行与 `©` 行不相交（`copyTop − linkBottom = +4px`），两者右边缘与内容右边缘差 **0px**；
+en/zh × 1803×908/1512×765 四组 `scrollWidth == clientWidth`、无相交；7 个公共页一致；`≤640px` 回退平台堆叠布局（`©` 贴左，范围外）。
+
 平台 `app-footer` 原语的 DOM/样式是固定的（bundle 证据 + 线上 `aup-app.css` 实测）：
 
 ```
