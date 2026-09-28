@@ -4,13 +4,25 @@ page hub {
     approve-msg { en "The relation becomes indexed. Only meaningful for applied relations." zh "关系将变为 indexed。仅对 applied 状态的申请有意义。" }
     approve-title { en "Approve this application?" zh "通过这条申请？" }
     approved-ok { en "Approved — relation is indexed." zh "已通过——关系为 indexed。" }
+    apply-desc { en "A Studio applies to a Hub by DID; the relation stays applied until the Hub approves it." zh "Studio 以 DID 向 Hub 提交申请；在 Hub 通过前关系保持 applied。" }
+    apply-title { en "Apply to a Hub (Studio → Hub)" zh "申请收录（Studio → Hub）" }
+    cmd-add { en "Index a Studio (Hub side)" zh "主动收录 Studio（Hub 侧）" }
+    cmd-index-rebuild { en "Rebuild the content index" zh "重建内容索引" }
+    cmd-register { en "Apply" zh "提交申请" }
+    cmd-show { en "Inspect a relation" zh "查看关系" }
+    cmd-show-row { en "Inspect this Hub" zh "查看该 Hub" }
+    cmd-sync { en "Report a sync result" zh "上报同步结果" }
+    cmd-sync-row { en "Retry / report this Hub" zh "重试 / 上报该 Hub" }
     cli-desc { en "Relation ids are derived from the Hub DID by hashing, which the UI cannot compute — add a Studio and rebuild the index with:" zh "收录记录的 id 由 Hub DID 哈希派生，界面无法计算——主动收录与索引重建请使用：" }
     cli-title { en "Add & rebuild via CLI" zh "主动收录与索引重建（CLI）" }
     desc { en "Studio ↔ Hub relations and the derived content index. Indexing is the Hub's sovereignty: it only ever carries metadata, never the source body." zh "Studio ↔ Hub 收录关系与派生内容索引。索引是 Hub 的主权行为：只承载元数据，永不承载原文。" }
+    did-shape { en "Hub DID must start with did: (did:key:z… or did:…). This is a text-shape note only — this page does not validate a DID against any chain." zh "Hub DID 必须以 did: 开头（did:key:z… 或 did:…）。此处只做文本形态说明——本页不校验 DID 的链上有效性。" }
+    direction-legend { en "direction studio = this Studio applied to the Hub · direction hub = the Hub indexed this Studio on its own initiative (§70.2). Both directions live in one list: a per-direction filter would go through the AFS query index, and editing a record leaves that index entry stale, so the row would silently disappear (docs/arc-contracts.md §15)." zh "direction studio = 本 Studio 申请收录到该 Hub · direction hub = 该 Hub 主动收录了本 Studio（§70.2）。两个方向同处一个列表：按方向过滤要走 AFS 查询索引，而记录被编辑后索引条目会变陈旧，该行会静默消失（docs/arc-contracts.md §15）。" }
     gate-desc { en "Sign in with DID Wallet to curate Studios and the content index." zh "使用 DID Wallet 登录后管理 Studio 收录与内容索引。" }
     gate-title { en "Hub console" zh "Hub 管理" }
     index-card { en "Content index" zh "内容索引" }
     index-empty { en "Index is empty. Rebuild: node scripts/arcblog-network.mjs hub index rebuild" zh "索引为空。重建：node scripts/arcblog-network.mjs hub index rebuild" }
+    id-hash { en "The record id and file name are the first 16 hex characters of SHA-256(Hub DID) — this UI has no hashing primitive, so it cannot compose that path. Writing hub/registrations from the page would create a second record next to the CLI's own; apply and index with the commands above." zh "记录 id 与文件名 = SHA-256(Hub DID) 的前 16 位十六进制——本界面没有哈希原语，拼不出该路径。若从页面写 hub/registrations，会与 CLI 自己写的记录并存成两条；申请与收录请用上面的命令。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     purge { en "Purge" zh "彻底删除" }
     purge-msg { en "Deletes the tombstone entirely. Prefer Terminate for auditability." zh "将记录彻底删除。为了可审计性，建议使用「终止」。" }
@@ -23,13 +35,16 @@ page hub {
     label-direction { en "Direction" zh "方向" }
     label-freshness { en "Freshness" zh "新鲜度" }
     label-relation { en "Relation" zh "关系" }
-    relations { en "Studio relations" zh "收录关系" }
+    relations { en "Studio ↔ Hub relations" zh "Studio ↔ Hub 收录关系" }
     relations-empty { en "No relations yet. A Studio applies with: node scripts/arcblog-network.mjs hub register --hub-did <did>" zh "还没有收录关系。Studio 申请：node scripts/arcblog-network.mjs hub register --hub-did <did>" }
     relations-legend { en "applied = awaiting review · indexed = live · removed = terminated (Tombstone kept) · freshness fresh/stale/never/offline (derived by `hub refresh`; offline = last sync failed)" zh "applied = 待审核 · indexed = 已收录 · removed = 已终止（保留 Tombstone）· 新鲜度 fresh/stale/never/offline（由 hub refresh 派生；offline = 最近一次同步失败）" }
+    retry-note { en "Retry is per Hub: report one Hub's sync result with its own row command. One Hub's failure never blocks another (§113) — this page has no batch or serial action." zh "重试是逐 Hub 的：用该行的命令单独上报某个 Hub 的同步结果。一个 Hub 的失败不阻塞其他 Hub（§113）——本页不提供批量或串行动作。" }
     status-index { en "Status" zh "状态" }
     status-note { en "The dot and the status text are read from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so relation / direction / freshness / status keep their machine values next to the local labels — docs/arc-contracts.md §28.8." zh "色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此 relation / direction / freshness / status 保留原始机器值，并与本地化标签同排显示——docs/arc-contracts.md §28.8。" }
     status-registration { en "Status" zh "状态" }
+    sync-hint { en "Sync view of this Studio as reported by the Hub (spec §112). — means the field has no value yet (never synced); nothing is invented in its place." zh "Hub 上报的对本 Studio 的同步视图（spec §112）。— 表示该字段尚无值（从未同步）；不会伪造数值。" }
     title { en "Hub console" zh "Hub 管理" }
+    write-failed { en "Write failed — verify the record with hub show (a success toast is not proof)." zh "写入失败——请用 hub show 复核记录（成功 toast 不是证据）。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -137,7 +152,7 @@ page hub {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :relations level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:relations-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/registrations" {
-                  row gap=sm cross=center role=item {
+                  row gap=sm cross=start role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace} format=did title="${entry.content.hubDid}"
                       row gap=xs cross=center {
@@ -154,21 +169,32 @@ page hub {
                           time mode=display value="${entry.content.updatedAt}" timeMode=relative
                         }
                       }
+                      key-value-list hub-sync-fields dense=true fields=[{label: "sync.status", value: "${entry.content.sync.status}"}, {label: "sync.lastSync", value: "${entry.content.sync.lastSync}"}, {label: "sync.lastVersion", value: "${entry.content.sync.lastVersion}"}, {label: "sync.lastError", value: "${entry.content.sync.lastError}"}]
+                      key-value-list hub-row-cmds dense=true fields=[{label: "$t(hub.cmd-show-row)", value: "node scripts/arcblog-network.mjs hub show --hub-did ${entry.content.hubDid}", monospace: true, copyable: true}, {label: "$t(hub.cmd-sync-row)", value: "node scripts/arcblog-network.mjs hub sync --hub-did ${entry.content.hubDid} --status error --error <message>", monospace: true, copyable: true}]
                     }
-                    action variant=secondary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge-title, message: :purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                    action variant=secondary size=sm label=:approve confirm={title: :approve-title, message: :approve-msg} onSuccessToast={intent: success, message: "$t(hub-admin.approved-ok)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:reject confirm={title: :reject-title, message: :reject-msg} onSuccessToast={intent: success, message: "$t(hub-admin.rejected-ok)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge-title, message: :purge-msg} onSuccessToast={intent: success, message: "$t(hub-admin.purged-ok)", duration: 2500} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"}
                     input type=hidden name=ePath value="${entry.path}"
                   }
                 }
                 p :relations-legend scale=sm intent=muted
+                p :direction-legend scale=sm intent=muted
+                p :retry-note scale=sm intent=muted
+                p :sync-hint scale=sm intent=muted
                 p :status-note scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :apply-title level=3 style={fontSize: "var(--type-body)"}
+                p :apply-desc intent=muted
+                key-value-list hub-apply-cmds dense=true fields=[{label: "$t(hub.cmd-register)", value: "node scripts/arcblog-network.mjs hub register --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-show)", value: "node scripts/arcblog-network.mjs hub show --hub-did <did>", monospace: true, copyable: true}]
+                p :did-shape scale=sm intent=muted
+                p :id-hash scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :cli-title level=3 style={fontSize: "var(--type-body)"}
                 p :cli-desc intent=muted
-                p "node scripts/arcblog-network.mjs hub add --hub-did <did>" scale=sm style={fontFamily: monospace}
-                p "node scripts/arcblog-network.mjs hub index rebuild" scale=sm style={fontFamily: monospace}
+                key-value-list hub-inbound-cmds dense=true fields=[{label: "$t(hub.cmd-add)", value: "node scripts/arcblog-network.mjs hub add --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-index-rebuild)", value: "node scripts/arcblog-network.mjs hub index rebuild", monospace: true, copyable: true}, {label: "$t(hub.cmd-sync)", value: "node scripts/arcblog-network.mjs hub sync --hub-did <did> [--version <n>] [--hash <h>] [--status never|ok|stale|error] [--error <message>]", monospace: true, copyable: true}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :index-card level=3 style={fontSize: "var(--type-body)"}

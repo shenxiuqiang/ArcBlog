@@ -28,7 +28,7 @@ page compose-edit {
   view gap=lg style={height: "100vh", overflow: visible} {
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
-        h2 :gate-title level=2
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=muted
         row cross=start {
           action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose-edit&cancel_to=%2F%3Fpage%3Dcompose-edit" variant=primary label=:login
@@ -36,9 +36,9 @@ page compose-edit {
       }
       view gap=lg visible=$session.authenticated {
         view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} visible="!$state.post" {
-          h2 :title level=2
+          h2 :title level=2 style={fontSize: "var(--type-subheading)"}
           p :not-found intent=muted
-          action -> page posts variant=ghost label=:back
+          action -> page posts variant=ghost label=:back style={borderRadius: "var(--radius-md, 8px)", padding: "5px 12px"}
         }
         view gap=lg visible=$state.post {
           view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {

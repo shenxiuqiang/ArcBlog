@@ -55,6 +55,13 @@
     '.aup-footer-bottom-bar{border-top:0;padding-top:0}',
     '.aup-footer-columns[data-count="1"]{grid-template-columns:auto;justify-items:end}',
     '.aup-footer-column{flex-direction:row;flex-wrap:wrap;gap:20px}',
+    // V3 / WCAG 2.1 AA (UI-009 §3.A-ii, approved by L-R13-1): the platform's
+    // destructive variant paints text+border+icon all in --color-error, which
+    // lands at 3.99:1 rest / 3.64:1 hover on the 12% tint. Keep the red on the
+    // 1px border and the icon and let the text carry the readable colour.
+    '.aup-action[data-variant="destructive"]{color:var(--color-text)}',
+    '.aup-action[data-variant="destructive"]:not(:hover) .aup-icon-svg{color:var(--color-error)}',
+    '.aup-action[data-variant="destructive"]:hover{color:var(--color-surface)}',
   ].join('');
 
   function injectChromeStyles(p) {

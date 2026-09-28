@@ -1530,3 +1530,26 @@ aup:exec:result → {"validationFailed":[{"id":"…-input-6","errors":[{"rule":"
 `test-reports/round-11-reverify.md` 与 Dev 的 R11F 报告）；**QA 未独立复现**该条（复现需要在页面里放
 `pattern` 探针，属 QA 写范围外）。因此本节按「单次实测、证据原始输出齐全、未二次复现」收录，
 后续若有人复跑出不同结果，以新证据为准并回来修订。
+
+### 29.6 `action` 的 `style` 只转发**部分键**：`padding`/`borderRadius` 生效，`minHeight` 被静默丢弃（Round 13 实测）
+
+想让一个矮按钮达到 WCAG 2.5.8 的 24×24 命中区时，最自然的写法是给 `action` 加
+`style={minHeight: "24px"}`。Round 13 的 P0–P3 探针矩阵实测（`?page=compose-edit` 的 `Back to studio`，
+admin / 1803×908）：
+
+| 探针 | 写入 | 渲染后 `style` 属性 | `rect` | computed `min-height` |
+| --- | --- | --- | --- | --- |
+| P0 | 不改 | `null` | 115×19 | `0px` |
+| P1 | `padding: "12px 0"` | `padding: 12px 0px;` | 115×43 | `0px` |
+| P2 | `minHeight: "24px"` | **`null`** | 115×19 | `0px` |
+| P3 | `borderRadius` + `padding` + `minHeight` | `border-radius…; padding: 12px 0px;` | 115×43 | `0px` |
+
+源代码与 `dist/.aup/…` 里确实带着 `minHeight: "24px"`（`grep` 可证），说明它进了解析、被 style
+**转发白名单**丢掉。**结论**：命中区尺寸只能靠 `padding`（或平台 `size` 档）来保证；`minHeight` 不可依赖。
+
+### 29.7 `hub list` / `hub show` **读取即回写**派生的 freshness 字段（Round 13 实测）
+
+`scripts/arcblog-network.mjs` 的 hub 读取路径会刷新 `freshness.checkedAt` 与记录的 `updatedAt`
+（spec §75/§76 的派生语义）。所以「只读一次 hub 列表」也会让记录看起来刚被改过，
+对比 `updatedAt` 判断「谁改了这条记录」时必须把这层写回排除在外。
+注意它**不是** §29.2 的 authority-sidecar 问题，也不会改变 `sync.lastVersion` 的类型（BUG-016 未复发）。

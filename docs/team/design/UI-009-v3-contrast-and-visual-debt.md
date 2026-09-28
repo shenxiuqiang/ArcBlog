@@ -129,9 +129,12 @@ Dev 的 task-35 改动（.aup/** + scripts/console-nav.mjs + arcblog-doctor.mjs 
 | 快照 | 数量 | 文件 |
 | ---- | ---- | ---- |
 | **10:20（Dev 改动前）** | **10 处 / 8 文件** | `admin/posts.aup:179,216` · `admin/pages.aup:165,192` · `site/categories.aup:130` · `site/heroes.aup:148` · `site/tags.aup:174` · `ops/factory.aup:210` · `ops/hub.aup:156` · `preview.aup:36` |
-| **10:41（本轮最终，Dev task-35 已收口 categories）** | **9 处 / 7 文件** | 同上**去掉** `site/categories.aup` |
+| **10:41（Dev task-35 已收口 categories 后的中间快照）** | **9 处 / 7 文件** | 同上去掉 `site/categories.aup`；**行号列当时沿用了 10:20 的行号（BUG-028），已作废** |
+| **Round 13 刷新（BUG-028 修复后真值；`task-35` + `task-40` 均已落盘）** | **9 处 / 7 文件** | `admin/pages.aup:169,196` · `admin/posts.aup:183,220` · `site/heroes.aup:152` · `site/tags.aup:178` · `ops/factory.aup:214` · `ops/hub.aup:177` · `preview.aup:36` |
 
-> REQ-014 A3 说「PM 实测 10」：**10 是 10:20 快照的真值**；Dev 本轮把它变成 **9**。两者都登记，**不把任一写成永久真值**。
+> REQ-014 A3 说「PM 实测 10」：**10 是 10:20 快照的真值**；Dev 把它变成 **9**。两者都登记，**不把任一写成永久真值**。
+>
+> **BUG-028 刷新（Round 13，UI）**：10:41 行的行号是 10:20 快照的复用值——Dev 的 `task-35` 给每个控制台页侧栏插入 `nav-diagnostics`（`action` + 分隔 `view` 共 4 行），7 个控制台页整体 **+4**（`preview.aup:36` 不受影响）；本轮 `task-40`（REQ-015）又在 `compose-edit`/`hub` 插入多行，**`ops/hub.aup` 再 `:160 → :177`**。以上「Round 13 刷新」行 = `grep -rn "variant=destructive" .aup/pages --include=*.aup` 的**当前真值**，逐条见 [UI-010](UI-010-v3-aii-implementation.md) §4。
 
 #### ② 渲染实例（可见 `[data-variant="destructive"]`，本轮 CDP，单标签页）
 
@@ -392,7 +395,7 @@ mix(hex('#8b1a1a'),0.12,CARD); ratio(hex('#8b1a1a'), mix(hex('#8b1a1a'),0.12,CAR
 | `?page=appearance` 的 `auto-surface`（内层 20px / 21.6px 标题 / 平台阴影） | **保持** | **平台原语**，内部结构不读页面内联 `style`；标准 §3.3/§3.4 已写入免责（V1.7/D3） |
 | `--color-dim` 在卡片底上 **4.57:1** | **保持**（登记为回归风险） | 达标，余量 +0.07；建议把「dim on card ≥4.5」列入主题回归断言（Dev/测试范围），**本轮不动** |
 | 平台 hover 的 `background: var(--color-error)` 实心红 | **保持** | 是平台既有交互语言；A-ii 只改其文字色（5.47 ✅），不改底色 |
-| `?page=tags` 的 `tags.aup:174` 计数为 0 | **不是缺陷** | 行列表为空 → 按钮不渲染（数据驱动） |
+| `?page=tags` 的 `tags.aup:178` 计数为 0 | **不是缺陷** | 行列表为空 → 按钮不渲染（数据驱动）。（行号随 BUG-028 一处刷新：`174 → 178`） |
 | `?page=categories` 计数由 3 → 0 | **预期** | Dev 按 REQ-013 §2.1② 5(a) 把裸删除收口为 CLI 指引（§15.4 红线），**不是 V3 的回归** |
 | `?page=` 深链在并发写窗口的静默归一化 | **仍未定性** | 探针 1/7 共 26 次单标签页导航**无回落**，但探针 1 与 Dev 持锁重叠 → 只作旁证；沿用 UI-007 §7.3「待 200 次定性」 |
 | 标准 §4.3「文字 `--color-danger`」的措辞 | **建议下一轮做一次事实对齐** | 实测 `--color-danger` 只是别名；本轮按 REQ-014 A6（只允许登记指向）**只加了一行指向**（§7.2），**未改**期望值 |
@@ -471,7 +474,7 @@ PROBE 9  [targets before] pages=1                    [targets after] pages=1
 | # | 断言 | 命令 / 表达式 | 期望 |
 | - | ---- | ------------- | ---- |
 | S1（A2 复算） | 报告比值可独立复算（±0.02） | `node docs/team/design/raw/UI-009-contrast.mjs` | `3.99 FAIL`（静息）、`3.64 FAIL`（hover 实测）、`12.65 PASS`（A-ii 静息）、`5.47 PASS`（A-ii hover） |
-| S2（A3 影响面） | 源码使用点数 = `grep` 真值 | `grep -rn "variant=destructive" .aup/pages --include=*.aup \| wc -l` | 10:20 = **10**；Dev 收口 categories 后 = **9**（不得写死为永久值） |
+| S2（A3 影响面） | 源码使用点数 = `grep` 真值 | `grep -rn "variant=destructive" .aup/pages --include=*.aup \| wc -l` | 10:20 = **10**；收口 categories 后 = **9**（不得写死为永久值）。**Round 13 真值**（BUG-028 刷新，含 `task-40` 后行号）：`pages.aup:169,196` · `posts.aup:183,220` · `heroes.aup:152` · `tags.aup:178` · `factory.aup:214` · `hub.aup:177` · `preview.aup:36` |
 | S3（A4 推荐不依赖未验证假设） | A-ii 不依赖「平台读 `--color-danger`」「tokens.json 生效」 | 读 §3.A/§4.1 | 成立 |
 | S4（V3 修复后） | `?page=posts` 首个 destructive 静息 | `(() => { const b=document.querySelector('[data-variant="destructive"]'); const c=getComputedStyle(b); return [c.color, c.borderTopColor, c.backgroundColor]; })()` | `["rgb(26, 26, 31)", "rgb(197, 48, 48)", "color(srgb 0.772549 0.188235 0.188235 / 0.12)"]` |
 | S5（V3 hover） | 强制 hover 后文字/图标为浅色 | `CSS.forcePseudoState({nodeId, forcedPseudoClasses:["hover"]})` + 上式 | `color === "rgb(255, 255, 255)"`、`background === "rgb(197, 48, 48)"`、图标同色（≠ 红） |

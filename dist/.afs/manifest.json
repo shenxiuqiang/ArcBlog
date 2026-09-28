@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 53054,
+      "size": 54840,
       "contentType": "application/json",
-      "sha256": "138d13c774fe9a54c64f2fb3e2e5e284999431aaee2c1d3644d19b427cd27a77"
+      "sha256": "26677a065daebea63cba0fbda87f4e23ff9b5cd68b3b1c2469c322fb5b581eec"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 51289,
+      "size": 52982,
       "contentType": "application/json",
-      "sha256": "ea3b99d8ec49d000bdf4828256f6b77a256303849a8579645a695e5fee91341f"
+      "sha256": "ca97852f8b598c56d76d7bf0a376300672b9c9d95a866f587b757764af8228c3"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -208,9 +208,9 @@
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
-      "size": 7683,
+      "size": 7830,
       "contentType": "application/octet-stream",
-      "sha256": "30fef2cda626d19c35d087d2c831c46c84d2e23a24f9d3e134cfa003ea6f4925"
+      "sha256": "b0bbebf86a82acb65f2ac96e7f3a9c6786ae2e909b9ce9d6d40c36403f45b461"
     },
     {
       "path": ".aup/pages/admin/compose.aup",
@@ -298,9 +298,9 @@
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 17306,
+      "size": 22789,
       "contentType": "application/octet-stream",
-      "sha256": "2f447f7fa4c7614de56536cbb9d28845b7addec990ef6ebd416337e51f5404f5"
+      "sha256": "dcc00e73fd3bfd02282ca255212ac49694118b43ef0d359eff53e9ce8faf25e3"
     },
     {
       "path": ".aup/pages/ops/media.aup",
@@ -544,9 +544,9 @@
     },
     {
       "path": ".web/components/theme-bridge/script.js",
-      "size": 10962,
+      "size": 11527,
       "contentType": "text/javascript",
-      "sha256": "88ab6d700948cd987487db85f611b86ede7041ecfc35831d886590e6cbdea21b"
+      "sha256": "58e457617363bb74f809f4b8ac30e9a18e975d325bfd562c064463d5ba6cfc55"
     },
     {
       "path": ".web/components/theme-bridge/style.css",
@@ -1324,21 +1324,21 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 129582,
+      "size": 131167,
       "contentType": "text/markdown",
-      "sha256": "64f7d9b866441933274e65e924c5dc85c74387b4c357f2b8969d64bdb28329c4"
+      "sha256": "3fdb5b1ded6e3f5011c304e804fcf85ce4da678bc73fb96b8be23d02fdf6c714"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 56602,
+      "size": 64302,
       "contentType": "text/markdown",
-      "sha256": "7482666c0f4c4abdfee757d471658d270136f958e7db540ff41e9e3cbf45d6df"
+      "sha256": "9ce86f3514c4550264c41560838d7ba3a1976c0b82976823a106b10acb5c6075"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 51095,
+      "size": 53690,
       "contentType": "text/markdown",
-      "sha256": "8288ed940cd85de8a85249ca6c70668fd4fa4a4a16ceb08215628e2abadf768b"
+      "sha256": "505c1173292c345e18df098be6802e2aed39ebb8340d0289aa0f24fc829d22c4"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1450,9 +1450,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 297160,
+      "size": 354857,
       "contentType": "text/markdown",
-      "sha256": "4f203ddc555fd82ca0dc538a3579379eaa790348a349f7bfe6cb5daa21a78760"
+      "sha256": "afacc1392ac8ca86770d646150bd09f01ed9a80eb6499d52601ee40735a6f474"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1629,6 +1629,12 @@
       "sha256": "5bab7b85ce6ff8c7b11a4b27aa8cab23b155181c796600d2e014b8e7e31bbd18"
     },
     {
+      "path": "docs/team/bugs/BUG-029-hub-help-omits-refresh-subcommand.md",
+      "size": 3467,
+      "contentType": "text/markdown",
+      "sha256": "bcfea94440c10d96cf99703f43833ddb80f13562d8a42ca3fcfb4de966d212f1"
+    },
+    {
       "path": "docs/team/design/raw/UI-007-admin.json",
       "size": 376894,
       "contentType": "application/json",
@@ -1681,6 +1687,18 @@
       "size": 23992,
       "contentType": "application/json",
       "sha256": "e251c0f0d2f104063f6bfd2f8ef3111589ba342581d87885524ae147f09faaad"
+    },
+    {
+      "path": "docs/team/design/raw/UI-010-cdp-probes.txt",
+      "size": 3521,
+      "contentType": "text/plain",
+      "sha256": "b92a04c61548975c6eef490befff009e26ce5cd4605886f29d041606f63eef64"
+    },
+    {
+      "path": "docs/team/design/raw/UI-010-contrast-output.txt",
+      "size": 1476,
+      "contentType": "text/plain",
+      "sha256": "1808a91d6bc14b900e1e2ca740d70ff9d0a93f23fb927b09f5f27d438b60ef67"
     },
     {
       "path": "docs/team/design/review-console.md",
@@ -1762,15 +1780,21 @@
     },
     {
       "path": "docs/team/design/UI-009-v3-contrast-and-visual-debt.md",
-      "size": 44526,
+      "size": 45698,
       "contentType": "text/markdown",
-      "sha256": "778216f9714cd40671f5a549ddd162d67f4578d5bda0456b0cad222e9a5aabc2"
+      "sha256": "4254ca66b1e84f01f7c461494288aa708fa7dcfd69264846f04ac5c2b454b5d2"
+    },
+    {
+      "path": "docs/team/design/UI-010-v3-aii-implementation.md",
+      "size": 29593,
+      "contentType": "text/markdown",
+      "sha256": "e7155ec4337ea7fb5d6e219e2b9d3f96d80f8f378a17240323fc22a624aeaecf"
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 14332,
+      "size": 17477,
       "contentType": "text/markdown",
-      "sha256": "afb7b30450f423eee13afe4e859e639897d2285217da32b7ce58e673bf2c7898"
+      "sha256": "95a56965a1172d0bfcd2432a1a890258a0ab9db44c9d5b5e528e13ad6a64e9fd"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -1789,6 +1813,12 @@
       "size": 28926,
       "contentType": "text/markdown",
       "sha256": "7f1e90bf99d4b97d775318f1910d95db3b93cdde6cb9c2b98c1bbfc1a3b8b8ad"
+    },
+    {
+      "path": "docs/team/journal/round-13.md",
+      "size": 24826,
+      "contentType": "text/markdown",
+      "sha256": "5839bfba1aff39d55ca6d817a8ca7ae4db948b2e139da7616135d2a00b3984a5"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -1911,6 +1941,18 @@
       "sha256": "e7e895b2a7155fdfd52b523e82470ca3e2356861a3230737476e68d464abcd86"
     },
     {
+      "path": "docs/team/requirements/REQ-015-hub-registration-and-compose-edit.md",
+      "size": 29017,
+      "contentType": "text/markdown",
+      "sha256": "d2b49901bfab5ef0a35c913e34e342d8d59d8c44c3111f92b7ec16360fd4073a"
+    },
+    {
+      "path": "docs/team/requirements/REQ-016-v3-aii-and-visual-debt.md",
+      "size": 25291,
+      "contentType": "text/markdown",
+      "sha256": "4b3f1a334c69d094486cc7904379047daf5341b0b307b5970a3c225c2a4b6026"
+    },
+    {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
       "size": 18476,
       "contentType": "text/markdown",
@@ -2005,6 +2047,12 @@
       "size": 46061,
       "contentType": "text/markdown",
       "sha256": "8db2fac0f263c11472d2b132720ab2a1624eb0b14558b36d184ff05688ca67ae"
+    },
+    {
+      "path": "docs/team/test-reports/round-13.md",
+      "size": 41898,
+      "contentType": "text/markdown",
+      "sha256": "0760404ca0242c31b06c6b389097eba36b52942e5830a1ae28fcc926fb93201c"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",

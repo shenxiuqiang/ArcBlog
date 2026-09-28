@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.7（Round 11 · 2026-09-28，授权书 **D27 文档对齐：D1–D5 + V3/V8 裁定写入标准**：§3.3 写入 gate 卡 20px 豁免（D1，引 Lead D4）与 `auto-surface` 免责（D3）；§4.3 尺寸档高度改准为实测口径 36/38/29px（D2）；§2.1 菜单项内边距改准为 `8px 20px 8px 32px`（D5）；§2.5 + §9 写入「节数 ≥ 18 侧栏自滚可接受、页脚须可滚动到达」（V8/D24）；§4.3 记录 destructive 文字 3.99:1 为 R12 设计项（V3/D23）；另附带对齐 3 处过期的节数示例值（5 组 18 项）。**期望值、断言表达式、§9 条目结构逐字节未动**；逐条 before/after 见 [UI-008](team/design/UI-008-standard-gap-closure.md)）· V1.6（Round 11 · 2026-09-28，授权书 **L-R11-2 事实对齐**：§2.1「选中菜单项 / 当前菜单项」两行由「深色实心块（`background: var(--color-text)`）」改为实测的平台 `active=true` **强调色块**（`--color-accent-bg` / `--color-accent`，与 §2.3 第 122 行一致），并把「两者文字左缩进均为 20px」改准为实测 **32px**；期望值与 §9 条目未动。逐条 before/after 见 [UI-007](team/design/UI-007-console-pixel-walkthrough.md) §7.2）· V1.5（Round 10 · 2026-09-28 落盘（授权书 2026-09-27，**L-R10-1 事实对齐**）：**残留收口**——(a) §9 第 2 条条目文字里的 `console-pane` 按 §2.5 / §8 既有范式标注为本文档的**概念名**（条目判据与 `^□` 十二条不变）；(b) 附录 A.1 的参考 CSS 类名与提示词模板里的 `console-pane` / `console-shell` 同范式标注（CSS 骨架与 `docs/reference/console-shell-layout.html` 引用未动）；(c) 附录三处 §2.3 交叉引用改准为「§2.3 结构 + §2.5 滚动」（双滚动条那处直指 §2.5）。三项**只做事实对齐**：期望值、§9 条目结构、两个等价断言块逐字节未动。逐条 before/after 见 [UI-006](team/design/UI-006-appendix-residuals.md)，上一轮见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)）
+**文档版本：** V1.8（Round 13 · 2026-09-28，授权书 **Lead L-R13-1** + [REQ-016](team/requirements/REQ-016-v3-aii-and-visual-debt.md) §1.5 四项 + 版本行：§4.3 的 destructive 现状块由「记为 R12 设计项」改为**已实施**（路径 A-ii：静息文字 `var(--color-text)` 12.65:1、hover 文字 `var(--color-surface)` 5.47:1，红只留 1px 描边 + 图标；令牌与 `.aup` 零改动）；§3.1 新增「平台 `destructive` variant 文字/描边/图标同色 → 与淡底同色相时破 AA」的口径；§9 新增 **2 条**条目与对应可执行断言（`destructive` 静息/hover ≥4.5:1；命中区 ≥24×24，按 REQ-015 R3 探针**态①** 写硬断言）；§3.4 补 **D6** 判据（卡片内 `h2` 承担该页唯一可见标题 → 17px）；另把 §4.3 姊妹行「V3 方案指向」的状态词从「未实施」对齐为「已实施」。**既有期望值、既有断言表达式、既有 §9 条目逐字节未动**（§9 只增不减）；逐条 before/after 与原始实测值见 [UI-010](team/design/UI-010-v3-aii-implementation.md)）· V1.7（Round 11 · 2026-09-28，授权书 **D27 文档对齐：D1–D5 + V3/V8 裁定写入标准**：§3.3 写入 gate 卡 20px 豁免（D1，引 Lead D4）与 `auto-surface` 免责（D3）；§4.3 尺寸档高度改准为实测口径 36/38/29px（D2）；§2.1 菜单项内边距改准为 `8px 20px 8px 32px`（D5）；§2.5 + §9 写入「节数 ≥ 18 侧栏自滚可接受、页脚须可滚动到达」（V8/D24）；§4.3 记录 destructive 文字 3.99:1 为 R12 设计项（V3/D23）；另附带对齐 3 处过期的节数示例值（5 组 18 项）。**期望值、断言表达式、§9 条目结构逐字节未动**；逐条 before/after 见 [UI-008](team/design/UI-008-standard-gap-closure.md)）· V1.6（Round 11 · 2026-09-28，授权书 **L-R11-2 事实对齐**：§2.1「选中菜单项 / 当前菜单项」两行由「深色实心块（`background: var(--color-text)`）」改为实测的平台 `active=true` **强调色块**（`--color-accent-bg` / `--color-accent`，与 §2.3 第 122 行一致），并把「两者文字左缩进均为 20px」改准为实测 **32px**；期望值与 §9 条目未动。逐条 before/after 见 [UI-007](team/design/UI-007-console-pixel-walkthrough.md) §7.2）· V1.5（Round 10 · 2026-09-28 落盘（授权书 2026-09-27，**L-R10-1 事实对齐**）：**残留收口**——(a) §9 第 2 条条目文字里的 `console-pane` 按 §2.5 / §8 既有范式标注为本文档的**概念名**（条目判据与 `^□` 十二条不变）；(b) 附录 A.1 的参考 CSS 类名与提示词模板里的 `console-pane` / `console-shell` 同范式标注（CSS 骨架与 `docs/reference/console-shell-layout.html` 引用未动）；(c) 附录三处 §2.3 交叉引用改准为「§2.3 结构 + §2.5 滚动」（双滚动条那处直指 §2.5）。三项**只做事实对齐**：期望值、§9 条目结构、两个等价断言块逐字节未动。逐条 before/after 见 [UI-006](team/design/UI-006-appendix-residuals.md)，上一轮见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -256,6 +256,7 @@
 * **一个页面最多出现一个语义色焦点**——满页红色等于没有红色。
 * 状态用"色点 + 文字"双编码（`● Online`），不只用颜色（色盲友好）。
 * 边线优先于阴影：后台用 `1px border` 分区，不用厚重投影。
+* **平台 `destructive` variant 的文字 / 描边 / 图标同色**（都取 `--color-error`，页面写法里的 `--color-danger` 只是它的别名）；**当文字与淡底同色相时会破 AA**，必须由 `color` 覆写或 variant 选择处理（现状与已实施口径见 §4.3；Round 13 实测，[UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md) §1.1/§1.5）。
 
 ### 3.2 圆角与边线
 
@@ -301,6 +302,7 @@ lg    32px    页面大区块之间
 * 文章标题等关键文字 `line-height: 1.25`，允许 `clamp()` 流式缩放。
 * **数字、DID、哈希、金额**使用等宽/表格数字呈现，避免宽度抖动。
 * 行内不堆砌超过 3 个信息层级。
+* **D6 判据（Round 13 补齐，解决 R1b 歧义）**：**卡片内的 `h2` 若承担该页唯一可见标题 → 按页面标题（17px，`var(--type-subheading)`）判定**，否则按卡片标题（15px，`var(--type-body)`）判定。例：`?page=compose-edit` 的 not-found 卡 `h2 :title` 是该页唯一可见标题 → **17px**；同页 gate 卡 `h2 :gate-title` 是卡片内标题 → **15px**（依据：[UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md) §6.1、[REQ-015](team/requirements/REQ-015-hub-registration-and-compose-edit.md) §3 A2/A3、[UI-010](team/design/UI-010-v3-aii-implementation.md) §6）。
 
 ---
 
@@ -351,9 +353,9 @@ Danger      需确认           删除、撤销质押、退款
 | 层级 | 每屏一个 `primary`；次级用 `secondary`（accent 淡底）或 `ghost`；破坏性操作 `destructive` |
 | 列表行内按钮 | 若行是 `layout=grid itemStyle=card`，行必须 `cross=start`，否则按钮被拉伸到卡片等高（实测 140px） |
 
-> **已知现状 · destructive 按钮文字对比度 3.99:1（Lead D23 裁定：本轮不修，记为 R12 设计项）**：行内 `variant=destructive size=sm` 按钮的文字 `--color-danger`（`#c53030`）叠在该 variant 自带的 danger 12% 淡化底上（合成 `rgb(235,216,213)`），实测对比度 **3.99:1 < WCAG 2.1 AA 正文 4.5:1**（13.6px 正常字重，无大字豁免）；受影响可见按钮 `?page=posts` 34 个（首屏 30）、`?page=hub` 4 个、`?page=factory` 6 个。这是**平台 variant 的运行时色值 + 页面用法的组合**，不是令牌本身选错——`--color-danger` 单独用在页面底 / 卡片底上分别是 **5.23:1 / 4.76:1**（均达标）。Lead **D23**（Round 11，2026-09-28）裁定**本轮不修**，记为 **R12 设计项**（需要令牌级方案：加深危险色，或文字改用 `--color-text`、只让描边/图标承担红色）；在 R12 给出方案前**不改任何主题令牌**。实测与复现见 UI-007 §4 与 V3。
+> **已知现状 · destructive 按钮文字对比度（Round 11 记 3.99:1 → Round 13 已实施修复，闭环）**：行内 `variant=destructive size=sm` 按钮的文字色由平台规则写成 `--color-error`（`#c53030`；`--color-danger` 只是别名，改写无效），叠在该 variant 自带的 danger 12% 淡化底上（合成 `rgb(235,216,213)`）实测 **3.99:1 < WCAG 2.1 AA 正文 4.5:1**（13.6px 正常字重，无大字豁免）；平台 hover 把底色变成**实心红**并把文字取成 `--color-on-accent`（`#09090b`）→ **3.64:1 ❌**——两态皆破，受影响可见按钮（UI-007 计数）`?page=posts` 34 个（首屏 30）、`?page=hub` 4 个、`?page=factory` 6 个（Round 13 复测 `?page=posts` 为 **38** 个，属列表数据变化、非回归）。这是**平台 variant 的运行时色值 + 页面用法的组合**，不是令牌本身选错——`--color-error` 单独用在页面底 / 卡片底上分别是 **5.23:1 / 4.76:1**（均达标）。Lead **D23**（Round 11）曾裁定记为 R12 设计项；**Round 13 已实施**（Lead **L-R13-1** 批准路径 **A-ii**，UI `task-41`）：`.web/components/theme-bridge/` 的 `CHROME_CSS` 追加 3 条覆写——**静息文字 `var(--color-text)`（实测 12.65:1 ✅）、hover 文字 `var(--color-surface)`（实测 5.47:1 ✅）、非 hover 图标 `var(--color-error)`**；**红改由 1px 描边 + 图标承担**，主题令牌与 `.aup` 零改动，回退 = 删 3 行 CSS。10 个 palette/mode 组合复算：静息 **10/10**、hover **10/10** 均 ≥4.5（最低 6.32 warm/dark、4.53 neutral/dark）。实测原始值、复现命令与已验证断言见 UI-007 §4/V3、[UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md) §3.A-ii、[UI-010](team/design/UI-010-v3-aii-implementation.md) §5。
 
-> **V3 方案指向（Round 12 · UI-009；本轮只提议、未实施，L-R12-2）**：见 [UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md)。本轮实测更正两点事实——① 平台 destructive 规则消费的是 **`--color-error`**（`:root{--color-danger:var(--color-error)}`，改写 `--color-danger` 对按钮**无效**）；② **`.web/themes/*/tokens.json` 不参与控制台**（控制台只加载 Google Fonts + `aup-core.css` + `aup-app.css`）。因此令牌路径必须落在 `--color-error` 上，或改走「文字中性、红由描边 + 图标承担」的用法路径（UI-009 §3/§4）。
+> **V3 方案指向（Round 12 · UI-009 只提议；Round 13 已按 A-ii 实施，L-R13-1）**：见 [UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md)。本轮实测更正两点事实——① 平台 destructive 规则消费的是 **`--color-error`**（`:root{--color-danger:var(--color-error)}`，改写 `--color-danger` 对按钮**无效**）；② **`.web/themes/*/tokens.json` 不参与控制台**（控制台只加载 Google Fonts + `aup-core.css` + `aup-app.css`）。因此令牌路径必须落在 `--color-error` 上，或改走「文字中性、红由描边 + 图标承担」的用法路径（UI-009 §3/§4）；**本轮已选择后者并落地**（见上一段与 [UI-010](team/design/UI-010-v3-aii-implementation.md)）。
 
 ### 4.4 空状态
 
@@ -488,6 +490,8 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 □ 克制：没有为填满空间而存在的内容
 □ 点击去向（§2.6）：控制台页面框架内切换；公共/独立页面与非 HTML 资源新标签页；
   右侧内容里不存在会把控制台整页替换掉的链接（断言见本节末，期望 0）
+□ 对比度：`[data-variant="destructive"]` 静息与 `:hover` 的文字/底对比度均 ≥4.5:1（WCAG 2.1 AA，无大字豁免）
+□ 命中区：可点击控件的命中区 ≥24×24（WCAG 2.5.8）；`data-kind=back` 的平台配方（`padding:0;min-height:0`）必须被页面内联 `padding` 覆盖（断言见本节末）
 ```
 
 末条的可执行断言（**执行前提：admin 会话、视口 1803×908**；在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
@@ -526,6 +530,61 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 原断言实测（2026-09-27，admin 会话，视口 1803×908）：17/17 控制台页均为 `0`。**更正（2026-09-28，BUG-010 修复后复跑，见 [UI-005](team/design/UI-005-bug014-measurement-note.md)）**：原文把去掉 `!el.querySelector('.aup-app-header')` 后 `?page=compose` 的计数写作非零（BUG-010 之前的旧测量为 `2`，命中框架 chrome 两条链接），那是 BUG-010 之前的旧测量；修复后同一探针在 1803×908 与 1512×765 复跑，**去掉过滤后 `?page=compose` 均为 `0`**（`.pop()` 已直接命中内容列，该过滤项在 compose 上不产生差异），漂移改在 `?page=appearance` 上重现（1512×765 带 / 不带过滤均为 `1`，`.pop()` 命中侧栏容器）。命中项都不属于右侧内容区，**期望值仍为 `0`，判定以等价断言为准**（成因与两视口原始 JSON 见 §2.6）。
 
 等价断言实测（**UI 自跑**，admin 会话，两视口原始 JSON 见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md) §2）：**BUG-010 修复后**（2026-09-28 00:3x）`?page=compose` / `?page=appearance` / `?page=posts` / `?page=tags` / `?page=dashboard` 在 1803×908 与 1512×765 下**全部**为 `candidates: 1, total: 0`；**BUG-010 修复前**（2026-09-28 00:2x）`?page=compose` 两视口均为 `candidates: 0`（该页当时没有内容列滚动容器，属 [BUG-010](team/bugs/BUG-010-compose-appearance-missing-content-scroll-container.md) 的实现缺口，断言此时**不通过**，而非旧的空心放行）。全部控制台页的复跑由 QA-004（`task-14`）在同一 admin 会话内执行。
+
+**对比度断言（Round 13 · V3 A-ii 实施后新增；执行前提同上：admin 会话、1803×908）**——静息态用下面这段**只读**页面断言（本片段已在实例上跑通，原始输出见 [UI-010](team/design/UI-010-v3-aii-implementation.md) §5.3：`restRatio 12.64 / backdrop rgb(235, 216, 213) / pass true`）：
+
+```js
+// [data-variant="destructive"] 静息：文字 vs 12% 淡底合成到实测 --card-bg —— 期望 >= 4.5 且 pass === true
+(() => {
+  const nums = (s) => (s.match(/[\d.]+/g) || []).map(Number);
+  const rgb255 = (s) => {              // 'rgb(r, g, b)' 0-255 或 'color(srgb r g b / a)' 0-1，也接受 hex
+    if (s.trim().startsWith('color(')) { const v = nums(s); return v.slice(0, 3).map((x) => Math.round(x * 255)); }
+    if (s.trim().startsWith('#')) { const h = s.trim().slice(1); const f = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+      return [0, 2, 4].map((i) => parseInt(f.slice(i, i + 2), 16)); }
+    return nums(s).slice(0, 3);
+  };
+  const alpha = (s) => { const v = nums(s); return v.length > 3 ? v[3] : 1; };
+  const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return Math.round(((x + 0.05) / (y + 0.05)) * 100) / 100; };
+  const root = getComputedStyle(document.documentElement);
+  const card = rgb255(root.getPropertyValue('--card-bg'));
+  const cs = getComputedStyle(document.querySelector('[data-variant="destructive"]'));
+  const a = alpha(cs.backgroundColor);
+  const backdrop = rgb255(cs.backgroundColor).map((v, i) => Math.round(v * a + card[i] * (1 - a)));
+  const css = (document.getElementById('arcblog-chrome-style') || {}).textContent || '';
+  return {
+    restRatio: ratio(rgb255(cs.color), backdrop),      // 期望 >= 4.5（Round 13 实测 12.64）
+    restText: cs.color,                                // 期望 'rgb(26, 26, 31)'（natural/light 的 --color-text）
+    backdrop: 'rgb(' + backdrop.join(', ') + ')',       // 实测 'rgb(235, 216, 213)'
+    textIsTextToken: rgb255(cs.color).join() === rgb255(root.getPropertyValue('--color-text')).join(),
+    hoverRuleInjected: css.includes('[data-variant="destructive"]:hover{color:var(--color-surface)}'),
+    pass: ratio(rgb255(cs.color), backdrop) >= 4.5 && css.includes(':hover{color:var(--color-surface)}'),
+  };
+})()
+```
+
+**hover 态**无法用页面内 JS 触发（`:hover` 不是可编程状态），按下述 CDP 配方判定（**覆盖色实验后必须等 ≥800ms** 再读 computed，平台 `transitionDuration = 0.15s`；Round 13 原始取值见 [UI-010](team/design/UI-010-v3-aii-implementation.md) §5.2：`color rgb(255, 255, 255)` / `bg rgb(197, 48, 48)` / 图标非红 / 比值 **5.47**）：
+
+```text
+# 同一 tab 内（单标签页纪律）：
+DOM.getDocument → DOM.querySelector('[data-variant="destructive"]') → nodeId
+CSS.forcePseudoState({ nodeId, forcedPseudoClasses: ["hover"] })   # 等 >=800ms
+Runtime.evaluate → getComputedStyle(btn).color / backgroundColor    # 期望 白字 on 实心红
+CSS.forcePseudoState({ nodeId, forcedPseudoClasses: [] })           # 复原
+```
+
+**命中区断言（WCAG 2.5.8 · Round 13 由 REQ-015 探针定为「`padding` 被 `action` 转发」= 态①）**：`?page=compose-edit` 的 `Back to studio`（`variant=ghost` + `data-kind=back`）页面内联 `padding: 5px 12px` 已覆盖平台 `padding:0;min-height:0` 配方，**实测 `rect 139×29`**（Round 13，1803×908，[UI-010](team/design/UI-010-v3-aii-implementation.md) §5.4），因此写为**硬断言**：
+
+```js
+// ?page=compose-edit：返回按钮命中区 —— 期望 h >= 24 && w >= 24（实测 139x29）
+(() => { const a = [...document.querySelectorAll('button,a')].find((x) => /Back to studio/i.test(x.innerText || ''));
+  if (!a) return { notFound: true };
+  const r = a.getBoundingClientRect();
+  return { w: Math.round(r.width), h: Math.round(r.height), pass: r.width >= 24 && r.height >= 24 }; })()
+```
+
+> 注：该按钮的 `font-size: 13px` 仍落在 §4.3 两档（14.4 / 13.6px）之外（平台 `data-kind=back` 配方），Round 13 未改（REQ-015 明令「不得为它单独引入 hack」，且此项不进验收硬门）。
 
 ---
 
