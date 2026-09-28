@@ -6,9 +6,15 @@
 // which REQ-019 §3.2 rules a failure: one console, one vocabulary.
 //
 //   pending   — queued; the local worker has not run it yet
+//   running   — in flight; the worker started it but has not written an outcome
 //   applied   — the work ran and the data changed      (terminal)
 //   rejected  — refused; no data changed               (terminal)
 //   noop      — nothing to do / already done           (terminal)
+//
+// `running` is an IN-FLIGHT state, not a terminal one (BUG-051 / L-R19-4): the
+// chain worker marks an intent `running` before it signs, and a dead worker must
+// leave it re-runnable, so `isTerminalStatus('running') === false` and the
+// in-flight set is `{pending, running}`.
 //
 // Both `pending` and every terminal word must carry a non-empty `message`
 // (a terminal record without a reason is unreadable to the operator).
@@ -24,6 +30,7 @@ import { nowIso } from './arc.mjs';
 /** The canonical words. Use `INTENT_STATUS.applied` in code, never a literal. */
 export const INTENT_STATUS = Object.freeze({
   pending: 'pending',
+  running: 'running',
   applied: 'applied',
   rejected: 'rejected',
   noop: 'noop',
@@ -35,6 +42,15 @@ export const INTENT_STATUSES = Object.freeze(Object.values(INTENT_STATUS));
 /** A record in one of these states is finished: never executed again. */
 export const TERMINAL_STATUSES = Object.freeze(
   new Set([INTENT_STATUS.applied, INTENT_STATUS.rejected, INTENT_STATUS.noop]),
+);
+
+/**
+ * A record in one of these states still needs the worker: `pending` has never
+ * been claimed, `running` was claimed but its outcome was never written (a
+ * worker crashed mid-flight), so both are drained.
+ */
+export const IN_FLIGHT_STATUSES = Object.freeze(
+  new Set([INTENT_STATUS.pending, INTENT_STATUS.running]),
 );
 
 /**
@@ -60,6 +76,11 @@ export function isLegacyStatus(value) {
 /** True when `value` (canonical OR legacy) means "finished, do not re-run". */
 export function isTerminalStatus(value) {
   return TERMINAL_STATUSES.has(canonicalStatus(value));
+}
+
+/** True when `value` still needs the worker (`pending` / `running`). */
+export function isInFlightStatus(value) {
+  return IN_FLIGHT_STATUSES.has(canonicalStatus(value));
 }
 
 /**

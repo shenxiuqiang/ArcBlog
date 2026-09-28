@@ -160,6 +160,28 @@ export const TEST_RECORD_PREFIXES = [
   'store-test-',
   // `arcblog-node-nft.test.mjs` uses an isolated mock-chain ledger per run.
   'mock-chain-test-',
+  // BUG-048: the two node-NFT/chain test files write their isolated state and
+  // queue paths under `config/` + `node/` with a `<family>-<role>-<stamp>` name,
+  // and `arcblog-node-nft.test.mjs` / `arcblog-roles.test.mjs` do the same for
+  // their own resources. Residue with those names was invisible to the cleaner,
+  // so "ran the targeted live suite, cleaner says found=0" proved nothing.
+  // Every entry stays distinctive (`factories-test-` / `factories-worker-`, NOT
+  // a bare `factories-`, so `node/factories.json` can never match).
+  'nft-factories-test-',
+  'node-nft-test-',
+  'roles-test-',
+  'factories-test-',
+  'mock-worker-',
+  'nft-factories-worker-',
+  'node-nft-worker-',
+  'roles-worker-',
+  'factories-worker-',
+  'chain-intents-worker-',
+  // `arcblog-category.test.mjs` points ARCBLOG_CATEGORY_INTENTS_PATH at this
+  // isolated queue directory.
+  'category-intents-test-',
+  // `arcblog-content-sign.test.mjs` leaves `sign-keys-*` records in drafts/.
+  'sign-keys-',
 ];
 
 /** Does an AFS entry id look like test residue? */

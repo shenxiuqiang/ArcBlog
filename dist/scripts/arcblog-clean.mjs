@@ -45,6 +45,17 @@ export const CLEAN_DIRS = [
   'config/signing-keys',
   // per-test mock-chain ledgers live directly under config/ (id-prefixed).
   'config',
+  // BUG-048: the two console queues own directories of their own. A test that
+  // leaves an intent behind (or a directory named `<queue>-test-<stamp>` /
+  // `chain-intents-worker-<stamp>`) was invisible while only `config` itself was
+  // scanned, so the dry run could not prove a queue was clean.
+  'config/category-intents',
+  'config/media-intents',
+  // BUG-048: the node-NFT suites write the public projection under node/
+  // (`factories-test-*` / `factories-worker-*`), which was not scanned at all.
+  // Real records there (`factories.json`, `profile.json`, `identity.json`, …)
+  // never match a test prefix.
+  'node',
   'hub/registrations',
   'hub/index',
   'drafts',
@@ -122,7 +133,14 @@ export function main(argv = process.argv.slice(2)) {
 
     const found = findTestRecords(instance, dirs);
     const byDir = {};
-    for (const record of found) byDir[record.dir] = (byDir[record.dir] ?? 0) + 1;
+    const byPrefix = {};
+    for (const record of found) {
+      byDir[record.dir] = (byDir[record.dir] ?? 0) + 1;
+      // The prefix breakdown is what makes a dry run READABLE: it says which test
+      // family left what, instead of one opaque total (BUG-048 / C4).
+      const token = TEST_RECORD_PREFIXES.find((prefix) => String(record.matchedOn ?? record.id ?? '').startsWith(prefix));
+      if (token) byPrefix[token] = (byPrefix[token] ?? 0) + 1;
+    }
 
     const confirm = args.confirm === true || args.confirm === 'true';
     let removed = 0;
@@ -141,8 +159,10 @@ export function main(argv = process.argv.slice(2)) {
           confirm,
           found: found.length,
           removed,
+          dirsScanned: dirs.length,
           byDir,
-          sample: found.slice(0, 10).map((record) => `${record.dir}/${record.id}`),
+          byPrefix,
+          sample: found.slice(0, 25).map((record) => `${record.dir}/${record.id}`),
           hint: confirm ? '' : 'dry run — re-run with --confirm to delete',
         },
         null,

@@ -106,17 +106,63 @@ test('a console-shaped intent is drained through the adapter and recorded', asyn
   const drained = json(run(workerCli, ['run', '--json']).stdout);
   assert.equal(drained.ok, true);
   assert.equal(drained.processed.length, 1);
-  assert.equal(drained.processed[0].status, 'done', `intent failed: ${drained.processed[0].error}`);
+  // D36/BUG-051: the canonical word for "the work ran" is `applied`.
+  assert.equal(drained.processed[0].status, 'applied', `intent failed: ${drained.processed[0].error}`);
 
   const { readJson } = await import('./lib/arc.mjs');
   const stored = readJson(`${env.ARCBLOG_CHAIN_INTENTS_PATH}/pending.json`)?.value ?? {};
-  assert.equal(stored.status, 'done');
+  assert.equal(stored.status, 'applied');
   assert.equal(stored.result.lifecycle, 'acquired');
   assert.ok(stored.result.assetId, 'the minted asset id is recorded');
 
-  // A second drain must be a no-op: a done intent is never replayed.
+  // A second drain must be a no-op: a terminal intent is never replayed.
   const again = json(run(workerCli, ['run', '--json']).stdout);
   assert.deepEqual(again.processed, []);
+});
+
+// --- BUG-051: this queue joins the ONE intent vocabulary (D36) -----------------
+//
+// The chain queue used to spell its lifecycle `pending | running | done | failed`.
+// `done`/`failed` are now read-side aliases of `applied`/`rejected`, `running` is
+// the allowed in-flight word, and the WRITE side only ever emits canonical ones.
+
+test('D36/BUG-051: `running` is an in-flight word, never a terminal one', async () => {
+  const { INTENT_STATUS, INTENT_STATUSES, isInFlightStatus, isTerminalStatus } = await import('./lib/intents.mjs');
+  assert.deepEqual(INTENT_STATUSES, ['pending', 'running', 'applied', 'rejected', 'noop']);
+  assert.equal(isTerminalStatus('running'), false, 'a crashed worker must leave the intent re-runnable');
+  assert.equal(isInFlightStatus('running'), true);
+  assert.equal(isTerminalStatus('done'), true, 'the retired word still means "finished"');
+  assert.equal(isTerminalStatus('applied'), true);
+});
+
+test('D36/BUG-051: a read-only `queue` repairs pre-D36 words IN PLACE and never drains', async () => {
+  const { readJson, remove, writeJson } = await import('./lib/arc.mjs');
+  const legacyDone = `${env.ARCBLOG_CHAIN_INTENTS_PATH}/legacy-done-${stamp}.json`;
+  const legacyFailed = `${env.ARCBLOG_CHAIN_INTENTS_PATH}/legacy-failed-${stamp}.json`;
+  const stillPending = `${env.ARCBLOG_CHAIN_INTENTS_PATH}/still-pending-${stamp}.json`;
+  writeJson(legacyDone, { id: `legacy-done-${stamp}`, action: 'claim', role: 'studio', status: 'done', requestedAt: '2026-01-01T00:00:00.000Z' });
+  writeJson(legacyFailed, { id: `legacy-failed-${stamp}`, action: 'acquire', role: 'studio', status: 'failed', error: 'boom', requestedAt: '2026-01-01T00:00:01.000Z' });
+  writeJson(stillPending, { id: `still-pending-${stamp}`, action: 'acquire', role: 'studio', status: 'pending', requestedAt: '2026-01-01T00:00:02.000Z', requestedVia: 'console' });
+  try {
+    const queued = json(run(workerCli, ['queue', '--json']).stdout);
+    assert.equal(queued.ok, true);
+    const byId = Object.fromEntries(queued.intents.map((intent) => [intent.id, intent]));
+    assert.equal(byId[`legacy-done-${stamp}`].status, 'applied');
+    assert.equal(byId[`legacy-done-${stamp}`].normalizedFrom, 'done');
+    assert.equal(byId[`legacy-failed-${stamp}`].status, 'rejected');
+    assert.equal(byId[`legacy-failed-${stamp}`].normalizedFrom, 'failed');
+    assert.ok(byId[`legacy-done-${stamp}`].message, 'a terminal record must carry a non-empty reason');
+
+    // The repair is on disk (the console renders the stored record)…
+    assert.equal(readJson(legacyDone).value.status, 'applied');
+    assert.equal(readJson(legacyDone).value.normalizedFrom, 'done');
+    assert.equal(readJson(legacyFailed).value.status, 'rejected');
+    // …and the drain did NOT run: the pending intent is still pending.
+    assert.equal(readJson(stillPending).value.status, 'pending', '`queue` must never drain');
+    assert.equal(json(run(workerCli, ['queue', '--json']).stdout).count, queued.count, 'record count is unchanged');
+  } finally {
+    for (const path of [legacyDone, legacyFailed, stillPending]) remove(path);
+  }
 });
 
 test('an unsupported action is rejected by the enqueue command', () => {

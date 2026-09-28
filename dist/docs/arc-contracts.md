@@ -1817,3 +1817,35 @@ hub 一次都没发。
 实测「访问过 `?page=saved` 再打开裸 `/`」**仍然重放阅读清单**——**会话保存的 `page` 覆盖了节点级 state 默认值**。
 该实验已完整回滚（`git diff -- .aup/wrapper.aup` 与 `wrapper.json` 均无残留），结论：这是平台边界，
 保留既有绕过（全站入口带显式 `?page=`、品牌链接 `/?page=index`），不再重复实验。
+
+---
+
+## 34. 两条运维/表达式硬事实（Round 19 实测）
+
+**(1) `arc service restart` 会掉 blocklet 挂载 —— 之后必须 `arc blocklet run .` 复挂。**
+`arc service restart` 之后，所有实例读都会失败并报
+`ERROR: No module found for path: /blocklets/arcblog/.actions/list in namespace 'default'`，
+`arc afs exec`、页面 `propBind` 一律受影响；**重新挂载**：
+
+```bash
+arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog      # 支持 -i <instance>
+```
+
+判定「重启成功」不能只看 `arc service restart` 的 `Status: up`——必须跟一条 `/instance/**` 读或一次站点
+HTTP 200 才算恢复（Round 18F 曾把它误当成"第一次读偶发失败"，Round 19 定位为挂载丢失）。
+**门/脚本里做 `restart` 的，后面都要补一条 `arc blocklet run .`。**
+
+**(2) `exec` 的 `content` 里 `${entry.content.*}` 不插值（与 §28.7 的 `$session.*` 同族）。**
+在 `afs-list` 行内写
+`exec "/.actions/write", args: { content: { mediaId: "${entry.content.id}" } }`，
+落库的会是**字面量** `${entry.content.id}`（Round 19 的第一次探针就是这样写坏的）。可用形态是
+**隐藏输入 + `${args.*}`**：行内放一个带 `state`/`value="${entry.content.id}"` 的隐藏字段，
+exec 里写 `content: { mediaId: "${args.mId}" }`（categories / media 两个队列现在都用这一形态）。
+⇒ 页面写记录的**唯一可靠来源**依次是：`${args.*}` > `${generate.*}` > 字面量；`$session.*` 与 `entry.*` 都不要直接写进 `content`。
+
+**(3) 意图队列现在有两个（契约同上 §33）**：`config/category-intents/`（分类：合并/删除迁移）与
+`config/media-intents/`（媒体：移除单个 / 清理孤儿）。两者都：`<id>.json`、canonical 词表、
+`apply|watch|queue` 三通道、非 `.json` 条目显式诊断、队列全树 admin-only（guest 403，零 `blocklet.yaml` 改动）。
+**媒体特有的一条域规则**：`remove` 必须在 **worker 侧重新校验 refs**（页面显示"0 引用"到执行之间可能新增引用）
+→ 仍被引用则 `rejected/CONFLICT` + 原因含引用方 + **记录与引用方都不动**；`orphans` 只删**显式确认过的 id**
+（`changed` = 确认清单 ∩ 仍为孤儿者），`changed: []` → `noop`，永不 `--force`、永不连锁删除。

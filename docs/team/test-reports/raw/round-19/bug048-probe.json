@@ -1,0 +1,382 @@
+{
+ "c1_known9": [
+  {
+   "name": "mock-chain-test-1790602604314",
+   "recognised": true
+  },
+  {
+   "name": "nft-factories-test-1790602604314",
+   "recognised": true
+  },
+  {
+   "name": "node-nft-test-1790602604314",
+   "recognised": true
+  },
+  {
+   "name": "roles-test-1790602604314",
+   "recognised": true
+  },
+  {
+   "name": "mock-worker-1790602675663",
+   "recognised": true
+  },
+  {
+   "name": "factories-worker-1790602675663",
+   "recognised": true
+  },
+  {
+   "name": "chain-intents-worker-1790602675663",
+   "recognised": true
+  },
+  {
+   "name": "nft-factories-worker-1790602675663",
+   "recognised": true
+  },
+  {
+   "name": "node-nft-worker-1790602675663",
+   "recognised": true
+  },
+  {
+   "name": "roles-worker-1790602675663",
+   "recognised": true
+  }
+ ],
+ "c2_families11": [
+  {
+   "prefix": "nft-factories-test-",
+   "probe": "nft-factories-test-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "node-nft-test-",
+   "probe": "node-nft-test-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "roles-test-",
+   "probe": "roles-test-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "mock-worker-",
+   "probe": "mock-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "nft-factories-worker-",
+   "probe": "nft-factories-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "chain-intents-worker-",
+   "probe": "chain-intents-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "node-nft-worker-",
+   "probe": "node-nft-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "roles-worker-",
+   "probe": "roles-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "factories-test-",
+   "probe": "factories-test-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "factories-worker-",
+   "probe": "factories-worker-1790600000000",
+   "recognised": true
+  },
+  {
+   "prefix": "sign-keys-",
+   "probe": "sign-keys-1790600000000",
+   "recognised": true
+  }
+ ],
+ "c2_prefixTableLength": 43,
+ "c3_cleanDirsHasNode": true,
+ "c3_cleanDirsHasMediaIntents": true,
+ "c3_cleanDirsHasCategoryIntents": true,
+ "c5_realRecords": [
+  {
+   "name": "factories.json",
+   "recognised": false
+  },
+  {
+   "name": "identity.json",
+   "recognised": false
+  },
+  {
+   "name": "profile.json",
+   "recognised": false
+  },
+  {
+   "name": "health.json",
+   "recognised": false
+  },
+  {
+   "name": "discovery.json",
+   "recognised": false
+  },
+  {
+   "name": "post-detail.json",
+   "recognised": false
+  },
+  {
+   "name": "diagnostics",
+   "recognised": false
+  },
+  {
+   "name": "general",
+   "recognised": false
+  },
+  {
+   "name": "mock-chain.json",
+   "recognised": false
+  },
+  {
+   "name": "chain-intents",
+   "recognised": false
+  },
+  {
+   "name": "nft-factories.json",
+   "recognised": false
+  },
+  {
+   "name": "roles.json",
+   "recognised": false
+  },
+  {
+   "name": "trusted-hubs",
+   "recognised": false
+  },
+  {
+   "name": "switches",
+   "recognised": false
+  },
+  {
+   "name": "media-orphan-candidates.json",
+   "recognised": false
+  }
+ ],
+ "c5_draftsMatchingPrefix": [
+  "cat-test-post-1790606092171.json",
+  "cat-test-post-1790608402573.json",
+  "cat-test-tag-1790605733599.json",
+  "cat-test-tag-1790608081011.json",
+  "cat-test-tags-invalid-1790606026604.json",
+  "cat-test-tags-invalid-1790608342678.json",
+  "cat-test-tags-multi-1790605802728.json",
+  "cat-test-tags-multi-1790608142213.json",
+  "cat-test-tags-noop-1790605975556.json",
+  "cat-test-tags-noop-1790608292890.json",
+  "cat-test-tags-normalize-1790606038057.json",
+  "cat-test-tags-normalize-1790608351600.json",
+  "cat-test-tags-proj-1790605872095.json",
+  "cat-test-tags-proj-1790608201793.json",
+  "cat-test-tags-queue-1790605921064.json",
+  "cat-test-tags-queue-1790608245140.json",
+  "sign-keys-1790417127451.json",
+  "sign-keys-1790418260091.json",
+  "sign-keys-1790422462124.json",
+  "sign-keys-1790424357210.json",
+  "sign-keys-1790428123413.json",
+  "sign-keys-1790431536899.json",
+  "sign-keys-1790433089062.json",
+  "sign-keys-1790434269585.json",
+  "sign-keys-1790435176375.json",
+  "sign-keys-1790482924742.json",
+  "sign-keys-1790483550236.json",
+  "sign-keys-1790487321396.json",
+  "sign-keys-1790488023042.json",
+  "sign-keys-1790489317507.json",
+  "sign-keys-1790492237709.json",
+  "sign-keys-1790493297442.json",
+  "sign-keys-1790494523065.json",
+  "sign-keys-1790495599523.json",
+  "sign-keys-1790498486859.json",
+  "sign-keys-1790499349888.json",
+  "sign-keys-1790500248050.json",
+  "sign-keys-1790502610603.json",
+  "sign-keys-1790503052207.json",
+  "sign-keys-1790503613077.json",
+  "sign-keys-1790504197871.json",
+  "sign-keys-1790515075322.json",
+  "sign-keys-1790522448324.json"
+ ],
+ "c5_draftsTotal": 43,
+ "c5_nodeMatchingPrefix": [
+  "factories-test-1790495048941.json",
+  "factories-test-1790495876647.json",
+  "factories-test-1790498751317.json",
+  "factories-test-1790499620050.json",
+  "factories-test-1790500535149.json",
+  "factories-test-1790502899865.json",
+  "factories-test-1790503409541.json",
+  "factories-test-1790503979684.json",
+  "factories-test-1790504510361.json",
+  "factories-test-1790515371542.json",
+  "factories-test-1790522740814.json",
+  "factories-test-1790588455429.json",
+  "factories-test-1790591074933.json",
+  "factories-worker-1790498098649.json",
+  "factories-worker-1790498117031.json",
+  "factories-worker-1790498267599.json",
+  "factories-worker-1790499133372.json",
+  "factories-worker-1790499858177.json",
+  "factories-worker-1790500024318.json",
+  "factories-worker-1790501329036.json",
+  "factories-worker-1790502232270.json",
+  "factories-worker-1790502810557.json",
+  "factories-worker-1790503352510.json",
+  "factories-worker-1790503943380.json",
+  "factories-worker-1790514846088.json",
+  "factories-worker-1790516217671.json",
+  "factories-worker-1790519909944.json",
+  "factories-worker-1790522114685.json",
+  "factories-worker-1790589749553.json"
+ ],
+ "c5_nodeTotal": 35,
+ "c5_configMatchingPrefix": [
+  "chain-intents-worker-1790498117031",
+  "chain-intents-worker-1790498267599",
+  "chain-intents-worker-1790499133372",
+  "chain-intents-worker-1790499858177",
+  "chain-intents-worker-1790500024318",
+  "chain-intents-worker-1790501329036",
+  "chain-intents-worker-1790502232270",
+  "chain-intents-worker-1790502810557",
+  "chain-intents-worker-1790503352510",
+  "chain-intents-worker-1790503943380",
+  "chain-intents-worker-1790514846088",
+  "chain-intents-worker-1790516217671",
+  "chain-intents-worker-1790519909944",
+  "chain-intents-worker-1790522114685",
+  "chain-intents-worker-1790589749553",
+  "mock-worker-1790498098649.json",
+  "mock-worker-1790498117031.json",
+  "mock-worker-1790498267599.json",
+  "mock-worker-1790499133372.json",
+  "mock-worker-1790499858177.json",
+  "mock-worker-1790500024318.json",
+  "mock-worker-1790501329036.json",
+  "mock-worker-1790502232270.json",
+  "mock-worker-1790502810557.json",
+  "mock-worker-1790503352510.json",
+  "mock-worker-1790503943380.json",
+  "mock-worker-1790514846088.json",
+  "mock-worker-1790516217671.json",
+  "mock-worker-1790519909944.json",
+  "mock-worker-1790522114685.json",
+  "mock-worker-1790589749553.json",
+  "nft-factories-test-1790491371270.json",
+  "nft-factories-test-1790492496141.json",
+  "nft-factories-test-1790492898344.json",
+  "nft-factories-test-1790492944774.json",
+  "nft-factories-test-1790492991181.json",
+  "nft-factories-test-1790493565367.json",
+  "nft-factories-test-1790494048751.json",
+  "nft-factories-test-1790494798038.json",
+  "nft-factories-test-1790494868913.json",
+  "nft-factories-test-1790495048941.json",
+  "nft-factories-test-1790495876647.json",
+  "nft-factories-test-1790498751317.json",
+  "nft-factories-test-1790499620050.json",
+  "nft-factories-test-1790500535149.json",
+  "nft-factories-test-1790502899865.json",
+  "nft-factories-test-1790503409541.json",
+  "nft-factories-test-1790503979684.json",
+  "nft-factories-test-1790504510361.json",
+  "nft-factories-test-1790515371542.json",
+  "nft-factories-test-1790522740814.json",
+  "nft-factories-test-1790588455429.json",
+  "nft-factories-test-1790591074933.json",
+  "nft-factories-worker-1790498098649.json",
+  "nft-factories-worker-1790498117031.json",
+  "nft-factories-worker-1790498267599.json",
+  "nft-factories-worker-1790499133372.json",
+  "nft-factories-worker-1790499858177.json",
+  "nft-factories-worker-1790500024318.json",
+  "nft-factories-worker-1790501329036.json",
+  "nft-factories-worker-1790502232270.json",
+  "nft-factories-worker-1790502810557.json",
+  "nft-factories-worker-1790503352510.json",
+  "nft-factories-worker-1790503943380.json",
+  "nft-factories-worker-1790514846088.json",
+  "nft-factories-worker-1790516217671.json",
+  "nft-factories-worker-1790519909944.json",
+  "nft-factories-worker-1790522114685.json",
+  "nft-factories-worker-1790589749553.json",
+  "node-nft-test-1790491371270.json",
+  "node-nft-test-1790492496141.json",
+  "node-nft-test-1790492898344.json",
+  "node-nft-test-1790492944774.json",
+  "node-nft-test-1790492991181.json",
+  "node-nft-test-1790493565367.json",
+  "node-nft-test-1790494048751.json",
+  "node-nft-test-1790494798038.json",
+  "node-nft-test-1790494868913.json",
+  "node-nft-test-1790495048941.json",
+  "node-nft-test-1790495876647.json",
+  "node-nft-test-1790498751317.json",
+  "node-nft-test-1790499620050.json",
+  "node-nft-test-1790500535149.json",
+  "node-nft-test-1790502899865.json",
+  "node-nft-test-1790503409541.json",
+  "node-nft-test-1790503979684.json",
+  "node-nft-test-1790504510361.json",
+  "node-nft-test-1790515371542.json",
+  "node-nft-test-1790522740814.json",
+  "node-nft-test-1790588455429.json",
+  "node-nft-test-1790591074933.json",
+  "node-nft-worker-1790498117031.json",
+  "node-nft-worker-1790498267599.json",
+  "node-nft-worker-1790499858177.json",
+  "node-nft-worker-1790500024318.json",
+  "node-nft-worker-1790501329036.json",
+  "node-nft-worker-1790502232270.json",
+  "node-nft-worker-1790502810557.json",
+  "node-nft-worker-1790503352510.json",
+  "node-nft-worker-1790503943380.json",
+  "node-nft-worker-1790514846088.json",
+  "node-nft-worker-1790516217671.json",
+  "node-nft-worker-1790519909944.json",
+  "node-nft-worker-1790522114685.json",
+  "node-nft-worker-1790589749553.json",
+  "roles-test-1790495048941.json",
+  "roles-test-1790495876647.json",
+  "roles-test-1790498751317.json",
+  "roles-test-1790499620050.json",
+  "roles-test-1790500535149.json",
+  "roles-test-1790502899865.json",
+  "roles-test-1790503409541.json",
+  "roles-test-1790503979684.json",
+  "roles-test-1790504510361.json",
+  "roles-test-1790515371542.json",
+  "roles-test-1790522740814.json",
+  "roles-test-1790588455429.json",
+  "roles-test-1790591074933.json",
+  "roles-worker-1790498117031.json",
+  "roles-worker-1790498267599.json",
+  "roles-worker-1790499858177.json",
+  "roles-worker-1790500024318.json",
+  "roles-worker-1790501329036.json",
+  "roles-worker-1790502232270.json",
+  "roles-worker-1790502810557.json",
+  "roles-worker-1790503352510.json",
+  "roles-worker-1790503943380.json",
+  "roles-worker-1790514846088.json",
+  "roles-worker-1790516217671.json",
+  "roles-worker-1790519909944.json",
+  "roles-worker-1790522114685.json",
+  "roles-worker-1790589749553.json"
+ ],
+ "c5_configTotal": 142,
+ "c5_chainIntentsDirIsResidue": false,
+ "c5_orphanCandidatesIsResidue": false
+}

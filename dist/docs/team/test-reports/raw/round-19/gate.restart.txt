@@ -1,0 +1,38 @@
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+Starting AFS service...
+  Extra blocklet dirs: /Users/shenxiuqiang/workspace/my-app, /Users/shenxiuqiang/workspace/ArcBlog
+AFS Service restarted
+  Log:  /Users/shenxiuqiang/.afs/daemon.log
+  Build: 2.0.0-beta.50
+  Exec:  /$bunfs/root/arc-darwin-arm64
+
+  Endpoints:
+    http://127.0.0.1:4939/            AUP Web Client
+    http://127.0.0.1:4939/explorer    Explorer UI
+    http://127.0.0.1:4939/ws          WebSocket (Explorer)
+    http://127.0.0.1:4939/afs/*       REST API
+    http://127.0.0.1:4939/mcp         MCP Streamable HTTP
+
+  Blocklet: my-app
+    http://my-app.localhost:4939/
+    http://localhost:4939/?blocklet=my-app    (Safari / universal)
+
+  Blocklet: arcblog
+    http://arcblog.localhost:4939/
+    http://localhost:4939/?blocklet=arcblog    (Safari / universal)
+  Instance: default
+  ID:       37a8eec1ce19687d
+  Status:   up
+  PID:      46916
+  Port:     4939
+  URL:      http://127.0.0.1:4939
+  Home:     /Users/shenxiuqiang
+  Space:    /Users/shenxiuqiang/.afs/spaces
+  Sources:  /Users/shenxiuqiang/workspace/my-app, /Users/shenxiuqiang/workspace/ArcBlog
+  Version:  2.0.0-beta.50
+  Commit:   c711b9aa (main)
+  Checkout: /Users/shenxiuqiang/workspace/ArcBlog
+  Host:     localhost
+  Started:  2026-09-28T16:15:41.528Z (up 1s)

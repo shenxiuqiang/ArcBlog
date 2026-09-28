@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   EXPECTED_DIRS,
+  TEST_RECORD_PREFIXES,
   checkAuthorship,
   checkCategories,
   checkDeidentification,
@@ -14,6 +15,7 @@ import {
   checkResources,
   checkSpaceApp,
   checkSpaceLayout,
+  isTestRecordId,
   summarize,
 } from './lib/doctor.mjs';
 
@@ -145,6 +147,51 @@ test('checkDeidentification warns only while the scope secret is unset', () => {
 });
 
 // --- CLI surface -----------------------------------------------------------
+
+test('BUG-048: the residue table recognises every family the live suites write', () => {
+  // The 9 records BUG-048 measured on the dev instance after one targeted live
+  // run, plus the projection the node-NFT suite writes under node/.
+  const measured = [
+    'nft-factories-test-1790602604314',
+    'node-nft-test-1790602604314',
+    'roles-test-1790602604314',
+    'mock-chain-test-1790602604314',
+    'mock-worker-1790602675663',
+    'chain-intents-worker-1790602675663',
+    'config/nft-factories-worker-1790602675663',
+    'config/node-nft-worker-1790602675663',
+    'config/roles-worker-1790602675663',
+    'node/factories-worker-1790602675663',
+  ];
+  for (const name of measured) {
+    assert.equal(isTestRecordId(name.split('/').pop()), true, `${name} must be recognised`);
+  }
+
+  // Fail-closed (C5 / R-6): a real record can never match a residue prefix. The
+  // table deliberately carries `factories-test-` / `factories-worker-`, never a
+  // bare `factories-`.
+  for (const real of [
+    'factories.json',
+    'identity.json',
+    'profile.json',
+    'health.json',
+    'discovery.json',
+    'post-detail.json',
+    'diagnostics.json',
+    'general.json',
+    'mock-chain.json',
+    'chain-intents',
+    'category-intents',
+    'media-intents',
+    'media-orphan-candidates.json',
+    'technology.json',
+    'hello-arcblog.json',
+  ]) {
+    assert.equal(isTestRecordId(real), false, `${real} must NOT be treated as residue`);
+  }
+  assert.ok(!TEST_RECORD_PREFIXES.includes('factories-'));
+  assert.ok(!TEST_RECORD_PREFIXES.includes('mock-'));
+});
 
 test('doctor help exits 0', () => {
   const res = run(['--help']);

@@ -134,10 +134,44 @@ node scripts/arcblog-media.mjs add --path /blocklets/arcblog/users/<did>/media/c
   --title "Cover" --alt "Cover art" --mime image/png --width 1200 --height 630
 node scripts/arcblog-media.mjs list
 node scripts/arcblog-media.mjs show --id cover
-node scripts/arcblog-media.mjs remove --id cover
+node scripts/arcblog-media.mjs refs --id cover      # where is it used? (spec §15.4)
+node scripts/arcblog-media.mjs orphans              # unreferenced records + refresh the
+                                                    # console's "将删清单" projection
+node scripts/arcblog-media.mjs remove --id cover    # refuses while still referenced
 ```
 The id defaults to the file basename (`cover.png` → `cover`). Records index the
 binary; removing a record never deletes the file.
+
+**Console buttons (`?page=media`, REQ-019 second batch).** The page's「移除该媒体」
+(per row) and「清理孤儿」(page level) buttons only queue an intent record under
+`/instance/app/arcblog/config/media-intents/<id>.json` (admin-only `config/` tree, so
+No `blocklet.yaml` change); the worker executes it:
+
+```bash
+node scripts/arcblog-media.mjs queue                       # read-only queue view (D38 diagnostics)
+node scripts/arcblog-media.mjs request --action remove --id cover
+node scripts/arcblog-media.mjs request --action orphans --ids a,b
+node scripts/arcblog-media.mjs apply                       # drain pending intents once
+node scripts/arcblog-media.mjs watch                       # keep draining (the console's worker)
+```
+
+Semantics worth knowing before you run it:
+
+* **the guard is re-checked at execution time, not at click time.** `remove` re-runs
+  `findMediaReferences` (posts / drafts / pages / page-drafts / heroes) right before
+  deleting; a still-referenced asset ends as `rejected` with the referencing
+  `kind:slug` list in `message` and the record untouched (TOCTOU, M1). `--force` is
+  CLI-only — no page exposes it.
+* **orphans only deletes the ids the operator explicitly confirmed** (`ids: […]`); an
+  id that became referenced in the meantime is skipped and written into the record's
+  `skipped`, and a run that deletes nothing ends as `noop` (never `applied` with an
+  empty `changed`).
+* the candidate list the page shows is the CLI-owned projection
+  `/instance/app/arcblog/config/media-orphan-candidates.json`, refreshed by `orphans`
+  and by every `apply` / `watch` tick.
+* statuses use the one shared vocabulary (`scripts/lib/intents.mjs`, D36):
+  `pending | running | applied | rejected | noop`, and every terminal record carries a
+  non-empty `message`.
 
 ### Roles and capabilities
 ```bash
@@ -260,6 +294,26 @@ came from another adapter is **not** queried through this run's adapter; it gets
 `svgError: "not queried: this node's facts come from the \"mock\" adapter; this
 worker runs \"ocap\""` instead of a misleading lookup failure.
 
+### The chain intent queue speaks the shared vocabulary (BUG-051)
+
+The console's node-NFT buttons write `/instance/app/arcblog/config/chain-intents/<id>.json`;
+`arcblog-chain-worker.mjs run|watch` signs them. That queue was the last one spelling its
+lifecycle with `done` / `failed` (D36 unifies every queue on
+`pending | running | applied | rejected | noop`, `running` being the in-flight word).
+
+```bash
+node scripts/arcblog-chain-worker.mjs queue        # READ-ONLY view; repairs pre-D36 words
+node scripts/arcblog-chain-worker.mjs run          # ⚠️ drains = signs on chain
+node scripts/arcblog-chain-worker.mjs watch        # ⚠️ same, forever
+```
+
+`queue` canonicalizes `done → applied` and `failed → rejected` **in place** (adding
+`normalizedFrom` / `normalizedAt`, and a `message` when the record had none), which is
+the only safe repair path when the queue holds an intent you do not want to execute:
+`run` / `watch` are the only commands that can sign, and a live `pending` intent will be
+executed by either. A `running` record is drained again on purpose — a worker that died
+mid-flight must not strand the intent forever.
+
 ## Economy (Phase 8 / MVP-3)
 
 ```bash
@@ -373,6 +427,30 @@ the residue for inspection). The matcher only recognises ids listed in
 `TEST_RECORD_PREFIXES` (`scripts/lib/doctor.mjs`), so **a new test that writes records
 must add its prefix** — otherwise the records pile up in `drafts/` and are rendered in
 the Creator Studio list (107 `lifecycle-test-*` records once did exactly that).
+
+The dry run is the readable form:
+
+```bash
+node scripts/arcblog-clean.mjs            # JSON: found / byDir / byPrefix / sample (25), removed: 0
+node scripts/arcblog-clean.mjs --confirm  # actually delete (see the warning below)
+```
+
+**BUG-048 measured gap and its fix.** The prefix table only recognised the drafts
+families, and `CLEAN_DIRS` did not scan `node/` at all, so a targeted live run that
+wrote `nft-factories-test-*`, `node-nft-test-*`, `roles-test-*`, `*-worker-*`,
+`chain-intents-worker-*` or `sign-keys-*` reported `found: 1` while ~188 records
+accumulated. The table and the directory list now cover those families and
+`config/category-intents` / `config/media-intents`; the dry run reports `byDir` and
+`byPrefix` so the numbers are auditable. Every prefix still carries a distinctive test
+token (`factories-test-`, never a bare `factories-`), so `node/factories.json`,
+`config/mock-chain.json`, the live queues and real drafts stay unmatched.
+
+> ⚠️ **`scripts/arcblog-clean.test.mjs` really deletes.** Its last clause runs the gate
+> with a stubbed "passing live run" and asserts that the gate's cleanup removed the
+> probe — which means the gate's *real* `findTestRecords()` sweep runs. Before BUG-048
+> that was ~16 records; now it is every recognised residue family (~200 on this dev
+> machine). Capture the `arcblog-clean.mjs` dry-run evidence (and QA's `found ≈ 188`
+> check) **before** running that file, or run it last.
 
 `scripts/arcblog-clean.test.mjs` pins the prefixes the suite actually produces
 (`lifecycle-test-`, `audit-test-`, `query-fixture`, …), so a gap fails a test instead of
@@ -596,6 +674,20 @@ deploy` (both `--cloud=fs` into `~/.arc/pages` and `--cloud=none` into
 `~/.afs/blocklets-staging`) did **not** change what was served in this setup — it is
 not the reload path here. Static files under the root `.web-cache/` (including the
 RSS feed) do *not* need a restart; the compiled AUP bundle does.
+
+> ⚠️ **Measured 2026-09-28 (R19): `arc service restart` drops the `/blocklets/<name>`
+> mount.** Immediately after the restart, every instance-path read fails with
+> `ERROR: No module found for path: /blocklets/arcblog/.actions/{list,read,write} in
+> namespace 'default'` — that is a missing mount, not a bad record. Re-serve it from
+> the workspace and the instance is reachable again:
+>
+> ```bash
+> arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog   # prints the URLs, exits
+> arc afs exec /blocklets/arcblog/.actions/list --args '{"path":"/instance/app/arcblog"}' --json
+> ```
+>
+> So the restart gate is `arc service restart` **followed by** `arc blocklet run .`
+> whenever the next step talks to `/instance/**` (targeted live suites do).
 
 ## Development instance hygiene
 

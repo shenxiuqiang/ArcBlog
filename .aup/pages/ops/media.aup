@@ -1,7 +1,20 @@
 page media {
   i18n {
     admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-    desc { en "The upload index and where each file is referenced." zh "上传索引与引用关系。" }
+    adv-desc { en "The same actions as the buttons above, plus what this page does not offer (adding an index record by hand, forcing a delete). Kept for operators who prefer the shell — never the only path." zh "与上方按钮相同的动作，外加本页不提供的能力（手工登记索引记录、强制删除）。保留给习惯命令行的运维人员——绝不是唯一路径。" }
+    adv-hide { en "Hide advanced" zh "收起高级" }
+    adv-show { en "Show advanced (CLI)" zh "展开高级（CLI）" }
+    adv-title { en "Advanced: command line (optional)" zh "高级：命令行（可选）" }
+    cmd-add { en "Index an uploaded asset (the console cannot: the file lands in your own DID space)" zh "登记已上传资产（控制台做不到：文件落在你自己的 DID 空间）" }
+    cmd-orphans { en "Re-scan the unreferenced list and refresh this page's delete-candidate list" zh "重新扫描未引用清单，并刷新本页的「将删清单」" }
+    cmd-refs { en "Show where one asset is used (read-only information)" zh "查看某个资产被用在哪里（只读信息）" }
+    cmd-remove-force { en "Force-remove a record that is still referenced — CLI only, never a button" zh "强制删除仍被引用的记录——仅 CLI，页面上没有该按钮" }
+    cmd-queue { en "Print the intent queue (read-only; also repairs an old status word)" zh "打印意图队列（只读；同时原地修复旧状态词）" }
+    cmd-worker { en "Run the worker once / keep it running (this is what executes the buttons)" zh "运行一次 worker / 常驻运行（按钮的执行者）" }
+    desc { en "Every cleanup action is a button: it queues an intent, and this node's worker deletes the record. The browser never deletes anything itself — and a wrong click cannot delete an asset that other content still references." zh "每个清理动作都是一个按钮：它把意图入队，由本机 worker 执行删除。浏览器本身不删除任何东西——而误点也不会删掉仍被其它内容引用的资产。" }
+    enqueue-failed { en "Could not queue the intent — nothing was written. Sign in as the blocklet owner and try again." zh "意图入队失败 —— 没有写入任何记录。请以 Blocklet 属主身份登录后重试。" }
+    gov-desc { en "Each row of the upload index below carries its own 「移除该媒体」 button; the page-level 「清理孤儿」 card handles several records at once. A button only writes one intent record — this node's worker performs the actual delete, so the browser never touches your records." zh "下方上传索引的每一行都有自己的「移除该媒体」按钮；页级的「清理孤儿」卡处理多条记录。按钮只写一条意图记录——真正的删除由本机 worker 执行，浏览器不会直接改你的记录。" }
+    gov-title { en "Cleanup actions (buttons)" zh "清理动作（按钮）" }
     gate-desc { en "Sign in with DID Wallet to view the media index." zh "使用 DID Wallet 登录后查看媒体索引。" }
     gate-title { en "Operations" zh "运维" }
     index-note { en "Each row is one index record under /instance/app/arcblog/media: id, title, AFS path, MIME type, byte size, indexed time. The path is the direct answer to \"where is it\" — select the text to copy it, this console has no clipboard primitive. The record only carries the AFS path: no public URL is shown, because the index does not store one and none is invented here." zh "每行是 /instance/app/arcblog/media 下的一条索引记录：id、标题、AFS 路径、MIME 类型、字节大小、索引时间。路径就是「它在哪」的直接答案——请选中文本手动复制，本控制台没有剪贴板原语。记录只承载 AFS 路径：页面不显示公开 URL，因为索引里没有该字段，也不得臆造。" }
@@ -19,6 +32,27 @@ page media {
     orphans-record-only { en "remove deletes the index record only — it never deletes the binary file." zh "remove 只删除索引记录——绝不会删除二进制文件。" }
     orphans-refuse { en "remove is refused while the asset is still referenced (exit 1, code CONFLICT): resolve the references first, or pass --force to override." zh "资产仍被引用时 remove 会被拒绝（exit 1，code CONFLICT）：请先解除引用，或加 --force 强制覆盖。" }
     orphans-title { en "Unreferenced media & cleanup" zh "未引用媒体与清理" }
+    orphans-btn { en "Clean orphans (confirmed list)" zh "清理孤儿（确认清单）" }
+    orphans-candidates-note { en "The list above is the 「将删清单」: exactly the ids this node's last scan found unreferenced. It is refreshed by the local worker (node scripts/arcblog-media.mjs watch) and by node scripts/arcblog-media.mjs orphans. Edit the field to confirm a shorter list — the worker deletes ONLY the ids in it, and re-checks every one of them right before deleting." zh "上面的清单就是「将删清单」：即本机上次扫描出的、确实未被引用的 id。它由本机 worker（node scripts/arcblog-media.mjs watch）与 node scripts/arcblog-media.mjs orphans 刷新。你可以把字段改成更短的清单——worker 只删字段里的 id，并在删除前逐个重新校验。" }
+    orphans-confirm-label { en "Ids to delete (explicit confirmation, comma separated)" zh "要删除的 id（显式确认，逗号分隔）" }
+    orphans-confirm-title { en "Queue deleting the confirmed records?" zh "提交删除确认清单？" }
+    orphans-confirm-msg { en "Only the ids in the field are queued; each one is re-checked by this node's worker before its index record is deleted, and an asset that other content now references is skipped and kept. The binary files are never touched." zh "只有字段里的 id 会入队；本机 worker 会逐个重新校验后再删除索引记录，若某个资产已被其它内容引用则跳过并保留。二进制文件绝不会被删除。" }
+    orphans-count { en "Unreferenced records in the last scan" zh "上次扫描到的未引用记录数" }
+    queue-clear { en "Clear" zh "清除" }
+    queue-clear-msg { en "Removes the record from the queue. Records it already deleted stay deleted." zh "从队列移除该记录。已被它删除的记录保持删除状态。" }
+    queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
+    queue-desc { en "The console cannot delete records itself, so a button only queues an intent. The worker applies it with the same code path as the CLI remove, and writes the outcome (applied / rejected / noop + reason) back onto this record." zh "控制台本身不能删除记录，按钮只负责入队。worker 会用与 CLI remove 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。" }
+    queue-empty { en "No intent queued yet. The buttons below write the first one." zh "还没有入队的意图。下方按钮会写入第一条。" }
+    queue-legend { en "pending = waiting for the worker · applied = the engine really deleted the record(s) · noop = nothing to do (already done, or nothing matched) · rejected = refused with a reason, no data changed" zh "pending = 等待 worker · applied = 记录确实被删除 · noop = 无需执行（已经做过，或没有匹配项）· rejected = 被拒绝并给出原因，未改动任何数据" }
+    queue-title { en "Intent queue" zh "意图队列" }
+    queued { en "Intent queued — the local worker applies it." zh "意图已入队 —— 由本机 worker 执行。" }
+    remove-btn { en "Remove this media" zh "移除该媒体" }
+    remove-confirm-title { en "Queue removing this media record?" zh "提交移除该媒体记录？" }
+    remove-confirm-msg { en "The index record is deleted by this node's worker — never by this page — and the worker re-checks first: if any post, draft, page or hero still references the asset's path, the intent is refused, the reason is written on the record and NOTHING is deleted. The binary file is never deleted." zh "索引记录由本机 worker 删除——绝不是本页——且 worker 会先重新校验：只要还有文章、草稿、页面或 hero 引用该资产路径，意图就会被拒绝，原因写入记录，且不会删除任何东西。二进制文件绝不删除。" }
+    status-intent { en "Status" zh "状态" }
+    status-note { en "The status text is read verbatim from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown — docs/arc-contracts.md §28.8." zh "状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/arc-contracts.md §28.8。" }
+    worker-hint { en "Worker: node scripts/arcblog-media.mjs watch" zh "Worker：node scripts/arcblog-media.mjs watch" }
+    worker-note { en "Buttons only queue the action. The node's worker (node scripts/arcblog-media.mjs watch) performs it — the browser never deletes a record. This platform cannot run server-side code from a button click (docs/arc-contracts.md §26)." zh "按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-media.mjs watch）——浏览器不会删除记录。本平台的按钮点击无法直接执行服务端代码（docs/arc-contracts.md §26）。" }
     refs-desc { en "Where is one asset used? The CLI answers per asset id." zh "某个资产被用在哪里？由 CLI 按资产 id 回答。" }
     refs-note { en "refs prints count plus each referring record (kind + slug + path) from posts / drafts / pages / page-drafts / heroes." zh "refs 会输出引用数量与每条引用记录（kind + slug + path），来源为 posts / drafts / pages / page-drafts / heroes。" }
     refs-title { en "References (via CLI)" zh "引用视图（CLI）" }
@@ -139,6 +173,44 @@ page media {
               p :desc intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
+              // 1) The page's MAIN path: buttons. A click only writes ONE intent
+              //    record; the node's worker performs the delete. The platform
+              //    cannot run server-side code from a click (arc-contracts §26),
+              //    so the page says so instead of pretending (L-R18-2).
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :gov-title level=3 style={fontSize: "var(--type-body)"}
+                p :gov-desc scale=sm intent=muted
+                p :worker-note scale=sm intent=muted
+                p :worker-hint scale=caption intent=muted
+              }
+              // 2) The queue: one record per click, carrying the worker's outcome.
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+                p :queue-desc scale=sm intent=muted
+                p :queue-legend scale=caption intent=muted
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/media-intents" {
+                  row gap=sm cross=center role=item {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                        p "${entry.content.action}" scale=sm
+                        p "${entry.content.mediaId}" scale=sm intent=muted
+                        p "${entry.content.idsCsv}" scale=sm intent=muted
+                        p :status-intent scale=sm
+                        p "${entry.content.status}" scale=sm
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                        }
+                      }
+                      p "${entry.content.message}" scale=sm intent=muted
+                    }
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                  }
+                }
+                p :queue-empty scale=caption intent=muted
+                p :status-note scale=sm intent=muted
+              }
+              // 3) The upload index itself: every row carries its own button.
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :index-title level=3 style={fontSize: "var(--type-body)"}
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
@@ -157,13 +229,37 @@ page media {
                             time mode=display value="${entry.content.createdAt}" timeMode=relative
                           }
                         }
+                        p "node scripts/arcblog-media.mjs refs --id ${entry.content.id}" scale=sm intent=muted style={fontFamily: monospace}
                       }
-                      p "node scripts/arcblog-media.mjs refs --id ${entry.content.id}" scale=sm style={fontFamily: monospace, flexShrink: 0}
+                      // Measured (R19): `${entry.content.*}` does NOT interpolate inside an
+                      // exec `content` (it lands as the literal template, like `$session.*`
+                      // in BUG-003), so the row id is carried by a hidden field and read as
+                      // `${args.mId}` — the same shape categories.aup uses.
+                      input type=hidden name=mId value="${entry.content.id}"
+                      action variant=destructive size=sm icon=trash label=:remove-btn confirm={title: :remove-confirm-title, message: :remove-confirm-msg} onSuccessToast={intent: success, message: "$t(media.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(media.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/media-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: remove, mediaId: "${args.mId}", ids: [], idsCsv: "", status: pending, message: "", changed: [], skipped: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
                     }
                   }
                   p :media-empty scale=sm intent=muted
                 }
                 p :index-note scale=sm intent=muted
+              }
+              // 4) Orphans. The candidate list is CLI-owned (a page cannot scan
+              //    posts/pages/heroes for references), so it is SHOWN here first
+              //    and only the ids confirmed in the field are queued; the worker
+              //    re-checks every one of them right before deleting.
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={mediaOrphans: "/instance/app/arcblog/config/media-orphan-candidates.json"} {
+                h3 :orphans-title level=3 style={fontSize: "var(--type-body)"}
+                p :orphans-intro intent=muted
+                p :orphans-order scale=sm intent=muted
+                p "$t(media.orphans-count): ${state.mediaOrphans.count}" scale=sm
+                p "${state.mediaOrphans.idsCsv}" scale=sm style={fontFamily: monospace, wordBreak: break-all}
+                p :orphans-candidates-note scale=sm intent=muted
+                input type=text label=:orphans-confirm-label name=orphanIds value="${state.mediaOrphans.idsCsv}"
+                row cross=start {
+                  action variant=destructive size=sm icon=trash label=:orphans-btn confirm={title: :orphans-confirm-title, message: :orphans-confirm-msg} onSuccessToast={intent: success, message: "$t(media.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(media.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/media-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: orphans, mediaId: "", ids: ["${args.orphanIds}"], idsCsv: "${args.orphanIds}", status: pending, message: "", changed: [], skipped: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                }
+                p :orphans-record-only scale=sm intent=muted
+                p :orphans-refuse scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :upload-title level=3 style={fontSize: "var(--type-body)"}
@@ -172,22 +268,29 @@ page media {
                 view style={flexShrink: 0} {
                   afs-dropzone
                 }
-                p "node scripts/arcblog-media.mjs add --path <afs-path> --id <id> [--mime <type>] [--size <bytes>]" scale=sm style={fontFamily: monospace}
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :refs-title level=3 style={fontSize: "var(--type-body)"}
                 p :refs-desc intent=muted
-                p "node scripts/arcblog-media.mjs refs --id <id>" scale=sm style={fontFamily: monospace}
                 p :refs-note scale=sm intent=muted
               }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :orphans-title level=3 style={fontSize: "var(--type-body)"}
-                p :orphans-intro intent=muted
-                p "node scripts/arcblog-media.mjs orphans" scale=sm style={fontFamily: monospace}
-                p "node scripts/arcblog-media.mjs remove --id <id> [--force]" scale=sm style={fontFamily: monospace}
-                p :orphans-refuse scale=sm intent=muted
-                p :orphans-record-only scale=sm intent=muted
-                p :orphans-order scale=sm intent=muted
+              // 5) Advanced: the CLI is a folded ALTERNATIVE, never the only path
+              //    (L-R18-5). The collapse is a `-> set … state {open: …}` patch
+              //    plus an expression `visible=$state.open`; the values are
+              //    strings because boolean literals trip the DSL formatter's
+              //    round-trip guard (ArcBlock/arc#2764) — same as factory.aup.
+              view media-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :adv-title level=3 style={fontSize: "var(--type-body)"}
+                p :adv-desc scale=sm intent=muted
+                row cross=start {
+                  action -> set media-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                }
+                view gap=sm visible=$state.open {
+                  key-value-list media-cmds dense=true fields=[{label: "$t(media.cmd-refs)", value: "node scripts/arcblog-media.mjs refs --id <id>", monospace: true, copyable: true}, {label: "$t(media.cmd-orphans)", value: "node scripts/arcblog-media.mjs orphans", monospace: true, copyable: true}, {label: "$t(media.cmd-remove-force)", value: "node scripts/arcblog-media.mjs remove --id <id> --force", monospace: true, copyable: true}, {label: "$t(media.cmd-add)", value: "node scripts/arcblog-media.mjs add --path <afs-path> --id <id>", monospace: true, copyable: true}, {label: "$t(media.cmd-queue)", value: "node scripts/arcblog-media.mjs queue", monospace: true, copyable: true}, {label: "$t(media.cmd-worker)", value: "node scripts/arcblog-media.mjs watch", monospace: true, copyable: true}]
+                  row cross=start {
+                    action -> set media-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :limits-title level=3 style={fontSize: "var(--type-body)"}

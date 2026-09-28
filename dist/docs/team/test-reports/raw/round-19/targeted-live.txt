@@ -1,0 +1,82 @@
+=== media.test.mjs ===
+✔ media add/show/list/remove roundtrip on the live instance (19273.414041ms)
+✔ media refs finds referencing posts; remove is blocked until resolved (73697.921541ms)
+✔ media CLI exposes the queue worker surface (68.3755ms)
+✔ normalizeIds accepts every shape a page or an operator can write (1.102792ms)
+✔ orphans request is fail-closed without an explicit confirmation list (68.076791ms)
+✔ live: a console-shaped remove intent really deletes the record (AFS before/after) (22851.880917ms)
+✔ live: idempotence — a repeated remove ends as noop, and a terminal intent never re-runs (27394.473167ms)
+✔ live: a remove intent for a media id that never existed is rejected (5252.258375ms)
+✔ live: M1/TOCTOU — remove is re-checked at execution time and refused while referenced (60264.855667ms)
+✔ live: orphans deletes ONLY the confirmed ids, keeps a referenced one, and repeats as noop (236542.703792ms)
+✔ live: the page-shaped orphans intent (CSV inside a one-element array) is normalized (41830.377625ms)
+✔ D38: a media-intents entry without the .json extension is diagnosed, not consumed (3402.204083ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 514886.642291
+EXIT=0
+=== chain-worker.test.mjs ===
+
+> test:file
+> node --test --test-concurrency=1 scripts/arcblog-chain-worker.test.mjs
+
+✔ renderNodeSvg renders the factory template with the NFT data (0.553459ms)
+✔ renderNodeSvg refuses an SVG that could execute script (0.087417ms)
+✔ a console-shaped intent is drained through the adapter and recorded (10014.950125ms)
+✔ D36/BUG-051: `running` is an in-flight word, never a terminal one (0.285417ms)
+✔ D36/BUG-051: a read-only `queue` repairs pre-D36 words IN PLACE and never drains (6818.255375ms)
+✔ an unsupported action is rejected by the enqueue command (36.83775ms)
+✔ D37c: refreshSvg queries an ocap node and skips mock/unknown ones with a diagnostic (6183.273833ms)
+✔ D38: a chain-intents entry without the .json extension is diagnosed, not silently ignored (2491.329083ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27749.167416
+EXIT=0
+=== doctor.test.mjs ===
+✔ checkNodeProfile fails when missing and when invalid (0.155917ms)
+✔ checkNodeIdentity fails when missing and when the auth method is unknown (0.093625ms)
+✔ checkCategories requires at least one record (0.069917ms)
+✔ checkAuthorship flags unattributed records as a warning (0.088916ms)
+✔ summarize separates failures from warnings (0.324375ms)
+✔ checkSpaceLayout follows the arc space check exit code (0.07375ms)
+✔ checkSpaceApp matches any blocklet identifier and warns when absent (0.108583ms)
+✔ checkDeidentification warns only while the scope secret is unset (0.061958ms)
+✔ BUG-048: the residue table recognises every family the live suites write (0.171125ms)
+✔ doctor help exits 0 (36.469458ms)
+✔ doctor rejects an unknown command with VALIDATION (34.823708ms)
+✔ doctor reports a healthy instance on the live default instance (20259.745334ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20380.116167
+EXIT=0
+=== clean.test.mjs (destructive case SKIPPED on purpose: L-R19-5) ===
+✔ isTestRecordId recognises residue and leaves real content alone (0.415958ms)
+✔ the cleanup never touches published content directories (0.067833ms)
+✔ BUG-048: the cleaner scans node/ and both console intent queues (0.04975ms)
+✔ clean help exits 0 and cleanup rejects an unknown directory (69.928042ms)
+✔ live: the dry run reports residue and deletes nothing (168763.200375ms)
+✔ the residue matcher cannot swallow plausible production ids (0.085292ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 168880.331125
+EXIT=0

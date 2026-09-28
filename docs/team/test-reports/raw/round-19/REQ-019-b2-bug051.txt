@@ -1,0 +1,258 @@
+
+## S1 grep write-side literals done/failed
+GREP_EXIT=1
+
+## S1 INTENT_STATUS call sites
+262:      results.push(updateIntent(intent, { status: INTENT_STATUS.rejected, error: `unsupported intent: ${intent.action}/${intent.role}`, finishedAt: nowIso() }, instance));
+265:    updateIntent(intent, { status: INTENT_STATUS.running, startedAt: nowIso() }, instance);
+272:              status: INTENT_STATUS.applied,
+282:          : { status: INTENT_STATUS.rejected, finishedAt: nowIso(), error: `${payload?.code ?? ''} ${payload?.error ?? 'unknown error'}`.trim() },
+312:      status: INTENT_STATUS.pending,
+
+## S1 vocabulary module
+{
+ "INTENT_STATUS": {
+  "pending": "pending",
+  "running": "running",
+  "applied": "applied",
+  "rejected": "rejected",
+  "noop": "noop"
+ },
+ "INTENT_STATUSES": [
+  "pending",
+  "running",
+  "applied",
+  "rejected",
+  "noop"
+ ],
+ "inFlight": [
+  "pending",
+  "running"
+ ],
+ "terminal": [
+  "applied",
+  "rejected",
+  "noop"
+ ],
+ "legacyAliases": {
+  "done": "applied",
+  "failed": "rejected"
+ },
+ "isTerminalStatus_running": false,
+ "isInFlightStatus_running": true,
+ "isTerminalStatus_applied": true,
+ "canonical_running": "running"
+}
+
+## S2 isolated `queue` (read-only repair) stdout
+{
+  "ok": true,
+  "action": "intent-queue",
+  "path": "/instance/app/arcblog/config/r19qa-chain-intents",
+  "count": 4,
+  "intents": [
+    {
+      "id": "r19qa-now-pending",
+      "action": "claim",
+      "role": "studio",
+      "status": "pending",
+      "message": "",
+      "requestedAt": "2026-01-01T00:00:03.000Z",
+      "updatedAt": ""
+    },
+    {
+      "id": "r19qa-now-running",
+      "action": "stake",
+      "role": "studio",
+      "status": "running",
+      "message": "",
+      "requestedAt": "2026-01-01T00:00:02.000Z",
+      "updatedAt": ""
+    },
+    {
+      "id": "r19qa-old-done",
+      "action": "acquire",
+      "role": "studio",
+      "status": "applied",
+      "message": "recorded as \"done\" before the vocabulary was unified (D36) — normalized to \"applied\"",
+      "normalizedFrom": "done",
+      "requestedAt": "2026-01-01T00:00:01.000Z",
+      "updatedAt": ""
+    },
+    {
+      "id": "r19qa-old-failed",
+      "action": "acquire",
+      "role": "studio",
+      "status": "rejected",
+      "message": "boom",
+      "normalizedFrom": "failed",
+      "requestedAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": ""
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+
+## S2 isolated queue status as returned
+0
+
+## S2 isolated records after queue (count unchanged?)
+{
+ "beforeCount": 4,
+ "afterCount": 4,
+ "repaired": {
+  "r19qa-old-failed.json": {
+   "id": "r19qa-old-failed",
+   "action": "acquire",
+   "role": "studio",
+   "status": "rejected",
+   "error": "boom",
+   "requestedAt": "2026-01-01T00:00:00.000Z",
+   "normalizedFrom": "failed",
+   "normalizedAt": "2026-09-28T16:57:19.547Z",
+   "message": "recorded as \"failed\" before the vocabulary was unified (D36) — normalized to \"rejected\""
+  },
+  "r19qa-old-done.json": {
+   "id": "r19qa-old-done",
+   "action": "acquire",
+   "role": "studio",
+   "status": "applied",
+   "result": {
+    "assetId": "KEEP-ME",
+    "hash": "HASH-KEEP"
+   },
+   "requestedAt": "2026-01-01T00:00:01.000Z",
+   "normalizedFrom": "done",
+   "normalizedAt": "2026-09-28T16:57:18.968Z",
+   "message": "recorded as \"done\" before the vocabulary was unified (D36) — normalized to \"applied\""
+  },
+  "r19qa-now-running.json": {
+   "id": "r19qa-now-running",
+   "action": "stake",
+   "role": "studio",
+   "status": "running",
+   "requestedAt": "2026-01-01T00:00:02.000Z"
+  },
+  "r19qa-now-pending.json": {
+   "id": "r19qa-now-pending",
+   "action": "claim",
+   "role": "studio",
+   "status": "pending",
+   "requestedAt": "2026-01-01T00:00:03.000Z"
+  }
+ }
+}
+
+## S3/S4 live `queue` stdout
+{
+  "ok": true,
+  "action": "intent-queue",
+  "path": "/instance/app/arcblog/config/chain-intents",
+  "count": 6,
+  "intents": [
+    {
+      "id": "intent-mujk7d7z-2hv8",
+      "action": "acquire",
+      "role": "studio",
+      "status": "rejected",
+      "message": "VALIDATION a public key is required: pass --pk <pem|file> or register one with `publish --sign-key` (§67)",
+      "normalizedFrom": "failed",
+      "requestedAt": "2026-09-27T08:31:13.583Z",
+      "updatedAt": "2026-09-27T08:31:17.171Z"
+    },
+    {
+      "id": "intent-mujk7tb0-asgd",
+      "action": "acquire",
+      "role": "studio",
+      "status": "rejected",
+      "message": "RUNTIME_ERROR GraphQLError: Invalid itx: \"variablesList.value\" Invalid length: Expected >=1 but received 0; \"variablesList.1.value\" Invalid length: Expected >=1 but received 0",
+      "normalizedFrom": "failed",
+      "requestedAt": "2026-09-27T08:31:34.428Z",
+      "updatedAt": "2026-09-27T08:31:39.218Z"
+    },
+    {
+      "id": "intent-mujk8d8h-3lis",
+      "action": "acquire",
+      "role": "studio",
+      "status": "applied",
+      "message": "recorded as \"done\" before the vocabulary was unified (D36) — normalized to \"applied\"",
+      "normalizedFrom": "done",
+      "requestedAt": "2026-09-27T08:32:00.257Z",
+      "updatedAt": "2026-09-27T08:32:07.770Z"
+    },
+    {
+      "id": "intent-mujkc8nv-7e3r",
+      "action": "acquire",
+      "role": "studio",
+      "status": "rejected",
+      "message": "VALIDATION --owner <address> is required when the adapter has no wallet (mock)",
+      "normalizedFrom": "failed",
+      "requestedAt": "2026-09-27T08:35:00.955Z",
+      "updatedAt": "2026-09-27T08:35:05.521Z"
+    },
+    {
+      "id": "intent-mujkccy6-r1nd",
+      "action": "acquire",
+      "role": "studio",
+      "status": "pending",
+      "message": "",
+      "requestedAt": "2026-09-27T08:35:06.510Z",
+      "updatedAt": ""
+    },
+    {
+      "id": "pending",
+      "action": "claim",
+      "role": "studio",
+      "status": "applied",
+      "message": "recorded as \"done\" before the vocabulary was unified (D36) — normalized to \"applied\"",
+      "normalizedFrom": "done",
+      "requestedAt": "2026-09-27T08:34:35.267Z",
+      "updatedAt": "2026-09-27T08:34:41.896Z"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+
+## S3/S4 live queue before/after
+{
+ "idsBefore": [
+  "intent-mujk7d7z-2hv8.json",
+  "intent-mujk7tb0-asgd.json",
+  "intent-mujk8d8h-3lis.json",
+  "intent-mujkc8nv-7e3r.json",
+  "intent-mujkccy6-r1nd.json",
+  "pending.json"
+ ],
+ "idsAfter": [
+  "intent-mujk7d7z-2hv8.json",
+  "intent-mujk7tb0-asgd.json",
+  "intent-mujk8d8h-3lis.json",
+  "intent-mujkc8nv-7e3r.json",
+  "intent-mujkccy6-r1nd.json",
+  "pending.json"
+ ],
+ "idSetsEqual": true,
+ "changedRecords": [],
+ "pendingStillPending": true,
+ "factoriesByteIdentical": true,
+ "liveQueueCount": 6,
+ "liveQueueIgnored": 0
+}
+file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:64
+  const err = new Error(message);
+              ^
+
+Error: Path not found: /app/arcblog/config/r19qa-chain-intents/[object Object]
+    at fail (file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:64:15)
+    at unwrapAction (file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:143:5)
+    at exec (file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:235:10)
+    at remove (file:///Users/shenxiuqiang/workspace/ArcBlog/scripts/lib/arc.mjs:289:36)
+    at file:///Users/shenxiuqiang/workspace/ArcBlog/docs/team/test-reports/raw/round-19/REQ-019-b2-bug051.mjs:75:40
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  code: 'NOT_FOUND'
+}
+
+Node.js v24.14.0
+EXIT=1

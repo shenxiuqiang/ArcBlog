@@ -109,12 +109,12 @@
   },
   "media": {
     "blocks": 1,
-    "cards": 6,
+    "cards": 9,
     "nested": 0,
-    "ctrl": 0,
-    "styles": 27,
-    "i18n": 27,
-    "tech": 10
+    "ctrl": 7,
+    "styles": 37,
+    "i18n": 61,
+    "tech": 24
   },
   "agents": {
     "blocks": 1,

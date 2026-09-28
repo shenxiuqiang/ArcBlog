@@ -1,10 +1,10 @@
 # REQ-019 — 控制台按钮化第一批：`?page=categories` 的「合并到 / 删除并迁移」
 
-> **元信息**：**REQ-019** ｜ 对应 spec 章节 **§15.4**（分类治理）/ **§12**（分类法）/ **§1**（面向无技术基础用户的产品原则） ｜ checklist 行 **第 103 行「分类与标签管理界面」（§15.4，现 ✅，备注明写「无排序 / 合并 / 删除迁移——迁移只在 CLI `arcblog-category.mjs remove --migrate-to` / `merge`」）** ｜ 优先级 **P1（用户点名的主项）** ｜ 提出轮次 **Round 14**（用户需求登记，见 [journal/round-14.md](../journal/round-14.md)）/ **Round 18 第一批落地** ｜ 负责角色 **Dev（实现）+ QA（独立验证）** ｜ 状态 **🟥 本轮开工（Round 18，`task-74`）**
+> **元信息**：**REQ-019** ｜ 对应 spec 章节 **§15.4**（分类治理 / 媒体治理）/ **§12**（分类法 / 内容模型）/ **§1**（面向无技术基础用户的产品原则） ｜ checklist 行 **第 103 行「分类与标签管理界面」（§15.4，现 ✅，备注明写「无排序 / 合并 / 删除迁移——迁移只在 CLI `arcblog-category.mjs remove --migrate-to` / `merge`」）**（**实测行号随插入漂移，以 `grep -n` 为准**）｜ 优先级 **P1（用户点名的主项）** ｜ 提出轮次 **Round 14**（用户需求登记，见 [journal/round-14.md](../journal/round-14.md)）/ **Round 18 第一批落地** / **Round 19 第二批（媒体清理）** ｜ 负责角色 **Dev（实现）+ QA（独立验证）** ｜ 状态 **第一批 = ✅ 已交付并收口（R18 + R18F：BUG-045 由 D36 收口）；第二批 = ✅ 已交付并「达标（放行）」（Round 19，`task-80`/`task-81`/`task-82`：B1–B6 + M1–M2 逐条通过、`VERDICT=pass, BLOCKING=0`）→ 口径与结果见 [§11](#11-第二批口径round-19page-media-媒体清理按钮化)**
 >
 > **用户原话（Round 14 登记，Round 18 由 Lead L-R18-1 定为本轮主项）**：「arcblog 是给普通用户使用，没有技术基础，不应该有粘贴命令执行任务；应该通过按钮调用执行」。
 >
-> **本 REQ 是「按钮化第一批」，不是全站按钮化**：只覆盖 `?page=categories` 的**「合并到…」与「删除并迁移…」两个动作**（L-R18-1）。其余页面与其余动作 = 后续批次（Lead 排期）。
+> **本 REQ 是「按钮化」的一个**需求线**，不是全站按钮化**：**第一批**只覆盖 `?page=categories` 的**「合并到…」与「删除并迁移…」**（L-R18-1，已交付）；**第二批**只覆盖 `?page=media` 的**「移除该媒体」与「清理孤儿」**（L-R19-1，见 [§11](#11-第二批口径round-19page-media-媒体清理按钮化)）。其余页面与其余动作 = 后续批次（Lead 排期）。
 
 ---
 
@@ -338,4 +338,112 @@ state=page:index: /?page=saved 后裸 / → ?locale=zh&page=saved，标题「阅
 | **R19-2** | **BUG-046 + BUG-047 + BUG-043 收口**（含「历史节点 adapter 归属」决策；**先定归属再硬化守卫**，避免半修） |
 | **R19-3** | **本 REQ 第二批**（Lead 定批次范围，建议 **media 清理领跑**；判据沿用 §3.2 B1–B6、验收仍**以 AFS 为准**） |
 | **R19-8** | **BUG-048 + BUG-049**（清理自证 + 队列约定，第二批的前置） |
-| 完整路线 | 见 [backlog](../../backlog.md)「排队（🟨）」→「**R18 轮末重排（PM `task-76`）**」⑥ 的 **R19-1…R19-10** |
+| 完整路线 | 见 [backlog](../../backlog.md)「排队（🟨）」→「**R18 轮末重排（PM `task-76`）**」⑥ 的 **R19-1…R19-10**（**R19 轮初重排**已把 R19-1/R19-2/BUG-049 标为 R18F 消项、R19-3 提为本轮第二批、其余顺延 R20+） |
+
+---
+
+## 11. 第二批口径（Round 19：`?page=media` 媒体清理按钮化）
+
+> **本节是第二批的「需求 + 验收标准」落点**：范围（做 / 明确不做）、沿用判据 B1–B6、**媒体特有判据 M1–M2**、依赖、写范围、结果预留。
+> **Lead 裁定**：**L-R19-1**（主项与范围）/ **L-R19-2**（复用既有契约）/ **L-R19-3**（验收以 AFS 为准）；任务板上 **`task-80`（Dev）/ `task-81`（QA，`blocked_by task-80`）/ `task-82`（PM 裁决）**。
+> **与第一批的关系**：**同一条需求线的第二个批次**，**照抄第一批已交付并经 QA 以 AFS 前后对比验证的队列/worker 契约**，不重新设计；第一批判据（B1–B6）**原样沿用**，只补媒体特有的两条。
+
+### 11.1 背景
+
+`?page=media` 今天**主路径就是复制命令**：记录列表只读，页面给 4 条 CLI 文案（`add --path` / `refs --id` / `orphans` / `remove --id [--force]`，`.aup/pages/ops/media.aup:175/:180/:186/:187`），**全页零写按钮**（`grep -n "events=\|-> " .aup/pages/ops/media.aup` 只命中侧栏导航）。对一个没有技术基础的用户，这等于「功能不存在」——而这正是用户原话点名的场景（[journal/round-14.md](../journal/round-14.md)）。
+
+**为什么第二批选 media**（本文 **§10.2** 的 **B2-1**）：用户价值 ★★★（「看不见的垃圾」最容易积累）；平台可行性 ★★★（**完全复用第一批范式**：`refs` 是只读信息；`remove` / `orphans` 写 `config/media-intents` + 本机 worker；**零新平台能力、零 `blocklet.yaml` 改动**）。第一批留下的两个前置（词表统一、队列 `.json` 约定）已由 **R18F 的 D36 / D38** 收口，第二批不再被阻塞。
+
+**业务闸门已经存在**（worker 不重造规则）：`scripts/arcblog-media.mjs:51 commandRemove`，`:59-61` 仍有引用且未 `--force` → `fail('CONFLICT', 'media <id> is referenced by N record(s): …')`；引用扫描 = `scripts/lib/media.mjs:133 findMediaReferences`（`REF_SCAN_DIRS:124-130` = `posts` / `drafts` / `pages` / `page-drafts` / `heroes`）。
+
+### 11.2 做（范围）
+
+1. **「移除该媒体」（逐行按钮）**：每个媒体记录行一个带 `confirm` 的按钮 → 写一条 `action: "remove"`、`id: <row id>` 的意图记录到 `config/media-intents/<id>.json` → worker 执行**记录删除**（沿用 `removeMedia`，**只删索引记录，不删二进制**）。
+2. **「清理孤儿」（页级按钮）**：写一条 `action: "orphans"`、**携带显式 id 集合 `ids: […]`** 的意图记录 → worker **只删集合内的 id**（见 M2）。
+3. **队列区（`afs-list` 订阅 `config/media-intents`）**：逐行显示 `action` / 目标 id（或 id 数）/ `status` 原文 / `message`；**与 AFS 记录逐字一致**。
+4. **worker 通道**：`node scripts/arcblog-media.mjs apply`（一次性排空）/ `watch`（常驻）/ `queue`（**只读**，含 D38 非 `.json` 诊断）；终态 + 原因**回写意图记录自身**；语义与 `arcblog-category.mjs` / `arcblog-tags.mjs` 的 `apply|watch` 对齐。
+5. **CLI 折叠为「高级」备选**：既有 4 条命令卡**保留但默认收起**（沿用 `factory.aup:243-259` 的 `-> set … state {open}` 折叠范式）；`refs` 的**只读信息**（逐行文案或只读卡）可保留 —— 它不是动作。
+6. **诚实标注**：页面明写「按钮只入队，由本机 worker 执行」+ 给出 worker 命令（`node scripts/arcblog-media.mjs watch`）；**不得出现「点了没有执行路径」的假按钮**。
+7. **fail-closed / 幂等 / TOCTOU / 删除清单**：见 §11.3 的 **B4 / B6 / M1 / M2**。
+
+### 11.3 明确不做（防蔓延）
+
+1. **不做全站按钮化**：只 `?page=media` 的两个动作；`?page=pages` / `?page=hub` / `?page=orders` / `?page=agents` 等**一律不动**（L-R19-1）。
+2. **不按钮化 `media add --path`**：它要任意 AFS 路径 + 路径/引用校验，形态未评估（**本批不做，留后续批次**）。
+3. **不把 `refs` 做成按钮**：它是只读信息（页面已有的 CLI 文案可保留，**不算「CLI 是唯一路径」**）。
+4. **不暴露 `--force`**：页面不得提供强制删除仍被引用资产的路径；强制删除仍是 CLI-only（`commandRemove:59-61` 的 `CONFLICT` 是基准）。
+5. **不改 `blocklet.yaml`**：队列落 **`config/media-intents`**（`config` 整树与 `media` 均 admin-only，零集合声明改动）；**禁止**把队列挂在 guest 可读前缀下（`arc-contracts.md §13` 前缀语义 / `blocklet.yaml:109-111` 的 `media` 声明）。
+6. **不改 tags / categories 既有范式**（第一批 + R18F 已收口）。
+7. **不做** REQ-022 双节点台（→ R20）/ REQ-021 阶段二 / §83 其余四棵树 / I 组 6 项 / 旧队列 BUG-032·033·034·036·037·038（L-R19-6）。
+8. **不新增测试文件**（新文件默认 live，会破快层基线）；**不动 `FAST_TESTS`**；**不跑全量 `npm run test:live`**。
+9. **不改** spec / checklist 状态列 / `arc-contracts.md` / `docs/ArcBlog-admin-ui-design.md`；**不改** `.aup/wrapper.aup`（BUG-039 已实测否证并回滚，不再重复实验）。
+10. **不碰链**：**不得对 live `config/chain-intents` 调用 `run` / `watch`**（那 1 条 `pending` 意图会触发真实链写 —— 那是 BUG-051 的独立约束，`task-80` 同轮同人，须串行且互不越界）；零真实链交易、零资金、私钥/Mnemonic 不打印不落盘；**不删** `node.key` / `.env.local`。
+11. **不 `git commit` / `git push` / `git reset --hard` / `git add -A`**。
+
+### 11.4 队列与词表契约（L-R19-2 —— **复用，不许再造一套**）
+
+| 契约 | 取值 / 形态 |
+| --- | --- |
+| **状态词表** | **唯一来源 = `scripts/lib/intents.mjs`**（D36）：canonical = `pending \| running \| applied \| rejected \| noop`；终态 = `applied \| rejected \| noop`；**不得在 `arcblog-media.mjs` 里写字面状态词**（用 `INTENT_STATUS.*`） |
+| **队列条目命名** | **必须 `<id>.json`**（D38）；读取端（`queue` / `apply` / `watch`）对**非 `.json` 条目显式诊断**（`queueEntryIgnored` + `{path, reason}`），**不得静默忽略** |
+| **队列落点** | `/instance/app/arcblog/config/media-intents`（admin-only；同族先例 `config/category-intents` / `config/chain-intents`） |
+| **记录形状（最小）** | `{ id, action: "remove" \| "orphans", mediaId?（remove）, ids?（orphans，显式集合）, status: "pending", message: "", requestedVia: "console", requestedAt, changed: [], … }`；页面侧**不得写** `requestedBy: $session.did`（BUG-003：`$session.*` 在 `exec content` 内落字面量）；记录内 `grep '\$session\.'` 必须为 **0** ｜ **`ids` 的形态（BUG-054 口径，2026-09-28 由 PM 就地写清）**：`ids` **保留页面写入的原始形态** —— 页面模板产不出动态数组，实际是**单元素数组包 CSV**（`ids:["a,b,c"]`）；`idsCsv` 是干净 CSV；**worker 在读取侧**用 `normalizeIds()` 归一化后**逐个**执行（重新校验 + 逐个删除/跳过），**不重写**记录里的 `ids`；CLI `queue` 的 `target` 与 `report()` 输出是干净列表。**三处口径以 AFS 实测为准，不得声称「归一化并写回」** |
+| **worker 形态** | `apply`（一次性）/ `watch`（常驻）/ `queue`（只读）；终态 + `message` 非空回写；幂等（同 id 同内容幂等 / 异内容 `CONFLICT`）；**同一时刻只有一个 worker 消费（`.gate-lock` 约定）** |
+
+### 11.5 验收标准（**B1–B6 沿用 + M1–M2 媒体特有**；QA 逐条判，缺一条即不放行）
+
+> **证据形态 = AFS 前后对比**（`arc-contracts.md §29.4`：**toast 不是证据**）。**三类证据分开标注**（浏览器实测 / 静态复核 / 受限未验证）。**每个「已验证」必须附真实命令 + 真实输出**。
+
+| # | 验收标准 | 验证方式（可执行） |
+| - | -------- | ------------------ |
+| **B1** | **① 主路径是按钮，CLI 只作折叠的高级备选** | 浏览器实测（admin context，真实点击）：记录行出现「移除该媒体」、页级出现「清理孤儿」；两个动作**只靠点击**即可入队；命令卡默认收起（`copyableBeforeExpand = 0` 或等价观测），展开后可见；**CLI 不是唯一路径**；静态复核 `.aup/pages/ops/media.aup` 中两按钮带 `events={click: {exec: "/.actions/write", …}}` |
+| **B2** | **② 点按钮 → AFS 意图记录（含 `status`/来源/原因）→ worker 执行 → 目标数据真的改变** | `arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/config/media-intents/<id>.json` 原始输出含 `action` / 目标 / `status: "pending"` / `requestedVia: "console"` / `requestedAt`；`grep -c '\$session\.' <记录>` = **0**；`apply` 后**再读一次媒体记录**（`arc afs exec … read --path /instance/app/arcblog/media/<id>.json`）确认**记录真的消失**（remove 分支）或**仍在**（负例）；终态三档 + `message` 非空 |
+| **B3** | **③ 队列状态页面可见且与 AFS 一致** | 浏览器读页面队列区文本 + `arc afs` 逐条读；**抽 ≥3 条逐字比对**（动作 / 目标 / `status`） |
+| **B4** | **④ 负例 fail-closed（3 条，数据不得改变）** | ① 不存在的媒体 id → `rejected` + 原因非空 + 零改动；② 非法意图记录（未知 `action` / 缺 `id`）→ `rejected`；③ **仍被引用的媒体**（M1）→ `rejected` + **记录仍在**。三条均**不得留 `pending`**（worker 捕获并落记录，不抛出后丢单） |
+| **B5** | **⑤ 平台受限面如实标注、禁止假按钮、落点约束** | 页面常驻「已排队，由本机 worker 执行」+ worker 命令；每个按钮都有**真实写入 + 真实消费路径**；**队列落 `config/media-intents`**；guest 无 cookie 读队列路径 → **403**（`role 'guest' is below readRole 'admin'`）；`npm test` 内的 `scripts/arcblog-permissions.test.mjs` 仍 **6/6**（基线不得降）；公开 `?page=media` guest 视图不因队列多出条目 |
+| **B6** | **⑥ 幂等（重复点不重复执行）** | 同一目标连点 2 次（或同意图 `apply` 两次）→ 媒体记录**只被删一次**；第二次终态 = **`noop`** + 原因非空；同 id 同内容幂等 / 异内容 `CONFLICT`（不覆盖 pending，`arcblog-tags.mjs:225-235` 口径） |
+| **M1** | **⑦（媒体特有）「移除」在 worker 侧重新校验 refs —— 防 TOCTOU** | worker 执行前**重新**调用引用扫描（`scripts/lib/media.mjs:133`，`REF_SCAN_DIRS:124-130`）；**若仍被引用 → 终态 `rejected`** + `message` 含引用方（`kind:slug`，≥1 条）+ **媒体记录逐字节仍在** + 引用方记录逐字节不变。**QA 必须独立造时序**：页面/`refs` 显示 0 引用 → 入队 → **再**制造一条引用（写草稿/页面/hero 引用该资产路径）→ `apply` → 读回 `status:"rejected"` 且媒体记录仍可读。**「页面显示为空」不构成可删证据** |
+| **M2** | **⑧（媒体特有）「清理孤儿」只删显式确认过的条目，且删除清单可查** | ① 意图记录携带**显式 id 集合**（`ids:[…]`，非空）；空集合 → fail-closed（不入队或 `rejected`）；② 入队前**页面把候选/确认清单显示给用户**（两步：候选可见 → 确认；禁止「一键静默批量删」）；③ 终态 `changed` **逐条列出实际删除的媒体 id**（`changed` 非空 = 删除清单可查）；`changed: []` → 终态必须 **`noop` + 原因非空**（**不允许「`applied` 但零清单」**）；④ 集合内某 id 在入队后变成被引用（TOCTOU）→ **该 id 跳过并写明（记录仍在）**，其余照删；**禁止 `--force`、禁止连锁删除**。验证：造 2 条孤儿 + 1 条被引用记录 → 确认清理 → `changed` **恰好 = 确认清单 ∩ 仍为孤儿者**；被引用记录**仍在**；再跑一次 → `noop` |
+
+**门（第二批必须全绿）**：`arc dsl validate --json`（`issues: []`）+ `npm test`（**35/35**，基线不得降）+ `arc dsl generate --check`（0 漂移）+ `arc blocklet build` + **`arc service restart`** + `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `diff -r .aup dist/.aup`（改了 `.web` 再加 `diff -r .web dist/.web`）。
+
+### 11.6 依赖
+
+| 依赖 | 状态 | 影响 |
+| --- | --- | --- |
+| 第一批范式（`?page=categories` + `arcblog-category.mjs apply\|watch` + `config/category-intents`） | ✅ 已交付并经 R18/R18F QA 以 AFS 前后对比验证 | **照抄对象**；本批不重复设计 |
+| `scripts/lib/intents.mjs`（D36 词表 + 读取端兼容） | ✅ 已存在（R18F） | 本批**唯一**状态词来源；**不得**再写字面状态词 |
+| D38 队列 `.json` 约定 + 非 `.json` 显式诊断 | ✅ 已由 R18F 收口（BUG-049 关闭） | 本批 `queue` / `apply` / `watch` 三处读取端都要照做 |
+| `scripts/arcblog-media.mjs` 的 `refs` / `orphans` / `remove` + `CONFLICT` 守卫 | ✅ 已存在（`commandRemove:51`，`:59-61` 引用守卫；`scripts/lib/media.mjs:133 findMediaReferences`） | worker 的**唯一业务执行者**；**缺 `apply` / `watch` / `queue`** → 本批新增 |
+| `scripts/arcblog-media.test.mjs` | ✅ 存在（**live 层**，不在 `FAST_TESTS`） | 触及 CLI → **先 `docs/team/.gate-lock`**，再 `npm run test:file -- scripts/arcblog-media.test.mjs`，**跑完删锁** |
+| `scripts/arcblog-permissions.test.mjs` | ✅ 存在（**在 `FAST_TESTS`**，`npm test` 内含） | 权限基线 **6/6**；本批**预期零 `blocklet.yaml` 改动** |
+| 浏览器 admin 会话 | ✅ 可用 | guest 无侧栏 → 真实点击必须用 admin context（**单 tab 纪律**：复用同标签页、每身份/每语言新 context、结束关 target） |
+| **BUG-051 同轮约束（L-R19-4）** | 🟥 同轮（同 `task-80`） | **`task-80` 内串行**：第二批 → BUG-051 → BUG-048；**BUG-051 严禁 drain**，与本批的 `apply`/`watch` **不是同一个队列**（`config/media-intents` ≠ `config/chain-intents`），**不得把任一 worker 指向对方队列** |
+
+### 11.7 写范围
+
+| 批次 | 成员 / 任务 | 写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A（唯一写者）** | Dev / `task-80` | `.aup/pages/ops/media.aup`、生成的 `.aup/locales/**` 与 `.aup/app.json`/`wrapper.json`（由 `arc dsl generate --write` 生成）、`scripts/arcblog-media.mjs`（+ `scripts/lib/media.mjs` 如需）、既有 `scripts/*.test.mjs`（**仅追加用例，不新增文件**）、`dist/**`（build）、`docs/team/.gate-lock`（临时） | 触及 CLI/AFS → **先 `.gate-lock` + 定向单跑 + 跑完删锁**；**不新增测试文件**；`blocklet.yaml` **预期零改动**（越界即停并上报）；**`--force` 不进按钮路径** |
+| **B（后）** | QA / `task-81` | `docs/team/test-reports/round-19.md`、`docs/team/test-reports/raw/REQ-019-b2-*`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时） | **`blocked_by task-80`**；**以 AFS 为准**；**TOCTOU 独立造时序**；**孤儿显式性**；单 tab 自证；不跑全量 live；三类证据分开标注；残留逐条清理或登记 |
+| **C** | PM / `task-79` + `task-82` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划 + 轮末逐条裁决；**不调用 `team_task_*`**；不写源码 / `blocklet.yaml` / checklist 状态列 |
+
+### 11.8 结果记录（**Round 19 轮末已回填**：Dev `task-80` → QA `task-81` → PM `task-82`，2026-09-28）
+
+> **判定：第二批 = 「达标（放行）」**（QA-015 [round-19.md](../../test-reports/round-19.md) 末行 `VERDICT=pass, BLOCKING=0`；**8 条判据逐条通过**，证据全部为 **AFS 前后对比**，无一条以 toast 为依据）。逐条判定与新增 BUG 裁决见 [backlog](../../backlog.md)「**Round 19 结论**」+「**缺陷（🐞）— Round 19**」。
+
+| 项 | 结果 |
+| --- | --- |
+| 队列落点 | **`/instance/app/arcblog/config/media-intents`**（admin-only 同族；**`blocklet.yaml` 零改动**，permissions **6/6** 未退化） |
+| 意图记录形状 | `2026-09-28T16:18:52.846Z.json`：`{ id, action:"remove", mediaId:"r19qa-free", ids:[], idsCsv:"", status:"pending", message:"", changed:[], skipped:[], requestedVia:"console", requestedAt }`；**`$session.` 计数 = 0**、**无 `requestedBy` 键**（BUG-003 口径）。孤儿意图：`ids:["r19qa-orph1,r19qa-orph2,r19qa-orph3"]`（**单元素包 CSV**，`idsCsv` 干净 —— 见下方 BUG-054 注记） |
+| B1–B6 逐条 | **B1/B2/B3/B4/B5/B6 全部通过**（浏览器实测 + AFS 前后对比）：B1 按钮主路径 + 折叠态 `copyable = 0`（展开后命令数 8→14）；B2 apply 前媒体记录**逐字节不变** → apply 后 `r19qa-free` **真的消失** + `applied` + `changed` + `message`；B3 页面队列 12 行与 CLI `queue` **逐字一致**（≥3 条）；B4 三条负例（不存在 id / 非法 action / 仍被引用）**`rejected` + 零改动 + 无残留 pending**；B5 落点约束 + guest **403**（`/config`、`/config/media-intents`、`/media`）；B6 连点 2 次 → 第二条 **`noop`**、记录只删一次 |
+| **M1（TOCTOU）** | **通过（QA 独立造时序）**：`refs count:0` → 入队 → 再写引用草稿（`refs count:1`）→ `apply` → **`rejected` / `code:CONFLICT`** + `message` 含 `post (draft):r19qa-toctou-post` + **媒体记录逐字节仍在** + 引用方逐字节不变。`--force` **不在按钮路径** |
+| **M2（孤儿显式性）** | **通过（附注记）**：空集合 → `rejected` / `VALIDATION`（`nothing was deleted — no data changed`）；入队前清单可见可改 + 二次确认（点开对话框**不写入**）；终态 `applied` + `changed:["r19qa-orph1","r19qa-orph2"]`（**恰好 = 确认清单 ∩ 仍为孤儿者**）、被引用的 `r19qa-orph3` **跳过 + 记录仍在**；再跑 → **`noop` + `changed:[]` + 原因非空**；无 `--force`、无连锁删除 |
+| **D38 诊断** | **实测**：队列根存在非 `.json` 条目时 `queue` / `apply` 均给出 `queueEntryIgnored:1` + `{path, reason}`（显式诊断，非静默忽略） |
+| 门原始输出 | QA **自跑**（原始输出 `test-reports/raw/round-19/`）：`arc dsl validate --json` `"issues": []`；`npm test` **35/35**；`arc dsl generate --check` `Would generate 0 file(s)`；`arc blocklet build` Published **775**；`diff -r .aup dist/.aup` **0 字节**、`diff -r .web dist/.web` **0 字节**；`console-nav --check` `{"ok":true,"pages":21}`；`arc service restart` **实测掉 `/blocklets/arcblog` 挂载 → `arc blocklet run .` 复挂**（新增环境事实，交 Lead 落 `arc-contracts.md` 候选 #14）。**PM 轮末只读复核**：validate `issues: []` / `npm test` **35/35**（`duration_ms 1087.2505`）/ `generate --check` 0 漂移 / `console-nav --check` pages 21 / `.gate-lock` 不存在 |
+| 定向 live 单跑 | `.gate-lock` 下串行：`arcblog-media.test.mjs` **22/22** / `arcblog-chain-worker.test.mjs` **8/8** / `arcblog-doctor.test.mjs` **13/13** / `arcblog-clean.test.mjs` **6/6（最后 1 条被 `--test-skip-pattern` 跳过 → BUG-053）**；**未跑全量 `npm run test:live`** |
+| 新增 BUG | **3 条**：[BUG-052](../../team/bugs/BUG-052-media-empty-hints-always-rendered.md)（**P2**，空态提示无条件渲染 → **R20-2**）／[BUG-053](../../team/bugs/BUG-053-clean-test-really-deletes-instance-residue.md)（P3，clean 测试真删实例残留 → **R20-3**；亦是 BUG-048 C6 受限的原因）／[BUG-054](../../team/bugs/BUG-054-media-intent-ids-not-normalized-in-record.md)（P3，`ids` 归一化**自述**与 AFS 实测不符 → **本轮修：PM 内联 docs-only 口径订正（§11.4 + 本节）→ 已闭环**；选项① 真写回 `next.ids` = R20-6 低优先候选）。**P0 = 0 / P1 = 0** |
+| QA 结论 | **`VERDICT=pass, BLOCKING=0`**（[round-19.md](../../test-reports/round-19.md) 末行）；21 页运行期扫描无回归（每页恰 1 active、无 `SESSION INIT FAILED`） |
+| 受限未验证（如实登记） | ① **en locale 未再真实点击**（全部真实点击在 zh admin context；en 文案由 `generate` 产出、i18n/死键门全绿）；② `arcblog-clean.test.mjs` 最后一条破坏性用例（= BUG-053）；③ `--confirm` 对**目录条目**（15 个 `config/chain-intents-worker-*`）的删除语义（**按 L-R19-5 刻意不验**）；④ 全量 `npm run test:live`（明文禁止） |
+
+> **BUG-051 / BUG-048 的关闭判据**不在本节：它们是**独立缺陷**（同轮修），判据逐条登记在 [backlog](../../backlog.md)「本轮：Round 19」→「**BUG-051 关闭判据**」/「**BUG-048 关闭判据**」两张表。

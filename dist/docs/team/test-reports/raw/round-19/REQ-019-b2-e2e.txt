@@ -1,0 +1,722 @@
+== fixtures ready == r19qa-free,r19qa-ref,r19qa-toctou,r19qa-dup,r19qa-orph1,r19qa-orph2,r19qa-orph3 | ref-post exists
+== B1 buttons/fold == {"mediaRows":[{"id":"r19qa-dup","buttons":["移除该媒体"]},{"id":"r19qa-free","buttons":["移除该媒体"]},{"id":"r19qa-orph1","buttons":["移除该媒体"]},{"id":"r19qa-orph2","buttons":["移除该媒体"]},{"id":"r19qa-orph3","buttons":["移除该媒体"]},{"id":"r19qa-ref","buttons":["移除该媒体"]},{"id":"r19qa-toctou","buttons":["移除该媒体"]}],"orphanButton":["清理孤儿（确认清单）"],"orphanField":"","copyableFolded":12,"workerMentionsFolded":12,"advancedButton":true}
+== confirm gate: row remove == {"before":[],"afterOpen":[],"after":["2026-09-28T16:18:52.846Z.json"],"openedDialog":"{\"dialogOpen\":true,\"dialogText\":\"提交移除该媒体记录？\\n索引记录由本机 worker 删除——绝不是本页——且 worker 会先重新校验：只要还有文章、草稿、页面或 hero 引用该资产路径，意图就会被拒绝，原因写入记录，且不会删除任何东西。二进制文件绝不删除。\\nCancel\\n移除该媒体\",\"dialogButtons\":[\"Cancel\",\"移除该媒体\"]}","accepted":"{\"confirmLabel\":\"移除该媒体\",\"dialogGone\":true}","newIds":["2026-09-28T16:18:52.846Z.json"]}
+== B2 arc afs read of the row intent == 
+{
+  "success": true,
+  "data": {
+    "id": "2026-09-28T16:18:52.846Z.json",
+    "path": "/instance/app/arcblog/config/media-intents/2026-09-28T16:18:52.846Z.json",
+    "createdAt": "2026-09-28T16:18:52.849Z",
+    "updatedAt": "2026-09-28T16:18:52.849Z",
+    "content": "{\n  \"id\": \"2026-09-28T16:18:52.846Z\",\n  \"action\": \"remove\",\n  \"mediaId\": \"r19qa-free\",\n  \"ids\": [],\n  \"idsCsv\": \"\",\n  \"status\": \"pending\",\n  \"message\": \"\",\n  \"changed\": [],\n  \"skipped\": [],\n  \"requestedVia\": \"console\",\n  \"requestedAt\": \"2026-09-28T16:18:52.846Z\"\n}",
+    "meta": {
+      "size": 264,
+      "version": "1790612332849.7314-157342190-264",
+      "mimeType": "application/json"
+    },
+    "actions": []
+  }
+}
+== B2 intent shape == {"id":"2026-09-28T16:18:52.846Z","fileStem":"2026-09-28T16:18:52.846Z","action":"remove","mediaId":"r19qa-free","ids":[],"status":"pending","requestedVia":"console","requestedAt":"2026-09-28T16:18:52.846Z","sessionLiteralCount":0,"hasRequestedBy":false,"changed":[],"message":""}
+== CLI refs (before enqueue/apply) == {
+  "ok": true,
+  "id": "r19qa-free",
+  "mediaPath": "/instance/app/arcblog/r19qa-assets/r19qa-free.png",
+  "count": 0,
+  "refs": []
+}
+== worker apply #1 (row remove) == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:18:52.846Z",
+      "action": "remove",
+      "target": "r19qa-free",
+      "status": "applied",
+      "changed": [
+        "r19qa-free"
+      ],
+      "appliedAt": "2026-09-28T16:19:32.340Z",
+      "message": "remove: deleted media record r19qa-free (the binary is untouched)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B2 after worker == {"mediaRecordBefore_existed":true,"mediaRecordAfter_exists":false,"intentStatus":"applied","intentChanged":["r19qa-free"],"intentMessage":"remove: deleted media record r19qa-free (the binary is untouched)","intentAppliedAt":"2026-09-28T16:19:32.340Z"}
+== click remove on referenced media == ["2026-09-28T16:21:19.542Z.json"]
+== CLI refs of the referenced media == {
+  "ok": true,
+  "id": "r19qa-ref",
+  "mediaPath": "/instance/app/arcblog/r19qa-assets/r19qa-ref.png",
+  "count": 1,
+  "refs": [
+    {
+      "kind": "post (draft)",
+      "slug": "r19qa-ref-post",
+      "path": "/instance/app/arcblog/drafts/r19qa-ref-post.json"
+    }
+  ]
+}
+== worker apply (negative: referenced) == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:21:19.542Z",
+      "action": "remove",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B4③ result == {"mediaRecordStillExists":true,"intentStatus":"rejected","code":"CONFLICT","message":"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)","refPostByteIdentical":true}
+== M1 refs BEFORE enqueue (must be 0) == {
+  "ok": true,
+  "id": "r19qa-toctou",
+  "mediaPath": "/instance/app/arcblog/r19qa-assets/r19qa-toctou.png",
+  "count": 0,
+  "refs": []
+}
+== M1 refs AFTER enqueue (reference added) == {
+  "ok": true,
+  "id": "r19qa-toctou",
+  "mediaPath": "/instance/app/arcblog/r19qa-assets/r19qa-toctou.png",
+  "count": 1,
+  "refs": [
+    {
+      "kind": "post (draft)",
+      "slug": "r19qa-toctou-post",
+      "path": "/instance/app/arcblog/drafts/r19qa-toctou-post.json"
+    }
+  ]
+}
+== M1 worker apply == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:24:06.542Z",
+      "action": "remove",
+      "target": "r19qa-toctou",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== M1 result == {"mediaRecordStillExists":true,"intentStatus":"rejected","code":"CONFLICT","message":"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)","referencingRecordByteIdentical":true}
+== B6 two clicks on the same row == {"c1":["2026-09-28T16:26:37.208Z.json"],"c2":["2026-09-28T16:26:42.243Z.json"]}
+== B6 apply (first applied, second noop) == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 2,
+  "intents": [
+    {
+      "id": "2026-09-28T16:26:37.208Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "applied",
+      "changed": [
+        "r19qa-dup"
+      ],
+      "appliedAt": "2026-09-28T16:27:05.062Z",
+      "message": "remove: deleted media record r19qa-dup (the binary is untouched)"
+    },
+    {
+      "id": "2026-09-28T16:26:42.243Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "noop",
+      "changed": [],
+      "message": "nothing to do: media \"r19qa-dup\" was already removed by intent \"2026-09-28T16:26:37.208Z\" at 2026-09-28T16:27:05.062Z"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B6 result == {"mediaStillExists":false,"statuses":[[{"id":"2026-09-28T16:26:37.208Z.json","status":"applied","message":"remove: deleted media record r19qa-dup (the binary is untouched)"}],[{"id":"2026-09-28T16:26:42.243Z.json","status":"noop","message":"nothing to do: media \"r19qa-dup\" was already removed by intent \"2026-09-28T16:26:37.208Z\" at 2026-09-28T16:27:05.062Z"}]]}
+== M2 orphans refresh (candidate list) == {
+  "ok": true,
+  "count": 3,
+  "total": 5,
+  "orphans": [
+    {
+      "id": "r19qa-orph3",
+      "path": "/instance/app/arcblog/r19qa-assets/r19qa-orph3.png",
+      "size": 1234
+    },
+    {
+      "id": "r19qa-orph2",
+      "path": "/instance/app/arcblog/r19qa-assets/r19qa-orph2.png",
+      "size": 1234
+    },
+    {
+      "id": "r19qa-orph1",
+      "path": "/instance/app/arcblog/r19qa-assets/r19qa-orph1.png",
+      "size": 1234
+    }
+  ],
+  "candidatesPath": "/instance/app/arcblog/config/media-orphan-candidates.json",
+  "candidatesRefreshed": true
+}
+== M2 candidate list shown BEFORE confirmation == {"countLabel":"上次扫描到的未引用记录数: 3","idsCsv":"r19qa-orph3,r19qa-orph2,r19qa-orph1","visibleIdsText":["r19qa-free","remove: deleted media record r19qa-free (the binary is untouched)","r19qa-ref","media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)","r19qa-toctou","media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)","r19qa-dup","remove: deleted media record r19qa-dup (the binary is untouched)","r19qa-dup","nothing to do: media \"r19qa-dup\" was already removed by intent \"2026-09-28T16:26:37.208Z\" at 2026-09-28T16:27:05.062Z","QA R19 r19qa-orph1","r19qa-orph1","/instance/app/arcblog/r19qa-assets/r19qa-orph1.png","node scripts/arcblog-media.mjs refs --id r19qa-orph1","QA R19 r19qa-orph2","r19qa-orph2","/instance/app/arcblog/r19qa-assets/r19qa-orph2.png","node scripts/arcblog-media.mjs refs --id r19qa-orph2","QA R19 r19qa-orph3","r19qa-orph3","/instance/app/arcblog/r19qa-assets/r19qa-orph3.png","node scripts/arcblog-media.mjs refs --id r19qa-orph3","QA R19 r19qa-ref","r19qa-ref","/instance/app/arcblog/r19qa-assets/r19qa-ref.png","node scripts/arcblog-media.mjs refs --id r19qa-ref","QA R19 r19qa-toctou","r19qa-toctou","/instance/app/arcblog/r19qa-assets/r19qa-toctou.png","node scripts/arcblog-media.mjs refs --id r19qa-toctou","r19qa-orph3,r19qa-orph2,r19qa-orph1"]}
+== M2 orphan click == {"before":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json"],"afterOpen":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json"],"after":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json","2026-09-28T16:30:12.291Z.json"],"openedDialog":"{\"typed\":\"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\"dialogOpen\":true,\"dialogText\":\"提交删除确认清单？\\n只有字段里的 id 会入队；本机 worker 会逐个重新校验后再删除索引记录，若某个资产已被其它内容引用则跳过并保留。二进制文件绝不会被删除。\\nCancel\\n清理孤儿（确认清单）\"}","accepted":"{\"confirmLabel\":\"清理孤儿（确认清单）\",\"dialogGone\":true}","newIds":["2026-09-28T16:30:12.291Z.json"]}
+== M2 orphan intent (as AFS returns it) == {
+  "success": true,
+  "data": {
+    "id": "2026-09-28T16:30:12.291Z.json",
+    "path": "/instance/app/arcblog/config/media-intents/2026-09-28T16:30:12.291Z.json",
+    "createdAt": "2026-09-28T16:30:12.292Z",
+    "updatedAt": "2026-09-28T16:30:12.293Z",
+    "content": "{\n  \"id\": \"2026-09-28T16:30:12.291Z\",\n  \"action\": \"orphans\",\n  \"mediaId\": \"\",\n  \"ids\": [\n    \"r19qa-orph1,r19qa-orph2,r19qa-orph3\"\n  ],\n  \"idsCsv\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n  \"status\": \"pending\",\n  \"message\": \"\",\n  \"changed\": [],\n  \"skipped\": [],\n  \"requestedVia\": \"console\",\n  \"requestedAt\": \"2026-09-28T16:30:12.291Z\"\n}",
+    "meta": {
+      "size": 335,
+      "version": "1790613012293.0283-157345394-335",
+      "mimeType": "application/json"
+    },
+    "actions": []
+  }
+}
+== M2 orphan intent shape == {"action":"orphans","ids":["r19qa-orph1,r19qa-orph2,r19qa-orph3"],"idsCsv":"r19qa-orph1,r19qa-orph2,r19qa-orph3","status":"pending","requestedVia":"console","sessionLiteralCount":0}
+== M2 worker apply == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:30:12.291Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "applied",
+      "changed": [
+        "r19qa-orph1",
+        "r19qa-orph2"
+      ],
+      "skipped": [
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "appliedAt": "2026-09-28T16:31:15.956Z",
+      "message": "orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== M2 result == {
+ "status": "applied",
+ "changed": [
+  "r19qa-orph1",
+  "r19qa-orph2"
+ ],
+ "skipped": [
+  {
+   "id": "r19qa-orph3",
+   "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+  }
+ ],
+ "message": "orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)",
+ "orph1_gone": true,
+ "orph2_gone": true,
+ "orph3_stillExists": true,
+ "orph3ByteIdentical": true,
+ "orph3ReferenceRecordByteIdentical": true,
+ "snapshotBefore": {
+  "orph1": 314,
+  "orph2": 314,
+  "orph3": 314
+ }
+}
+== B6 orphans second confirmation == {"newIds":["2026-09-28T16:32:17.288Z.json"]}
+== B6 orphans apply #2 == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:32:17.288Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "noop",
+      "changed": [],
+      "skipped": [
+        {
+          "id": "r19qa-orph1",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph2",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "message": "nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B6 orphans result #2 == {"id":"2026-09-28T16:32:17.288Z","action":"orphans","mediaId":"","ids":["r19qa-orph1,r19qa-orph2,r19qa-orph3"],"idsCsv":"r19qa-orph1,r19qa-orph2,r19qa-orph3","status":"noop","message":"nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)","changed":[],"skipped":[{"id":"r19qa-orph1","reason":"no such media record"},{"id":"r19qa-orph2","reason":"no such media record"},{"id":"r19qa-orph3","reason":"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"}],"requestedVia":"console","requestedAt":"2026-09-28T16:32:17.288Z","updatedAt":"2026-09-28T16:32:42.116Z"}
+== M2 empty-list click == {"before":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json","2026-09-28T16:30:12.291Z.json","2026-09-28T16:32:17.288Z.json"],"afterOpen":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json","2026-09-28T16:30:12.291Z.json","2026-09-28T16:32:17.288Z.json"],"after":["2026-09-28T16:18:52.846Z.json","2026-09-28T16:21:19.542Z.json","2026-09-28T16:24:06.542Z.json","2026-09-28T16:26:37.208Z.json","2026-09-28T16:26:42.243Z.json","2026-09-28T16:30:12.291Z.json","2026-09-28T16:32:17.288Z.json","2026-09-28T16:33:39.990Z.json"],"openedDialog":"{\"typed\":\"\",\"dialogOpen\":true,\"dialogText\":\"提交删除确认清单？\\n只有字段里的 id 会入队；本机 worker 会逐个重新校验后再删除索引记录，若某个资产已被其它内容引用则跳过并保留。二进制文件绝不会被删除。\\nCancel\\n清理孤儿（确认清单）\"}","accepted":"{\"confirmLabel\":\"清理孤儿（确认清单）\",\"dialogGone\":true}","newIds":["2026-09-28T16:33:39.990Z.json"]}
+== M2 empty-list intent shape == {"ids":[""],"idsCsv":""}
+== M2 empty-list apply == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T16:33:39.990Z",
+      "action": "orphans",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== M2 empty-list result == {"id":"2026-09-28T16:33:39.990Z","action":"orphans","mediaId":"","ids":[""],"idsCsv":"","status":"rejected","message":"orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed","changed":[],"skipped":[],"requestedVia":"console","requestedAt":"2026-09-28T16:33:39.990Z","code":"VALIDATION","updatedAt":"2026-09-28T16:33:46.265Z"}
+== B4① CLI request for a missing media == {
+  "ok": true,
+  "action": "media-request",
+  "path": "/instance/app/arcblog/config/media-intents/media-intent-mulgwyh6vhiq.json",
+  "intent": {
+    "id": "media-intent-mulgwyh6vhiq",
+    "action": "remove",
+    "mediaId": "r19qa-nope",
+    "ids": [],
+    "idsCsv": "",
+    "status": "pending",
+    "message": "",
+    "changed": [],
+    "skipped": [],
+    "requestedVia": "cli",
+    "requestedBy": "",
+    "requestedAt": "2026-09-28T16:34:41.418Z",
+    "updatedAt": "2026-09-28T16:34:41.419Z"
+  }
+}
+== B4 negatives apply == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 3,
+  "intents": [
+    {
+      "id": "media-intent-mulgwyh6vhiq",
+      "action": "remove",
+      "target": "r19qa-nope",
+      "status": "rejected",
+      "code": "NOT_FOUND",
+      "changed": [],
+      "message": "media not found: r19qa-nope — no data changed"
+    },
+    {
+      "id": "r19qa-invalid-action",
+      "action": "nuke",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "unknown media intent action: nuke — no data changed"
+    },
+    {
+      "id": "r19qa-missing-mediaid",
+      "action": "remove",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "remove: a media id is required (mediaId) — no data changed"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B4 result r19qa-invalid-action == {"status":"rejected","code":"VALIDATION","message":"unknown media intent action: nuke — no data changed","changed":[]}
+== B4 result r19qa-missing-mediaid == {"status":"rejected","code":"VALIDATION","message":"remove: a media id is required (mediaId) — no data changed","changed":[]}
+== B1 fold == {"copyableBeforeExpand":8,"copyableAfterExpand":14,"hideButton":"收起高级","visibleCliLines":["按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-media.mjs watch）——浏览器不会删除记录。本平台的按钮点击无法直接执行服务端代码（docs/arc-contracts.md §26）。","Worker：node scripts/arcblog-media.mjs watch","node scripts/arcblog-media.mjs refs --id r19qa-orph3","node scripts/arcblog-media.mjs refs --id r19qa-ref","node scripts/arcblog-media.mjs refs --id r19qa-toctou","如何添加：node scripts/arcblog-media.mjs add","上面的清单就是「将删清单」：即本机上次扫描出的、确实未被引用的 id。它由本机 worker（node scripts/arcblog-media.mjs watch）与 node scripts/arcblog-media.mjs orphans 刷新。你可以把字段改成更短的清单——worker 只删字段里的 id，并在删除前逐个重新校验。","node scripts/arcblog-media.mjs refs --id <id>","node scripts/arcblog-media.mjs orphans","node scripts/arcblog-media.mjs remove --id <id> --force","node scripts/arcblog-media.mjs add --path <afs-path> --id <id>","node scripts/arcblog-media.mjs queue","node scripts/arcblog-media.mjs watch"]}
+== B3 page queue text == {"queueText":""}
+== B3 CLI queue (AFS truth) == {
+  "ok": true,
+  "path": "/instance/app/arcblog/config/media-intents",
+  "count": 11,
+  "intents": [
+    {
+      "id": "2026-09-28T16:18:52.846Z",
+      "action": "remove",
+      "target": "r19qa-free",
+      "status": "applied",
+      "changed": [
+        "r19qa-free"
+      ],
+      "appliedAt": "2026-09-28T16:19:32.340Z",
+      "message": "remove: deleted media record r19qa-free (the binary is untouched)"
+    },
+    {
+      "id": "2026-09-28T16:21:19.542Z",
+      "action": "remove",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    },
+    {
+      "id": "2026-09-28T16:24:06.542Z",
+      "action": "remove",
+      "target": "r19qa-toctou",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    },
+    {
+      "id": "2026-09-28T16:26:37.208Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "applied",
+      "changed": [
+        "r19qa-dup"
+      ],
+      "appliedAt": "2026-09-28T16:27:05.062Z",
+      "message": "remove: deleted media record r19qa-dup (the binary is untouched)"
+    },
+    {
+      "id": "2026-09-28T16:26:42.243Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "noop",
+      "changed": [],
+      "message": "nothing to do: media \"r19qa-dup\" was already removed by intent \"2026-09-28T16:26:37.208Z\" at 2026-09-28T16:27:05.062Z"
+    },
+    {
+      "id": "2026-09-28T16:30:12.291Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "applied",
+      "changed": [
+        "r19qa-orph1",
+        "r19qa-orph2"
+      ],
+      "skipped": [
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "appliedAt": "2026-09-28T16:31:15.956Z",
+      "message": "orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    },
+    {
+      "id": "2026-09-28T16:32:17.288Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "noop",
+      "changed": [],
+      "skipped": [
+        {
+          "id": "r19qa-orph1",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph2",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "message": "nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    },
+    {
+      "id": "2026-09-28T16:33:39.990Z",
+      "action": "orphans",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed"
+    },
+    {
+      "id": "media-intent-mulgwyh6vhiq",
+      "action": "remove",
+      "target": "r19qa-nope",
+      "status": "rejected",
+      "code": "NOT_FOUND",
+      "changed": [],
+      "message": "media not found: r19qa-nope — no data changed"
+    },
+    {
+      "id": "r19qa-invalid-action",
+      "action": "nuke",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "unknown media intent action: nuke — no data changed"
+    },
+    {
+      "id": "r19qa-missing-mediaid",
+      "action": "remove",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "remove: a media id is required (mediaId) — no data changed"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== D38 queue with a non-.json entry == {
+  "ok": true,
+  "path": "/instance/app/arcblog/config/media-intents",
+  "count": 11,
+  "intents": [
+    {
+      "id": "2026-09-28T16:18:52.846Z",
+      "action": "remove",
+      "target": "r19qa-free",
+      "status": "applied",
+      "changed": [
+        "r19qa-free"
+      ],
+      "appliedAt": "2026-09-28T16:19:32.340Z",
+      "message": "remove: deleted media record r19qa-free (the binary is untouched)"
+    },
+    {
+      "id": "2026-09-28T16:21:19.542Z",
+      "action": "remove",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    },
+    {
+      "id": "2026-09-28T16:24:06.542Z",
+      "action": "remove",
+      "target": "r19qa-toctou",
+      "status": "rejected",
+      "code": "CONFLICT",
+      "changed": [],
+      "message": "media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)"
+    },
+    {
+      "id": "2026-09-28T16:26:37.208Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "applied",
+      "changed": [
+        "r19qa-dup"
+      ],
+      "appliedAt": "2026-09-28T16:27:05.062Z",
+      "message": "remove: deleted media record r19qa-dup (the binary is untouched)"
+    },
+    {
+      "id": "2026-09-28T16:26:42.243Z",
+      "action": "remove",
+      "target": "r19qa-dup",
+      "status": "noop",
+      "changed": [],
+      "message": "nothing to do: media \"r19qa-dup\" was already removed by intent \"2026-09-28T16:26:37.208Z\" at 2026-09-28T16:27:05.062Z"
+    },
+    {
+      "id": "2026-09-28T16:30:12.291Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "applied",
+      "changed": [
+        "r19qa-orph1",
+        "r19qa-orph2"
+      ],
+      "skipped": [
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "appliedAt": "2026-09-28T16:31:15.956Z",
+      "message": "orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    },
+    {
+      "id": "2026-09-28T16:32:17.288Z",
+      "action": "orphans",
+      "target": "r19qa-orph1,r19qa-orph2,r19qa-orph3",
+      "status": "noop",
+      "changed": [],
+      "skipped": [
+        {
+          "id": "r19qa-orph1",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph2",
+          "reason": "no such media record"
+        },
+        {
+          "id": "r19qa-orph3",
+          "reason": "still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept"
+        }
+      ],
+      "message": "nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)"
+    },
+    {
+      "id": "2026-09-28T16:33:39.990Z",
+      "action": "orphans",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed"
+    },
+    {
+      "id": "media-intent-mulgwyh6vhiq",
+      "action": "remove",
+      "target": "r19qa-nope",
+      "status": "rejected",
+      "code": "NOT_FOUND",
+      "changed": [],
+      "message": "media not found: r19qa-nope — no data changed"
+    },
+    {
+      "id": "r19qa-invalid-action",
+      "action": "nuke",
+      "target": "r19qa-ref",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "unknown media intent action: nuke — no data changed"
+    },
+    {
+      "id": "r19qa-missing-mediaid",
+      "action": "remove",
+      "target": "",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "remove: a media id is required (mediaId) — no data changed"
+    }
+  ],
+  "queueEntryIgnored": 1,
+  "ignored": [
+    {
+      "path": "/instance/app/arcblog/config/media-intents/r19qa-bad",
+      "reason": "queue entries must be named <id>.json — \"r19qa-bad\" has no .json extension, so no worker will ever consume it (D38)"
+    }
+  ]
+}
+== D38 apply with a non-.json entry == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 0,
+  "intents": [],
+  "queueEntryIgnored": 1,
+  "ignored": [
+    {
+      "path": "/instance/app/arcblog/config/media-intents/r19qa-bad",
+      "reason": "queue entries must be named <id>.json — \"r19qa-bad\" has no .json extension, so no worker will ever consume it (D38)"
+    }
+  ]
+}
+== AFS queue snapshot (r19qa-*) == {
+ "r19qa-invalid-action.json": {
+  "id": "r19qa-invalid-action",
+  "action": "nuke",
+  "mediaId": "r19qa-ref",
+  "status": "rejected",
+  "message": "unknown media intent action: nuke — no data changed",
+  "changed": [],
+  "requestedVia": "qa-probe",
+  "requestedAt": "2026-09-28T16:34:42.037Z",
+  "code": "VALIDATION",
+  "updatedAt": "2026-09-28T16:34:50.744Z"
+ },
+ "r19qa-missing-mediaid.json": {
+  "id": "r19qa-missing-mediaid",
+  "action": "remove",
+  "mediaId": "",
+  "status": "rejected",
+  "message": "remove: a media id is required (mediaId) — no data changed",
+  "changed": [],
+  "requestedVia": "qa-probe",
+  "requestedAt": "2026-09-28T16:34:42.357Z",
+  "code": "VALIDATION",
+  "updatedAt": "2026-09-28T16:34:51.060Z"
+ }
+}
+== browser page targets after close == ["http://arcblog.localhost:4939/","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh"]
+== final orphans refresh (projection back to the instance truth) == {
+  "ok": true,
+  "count": 0,
+  "total": 0,
+  "orphans": [],
+  "candidatesPath": "/instance/app/arcblog/config/media-orphan-candidates.json",
+  "candidatesRefreshed": true
+}
+== cleanup == {"queueR19qaLeft":[],"mediaR19qaLeft":[],"draftsR19qaLeft":[]}
+
+===RESULT_JSON===
+{
+ "log": [
+  "== fixtures ready == r19qa-free,r19qa-ref,r19qa-toctou,r19qa-dup,r19qa-orph1,r19qa-orph2,r19qa-orph3 | ref-post exists",
+  "== B1 buttons/fold == {\"mediaRows\":[{\"id\":\"r19qa-dup\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-free\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-orph1\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-orph2\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-orph3\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-ref\",\"buttons\":[\"移除该媒体\"]},{\"id\":\"r19qa-toctou\",\"buttons\":[\"移除该媒体\"]}],\"orphanButton\":[\"清理孤儿（确认清单）\"],\"orphanField\":\"\",\"copyableFolded\":12,\"workerMentionsFolded\":12,\"advancedButton\":true}",
+  "== confirm gate: row remove == {\"before\":[],\"afterOpen\":[],\"after\":[\"2026-09-28T16:18:52.846Z.json\"],\"openedDialog\":\"{\\\"dialogOpen\\\":true,\\\"dialogText\\\":\\\"提交移除该媒体记录？\\\\n索引记录由本机 worker 删除——绝不是本页——且 worker 会先重新校验：只要还有文章、草稿、页面或 hero 引用该资产路径，意图就会被拒绝，原因写入记录，且不会删除任何东西。二进制文件绝不删除。\\\\nCancel\\\\n移除该媒体\\\",\\\"dialogButtons\\\":[\\\"Cancel\\\",\\\"移除该媒体\\\"]}\",\"accepted\":\"{\\\"confirmLabel\\\":\\\"移除该媒体\\\",\\\"dialogGone\\\":true}\",\"newIds\":[\"2026-09-28T16:18:52.846Z.json\"]}",
+  "== B2 arc afs read of the row intent == \n{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"2026-09-28T16:18:52.846Z.json\",\n    \"path\": \"/instance/app/arcblog/config/media-intents/2026-09-28T16:18:52.846Z.json\",\n    \"createdAt\": \"2026-09-28T16:18:52.849Z\",\n    \"updatedAt\": \"2026-09-28T16:18:52.849Z\",\n    \"content\": \"{\\n  \\\"id\\\": \\\"2026-09-28T16:18:52.846Z\\\",\\n  \\\"action\\\": \\\"remove\\\",\\n  \\\"mediaId\\\": \\\"r19qa-free\\\",\\n  \\\"ids\\\": [],\\n  \\\"idsCsv\\\": \\\"\\\",\\n  \\\"status\\\": \\\"pending\\\",\\n  \\\"message\\\": \\\"\\\",\\n  \\\"changed\\\": [],\\n  \\\"skipped\\\": [],\\n  \\\"requestedVia\\\": \\\"console\\\",\\n  \\\"requestedAt\\\": \\\"2026-09-28T16:18:52.846Z\\\"\\n}\",\n    \"meta\": {\n      \"size\": 264,\n      \"version\": \"1790612332849.7314-157342190-264\",\n      \"mimeType\": \"application/json\"\n    },\n    \"actions\": []\n  }\n}",
+  "== B2 intent shape == {\"id\":\"2026-09-28T16:18:52.846Z\",\"fileStem\":\"2026-09-28T16:18:52.846Z\",\"action\":\"remove\",\"mediaId\":\"r19qa-free\",\"ids\":[],\"status\":\"pending\",\"requestedVia\":\"console\",\"requestedAt\":\"2026-09-28T16:18:52.846Z\",\"sessionLiteralCount\":0,\"hasRequestedBy\":false,\"changed\":[],\"message\":\"\"}",
+  "== CLI refs (before enqueue/apply) == {\n  \"ok\": true,\n  \"id\": \"r19qa-free\",\n  \"mediaPath\": \"/instance/app/arcblog/r19qa-assets/r19qa-free.png\",\n  \"count\": 0,\n  \"refs\": []\n}",
+  "== worker apply #1 (row remove) == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:18:52.846Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-free\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-free\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:19:32.340Z\",\n      \"message\": \"remove: deleted media record r19qa-free (the binary is untouched)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== B2 after worker == {\"mediaRecordBefore_existed\":true,\"mediaRecordAfter_exists\":false,\"intentStatus\":\"applied\",\"intentChanged\":[\"r19qa-free\"],\"intentMessage\":\"remove: deleted media record r19qa-free (the binary is untouched)\",\"intentAppliedAt\":\"2026-09-28T16:19:32.340Z\"}",
+  "== click remove on referenced media == [\"2026-09-28T16:21:19.542Z.json\"]",
+  "== CLI refs of the referenced media == {\n  \"ok\": true,\n  \"id\": \"r19qa-ref\",\n  \"mediaPath\": \"/instance/app/arcblog/r19qa-assets/r19qa-ref.png\",\n  \"count\": 1,\n  \"refs\": [\n    {\n      \"kind\": \"post (draft)\",\n      \"slug\": \"r19qa-ref-post\",\n      \"path\": \"/instance/app/arcblog/drafts/r19qa-ref-post.json\"\n    }\n  ]\n}",
+  "== worker apply (negative: referenced) == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:21:19.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== B4③ result == {\"mediaRecordStillExists\":true,\"intentStatus\":\"rejected\",\"code\":\"CONFLICT\",\"message\":\"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\",\"refPostByteIdentical\":true}",
+  "== M1 refs BEFORE enqueue (must be 0) == {\n  \"ok\": true,\n  \"id\": \"r19qa-toctou\",\n  \"mediaPath\": \"/instance/app/arcblog/r19qa-assets/r19qa-toctou.png\",\n  \"count\": 0,\n  \"refs\": []\n}",
+  "== M1 refs AFTER enqueue (reference added) == {\n  \"ok\": true,\n  \"id\": \"r19qa-toctou\",\n  \"mediaPath\": \"/instance/app/arcblog/r19qa-assets/r19qa-toctou.png\",\n  \"count\": 1,\n  \"refs\": [\n    {\n      \"kind\": \"post (draft)\",\n      \"slug\": \"r19qa-toctou-post\",\n      \"path\": \"/instance/app/arcblog/drafts/r19qa-toctou-post.json\"\n    }\n  ]\n}",
+  "== M1 worker apply == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:24:06.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-toctou\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== M1 result == {\"mediaRecordStillExists\":true,\"intentStatus\":\"rejected\",\"code\":\"CONFLICT\",\"message\":\"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\",\"referencingRecordByteIdentical\":true}",
+  "== B6 two clicks on the same row == {\"c1\":[\"2026-09-28T16:26:37.208Z.json\"],\"c2\":[\"2026-09-28T16:26:42.243Z.json\"]}",
+  "== B6 apply (first applied, second noop) == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 2,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:26:37.208Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-dup\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:27:05.062Z\",\n      \"message\": \"remove: deleted media record r19qa-dup (the binary is untouched)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:26:42.243Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"message\": \"nothing to do: media \\\"r19qa-dup\\\" was already removed by intent \\\"2026-09-28T16:26:37.208Z\\\" at 2026-09-28T16:27:05.062Z\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== B6 result == {\"mediaStillExists\":false,\"statuses\":[[{\"id\":\"2026-09-28T16:26:37.208Z.json\",\"status\":\"applied\",\"message\":\"remove: deleted media record r19qa-dup (the binary is untouched)\"}],[{\"id\":\"2026-09-28T16:26:42.243Z.json\",\"status\":\"noop\",\"message\":\"nothing to do: media \\\"r19qa-dup\\\" was already removed by intent \\\"2026-09-28T16:26:37.208Z\\\" at 2026-09-28T16:27:05.062Z\"}]]}",
+  "== M2 orphans refresh (candidate list) == {\n  \"ok\": true,\n  \"count\": 3,\n  \"total\": 5,\n  \"orphans\": [\n    {\n      \"id\": \"r19qa-orph3\",\n      \"path\": \"/instance/app/arcblog/r19qa-assets/r19qa-orph3.png\",\n      \"size\": 1234\n    },\n    {\n      \"id\": \"r19qa-orph2\",\n      \"path\": \"/instance/app/arcblog/r19qa-assets/r19qa-orph2.png\",\n      \"size\": 1234\n    },\n    {\n      \"id\": \"r19qa-orph1\",\n      \"path\": \"/instance/app/arcblog/r19qa-assets/r19qa-orph1.png\",\n      \"size\": 1234\n    }\n  ],\n  \"candidatesPath\": \"/instance/app/arcblog/config/media-orphan-candidates.json\",\n  \"candidatesRefreshed\": true\n}",
+  "== M2 candidate list shown BEFORE confirmation == {\"countLabel\":\"上次扫描到的未引用记录数: 3\",\"idsCsv\":\"r19qa-orph3,r19qa-orph2,r19qa-orph1\",\"visibleIdsText\":[\"r19qa-free\",\"remove: deleted media record r19qa-free (the binary is untouched)\",\"r19qa-ref\",\"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\",\"r19qa-toctou\",\"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\",\"r19qa-dup\",\"remove: deleted media record r19qa-dup (the binary is untouched)\",\"r19qa-dup\",\"nothing to do: media \\\"r19qa-dup\\\" was already removed by intent \\\"2026-09-28T16:26:37.208Z\\\" at 2026-09-28T16:27:05.062Z\",\"QA R19 r19qa-orph1\",\"r19qa-orph1\",\"/instance/app/arcblog/r19qa-assets/r19qa-orph1.png\",\"node scripts/arcblog-media.mjs refs --id r19qa-orph1\",\"QA R19 r19qa-orph2\",\"r19qa-orph2\",\"/instance/app/arcblog/r19qa-assets/r19qa-orph2.png\",\"node scripts/arcblog-media.mjs refs --id r19qa-orph2\",\"QA R19 r19qa-orph3\",\"r19qa-orph3\",\"/instance/app/arcblog/r19qa-assets/r19qa-orph3.png\",\"node scripts/arcblog-media.mjs refs --id r19qa-orph3\",\"QA R19 r19qa-ref\",\"r19qa-ref\",\"/instance/app/arcblog/r19qa-assets/r19qa-ref.png\",\"node scripts/arcblog-media.mjs refs --id r19qa-ref\",\"QA R19 r19qa-toctou\",\"r19qa-toctou\",\"/instance/app/arcblog/r19qa-assets/r19qa-toctou.png\",\"node scripts/arcblog-media.mjs refs --id r19qa-toctou\",\"r19qa-orph3,r19qa-orph2,r19qa-orph1\"]}",
+  "== M2 orphan click == {\"before\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\"],\"afterOpen\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\"],\"after\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\",\"2026-09-28T16:30:12.291Z.json\"],\"openedDialog\":\"{\\\"typed\\\":\\\"r19qa-orph1,r19qa-orph2,r19qa-orph3\\\",\\\"dialogOpen\\\":true,\\\"dialogText\\\":\\\"提交删除确认清单？\\\\n只有字段里的 id 会入队；本机 worker 会逐个重新校验后再删除索引记录，若某个资产已被其它内容引用则跳过并保留。二进制文件绝不会被删除。\\\\nCancel\\\\n清理孤儿（确认清单）\\\"}\",\"accepted\":\"{\\\"confirmLabel\\\":\\\"清理孤儿（确认清单）\\\",\\\"dialogGone\\\":true}\",\"newIds\":[\"2026-09-28T16:30:12.291Z.json\"]}",
+  "== M2 orphan intent (as AFS returns it) == {\n  \"success\": true,\n  \"data\": {\n    \"id\": \"2026-09-28T16:30:12.291Z.json\",\n    \"path\": \"/instance/app/arcblog/config/media-intents/2026-09-28T16:30:12.291Z.json\",\n    \"createdAt\": \"2026-09-28T16:30:12.292Z\",\n    \"updatedAt\": \"2026-09-28T16:30:12.293Z\",\n    \"content\": \"{\\n  \\\"id\\\": \\\"2026-09-28T16:30:12.291Z\\\",\\n  \\\"action\\\": \\\"orphans\\\",\\n  \\\"mediaId\\\": \\\"\\\",\\n  \\\"ids\\\": [\\n    \\\"r19qa-orph1,r19qa-orph2,r19qa-orph3\\\"\\n  ],\\n  \\\"idsCsv\\\": \\\"r19qa-orph1,r19qa-orph2,r19qa-orph3\\\",\\n  \\\"status\\\": \\\"pending\\\",\\n  \\\"message\\\": \\\"\\\",\\n  \\\"changed\\\": [],\\n  \\\"skipped\\\": [],\\n  \\\"requestedVia\\\": \\\"console\\\",\\n  \\\"requestedAt\\\": \\\"2026-09-28T16:30:12.291Z\\\"\\n}\",\n    \"meta\": {\n      \"size\": 335,\n      \"version\": \"1790613012293.0283-157345394-335\",\n      \"mimeType\": \"application/json\"\n    },\n    \"actions\": []\n  }\n}",
+  "== M2 orphan intent shape == {\"action\":\"orphans\",\"ids\":[\"r19qa-orph1,r19qa-orph2,r19qa-orph3\"],\"idsCsv\":\"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\"status\":\"pending\",\"requestedVia\":\"console\",\"sessionLiteralCount\":0}",
+  "== M2 worker apply == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:30:12.291Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-orph1\",\n        \"r19qa-orph2\"\n      ],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"appliedAt\": \"2026-09-28T16:31:15.956Z\",\n      \"message\": \"orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== M2 result == {\n \"status\": \"applied\",\n \"changed\": [\n  \"r19qa-orph1\",\n  \"r19qa-orph2\"\n ],\n \"skipped\": [\n  {\n   \"id\": \"r19qa-orph3\",\n   \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n  }\n ],\n \"message\": \"orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\",\n \"orph1_gone\": true,\n \"orph2_gone\": true,\n \"orph3_stillExists\": true,\n \"orph3ByteIdentical\": true,\n \"orph3ReferenceRecordByteIdentical\": true,\n \"snapshotBefore\": {\n  \"orph1\": 314,\n  \"orph2\": 314,\n  \"orph3\": 314\n }\n}",
+  "== B6 orphans second confirmation == {\"newIds\":[\"2026-09-28T16:32:17.288Z.json\"]}",
+  "== B6 orphans apply #2 == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:32:17.288Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph1\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph2\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"message\": \"nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== B6 orphans result #2 == {\"id\":\"2026-09-28T16:32:17.288Z\",\"action\":\"orphans\",\"mediaId\":\"\",\"ids\":[\"r19qa-orph1,r19qa-orph2,r19qa-orph3\"],\"idsCsv\":\"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\"status\":\"noop\",\"message\":\"nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\",\"changed\":[],\"skipped\":[{\"id\":\"r19qa-orph1\",\"reason\":\"no such media record\"},{\"id\":\"r19qa-orph2\",\"reason\":\"no such media record\"},{\"id\":\"r19qa-orph3\",\"reason\":\"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"}],\"requestedVia\":\"console\",\"requestedAt\":\"2026-09-28T16:32:17.288Z\",\"updatedAt\":\"2026-09-28T16:32:42.116Z\"}",
+  "== M2 empty-list click == {\"before\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\",\"2026-09-28T16:30:12.291Z.json\",\"2026-09-28T16:32:17.288Z.json\"],\"afterOpen\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\",\"2026-09-28T16:30:12.291Z.json\",\"2026-09-28T16:32:17.288Z.json\"],\"after\":[\"2026-09-28T16:18:52.846Z.json\",\"2026-09-28T16:21:19.542Z.json\",\"2026-09-28T16:24:06.542Z.json\",\"2026-09-28T16:26:37.208Z.json\",\"2026-09-28T16:26:42.243Z.json\",\"2026-09-28T16:30:12.291Z.json\",\"2026-09-28T16:32:17.288Z.json\",\"2026-09-28T16:33:39.990Z.json\"],\"openedDialog\":\"{\\\"typed\\\":\\\"\\\",\\\"dialogOpen\\\":true,\\\"dialogText\\\":\\\"提交删除确认清单？\\\\n只有字段里的 id 会入队；本机 worker 会逐个重新校验后再删除索引记录，若某个资产已被其它内容引用则跳过并保留。二进制文件绝不会被删除。\\\\nCancel\\\\n清理孤儿（确认清单）\\\"}\",\"accepted\":\"{\\\"confirmLabel\\\":\\\"清理孤儿（确认清单）\\\",\\\"dialogGone\\\":true}\",\"newIds\":[\"2026-09-28T16:33:39.990Z.json\"]}",
+  "== M2 empty-list intent shape == {\"ids\":[\"\"],\"idsCsv\":\"\"}",
+  "== M2 empty-list apply == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:33:39.990Z\",\n      \"action\": \"orphans\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== M2 empty-list result == {\"id\":\"2026-09-28T16:33:39.990Z\",\"action\":\"orphans\",\"mediaId\":\"\",\"ids\":[\"\"],\"idsCsv\":\"\",\"status\":\"rejected\",\"message\":\"orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed\",\"changed\":[],\"skipped\":[],\"requestedVia\":\"console\",\"requestedAt\":\"2026-09-28T16:33:39.990Z\",\"code\":\"VALIDATION\",\"updatedAt\":\"2026-09-28T16:33:46.265Z\"}",
+  "== B4① CLI request for a missing media == {\n  \"ok\": true,\n  \"action\": \"media-request\",\n  \"path\": \"/instance/app/arcblog/config/media-intents/media-intent-mulgwyh6vhiq.json\",\n  \"intent\": {\n    \"id\": \"media-intent-mulgwyh6vhiq\",\n    \"action\": \"remove\",\n    \"mediaId\": \"r19qa-nope\",\n    \"ids\": [],\n    \"idsCsv\": \"\",\n    \"status\": \"pending\",\n    \"message\": \"\",\n    \"changed\": [],\n    \"skipped\": [],\n    \"requestedVia\": \"cli\",\n    \"requestedBy\": \"\",\n    \"requestedAt\": \"2026-09-28T16:34:41.418Z\",\n    \"updatedAt\": \"2026-09-28T16:34:41.419Z\"\n  }\n}",
+  "== B4 negatives apply == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 3,\n  \"intents\": [\n    {\n      \"id\": \"media-intent-mulgwyh6vhiq\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-nope\",\n      \"status\": \"rejected\",\n      \"code\": \"NOT_FOUND\",\n      \"changed\": [],\n      \"message\": \"media not found: r19qa-nope — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-invalid-action\",\n      \"action\": \"nuke\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"unknown media intent action: nuke — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-missing-mediaid\",\n      \"action\": \"remove\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"remove: a media id is required (mediaId) — no data changed\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== B4 result r19qa-invalid-action == {\"status\":\"rejected\",\"code\":\"VALIDATION\",\"message\":\"unknown media intent action: nuke — no data changed\",\"changed\":[]}",
+  "== B4 result r19qa-missing-mediaid == {\"status\":\"rejected\",\"code\":\"VALIDATION\",\"message\":\"remove: a media id is required (mediaId) — no data changed\",\"changed\":[]}",
+  "== B1 fold == {\"copyableBeforeExpand\":8,\"copyableAfterExpand\":14,\"hideButton\":\"收起高级\",\"visibleCliLines\":[\"按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-media.mjs watch）——浏览器不会删除记录。本平台的按钮点击无法直接执行服务端代码（docs/arc-contracts.md §26）。\",\"Worker：node scripts/arcblog-media.mjs watch\",\"node scripts/arcblog-media.mjs refs --id r19qa-orph3\",\"node scripts/arcblog-media.mjs refs --id r19qa-ref\",\"node scripts/arcblog-media.mjs refs --id r19qa-toctou\",\"如何添加：node scripts/arcblog-media.mjs add\",\"上面的清单就是「将删清单」：即本机上次扫描出的、确实未被引用的 id。它由本机 worker（node scripts/arcblog-media.mjs watch）与 node scripts/arcblog-media.mjs orphans 刷新。你可以把字段改成更短的清单——worker 只删字段里的 id，并在删除前逐个重新校验。\",\"node scripts/arcblog-media.mjs refs --id <id>\",\"node scripts/arcblog-media.mjs orphans\",\"node scripts/arcblog-media.mjs remove --id <id> --force\",\"node scripts/arcblog-media.mjs add --path <afs-path> --id <id>\",\"node scripts/arcblog-media.mjs queue\",\"node scripts/arcblog-media.mjs watch\"]}",
+  "== B3 page queue text == {\"queueText\":\"\"}",
+  "== B3 CLI queue (AFS truth) == {\n  \"ok\": true,\n  \"path\": \"/instance/app/arcblog/config/media-intents\",\n  \"count\": 11,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:18:52.846Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-free\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-free\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:19:32.340Z\",\n      \"message\": \"remove: deleted media record r19qa-free (the binary is untouched)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:21:19.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:24:06.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-toctou\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:26:37.208Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-dup\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:27:05.062Z\",\n      \"message\": \"remove: deleted media record r19qa-dup (the binary is untouched)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:26:42.243Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"message\": \"nothing to do: media \\\"r19qa-dup\\\" was already removed by intent \\\"2026-09-28T16:26:37.208Z\\\" at 2026-09-28T16:27:05.062Z\"\n    },\n    {\n      \"id\": \"2026-09-28T16:30:12.291Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-orph1\",\n        \"r19qa-orph2\"\n      ],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"appliedAt\": \"2026-09-28T16:31:15.956Z\",\n      \"message\": \"orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:32:17.288Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph1\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph2\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"message\": \"nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:33:39.990Z\",\n      \"action\": \"orphans\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed\"\n    },\n    {\n      \"id\": \"media-intent-mulgwyh6vhiq\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-nope\",\n      \"status\": \"rejected\",\n      \"code\": \"NOT_FOUND\",\n      \"changed\": [],\n      \"message\": \"media not found: r19qa-nope — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-invalid-action\",\n      \"action\": \"nuke\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"unknown media intent action: nuke — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-missing-mediaid\",\n      \"action\": \"remove\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"remove: a media id is required (mediaId) — no data changed\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+  "== D38 queue with a non-.json entry == {\n  \"ok\": true,\n  \"path\": \"/instance/app/arcblog/config/media-intents\",\n  \"count\": 11,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-28T16:18:52.846Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-free\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-free\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:19:32.340Z\",\n      \"message\": \"remove: deleted media record r19qa-free (the binary is untouched)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:21:19.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-ref is referenced by 1 record(s): post (draft):r19qa-ref-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:24:06.542Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-toctou\",\n      \"status\": \"rejected\",\n      \"code\": \"CONFLICT\",\n      \"changed\": [],\n      \"message\": \"media r19qa-toctou is referenced by 1 record(s): post (draft):r19qa-toctou-post — refused, the record and every referencing record are unchanged (pass --force on the CLI only if you really mean it)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:26:37.208Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-dup\"\n      ],\n      \"appliedAt\": \"2026-09-28T16:27:05.062Z\",\n      \"message\": \"remove: deleted media record r19qa-dup (the binary is untouched)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:26:42.243Z\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-dup\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"message\": \"nothing to do: media \\\"r19qa-dup\\\" was already removed by intent \\\"2026-09-28T16:26:37.208Z\\\" at 2026-09-28T16:27:05.062Z\"\n    },\n    {\n      \"id\": \"2026-09-28T16:30:12.291Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"r19qa-orph1\",\n        \"r19qa-orph2\"\n      ],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"appliedAt\": \"2026-09-28T16:31:15.956Z\",\n      \"message\": \"orphans: deleted 2 confirmed record(s): r19qa-orph1, r19qa-orph2; skipped 1: r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:32:17.288Z\",\n      \"action\": \"orphans\",\n      \"target\": \"r19qa-orph1,r19qa-orph2,r19qa-orph3\",\n      \"status\": \"noop\",\n      \"changed\": [],\n      \"skipped\": [\n        {\n          \"id\": \"r19qa-orph1\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph2\",\n          \"reason\": \"no such media record\"\n        },\n        {\n          \"id\": \"r19qa-orph3\",\n          \"reason\": \"still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept\"\n        }\n      ],\n      \"message\": \"nothing deleted: none of the 3 confirmed id(s) is still an unreferenced media record; skipped 3: r19qa-orph1 (no such media record); r19qa-orph2 (no such media record); r19qa-orph3 (still referenced by 1 record(s): post (draft):r19qa-orph3-post — record kept)\"\n    },\n    {\n      \"id\": \"2026-09-28T16:33:39.990Z\",\n      \"action\": \"orphans\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"orphans: an explicit, non-empty id list is required (ids) — nothing was deleted — no data changed\"\n    },\n    {\n      \"id\": \"media-intent-mulgwyh6vhiq\",\n      \"action\": \"remove\",\n      \"target\": \"r19qa-nope\",\n      \"status\": \"rejected\",\n      \"code\": \"NOT_FOUND\",\n      \"changed\": [],\n      \"message\": \"media not found: r19qa-nope — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-invalid-action\",\n      \"action\": \"nuke\",\n      \"target\": \"r19qa-ref\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"unknown media intent action: nuke — no data changed\"\n    },\n    {\n      \"id\": \"r19qa-missing-mediaid\",\n      \"action\": \"remove\",\n      \"target\": \"\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"changed\": [],\n      \"message\": \"remove: a media id is required (mediaId) — no data changed\"\n    }\n  ],\n  \"queueEntryIgnored\": 1,\n  \"ignored\": [\n    {\n      \"path\": \"/instance/app/arcblog/config/media-intents/r19qa-bad\",\n      \"reason\": \"queue entries must be named <id>.json — \\\"r19qa-bad\\\" has no .json extension, so no worker will ever consume it (D38)\"\n    }\n  ]\n}",
+  "== D38 apply with a non-.json entry == {\n  \"ok\": true,\n  \"action\": \"media-apply\",\n  \"applied\": 0,\n  \"intents\": [],\n  \"queueEntryIgnored\": 1,\n  \"ignored\": [\n    {\n      \"path\": \"/instance/app/arcblog/config/media-intents/r19qa-bad\",\n      \"reason\": \"queue entries must be named <id>.json — \\\"r19qa-bad\\\" has no .json extension, so no worker will ever consume it (D38)\"\n    }\n  ]\n}",
+  "== AFS queue snapshot (r19qa-*) == {\n \"r19qa-invalid-action.json\": {\n  \"id\": \"r19qa-invalid-action\",\n  \"action\": \"nuke\",\n  \"mediaId\": \"r19qa-ref\",\n  \"status\": \"rejected\",\n  \"message\": \"unknown media intent action: nuke — no data changed\",\n  \"changed\": [],\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-28T16:34:42.037Z\",\n  \"code\": \"VALIDATION\",\n  \"updatedAt\": \"2026-09-28T16:34:50.744Z\"\n },\n \"r19qa-missing-mediaid.json\": {\n  \"id\": \"r19qa-missing-mediaid\",\n  \"action\": \"remove\",\n  \"mediaId\": \"\",\n  \"status\": \"rejected\",\n  \"message\": \"remove: a media id is required (mediaId) — no data changed\",\n  \"changed\": [],\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-28T16:34:42.357Z\",\n  \"code\": \"VALIDATION\",\n  \"updatedAt\": \"2026-09-28T16:34:51.060Z\"\n }\n}",
+  "== browser page targets after close == [\"http://arcblog.localhost:4939/\",\"http://arcblog.localhost:4939/\",\"http://arcblog.localhost:4939/?locale=zh\",\"http://arcblog.localhost:4939/\",\"http://arcblog.localhost:4939/?locale=zh\"]",
+  "== final orphans refresh (projection back to the instance truth) == {\n  \"ok\": true,\n  \"count\": 0,\n  \"total\": 0,\n  \"orphans\": [],\n  \"candidatesPath\": \"/instance/app/arcblog/config/media-orphan-candidates.json\",\n  \"candidatesRefreshed\": true\n}",
+  "== cleanup == {\"queueR19qaLeft\":[],\"mediaR19qaLeft\":[],\"draftsR19qaLeft\":[]}"
+ ]
+}

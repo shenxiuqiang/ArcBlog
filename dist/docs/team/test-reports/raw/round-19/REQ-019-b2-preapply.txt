@@ -1,0 +1,39 @@
+== click == {"confirmLabel":"移除该媒体","dialogGone":true}
+== intent queued == ["2026-09-28T17:12:31.813Z.json"]
+== intent record (AFS) == {
+  "id": "2026-09-28T17:12:31.813Z",
+  "action": "remove",
+  "mediaId": "r19qa-preapply",
+  "ids": [],
+  "idsCsv": "",
+  "status": "pending",
+  "message": "",
+  "changed": [],
+  "skipped": [],
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T17:12:31.813Z"
+}
+== PRE-APPLY == {"mediaRecordByteIdentical":true,"mediaRecordStillExists":true,"cliRefs":0}
+== apply == {
+  "ok": true,
+  "action": "media-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T17:12:31.813Z",
+      "action": "remove",
+      "target": "r19qa-preapply",
+      "status": "applied",
+      "changed": [
+        "r19qa-preapply"
+      ],
+      "appliedAt": "2026-09-28T17:13:11.047Z",
+      "message": "remove: deleted media record r19qa-preapply (the binary is untouched)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== POST-APPLY == {"status":"applied","changed":["r19qa-preapply"],"message":"remove: deleted media record r19qa-preapply (the binary is untouched)","mediaRecordGone":true}
+== page targets after close == ["http://arcblog.localhost:4939/","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh"]
+== cleanup == {"queueLeft":[],"mediaLeft":[]}
+EXIT=0

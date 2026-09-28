@@ -11,6 +11,8 @@
  *   node scripts/arcblog-chain-worker.mjs run                 # drain pending intents once
  *   node scripts/arcblog-chain-worker.mjs watch [--interval 3] # keep draining (Ctrl-C to stop)
  *   node scripts/arcblog-chain-worker.mjs enqueue --action acquire --role studio [--by <did>]
+ *   node scripts/arcblog-chain-worker.mjs queue                # print the queue (read-only; also
+ *                                                              # repairs pre-D36 done/failed in place)
  *   node scripts/arcblog-chain-worker.mjs refresh              # re-render the NFT SVG only
  *
  * Env: ARCBLOG_CHAIN_* from the environment or `.env.local` (gitignored).
@@ -22,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { NODE_NFT_STATE_PATH, nodeAdapterOf, openChain, resolveChainOptions } from './lib/chain.mjs';
+import { INTENT_STATUS, isInFlightStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -56,6 +59,15 @@ function loadLocalEnv() {
  * The queue root is an AFS directory: an entry without the `.json` extension can
  * exist, and no worker will ever consume it. Instead of a silent skip it is
  * reported as a diagnostic, which `run` prints and `watch` logs once.
+ *
+ * D36 read-side compatibility (BUG-051 / L-R19-4): this queue was the last one
+ * spelling its lifecycle with `done` / `failed`. Those words are canonicalized
+ * on read and the record is repaired IN PLACE — the same shape
+ * `arcblog-category.mjs` / `arcblog-tags.mjs` use — so the console pages that
+ * render the raw record never show a word the shared legend does not define.
+ * Reading is also the repair path: `queue` performs it without draining, which
+ * matters because one live intent is `pending` and draining it would sign a real
+ * chain transaction.
  */
 export function scanIntents(instance) {
   const intents = [];
@@ -77,9 +89,11 @@ export function scanIntents(instance) {
       ignored.push({ path, reason: 'queue entry could not be read — no worker will consume it (D38)' });
       continue;
     }
-    intents.push(stored.value ?? null);
+    const { record, changed, from } = normalizeIntentRecord(stored.value);
+    if (changed) writeJson(path, record, instance, stored.ifMatch);
+    intents.push({ ...record, path, ...(changed ? { normalizedFrom: from } : {}) });
   }
-  return { intents: intents.filter(Boolean), ignored };
+  return { intents, ignored };
 }
 
 function listIntents(instance) {
@@ -237,23 +251,25 @@ async function refreshSvg(instance, { chain: injectedChain = null, opts = {} } =
 
 function drainOnce(instance) {
   const { intents, ignored } = scanIntents(instance);
+  // `running` is the allowed IN-FLIGHT word (D36 / BUG-051): a worker that died
+  // mid-flight left the intent claimed, so it is drained again.
   const pending = intents
-    .filter((intent) => intent.status === 'pending' || intent.status === 'running')
+    .filter((intent) => isInFlightStatus(intent.status))
     .sort((a, b) => String(a.requestedAt ?? '').localeCompare(String(b.requestedAt ?? '')));
   const results = [];
   for (const intent of pending) {
     if (!ACTIONS.includes(intent.action) || !ROLES.includes(intent.role)) {
-      results.push(updateIntent(intent, { status: 'failed', error: `unsupported intent: ${intent.action}/${intent.role}`, finishedAt: nowIso() }, instance));
+      results.push(updateIntent(intent, { status: INTENT_STATUS.rejected, error: `unsupported intent: ${intent.action}/${intent.role}`, finishedAt: nowIso() }, instance));
       continue;
     }
-    updateIntent(intent, { status: 'running', startedAt: nowIso() }, instance);
+    updateIntent(intent, { status: INTENT_STATUS.running, startedAt: nowIso() }, instance);
     const { ok, payload } = runLifecycleCommand(intent.action, intent.role, instance, intent.args ?? {});
     results.push(
       updateIntent(
         intent,
         ok
           ? {
-              status: 'done',
+              status: INTENT_STATUS.applied,
               finishedAt: nowIso(),
               result: {
                 assetId: payload.assetId ?? '',
@@ -263,7 +279,7 @@ function drainOnce(instance) {
               },
               error: '',
             }
-          : { status: 'failed', finishedAt: nowIso(), error: `${payload?.code ?? ''} ${payload?.error ?? 'unknown error'}`.trim() },
+          : { status: INTENT_STATUS.rejected, finishedAt: nowIso(), error: `${payload?.code ?? ''} ${payload?.error ?? 'unknown error'}`.trim() },
         instance,
       ),
     );
@@ -293,13 +309,44 @@ async function main() {
       id: newIntentId(),
       action,
       role,
-      status: 'pending',
+      status: INTENT_STATUS.pending,
       requestedBy: optString(opts.by).trim() || 'cli',
       requestedAt: nowIso(),
       requestedVia: 'cli',
     };
     writeJson(`${INTENT_DIR}/${intent.id}.json`, intent, instance);
     console.log(JSON.stringify({ ok: true, action: 'intent-enqueue', intent }, null, 2));
+    return;
+  }
+
+  // Read-only queue view (S2): this is the repair path for pre-D36 records and
+  // it NEVER drains, so `run` / `watch` stay the only commands that can sign.
+  if (command === 'queue') {
+    const { intents, ignored } = scanIntents(instance);
+    console.log(
+      JSON.stringify(
+        {
+          ok: true,
+          action: 'intent-queue',
+          path: INTENT_DIR,
+          count: intents.length,
+          intents: intents.map((intent) => ({
+            id: intent.id,
+            action: intent.action,
+            role: intent.role,
+            status: intent.status,
+            message: intent.error || intent.message || '',
+            ...(intent.normalizedFrom ? { normalizedFrom: intent.normalizedFrom } : {}),
+            requestedAt: intent.requestedAt ?? '',
+            updatedAt: intent.updatedAt ?? '',
+          })),
+          queueEntryIgnored: ignored.length,
+          ...(ignored.length ? { ignored } : {}),
+        },
+        null,
+        2,
+      ),
+    );
     return;
   }
 
@@ -346,7 +393,7 @@ async function main() {
     }
   }
 
-  fail('VALIDATION', `unknown command: ${command} (run|watch|enqueue|refresh)`);
+  fail('VALIDATION', `unknown command: ${command} (run|watch|enqueue|queue|refresh)`);
 }
 
 const invokedDirectly = process.argv[1] && process.argv[1].endsWith('arcblog-chain-worker.mjs');

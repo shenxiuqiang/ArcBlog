@@ -48,6 +48,17 @@ test('the cleanup never touches published content directories', () => {
   assert.ok(CLEAN_DIRS.includes('economy/ledger'));
 });
 
+test('BUG-048: the cleaner scans node/ and both console intent queues', () => {
+  // The node-NFT suites write the public projection under node/ (previously not
+  // scanned at all) and their own queue directories under config/.
+  assert.ok(CLEAN_DIRS.includes('node'), 'node/ must be scanned');
+  assert.ok(CLEAN_DIRS.includes('config/media-intents'));
+  assert.ok(CLEAN_DIRS.includes('config/category-intents'));
+  // …while every scanned id still has to carry a known test prefix.
+  assert.equal(isTestRecordId('factories.json'), false);
+  assert.equal(isTestRecordId('factories-worker-1790602675663.json'), true);
+});
+
 test('clean help exits 0 and cleanup rejects an unknown directory', () => {
   const help = run(['--help']);
   assert.equal(help.status, 0);

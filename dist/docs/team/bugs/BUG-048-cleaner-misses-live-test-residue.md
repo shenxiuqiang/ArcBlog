@@ -6,7 +6,7 @@
 | 严重级 | **P3**（工具/清理面：不影响功能，但让「跑完全量 live 后实例干净」无法自证；本轮开锁跑定向测试即踩到） |
 | 发现轮次 | round-18（QA `task-75` 独立验证） |
 | 关联 REQ | 无（范围外；`docs/team/README.md §6.1` 的 `.gate-lock` + 定向 live 门约定） |
-| 状态 | 待裁决 |
+| 状态 | **QA 复验（round-19，`task-81`）：C1–C5 全过；C6 受限（见文末「复验记录」+ [BUG-053](BUG-053-clean-test-really-deletes-instance-residue.md)）→ 建议条件式关闭** |
 
 ## 复现命令与最小步骤
 
@@ -89,3 +89,27 @@ drafts: 27 条，全部为 sign-keys-* 等历史残留（非内容草稿）
 - `scripts/arcblog-chain-worker.test.mjs`（无清理钩子；`node-nft.test.mjs` 同族）
 
 > QA 不修改上述任何文件。
+
+## 复验记录（round-19，QA `task-81`；**只 dry run，从未 `--confirm`**）
+
+> 原始输出：`docs/team/test-reports/raw/round-19/bug048-probe.json`、`bug048-clean-after.json`、`bug048-clean-final.json`、`targeted-live.txt`。
+
+| # | 判据 | 结论 | 证据 |
+| - | ---- | ---- | ---- |
+| **C1** | 本 BUG 列出的已知残留全部可识别 | **通过** | 清单实测 **10 条**（原文就是 10 行），`isTestRecordId` **10/10 true**（轮初基线 **1/10**） |
+| **C2** | 前缀表覆盖实测家族 | **通过** | 11/11：`nft-factories-test-` / `node-nft-test-` / `roles-test-` / `mock-worker-` / `nft-factories-worker-` / `chain-intents-worker-` / `node-nft-worker-` / `roles-worker-` / `factories-test-` / `factories-worker-` / `sign-keys-`；`TEST_RECORD_PREFIXES.length = 43` |
+| **C3** | `CLEAN_DIRS` 含 `node` | **通过** | `CLEAN_DIRS.includes('node') === true`；另含 `config/category-intents` / `config/media-intents`，`dirsScanned: 20` |
+| **C4** | dry run 覆盖 3 目录 + 残留目录不静默跳过 | **通过** | `node scripts/arcblog-clean.mjs` → `found:204, removed:0, confirm:false, byDir{config:132,node:29,drafts:43}`，`byPrefix` 含 `chain-intents-worker-:15`，`sample` 25 条含 `config/chain-intents-worker-1790498117031`。**口径**：PM 的 188 = 132+29+27(sign-keys)；今天 drafts 43 多出的 16 条 `cat-test-*` 是**轮初就已可见**的（PM found=16 即它们）→ 16+188=204 自洽 |
+| **C5** | 不误伤真记录、不真删 | **通过** | 15 个真记录 `isTestRecordId` **全 false**（`factories.json`/`identity.json`/`profile.json`/`health.json`/`discovery.json`/`post-detail.json`/`diagnostics`/`general`/`mock-chain.json`/**`chain-intents`（目录）**/`nft-factories.json`/`roles.json`/`trusted-hubs`/`switches`/`media-orphan-candidates.json`）；live drafts 43 全是测试家族（无真实草稿）；三次 dry run 均 `confirm:false, removed:0` |
+| **C6** | 门 + 单测同步（定向单跑全绿） | **部分通过 / 受限未验证** | `arcblog-doctor.test.mjs` **13/13**；`arcblog-clean.test.mjs` 跑 **6/6** + **跳过最后 1 条**（`--test-skip-pattern`）。被跳过那条会真跑 gate 清理 → 删本机 **204** 条残留（含 188 条非本轮）→ 违反 L-R19-5 → **未跑**（**[BUG-053](BUG-053-clean-test-really-deletes-instance-residue.md)**） |
+
+**数字前后对比**
+
+```text
+轮初：found 16（byDir:{drafts:16}）/ isTestRecordId(9) = 1/9
+本轮：found 204（config 132 / node 29 / drafts 43）/ isTestRecordId(10) = 10/10 / 家族 11/11 / 真记录 0 误伤
+QA 自清探针后复跑：found 仍 204（removed:0）→ 未真删任何非本人残留
+```
+
+**QA 判定：C1–C5 全过、C6 因测试自身的破坏性设计不可达 → 建议条件式关闭**（识别表本身无缺陷；条件 = BUG-053 被裁决）。
+
