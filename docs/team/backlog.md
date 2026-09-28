@@ -17,7 +17,10 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
-> ✅ **R13 已收官 —— 自动续轮 6/8；R14 待人工恢复 / Lead 重新武装**（2026-09-28：人类恢复 → Lead 重新武装长时目标并建 R12 任务板 `task-34`…`task-38`；**R13 任务板 = `task-39`（PM 规划）/ `task-40`（Dev）/ `task-41`（UI）/ `task-42`（QA）/ `task-43`（PM 裁决），并下发 L-R13-1…L-R13-5**）。**R13 = 精简轮**：**V3 路径 A-ii 实施（UI）+ `compose-edit` 视觉债 R1/R2/R3（Dev）+ §15.6 Hub 注册界面（Dev）+ BUG-028 行号刷新（UI）+ 标准 §3.1/§3.4/§4.3/§9 同步** —— **Dev 与 UI 串行**（都写 `dist/**`，L-R13-5），详见下方「**本轮：Round 13**」。**R13 结果 = QA-008 独立验证放行（`VERDICT=pass, BLOCKING=0`）**：REQ-015（`compose-edit` 视觉债 R1/R2/R3 + §15.6 Hub 注册界面）与 REQ-016（V3 路径 A-ii + BUG-028 行号刷新 + 标准 §3.1/§3.4/§4.3/§9 同步）**A1–A16 / A1–A15 逐条有结论、无未裁决 P0/P1**；**唯一新增缺陷 = BUG-029（P3，范围外）→ PM 裁「下一轮修（R14）」**；**R13 三行终态见下方「本轮：Round 13」**；**checklist 建议 = 第 109 行 🟡→✅**（✅78→79 / 🟡11→10，附降级登记）→ **R14 排期见「Round 14 排期」节**。**R12 = 可运营性轮（精简轮，已收官）**：REQ-013「§15.9 诊断与维护页（诚实形态）+ §15.4 分类治理界面 + 既有 live 文件的 settings/diagnostics 用例」（Dev `task-35`）/ REQ-014（= **UI-009**）「V3 令牌级方案（**只提议**）+ 剩余视觉债」（UI `task-36`）/ QA-007 独立验证（`task-37`，`blocked_by task-35 + task-36`）/ PM `task-34`（规划）+ `task-38`（裁决）。**门规不变**：不跑全量 `npm run test:live`；门 = `arc dsl validate --json`（issues=[]）+ `npm test`（28/28）+ 改了 `.aup` 的 `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check`；**浏览器全程复用同一标签页**。**R11/R11F 已收口**：Lead 的收尾 `arc blocklet build` 关闭唯一阻断 **BUG-027**（提交 `a193a49`；PM 本轮复核 `diff -r .aup dist/.aup` 无输出），checklist 第 119 行已 ✅、**BUG-026 已修**；清单现网 **✅76 / 🟡13 / ⬜13 / ⚪2 = 104 行**。**R12 已收官（2026-09-28 轮末，PM）**：交付通过 + QA-007 独立验证**放行**（`VERDICT=pass, BLOCKING=0`，无 P0/P1/未裁决 P2）——诊断页 **`?page=diagnostics`**（第 19 个控制台页，诚实形态）+ **§15.4 分类治理界面** + 既有 live 文件 5 条用例（8/8，`npm test` 仍 28/28）；UI-009 只出 **V3 令牌级方案（未实施）**；新增 **BUG-028（P3）→ 裁「下一轮修」**；checklist 建议第 **121/103** 行 🟡→✅（附降级登记）→ **✅78 / 🟡11 / ⬜13 / ⚪2 = 104**；**R13 已收官**（排期与结果见「Round 13 排期」+「Round 13 交付结果 + Round 14 排期」两节；首项 V3 路径 A-ii 已实施并放行）；**R14 排期已重排**。
+> 🟥 **R14 已收官（PM，轮末 2026-09-28）—— 不放行（QA-009 `VERDICT=fail, BLOCKING=1`，唯一阻断 = [BUG-030](bugs/BUG-030-orders-missing-relative-time.md)（P1「相对 + 绝对两态」））**：**自动续轮 7/8**，Lead 建 R14 任务板 `task-44`（PM 规划）/ `task-45`（Dev）/ `task-46`（UI）/ `task-47`（QA）/ `task-48`（PM 裁决），下发 **L-R14-1…L-R14-4** → 详见下方「**本轮：Round 14**」；**R15 排期见「Round 14 交付结果 + Round 15 排期」**。**R14 结果摘要**：REQ-017（§15.7 订单/账本 + CLI `ledger list --type` + BUG-029）**交付完成但 A2.3 未达成 → 唯一阻断 P1**；REQ-018（`general`/`diagnostics` 像素走查 + 新页骨架建议）**QA 抽验通过**；门 6/6 全绿 + 定向 live economy 27/27 + network 15/15 + 21/21 页回归；新增 **BUG-030（P1）/ BUG-031（P3）/ BUG-032（P3 范围外）**；**PM 裁 BUG-030「本轮修（建议 Lead 开 R14F，D31；不批则 R15 首项）」**；checklist 建议 **114 🟡→✅ + 113 暂不落 ✅（R14F 复验后落）** → 建议计数 **✅80 / 🟡9**（113 亦落则 **81/8**）。**R13 收官记录（保留备查）**：自动续轮 6/8（2026-09-28：人类恢复 → Lead 重新武装长时目标并建 R12 任务板 `task-34`…`task-38`；**R13 任务板 = `task-39`（PM 规划）/ `task-40`（Dev）/ `task-41`（UI）/ `task-42`（QA）/ `task-43`（PM 裁决），并下发 L-R13-1…L-R13-5**）。**R13 = 精简轮**：**V3 路径 A-ii 实施（UI）+ `compose-edit` 视觉债 R1/R2/R3（Dev）+ §15.6 Hub 注册界面（Dev）+ BUG-028 行号刷新（UI）+ 标准 §3.1/§3.4/§4.3/§9 同步** —— **Dev 与 UI 串行**（都写 `dist/**`，L-R13-5），详见下方「**本轮：Round 13**」。**R13 结果 = QA-008 独立验证放行（`VERDICT=pass, BLOCKING=0`）**：REQ-015（`compose-edit` 视觉债 R1/R2/R3 + §15.6 Hub 注册界面）与 REQ-016（V3 路径 A-ii + BUG-028 行号刷新 + 标准 §3.1/§3.4/§4.3/§9 同步）**A1–A16 / A1–A15 逐条有结论、无未裁决 P0/P1**；**唯一新增缺陷 = BUG-029（P3，范围外）→ PM 裁「下一轮修（R14）」**；**R13 三行终态见下方「本轮：Round 13」**；**checklist 建议 = 第 109 行 🟡→✅**（✅78→79 / 🟡11→10，附降级登记）→ **R14 排期见「Round 14 排期」节**。**R12 = 可运营性轮（精简轮，已收官）**：REQ-013「§15.9 诊断与维护页（诚实形态）+ §15.4 分类治理界面 + 既有 live 文件的 settings/diagnostics 用例」（Dev `task-35`）/ REQ-014（= **UI-009**）「V3 令牌级方案（**只提议**）+ 剩余视觉债」（UI `task-36`）/ QA-007 独立验证（`task-37`，`blocked_by task-35 + task-36`）/ PM `task-34`（规划）+ `task-38`（裁决）。**门规不变**：不跑全量 `npm run test:live`；门 = `arc dsl validate --json`（issues=[]）+ `npm test`（28/28）+ 改了 `.aup` 的 `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check`；**浏览器全程复用同一标签页**。**R11/R11F 已收口**：Lead 的收尾 `arc blocklet build` 关闭唯一阻断 **BUG-027**（提交 `a193a49`；PM 本轮复核 `diff -r .aup dist/.aup` 无输出），checklist 第 119 行已 ✅、**BUG-026 已修**；清单现网 **✅76 / 🟡13 / ⬜13 / ⚪2 = 104 行**。**R12 已收官（2026-09-28 轮末，PM）**：交付通过 + QA-007 独立验证**放行**（`VERDICT=pass, BLOCKING=0`，无 P0/P1/未裁决 P2）——诊断页 **`?page=diagnostics`**（第 19 个控制台页，诚实形态）+ **§15.4 分类治理界面** + 既有 live 文件 5 条用例（8/8，`npm test` 仍 28/28）；UI-009 只出 **V3 令牌级方案（未实施）**；新增 **BUG-028（P3）→ 裁「下一轮修」**；checklist 建议第 **121/103** 行 🟡→✅（附降级登记）→ **✅78 / 🟡11 / ⬜13 / ⚪2 = 104**；**R13 已收官**（排期与结果见「Round 13 排期」+「Round 13 交付结果 + Round 14 排期」两节；首项 V3 路径 A-ii 已实施并放行）；**R14 排期已重排**。
+>
+> 🔧 **R14F 修复窗口已收官（Lead 开窗，PM `task-52` 写回 2026-09-28）—— 放行（QA-010 [round-14-reverify.md](test-reports/round-14-reverify.md) 末行 `VERDICT=pass, BLOCKING=0`）**：Lead 建 R14F 任务板 **`task-49`（Dev）/ `task-50`（UI）/ `task-51`（QA）/ `task-52`（PM 裁决）**，下发 **L-R14F-1…L-R14F-5**（**本轮重心 = UI 全面检查与优化**；BUG-030 P1 必修；BUG-031 / O-2 / O-3 / D-01 / R15-D 并轨；**写者串行**：UI 先审查 → Dev 后实施）。**结果**：**UI-012**（21 控制台页 + 4 公共页 × en/zh × 1803×908/1512×765，8 sweep / 168 次采集 / 单 tab 自证 1/1/1）给出 **12 条 `.aup` 可落地修法 + 2 条 UI 自修**；Dev 落地 **11/12** + **BUG-030（`orders`/`ledger` 各 2 个平台 `time`）/ BUG-031 / D-01 / R15-D** 全部完成；QA 独立复验 **11 组已修 / 1 组判据修正 / 3 条新 P2 残留**。**R14 唯一 P1 阻断（BUG-030）闭环**；**新缺陷 3 条**：[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（`?page=pages` `View` 链接 0 宽、实测压住 `Take offline` 20.92×16）/ [BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)（hub@1512 over **92**）/ [BUG-035](bugs/BUG-035-factory-1512-hash-overflow.md)（factory@1512 哈希 over **133**）→ **全部裁「下一轮修」（R15-11/12/13）**；**BUG-032 仍未修**（QA 复测等号形式 exit 0）→ **R15-2**。checklist 建议：**第 113 + 114 行同时 🟡→✅** → **✅ 81 / 🟡 8 / ⬜ 13 / ⚪ 2 = 104**。详见下方「**本轮：Round 14F**」+「**UI 优化（UI-012 逐条裁决）**」+「**缺陷（🐞）— Round 14F 复验**」。
+> 🔧 **R14F 三行终态：UI-012 ✅（完成）/ R14F Dev 修复 ✅（11/12）/ QA-010 ✅（复验放行，`BLOCKING=0`）**；**无未裁决 P0/P1**。
 >
 > 📌 **以下为历史横幅（R10 轮末原文，保留备查；其中「R12 不会再自动开始」一句已作废）**：**Round 10 是长时目标（`create_goal` 自动续轮，`max_goal_rounds=3`）的最后一轮自动续轮**，自动续轮到此为止；**Round 11 已由人类恢复并执行完毕**（结果见下方「本轮：Round 11」）。**Round 10 结果 = 交付通过 + QA-005 放行（`VERDICT=pass, BLOCKING=0`）**：REQ-009 / REQ-010 均验收通过、BUG-016 修复闭环、BUG-017 与 D14 文案落地；新增 3 条 P3（BUG-018/019/020，全部文档/判据层、不阻断）。**Round 11 结果 = QA-006 放行（`VERDICT=pass, BLOCKING=0`）+ checklist 重基线（✅80→75 / 🟡9→14 / ⬜9→13 / ⚪2 = 104 行）+ §15.9 通用设置页（第 18 页）+ 像素走查（V1–V9/D1–D5）+ 新增 5 条 P2（全部在新建页，PM 均裁「本轮修」、待 Lead 开 R11F）+ R12–R15 路线表**。**Round 11F（修复窗口，Lead D20 开窗）= BUG-021…025 全部修复 + UI-007 V1/V2/V4–V9 机械偏差修复 + V3/V8 口径裁定 + D1–D5 落标准（V1.7）；QA 独立复验 [round-11-reverify.md](test-reports/round-11-reverify.md) 判 `VERDICT=fail, BLOCKING=1` —— **功能面全绿，唯一阻断 = BUG-027**（`.aup/man` 改名晚于最后一次 build → `dist/.aup/man` 漂移；修复 = 一条命令 `arc blocklet build` + 复跑 `diff -r .aup dist/.aup` / `arc dsl validate --json`），另新开 **BUG-026**（compose-edit gate 指向不存在的 `?page=admin`，P2 既有）**。~~**R12 不会再自动开始**~~ **（2026-09-28 已作废：人类已恢复，自动续轮重新武装，R12 执行中——见文件顶部横幅与下方「本轮：Round 12」）**。恢复后从 **「R12–R15 实施路线表」（#1 设置收口 → #2 诊断页 → #3 §111 探针）**、排队区 #16 与「🎯 目标收尾」④ 取用候选。
 
@@ -608,6 +611,321 @@ $ node scripts/arcblog-clean.mjs（dry run）→ found 13（hub/index 4 + drafts
 
 ---
 
+## 本轮：Round 14 ｜ **精简轮** — 订单 / 账本界面 §15.7（+ CLI `ledger list --type` + BUG-029）+ 已稳定页像素走查补充与新页骨架建议
+
+> **轮次性质**：**精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 7/8**（R13 收口后由 Lead 重新武装长时目标并建 R14 任务板 `task-44`…`task-48`，下发 **L-R14-1…L-R14-4**）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）；本条小节即 `task-44` 的产物，轮末裁决为 `task-48`。
+> **门规（照此执行）**：门 = `arc dsl validate --json`（**issues=[]**）+ `npm test`（**28/28**，~1s，不写实例）+ 新增 `.aup` 页的 **`arc blocklet build`**（并核对 `diff -r .aup dist/.aup` **与 `diff -r .web dist/.web`** 均无输出）+ `node scripts/arcblog-console-nav.mjs --check`（**19→21 页，以实测为准**）+ `arc dsl generate --check`（无漂移）+ `node scripts/arcblog-economy.mjs --help`（含 `--type`）+ `node scripts/arcblog-network.mjs hub --help`（含 `refresh`/`freshness`）。**禁止跑全量 `npm run test:live`**；只有触及 **CLI / AFS 记录 / 链适配器 / daemon 路由**时才**定向单跑**受影响文件（`scripts/arcblog-economy.test.mjs` + `scripts/arcblog-network.test.mjs`，后者基线 **15/15**），且**先写 `docs/team/.gate-lock`**（一行 `owner + 时间`）、跑完删除。**浏览器单 tab 纪律**：整个 sweep **复用同一个标签页**（`Page.navigate` 换页），禁止每页新开 tab；探针结束关闭自己开的 target。
+
+**目标（可验收）**：① **Dev（REQ-017，`task-45`）** 交付 **§15.7 订单界面**（列表 + **详情完整回答 §50 六问**）+ **结算 / 账本界面**（append-only 的界面含义、分页口径如实、按类型筛选只给真命令），并补 **CLI `ledger list --type <type>`**（真过滤 + 未知类型 fail-closed + 旧语义不破坏 + Usage 更新）与 **BUG-029**（`hub --help` 1 行）；**状态呈现走 BUG-005 路径 B**（**L-R14-4**）。② **UI（REQ-018，`task-46`）** 做**已稳定两页**（`?page=general` / `?page=diagnostics`）的**像素走查补充**（偏差表可复现 + **平台差异分开判定**）+ **订单/账本新页骨架建议（docs-only，不实施）**。③ **QA-009（`task-47`）** 独立验证（自跑门 + 自造 `qa-r14-*` 探针 + AFS/CLI 复核 + guest 越权 + 偏差表抽验）。④ **PM（`task-44`/`task-48`）** 规划与轮末裁决。
+
+**入选理由**：R13 已收官（QA-008 放行、checklist 第 109 行 ✅）→ 仓库**无未裁决 P0/P1**，快层门全绿、`diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` 均无输出（**PM 轮初实测**）→ 可选「**功能界面补全**」的下一项。**§15.7 订单/账本是 R12–R15 路线 #5、R13-6 承继项**，也是 checklist 113/114 两条 🟡 的唯一共同落点（spec §15.7 的达成标准分别要求「订单详情页回答六问」与「账本是 append-only 的唯一事实来源 + 按类型筛选分页浏览」）；**BUG-029 是 R13 轮末唯一新增缺陷**（P3、1 行、触及同一 `scripts/**` 批次 → 并轨最省）。同时 **R11 像素走查未覆盖的两页**（`general` / `diagnostics`）需要补齐，否则 R14-1 的新页会在没有设计基线的情况下落地。**写范围不重叠（Dev `.aup/**`+`scripts/**`+`dist/**` ↔ UI `docs/team/design/**`）→ 可真并行**；QA 串行等两者定稿。
+
+| ID | 需求 | 规格 | 角色 | 状态 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| **REQ-017** | **§15.7 订单界面（列表 + 详情回答 §50 六问）+ 结算 / 账本界面（append-only、分页口径、按类型筛选）+ CLI `ledger list --type` + BUG-029** | **§15.7**（spec L1155–L1181）／**§50**（L2315–L2340 六问）／**§91–§92**／§89；checklist 第 **113** 行 🟡 + 第 **114** 行 🟡 | **Dev** | 🐞 **交付完成 · QA 判不放行**（`VERDICT=fail, BLOCKING=1`；唯一阻断 = BUG-030 P1） | REQ: [requirements/REQ-017-orders-and-ledger-ui.md](requirements/REQ-017-orders-and-ledger-ui.md)（§1 背景含 PM 只读实测 / §2 范围与明确不做 / §3 A0–A9 / §4 依赖 / §5 写范围；**§7 结果记录预留**）。**写范围** `.aup/pages/economy/{orders,ledger}.aup`（新）、`.aup/locales/**`（生成）、`.aup/wrapper.aup`（仅 nav 键）、`scripts/console-nav.mjs`、`scripts/arcblog-economy.mjs`、`scripts/arcblog-network.mjs`（**仅 BUG-029 的 Usage 1 行**）、`scripts/arcblog-economy.test.mjs`（如选此路径）、`dist/**`（build）、`docs/team/.gate-lock`（临时）。**关键约束**：**只镜像 CLI 真实能力**（`order create/list/show/pay/refund`、`ledger list [--order] [--type] [--limit\|--all]`，**L-R14-2**）；**链上/支付 operator-declared**；**页 id 与 `$params` 先探针**（A0，同 L-R12-1 范式，做不到走路径 B 并写明降级）；**交易哈希反伪造断言**（页面出现的哈希必须全部存在于 AFS/CLI 输出）；**spec §15.7 的 7 类 ledger type 与真实 4 类不一致 → 如实登记，不得补齐类型实现**；**不改 `blocklet.yaml`**（判需要 → 停手上报）；**`--type` 必须真被消费 + 未知类型 fail-closed**（现状 `--type refund`/`--bogus x` 均 **exit 0 被静默忽略**，PM 实测）。**触及 CLI → `.gate-lock` + 定向单跑两文件**（L-R14-3） ｜ **R14 终态（PM `task-48`，2026-09-28）**：**交付完成 · QA-009 判不放行**（[round-14.md](test-reports/round-14.md) 末行 **`VERDICT=fail, BLOCKING=1`**）。**A0/A1/A3–A9 通过；A2.3 不通过 → [BUG-030](bugs/BUG-030-orders-missing-relative-time.md)（P1，阻断：`?page=orders` 全页 `time` 元素 **0**、`relativeMatches=[]`；平台 `time … timeMode=relative` 原语可用且仓库 **6 页在用** → **非平台限制**）**；A1.3 后半句（空 afs-list 不含运行时英文兜底）= **平台不可达**（`arc-contracts` §28.6 四写法含纯字面量全无效）→ 按平台限制记录、**不作为 Dev 未完成项**；A2.3「未结算」行内字面句 + A3.4 逐状态文案集合 = **路径 B 语义通过（附口径偏差）**（PM 已在 [REQ-017 §7.3](requirements/REQ-017-orders-and-ledger-ui.md) 追加判据，历史原文不改写）。**CLI `--type`**：四类型 `count==entries.length` 且 `idsMatch=true`、空格形式非法值 exit **1** + `VALIDATION`（缺值/空值同）、**旧语义四次 `diff` byte-identical**、help 含 `--type` 且 `[--limit <n>\|--all]` 收敛为 **1 次**；**等号形式缺口 → [BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md)（P3，范围外/既有机制）**。**BUG-029 已修并经 QA 独立验证**（`hub --help:12` 含 `hub refresh`；`refresh`/`freshness` 实跑 exit 0）。**三类证据**：**浏览器实测** = A0.3 / A1.1–A1.4 / A2.1–A2.5 / A3.2·A3.4 / A4.2 / A5 / A7 / A9.3 + **21/21** 页回归 + 侧栏真实点击换页 + 主题时序；**静态复核 + CLI/AFS** = A1.5 / A3.1·A3.3 / A4.1·A4.3 / A6.1–A6.6 / A9.1·A9.2 + **门 6 条** + 实例清理自证；**受限未验证 = 8 条**（全量 live / `$params` 探针重放 / `failed` 态 / 真实 `transactionHash` / 真实钱包回跳 / `hub_share` 正向 / `afs-list` 容量上限 / 硬件 hover·dark 切换）；**定向 live** = economy **27/27** + network **15/15**（持锁串行）。**过程事实**：Dev 首次 network 单跑 **14/15** 根因 = 其本人在测试期间执行 `arc blocklet build` + `arc service restart`（daemon 重启截断 stdout）→ **无并发干净重跑 15/15**、QA 复跑亦 **15/15** → **非代码回归**；Usage 拆行（`order list` / `order show --id <id>` 两行）已由 PM 在 REQ-017 §7.3 ⑥ **追认**（纯 help 文本、无行为影响）。**checklist 建议：第 113 行暂不落 ✅（阻断 BUG-030；Lead 开 R14F 且 QA 复验通过后落 ✅，附 5 条降级登记）**。详见 [REQ-017 §7](requirements/REQ-017-orders-and-ledger-ui.md) |
+| **REQ-018** | **新增页像素走查补充**（**只走已稳定的 `general` / `diagnostics`**，**不得走 Dev 本轮新建页**）+ **订单/账本新页骨架建议（docs-only）** | UI 标准 **§2.5 / §2.6 / §3.1 / §3.3 / §3.4 / §4.1 / §4.3 / §4.4 / §5.1–§5.3 / §9**；无 checklist 变更 | **UI** | ✅ **完成（QA 抽验通过，不阻断）** | REQ: [requirements/REQ-018-newpage-pixel-audit.md](requirements/REQ-018-newpage-pixel-audit.md)（§1 背景含 PM 只读实测 / §2 范围 / §3 A0–A9 / §4 依赖 / §5 写范围；**§7 结果记录预留**）。**写范围** `docs/team/design/**`（报告 + `raw/**` 原始 JSON/脚本；截图需先与 QA 约定）。**关键约束**：**验收 = 偏差表可复现（computed 值 + 可复制探针 + 当场重取的 `文件:行`）+ 平台差异与实现偏差分开判定**（平台差异必须附平台侧证据、不得据此改 `.aup`）；**单标签页纪律自证**；**并发快照**（Dev 本轮同时改 `.aup`+`dist/**`，`pages 19→21` → 侧栏相关观测量必须复采或标注）；**UI 零 `.aup`/`.web`/`scripts`/标准口径改动**；骨架建议**只提议不实施**；**不点击任何写操作** ｜ **R14 终态（PM `task-48`，2026-09-28）**：**交付完成 · QA 抽验通过（不阻断）** —— **A0–A6 / A8 / A9 通过、A7（zh 全量逐条目视）受限**；**A3 抽验 ≥3 条 4 组数值与 UI-011 逐值一致**（`general` 3× `Save` `60.39/62.39/62.39`、`h2=17px` 且可见 `h3` 集合 `{15px}`、`cards pad=14/gap=10/radius=10`、`sidebar rows=23/overflow=161/footerReachable=true`、`copyBtns 18×18`）；**实测偏差仅 1 条 D-01（P2 实现偏差）→ PM 裁「下一轮修（R15 候选，不单独开窗；修法 UI 已给 = `row cross=start` 或 `alignSelf:"flex-start"`）」**、**平台差异 8 条 P-01…P-08（不修；附平台侧证据，不得据此改 `.aup`/令牌）**；**`git diff --name-only -- .web` 为空（UI 零源码改动）**；**单标签页纪律自证**（`pageTargets` before/during/afterProbe/afterClose = **1/1/1/1**，guest 隔离上下文已 dispose）；**并发诚实登记**（Dev 中途 `console-nav` 19→21、侧栏量复采于 `pages=21`；一次误挂他人标签页的污染**整轮丢弃**并写明）。**产物** = [UI-011](design/UI-011-newpage-pixel-audit.md)（592 行 / 65 202 B）+ `design/raw/UI-011-{admin,guest}.json`（111 290 / 23 823 B）+ `UI-011-cdp-probes.txt` + `UI-011-contrast.mjs` + 输出 + `UI-011-probe.mjs`。**骨架建议 = docs-only、本轮不实施 → PM 采纳为 R15 输入（建议 ≠ 派工，是否整体实施由 Lead 定）**；**订单/账本新页像素走查**（§2.2 留后续轮）→ R15 候选。**三类证据**：浏览器实测（UI 自采 admin/guest 两态，1803×908 dsf1，3500 ms）+ 静态复核 + **QA 独立复跑 UI 探针（不带 `--out`，不写 UI 写范围）逐值一致**；受限 = A7 zh 全量 / 真实硬件 hover / dark 真实切换。详见 [REQ-018 §7](requirements/REQ-018-newpage-pixel-audit.md) |
+| **QA-009** | **Round 14 独立验证**：自跑门 + 自造探针（AFS/CLI 复核）+ guest 越权 + 六问逐问对照 + `--type` 正/负/回归 + 偏差表抽验 ≥3 条 + 单标签页纪律 | REQ-017 / REQ-018 的验收标准 | **QA** | ✅ **完成（独立验证 · 诚实判不放行）**（`task-47`，**`blocked_by task-45 + task-46`**） | **写范围** `docs/team/test-reports/**`、`docs/team/bugs/**`、`docs/team/.gate-lock`（临时）。**必须**：自己重跑门（不采信自述）、自造 `qa-r14-*` 探针（先落锁 → 断言 → **逐条清理 → 基线复原**）、**逐字对照**页面命令与 `--help`、**反伪造断言**（页面哈希必须全部可回溯到 CLI 输出）、guest 三条负面（两页 gate + admin-only 集合 403）、UI 偏差表抽 ≥3 条自行复跑；**不跑全量 live**；报告落 `test-reports/round-14.md`（末行机读 `VERDICT=…`） ｜ **R14 终态（PM `task-48`，2026-09-28）**：**✅ 完成（独立验证 · 诚实判不放行）** —— 报告 [round-14.md](test-reports/round-14.md)（491 行，末行机读 **`VERDICT=fail, BLOCKING=1`**；**`P0=0 / P1=1`**）。**门 6/6 全绿** + **定向 live 持锁串行**（economy **27/27** 63.2 s、network **15/15** 83.2 s，跑完删锁）+ **21/21** 控制台页回归（每页 `active=1`、无 `SESSION INIT FAILED`、整壳 `docOverflow=0`）+ guest 页面只见 gate / 无 cookie 四私有前缀 **403** / 公开面 200 / 写删 **401** + **实例卫生自证**（12 条 `qa-r14-*` 逐条 AFS delete、39 条 live 残渣 `--confirm` 清除、基线复原 orders/ledger/products/refunds/grants 全 0、`.gate-lock` 已删、page target 数 = 1）。**新增 3 条缺陷**：BUG-030（P1 阻断）、BUG-031（P3）、BUG-032（P3，范围外/既有机制）；**O-1…O-8 + D-R14-1/D-R14-2 + 10 条受限未验证全部有结论（PM 逐条裁决，无悬挂）**。QA 另暴露 **O-5**（`test:file` 不自动清理 → 建议 Lead 写入 `CLAUDE.md`）与 **O-6**（`dist/docs/**` 镜像纪律）。**诚实判不放行符合角色卡 §8**（不采信自述、不掩盖 P1、§4 明确「若 Lead 裁决延后则可放行，但截至落盘该裁决未发生」）。详见 [round-14.md](test-reports/round-14.md) |
+
+> **PM 侧配套任务（同一轮，不在上表内）**：**`task-44`** = 本轮规划（本小节 + [REQ-017](requirements/REQ-017-orders-and-ledger-ui.md) / [REQ-018](requirements/REQ-018-newpage-pixel-audit.md) 新建 + [journal/round-14.md](journal/round-14.md) 计划节）— ✅ 已完成；**`task-48`** = 轮末裁决（QA 报告后逐条裁决新 BUG + O 批 + 受限项 + 写 `journal/round-14.md` 结果节 + 更新本文件 + checklist 建议 + REQ-017 §7 / REQ-018 §7）— ✅ **已完成（2026-09-28 轮末）**。本轮「🟥 同时最多 2 项」按写范围满足：`task-45`（`.aup/**`+`scripts/**`+`dist/**`）与 `task-46`（`docs/team/design/**`）不重叠。
+
+### 本轮裁定（Lead 2026-09-28，Round 14 生效；**照此执行**）
+
+| # | 裁定 | 摘要 | 落点 |
+| - | ---- | ---- | ---- |
+| **L-R14-1** | **本轮范围** | **Dev** = ① 订单 + 账本界面（checklist **113/114**）② CLI **`ledger list --type`** ③ **BUG-029**（`hub --help` 补 refresh/freshness **1 行**）；**UI** = 新增页像素走查补充（**只走已稳定的 `general`/`diagnostics`，不得走 Dev 本轮新建页**）+ 订单/账本新页骨架建议（**docs-only**）。**R14-4（§111 探针，待 C-14 批准）与 R14-5（SEO/OG，待 C-04/C-07）本轮不做** | 本小节三行表；[REQ-017](requirements/REQ-017-orders-and-ledger-ui.md) / [REQ-018](requirements/REQ-018-newpage-pixel-audit.md) |
+| **L-R14-2** | **只镜像 CLI 真实能力** | 订单/账本界面只镜像 `order create/list/show/pay/refund`、`ledger list [--order] [--type] [--limit\|--all]`；**链上 / 支付动作保持 operator-declared，不得伪造**（不得声称已支付/已上链；不得生成 AFS 中不存在的哈希；账本页不得有修改/删除入口） | REQ-017 §2.1 / §2.2 第 1、6 项 / §3 A2.4 / A3 |
+| **L-R14-3** | **CLI 变更纪律** | `ledger list --type` 是 **CLI 变更**：**先在 `docs/team/.gate-lock` 写一行**，**定向单跑** `npm run test:file -- scripts/arcblog-economy.test.mjs` 与 `scripts/arcblog-network.test.mjs`（基线 **15/15**），**跑完删锁**；**不得破坏 `--order` / `--limit` / `--all` 旧语义** | REQ-017 §2.1④ / §3 A6；`task-45` |
+| **L-R14-4** | **状态呈现沿用 BUG-005 路径 B** | **本地化中性标签 + 原始值可见 + 常驻 dim 说明**；**不得只把真实值放 `title`**；不同真实状态不得被同一句话断言（订单 `status` / 账本 `type`、`status`） | REQ-017 §3 A2.4 / A3.4；[arc-contracts §28.8](../arc-contracts.md) |
+
+**写范围冲突矩阵（R14 派活必须照此）**
+
+| 批次 | 成员 / 任务 | 本轮写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A** | Dev / `task-45`（REQ-017） | `.aup/pages/economy/{orders,ledger}.aup`（新）、`.aup/locales/**`（生成）、`.aup/wrapper.aup`（仅 nav 键）、`scripts/console-nav.mjs`、`scripts/arcblog-economy.mjs`、`scripts/arcblog-network.mjs`（BUG-029 1 行）、`scripts/arcblog-economy.test.mjs`（如选）、`dist/**`（build）、`docs/team/.gate-lock`（临时） | **同 owner 串行**；**A0 先探针**（页 id + `$params`）；**触及 CLI → 先写锁再定向单跑两文件**，**不跑全量 live**；`arc blocklet build` **必须晚于自己的最后一次写盘**；**不改 `blocklet.yaml` / `world/**` / `.web/**`** |
+| **B** | UI / `task-46`（REQ-018） | `docs/team/design/**`（报告 + `raw/**`；截图需 QA 同意） | **与 A 可并行**（写范围不重叠）；**零源码改动**（`.aup`/`.web`/`scripts`/`world`/`blocklet.yaml`/`dist`）；**不改标准口径**；**单标签页**；**并发快照规则**必执行（A 会 build/restart → `pages 19→21`） |
+| **C** | QA / `task-47`（QA-009） | `docs/team/test-reports/round-14.md`、`docs/team/bugs/**`、`docs/team/.gate-lock`（临时） | **`blocked_by` A + B 定稿**（验证对象不得在脚下移动）；自造探针必须先落锁、逐条清理、**基线复原**；**真实点击/读取以 AFS+CLI 复核为准（不看 toast）**；**不跑全量 live** |
+| **D** | PM / `task-44` + `task-48` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划（本轮）+ 轮末裁决；**不调用 `team_task_*`**；不写源码/构建产物 |
+
+**本轮明确不做（防蔓延）**
+
+1. **不做 R14-4（§111 调度探针）**（**依赖用户批准 C-14**）；**不做 R14-5（SEO/OG §126 + RSS Atom）**（**依赖 C-04 / C-07**）；**不做 R14-3（REQ-011 媒体）与 R14-6（设置-角色与能力）**（与 R14-1 同 `.aup/pages/**` 族 → 串行冲突，承继后续轮）。
+2. **不做链上 / 真实支付**：`--adapter ocap` 真链演练、Payment Adapter 真实通道（§44）→ **operator-declared**（**L-R14-2**）。
+3. **不改 spec**（只有人类可改；C-01/C-02/C-03 仍待批）、**不改 checklist 状态列**（Lead 落笔）、**不改 `blocklet.yaml`**（绑定/权限表；判需要 → 停手上报）、**不改 `world/**` 记录形态**、**不动主题令牌 / `.web/**`**。
+4. **不新增测试文件**（新文件默认 live 层，会破坏 `npm test` 28/28 基线）；**不动 `FAST_TESTS`**；**不跑全量 live**。
+5. **不伪造**：不得生成/补全 AFS 中不存在的哈希；账本页不得有修改/删除入口；界面不得声称展示全量账本；**不得把 spec §15.7 的 7 类 ledger type 当真实能力**（真实 4 类 = `creator_share` / `hub_share` / `protocol_fee` / `refund`，证据 `scripts/lib/economy.mjs:249-270`、`:366-390`）。
+6. **不以 toast 作为写入成功判据**（一律 AFS 复核，`arc-contracts` §29.4）；**不重开**已闭环项（BUG-021…029 已修者、UI-007 V 批、D1–D5、R12/R13 的 O 批、D28–D30）。
+7. **不把** `docs/dsh-workflow-and-ralph.md` 与 `dist/docs/dsh-workflow-and-ralph.md` 当本轮产物（非 ArcBlog 产品文档；**严禁 `git add -A`**）。
+8. 浏览器**只开一个标签页**、只在验收要求 DOM 断言时启动。
+
+**PM 轮初只读复核门（2026-09-28；未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ git status --short     → 只有 ?? docs/dsh-workflow-and-ralph.md 与 ?? dist/docs/dsh-workflow-and-ralph.md
+                            （**非本轮产物**，R12 起既有；Lead 不得 `git add -A` 卷入）
+$ git log --oneline -1   → 9a06261 docs(team): record the Round 13 commit sha and the Lead closure in the journal
+$ ls docs/team/.gate-lock → No such file or directory                                     [exit=1]（无人在写实例）
+$ arc dsl validate --json → "ok": true / "issues": []                                     [exit=0]
+$ npm test                → tests 28 / pass 28 / fail 0 / duration_ms 918.58              [exit=0]
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":19}  [exit=0]
+$ arc dsl generate --check → Would generate 0 file(s) (dry-run) — nothing to change       [exit=0]
+$ diff -r .aup dist/.aup   → （无输出，SAME）｜ diff -r .web dist/.web → （无输出，SAME）  [exit=0]
+$ node scripts/arcblog-economy.mjs --help | grep 'ledger list'
+  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--limit <n>|--all] [--limit <n>|--all]
+                                                                   ↑ 重复项（:500）+ **无 --type**  ← REQ-017 G3 依据
+$ node scripts/arcblog-economy.mjs order list → {"ok":true,…,"count":0,"orders":[]}        [exit=0]
+$ node scripts/arcblog-economy.mjs ledger list --limit 3 → {"ok":true,…,"count":0,"totalCount":0,"truncated":false} [exit=0]
+$ node scripts/arcblog-economy.mjs ledger list --type refund → 与不带 --type **完全一致**，exit 0
+$ node scripts/arcblog-economy.mjs ledger list --bogus x → 同上，exit 0
+                            ← **--type 当前被静默忽略**、parseArgs 不校验未知 flag（REQ-017 §3 A6.1/A6.2 依据）
+$ grep -n "type:" scripts/lib/economy.mjs → :249-270 {creator_share,hub_share,protocol_fee}；:366-390 'refund'
+$ grep -c '^test(' scripts/arcblog-economy.test.mjs → 27 ｜ scripts/arcblog-network.test.mjs → 15（**基线以实跑为准**）
+$ python3 逐行统计 checklist → ✅79 / 🟡10 / ⬜13 / ⚪2 = 104（与 docs/ArcBlog-feature-checklist.md:29-41 总览表差异 0；
+  第 113/114 行均 🟡）
+$ arc dsl lint | grep -c WARNING → 28（R12 = 24、R13 = 28；**非门禁，禁止整体 `--fix`**）
+```
+
+**Round 14 结论（PM，轮末 2026-09-28）**：**交付完成、QA 判不放行**（[round-14.md](test-reports/round-14.md) 末行 **`VERDICT=fail, BLOCKING=1`**；`P0=0 / P1=1`）——**REQ-017** 的 §15.7 两页 + CLI `ledger list --type` + BUG-029 **均已落地**（21 页控制台无回归、实例零残留、`--type` 空格形式 fail-closed、旧语义 **byte-identical**），但 **A2.3「相对 + 绝对两态」未达成 = [BUG-030](bugs/BUG-030-orders-missing-relative-time.md)（P1）**，属**可实现项**（平台 `timeMode=relative` 原语可用、仓库 6 页在用）→ **不能以「平台限制」收口**；**REQ-018** QA 抽验通过（**实现偏差仅 1 条 D-01（P2）** + **平台差异 8 条** + 骨架建议 docs-only 不实施）。**PM 裁决**：BUG-030 **本轮修（建议 Lead 立即开 R14F 修复窗口；`task-44`…`task-48` 已收官，开窗由 Lead 建任务）**，**Lead 不批则落 R15 首项**（**D31**）；BUG-031（P3 文案）并轨 R14F/R15；BUG-032（P3，`--key=value` 静默忽略，范围外/既有机制）**下一轮修（R15，修法口径 = D32）**；**O-1…O-8 + D-R14-1/D-R14-2 + 10 条受限未验证全部逐条裁决，无悬挂**（见下方 🐞 区）。**「放行 ≠ 无缺陷」**：若不开 R14F，仓库将带 **1 条 P1 + 2 条 P3** 进入 R15。清单状态列本轮仍由 Lead 落笔（建议见下节）。
+
+**PM 轮末只读复核门（2026-09-28；未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ git log --oneline -1        → 9a06261 docs(team): record the Round 13 commit sha and the Lead closure in the journal
+$ git status --short | wc -l  → 87（Dev/UI 源文件 + dist 镜像 + PM/UI/QA 文档）
+$ ls docs/team/.gate-lock     → No such file or directory                                  [exit=1]（无人在写实例）
+$ arc dsl validate --json     → "ok": true / "issues": []                                   [exit=0]
+$ npm test                    → tests 28 / pass 28 / fail 0 / duration_ms 959.41             [exit=0]
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":21}     [exit=0]
+$ arc dsl generate --check    → Would generate 0 file(s) (dry-run) — nothing to change        [exit=0]
+$ diff -r .aup dist/.aup      → （无输出）｜ diff -r .web dist/.web → （无输出）              [exit=0]
+$ arc dsl lint | grep -c WARNING → 28（全部非门禁；deadLocaleKeys=0）
+$ grep -c 'time mode=' .aup/pages/economy/orders.aup → 0 ｜ policy.aup → 1   ← BUG-030 静态复核
+$ grep -n 'gate-desc' .aup/pages/economy/ledger.aup → :19 "…view the economy and grants."     ← BUG-031 独立复现
+$ node scripts/arcblog-economy.mjs ledger list --type payment → exit 1 + VALIDATION
+$ node scripts/arcblog-economy.mjs ledger list --type=payment → exit 0、无 VALIDATION         ← BUG-032 独立复现
+$ node scripts/arcblog-economy.mjs --help | grep 'ledger list' → :19 含 [--type <t>]；[--limit <n>|--all] 1 次
+$ python3 逐行统计 checklist → ✅79 / 🟡10 / ⬜13 / ⚪2 = 104（总览表差异 0；D 组 18✅/6🟡；113/114 均 🟡）
+$ git status --short docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature-checklist.md → （空）
+```
+
+### Round 14 checklist 建议（**只建议**；checklist 由 Lead 落笔，PM 本轮零编辑）
+
+**① 第 114 行「结算与账本（append-only）」（§15.7、§91–§92）：建议 🟡 → ✅（附 9 条降级 / 缺口登记）**
+
+- **前置已满足**：QA-009 独立验证 **A3 / A4 / A5 / A6 全通过** —— A3.1 零写接线 `grep -nE 'exec|events='` = **0 处**；A3.2 常驻文案含 `append-only` / `只增不改` / `无修改或删除入口`（en+zh）；A3.3 ledger 行 **11 字段**与 `world/ledger-entry.yaml` 逐项同名（`policyVersion` / `transactionHash` 均在）；A4.1 分页口径如实（默认最新 20 / `--limit <n>` / `--all` + count/totalCount/truncated/hint）且**不声称全量**；A4.3 `filter=` / `serverFilters` = **0 处**；A5 结算 10 字段 + `hubShareWithheld` 原始值可见 + 常驻说明（spec §30/§33）；A6.1 四类型真过滤 `count==entries.length` 且 `idsMatch=true`；A6.2 空格形式非法值 **exit 1 + `VALIDATION` + 允许值集合**；A6.4 旧语义 **byte-identical**（四次 `diff` 无输出）；A6.6 help 含 `--type` 且 `[--limit <n>\|--all]` 收敛为 1 次；A8 实例卫生；A9 i18n（`ledger` en/zh 各 47 键、差集空、`deadLocaleKeys=0`）。
+- **降级与缺口登记（不得省略）**：① **分页 / 筛选一律靠 CLI 命令**（页面不给 `filter=`/`serverFilters` —— 索引陈旧会静默丢行，`arc-contracts` §15 实测）；页面**不显示计数、不声称全量**；② **append-only 的界面含义 = 零写接线 + 无修改/删除入口**（本页只读，写入只能走 CLI/AFS）；③ **`ledger list --type` 无 `node:test` 覆盖**（REQ-017 §2.2.5 允许改既有 live 文件，但本轮 `task-45` 指令禁止改测试 → QA 以手工命令覆盖 A6.1–A6.7 全部条目；**补测 = R15 待办**，不得新增测试文件）；④ 真实 `transactionHash` 全空（本机无链、`paymentAdapter=manual`）→ 空值渲染 `—` 且**绝不伪造**，反伪造断言以「页面 0 个 hash token」通过 → **非空哈希渲染路径受限未验证**；⑤ `hub_share` 正向条目需可验证归因环境 → 只验「0 条且形状正确」（受限）；⑥ 账本 `afs-list` 容量上限未验证（当前 16 条全渲染）；⑦ **BUG-031 + O-2 + O-3 三条文案级 P3**（gate 文案写 `grants` / `withheld-note` 的 "every row" / `cli-desc` 的 "verbatim"）→ 裁「本轮修（R14F）／R15」，**不阻断**；⑧ **BUG-032**（`--key=value` 等号形式静默忽略）= 范围外既有机制（`scripts/lib/arc.mjs:22-40`）→ R15（**D32**）；⑨ spec §15.7 的 **7 类 ledger type 与真实 4 类**不一致（`creator_share` / `hub_share` / `protocol_fee` / `refund`）→ 页面/help 只列真实 4 类，**未补齐类型实现**（如实登记；spec 候选 **D33**）。
+- **计数**：第 114 行落 ✅ → **✅ 79→80 ｜ 🟡 10→9 ｜ ⬜ 13 ｜ ⚪ 2 = 104 行**（总行数不变；**D 组 18→19 ✅ / 6→5 🟡**）。
+
+**② 第 113 行「订单管理（含六问追溯）」（§15.7、§50）：建议「条件式 ✅」—— 本轮暂不落，Lead 开 R14F 且 QA 复验通过后落 ✅（附 5 条降级登记）**
+
+- **已达成**：A1.1 / A1.2 / A1.4（列表字段 + DID 中间截断 + 全值可复制）、A2.1（Q1–Q3 真实值与 CLI 逐字相等）、A2.2（Q4 规则 + policy 三方比例 `0.8/0.15/0.05`）、A2.4（**反伪造：0 个哈希 token**、Q6 为指向说明）、A2.5（`refunded` 态 `refundedAt`+`refundReason` + 账本 2 条冲正）、A3–A9 全通过；**空态常驻引导卡**（含 `order create` / `order list`）通过；21/21 页回归、侧栏 `footerReachable=true`。
+- **未达成（阻断）**：**§3.3 A2.3「`settledAt` 显示为相对 + 绝对两态」** —— `?page/orders` 全页 `time` 元素 **0**、`relativeMatches=[]`、`settledAtLine` 纯 ISO；平台 `time … timeMode=relative` 原语可用且仓库 **6 页在用** → **非平台限制**（= **BUG-030 P1**）。
+- **落笔条件（写死，避免"看起来达标"）**：Lead 开 **R14F** → Dev 在 `orders.aup` 订单行内接平台 `time` 原语（保留现有绝对 ISO）→ QA 定向复跑 `?page=orders` 的 `time` 元素与相对文本断言（复跑命令已在 BUG-030 内）→ **复验通过后由 Lead 落 ✅**。**Lead 不批开窗 → 113 保持 🟡、BUG-030 = R15 首项**（二态写明，不留悬挂）。
+- **降级与缺口登记（落 ✅ 时一并写）**：① **页 id = `orders`；per-record 深链 `?page=orders&id=<id>` 非平台特性**（A0 实测 `$params.id` 不被替换）→ 走 REQ-017 §2.1② **路径 B**（列表行内「记录内含」的 5 问 + 逐行真命令 `order show --id <id>` / `ledger list --order <id>` / `settle --order <id>` + 账本页核对），**降级原因写进 `orders.q-desc` 常驻说明**；② **链上 / 支付动作保持 operator-declared**（不得声称已支付/已上链、不得生成 AFS 中不存在的哈希；**L-R14-2**）；③ **`failed` 订单态 CLI 无写入路径**（`validateOrder` 允许但无任何命令产生）→ **受限未验证**；④ **空 `afs-list` 恒渲染平台英文兜底 `No items to display`**（`arc-contracts` §28.6 四种写法含纯字面量全无效）→ 空态引导由**常驻卡**承载；A1.3 后半句**平台不可达**，**不作为 Dev 未完成项**；⑤ A2.3「未结算」**行内字面句**不可达（平台不能按记录值切文案，§28.8）→ 空值渲染 `—`（非空串/`undefined`/假时间）+ 常驻说明含字面「未结算」，按**路径 B 语义**验收（PM 已在 REQ-017 §7.3 追加判据）。
+- **计数**：若 113 与 114 同时落 ✅ → **✅ 79→81 ｜ 🟡 10→8 ｜ ⬜ 13 ｜ ⚪ 2 = 104 行**（**D 组 18→20 ✅ / 6→4 🟡**）。
+
+**③ 本轮不新增 / 不改变其它清单行**：BUG-030 / BUG-031 / BUG-032 **均不新增 ⬜ 行**（分别落 R14F/R15 与 REQ-017 续作）；**REQ-018（像素走查 + 骨架建议）属质量 / 设计层 → 不改任何行**；O-1…O-8 与 10 条受限未验证均属**质量 / 文档 / 方法层**（不新增行）；**spec 与 checklist 本轮由 Lead 落笔，PM 零编辑**（PM 实测 `git status --short docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature-checklist.md` 为空）。**总览表与正文必须同时改**（L-R11-1 口径：每个状态变更附可执行验证命令 + 真实输出；PM 本轮已独立复算，见上方复核门）。
+
+**④ `## 维护记录` 追加一行（轮末由 Lead 写；建议文案）**
+
+> `2026-09 | 精简轮次 14（自动续轮 7/8）：① Dev（REQ-017）= §15.7 订单 / 账本界面（`?page=orders` + `?page=ledger`，控制台 19→**21** 页）+ CLI `ledger list --type`（四类型真过滤、空格形式 fail-closed、旧语义 **byte-identical**）+ BUG-029（`hub --help` 补 `refresh`/`freshness` 1 行）——**QA-009 判不放行**（`VERDICT=fail, BLOCKING=1`），唯一阻断 = **BUG-030（P1）**：`?page=orders` 缺「相对 + 绝对」两态（平台 `timeMode=relative` 原语可用、6 页在用 → **非平台限制**）→ PM 裁「**本轮修（建议 Lead 开 R14F；不批则 R15 首项）**」；② UI（REQ-018）= `general` / `diagnostics` 两页像素走查补充（UI-011，592 行；**实现偏差仅 1 条 P2**、平台差异 8 条、单标签页 1/1/1/1 自证）+ 订单 / 账本新页骨架建议（docs-only，**本轮不实施**）；③ **门 6/6 全绿**（validate issues []、`npm test` 28/28、`console-nav --check` pages **21**、`generate --check` 0 漂移、build 后 `.aup` / `.web` 双向 diff 无输出）+ **定向 live economy 27/27 + network 15/15**（持锁串行）+ **21/21** 控制台页回归 + guest 403/401 + 实例基线复原；④ checklist：第 **114** 行 🟡→✅（附 9 条降级 / 缺口登记）→ **✅ 80 / 🟡 9 / ⬜ 13 / ⚪ 2 = 104**；第 **113** 行**暂保持 🟡**（阻断 BUG-030；R14F 复验通过后落 ✅ → **✅ 81 / 🟡 8**）；⑤ 本轮 **spec 零改动**、PM **checklist 零编辑**、**不跑全量 live**；新增 **BUG-031（P3 文案）/ BUG-032（P3 范围外：`--key=value` 静默忽略）** 分别落 R14F/R15。`
+
+> **备选文案（若 Lead 不批 R14F）**：把 ④ 中「R14F 复验通过后落 ✅ → ✅ 81 / 🟡 8」改为「**第 113 行保持 🟡，BUG-030 = R15 首项**」；③④ 其余不变，计数为 **✅ 80 / 🟡 9**。
+
+---
+
+## 本轮：Round 14F（修复窗口）｜ **UI 全面检查与优化**（L-R14F-1）+ BUG-030（P1）收口 + BUG-031 / D-01 / R15-D 并轨
+
+> **轮次性质**：**修复窗口**（Lead 裁定 **L-R14F-1…L-R14F-5** 后开窗）。**任务板 `task-49`（Dev）/ `task-50`（UI）/ `task-51`（QA）/ `task-52`（PM 裁决）**；**PM 不调用 `team_task_*`**（任务板由 Lead 维护）；本小节即 `task-52` 的产物。
+> **门规（照此执行）**：门 = `arc dsl validate --json`（**issues=[]**）+ `npm test`（**28/28**）+ **`arc blocklet build`** + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check` + `diff -r .aup dist/.aup`（改了 `.web` 还要 **`diff -r .web dist/.web`**）。**禁止跑全量 `npm run test:live`**；R15-D 触及测试文件 → **定向单跑** `scripts/arcblog-economy.test.mjs`（**先写 `docs/team/.gate-lock`**，跑完删锁）。**浏览器单 tab 纪律**：整个 sweep 复用**同一个既有 page target**（只 `Page.navigate` 换页），结束关闭自己开的 target（历史 53 tab 事故）。
+
+**Lead 裁定（L-R14F-1…5，照此执行）**
+
+| # | 裁定 | 摘要 |
+| - | ---- | ---- |
+| **L-R14F-1** | **本轮重心 = UI 全面检查与优化**（边距/间距、文案溢出与重叠、跨页一致性、简洁性、用户可用性） | UI 出**可落地修复清单**；Dev 在同一窗口按清单落地 `.aup` 侧修复 |
+| **L-R14F-2** | **BUG-030（P1）必修** | `?page=orders` 无任何 `time` 元素，而平台 `time mode=display timeMode=relative` 原语**可用且被 6 页使用**（`policy:146` / `hub:177` / `access:133` / `pages:168` / `posts:185` / `diagnostics:192`）→ **不是平台限制** |
+| **L-R14F-3** | **并轨** | BUG-031（`ledger` gate-desc 误写 grants）+ QA O-2/O-3 文案 + **D-01**（`general` 三只 Save 被拉伸到 60px）+ **R15-D**（`--type` 用例补进**既有** live 文件） |
+| **L-R14F-4** | **写者串行** | UI 先审查（`.web`/docs），Dev 后实施（`.aup`/一个测试文件/`dist`）；两者都写 `dist/**`（UI 若改 `.web` 也需 build），**不得并行** |
+| **L-R14F-5** | **溢出与重叠是验收项** | 控制台 21 页 + 公共页（`/`、`/posts/<slug>`、`/store`、`/about`），en/zh，**1803×908 与 1512×765**；`document.scrollWidth > clientWidth`、文本 `scrollWidth > clientWidth+1`、相邻元素 bounding box 相交**都必须有实测结论**；平台固有项**必须给平台侧证据**后才可 allowlist |
+
+**Round 14F 三行最终状态**
+
+| 行 | 交付物 | 角色 / 任务 | 产物 | 最终状态 | 三类证据 |
+| - | ----- | ----------- | ---- | -------- | -------- |
+| **UI-012** | UI 全面走查 + 可落地修复清单（**12 条 `.aup` 修法 + 2 条 UI 自修**；平台差异 **7** 条 allowlist；受限 **3** 条） | UI / `task-50` | [design/UI-012-ui-audit-and-fixes.md](design/UI-012-ui-audit-and-fixes.md)（205 行）+ `design/raw/UI-012-{console,public,consistency,dryrun,diag,analyze,probe,locale-test}.…`（8 sweep 文件 + 诊断/干跑） | ✅ **完成**（8 sweep / **168 次页面采集** / `badLandings=[]`；单 tab 自证 `before/during/after = 1/1/1`、**未新建未遗留 target**） | **浏览器实测**（CDP 9333，复用 target `1F2B2046…`）；**静态复核**（`grep -n` 当场取行号）；**受限未验证 3 条**（UI-012 §6：文案重叠假阳性判定口径、CSS 覆盖不适用、两条候选 CSS 被干跑否掉） |
+| **R14F Dev 修复** | BUG-030（P1）+ BUG-031 + QA O-2/O-3 + D-01 + R15-D + UI-012 可落地项 | Dev / `task-49` | `.aup/pages/economy/{orders,ledger,policy}.aup`、`.aup/pages/admin/{pages,posts,general}.aup`、`.aup/pages/site/{tags,feeds}.aup`、`.aup/pages/ops/{hub,factory,agents,media,operations}.aup`、`.aup/wrapper.aup`（品牌）+ **7 个公共页** `app-footer` 品牌、`.aup/locales/**`（生成）、`scripts/arcblog-economy.test.mjs`（**+84 行 / 3 用例**）、`dist/**`；UI 侧 `.web/components/theme-bridge/script.js`（CHROME_CSS 2 条） | ✅ **完成 11/12**（UI-012-03/04/05@1803/06/07 前半/08/09/10/11@1803/12/14 + UI 自修 2 条）；**3 处未完全达成 → BUG-034 / BUG-035 / tags@1512 判据修正** | **浏览器实测**（QA 独立复跑）；**静态复核**（`grep -n` + `git diff --numstat` = `84 0 scripts/arcblog-economy.test.mjs`）；**受限**（超长真实 DID/title 未构造 → UI-012-05/06 极端值未验证） |
+| **QA-010** | 独立复验（不采信自述）+ 溢出/重叠专项 + 零宽塌陷专项 + 品牌点击 + 主题时序 | QA / `task-51` | [test-reports/round-14-reverify.md](test-reports/round-14-reverify.md)（304 行，末行机读 `VERDICT=pass, BLOCKING=0`）+ 3 条新 BUG | ✅ **完成 · 放行**（`P0=0 / P1=0`（本轮新发现）；**11 组已修 / 1 组判据修正 / 3 组未完全达成并登记**） | **浏览器实测**（100 次页面采集 + 零宽塌陷 21×2 + 4 定向批次 + 4 单发探针；每批 `pageTargets before/after = 1/1`）；**静态复核 + CLI/AFS**（门 7 条 + `.gate-lock` 下定向 live economy **30/30** / 100.8 s）；**受限 9 条**（QA §0） |
+
+**Round 14F 结论（PM `task-52`，2026-09-28）**：**放行（pass）** —— QA-010 末行 **`VERDICT=pass, BLOCKING=0`**；**R14 的唯一 P1 阻断（BUG-030）已修复并经 QA 独立复验**（`?page=orders` 订单行 **2 个**平台 `time` 元素：相对文本 `just now` + 绝对 `title`/`data-datetime` + kv 行 ISO 逐字保留、18 字段未丢）；**BUG-031 / D-01 / R15-D 全部通过**；**新发现 3 条 P2 残留（BUG-033/034/035）→ 全部裁「下一轮修（R15-11/12/13）」**；**无未裁决 P0/P1**。**UI-012 清单逐条裁决见下节**。
+
+**R14F 写范围冲突矩阵（照 L-R14F-4 串行）**
+
+| 批次 | 成员 / 任务 | 写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A（先）** | UI / `task-50` | `docs/team/design/**`、`.web/**`（`theme-bridge` CHROME_CSS 2 条）、`dist/**`（改 `.web` → build）；未写 `.aup` 逻辑 | **先审查**；与 Dev 都写 `dist/**` → **审查与实施不得并行**；单 tab；不改业务逻辑 |
+| **B（后）** | Dev / `task-49` | `.aup/pages/**`、`.aup/wrapper.aup`、`.aup/locales/**`（生成）、`scripts/arcblog-economy.test.mjs`、`dist/**`；`docs/team/.gate-lock`（临时，仅定向 live） | **UI 停写后开工**；`arc blocklet build` **必须晚于自己最后一次写盘** |
+| **C** | QA / `task-51` | `docs/team/test-reports/**`、`docs/team/bugs/**`、`docs/team/.gate-lock`（临时） | **`blocked_by` A + B**（验证对象不得在脚下移动）；自造 `qa-r14f-*` 探针 → **逐条清理 → 基线复原**；**不跑全量 live** |
+| **D** | PM / `task-52` | `docs/team/backlog.md`、`docs/team/journal/**`、`docs/team/requirements/**` | 裁决；**不调用 `team_task_*`**；不写源码 / 构建产物 |
+
+**本轮明确不做（防蔓延）**
+
+1. **不跑全量 `npm run test:live`**（用户裁定）；**不新增测试文件**（R15-D **补进既有** live 文件 → 快层仍 28/28）。
+2. **不改 spec、不改 checklist 状态列**（Lead 落笔）、**不改 `arc-contracts.md` / `ArcBlog-admin-ui-design.md`**（Lead / UI 写范围）、**不改 `blocklet.yaml` / `world/**`**、**不动主题令牌**。
+3. **不把平台固有项当实现缺陷**：品牌链 / breadcrumb 返回链 / `.aup-kv-row` 平台 grid / 空 `afs-list` 抢焦点 / `auto-surface` 内部结构 → 必须**附平台侧证据**方可 allowlist（L-R14F-5）；**UI-012 §6 的 2 条候选 CSS 覆盖已被干跑否掉 → 不得用平台类名 CSS 覆盖替代 `.aup` 结构修法**（UI-007 §3.2 既定口径）。
+4. **不允许「部分达成」被写成「已修」**：hub@1512 / factory@1512 按 QA 实测原值登记为 **BUG-034 / BUG-035**；tags@1512 按「判据修正」单独裁决（见 🐞 区 QA-T1）。
+5. **不重开已闭环项**（BUG-001…029 已修者、UI-007 V 批、D1–D5、R12/R13/R14 的 O 批与 D28–D30）。
+6. 浏览器**只开一个标签页**，结束关闭自己开的 target。
+
+**PM 轮末只读复核门（2026-09-28，R14F；未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ git log --oneline -1        → 9a06261 docs(team): record the Round 13 commit sha and the Lead closure in the journal
+$ ls docs/team/.gate-lock     → No such file or directory                                    [exit=1]（无人在写实例）
+$ arc dsl validate --json     → "issues": []                                                 [exit=0]
+$ npm test                    → pass 28 / fail 0 / duration_ms 1040.131292                    [exit=0]
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":21}      [exit=0]
+$ arc dsl generate --check    → Would generate 0 file(s) (dry-run) — nothing to change        [exit=0]
+$ diff -r .aup dist/.aup      → （无输出，AUP_IDENTICAL）                                     [exit=0]
+$ diff -r .web dist/.web      → （无输出，WEB_IDENTICAL）                                     [exit=0]
+$ arc dsl lint | grep -c WARNING → 28（较 R12 的 24 上升，全部 unreferenced_explicit_id，非门禁；禁止整体 --fix）
+$ grep -c 'time mode=' .aup/pages/economy/orders.aup → 2   ← BUG-030 闭环复核（:183 createdAt / :187 settledAt，均 timeMode=relative）
+$ grep -c 'time mode=' .aup/pages/economy/ledger.aup → 2   ← UI-012-04 ledger 侧
+$ grep -n 'gate-desc' .aup/pages/economy/ledger.aup → :19 "…view settlements and the ledger." / "…查看结算与账本。"  ← BUG-031 闭环复核
+$ grep -n 'gate-desc' .aup/pages/economy/policy.aup .aup/pages/ops/{agents,media,operations}.aup
+  → policy:4 分成策略与商品 / agents:14 Agent 授权与策略 / media:5 媒体索引 / operations:9 节点健康与发现  ← UI-012-12 同族 4 处（en/zh 成对）
+$ grep -n 'row gap=xs' .aup/pages/admin/general.aup → :171/:180/:189 三处均带 cross=center   ← D-01 修法在位
+$ grep -n 'href: "/?page=index"' .aup/wrapper.aup → :42；7 个公共页 app-footer brand → 各 1 处   ← UI-012-03 闭环复核
+$ grep -n 'flexGrow: 0\|flexBasis' .aup/pages/ops/hub.aup → :218 flexGrow:0 / :219 flexBasis:auto  ← UI-012-06 修法在位
+$ grep -n 'flexGrow' .aup/pages/admin/pages.aup → :173 style={…, flexGrow: 0}                 ← BUG-033 根因仍在（未修，R15-11）
+$ python3 逐行统计 checklist → ✅79 / 🟡10 / ⬜13 / ⚪2 = 104（D 组 18✅/6🟡；与 docs/ArcBlog-feature-checklist.md:29-41 总览表差异 0；第 113/114 行均 🟡）
+$ git status --short docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature-checklist.md → （空，PM 本轮零编辑）
+```
+
+### Round 14F checklist 建议（**只建议**；checklist 由 Lead 落笔，PM 本轮零编辑）
+
+**① 第 113 行「订单管理（含六问追溯）」（§15.7、§50）：建议 🟡 → ✅（R14 的落笔前置已由 R14F 解除）**
+
+- **前置已解除**：R14 的**唯一阻断 = BUG-030（P1）**已修复并经 **QA-010 独立复验** —— `?page=orders` 订单行出现 **2 个**平台 `time` 元素（相对 `just now` + 绝对 `title` / `data-datetime`），kv 行 ISO 逐字保留、**18 个字段未丢** ⇒ A2.3「`settledAt` 相对 + 绝对两态」**达成**。R14 已通过的 A0 / A1 / A3–A9 结论继续有效（[round-14.md](test-reports/round-14.md) §1）。
+- **降级与缺口登记（落 ✅ 时一并写 = R14 原 5 条 + R14F 追加 2 条）**：① 页 id = `orders`；per-record 深链 `?page=orders&id=<id>` **非平台特性**（`$params.id` 不被替换）→ 走**路径 B**（行内 5 问 + 逐行真命令 `order show --id` / `ledger list --order` + 账本页核对），降级原因写进 `orders.q-desc`；② **链上 / 支付动作保持 operator-declared**（不声称已支付/已上链、不生成 AFS 中不存在的哈希；L-R14-2）；③ **`failed` 订单态无 CLI 写入路径** → 受限未验证；④ 空 `afs-list` 恒渲染平台英文兜底 `No items to display`（`arc-contracts` §28.6 四种写法含纯字面量全无效）；⑤ A2.3「未结算」**行内字面句**不可达（§28.8）→ 空值渲染 `—` + 常驻说明含字面「未结算」，按**路径 B 语义**验收；**⑥ R14F 追加：卡片顺序以「列表 = 第一屏主内容」呈现 —— PM 已追认（[REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md)），并消除了空 `afs-list` 抢焦点导致的开局滚到底（340 → 0）**；**⑦ R14F 追加：UI-012 对 `?page=orders` 的其余发现为 0 条未修 P2**（UI-012-13 的严格去重判为「口径修正后已达成」）。
+- **UI 优化的剩余项（**不阻断本行**，均为其它页面）**：[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（`?page=pages`）/ [BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)（`?page=hub`）/ [BUG-035](bugs/BUG-035-factory-1512-hash-overflow.md)（`?page=factory`）→ **R15-11 / R15-12 / R15-13**。**`?page=orders` 本身无剩余溢出 / 重叠 / 命中区问题**（QA-010 100 次采集结论）。
+
+**② 第 114 行「结算与账本（append-only）」（§15.7、§91–§92）：建议 🟡 → ✅（R14 的 9 条登记继续有效，R14F 复核后维持）**
+
+- **R14 的 9 条降级 / 缺口登记全部继续有效**（分页 / 筛选一律靠 CLI、append-only = 零写接线 + 无修改删除入口、**真实 `transactionHash` 全空**、`hub_share` 正向受限、`afs-list` 容量上限未验证、三条文案级 P3、**BUG-032 等号形式**、spec §15.7 **7 类 vs 真实 4 类**），其中两条本轮**已收口**：① **`--type` 无 `node:test` 覆盖 → R14F 已补**（`scripts/arcblog-economy.test.mjs` **+84 行 / 3 用例**，定向单跑 **30/30**，快层仍 28/28）；② **BUG-031 + UI-012-12 同族 4 处文案 → R14F 已修**（`ledger:19` / `policy:4` / `agents:14` / `media:5` / `operations:9`，en/zh 成对）。**仍未收口 1 条**：**BUG-032（P3）→ R15-2**（等号形式 `--type=payment` QA 复测仍 `exit=0`；**P3 不阻断**）。
+- **R14F 净变化**：`ledger` 页新增 **2 个**平台 `time`（2 条 settlement 行 `4 days ago`，与 orders 同批）；**UI-012 对 ledger 页无剩余 P2 未修项**（UI-012-13 判「口径修正后已达成」）。
+
+**③ 计数（Lead 落笔两行后的应有值）**：**现状 = ✅ 79 / 🟡 10 / ⬜ 13 / ⚪ 2 = 104**（PM 本轮 `python3` 逐行复算，与 `docs/ArcBlog-feature-checklist.md:29-41` 总览表**逐项相等、差异 0**；**两行均仍 🟡**）→ **第 113 + 114 同时落 ✅ ⇒ ✅ 79→81 / 🟡 10→8 / ⬜ 13 / ⚪ 2 = 104 行**（总行数不变；**D 组 18→20 ✅ / 6→4 🟡**）。**总览表与正文必须同时改**（L-R11-1 口径：每个状态变更附可执行验证命令 + 真实输出；PM 已独立复算，见上方「PM 轮末只读复核门」）。
+
+**④ `## 维护记录` 追加一行（轮末由 Lead 写；建议文案）**
+
+> `2026-09 | 修复窗口 R14F（L-R14F-1…5）：① UI = UI-012 全面走查（21 控制台页 + 4 公共页 × en/zh × 1803×908/1512×765，8 sweep / 168 次采集 / 单 tab 自证 1/1/1）→ 12 条 .aup 修法 + 2 条 UI 自修；② Dev = BUG-030（P1，orders/ledger 各 2 个平台 time：相对 + 绝对两态）+ BUG-031 + QA O-2/O-3 + D-01（general 3×Save 60.39/62.39 → 29(en)/31(zh)）+ R15-D（--type 补进既有 live 文件 +84 行 3 用例，定向单跑 30/30）+ UI-012 落地 11/12；③ QA-010 独立复验 = 放行（VERDICT=pass, BLOCKING=0；P0=0/P1=0），门 7 条全绿 + 100/100 采集文档级横向溢出 0 + 实例基线复原（clean --confirm 40/40、探针逐条删、page target=1）；④ 新增 3 条 P2 残留（BUG-033 pages View 0 宽压按钮 / BUG-034 hub@1512 over 92 / BUG-035 factory@1512 over 133）→ R15-11/12/13；BUG-032 仍 R15-2；⑤ checklist：第 113 + 114 行 🟡→✅（附降级登记）→ ✅ 81 / 🟡 8 / ⬜ 13 / ⚪ 2 = 104；⑥ spec 零改动、PM checklist 零编辑、不跑全量 live、主题令牌零改动。`
+
+**⑤ 本轮不新增 / 不改变其它清单行**：**BUG-033 / BUG-034 / BUG-035 均不新增 ⬜ 行**（落 **R15-11/12/13**）；**BUG-032 落 R15-2**；**UI-012 属质量 / 设计层 → 不改任何行**（平台差异 7 条为 allowlist，无行可改）；**spec 与 checklist 本轮由 Lead 落笔，PM 零编辑**（PM 实测 `git status --short docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature-checklist.md` 为空）。
+
+---
+
+## UI 优化（UI-012 逐条裁决 · Round 14F）
+
+> **来源**：[design/UI-012-ui-audit-and-fixes.md](design/UI-012-ui-audit-and-fixes.md)（UI `task-50`，`§2` 12 条 `.aup` 修法 + `§5` 2 条 UI 自修 + `§3` 平台差异）｜**独立复核**：[round-14-reverify.md](test-reports/round-14-reverify.md) §2（**14 组**：12 + 2）。
+> **裁决口径**：每条三选一 —— ✅ **已修**（本轮落地 + QA 实测）/ 🟥 **下轮修**（R15，含级别 + 落点）/ ⛔ **不修**（理由 + 标准/spec 章节 + 平台侧证据）。
+> **PM 计数复算**：`grep -c '^| \*\*UI-012-'` = **12**（P1×3 = 03/04/05；P2×7 = 06–12；P3×2 = 13/14）+ `§5` **2** 条 UI 自修 = **14 组**，与 QA 复核组数一致；**UI-012 §0 写的「13 条 / P1×4 / P2×6 / P3×3」与 §2 表不符 → 文档一致性瑕疵，见 🐞 区 QA-T8**（不影响裁决）。
+
+| # | 类别 | 项（UI-012 定位） | 裁决 | 实测证据（QA 独立复采） | 落点 |
+| -- | ---- | ---------------- | ---- | ---------------------- | ---- |
+| **UI 自修-1** | 命中区 | `.aup-copy-btn` / `.aup-qr-btn` **18×18 → 24×24**（`.web` `CHROME_CSS` 2 条） | ✅ **已修** | 8 个控制台页 `copy={24,24}`；hub `qr={24,24}`；`tinyCount=1`（仅剩平台品牌链） | `.web/components/theme-bridge/script.js` + `arc blocklet build`（**已 build 并运行期复验**） |
+| **UI 自修-2** | 命中区 | 页脚链接 **17px → 28.8px**，`.aup-app-footer` 总高不变 | ✅ **已修** | `/store` 4 条链接 h=**28.8**（40.86/36.25/45.41/26.94）；页脚高 **139.14** 未变 | 同上（平台 `.aup-footer-link`） |
+| **UI-012-03** | 可用性（深链/返回）**P1** | 顶栏品牌 + 7 公共页 `app-footer` 品牌 `href: "/"` → `"/?page=index"` | ✅ **已修** | 运行期：`?page=posts` 点 `.aup-app-header-brand-link`（href=`/?page=index`）→ 落地 **`/`**、`h2="Latest published"`、侧栏消失（active=0）、3 条 feed 项 | `.aup/wrapper.aup:42` + `about/author/index/page-view/preview/reader/store` |
+| **UI-012-04**（**BUG-030**） | 一致性 / 数据呈现 **P1** | `orders` / `ledger` 接平台 `time mode=display … timeMode=relative` | ✅ **已修 · 闭环** | orders 行 **2 个** `time`（`just now` + 绝对 `title` + `data-datetime` + kv ISO 逐字保留、18 字段未丢）；ledger **2 个**（2 条 settlement 行 `4 days ago`） | `.aup/pages/economy/{orders,ledger}.aup` |
+| **UI-012-05** | 溢出 **P1** | `hub.aup` 关系列表行拆两行（原 1803 over **131** / 1512 over **255**） | 🟥 **部分已修**：1803 归零 ✓，**1512 未归零** → **BUG-034（P2）** | 1803/en+zh 关系行与 kv **全 0**；**1512/en 残留 over 92**（cw 277 / sw 369，10 个元素）、zh 31；无横向滚动条（`docOver=0`、`hScrollers=[]`）、无文本×按钮相交 | **R15-12**：Dev `.aup/pages/ops/hub.aup`（把行内 3 个 action / 两条 CLI 命令移出该行或再拆行） |
+| **UI-012-06** | 溢出 **P2** | `hub.aup` 内容索引行 over 28 | ✅ **已修** | 1803 与 1512 的 hub 索引行**均无溢出**（`minWidth:0` + `flexBasis:auto` + 状态标签合并，`hub.aup:218/:219` 在位） | `.aup/pages/ops/hub.aup` |
+| **UI-012-07** | 溢出 **P2** | `factory.aup` `#factory-node-tx` 4 个 64 位哈希 + intents 行 | 🟥 **部分已修**（intents 121→**62** 未归零；tx kv 1512 over **133/121/120/112**、1803 over **10**）→ **BUG-035（P2）** | QA 独立解析服务端 bundle：**style 转发白名单恰 67 键，不含 `wordBreak`/`overflowWrap`/`whiteSpace`/`textOverflow`** → 页内内联 style 无法强制断行；**allowlist 不成立**（不是平台渲染限制） | **R15-13**：Dev `.aup/pages/ops/factory.aup`（单列化 / 放弃 copyable / allowlist 三选一 → **D34 需 Lead 定**） |
+| **UI-012-08** | 可用性（首屏）**P2** | 空 `afs-list` 抢焦点致 `orders`/`ledger` 开局滚到底（340 / 808） | ✅ **已修**（`scrollTop = 0`）；**卡片顺序变更 → ✅ PM 追认** | sweep：orders/ledger `st=0`（此前 340 / 808）；`document.activeElement` 仍是空 `.aup-list`（平台 P-05 不变）但**不再预滚动** | `.aup/pages/economy/{orders,ledger}.aup`；追认记录 = [REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md) |
+| **UI-012-09** | 一致性 / 按钮层级 **P2** | `posts.aup:164` `alignSelf` 被丢弃 → 按钮被拉伸到 **1440.56** 宽 | ✅ **已修**（包 `row cross=start`） | `Open the reader page` 实测 **w=176.58 / h=29**，父容器 1440.56 → **按钮=内容宽**；无内联 `alignSelf` 残留 | `.aup/pages/admin/posts.aup`；**归因口径更正 → QA-T5**（`alignSelf` **在** 67 键白名单内，丢弃发生在 **`action` 节点**的 style 转发路径） |
+| **UI-012-10**（**D-01**） | 一致性 / 按钮层级 **P2** | `general.aup` 三个 `Save` 被同级带 label 字段行拉伸（60.39 / 62.39 / 62.39） | ✅ **已修** | en **29/29/29**、zh **31/31/31**（同页 `size=sm` 基准 29/31）；`padding 5px 12px` / `font-size 13.6px` / `radius 8px` 未被破坏；`cross=center` 在位 | `.aup/pages/admin/general.aup:171/180/189`（**R15-C 消项**） |
+| **UI-012-11** | 布局 / 可用性 **P2** | `tags.aup` Intent queue 卡移入滚动列（原 1512 列表窗口仅 **93px**） | ✅ **已达成（PM 修正判据）**：1803 列高 **593 ≥ 500** ✓；1512 实测 **428** | **428 = 内容列 717 − 其余常驻内容 289**；修复意图（滚动列拿到**全部剩余高度**）已达成（**93 → 428，4.6×**）。**「1512 ≥ 500」是 UI-012 自定的字面值，不是标准条款**（`ArcBlog-admin-ui-design.md` 无该数）→ **判据改为「滚动列 clientHeight = 内容列剩余高度」**；若 Lead 坚持 500 需继续下沉常驻卡（属首屏顺序变更）→ **不另立 BUG**（见 🐞 区 QA-T1） | `.aup/pages/site/tags.aup`；判据订正由 UI 下轮顺手做（docs-only） |
+| **UI-012-12**（**BUG-031** + QA O-2/O-3） | 文案一致性 **P2** | 5 处 `gate-desc` 与本页内容对齐（ledger / policy / agents / media / operations） | ✅ **已修 · 闭环** | ledger:19 en「…settlements and the ledger.」/ zh「…查看结算与账本。」；policy:4「分成策略与商品」；agents:14「Agent 授权与策略」；media:5「媒体索引」；operations:9「节点健康与发现」（en/zh 成对，`grep -n` 逐行） | 上述 5 个 `.aup` 文件 + 生成 locales |
+| **UI-012-13** | 简洁性 **P3** | `orders`/`ledger` 行内 DID/ID 重复呈现（3 次 → 要求 1 次） | ✅ **已达成（PM 口径修正）**：3 → **2** 次；严格「每 DID 一处」**⛔ 不修** | 残留 2 处**用途不同**：行内摘要（可读）+ `key-value-list` kv（可复制 / 格式规范）。spec 与 UI 标准**均无「每字段只呈现一次」条款**；标准 §4.4 要求的是「原始值可见 + 可复制」→ 判已达成；去重到 1 处会牺牲可复制性 | `.aup/pages/economy/{orders,ledger}.aup`；口径修正记录 = [REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md)（见 🐞 区 QA-T3） |
+| **UI-012-14** | 命中区 **P3** | `posts` / `feeds` / `reader` 文本链接命中区 ≥24 | ✅ **已修**：posts + feeds；⛔ **reader 不修（平台固有）** | posts `.aup-view-link` **under24=0**（minH **25.19**，pad `3px 0`）；feeds 2 条 **h=25.5**；`/posts/<slug>` 返回链 **19.5px** 位于平台 `nav.aup-breadcrumb > ol.aup-breadcrumb-list > li`（`grep -rl aup-breadcrumb .aup .web scripts world` = **0**） | posts/feeds `.aup`；reader → **allowlist**（`admin-ui-design` §9 平台 chrome 例外，见 🐞 区 QA-T4） |
+| **平台差异 P-01…P-07** | — | `appearance` 的 `auto-surface` 20px/gap、`.aup-kv-row` 平台 grid、空列表英文兜底、`time` 悬停中文 title、空 `afs-list` 抢焦点、根容器 `100vw` 逃逸、顶栏品牌链 19.19px | ⛔ **不修（allowlist，逐条附平台侧证据）** | 平台 CSSOM 原文 / `arc-contracts` §28.2 §28.6 / 仓库内该类名 0 来源（`grep -rl`）；QA 独立解析 bundle 得 67 键白名单 | 平台侧；**P-05 空 `afs-list` 抢焦点**已由 UI-012-08 在页面侧缓解（平台行为本身不变） |
+| **UI-012 §6 受限 3 条** | — | 首轮 `textHits` 假阳性判定口径 / CSS 覆盖不适用于 `.aup` 结构溢出 / 两条候选 CSS 被干跑否掉 | **登记，不判未完成** | 几何值真实但成因是**滚动列已预滚动**（orders `scrollTop 340`）→ 判定文案重叠必须先与最近裁剪祖先求交或在 `scrollTop=0` 下重测；**本轮未实测到任何真实文案重叠**（真实重叠只有 BUG-033 的文本×按钮） | UI-012 §6；**结论已采纳**（QA 独立复核同口径） |
+
+**UI 优化小结（PM）**：**14 组 = 11 已修 / 2 判据或口径修正后达成（UI-012-11 / 13）/ 1 部分达成且已转 BUG（UI-012-05 → BUG-034；07 → BUG-035）**；**3 条 P2 残留 + BUG-032（P3）入 R15**。**溢出与重叠（L-R14F-5）实测结论**：100/100 次采集 **文档级横向溢出 = 0**；文本 `sw > cw+1` 残留仅 **hub@1512（en 92 / zh 31）** 与 **factory（1803 over 10；1512 over 133）**；公共页 **0**；相邻 bounding box 相交（剔除平台 overlay/SVG 噪声）**0**；**文本×可点控件真实相交 1 处 = BUG-033**。
+
+---
+
+## 缺陷（🐞）— Round 14F 复验：BUG-030 / BUG-031 闭环 + BUG-032 续 + 新增 BUG-033 / 034 / 035，PM 已逐条裁决（2026-09-28）
+
+> **大前提**：QA-010 判 **放行**（[round-14-reverify.md](test-reports/round-14-reverify.md) 末行 **`VERDICT=pass, BLOCKING=0`**，**`P0=0 / P1=0`**（本轮新发现））——门 **7 条全绿**、定向 live economy **30/30**（持锁串行）、**100/100** 页面采集文档级横向溢出 = 0、零宽塌陷仅 `?page=pages` **1 处**、实例基线复原。
+> **裁决口径**（[`roles/pm.md`](roles/pm.md) §6.2）：三选一 + 理由 + spec/标准章节 + 落点。**修复窗口内已修者写「已修 · 闭环」并附 QA 复验证据**。
+
+| BUG | 级别 | 标题 | 裁决 | 理由 + spec / 标准章节 | 落点 / 依赖 |
+| --- | ---- | ---- | ---- | --- | --- |
+| **[BUG-030](bugs/BUG-030-orders-missing-relative-time.md)** | **P1（R14 唯一阻断）** | `?page=orders` 只有绝对 ISO、缺「相对 + 绝对」两态 | ✅ **已修 · 闭环**（R14F 本轮修；QA 独立复验通过） | 平台 `time … timeMode=relative` 原语可用且 6 页在用（L-R14F-2）→ 可实现项；修后 **2 个 `time` 元素 + `just now` + 绝对 `title`/`data-datetime` + kv ISO 保留 + 18 字段未丢**（QA-010 §1①） | `.aup/pages/economy/{orders,ledger}.aup`（PM 复核 `grep -c 'time mode='` = 2 / 2）；**第 113 行落 ✅ 的前置已解除** |
+| **[BUG-031](bugs/BUG-031-ledger-gate-desc-says-grants.md)** | P3 | `ledger` guest 登录门文案写成「经济与授权（grants）」 | ✅ **已修 · 闭环**（并轨 R14F） | 纯文案 1 行 + 同文件族同 build；修后 `ledger.aup:19` = 「settlements and the ledger」/「结算与账本」（QA guest 实测 `gateDescHasGrants=false` / `HasLedger=true`）；同族 4 处（UI-012-12）一并落地 | `.aup/pages/economy/ledger.aup:19` + 生成 locales |
+| **[BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md)** | P3 | `ledger list --type=<v>` 等号形式被静默忽略（exit 0、未过滤） | 🟨 **下一轮修（R15-2）—— QA 本轮复测仍未修复** | 范围外 / 既有机制（`scripts/lib/arc.mjs:22-40` `parseArgs` 全 CLI 不识别 `--key=value`）；QA 复测 `--type=payment` → `exit=0`、返回全部 14 条 → 缺口仍在。**修法口径需 Lead/用户拍板（D32）**；改动面覆盖全 CLI → 不并轨任何批次 | **R15-2**：Dev `scripts/lib/arc.mjs` ± `scripts/arcblog-economy.mjs`；先 `.gate-lock` → 定向单跑 `scripts/arcblog-economy.test.mjs`（基线 **30/30**） |
+| **[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)**（QA 新发现） | **P2** | `?page=pages` 列表行 `View` 链接被 `flexGrow: 0` 压成 **0 宽**（`sw 31`），文字**实测压住 `Take offline` 按钮 20.92×16 px** | 🟥 **下一轮修（R15-11，建议优先于其它 P2）** | **本轮唯一真实文本×控件重叠**（L-R14F-5 的相交判据命中）→ 违反 `admin-ui-design` **§4.3**（宽度=内容宽、不得压盖）与 **§9**（命中区 ≥24×24）。根因（QA 已证）：`afs-list itemStyle=row` 给行子元素 `flex: 1 1 0%`，页内再写 `flexGrow: 0` → **basis 仍 0%** → 宽 0；**修法已在他处验证**（hub 索引行用 `flexBasis: auto`）。**HEAD `9a06261` 已存在** → 非本轮引入，但属本轮 UI 全面走查的遗漏项（UI-012 未列入清单） | **R15-11**：Dev `.aup/pages/admin/pages.aup:173`（`flexGrow: 0` → `flexBasis: auto` 或 `minWidth`）+ `arc blocklet build`；**PM 复核根因仍在**（`grep -n flexGrow` → `:173`） |
+| **[BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)**（QA 新发现） | **P2** | `?page=hub` 关系行 @1512/en 仍溢出 **92px**（UI-012-05 定为 P1 的项只达成 1803） | 🟥 **下一轮修（R15-12）**；**不升级 P1、不建议 allowlist** | 无横向滚动条、无相交 → 不构成 P1；但**平台固有性不成立**（同结构在 1803 已归零，证明可修）→ **不得 allowlist**。Dev 自述的「1512 残留 4–31px」只对 zh/1512 成立，**en/1512 实测 92**（QA-T6） | **R15-12**：Dev `.aup/pages/ops/hub.aup`（把行内 3 个 action + 2 条 CLI 命令移出关系行，或再拆行）+ `arc blocklet build` |
+| **[BUG-035](bugs/BUG-035-factory-1512-hash-overflow.md)**（QA 新发现） | **P2** | `?page=factory` @1512 哈希溢出（kv-mono **over 133 ×4**；intents 行 62；NFT 卡 119）+ tags@1512 列高字面值未达 | 🟥 **下一轮修（R15-13）**；**需先定修法（D34）**；tags 部分按 **QA-T1 判据修正**单独裁决 | ① QA **独立解析服务端 bundle**：style 转发白名单**恰 67 键，不含 `wordBreak`/`overflowWrap`/`whiteSpace`/`textOverflow`** → 页内内联 style **无法**强制断行（UI-012 §6 的 2 条候选 CSS 亦被干跑否掉）→ 只能**页内改结构**；② `docOver=0`、`hScrollers=[]` → 非页面级横向滚动。**allowlist 不成立**（是页内布局可改项） | **R15-13**：Dev `.aup/pages/ops/factory.aup`；**D34 = Lead 定「factory 改单列 / 放弃 copyable 按钮 / allowlist」三选一**（PM 建议**改单列**：保留 copyable 与断行能力，代价是每哈希一行） |
+
+### Round 14F 的 QA 观察与待办 —— PM 一并裁决（不允许挂着）
+
+| # | 观察 / 待办 | PM 裁决 | 说明 / 落点 |
+| - | ---------- | ------- | ----------- |
+| **QA-T1** | UI-012-11 字面验收「tags 滚动列 1512 `clientHeight ≥ 500`」实测 **428**（自报 450） | **不修（判据修正，判已达成）** | **428 = 内容列 717 − 其余常驻内容 289** —— 修复意图（滚动列拿到**全部剩余高度**）已达成（**93 → 428**，4.6×）。**「≥500」是 UI-012 自定的字面值、不是标准条款**（`ArcBlog-admin-ui-design.md` 无该数）；继续下沉其它常驻卡属「首屏顺序」变更（同 UI-012-08 类，需 Lead 裁定）→ **不另立 BUG、不判 Dev 未完成**。**判据订正**由 UI 下轮顺手做（docs-only）；**剩余项已登记**在 UI 优化小节 UI-012-11 |
+| **QA-T2** | UI-012-08 卡片顺序变更（`orders`/`ledger` 首个内容卡 = 列表）请 PM 追认 | ✅ **追认（本裁决生效）** | 列表是本页主体（spec **§15.7 / §91–§92** 的唯一事实来源）；升为第一屏主内容既解决开局滚到底（340/808 → **0**），也符合信息优先级。**已写入 [REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md)** |
+| **QA-T3** | UI-012-13 严格「每个 DID 只留一处」未达成（3→2 次） | ✅ **判已达成（口径修正）** | 残留 2 处**用途不同**：行内摘要（可读）+ `key-value-list` kv（**可复制 + 格式规范**）；spec 与 UI 标准均**无「每字段只呈现一次」条款**，标准 **§4.4** 要求的是「原始值可见 + 可复制」→ 严格去重会牺牲可复制性 ⇒ **不修**，口径修正记录 = [REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md) |
+| **QA-T4** | UI-012-14 `/posts/<slug>` 返回链 19.5px | ⛔ **不修（平台固有，附平台侧证据）** | 该 `<a>` 在平台 `nav.aup-breadcrumb > ol.aup-breadcrumb-list > li` 内，`grep -rl aup-breadcrumb .aup .web scripts world` = **0**（仓库无该类名源）；页面只能声明 `breadcrumb items=[…]`，无 padding 入口 ⇒ **allowlist**（`admin-ui-design` §9 平台 chrome 例外）。posts / feeds 侧已修（25.19 / 25.5） |
+| **QA-T5** | UI-012-09 的归因口径更正：`alignSelf` **在** 67 键白名单内，丢弃发生在 **`action` 节点**的 style 转发路径 | ✅ **采纳 QA 口径**；UI-012 原表述限定为「`action` 节点路径」 | 可观测结论不变（按钮已不拉伸：**176.58 × 29**）。**平台事实入库归 Lead**（`docs/arc-contracts.md`，与 D28–D30 同批）：① 67 键白名单（**含** `alignSelf`/`flexBasis`/`flexGrow`/`minWidth`/`minHeight`；**不含** `wordBreak`/`overflowWrap`/`whiteSpace`/`textOverflow`）；②「`alignSelf` 被丢弃」限 `action` 节点；③ `afs-list itemStyle=row` 的 `flex:1 1 0%` 塌陷（BUG-033 根因） |
+| **QA-T6** | Dev 自述 2 条现象 QA 未能复现：① dashboard zh/1512 两条 `.aup-time` `cw=0/25`；② hub@1512 kv over 4–31px | **不修；以 QA 实测为准** | ① dashboard zh/1512 实测 `zeroWidthCount=0`；② hub@1512 **en 实测 92**（zh 31）。两条自述**不再作为修复依据**，入账值改用 QA 复采（BUG-034） |
+| **QA-T7** | QA §0 **九条受限未验证**（全量 live / 真实钱包回跳 / 真实链 `transactionHash` / `failed` 订单态 / `hub_share` 正向 / UI-012-05·06 超长真实值 / 真实硬件 hover·dark / tags 1512 字面值）+ UI-012 §6 **3 条** | **不修（如实登记已足够）**；**不得当成通过** | 均属**环境或工具缺口**（本机无钱包、无链、CDP 不能驱动 dropzone/真实 hover），非 Dev 未完成项；R15 若环境变化再补 |
+| **QA-T8** | UI-012 §0 计数与 §2 表行数不符（§0 写「建议 Dev 修 **13** 条（P1×4 / P2×6 / P3×3）」；§2 实为 **12** 行 = P1×3 / P2×7 / P3×2） | **不修（文档一致性 P3，登记）** | QA 按 **14 组**（12 + §5 的 2 条 UI 自修）复核，裁决不受影响；**PM 当场复算** `grep -c '^| \*\*UI-012-'` = **12**。由 UI 下轮顺手更正 §0 计数（docs-only，**不新增 BUG 行**） |
+| **QA-T9** | 平台事实入库（67 键白名单 + `alignSelf` 限 `action` 节点 + `itemStyle=row` 塌陷） | **不修（Lead 写范围）** | 归 Lead 落 `docs/arc-contracts.md`（与 **D28–D30** 同批）；PM 登记为 Lead 待办 |
+
+---
+
+## 缺陷（🐞）— Round 14 QA 新增，PM 已逐条裁决（2026-09-28）
+
+> **大前提**：QA-009 **判不放行**（[round-14.md](test-reports/round-14.md) 末行 **`VERDICT=fail, BLOCKING=1`**，`P0=0 / P1=1`）——门 6 条全绿、定向 live economy 27/27 + network 15/15、21/21 页回归、REQ-018 抽验通过；**唯一阻断 = BUG-030（P1）**。
+> **裁决口径**（[`roles/pm.md`](roles/pm.md) §6.2）：三选一 + 理由 + spec/标准章节 + 落点。**本轮无修复窗口**（PM 无 `team_task_*` 权限，开窗由 Lead 决定）→ 需改源码的裁决一律 = 「**本轮修（R14F，建议 Lead 立即开窗）**」并把开窗决策升级 Lead（**D31**）；**Lead 不批则自动落 R15 首项**（二态写明，不留悬挂）。**P1 不适用「下一轮修」默认顺延**（同 R9F 的 BUG-012 先例）。
+
+| BUG | 级别 | 标题 | 裁决 | 理由 + spec / 标准章节 | 落点 / 依赖 |
+| --- | ---- | ---- | ---- | --- | --- |
+| **[BUG-030](bugs/BUG-030-orders-missing-relative-time.md)** | **P1（阻断）** | `?page=orders` 的 `settledAt` / `createdAt` **只有绝对 ISO、缺「相对 + 绝对」两态**（全页 `time` 元素 = **0**、`relativeMatches=[]`） | **本轮修（建议 Lead 立即开 R14F）**；**Lead 不批 → R15 首项** | **不是平台限制**：平台 `time mode=display … timeMode=relative` 原语可用且仓库 **6 个既有页**在用（`policy.aup:146` / `access.aup:133` / `hub.aup:177` / `pages.aup:168` / `posts.aup:185` / `diagnostics.aup:192`；对照页 `?page=hub` 实测产出「15 minutes ago + 绝对 `title`」）；Dev 自述**未登记**这一条（只登记了 A2.3 的「未结算」半句）。判据来源 = REQ-017 §3.3 A2.3 + §2.1①（spec §50 六问「何时结算」/ §15.7）。P1 阻断 → 第 **113** 行**暂不得落 ✅**（`roles/pm.md` §6.2 + R9F 先例） | **Dev**：`.aup/pages/economy/orders.aup`（订单行内接 `time` 原语，保留现有绝对 ISO；参照 `policy.aup:146`）+ 生成 locales（若需）+ `dist/**`（build）。**写范围与 REQ-017 相同** → 与 BUG-031 同批最省；QA 定向复跑 `?page=orders` 的 `time` 元素 + 相对文本断言（复跑命令见 BUG-030 文件）；`.aup` 变更**不写实例** → 无需 `.gate-lock` |
+| **[BUG-031](bugs/BUG-031-ledger-gate-desc-says-grants.md)** | P3 | 账本页 guest 登录门文案写成「查看经济与**授权（grants）**」（`.aup/pages/economy/ledger.aup:19` 沿用 policy/access 文案），与本页内容（结算 + 账本）不符 | **本轮修（并轨 R14F）／否则 R15 同批** | **纯文案 1 行**（同轮新增的 `orders.aup:16` 写法正确：`…view the economy and orders.`）；`grants`/「授权」在本仓库指 **access-grants**（`?page=access`）→ guest 读到错误的功能描述，违反「gate 说明真实本页」的精神（REQ-017 §3.8 A7.3）。成本极低 + 与 BUG-030 **同文件族、同一次 build** → 不单独开窗 | **Dev**：`.aup/pages/economy/ledger.aup:19` + 生成的 `.aup/locales/{en,zh}.json`（`ledger.gate-desc`）+ `dist/**`。**注**：`policy.aup:5` 有同一句（语义同样偏）但属**既有页面、非本轮产物** → 不在本条主张内，登记为可选顺手项（由 Lead/Dev 定） |
+| **[BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md)** | P3 | `ledger list --type=<v>` **等号形式被静默忽略**（`parseArgs` 把 `--type=payment` 当未知键整体忽略 → **exit 0 且返回未过滤全量**），空格形式已 fail-closed | **下一轮修（R15；修法口径 = D32）** | 属**范围外 / 既有机制**（`scripts/lib/arc.mjs:22-40` `parseArgs` 不识别 `--key=value`；对照 `--order=x` / `--limit=1` 同样被忽略，**非本轮引入**）——但本轮新增的 `--type` 把「静默忽略未知 flag」从「无害」升级为「**非法取值静默放行全量**」，与 REQ-017 §1.2「fail-closed / 不谎报已验证」正面相关（spec §150 精神）。**不并轨 R14F**：修法影响**全 CLI** 参数解析（支持 `=` vs 未知 flag fail-closed 两种口径，后者可能影响既有脚本调用），需独立 REQ + `.gate-lock` + 定向单跑受影响的既有 live 文件 | **Dev**：`scripts/lib/arc.mjs`（`parseArgs`）± `scripts/arcblog-economy.mjs`；**先 `docs/team/.gate-lock`** → 定向单跑受影响文件（至少 `scripts/arcblog-economy.test.mjs`，基线 27/27）→ 跑完删锁。**修法口径需 Lead/用户拍板（D32）**：① 全 CLI 支持 `--key=value`；② 未知 flag **fail-closed**（`exit ≠ 0` + 明确错误）；③ 两者都做（推荐，但改动面最大）。**P3 不阻断**，不影响 checklist 任何行 |
+
+### QA round-14 §5 观察 O-1…O-8 + D-R14-1/D-R14-2 —— PM 一并裁决（不允许挂着）
+
+| # | 观察 | PM 裁决 | 说明 / 落点 |
+| - | ---- | ------- | ----------- |
+| **O-1** | 主题时序与 R13 口径不一致：R13 报告写「正确主题在 `readyState=complete` **之前**由 bridge 覆盖」；QA 本轮 5 ms 粒度实测 6/6 页是 `complete` 先到（t≈60–72 ms 时 `data-mode=dark`），正确值**之后** 4–15 ms 才到（t≈66–87 ms） | **不修（无实现缺陷）；采纳 QA 口径更正** | `.web/components/theme-bridge/script.js` 本轮**零改动**（`git diff --name-only -- .web` 空）→ **不是 R14 回归**，是既有平台 boot 顺序；总窗口 ≤87 ms，远小于 R13 采纳的 300 ms 判据、无用户可见闪烁证据（真机闪烁属受限未验证）。**落点**：后续引用 REQ-016 A12 / R13 O1 时改述为「`complete` 时仍可能读到最后一次平台默认值，正确值在其后 ~4–15 ms 内到达，总窗口 ≤87 ms」；若要把它写成**硬断言** → 属设计/标准议题，需 Lead 授权（不新开 BUG） |
+| **O-2** | 账本页 `withheld-note` 断言「the raw boolean is shown **on every row**」；遗留记录 `tip-1790161886`（2026-09-23）**本身无 `hubShareWithheld` 字段** → 该行为空、页面**不伪造 `false`**（诚实） | **下一轮修（R14F 并轨文案，P3 级）** | 诚实性成立（仅 8 行中 1 行），但文案口径过宽 → 建议弱化为「**when the record carries it**」。与 BUG-031 同文件、同批、零行为影响 |
+| **O-3** | 账本页 `cli-desc` 写「Every command below exists in the CLI help **verbatim**」；`ledger list --type creator_share` / `--limit 20` / `--all` 是 help 记法的**取值实例化**，非逐字 | **下一轮修（R14F 并轨文案，P3 级）** | A1.5 语义已通过（PM 在 REQ-017 §7.3 ⑤ 判「宽口径通过」）→ 仅把 "verbatim" 改为「exists in the CLI help（取值在 help 的取值集合内）」，同批 1 行 |
+| **O-4** | **UI-011 §1 的 D-01 实现偏差**经 QA 独立复现逐值一致（`general` 3× `Save` `h=60.39/62.39/62.39`，同页其余 `size=sm` 按钮 `29px`，**2.08–2.15×**；`padding 5px 12px`） | **下一轮修（R15 候选，不单独开窗、不判 BUG）** | 属 **P2**（同屏一致性/体验），**本轮不在 L-R14-1 授权内**（R14 未派 UI 修 `.aup`）；修法 UI 已给（三个 `row gap=xs` 加 `cross=start`，或 action 加 `alignSelf:"flex-start"`）→ 登记 **⬜ 候选** + 进 **R15 排期**建议项；若 R15 不做该批次，可与任何 `.aup/pages/admin/general.aup` 批次并轨（同文件族 → 串行） |
+| **O-5** | 定向 `test:file` 会留下 **39 条** `econ-test-*` / `ledger-*` 实例残渣（不像 `test:live` 自动 `test:clean`）；不清理则基线不复原 | **不修（流程项）→ 交 Lead 落 `CLAUDE.md`** | QA 本轮已 `arcblog-clean --confirm` 清除 39/39 并复原基线；**建议把「`test:file` 跑完补一次 `node scripts/arcblog-clean.mjs --confirm`」写进 `CLAUDE.md`「Quality gates」**（Lead 写范围，不需用户批准）。**不立项**（门规文档项） |
+| **O-6** | `arc blocklet build` 把 `docs/**`（含 PM/UI 本轮产物）镜像进 `dist/docs/**`；QA 自己 build 后 `dist/docs/team/design/raw/UI-011-probe.mjs` 才出现 | **不修（流程项，Lead 轮末执行）** | 与「零越界」不冲突（生成物）。**Lead 轮末必做**：**晚于 PM/QA/UI 最后一次写盘**再 `arc blocklet build` 一次 → 再决定 `dist/docs/team/**` 是否入库；**严禁 `git add -A`**（`docs/dsh-workflow-and-ralph.md` 与本轮无关）。R7/R9/R10/R11F/R12/R13 同一教训 |
+| **O-7** | `arc dsl lint` 本轮 **28 条** warning，全部 `unreferenced_explicit_id`（R12 实测 24，随页数增长；**新增 orders/ledger 两页未新增**该告警）；`deadLocaleKeys=0` | **不修（非门禁）** | 与 R13 口径一致；**禁止整体 `arc dsl lint --fix`**（会删 runtime 寻址 id，`arc-contracts` §25.4 + `scripts/arcblog-runtime-ids.test.mjs` 守）。计数**以实测为准、不写死**（C-11a/C-11b 仍未结，交 Lead） |
+| **O-8** | 探针 DID 全为「零填充」长串（`did:key:zQa14Buyer000…`），中间截断后三者都显示 `did:key:…000000`，肉眼不可辨（`title` 有全值、kv 可复制全值） | **不修（无缺陷）** | `data-format="did"` 的截断策略正常（真实 DID 尾部随机）；**提醒后续探针用带区分度的尾串**便于人工核对（方法改进项，登记） |
+| **D-R14-1** | **A1.3 后半句**（空 `afs-list` 不得含运行时英文 `No items to display`）在本平台不可达：清理后 `runtimeFallback=true`；平台证据 `arc-contracts` §28.6（`emptyText` 四种写法含纯字面量全无效）/ §20 | **不修（平台限制）**；**判据已由 PM 在 [REQ-017 §7.3](requirements/REQ-017-orders-and-ledger-ui.md) ① 改判** | A1.3 唯一可验收项 = **空态引导由常驻卡承载**（实测 `orderCreate=true`/`orderList=true`，**通过**）；**不作为 Dev 未完成项**（Dev 已主动披露，未含糊成"已验证"）。**不新开 BUG** |
+| **D-R14-2** | **A2.3「未结算」字面半句**：空 `settledAt` 行内渲染 `—`（非空串/`undefined`/假时间）+ 常驻 `orders.q-settled-note`（含字面「未结算」）；平台**不能按记录值切换文案**（§28.8）。**A3.4** 的「可见文案集合大小 == 真实状态值集合大小」同理 | **不修（平台机制缺口）**；**判「路径 B 语义通过（附口径偏差）」**；判据已由 PM 在 REQ-017 §7.3 ②④ 改判 | 与 **BUG-030 无关**（BUG-030 要的是**相对时间形式**，平台原语可用、6 页在用，属**可实现项**）。若 Lead 要求字面口径 → 需平台机制（标准/平台议题），登记 **D33 同族**，不判 Dev 未完成 |
+
+### QA round-14 §0 十条受限未验证 —— PM 一并裁决（不允许挂着）
+
+| # | 项 | 裁决 | 说明 |
+| - | -- | ---- | ---- |
+| 1 | 全量 `npm run test:live` 未跑 | **不修（门规正确执行）** | 本轮任务书 + 用户 2026-09-27 裁定禁止；QA 已按门规**定向单跑** economy **27/27** + network **15/15**（持锁串行） |
+| 2 | `?page=orders&id=…` 下 `$params.*` 可用性 = **复核受限**（Dev 临时探针卡已删、QA 不得写 `.aup`） | **不修（如实登记已足够）** | 间接证据充分：两页无 `$params`/`propBind` 实际使用、`?page=orders&id=probe123` 实测参数不参与渲染、路径 B 说明常驻 → 与结论一致；**不为补证要求 QA 越界写 `.aup`** |
+| 3 | `failed` 订单状态未验证（`world/order.yaml` 允许，但 CLI 无任何命令写入） | **不修（环境/实现缺口，如实登记）** | 为它造 DOM 注入会**伪造通过**（REQ-017 §3.3 A2.5 明令禁止）→ 保持受限；若未来要可测，需 CLI 支持（另立 REQ，不在本轮） |
+| 4 | 真实 `transactionHash` 未验证（本机无链、`paymentAdapter=manual` → 全部为 `""`） | **不修（环境缺口）** | 反伪造断言以「页面 0 个 hash token」通过；**非空哈希渲染路径**保持受限，不得声称已验证 |
+| 5 | 真实 DID Wallet 登录回跳未验证（本机无钱包） | **不修（环境缺口）** | 只证明 guest gate 存在、`return_to/cancel_to` 由平台登录流承担、CTA `175.39×38` 未被拉伸；页面未声称已完成回跳 |
+| 6 | 主题时序 = 口径更正（`complete` 后 4–15 ms 才到正确值） | **不修（= O-1）** | 见 O-1；非 R14 回归、无实现缺陷 |
+| 7 | 真实硬件 hover / dark 真实切换（沿用 CDP `getComputedStyle`） | **不修（方法约定）** | computed 值可信；QA 本轮只抽验 UI-011 报告数值、未重跑全部对比度 → 与 UI-009/QA-007/QA-008 同口径，如实登记不构成达标声称 |
+| 8 | 账本 `afs-list` 容量上限未验证（当前 16 条全渲染） | **不修（登记）** | 页面已写明 CLI 分页口径且不声称全量（A4.1）；要测需造超限数据 = 写实例且形态不真实，收益不足（同 R9F/R12 口径） |
+| 9 | `hub_share` 正向用例未验证（需可验证归因：`config/trusted-hubs` + 归因证明） | **不修（环境缺口）** | 只验「`--type hub_share` 返回 0 条且形状正确」；**不得**为它伪造归因记录（spec §30/§33 反伪造）→ 保持受限 |
+| 10 | REQ-018 A7（zh 逐条目视）只做 guest zh gate 抽样 | **不修（抽样 + UI 自证，不阻断）** | 与 R11/R12 同口径；如需闭环 → R15 与「订单/账本新页像素走查」同一次 admin/guest 会话 |
+
+---
+
 ## 缺陷（🐞）— Round 13 QA 新增，PM 已逐条裁决（2026-09-28）
 
 > **大前提**：QA-008 **放行**（[round-13.md](test-reports/round-13.md) 末行 **`VERDICT=pass, BLOCKING=0`**），**无 P0 / 无 P1 / 无未裁决 P2**。本轮新增缺陷仅 **1 条（BUG-029，P3，范围外）**；另 QA §4 有 **9 条非阻断观察（O1–O9）**、§0 有 **9 条受限未验证**、Dev 报告有 **4 条范围外发现** —— **全部逐条裁决，不留悬挂**。
@@ -918,6 +1236,64 @@ $ node scripts/arcblog-clean.mjs（dry run）→ found 13（hub/index 4 + drafts
 
 ---
 
+### Round 14 交付结果 + Round 15 排期（PM，Round 14 轮末 · 2026-09-28）
+
+> **R14 收官状态**：**交付完成、QA-009 判不放行**（`VERDICT=fail, BLOCKING=1`）——**REQ-017**（`task-45`）与 **REQ-018**（`task-46`）均已交付；**唯一阻断 = BUG-030（P1，相对时间）**；**R14-2 / R14-3 / R14-4 / R14-5 / R14-6 未派发**，承继 R15（见下 ① ②）。
+> **R14F 收官状态（Lead 开窗，PM `task-52` 写回）**：**放行**（QA-010 [round-14-reverify.md](test-reports/round-14-reverify.md) `VERDICT=pass, BLOCKING=0`）——**BUG-030（P1）已修并复验通过**、BUG-031 / D-01 / R15-D 全部收口、UI-012 落地 **11/12**；**新增 3 条 P2 残留（BUG-033/034/035）→ R15-11/12/13**；**BUG-032 仍 → R15-2**；**R15-1 / R15-C / R15-D 三项消项**（见下 ② ③）。
+> **串行约束（照 L-R13-5 / L-R14F-4 教训）**：**R15-3…R15-8 都写 `.aup/pages/**` + `dist/**`**，**R15-11/12/13 也写 `.aup/pages/**` + `dist/**`** → 同一 owner 串行、或由 Lead 派活时明确**互不相交的文件集**并把 `arc blocklet build` 放在**最后一次写盘之后**（R7/R9/R10/R11F/R12/R13/R14/R14F 同一教训）。**R15-2 / R15-9 / R15-10 触及 CLI** → 每项**先写 `docs/team/.gate-lock` 再定向单跑**受影响文件，**不跑全量 live**。
+
+**① Round 14 已交付 / 未结**
+
+| 原行 | 结论 | 证据 |
+| --- | --- | --- |
+| **R14-1** 订单 / 账本界面 §15.7 + CLI `ledger list --type`（+ **R14-7** BUG-029 并轨） | **已交付 · QA 判不放行**（阻断 BUG-030 P1） | [REQ-017 §7](requirements/REQ-017-orders-and-ledger-ui.md)；A0/A1/A3–A9 通过、A2.3 不通过；`--type` 真过滤 + 空格形式 fail-closed + 旧语义 byte-identical；BUG-029 已修并经 QA 实跑验证；21/21 页回归；实例零残留 |
+| **REQ-018**（`task-46`）`general`/`diagnostics` 像素走查 + 新页骨架建议 | **已交付 · QA 抽验通过** | [REQ-018 §7](requirements/REQ-018-newpage-pixel-audit.md)；UI-011（592 行）；**D-01（P2）** + 平台差异 8 条；单标签页 1/1/1/1；骨架建议 docs-only **未实施** |
+| **R14-7** BUG-029（`hub --help` 补 `refresh`/`freshness`） | **已修 · 闭环** | `hub --help:12` 含 `hub refresh`；`hub refresh` / `hub freshness` 实跑 exit 0（QA A6.7） |
+| **R14-2 / R14-3 / R14-4 / R14-5 / R14-6** | **未派发** → 承继 R15 | R14-2（Dashboard §15.3）→ **R15-6**；R14-3（REQ-011 媒体）→ **R15-7**；R14-4（§111，待 C-14）→ **R15-10**；R14-5（SEO/OG，待 C-04·C-07）→ **R15-9**；R14-6（设置-角色与能力）→ **R15-3** |
+| **R14F-1** BUG-030（P1）+ BUG-031 + QA O-2/O-3 + **D-01** + **R15-D** | **已修 · 闭环**（原 **R15-1 / R15-C / R15-D 三项消项**） | QA-010：orders/ledger 各 **2 个** `time`（`just now` + 绝对 `title`/`data-datetime`）；ledger gate 文案「settlements and the ledger」；`general` 3× `Save` **29(en)/31(zh)**；`--type` **+84 行 / 3 用例** 定向单跑 **30/30**（[REQ-017 §7.6](requirements/REQ-017-orders-and-ledger-ui.md)） |
+| **R14F-2** UI-012 全面走查（12 条 `.aup` 修法 + 2 条 UI 自修）+ Dev 落地 **11/12** | **已交付 · QA 独立复验**（11 组已修 / 1 组判据修正 / 3 组未完全达成） | [UI-012](design/UI-012-ui-audit-and-fixes.md)；`?page=posts` `Open the reader page` **176.58×29**；tags 滚动列 **93→428**；品牌点击落地 `/` + `h2="Latest published"`；见「UI 优化（UI-012 逐条裁决）」 |
+| **R14F-3** 新增 **BUG-033 / BUG-034 / BUG-035**（均 P2） | **未修** → 承继 R15 | **R15-11**（pages View 0 宽压按钮）/ **R15-12**（hub@1512 over 92）/ **R15-13**（factory@1512 over 133） |
+| **R14F-4** BUG-032（P3，等号形式） | **未修**（QA 复测仍 `exit=0`） | → **R15-2**（口径 **D32** 待 Lead/用户） |
+
+**② Round 15 排序（写范围 / 依赖 / 批准三级标注）**
+
+| # | 项 | 来源 | 角色 · 写范围 | 依赖 | 需谁批准 |
+| - | -- | ---- | ------------- | ---- | -------- |
+| **R15-1** | ~~**BUG-030（P1，首项）**~~ **→ ✅ 消项（R14F 已修并经 QA-010 复验通过）**；并轨的 **BUG-031 / O-2 / O-3 / D-01 / R15-D 亦全部消项** | [BUG-030](bugs/BUG-030-orders-missing-relative-time.md) / [BUG-031](bugs/BUG-031-ledger-gate-desc-says-grants.md) / QA O-2·O-3 | —（不再派工） | — | —（**D31 已在 R14F 由 Lead 裁定为「开窗」并收官**） |
+| **R15-2** | **BUG-032（P3）**：`--key=value` 等号形式静默忽略 → 统一口径（① 全 CLI 支持 `=`；② 未知 flag fail-closed；③ 两者都做） | [BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md) / QA A6.2 | **Dev**：`scripts/lib/arc.mjs`（`parseArgs`）± `scripts/arcblog-economy.mjs`；**触及 CLI → `.gate-lock` + 定向单跑**（至少 `scripts/arcblog-economy.test.mjs`，基线 27/27） | **口径需先定（D32）**；改动面覆盖全 CLI → **不与其他批次并轨** | **Lead / 用户**（D32 修法口径） |
+| **R15-3** | **设置 - 角色与能力 §15.9**：外部化配置「重新验证」+ 质押 NFT data 表单 + **等待期倒计时**（现仅 `claimableAt` 时间值）+ 购买 / 质押 CLI 指引 | 清单 **120** 🟡 / §15.9、§8.2–8.5 / R12 路线 **#11** / R14-6 | **Dev**：`.aup/pages/**`（并入 `?page=factory` 或新页）+ `scripts/console-nav.mjs`（若新页）+ 生成 locales + `dist/**` | **真链动作仍需环境（D-链）** → 保持 operator-declared；**与 R15-6/7/8 同 `.aup` 族 → 串行** | 否（真链动作需环境） |
+| **R15-4** | **商品管理界面 §15.7**：创建 / 编辑 / 上下架（`visibility`）——CLI 已完整（`product add --update` / `product remove`），界面待补 | 清单 **112** 🟡 / §15.7 / R12 路线 **#5** 尾项 | **Dev**：`.aup/pages/economy/policy.aup`（或新页）+ 生成 locales + `dist/**`；**只镜像 CLI 真实能力** | 与 R15-3/6/7/8 同 `.aup` 族 → 串行 | 否 |
+| **R15-5** | **策略与账户 §15.7**：分成版本（已 ✅）之外的**收款账户 / Adapter 只读卡**（真实配置仍 operator-declared） | 清单 **115** 🟡 / §15.7 / R12 路线 **#16** 部分 | **Dev**：`.aup/pages/economy/policy.aup` ± 新页 + 生成 locales + `dist/**` | 与 R15-4 **同文件族**（可并轨一次批次）；Adapter 真实通道 = **D-链** | 否（真链动作需环境） |
+| **R15-6** | **Dashboard 网络概览 + 异常提醒条**：Studio 已注册 Hub 数 / Hub 已索引 Studio 数；同步失败 / 结算失败 / 授权即将过期（一次点击直达）；并文档化卡片计数口径 | 清单 **123** ⬜ / §15.3 / R12 路线 **#14** / R14-2 | **Dev**：`.aup/pages/admin/dashboard.aup` + 生成 locales + `dist/**` | 数据源 = `hub list` 派生 freshness（**读取会回写 `freshness.checkedAt`，QA O5**）+ 结算 / 授权记录 → **建议在 R15-1 之后（结算口径已定）** | 否 |
+| **R15-7** | **[REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) 媒体上传可观测性 + 文案去不可复现引用**（空态 / 有记录态双态；用 BUG-019/020 修订后的判据） | 排队 **#16** / QA round-10 §7-1/§7-3/§7-5 / R14-3 | **Dev**：`.aup/pages/ops/media.aup` + 生成 locales + `dist/**`；**QA**：`docs/team/test-reports/**`；写实例需 `.gate-lock` | 与 R15-3/4/6/8 同 `.aup` 族 → 串行；REQ-011 草案已在盘（未派发） | 否 |
+| **R15-8** | **Hub Topics 与推荐策展**（内容索引 / 搜索 / Tombstone CLI 已 ✅，Topics 与策展待实现） | 清单 **111** 🟡 / §15.6、**§52**、**§73** / 候选区 | **Dev**：`.aup/pages/ops/hub.aup` ± 新页 + `scripts/console-nav.mjs`（若新页）+ 生成 locales + `dist/**` | **需先出 Topics 设计口径**（§52 策展模型；建议 PM 先出 REQ 评估）；与 R15-3/4/6/7 同 `.aup` 族 → 串行 | 否（设计口径由 Lead/PM 定） |
+| **R15-9** | **SEO/OG 文章级继承 §126** + **RSS 补 Atom / 明确 `/p/rss.xml`（部署期快照）** | 清单 **91** 🟡（+ 清单 **90** 备注修正）/ §126、§124 / R12 路线 **#12** / R14-5 | **Dev**：`scripts/arcblog-lifecycle.mjs`、`scripts/arcblog-rss.mjs`、`.aup/pages/site/{seo,feeds}.aup` + 生成 locales + `dist/**`（**触及 CLI → `.gate-lock` + 定向单跑 rss / lifecycle**） | **C-04 / C-07 待批准**（RSS 路径 / 逐条静态 SEO = 平台受限） | **用户（C-04 / C-07）** |
+| **R15-10** | **§111 调度探针**：blocklet manifest 是否真有 `cron` 字段；daemon `/scheduler` 是否有可用入口 → 结论 + 落地或「平台受限 / 长驻 worker」降级留档 | 清单 **161** ⬜ / §111 / R12 路线 **#3** / R14-4 | **Dev**：`scripts/arcblog-chain-worker.mjs` / `scripts/lib/network.mjs`；**写实例探针 → `.gate-lock`** | **C-14 待用户批准**（spec §111 措辞）；探针写实例 | **用户（C-14）** |
+| **R15-11** | **[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（P2，UI 残留，建议优先）**：`?page=pages` 列表行 `View` 链接 0 宽 + 文字实测压住 `Take offline`（20.92×16） | QA-010 §4 / UI-012 全面走查遗漏项 / L-R14F-5 | **Dev**：`.aup/pages/admin/pages.aup:173`（`flexGrow: 0` → `flexBasis: auto` 或 `minWidth`）+ `arc blocklet build`；**QA**：复跑「文本×可点控件相交」扫描 + `cw>0` | **无需外部依赖**；`page id = pages` 已稳定 | 否 |
+| **R15-12** | **[BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)（P2，UI 残留）**：`?page=hub` 关系行 **@1512/en 溢出 92px**（UI-012-05 只达成 1803） | QA-010 §3.2 / UI-012-05 / L-R14F-5 | **Dev**：`.aup/pages/ops/hub.aup`（把行内 3 个 action / 2 条 CLI 命令移出关系行，或再拆行）+ `arc blocklet build` | **平台固有性不成立 → 不得 allowlist**；与 R15-8（Hub Topics，同文件）**同文件族 → 串行或合并批次** | 否 |
+| **R15-13** | **[BUG-035](bugs/BUG-035-factory-1512-hash-overflow.md)（P2，UI 残留）**：`?page=factory` **@1512 哈希 over 133 ×4** + intents 行 62 + NFT 卡 119 | QA-010 §3.2 / UI-012-07 / L-R14F-5 | **Dev**：`.aup/pages/ops/factory.aup`（**单列化** 每个哈希一行 label + 值）± 放弃 copyable 按钮 + `arc blocklet build`；**QA**：1512 复跑 `textOverflow` 扫描 | **修法三选一需 Lead 拍板（D34）**；平台白名单不含 `wordBreak/overflowWrap/whiteSpace`（QA 已独立证实）→ **页内 CSS 不可行** | **Lead（D34）** |
+| **R15-14** | **UI-012 判据订正 + 文档一致性（docs-only）**：① UI-012-11 的 1512 验收判据由「≥500」改为「滚动列 clientHeight = 内容列剩余高度（实测 428/717）」；② UI-012 §0 计数 13 → **12**（P1×3 / P2×7 / P3×2） | QA-T1 / QA-T8 / 「UI 优化」小节 | **UI**：`docs/team/design/UI-012-ui-audit-and-fixes.md`（docs-only，**零 `.aup`/`.web`/`.aup` 改动**） | **可与任何 UI 批次并轨**；不阻断任何清单行 | 否 |
+
+**③ R15 建议项（不占首项、按空位取用）**
+
+| # | 项 | 来源 | 说明 |
+| - | -- | ---- | ---- |
+| **R15-A** | **订单 / 账本新页像素走查**（与 `general`/`diagnostics` 同口径：computed 值 + 平台差异分离 + 单标签页自证） | REQ-018 §2.2 第 1 条（L-R14-1 明令本轮**只走已稳定页**） | **UI**：`docs/team/design/**`。**R14F 部分覆盖**：UI-012 的 8 组 sweep **已含 orders/ledger**（溢出 / 重叠 / 卡片 / 按钮 / 标题 / 时间 / 命中区，21 页同口径），**仅缺** UI-011 §2.2 式的「逐项像素偏差表 + 平台差异独立成表」→ 降级为**可选**项，若不派工则以 UI-012 为基线（**PM 建议：可并入 R15-14 一起做**） |
+| **R15-B** | **UI-011 骨架建议的采纳与实施**（建议 ≠ 派工） | [UI-011](design/UI-011-newpage-pixel-audit.md) §6 | **需 Lead 决策**（是否整体采纳、还是仅取状态双编码 / 长表格 / 等宽替代等单点）；UI **只提议不实施**（R14 未写 `.aup`，R14F 亦未写） |
+| **R15-C** | ~~**D-01 修法落地**~~ **→ ✅ 消项（R14F 已修：`general` 3× `Save` = 29(en)/31(zh)，`cross=center` 在位，QA-010 §1③ 通过）** | QA O-4 / [UI-011](design/UI-011-newpage-pixel-audit.md) §1 | —（不再派工） |
+| **R15-D** | ~~**`--type` 补 `node:test` 用例**~~ **→ ✅ 消项（R14F 已补进既有 live 文件：`scripts/arcblog-economy.test.mjs` +84 行 / 3 用例；`.gate-lock` 下定向单跑 30/30，快层仍 28/28）** | REQ-017 §7.3 ⑦ | —（不再派工）；**新增测试文件仍属禁止项**（会破坏快层 28/28 基线） |
+
+**④ 仍待人类 / Lead 批准或落笔（不批则对应行口径悬空）**
+
+- **C-01 / C-02 / C-03（P0/P1）**：仍是**后续每轮 agent 的前提**（HTTP 端点、Web Device 静态面、§15.1 一事一页口径）→ **建议最先批**；R14 照旧不改 spec。
+- **C-14（§111 cron 字段，P1）** → **R15-10 立项前提**；**C-04 / C-07** → **R15-9 口径**；**C-05（§21 可见性，P1）** → R12 路线 #10（仍未排）。
+- **C-13（§15.9 诊断诚实形态）**：R12 已按现有降级口径交付，未批不影响，建议随 C-01/C-02/C-03 一并批。
+- **新增待 Lead 决策（R14 轮末）**：**D31**（R14F 是否开窗 + 并轨 BUG-031/O-2/O-3）**→ ✅ 已裁定（Lead 已开 R14F 并收官：`task-49`…`task-52`；QA-010 放行）** / **D32**（BUG-032 修法口径 —— **仍未定**）/ **D33**（spec §15.7 两处平台边界句 → 建议登记为**新的 spec 修订候选**，编号由 Lead 定，PM 建议顺延 **C-15**）。
+- **新增待 Lead 决策（R14F 轮末）**：**D34**（**BUG-035 修法三选一**：① `factory` 哈希改**单列**（每哈希一行，保留 copyable 断行友好）② 放弃 copyable 按钮（等宽纯文本可换行）③ **allowlist** —— **PM 建议 ①**，理由：QA 已证平台 style 白名单**不含**断行类键 ⇒ 页内 CSS 不可行，而 ② 会丢失 §15 的「一键复制」能力；**allowlist 不成立**（是页内布局可改项））。**另两条 R14F 平台事实入库**（Lead 写范围，与 D28–D30 同批）：67 键 style 转发白名单（**不含** `wordBreak`/`overflowWrap`/`whiteSpace`/`textOverflow`；**含** `alignSelf`/`flexBasis`/`flexGrow`/`minWidth`/`minHeight`）、「`alignSelf` 被丢弃」限 **`action` 节点**路径、`afs-list itemStyle=row` 的 `flex:1 1 0%` 塌陷（BUG-033 根因）。
+- **Lead 写范围（R13-9 / D28–D30 同族，仍未结）**：`docs/arc-contracts.md` 的 §29.2 更正 + §25.4 计数 + **D29/D30** + **本轮新增两条平台事实**（`key-value-list` 的 `monospace:true` **完全无效**、`hideWhenEmpty` 对**空数组**无效）；`CLAUDE.md` 的 `test:file` 清理约定（QA O-5）+ 节数/lint 计数去硬编码；checklist 第 **113/114** 行状态 + 维护记录一行。
+
+---
+
 ## Round 11 checklist 建议（**只建议**；重基线已由另一 PM agent 落盘，PM 只核对）
 
 **① 计数核对（PM 独立复算，非复用重基线 agent 的自检脚本）**
@@ -1222,6 +1598,12 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 
 > **R13 轮末重排（PM，2026-09-28）**：① **BUG-029（P3，范围外：`hub --help` 漏列真实存在的 `hub refresh`）→ 裁「下一轮修」**，落 **R14-7**（可与任何触及 `scripts/arcblog-network.mjs` 的批次**并轨**；触及 CLI → `.gate-lock` + 定向单跑 `scripts/arcblog-network.test.mjs`，基线 **15/15**）；**不新开排队号**（避免两处计数漂移，同 R11 做法）。② **R13 未派发的 R13-4 / R13-6 / R13-7 / R13-8 全部承继 R14**（见「Round 14 排期」：R14-4 / R14-1 / R14-3 / R14-2）。③ 排队 **#16（REQ-011 媒体上传可观测性）** = **R14-3**。④ **#5 / #6 / #7 / #8 / #9 / #10 / #12 状态无变化**（#5 已由 UI-007 执行完毕；#6 属回归确认；#12 已由 REQ-010 结清）。⑤ 本轮**未开工任何 🟥 项**（R13 任务板由 Lead 派发，PM 不调用 `team_task_*`）。⑥ 新增转 **⬜ 候选** 2 条（O7 按 `relation` 禁用无意义动作、§4.3 补 13px 配方免责行）。
 
+> **R14 轮初（PM，2026-09-28）**：**R14 已派发 3 项**——**R14-1（订单/账本 §15.7 + CLI `ledger list --type`）= [REQ-017](requirements/REQ-017-orders-and-ledger-ui.md) / `task-45`（Dev，并轨 **R14-7 BUG-029**）**、**REQ-018（已稳定两页像素走查 + 新页骨架建议）= `task-46`（UI）**、**QA-009 = `task-47`（`blocked_by task-45 + task-46`）**；**R14-2（Dashboard §15.3）/ R14-3（REQ-011 媒体）/ R14-4（§111，待 C-14）/ R14-5（SEO/OG，待 C-04·C-07）/ R14-6（设置-角色与能力）未派发**，承继后续轮（见「本轮：Round 14」）。**排队 #5/#6/#7/#8/#9/#10/#12/#16 状态无变化**（#16 = R14-3）；**#13/#14/#15 与 #12 保持已结清**。
+
+> **R14 轮末重排（PM，2026-09-28）**：① **BUG-030（P1，阻断）→ 裁「本轮修」**（建议 Lead 立即开 **R14F**；不批则 **R15-1 首项**，**D31**）——**P1 不适用「下一轮修」默认顺延**（同 R9F 的 BUG-012 先例）；② **BUG-031（P3）+ QA O-2/O-3（文案）→ 与 BUG-030 同批**（同文件族 + 同一次 build）；③ **BUG-032（P3，范围外/既有机制）→ 下一轮修**，落 **R15-2**（**不新开排队号**，避免两处计数漂移，同 R11/R13 做法；口径需 Lead 定 = **D32**）；④ **R14 未派发的 R14-2 / R14-3 / R14-4 / R14-5 / R14-6 全部承继 R15**（见「Round 14 交付结果 + Round 15 排期」：**R15-6 / R15-7 / R15-10 / R15-9 / R15-3**）；⑤ **新增 R15 项两条**（不占排队号，进「Round 15 排期」③ 建议项）：**R15-A 订单/账本新页像素走查**（REQ-018 §2.2 留后续轮）、**R15-C D-01 修法落地**（QA O-4 = UI-011 §1，P2）；**R15-B（UI-011 骨架建议采纳）** 需 Lead 决策；**R15-D（`--type` 补 node:test 用例）** 由 QA 或授权 Dev 补进既有 live 文件；⑥ **#16（REQ-011 媒体上传可观测性）= R15-7**；**#5/#6/#7/#8/#9/#10/#12 状态无变化**（#5 已由 UI-007 执行完毕；#6 属回归确认；#12 已由 REQ-010 结清）；⑦ 本轮**未开工任何 🟥 项**（R14 任务板由 Lead 派发，PM 不调用 `team_task_*`）。
+
+> **R14F 轮末重排（PM，2026-09-28）**：① **BUG-030（P1）→ 已修 · 闭环**（Lead 开 R14F，QA-010 复验通过）→ **原 R15-1 消项**；**BUG-031 / QA O-2 / O-3 / D-01 / R15-D 同批收口**（**R15-C / R15-D 消项**）。② **BUG-032（P3）仍未修**（QA 复测等号形式 `exit=0`）→ **R15-2**（**不新开排队号**，避免两处计数漂移，同 R11/R13/R14 做法；**口径 D32 待 Lead/用户**）。③ **新增 3 条 P2**（QA-010 独立发现的溢出/重叠残留）→ **R15-11**（BUG-033，`?page=pages` 真实文本×按钮重叠，**建议优先**）/ **R15-12**（BUG-034，hub@1512 over 92）/ **R15-13**（BUG-035，factory@1512 over 133；修法 **D34**）；**另增 R15-14**（UI-012 判据与计数订正，docs-only）= 一并从 UI-012 的未修/待订正项转来，**不新开排队号**（同 R14 做法）。④ **R15-A 降级为可选**（UI-012 的 sweep 已覆盖 orders/ledger 的溢出/重叠/命中区，仅缺 UI-011 §2.2 式逐项偏差表，建议并入 R15-14）。⑤ **R15-B（UI-011 骨架建议采纳）**仍需 **Lead 决策**。⑥ **#16（REQ-011 媒体上传可观测性）= R15-7**；**#5/#6/#7/#8/#9/#10/#12 状态无变化**。⑦ 本轮**未开工任何 🟥 项**（R14F 任务板由 Lead 派发，PM 不调用 `team_task_*`）。
+
 **写范围冲突矩阵（R10 派活必须照此）**
 
 | 批次 | 成员 | 写范围 | 约束 |
@@ -1249,6 +1631,10 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | spec §15.8「启用开关」的**降级路径留档**（页面只读 + CLI 引导，非页面内开关） | spec §15.8 / §130 | 平台边界（AUP 无哈希原语 → 无法寻址 `config/agent-grants/<didHash>.json`；TTL / `agent.admin` 拒授在 CLI），**REQ-006 §2.2 第 6 条已写明不做**；建议 Lead 在 checklist 第 116 行备注或 `arc-contracts.md` 留档「降级路径」，避免 ✅ 与 spec 原文口径落差（见「Round 9 checklist 建议」缺口 3） |
 | **按 `relation` 值禁用 / 隐藏 `?page=hub` 的无意义动作**（`removed` 行不再显示 Approve 等；QA-008 O7） | spec §15.6 / §70.1–70.2；UI 标准 §4.3 | **R13 登记（PM 裁「不修，登记候选」）**：现状符合 REQ-015 §2.1 与 **L-R13-3**（CLI 本身允许对任意 did `approve`）；若做 → 需先定 **UI 标准口径（禁用 vs 隐藏、是否加 `confirm`）** + `.aup/pages/ops/hub.aup` 改动（同 `.aup` 族 → 串行）；**不阻断 checklist 第 109 行 ✅** |
 | **在 UI 标准 §4.3 补一行「平台 `data-kind=back` 配方 `13px` 不属两档」免责**（Dev D-a / QA O9③） | UI 标准 §4.3 / §9 | **R13 登记（PM 裁「不修，登记候选」）**：标准 §9 已写平台 13px 配方免责（`:587`），§4.3 的两档是标准给定的按钮尺寸档、`13px` 属平台配方；若补需 **Lead 授权 UI**（标准口径新增 → 超出 L-R13-1 四项）；**不阻断** |
+| **`general` 页 3× `Save` 按钮被同级带 label 字段行拉伸**（`60.39/62.39/62.39px` vs 同页 `size=sm` `29px`，2.08–2.15×）= UI-011 D-01 | UI 标准 §4.3 / §9；[UI-011](design/UI-011-newpage-pixel-audit.md) §1 | **R14 登记（PM 裁「下一轮修（R15 候选 R15-C，不单独开窗、不判 BUG）」）**：QA 独立复现**逐值一致**（P2，同屏一致性）；修法 UI 已给（三个 `row gap=xs` 加 `cross=start`，或 action 加 `alignSelf:"flex-start"`）；**本轮不在 L-R14-1 授权内** |
+| **订单 / 账本新页像素走查**（`?page=orders` / `?page=ledger`，与 `general`/`diagnostics` 同口径） | REQ-018 §2.2 第 1 条 / UI 标准 §9；[UI-011](design/UI-011-newpage-pixel-audit.md) §6 | **R14 登记 → R15-A**：L-R14-1 明令 R14 **只走已稳定页**；两新页现已稳定（21 页回归、侧栏 `footerReachable=true`、ledger 24 行渲染）→ 可做；**建议与 R15-1 同轮串行**（Dev 改完 `orders.aup` 后走查） |
+| **UI-011 §6 订单/账本新页骨架建议的采纳与实施**（共用骨架 + orders 5 卡 + ledger 5 卡 + §9 映射） | [UI-011](design/UI-011-newpage-pixel-audit.md) §6 | **R14 登记 → R15-B（建议 ≠ 派工）**：UI 只提议、**本轮未写 `.aup`**；**需 Lead 决策**（整体采纳 vs 取单点：状态双编码 / 长表格 / 可复制命令 / 等宽替代写法）；**不在 R14F 范围内**（R14F 只修 BUG-030 + 文案） |
+| **spec §15.7 两处平台边界句**（① 订单详情「完整回答六问」中的交易哈希需**跨记录 join**，AUP 无此能力 → 页面走路径 B；② §15.7 列 **7 类 ledger type** 而真实只有 **4 类**） | spec §15.7 / §50 / §91–§92；REQ-017 §7.4 第 5 条 | **R14 登记 → D33**（建议 Lead 登记为**新的 spec 修订候选**，编号由 Lead 定，PM 建议顺延 **C-15**）；**本轮不改 spec**（只有人类可改）；**不阻断 checklist 113/114**（页面/help 已只列真实能力、降级已写明） |
 
 ---
 
@@ -1294,6 +1680,11 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | **D28**（新，Round 11 轮末） | **`arc-contracts.md` §29.2 更正（= R10 的 D16，仍未结）** + §25.4「24 条」/`CLAUDE.md`「10 条」lint 计数（PM 本轮实测 **16**）+ `.aup/man/settings.yaml` 陈旧存根 | §29.2 是 BUG-022 的判据来源、页面文案正在等它定稿；lint 计数两处均过期（`arc-contracts.md:1182`、`CLAUDE.md:79`）；`man/settings.yaml` 引用了不存在的页面/action | **需 Lead 处理**（均属 Lead 写范围，不需要用户批准）：见 [SPEC-APPROVAL-001](requirements/SPEC-APPROVAL-001-spec-revision-requests.md) §3 的 **C-11a–d**。**建议本轮就改 C-11c（§29.2）** |
 | **D29**（新，Round 13 轮末） | **spec §15.6 达成标准「注册一个新 Hub 不需要离开此页面」与平台能力冲突**：AUP 无哈希原语 → 关系 id / filename = `sha256(did)` 前 16 位，页面**拼不出记录路径**，新关系只能走 CLI | 页面已按 **L-R13-3** 如实降级为「组装 + 一键复制真命令 + did 形态提示」，**未伪造写入**（REQ-015 A9 静态反证）；本轮 **spec 零改动**（**L-R13-4**：C-01/C-02/C-03 待批） | **需 Lead/用户**：把 §15.6 的平台边界句登记为**新的 spec 修订候选**（编号由 Lead 定，PM 建议顺延为 C-15 并随 C-01/C-02/C-03 一并呈批）；**未批不影响 checklist 第 109 行 ✅**（页面口径与实现一致、降级已登记） |
 | **D30**（新，Round 13 轮末） | **两条 R13 平台事实待写入 `docs/arc-contracts.md`**（Lead 写范围）：① `action` 的 `style` **只转发部分键** —— `border`/`borderRadius`/`padding`（+`color`/`background`）生效，**`minHeight` 被丢弃**（QA P2 实测 `styleAttr` 无 `min-height`、computed `0px`；Dev 自述「整个 style 属性被丢弃」**不准确**，已更正）；② `hub list` / `hub show` **读取即回写** `freshness.checkedAt` / `updatedAt`（spec §75/§76 派生语义；非 BUG-016 型漂移） | ① 直接决定本仓库 **WCAG 2.5.8 命中区只能靠 `padding` 实现**（R3 态①）；② 解释「4 条 baseline 的 `updatedAt` 在 QA 全程被刷新」而不误判为探针残留；且 ① 是 **D6/G8 平台事实**的同族（`arc-contracts §21.6` 已列 `width`/`justifyContent`/`flexShrink` 丢弃，`minHeight` 未被逐字列出） | **需 Lead 落笔**（`docs/arc-contracts.md`，与 **R13-9 / C-11a–d** 同批）；**lint 计数**同时以实测为准 —— PM 本轮实测 `arc dsl lint \| grep -c WARNING` = **28**（R12 = 24），**禁止写死** |
+| **D31**（新，Round 14 轮末） | **R14F 修复窗口开不开**：QA-009 判 **`VERDICT=fail, BLOCKING=1`**，唯一阻断 = **BUG-030（P1）**——`?page=orders` 缺「相对 + 绝对」两态，而平台 `time … timeMode=relative` 原语**可用且 6 个既有页在用** → **可实现项、非平台限制**；Round 14 两份交付已落盘，但仓库带 1 条 P1 + 2 条 P3 | 若 P1 默认顺延：第 **113** 行长期 🟡、与「订单详情完整回答六问」的承诺落差（spec §50/§15.7）；若开窗：+1 个 Dev 批次（约 2 行 + 3 处文案）+ 1 次 QA 定向复跑 | **需 Lead 决定（`roles/pm.md` §6.2：P0/P1 不允许默认顺延）**：① **开 R14F**（推荐，同 R9F 先例）→ `task-*`（Dev：BUG-030 + BUG-031 + QA O-2/O-3，同一 `.aup/pages/economy/**` + 一次 build；QA：定向复跑 `?page/orders` 的 `time` 断言）→ 复验通过后由 Lead 落 **113 ✅**；② **不批** → BUG-030 = **R15-1 首项**、113 保持 🟡、BUG-031/O-2/O-3 随 R15-1 并轨。**PM 无 `team_task_*` 权限 → 开窗与建任务均由 Lead 执行** ｜ **R14F 终态（PM，2026-09-28）：✅ Lead 已开窗并收官** —— `task-49`（Dev）/ `task-50`（UI）/ `task-51`（QA）/ `task-52`（PM 裁决），下发 **L-R14F-1…L-R14F-5**；QA-010 放行（[round-14-reverify.md](test-reports/round-14-reverify.md) `VERDICT=pass, BLOCKING=0`），**BUG-030 / BUG-031 闭环、D-01 与 R15-D 收口** → **D31 结案** |
+| **D32**（新，Round 14 轮末） | **BUG-032 的修法口径**：`--key=value` 等号形式在 `scripts/lib/arc.mjs:22-40` `parseArgs` **全 CLI 不被识别** → `ledger list --type=payment` **exit 0 且返回未过滤全量**（空格形式已 fail-closed）。属**范围外 / 既有机制**（`--order=x` / `--limit=1` 同样被忽略），但本轮新增的 `--type` 把它从「无害忽略」升级为「**非法取值静默放行全量**」，与 REQ-017 §1.2 / spec §150「不谎报已验证」正面相关 | 三种修法影响面差异大：① 支持 `=` = 兼容性最好但新增语法；② 未知 flag **fail-closed** = 最诚实但可能**打断既有脚本**（任何 `--foo=bar` 调用会开始报错）；③ 两者都做 = 改动面最大、需全 CLI 回归 | **需 Lead / 用户拍板**（属**门规级 / 全 CLI 行为**变更，不宜由 PM 自定）：口径定了之后落 **R15-2**（Dev `scripts/lib/arc.mjs` ± CLI，**先 `.gate-lock` 再定向单跑**受影响 live 文件；**不并轨 R14F**） |
+| **D33**（新，Round 14 轮末） | **spec §15.7 两处平台边界句**：① 达成标准「订单详情页**完整回答六问**」中的「交易哈希」**不在 `order` 记录里**（`world/order.yaml` 无该字段）→ 需 `settlement` / `ledger` **跨记录 join**，而 AUP **无跨记录查询能力**（A0 实测 `$params` 不走查询串）→ REQ-017 只能走**路径 B**（列表内 5 问 + 逐行真命令 + 账本页核对）；② §15.7 的功能列写 **7 类 ledger type**，而实现只写 **4 类**（`creator_share` / `hub_share` / `protocol_fee` / `refund`；证据 `scripts/lib/economy.mjs:249-270`、`:366-390`），页面/help **只列真实 4 类、未补齐类型实现** | 两处都是「spec 措辞 > 平台/实现能力」的落差；页面已按 **L-R14-2「只镜像 CLI 真实能力」**如实降级并写明原因（`orders.q-desc`），**未谎报**；但按 spec 字面读会以为页面应显示交易哈希、应能按 7 类筛选 | **需 Lead / 用户**：建议把两条登记为**新的 spec 修订候选**（编号由 Lead 定，PM 建议顺延 **C-15**，与 **D29** 同批呈批）：① §15.7 补「交易哈希经 settlement/ledger 核对，页面不跨记录拼装」的平台边界句；② §15.7 的 ledger type 列表改为**真实 4 类**或标注「以实现为准」。**本轮 spec 零改动**；**未批不影响 checklist 113/114**（降级已登记） |
+| **D34**（新，Round 14F 轮末） | **BUG-035 的修法三选一**：`?page=factory` @1512 的 4 个 64 位哈希（`#factory-node-tx` 的 `.aup-kv-row.aup-kv-mono` over **133/121/120/112**，1803 也 over 10）+ intents 行（`.aup-view` over 62）+ NFT 卡（over 119） | QA 独立解析服务端 bundle 证实：**style 转发白名单恰 67 键，不含 `wordBreak` / `overflowWrap` / `whiteSpace` / `textOverflow`**（含 `alignSelf`/`flexBasis`/`flexGrow`/`minWidth`/`minHeight`）→ 页内内联 style **无法**强制断行；UI-012 §6 的两条候选 CSS 亦被干跑否掉；`docOver=0`、无横向滚动条 → **不是页面级滚动问题** | **需 Lead 定**：① **改单列**（每哈希一行 label + 值，保留 `copyable`）—— **PM 建议**；② 放弃 copyable（等宽纯文本可换行）；③ allowlist（**PM 反对**：平台固有性不成立，是页内布局可改项）。**落 R15-13**；`docs/arc-contracts.md` 的 67 键白名单由 Lead 落笔（与 D28–D30 同批） |
+| **D35**（新，Round 14F 轮末，**仅登记**） | UI-012 的**文档一致性**：§0 写「建议 Dev 修 13 条（P1×4 / P2×6 / P3×3）」，§2 表实为 **12** 行（P1×3 / P2×7 / P3×2）；UI-012-11 的「1512 ≥500」为自定字面值、非标准条款 | QA 按 **14 组**（12 + 2 条 UI 自修）复核，**裁决不受影响**（PM 已当场 `grep -c` 复算 = 12）；`ArcBlog-admin-ui-design.md` 无「≥500」条款 | **无需 Lead 二次裁决**，仅登记；由 **R15-14**（UI，docs-only）订正判据与计数 |
 
 ### ① 需要用户批准才能落笔的 spec 修订清单（L-R11-3，Round 11）— **Lead 可直接呈给用户**
 
@@ -1351,3 +1742,9 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 | **【R13 不修】为补证而写 `settings` 记录切 dark 模式 / 构造带 slug 草稿量 `?page:preview` 合成底** | **方法收益不足**：A-ii 规则与其余 8 处同源且已在 `?page=posts` 实测（QA 用 CDP 强制属性覆盖 10 组 palette/mode，强于「写记录再重启」）；写实例仅换取形式化补证（同 R9F/R12 口径） | UI 标准 §4.3 / §9；REQ-016 §0.6/§0.7 |
 | **【R13 不修】按 `relation` 值禁用 / 隐藏 `?page=hub` 的无意义动作（QA O7：`removed` 行仍可 Approve 并「复活」为 `indexed`）** | **符合本轮范围裁定**：REQ-015 §2.1「既有 Approve/Terminate/Purge 继续有效」+ **L-R13-3**（只镜像 CLI 真实能力，CLI 本身允许对任意 did `approve`）→ 不判 BUG。若要改「按 `relation` 禁用」→ 属 **UI 标准口径（禁用 vs 隐藏）+ `.aup` 改动** → 已登记 **⬜ 候选**，不在本轮 | spec §15.6；REQ-015 §2.1；UI 标准 §4.3 |
 | **【R13 不修】把 `ARC_PRERENDER=1` 提成硬门（QA O4：`/p/{en,zh}/search/` 无预渲染产物）** | **既有、非本轮引入、默认非致命**：预渲染缓存是构建优化，非 spec 要求；提硬门属**门规变更** → 需 Lead/用户裁定，不由 PM 派工 | 工程约定（`CLAUDE.md` Quality gates；REQ-015 A1c） |
+| **【R14 不修】REQ-017 §3.2 A1.3 后半句「空态不含运行时英文兜底 `No items to display`」** | **平台不可达**：`afs-list` 空目录**恒渲染**平台英文兜底，`emptyText` 四种写法（含纯字面量）全无效（`arc-contracts.md` §28.6 / §20）；唯一可验收项 = **空态引导由常驻卡承载**（已通过）。**不作为 Dev 未完成项**（Dev 已主动披露）；判据已由 PM 在 [REQ-017 §7.3](requirements/REQ-017-orders-and-ledger-ui.md) ① 追加改判 | spec §15.7；REQ-017 §3.2 A1.3（QA round-14 §1.2 / D-R14-1） |
+| **【R14 不修】REQ-017 §3.3 A2.3 的「未结算」**行内字面句** + §3.4 A3.4 的「可见文案集合大小 == 真实状态值集合大小」字面口径** | **平台机制缺口**：平台**不能按记录值切换文案**（`arc-contracts.md` §28.8）→ 按 **BUG-005 路径 B 语义**判通过（原始值逐行可见且互不相同、空值渲染 `—` 而非空串/`undefined`/假时间、常驻说明含字面「未结算」）；判据已由 PM 在 REQ-017 §7.3 ②④ 追加改判 | UI 标准 §4.1；`arc-contracts.md` §28.8（QA round-14 §1.3 / D-R14-2） |
+| **【R14 不修】QA §0 十条受限未验证中的 8 条环境/方法类**（`$params` 探针重放、`failed` 态、真实 `transactionHash`、真实钱包回跳、主题时序、硬件 hover/dark、`afs-list` 容量上限、`hub_share` 正向） | **环境缺口或方法约定**：本机无链、无钱包、无归因环境；为它们造 DOM 注入/伪造记录会**谎报已验证**（REQ-017 §3.3 A2.4/A2.5 明令禁止）→ 保持受限并逐条写明原因；无一条属 ArcBlog 实现缺陷 | spec §150（不臆造/不谎报）；`roles/qa.md` 报告规范；round-14.md §0/§7 |
+| **【R14 不修】为「相对时间」之外的展示细节重构订单详情页（UI-011 §6 骨架整体实施）** | **建议 ≠ 派工**：UI 只提议、**本轮未写 `.aup`**；新页已按 REQ-017 较简形态落地并通过 A0/A1/A3–A9。是否整体采纳（长表格 / 状态双编码 / 等宽替代）需 **Lead 决策** → 登记 **R15-B ⬜ 候选**，不在 R14F | REQ-018 §2.2 第 3 项 / [UI-011](design/UI-011-newpage-pixel-audit.md) §6；L-R14-1 |
+| **【R14 不修】把「订单 / 账本新页像素走查」并入 R14** | **违反 L-R14-1 明文范围**（R14 只走已稳定的 `general`/`diagnostics`，不得走 Dev 本轮新建页）→ 已在 R14 交付后具备走查条件（21 页稳定），转 **R15-A** | REQ-018 §2.2 第 1 条；L-R14-1 |
+| **【R14 不修】为 UI 标准新增条目 / 改口径（UI-011 §8 标准缺口登记）** | **超出 L-R14-1 授权**（R14 UI 只做走查补充 + 骨架建议）→ 登记 **R15-B/§8 缺口**，需 **Lead 授权 UI** 后做 | UI 标准 §9；REQ-018 §2.2 第 2 项 |

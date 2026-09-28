@@ -52,8 +52,16 @@ export const CONSOLE_MENU = [
   {
     group: 'nav-group-economy',
     items: [
+      // spec §15.7 lists 订单 before the policy/access objects, and an order is
+      // the entry fact of the economy; §15.7's 结算与账本 is the record pair
+      // behind every split, so it sits with the orders it explains. Page ids are
+      // `orders` / `ledger` — both probed against `arc dsl validate --json`
+      // (issues []) in Round 14; neither is a reserved AUP keyword (unlike
+      // `settings`, see below).
+      { label: 'nav-orders', page: 'orders' },
       { label: 'nav-policy', page: 'policy' },
       { label: 'nav-access', page: 'access' },
+      { label: 'nav-ledger', page: 'ledger' },
       { label: 'nav-factory', page: 'factory' },
     ],
   },

@@ -88,6 +88,12 @@
     "access": {
       "tree": "pages/economy/access.aup"
     },
+    "ledger": {
+      "tree": "pages/economy/ledger.aup"
+    },
+    "orders": {
+      "tree": "pages/economy/orders.aup"
+    },
     "policy": {
       "tree": "pages/economy/policy.aup"
     }

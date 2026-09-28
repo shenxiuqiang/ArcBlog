@@ -29,7 +29,7 @@
             "variant": "compact",
             "brand": {
               "title": "ArcBlog",
-              "href": "/"
+              "href": "/?page=index"
             },
             "actions": [
               {

@@ -131,11 +131,19 @@ page factory {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -204,6 +212,8 @@ page factory {
                         p :status-intent scale=sm
                         p "${entry.content.status}" scale=sm
                         p "${entry.content.role}" scale=sm intent=muted
+                      }
+                      row gap=xs cross=center {
                         view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
                           time mode=display value="${entry.content.requestedAt}" timeMode=relative
                         }

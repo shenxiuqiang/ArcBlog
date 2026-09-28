@@ -1,0 +1,1608 @@
+{
+  "meta": {
+    "kind": "public",
+    "guest": false,
+    "locale": "en",
+    "viewport": "1512x765",
+    "origin": "http://arcblog.localhost:4939",
+    "waitMs": 3400,
+    "targetId": "1F2B2046662C9362703896A73C794B45",
+    "pinned": true,
+    "hadSession": "[\"afs:web:session:http://arcblog.localhost:4939:bl:arcblog\"]",
+    "pagesBefore": 1,
+    "pagesDuring": 1,
+    "pagesAfter": 1,
+    "startedAt": "2026-09-28T05:41:56.308Z",
+    "chrome": "Chrome/153.0.8010.54",
+    "finishedAt": "2026-09-28T05:42:10.112Z"
+  },
+  "pages": {
+    "home": {
+      "url": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "title": "ArcBlog",
+      "probeDiag": {
+        "sidebarW": null,
+        "sidebarRows": null,
+        "deepN": 76,
+        "contentDeepN": 58,
+        "colFound": false,
+        "colCandidates": 0
+      },
+      "vp": "1512x765",
+      "dpr": 1,
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "activeText": null,
+      "activeCount": 0,
+      "docOv": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "winW": 1512,
+        "winH": 765,
+        "pageXScroll": 0
+      },
+      "clipped": [],
+      "longVals": [
+        {
+          "sel": "div#index-view-1-view-1-afs-list-3.aup-list>div.aup-list-body>div#index-view-1-view-1-afs-list-3-row-1--hello-arcblog.json.aup-view.aup-list-template-item>a#index-view-1-view-1-afs-list-3-row-1-view-1.aup-view.aup-view-link>div#index-view-1-view-1-afs-list-3-row-1-view-1-p-3.aup-text",
+          "tag": "DIV",
+          "len": 122,
+          "text": "A tour of the node: DID-native authorship, the draft→published lifecycle, the economy, the",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 219,
+            "y": 761.56,
+            "w": 814,
+            "h": 19.19,
+            "right": 1033,
+            "bottom": 780.75
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        },
+        {
+          "sel": "div#index-view-1.aup-view>footer#index-view-1-app-footer-2.aup-app-footer>div.aup-footer-top>div.aup-footer-brand>div.aup-footer-brand-tagline",
+          "tag": "DIV",
+          "len": 46,
+          "text": "DID-native writing, Markdown-first publishing.",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 212,
+            "y": 1332.38,
+            "w": 302.86,
+            "h": 20.14,
+            "right": 514.86,
+            "bottom": 1352.52
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        }
+      ],
+      "overlaps": [],
+      "overlapCount": 0,
+      "textHits": [],
+      "textHitCount": 0,
+      "siblingGaps": [],
+      "cardMetrics": [
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#index-view-1.aup-view>div#index-view-1-view-1.aup-view>div#hero-carousel-frame.aup-frame",
+          "pad": "0px",
+          "gap": "normal",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 497,
+          "display": "flex",
+          "align": "normal",
+          "title": ""
+        }
+      ],
+      "cardCount": 1,
+      "buttons": [],
+      "primaryCount": 0,
+      "stretchedButtons": [],
+      "tallButtons": [],
+      "tinyTargets": [
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "About",
+          "w": 40.86,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Store",
+          "w": 36.25,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Author",
+          "w": 45.41,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "RSS",
+          "w": 26.94,
+          "h": 17
+        }
+      ],
+      "clickableCount": 9,
+      "headings": [
+        {
+          "tag": "H2",
+          "text": "Latest published",
+          "fs": "21.6px",
+          "fw": "600",
+          "lh": "27px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 575,
+            "w": 1136,
+            "h": 26.98,
+            "right": 1324,
+            "bottom": 601.98
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "Hello ArcBlog",
+          "fs": "25.92px",
+          "fw": "600",
+          "lh": "32.4px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 219,
+            "y": 669.98,
+            "w": 814,
+            "h": 32.39,
+            "right": 1033,
+            "bottom": 702.38
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "paid-test-1790472790603",
+          "fs": "25.92px",
+          "fw": "600",
+          "lh": "32.4px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 219,
+            "y": 885.58,
+            "w": 1074,
+            "h": 32.39,
+            "right": 1293,
+            "bottom": 917.97
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "sign-test-1790502598928",
+          "fs": "25.92px",
+          "fw": "600",
+          "lh": "32.4px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 219,
+            "y": 1091.58,
+            "w": 1074,
+            "h": 32.39,
+            "right": 1293,
+            "bottom": 1123.97
+          },
+          "lines": 1,
+          "wraps": false
+        }
+      ],
+      "pageHead": {
+        "h2": "Latest published",
+        "box": {
+          "x": 188,
+          "y": 575,
+          "w": 1136,
+          "h": 26.98,
+          "right": 1324,
+          "bottom": 601.98
+        },
+        "fs": "21.6px",
+        "lines": 1
+      },
+      "fontSizes": [
+        "12px",
+        "12.8px",
+        "13px",
+        "16px",
+        "21.6px",
+        "25.92px"
+      ],
+      "fonts": [
+        "Sora",
+        "\"SF Mono\""
+      ],
+      "timeEls": [
+        {
+          "tag": "DIV",
+          "text": "9 days ago",
+          "title": "2026年9月18日 16:02",
+          "dt": "2026-09-18T08:02:09.589Z",
+          "h": 18,
+          "w": 726.09,
+          "mono": false
+        },
+        {
+          "tag": "DIV",
+          "text": "1 day ago",
+          "title": "2026年9月27日 09:33",
+          "dt": "2026-09-27T01:33:13.351Z",
+          "h": 18,
+          "w": 986.09,
+          "mono": false
+        },
+        {
+          "tag": "DIV",
+          "text": "19 hours ago",
+          "title": "2026年9月27日 17:50",
+          "dt": "2026-09-27T09:50:01.325Z",
+          "h": 18,
+          "w": 986.09,
+          "mono": false
+        }
+      ],
+      "timeCount": 3,
+      "dots": [],
+      "dupes": [],
+      "dupSent": [],
+      "emptyish": [],
+      "side": null,
+      "footReach": null,
+      "scrollOwners": {
+        "candidates": 0,
+        "perCol": []
+      },
+      "textLen": 378,
+      "textHead": "ArcBlog | ▾ | Latest published | Hello ArcBlog | Technology | · | 9 days ago | A tour of the node: DID-native authorship, the draft→published lifecycle, the economy, the network, and the agent surface. | paid-test-1790472790603 | Technology | · | 1 day ago | sign-test-1790502598928 | Technology | · | 19 hours ago | ArcBlog | DID-native writing, Markdown-first publishing. | About | Store | Author | RSS | © 2026 ArcBlog"
+    },
+    "_posts_hello-arcblog": {
+      "url": "http://arcblog.localhost:4939/posts/hello-arcblog",
+      "lang": "en",
+      "title": "ArcBlog",
+      "probeDiag": {
+        "sidebarW": null,
+        "sidebarRows": null,
+        "deepN": 149,
+        "contentDeepN": 131,
+        "colFound": true,
+        "colCandidates": 4
+      },
+      "vp": "1512x765",
+      "dpr": 1,
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "activeText": null,
+      "activeCount": 0,
+      "docOv": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "winW": 1512,
+        "winH": 765,
+        "pageXScroll": 0
+      },
+      "clipped": [],
+      "longVals": [
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-view-5.aup-view>div#reader-view-1-view-1-view-3-view-5-p-2.aup-text",
+          "tag": "DIV",
+          "len": 122,
+          "text": "A tour of the node: DID-native authorship, the draft→published lifecycle, the economy, the",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 2583.66,
+            "w": 1094,
+            "h": 22.5,
+            "right": 1303,
+            "bottom": 2606.16
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-view-5.aup-view>div#reader-view-1-view-1-view-3-view-5-p-3.aup-text",
+          "tag": "DIV",
+          "len": 115,
+          "text": "This is a paid article. The full text is released after purchase — it is never shipped to ",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 2626.16,
+            "w": 1094,
+            "h": 19.19,
+            "right": 1303,
+            "bottom": 2645.34
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>p",
+          "tag": "P",
+          "len": 56,
+          "text": "One schema, two directories, and a deliberate lifecycle:",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 188,
+            "y": 1010.08,
+            "w": 1136,
+            "h": 23.05,
+            "right": 1324,
+            "bottom": 1033.13
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>footer#reader-view-1-app-footer-2.aup-app-footer>div.aup-footer-top>div.aup-footer-brand>div.aup-footer-brand-tagline",
+          "tag": "DIV",
+          "len": 46,
+          "text": "DID-native writing, Markdown-first publishing.",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 212,
+            "y": 2753.34,
+            "w": 302.86,
+            "h": 20.14,
+            "right": 514.86,
+            "bottom": 2773.48
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>p",
+          "tag": "P",
+          "len": 44,
+          "text": "The node ships with a small, honest economy:",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 188,
+            "y": 1724.95,
+            "w": 1136,
+            "h": 23.05,
+            "right": 1324,
+            "bottom": 1748
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>p>code",
+          "tag": "CODE",
+          "len": 40,
+          "text": "draft → published → archived → published",
+          "mono": true,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 188,
+            "y": 1208.27,
+            "w": 305.84,
+            "h": 20,
+            "right": 493.84,
+            "bottom": 1228.27
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>pre>code.hljs.language-bash",
+          "tag": "CODE",
+          "len": 31,
+          "text": "node scripts/arcblog-doctor.mjs",
+          "mono": true,
+          "ws": "pre",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 201.23,
+            "y": 1440.55,
+            "w": 1109.53,
+            "h": 18.34,
+            "right": 1310.77,
+            "bottom": 1458.89
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>h2",
+          "tag": "H2",
+          "len": 30,
+          "text": "Agents are first-class readers",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 188,
+            "y": 2122.25,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 2154.34
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>h2",
+          "tag": "H2",
+          "len": 27,
+          "text": "An economy, not just a page",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "break-word",
+          "box": {
+            "x": 188,
+            "y": 1685.67,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 1717.77
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": false
+        }
+      ],
+      "overlaps": [],
+      "overlapCount": 0,
+      "textHits": [],
+      "textHitCount": 0,
+      "siblingGaps": [],
+      "cardMetrics": [
+        {
+          "sel": "div#reader-view-1-view-1-view-3-p-4.aup-text>table>thead>tr>th",
+          "pad": "5.0688px 8.8704px",
+          "gap": "normal",
+          "radius": "0px",
+          "shadow": "none",
+          "bg": "rgb(250, 250, 248)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 339.39,
+          "h": 31.39,
+          "display": "table-cell",
+          "align": "normal",
+          "title": "Stage"
+        },
+        {
+          "sel": "div#reader-view-1-view-1-view-3-p-4.aup-text>table>thead>tr>th",
+          "pad": "5.0688px 8.8704px",
+          "gap": "normal",
+          "radius": "0px",
+          "shadow": "none",
+          "bg": "rgb(250, 250, 248)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 337.77,
+          "h": 31.39,
+          "display": "table-cell",
+          "align": "normal",
+          "title": "Where it lives"
+        },
+        {
+          "sel": "div#reader-view-1-view-1-view-3-p-4.aup-text>table>thead>tr>th",
+          "pad": "5.0688px 8.8704px",
+          "gap": "normal",
+          "radius": "0px",
+          "shadow": "none",
+          "bg": "rgb(250, 250, 248)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 457.84,
+          "h": 31.39,
+          "display": "table-cell",
+          "align": "normal",
+          "title": "Who can read it"
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>pre",
+          "pad": "9.792px 12.24px",
+          "gap": "normal",
+          "radius": "8px",
+          "shadow": "none",
+          "bg": "rgb(250, 250, 248)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 39.91,
+          "display": "block",
+          "align": "normal",
+          "title": "node scripts/arcblog-doctor.mjs"
+        },
+        {
+          "sel": "div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-p-4.aup-text>pre",
+          "pad": "9.792px 12.24px",
+          "gap": "normal",
+          "radius": "8px",
+          "shadow": "none",
+          "bg": "rgb(250, 250, 248)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 131.63,
+          "display": "block",
+          "align": "normal",
+          "title": "node scripts/arcblog-lifecycle.mjs publish -"
+        },
+        {
+          "sel": "div#wrapper-view-1.aup-view>div#reader-view-1.aup-view>div#reader-view-1-view-1.aup-view>div#reader-view-1-view-1-view-3.aup-view>div#reader-view-1-view-1-view-3-view-5.aup-view",
+          "pad": "20px",
+          "gap": "20px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 152.58,
+          "display": "flex",
+          "align": "normal",
+          "title": "Paid content A tour of the node: DID-native "
+        }
+      ],
+      "cardCount": 6,
+      "buttons": [],
+      "primaryCount": 0,
+      "stretchedButtons": [],
+      "tallButtons": [],
+      "tinyTargets": [
+        {
+          "tag": "A",
+          "cls": "",
+          "text": "Back to latest stories",
+          "w": 135.91,
+          "h": 19.5
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "About",
+          "w": 40.86,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Store",
+          "w": 36.25,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Author",
+          "w": 45.41,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "RSS",
+          "w": 26.94,
+          "h": 17
+        }
+      ],
+      "clickableCount": 6,
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Hello ArcBlog",
+          "fs": "56px",
+          "fw": "600",
+          "lh": "58.8px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 397.5,
+            "w": 1136,
+            "h": 58.8,
+            "right": 1324,
+            "bottom": 456.3
+          },
+          "lines": 1,
+          "wraps": true
+        },
+        {
+          "tag": "H1",
+          "text": "Hello ArcBlog",
+          "fs": "20.16px",
+          "fw": "700",
+          "lh": "32.256px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 553.5,
+            "w": 1136,
+            "h": 39.3,
+            "right": 1324,
+            "bottom": 592.8
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "What it is",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 685.55,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 717.64
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "The content model",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 970.8,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 1002.89
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "Authorship you can verify",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 1314,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 1346.09
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "The public surface",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 1538.66,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 1570.75
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "An economy, not just a page",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 1685.67,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 1717.77
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "A network of nodes",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 1975.23,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 2007.33
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "Agents are first-class readers",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 2122.25,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 2154.34
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H2",
+          "text": "Run it yourself",
+          "fs": "17.28px",
+          "fw": "700",
+          "lh": "27.648px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 188,
+            "y": 2269.27,
+            "w": 1136,
+            "h": 32.09,
+            "right": 1324,
+            "bottom": 2301.36
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "Paid content",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "25.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 2534.77,
+            "w": 1094,
+            "h": 25.5,
+            "right": 1303,
+            "bottom": 2560.27
+          },
+          "lines": 1,
+          "wraps": false
+        }
+      ],
+      "pageHead": {
+        "h2": "What it is",
+        "box": {
+          "x": 188,
+          "y": 685.55,
+          "w": 1136,
+          "h": 32.09,
+          "right": 1324,
+          "bottom": 717.64
+        },
+        "fs": "17.28px",
+        "lines": 1
+      },
+      "fontSizes": [
+        "10.7712px",
+        "12px",
+        "12.24px",
+        "12.672px",
+        "12.8px",
+        "13px",
+        "14.4px",
+        "15px",
+        "16px",
+        "17px",
+        "17.28px",
+        "20.16px",
+        "56px"
+      ],
+      "fonts": [
+        "Sora",
+        "\"SF Mono\"",
+        "\"JetBrains Mono\"",
+        "monospace"
+      ],
+      "timeEls": [
+        {
+          "tag": "DIV",
+          "text": "9 days ago",
+          "title": "2026年9月18日 16:02",
+          "dt": "2026-09-18T08:02:09.589Z",
+          "h": 18,
+          "w": 995.48,
+          "mono": false
+        }
+      ],
+      "timeCount": 1,
+      "dots": [],
+      "dupes": [],
+      "dupSent": [],
+      "emptyish": [],
+      "side": null,
+      "footReach": null,
+      "scrollOwners": {
+        "candidates": 4,
+        "perCol": [
+          {
+            "sw": 1134,
+            "cw": 1134,
+            "sh": 38,
+            "ch": 38,
+            "ovY": "auto",
+            "pad": "9.792px 12.24px",
+            "gap": "normal",
+            "inH": 39.91
+          },
+          {
+            "sw": 1110,
+            "cw": 1110,
+            "sh": 18,
+            "ch": 18,
+            "ovY": "auto",
+            "pad": "0px",
+            "gap": "normal",
+            "inH": 18.34
+          },
+          {
+            "sw": 1134,
+            "cw": 1134,
+            "sh": 130,
+            "ch": 130,
+            "ovY": "auto",
+            "pad": "9.792px 12.24px",
+            "gap": "normal",
+            "inH": 131.63
+          },
+          {
+            "sw": 1110,
+            "cw": 1110,
+            "sh": 110,
+            "ch": 110,
+            "ovY": "auto",
+            "pad": "0px",
+            "gap": "normal",
+            "inH": 110.06
+          }
+        ]
+      },
+      "textLen": 32,
+      "textHead": "node scripts/arcblog-doctor.mjs | "
+    },
+    "_store": {
+      "url": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "title": "ArcBlog",
+      "probeDiag": {
+        "sidebarW": null,
+        "sidebarRows": null,
+        "deepN": 56,
+        "contentDeepN": 38,
+        "colFound": false,
+        "colCandidates": 0
+      },
+      "vp": "1512x765",
+      "dpr": 1,
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "activeText": null,
+      "activeCount": 0,
+      "docOv": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "winW": 1512,
+        "winH": 765,
+        "pageXScroll": 0
+      },
+      "clipped": [],
+      "longVals": [
+        {
+          "sel": "div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-3.aup-view>div#store-view-1-view-1-view-3-p-2.aup-text",
+          "tag": "DIV",
+          "len": 234,
+          "text": "A purchase is an Order paid through the configured adapter; settlement then splits the amo",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 506.16,
+            "w": 1094,
+            "h": 45,
+            "right": 1303,
+            "bottom": 551.16
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 2,
+          "inScope": true
+        },
+        {
+          "sel": "div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-2.aup-view>div#store-view-1-view-1-view-2-afs-list-2.aup-list>div.aup-list-body>div.aup-list-empty",
+          "tag": "DIV",
+          "len": 126,
+          "text": "No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 254.77,
+            "w": 1094,
+            "h": 130.5,
+            "right": 1303,
+            "bottom": 385.27
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 7,
+          "inScope": true
+        },
+        {
+          "sel": "div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-1.aup-view>div#store-view-1-view-1-view-1-p-2.aup-text",
+          "tag": "DIV",
+          "len": 99,
+          "text": "Digital goods published by this node. The creator sets the price; buying happens with a DI",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 121.38,
+            "w": 1094,
+            "h": 22.5,
+            "right": 1303,
+            "bottom": 143.88
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        },
+        {
+          "sel": "div#store-view-1.aup-view>footer#store-view-1-app-footer-2.aup-app-footer>div.aup-footer-top>div.aup-footer-brand>div.aup-footer-brand-tagline",
+          "tag": "DIV",
+          "len": 46,
+          "text": "DID-native writing, Markdown-first publishing.",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 212,
+            "y": 659.16,
+            "w": 302.86,
+            "h": 20.14,
+            "right": 514.86,
+            "bottom": 679.3
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        }
+      ],
+      "overlaps": [],
+      "overlapCount": 0,
+      "textHits": [],
+      "textHitCount": 0,
+      "siblingGaps": [],
+      "cardMetrics": [
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-1.aup-view",
+          "pad": "20px",
+          "gap": "20px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 116.88,
+          "display": "flex",
+          "align": "normal",
+          "title": "Creator store Digital goods published by thi"
+        },
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-2.aup-view",
+          "pad": "20px",
+          "gap": "10px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 211.39,
+          "display": "flex",
+          "align": "normal",
+          "title": "Products No public products yet. Add one: no"
+        },
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-3.aup-view",
+          "pad": "20px",
+          "gap": "20px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 135.89,
+          "display": "flex",
+          "align": "normal",
+          "title": "How buying works A purchase is an Order paid"
+        }
+      ],
+      "cardCount": 3,
+      "buttons": [],
+      "primaryCount": 0,
+      "stretchedButtons": [],
+      "tallButtons": [],
+      "tinyTargets": [
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "About",
+          "w": 40.86,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Store",
+          "w": 36.25,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Author",
+          "w": 45.41,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "RSS",
+          "w": 26.94,
+          "h": 17
+        }
+      ],
+      "clickableCount": 5,
+      "headings": [
+        {
+          "tag": "H2",
+          "text": "Creator store",
+          "fs": "21.6px",
+          "fw": "600",
+          "lh": "27px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 69,
+            "w": 1094,
+            "h": 26.98,
+            "right": 1303,
+            "bottom": 95.98
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "Products",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "25.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 215.88,
+            "w": 1094,
+            "h": 25.5,
+            "right": 1303,
+            "bottom": 241.38
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "How buying works",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "25.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 457.27,
+            "w": 1094,
+            "h": 25.5,
+            "right": 1303,
+            "bottom": 482.77
+          },
+          "lines": 1,
+          "wraps": false
+        }
+      ],
+      "pageHead": {
+        "h2": "Creator store",
+        "box": {
+          "x": 209,
+          "y": 69,
+          "w": 1094,
+          "h": 26.98,
+          "right": 1303,
+          "bottom": 95.98
+        },
+        "fs": "21.6px",
+        "lines": 1
+      },
+      "fontSizes": [
+        "12px",
+        "13px",
+        "15px",
+        "16px",
+        "17px",
+        "21.6px"
+      ],
+      "fonts": [
+        "Sora",
+        "\"SF Mono\""
+      ],
+      "timeEls": [],
+      "timeCount": 0,
+      "dots": [],
+      "dupes": [],
+      "dupSent": [],
+      "emptyish": [],
+      "side": null,
+      "footReach": null,
+      "scrollOwners": {
+        "candidates": 0,
+        "perCol": []
+      },
+      "textLen": 605,
+      "textHead": "ArcBlog | ▾ | Creator store | Digital goods published by this node. The creator sets the price; buying happens with a DID wallet. | Products | No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n> | How buying works | A purchase is an Order paid through the configured adapter; settlement then splits the amount (creator / Hub / protocol), and a paid article unlocks through an Access Grant. This page is the catalogue only — t"
+    },
+    "_about": {
+      "url": "http://arcblog.localhost:4939/about?page=store",
+      "lang": "en",
+      "title": "ArcBlog",
+      "probeDiag": {
+        "sidebarW": null,
+        "sidebarRows": null,
+        "deepN": 56,
+        "contentDeepN": 38,
+        "colFound": false,
+        "colCandidates": 0
+      },
+      "vp": "1512x765",
+      "dpr": 1,
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "activeText": null,
+      "activeCount": 0,
+      "docOv": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "winW": 1512,
+        "winH": 765,
+        "pageXScroll": 0
+      },
+      "clipped": [],
+      "longVals": [
+        {
+          "sel": "div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-3.aup-view>div#store-view-1-view-1-view-3-p-2.aup-text",
+          "tag": "DIV",
+          "len": 234,
+          "text": "A purchase is an Order paid through the configured adapter; settlement then splits the amo",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 506.16,
+            "w": 1094,
+            "h": 45,
+            "right": 1303,
+            "bottom": 551.16
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 2,
+          "inScope": true
+        },
+        {
+          "sel": "div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-2.aup-view>div#store-view-1-view-1-view-2-afs-list-2.aup-list>div.aup-list-body>div.aup-list-empty",
+          "tag": "DIV",
+          "len": 126,
+          "text": "No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 254.77,
+            "w": 1094,
+            "h": 130.5,
+            "right": 1303,
+            "bottom": 385.27
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 7,
+          "inScope": true
+        },
+        {
+          "sel": "div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-1.aup-view>div#store-view-1-view-1-view-1-p-2.aup-text",
+          "tag": "DIV",
+          "len": 99,
+          "text": "Digital goods published by this node. The creator sets the price; buying happens with a DI",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 209,
+            "y": 121.38,
+            "w": 1094,
+            "h": 22.5,
+            "right": 1303,
+            "bottom": 143.88
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        },
+        {
+          "sel": "div#store-view-1.aup-view>footer#store-view-1-app-footer-2.aup-app-footer>div.aup-footer-top>div.aup-footer-brand>div.aup-footer-brand-tagline",
+          "tag": "DIV",
+          "len": 46,
+          "text": "DID-native writing, Markdown-first publishing.",
+          "mono": false,
+          "ws": "normal",
+          "wb": "normal",
+          "ovw": "normal",
+          "box": {
+            "x": 212,
+            "y": 659.16,
+            "w": 302.86,
+            "h": 20.14,
+            "right": 514.86,
+            "bottom": 679.3
+          },
+          "title": null,
+          "clipped": false,
+          "lines": 1,
+          "inScope": true
+        }
+      ],
+      "overlaps": [],
+      "overlapCount": 0,
+      "textHits": [],
+      "textHitCount": 0,
+      "siblingGaps": [],
+      "cardMetrics": [
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-1.aup-view",
+          "pad": "20px",
+          "gap": "20px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 116.88,
+          "display": "flex",
+          "align": "normal",
+          "title": "Creator store Digital goods published by thi"
+        },
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-2.aup-view",
+          "pad": "20px",
+          "gap": "10px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 211.39,
+          "display": "flex",
+          "align": "normal",
+          "title": "Products No public products yet. Add one: no"
+        },
+        {
+          "sel": "div>div#wrapper-view-1.aup-view>div#store-view-1.aup-view>div#store-view-1-view-1.aup-view>div#store-view-1-view-1-view-3.aup-view",
+          "pad": "20px",
+          "gap": "20px",
+          "radius": "10px",
+          "shadow": "none",
+          "bg": "rgb(240, 239, 236)",
+          "border": "1px rgba(0, 0, 0, 0.08)",
+          "w": 1136,
+          "h": 135.89,
+          "display": "flex",
+          "align": "normal",
+          "title": "How buying works A purchase is an Order paid"
+        }
+      ],
+      "cardCount": 3,
+      "buttons": [],
+      "primaryCount": 0,
+      "stretchedButtons": [],
+      "tallButtons": [],
+      "tinyTargets": [
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "About",
+          "w": 40.86,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Store",
+          "w": 36.25,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "Author",
+          "w": 45.41,
+          "h": 17
+        },
+        {
+          "tag": "A",
+          "cls": "aup-footer-link",
+          "text": "RSS",
+          "w": 26.94,
+          "h": 17
+        }
+      ],
+      "clickableCount": 5,
+      "headings": [
+        {
+          "tag": "H2",
+          "text": "Creator store",
+          "fs": "21.6px",
+          "fw": "600",
+          "lh": "27px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 69,
+            "w": 1094,
+            "h": 26.98,
+            "right": 1303,
+            "bottom": 95.98
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "Products",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "25.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 215.88,
+            "w": 1094,
+            "h": 25.5,
+            "right": 1303,
+            "bottom": 241.38
+          },
+          "lines": 1,
+          "wraps": false
+        },
+        {
+          "tag": "H3",
+          "text": "How buying works",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "25.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 209,
+            "y": 457.27,
+            "w": 1094,
+            "h": 25.5,
+            "right": 1303,
+            "bottom": 482.77
+          },
+          "lines": 1,
+          "wraps": false
+        }
+      ],
+      "pageHead": {
+        "h2": "Creator store",
+        "box": {
+          "x": 209,
+          "y": 69,
+          "w": 1094,
+          "h": 26.98,
+          "right": 1303,
+          "bottom": 95.98
+        },
+        "fs": "21.6px",
+        "lines": 1
+      },
+      "fontSizes": [
+        "12px",
+        "13px",
+        "15px",
+        "16px",
+        "17px",
+        "21.6px"
+      ],
+      "fonts": [
+        "Sora",
+        "\"SF Mono\""
+      ],
+      "timeEls": [],
+      "timeCount": 0,
+      "dots": [],
+      "dupes": [],
+      "dupSent": [],
+      "emptyish": [],
+      "side": null,
+      "footReach": null,
+      "scrollOwners": {
+        "candidates": 0,
+        "perCol": []
+      },
+      "textLen": 605,
+      "textHead": "ArcBlog | ▾ | Creator store | Digital goods published by this node. The creator sets the price; buying happens with a DID wallet. | Products | No public products yet. Add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n> | How buying works | A purchase is an Order paid through the configured adapter; settlement then splits the amount (creator / Hub / protocol), and a paid article unlocks through an Access Grant. This page is the catalogue only — t"
+    }
+  },
+  "steps": [
+    {
+      "page": "/",
+      "want": "http://arcblog.localhost:4939/?locale=en",
+      "tookMs": 3451,
+      "landed": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "langOk": true,
+      "active": null,
+      "scopeOk": true
+    },
+    {
+      "page": "/posts/hello-arcblog",
+      "want": "http://arcblog.localhost:4939/posts/hello-arcblog?locale=en",
+      "tookMs": 3459,
+      "landed": "http://arcblog.localhost:4939/posts/hello-arcblog",
+      "lang": "en",
+      "langOk": true,
+      "active": null,
+      "scopeOk": true
+    },
+    {
+      "page": "/store",
+      "want": "http://arcblog.localhost:4939/store?locale=en",
+      "tookMs": 3446,
+      "landed": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "langOk": true,
+      "active": null,
+      "scopeOk": true
+    },
+    {
+      "page": "/about",
+      "want": "http://arcblog.localhost:4939/about?locale=en",
+      "tookMs": 3440,
+      "landed": "http://arcblog.localhost:4939/about?page=store",
+      "lang": "en",
+      "langOk": true,
+      "active": null,
+      "scopeOk": true
+    }
+  ]
+}

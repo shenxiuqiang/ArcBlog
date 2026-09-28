@@ -114,7 +114,7 @@
 
   ```bash
   node -e "import('./scripts/console-nav.mjs').then(m=>console.log('groups='+m.CONSOLE_MENU.length,'sections='+m.CONSOLE_SECTIONS.length))"
-  # → groups=5 sections=18（2026-09-28 实测；一律以此命令输出为准）
+  # → groups=5 sections=21（2026-09-28 实测·UI-012 事实对齐；一律以此命令输出为准）
   ```
 
 * **侧栏只定义一次，由生成器投影进每个控制台页**：菜单模型在 `scripts/console-nav.mjs`；`node scripts/arcblog-console-nav.mjs` 重建各页侧栏，`node scripts/arcblog-console-nav.mjs --check` 是漂移门禁（进 `npm test`）。AUP 没有可用的跨页片段机制（`arc-contracts.md` §22 / §25.2），所以共享外壳只能"生成 + 守卫"。
@@ -166,7 +166,7 @@
 * **控制台不受站点列宽限制**：控制台内容 100% 满宽，不被 `--aup-content-max`（1200px）框住；公共站点保持原居中列。
 * **滚动条只有一条**：控制台页面禁止出现页面级纵向滚动条与内容区滚动条并存的"双滚动条"——看到双滚动条即视为布局缺陷。
 * **页头可固定**：内容区内的页头（标题 + 主操作）推荐固定在滚动视口顶部，长列表滚动时主操作保持可见；实现受限时允许页头随内容区一起滚动，但**禁止**页头脱离内容区悬浮。
-* **侧边栏不独立滚动（默认；节数 ≥ 18 时例外，见下条口径）**：菜单项数以 `scripts/console-nav.mjs` 的 `CONSOLE_SECTIONS.length` 为准（分组数以 `CONSOLE_MENU.length` 为准；**本文档不写死数字**，2026-09-28 实测 5 组 18 项，一律以命令输出为准），默认一屏可见；**节数 ≥ 18 时菜单总高超过一屏预算，侧栏自身滚动是可接受形态**（该容器 `overflowY: auto`，不撑破页面、不产生双滚动条）——此时的验收口径是「**页脚（品牌 / 关于 / RSS / 版权）必须能通过侧栏自身滚动到达**」，**不要求页脚首屏可见**（Lead **D24** 裁定，2026-09-28）；极端窄高下溢出同此口径。实测：1803×908 下 18 节侧栏 `scrollHeight - clientHeight` = **56px（en）/ 86px（zh）**，页脚块落到折叠线下（UI-007 §2 V8），而 17 节时同算式刚好放得下。
+* **侧边栏不独立滚动（默认；节数 ≥ 18 时例外，见下条口径）**：菜单项数以 `scripts/console-nav.mjs` 的 `CONSOLE_SECTIONS.length` 为准（分组数以 `CONSOLE_MENU.length` 为准；**本文档不写死数字**，2026-09-28 实测 5 组 21 项（原记 18 项，UI-012 事实对齐），一律以命令输出为准），默认一屏可见；**节数 ≥ 18 时菜单总高超过一屏预算，侧栏自身滚动是可接受形态**（该容器 `overflowY: auto`，不撑破页面、不产生双滚动条）——此时的验收口径是「**页脚（品牌 / 关于 / RSS / 版权）必须能通过侧栏自身滚动到达**」，**不要求页脚首屏可见**（Lead **D24** 裁定，2026-09-28）；极端窄高下溢出同此口径。实测：18 节时 1803×908 下侧栏 `scrollHeight - clientHeight` = **56px（en）/ 86px（zh）**（UI-007 §2 V8），而 17 节时同算式刚好放得下；**21 节复测（UI-011 §0.3，2026-09-28）：同算式 = 161px，`footerReachable = true`**——「页脚必须能滚到」这一验收口径不变。
 * **宽屏不设上限留白**：内容区随视口拉宽，列表与表单利用全部可用宽度；只有长文阅读类内容（预览、正文）才限制最大行宽（约 72 字符）。
 * **窄屏例外**：侧边栏折叠为顶部导航后（§7），恢复页面级整页滚动——单栏布局里再嵌套内滚动区域只会制造嵌套滚动灾难。
 
@@ -174,7 +174,7 @@
 >
 > ```bash
 > node -e "import('./scripts/console-nav.mjs').then(m=>console.log('groups='+m.CONSOLE_MENU.length,'sections='+m.CONSOLE_SECTIONS.length))"
-> # → groups=5 sections=18（2026-09-28 实测；一律以此命令输出为准）
+> # → groups=5 sections=21（2026-09-28 实测·UI-012 事实对齐；一律以此命令输出为准）
 > ```
 
 ---

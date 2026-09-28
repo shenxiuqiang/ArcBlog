@@ -11,7 +11,7 @@ page agents {
     declared-checks { en "Policy check" zh "策略检查" }
     declared-scopes { en "Declared scopes" zh "已声明范围" }
     desc { en "What the agent surface can do to this node: the enforced policy, the declared tool catalogue, the grant records and the operator CLI that issues them." zh "Agent 面能对本节点做什么：强制策略、已声明工具目录、授权记录，以及签发它们的运营者 CLI。" }
-    gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+    gate-desc { en "Sign in with DID Wallet to view agent grants and policy." zh "使用 DID Wallet 登录后查看 Agent 授权与策略。" }
     gate-title { en "Operations" zh "运维" }
     grant-desc { en "Grants are addressed by sha256(agentDid).slice(0,16), and the AUP DSL has no hash primitive, so this page cannot sign or revoke one. Use the operator CLI: it requires an explicit expiry and keeps high-risk capabilities behind a second confirmation." zh "授权记录按 sha256(agentDid).slice(0,16) 寻址，而 AUP DSL 没有哈希原语，因此本页无法签发或撤销。请用运营者 CLI：它强制填写到期时间，高风险能力需要二次确认。" }
     grant-forbidden { en "agent.admin is not grantable and cannot be granted: settle_payment, change_wallet and change_role never run from the agent surface (spec §130)." zh "agent.admin 不可授予：settle_payment、change_wallet、change_role 永不从 Agent 面执行（spec §130）。" }
@@ -112,11 +112,19 @@ page agents {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

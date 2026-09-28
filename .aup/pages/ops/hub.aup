@@ -117,11 +117,19 @@ page hub {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -163,6 +171,8 @@ page hub {
                         p "●" scale=sm intent=muted title="${entry.content.status}"
                         p :status-registration scale=sm intent=muted
                         p "${entry.content.status}" scale=sm
+                      }
+                      row gap=xs cross=center {
                         p :label-freshness scale=sm intent=muted
                         p "${entry.content.freshness.state}" scale=sm
                         view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
@@ -200,14 +210,13 @@ page hub {
                 h3 :index-card level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:index-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/index" {
                   row gap=sm cross=center role=item {
-                    view gap=xs style={flex: "1 1 0%"} {
+                    view gap=xs style={flex: "1 1 0%", minWidth: 0} {
                       p "${entry.content.title}" scale=lg
                       p "${entry.content.postId} · v${entry.content.version}" scale=sm intent=muted
                     }
                     p "●" scale=sm intent=muted title="${entry.content.status}"
-                    p :status-index scale=sm intent=muted style={flexGrow: 0}
-                    p "${entry.content.status}" scale=sm style={flexGrow: 0}
-                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)", flexGrow: 0} {
+                    p "$t(hub.status-index): ${entry.content.status}" scale=sm style={flexGrow: 0}
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)", flexGrow: 0, flexBasis: auto} {
                       time mode=display value="${entry.content.indexedAt}" timeMode=relative
                     }
                   }

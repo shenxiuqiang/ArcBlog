@@ -16,21 +16,21 @@
     },
     {
       "path": ".aup/app.json",
-      "size": 1859,
+      "size": 1987,
       "contentType": "application/json",
-      "sha256": "7f853ba0a41a1dd4a4302487d346ac32646877eb8e26eb5739a9f1b30f257da2"
+      "sha256": "715d391a4feb91d17c0cecb944b4f2cf1f8145be18b5a2facebc4bd0f50646ba"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 54840,
+      "size": 64130,
       "contentType": "application/json",
-      "sha256": "26677a065daebea63cba0fbda87f4e23ff9b5cd68b3b1c2469c322fb5b581eec"
+      "sha256": "224033f50f69e90a78fd8b504a2c72f2a3c96a82737f109b8072c9fa832b9e2d"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 52982,
+      "size": 61983,
       "contentType": "application/json",
-      "sha256": "ca97852f8b598c56d76d7bf0a376300672b9c9d95a866f587b757764af8228c3"
+      "sha256": "c932141afdc4204abeb998096b5725bcc51d5b4629ca98261875038e9435ca4f"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -190,9 +190,9 @@
     },
     {
       "path": ".aup/pages/about.aup",
-      "size": 1726,
+      "size": 1737,
       "contentType": "application/octet-stream",
-      "sha256": "e7fdf6f295e171f5b115951409ae962ffa075b0230ab96ee7c9e5c20ac6a44c2"
+      "sha256": "6794c144093fe78fda7782558fed07d428ba5cc87cf41e88405086cfb29190e6"
     },
     {
       "path": ".aup/pages/about.json",
@@ -202,9 +202,9 @@
     },
     {
       "path": ".aup/pages/admin/appearance.aup",
-      "size": 9074,
+      "size": 9652,
       "contentType": "application/octet-stream",
-      "sha256": "102533ad4f918ee7748b529ca3b90e4d24289bb7fc8b424308fff5a05e7d92d5"
+      "sha256": "3145c23eb34c25c1026e822650530305816653808ac77c471221d36b37df4433"
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
@@ -214,45 +214,45 @@
     },
     {
       "path": ".aup/pages/admin/compose.aup",
-      "size": 15535,
+      "size": 16113,
       "contentType": "application/octet-stream",
-      "sha256": "3277f2c209ae01b13e588fcbacc75ff1238d9ed0861c2d1de0ab5f8bf6428cfe"
+      "sha256": "7729911fc3ea77703d44cb347e880840c39bc247129015c3fd16c5f275d8fd65"
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 17375,
+      "size": 17953,
       "contentType": "application/octet-stream",
-      "sha256": "9d66e1926e12e808b350b7e1ecbece1e137f49c07821ef593d3eeee79fb7d81e"
+      "sha256": "8da896b7fe78222a0a89181916ba2018a64d86637bd550f78887a4c35b6f42ea"
     },
     {
       "path": ".aup/pages/admin/diagnostics.aup",
-      "size": 31195,
+      "size": 31773,
       "contentType": "application/octet-stream",
-      "sha256": "1727c7d790823216df0e78573387cfb77d4e67a15b8c8fc2b336586ca688ee96"
+      "sha256": "a57ee26d9b266fb4429f35ad2b661f8eb665638cb36796ebb59a4cdeb90d5b0c"
     },
     {
       "path": ".aup/pages/admin/general.aup",
-      "size": 27052,
+      "size": 27669,
       "contentType": "application/octet-stream",
-      "sha256": "a4ece47638be53000a02f9e22885b1cdcd382e54a7c35f43912d0639d0032cbf"
+      "sha256": "9b52161f3fd43a323418e11b7662ed5a97d21b6145a2dc49499b97e3569f6a1f"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 18809,
+      "size": 19387,
       "contentType": "application/octet-stream",
-      "sha256": "fe9706b64a8e3db339d636b204702e742d94886cc18c596dab4b97ead2fe7cd2"
+      "sha256": "7baa8f62f39ac1f0c7e3def5378b49f8edbc5fb8b44a3094db8acfa33322f128"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 25817,
+      "size": 26444,
       "contentType": "application/octet-stream",
-      "sha256": "f987fe8fb8ddd390702a40da53dddf95acc2761ed32371105406212c20f6e320"
+      "sha256": "6389751dc9fa039bf05f3ae122f430367b1b0842607607e33c34c597987b2b92"
     },
     {
       "path": ".aup/pages/author.aup",
-      "size": 2129,
+      "size": 2140,
       "contentType": "application/octet-stream",
-      "sha256": "babaf8774c77a9bb5f47400acbb875036d208416b132b362e5aad28627739148"
+      "sha256": "a78b9e925ce87f750538809aeefd3fc40f3b9a92af7f8a97727f604ea5c737e4"
     },
     {
       "path": ".aup/pages/author.json",
@@ -262,21 +262,33 @@
     },
     {
       "path": ".aup/pages/economy/access.aup",
-      "size": 10906,
+      "size": 11484,
       "contentType": "application/octet-stream",
-      "sha256": "39fb38e1298671ea401bc22027716323ccdc328ea967943ae963b15f770cbc63"
+      "sha256": "0381c235b5508084c782a7235e5938ec425ac599833a2541271e6b67ecadc28a"
+    },
+    {
+      "path": ".aup/pages/economy/ledger.aup",
+      "size": 25369,
+      "contentType": "application/octet-stream",
+      "sha256": "e6a84a2bbeaf5822d480011f56ce716e7eb9e4768a0f6142ef6bc79afea71a68"
+    },
+    {
+      "path": ".aup/pages/economy/orders.aup",
+      "size": 24670,
+      "contentType": "application/octet-stream",
+      "sha256": "d539f4aefecd04dcd8b8dc89618052c6f286093bdcd5ad411efa24bcbb973893"
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 11807,
+      "size": 12398,
       "contentType": "application/octet-stream",
-      "sha256": "8306e9f3f700375591c9a8b694951017e0df9685faa5e5cb4d5062bfb50f6e90"
+      "sha256": "274ecbc9b0591747a1be7def1d564b0d083440f56594b56bc6b39234eee06cf5"
     },
     {
       "path": ".aup/pages/index.aup",
-      "size": 2344,
+      "size": 2355,
       "contentType": "application/octet-stream",
-      "sha256": "3aee7558e8c57a1ce9523e0a1ae9bee43813e40f20903fa4dc0aa8303984da48"
+      "sha256": "4cf8db07c351345e78d6bf479256204f7d9b4204ab2107e66451816de40fe600"
     },
     {
       "path": ".aup/pages/index.json",
@@ -286,39 +298,39 @@
     },
     {
       "path": ".aup/pages/ops/agents.aup",
-      "size": 21411,
+      "size": 21949,
       "contentType": "application/octet-stream",
-      "sha256": "e012b1883a78d0611eaba3443a6fb83e93fe06000aadc3a6dd86b82e1166a4e8"
+      "sha256": "53b04c63d5c9bca7ef02fb24f0eb06a2a23597fe1bb23346d90922d1c693a60e"
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 23201,
+      "size": 23851,
       "contentType": "application/octet-stream",
-      "sha256": "7dfd80117c05d19f81884a40ce2a1985812873ab36046cc202b1c5b7fb3d338a"
+      "sha256": "98eeb41a292bc38eab3bbf4852860eb0ab0f5327f40fa83f9b4c100523c1378d"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 22789,
+      "size": 23413,
       "contentType": "application/octet-stream",
-      "sha256": "dcc00e73fd3bfd02282ca255212ac49694118b43ef0d359eff53e9ce8faf25e3"
+      "sha256": "7a2304cdc7242c0037c888d2ed8427ae1a5fe6aa786db76b78cf25e627acf29c"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 19200,
+      "size": 19720,
       "contentType": "application/octet-stream",
-      "sha256": "502661f1bb8ed28f44dbaaa69c97b998da7aa84ae307dc8454fb00f2355f67ee"
+      "sha256": "532353047c5835ee59ba7d02178e06ba9aa4afa3ba4f338ee34f98942bf8347d"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
-      "size": 13430,
+      "size": 13969,
       "contentType": "application/octet-stream",
-      "sha256": "32ae413eada2bdac2aea005ba6590ad6b0c5c22d1a181186e27fd7341b842d7a"
+      "sha256": "bc50be39528f449fd6e560b0921b989473b60a7e5f8f838d1262d75dafaac0d3"
     },
     {
       "path": ".aup/pages/page-view.aup",
-      "size": 1202,
+      "size": 1231,
       "contentType": "application/octet-stream",
-      "sha256": "8ae8f75a5c683f6e33614d1d1f0b8bb1ba7c8a8d6c94d2b9cd534f4437860ac5"
+      "sha256": "d0df0bd59a4d9950370bdec82897f5f0c9bc9707bd1c2b8c8bcaa47a398ac04c"
     },
     {
       "path": ".aup/pages/page-view.json",
@@ -328,9 +340,9 @@
     },
     {
       "path": ".aup/pages/preview.aup",
-      "size": 5091,
+      "size": 5102,
       "contentType": "application/octet-stream",
-      "sha256": "f37f6cc6163d6bf94df494b44e8fc7103924b821d0765e1d6160d48a91c50184"
+      "sha256": "4270e3f73d1bee066ca614763a0bc9eb28bbccc2eb69eb675156f95f6d887a93"
     },
     {
       "path": ".aup/pages/preview.json",
@@ -340,9 +352,9 @@
     },
     {
       "path": ".aup/pages/reader.aup",
-      "size": 2372,
+      "size": 2383,
       "contentType": "application/octet-stream",
-      "sha256": "f5bec9236a78f52b70e491721b97bf73cadf70b62c4594e35596e237c916bb2f"
+      "sha256": "64b8a9677b0134086cb9f71b220e78aa789d2568da895cf30f99031fbcbb648f"
     },
     {
       "path": ".aup/pages/reader.json",
@@ -352,39 +364,39 @@
     },
     {
       "path": ".aup/pages/site/categories.aup",
-      "size": 18356,
+      "size": 18934,
       "contentType": "application/octet-stream",
-      "sha256": "0a97b54ababf631e54e7d4fab9f6745ba3981ab80cbaa64f2d0785e5c6f16e53"
+      "sha256": "9bb2211b3cfd55c7c67f4361aefada10d620ae91064d005756ff74f07ea56904"
     },
     {
       "path": ".aup/pages/site/feeds.aup",
-      "size": 9820,
+      "size": 10434,
       "contentType": "application/octet-stream",
-      "sha256": "2b7a6f5fd1acb2d8507250a723f3beedfcf51bfa2b744222b131efbb0840c761"
+      "sha256": "85642bdf965ddddea7071a1c6e86c04c3802c725827863322d698a3f4bb45d50"
     },
     {
       "path": ".aup/pages/site/heroes.aup",
-      "size": 17451,
+      "size": 18029,
       "contentType": "application/octet-stream",
-      "sha256": "cf7c1b4ed48d650f6b67356a023b01238599a453f86971af0c29f78e4968a402"
+      "sha256": "3eb54c3e5da40b0b4f47849ffd81fb0d81f0f49e6bce246284992f4b3816d48e"
     },
     {
       "path": ".aup/pages/site/seo.aup",
-      "size": 11234,
+      "size": 11812,
       "contentType": "application/octet-stream",
-      "sha256": "5ef5a11d2e1a3aa4779c80bba66fb0380f898c1553906dd0d8f9d9ab2f73bf4e"
+      "sha256": "5ea7f1adb6c7698728700d2e3551c87e5aafb9ed6252f8fa6de34cd58e6d6db5"
     },
     {
       "path": ".aup/pages/site/tags.aup",
-      "size": 20662,
+      "size": 21288,
       "contentType": "application/octet-stream",
-      "sha256": "cb9e6c691d897fd35b3a72e5a79330fd99a0372d254fbdc1eaddc4565433e0cc"
+      "sha256": "968ece72c12442b77b40173e6a1babcbe684ea8ba5844759db054f06a0c1e4d1"
     },
     {
       "path": ".aup/pages/store.aup",
-      "size": 3112,
+      "size": 3123,
       "contentType": "application/octet-stream",
-      "sha256": "82ed77a25d71c485b63d4056283cdd1ed25ddcb2bbb7ae207e2ce317abc17367"
+      "sha256": "fef8358f694880ecdd3097a406d72cf69511bb83b60c7554b7eeabacf244a951"
     },
     {
       "path": ".aup/pages/store.json",
@@ -394,15 +406,15 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 2474,
+      "size": 2594,
       "contentType": "application/octet-stream",
-      "sha256": "47b25596087254d7d0078e3d2e0073f8138033c0920f66e9f8d364fbd4479486"
+      "sha256": "7a6ef386735301751bd8977bfd29364ea33c274d11b720076b66d4cdd3111280"
     },
     {
       "path": ".aup/wrapper.json",
-      "size": 2132,
+      "size": 2143,
       "contentType": "application/json",
-      "sha256": "8697d124b483449461d09337842c276b453c14fb56f945aa451e2a40d1bbc15a"
+      "sha256": "1ceb36ed0ab097871a678e893f57d804567b8a3f0bdb8440eced5ca7d55584dc"
     },
     {
       "path": ".env.example",
@@ -544,9 +556,9 @@
     },
     {
       "path": ".web/components/theme-bridge/script.js",
-      "size": 11527,
+      "size": 12315,
       "contentType": "text/javascript",
-      "sha256": "58e457617363bb74f809f4b8ac30e9a18e975d325bfd562c064463d5ba6cfc55"
+      "sha256": "8a02ceebc43379853bcaa46961eaa585999a81237787fcd1966ce63e87294559"
     },
     {
       "path": ".web/components/theme-bridge/style.css",
@@ -1324,21 +1336,21 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 131167,
+      "size": 132772,
       "contentType": "text/markdown",
-      "sha256": "3fdb5b1ded6e3f5011c304e804fcf85ce4da678bc73fb96b8be23d02fdf6c714"
+      "sha256": "c2d80d498b031dcfe1d1d18894eaba2e61f443edb653adfb32cf9951e7e3695b"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 64302,
+      "size": 64512,
       "contentType": "text/markdown",
-      "sha256": "9ce86f3514c4550264c41560838d7ba3a1976c0b82976823a106b10acb5c6075"
+      "sha256": "b42f93ae4b3defa9f2b7e98bdec24543aa000f6b0cce9e59521981b434802c37"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 53690,
+      "size": 57124,
       "contentType": "text/markdown",
-      "sha256": "505c1173292c345e18df098be6802e2aed39ebb8340d0289aa0f24fc829d22c4"
+      "sha256": "f6e3ca79773209c9025e7e66bcf8c889638ee8ccec142d75b7f50515f4cbb494"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1450,9 +1462,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 354857,
+      "size": 469088,
       "contentType": "text/markdown",
-      "sha256": "afacc1392ac8ca86770d646150bd09f01ed9a80eb6499d52601ee40735a6f474"
+      "sha256": "2b710f2d62c69a89bc827f851847818b64c1993e0c290dd5674dd225083a55bd"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1635,6 +1647,42 @@
       "sha256": "bcfea94440c10d96cf99703f43833ddb80f13562d8a42ca3fcfb4de966d212f1"
     },
     {
+      "path": "docs/team/bugs/BUG-030-orders-missing-relative-time.md",
+      "size": 7257,
+      "contentType": "text/markdown",
+      "sha256": "c3f8fa793bec218c805a6d1e8cdb1bbae4e5eaf14e569f456380b75275f77045"
+    },
+    {
+      "path": "docs/team/bugs/BUG-031-ledger-gate-desc-says-grants.md",
+      "size": 4925,
+      "contentType": "text/markdown",
+      "sha256": "dd530ce0e3e9a158dd873d3f8b23b467e0557b63086ed5f41abceeb38405dd85"
+    },
+    {
+      "path": "docs/team/bugs/BUG-032-ledger-type-equals-form-silently-ignored.md",
+      "size": 5349,
+      "contentType": "text/markdown",
+      "sha256": "0b85d4275f917dd52495f391528c95201e18dc945bf333cc450158ff94843735"
+    },
+    {
+      "path": "docs/team/bugs/BUG-033-pages-view-link-collapses-to-zero-width.md",
+      "size": 4051,
+      "contentType": "text/markdown",
+      "sha256": "406bc964130df5769158e66764f5ea49f220f89a2a724148806a7510afcec262"
+    },
+    {
+      "path": "docs/team/bugs/BUG-034-hub-relations-overflow-1512.md",
+      "size": 3899,
+      "contentType": "text/markdown",
+      "sha256": "e7cab634cb7cf8eb6eb00e3f155ca65452d0884787761d9a93b52212697e2575"
+    },
+    {
+      "path": "docs/team/bugs/BUG-035-factory-1512-hash-overflow.md",
+      "size": 4862,
+      "contentType": "text/markdown",
+      "sha256": "64622996d0bc32658ef095f22efc7d09c78949b6585ee8c8e0f62e33d725ada1"
+    },
+    {
       "path": "docs/team/design/raw/UI-007-admin.json",
       "size": 376894,
       "contentType": "application/json",
@@ -1701,6 +1749,138 @@
       "sha256": "1808a91d6bc14b900e1e2ca740d70ff9d0a93f23fb927b09f5f27d438b60ef67"
     },
     {
+      "path": "docs/team/design/raw/UI-011-admin.json",
+      "size": 111290,
+      "contentType": "application/json",
+      "sha256": "cd8ac73e9b311a7dc4dc467ad3e9db0bb7a21442dd8a888ef15ee87a170ffa41"
+    },
+    {
+      "path": "docs/team/design/raw/UI-011-cdp-probes.txt",
+      "size": 7013,
+      "contentType": "text/plain",
+      "sha256": "152c88d8ba30eae04f6861d15f73a5296653c8c02498555219f50eec928e5351"
+    },
+    {
+      "path": "docs/team/design/raw/UI-011-contrast-output.txt",
+      "size": 3443,
+      "contentType": "text/plain",
+      "sha256": "acb6f1fe79aa6381dd9511a3b0c53955c69036041874826064f10cd3a48f673e"
+    },
+    {
+      "path": "docs/team/design/raw/UI-011-contrast.mjs",
+      "size": 3860,
+      "contentType": "text/javascript",
+      "sha256": "b93836ba41ce8d938085b42e6a75640c33a3ba40880cdc43003107376d5bb15c"
+    },
+    {
+      "path": "docs/team/design/raw/UI-011-guest.json",
+      "size": 23823,
+      "contentType": "application/json",
+      "sha256": "7c6b55672686f4f56a9cb30fe8b7e7260c47a9a242d287498f3d33a72cdd4731"
+    },
+    {
+      "path": "docs/team/design/raw/UI-011-probe.mjs",
+      "size": 22579,
+      "contentType": "text/javascript",
+      "sha256": "91a3a703e8bf97640b9953e63081427fe2cd1a13baf2a1f59098bcec279c6052"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-analyze.mjs",
+      "size": 5459,
+      "contentType": "text/javascript",
+      "sha256": "7b36d974abc289a75ba1b73276c9e2b980ccc261d8117f4b4bff889bb480257c"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-consistency-en-1803.json",
+      "size": 57653,
+      "contentType": "application/json",
+      "sha256": "35a1a30a926d3bfe14dd653b29e66f1d887aa23a6b0078a8703f9d3a8315a9c7"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-consistency.mjs",
+      "size": 6870,
+      "contentType": "text/javascript",
+      "sha256": "8e37ef1df73903c3621826596ab5312fb4aea65c023412f242aaf6baac2a3a68"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-console-en-1512.json",
+      "size": 725955,
+      "contentType": "application/json",
+      "sha256": "80bfdb3728d533285f682a0a14d0dca3491f5130959c76e3b698389e2881f4b3"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-console-en-1803.json",
+      "size": 715585,
+      "contentType": "application/json",
+      "sha256": "de30b6b273cc9153bb2a3fd0d8b24d173241ce4df6e974b80e45deabeb430acf"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-console-zh-1512.json",
+      "size": 680831,
+      "contentType": "application/json",
+      "sha256": "e407358bbca6603f5a8ae46c75a8de35982bbb83fefc5402f3b6f0f3d5f7f28d"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-console-zh-1803.json",
+      "size": 663860,
+      "contentType": "application/json",
+      "sha256": "93b58cd368431938447e5f9eb5caf0fef5191d7423955edd31a71b2eaf55efc9"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-diag.mjs",
+      "size": 8080,
+      "contentType": "text/javascript",
+      "sha256": "6cdccffa345fd78fe9fe8d1ddc83a8c95f22933fe423500d5f45fa544ee1bc34"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-dryrun-1803.json",
+      "size": 7136,
+      "contentType": "application/json",
+      "sha256": "fe2916bbcaa3317f0a74209c63f21a4415af9eb473d34e6e57b3a8bf6daaabb3"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-dryrun.mjs",
+      "size": 5728,
+      "contentType": "text/javascript",
+      "sha256": "5cccdbc761d51bda373d40c7004556313001d78915a442d7490a28452e79a8fa"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-locale-test.mjs",
+      "size": 2786,
+      "contentType": "text/javascript",
+      "sha256": "56caf9c163b7056eeaacd8d9d60377875c19873233b38084a54e16aa2ee6fa1e"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-probe.mjs",
+      "size": 21478,
+      "contentType": "text/javascript",
+      "sha256": "00747cab912810c87fdedada1de1736ae1a0209dead52e2852ec01f7124fc3a6"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-public-en-1512.json",
+      "size": 44629,
+      "contentType": "application/json",
+      "sha256": "cc9f9aaa940d09f37bb43ef9c32258639b6f7efc96d7d3ea895f115dd52dc48e"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-public-en-1803.json",
+      "size": 44791,
+      "contentType": "application/json",
+      "sha256": "420104948f82d1925a0d9fc387cc0927378d70693ab60d5fc38c8d233423c77e"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-public-zh-1512.json",
+      "size": 43352,
+      "contentType": "application/json",
+      "sha256": "4494a566d001672917c7b021ddf1ef497e557d6b9c0994c8d66c6c69a007f3d8"
+    },
+    {
+      "path": "docs/team/design/raw/UI-012-public-zh-1803.json",
+      "size": 43506,
+      "contentType": "application/json",
+      "sha256": "a3b38acb798735dfb6c5fc85a69ac76b47d9ac41fa95235ffe963fea7f08dde3"
+    },
+    {
       "path": "docs/team/design/review-console.md",
       "size": 18928,
       "contentType": "text/markdown",
@@ -1729,6 +1909,12 @@
       "size": 907041,
       "contentType": "image/png",
       "sha256": "ddbf4ea948e503229c22a98f112db92f1db1b46305241823e328898f92cc1592"
+    },
+    {
+      "path": "docs/team/design/screenshots/UI-012-orders-en-1803.png",
+      "size": 154724,
+      "contentType": "image/png",
+      "sha256": "db227b3c22e4b8ff2aa0d308f3bf21b30e512a71f0e154b058369725218146f3"
     },
     {
       "path": "docs/team/design/UI-001-console-tokens-and-walkthrough.md",
@@ -1791,10 +1977,22 @@
       "sha256": "e7155ec4337ea7fb5d6e219e2b9d3f96d80f8f378a17240323fc22a624aeaecf"
     },
     {
-      "path": "docs/team/journal/README.md",
-      "size": 17464,
+      "path": "docs/team/design/UI-011-newpage-pixel-audit.md",
+      "size": 65870,
       "contentType": "text/markdown",
-      "sha256": "34ddf1e1e1c6073e52203207533db5a5d9fa4f4e8ad787600d8c9dccb6d2fe96"
+      "sha256": "422d454758c34897c4332615d168ef7ba49b7d97f795ea4bfd88dc7a882a5690"
+    },
+    {
+      "path": "docs/team/design/UI-012-ui-audit-and-fixes.md",
+      "size": 27658,
+      "contentType": "text/markdown",
+      "sha256": "7dc9ebcc5bf71cf1f6a9005cc71b15a97a7267f97d00b2c556b0d35e7785a12a"
+    },
+    {
+      "path": "docs/team/journal/README.md",
+      "size": 24557,
+      "contentType": "text/markdown",
+      "sha256": "93d638e0c8cbd322c624c7a35d2063ac9c997f979454ffe712f5799fd489c1c4"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -1819,6 +2017,12 @@
       "size": 26017,
       "contentType": "text/markdown",
       "sha256": "d6ceed789f062b5de179ab50dcf94be49c1b42278454e48ab802540ccbef55d5"
+    },
+    {
+      "path": "docs/team/journal/round-14.md",
+      "size": 45981,
+      "contentType": "text/markdown",
+      "sha256": "825c3fa0c6547485782b1a7e784fb32d1f49f510d44e407aba2ffe0253243b6f"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -1953,6 +2157,18 @@
       "sha256": "4b3f1a334c69d094486cc7904379047daf5341b0b307b5970a3c225c2a4b6026"
     },
     {
+      "path": "docs/team/requirements/REQ-017-orders-and-ledger-ui.md",
+      "size": 52640,
+      "contentType": "text/markdown",
+      "sha256": "fadee0a03a0e7b18ba943a05a8b2b045a2f55960ba4730e7732eb46ebe53cf9f"
+    },
+    {
+      "path": "docs/team/requirements/REQ-018-newpage-pixel-audit.md",
+      "size": 27523,
+      "contentType": "text/markdown",
+      "sha256": "c55e0e9664dad69e4347560e7ca10b0bdba799a99ed7edd516c87be2caf9e4eb"
+    },
+    {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
       "size": 18476,
       "contentType": "text/markdown",
@@ -2053,6 +2269,18 @@
       "size": 41898,
       "contentType": "text/markdown",
       "sha256": "0760404ca0242c31b06c6b389097eba36b52942e5830a1ae28fcc926fb93201c"
+    },
+    {
+      "path": "docs/team/test-reports/round-14-reverify.md",
+      "size": 30853,
+      "contentType": "text/markdown",
+      "sha256": "a06978221f73b8a85499e826e44d086d2bc8696da3eca99a5428c1a71ca42217"
+    },
+    {
+      "path": "docs/team/test-reports/round-14.md",
+      "size": 49917,
+      "contentType": "text/markdown",
+      "sha256": "ef527faf6a06cc33c748169a90b93cf0d4f9d81ac98bdb8d07a2e801a7296441"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -2278,15 +2506,15 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 25419,
+      "size": 28012,
       "contentType": "text/javascript",
-      "sha256": "9fbf68c6adef531d2728f9afca1e162a54b8b2d80104c24e807003a29256a437"
+      "sha256": "fbfcc24792d6991c539df99bd3ca1e434f6bf98bf350580c0db8044aab7d7b77"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 25385,
+      "size": 29675,
       "contentType": "text/javascript",
-      "sha256": "b6046e05d4c68e778e3818ecabb60e55f280459484aee7522cb5b31fe7cba589"
+      "sha256": "eaef48d84f073c6fed2a798009ed99f5c9bca6257603033cc8409c4050e9049f"
     },
     {
       "path": "scripts/arcblog-factory.mjs",
@@ -2338,9 +2566,9 @@
     },
     {
       "path": "scripts/arcblog-network.mjs",
-      "size": 16422,
+      "size": 16526,
       "contentType": "text/javascript",
-      "sha256": "bfdc40042bc2854e0d75afa9aaecde8ca5c01fc130cc2313af53ad50054f6535"
+      "sha256": "603e3929bb565186ff3ddaa9390a203533ef4c79ebaf7e68e50ffff168886ba4"
     },
     {
       "path": "scripts/arcblog-network.test.mjs",
@@ -2470,9 +2698,9 @@
     },
     {
       "path": "scripts/console-nav.mjs",
-      "size": 10558,
+      "size": 11090,
       "contentType": "text/javascript",
-      "sha256": "a890aad139006e468f3e43bee90f6186b8c96e5404b73259cfcb1fcda4eede9c"
+      "sha256": "9a0c2dd3f25fa540fdd49b0d1ec8cbc72b4dfd6c6da01ee763801b8c65bd9485"
     },
     {
       "path": "scripts/lib/agents.mjs",

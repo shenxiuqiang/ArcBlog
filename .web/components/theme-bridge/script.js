@@ -62,6 +62,15 @@
     '.aup-action[data-variant="destructive"]{color:var(--color-text)}',
     '.aup-action[data-variant="destructive"]:not(:hover) .aup-icon-svg{color:var(--color-error)}',
     '.aup-action[data-variant="destructive"]:hover{color:var(--color-surface)}',
+    // WCAG 2.5.8 / admin-ui-design §9 ("命中区 ≥24×24"), UI-012 P-01: the platform's
+    // copy and QR buttons render at 18×18 (UI-007 §3.2, UI-011 P-04 measured 18×18 on
+    // 8 console pages). Grow the hit box only — no colour, no font, no layout change;
+    // revert = delete these two lines. Measured after this change: 24×24 (UI-012 §5).
+    '.aup-copy-btn,.aup-qr-btn{min-width:24px;min-height:24px;display:inline-flex;align-items:center;justify-content:center}',
+    // WCAG 2.5.8 / §9: the platform footer links are 17px tall (measured on /, /store,
+    // /about, /posts/<slug>). 4px of vertical padding lifts the hit box to 28.8px and
+    // leaves the footer's own height at 139.14px (UI-012 §5).
+    '.aup-footer-link{display:inline-block;padding:4px 0}',
   ].join('');
 
   function injectChromeStyles(p) {

@@ -108,11 +108,19 @@ page tags {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -157,31 +165,31 @@ page tags {
               }
               p :refresh-hint intent=muted scale=caption
             }
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
-              p :queue-desc intent=muted scale=sm
-              p :queue-legend intent=muted scale=caption
-              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/intents" {
-                row gap=sm cross=center role=item {
-                  view gap=xs style={flex: "1 1 0%"} {
-                    row gap=xs cross=center {
-                      p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
-                      p :status-intent scale=sm
-                      p "${entry.content.status}" scale=sm
-                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                        time mode=display value="${entry.content.requestedAt}" timeMode=relative
-                      }
-                    }
-                    p "${entry.content.summary}" scale=sm intent=muted
-                    p "${entry.content.message}" scale=sm intent=muted
-                  }
-                  action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:clear confirm={title: :clear-title, message: :clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
-                }
-              }
-              p :status-note intent=muted scale=sm
-              p :worker-hint intent=muted scale=sm
-            }
             view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+                p :queue-desc intent=muted scale=sm
+                p :queue-legend intent=muted scale=caption
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/intents" {
+                  row gap=sm cross=center role=item {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                        p :status-intent scale=sm
+                        p "${entry.content.status}" scale=sm
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                        }
+                      }
+                      p "${entry.content.summary}" scale=sm intent=muted
+                      p "${entry.content.message}" scale=sm intent=muted
+                    }
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:clear confirm={title: :clear-title, message: :clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                  }
+                }
+                p :status-note intent=muted scale=sm
+                p :worker-hint intent=muted scale=sm
+              }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
                 afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/tags/items" {

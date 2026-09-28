@@ -1553,3 +1553,16 @@ admin / 1803×908）：
 （spec §75/§76 的派生语义）。所以「只读一次 hub 列表」也会让记录看起来刚被改过，
 对比 `updatedAt` 判断「谁改了这条记录」时必须把这层写回排除在外。
 注意它**不是** §29.2 的 authority-sidecar 问题，也不会改变 `sync.lastVersion` 的类型（BUG-016 未复发）。
+
+### 29.8 `style` 转发白名单是服务端固定的 67 键；`action` 的 style 只吃 `padding`/`borderRadius` 一族；`afs-list itemStyle=row` 的行子元素是 `flex: 1 1 0%`（Round 14F 实测）
+
+三件事都能让页内 CSS「看起来写了却完全没生效」，Round 14F 用真机与 bundle 解析逐条钉死：
+
+1. **白名单 67 键**（`curl http://arcblog.localhost:4939/aup.bc92de568433b0dc.js` 解析得到）：
+   **含** `padding` / `borderRadius` / `minWidth` / `minHeight` / `alignSelf` / `flexBasis` / `flexGrow`；
+   **不含** `wordBreak` / `overflowWrap` / `whiteSpace` / `textOverflow`。
+   → **长哈希/DID 无法用页内 style 强制断行**（factory 的 64 位哈希在 1512 下溢出 133px，只能改结构：单列或去掉 copyable 卡片）。
+2. **`action` 的 style 走另一条更窄的转发路径**：`alignSelf` 在 67 键白名单里，但写在 `action` 的 `style={…}` 上会被静默丢弃（`posts.aup` 的按钮因此被拉伸到 1440.56px）。
+   解法是**用布局包一层**（`row cross=start`）而不是给 action 写 `alignSelf`。这是 §29.6（`minHeight` 被丢）的同一家族。
+3. **`afs-list itemStyle=row` 给每个行子元素 `flex: 1 1 0%`**：页内再写 `flexGrow: 0` 只把 grow 归零，**basis 仍是 0%** → 元素宽度塌成 0、文字外溢压住旁边的按钮（BUG-033：`?page=pages` 的 `View` 链接 cw=0 / sw=31，实测压住 Take offline 按钮 20.92×16px）。
+   正确写法是 **`flexBasis: "auto"`**（hub 内容索引行用此法把 0px 的 `.aup-time` 恢复到 64.38px，溢出 28→0）。

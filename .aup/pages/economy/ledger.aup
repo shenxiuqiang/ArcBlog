@@ -1,0 +1,235 @@
+page ledger {
+  i18n {
+    amount-note { en "Amounts are raw strings exactly as stored (no rounding, no unit conversion); the asset is a separate field." zh "金额按记录原样显示（不做四舍五入、不做单位换算）；资产是独立字段。" }
+    append-only { en "The ledger is append-only: this page has zero write wiring — it declares no server action and no event handler, and it offers no edit or delete entry point. A new entry is only ever appended by settling or refunding an order (spec §91/§92)." zh "账本是 append-only：本页零写接线——不声明任何服务端动作、不声明任何事件处理器，也没有任何修改或删除入口。新条目只可能由结算或退款追加（spec §91/§92）。" }
+    cli-desc { en "Every command below exists in the CLI help; the page never invents one, and it never runs one for you." zh "下列命令均存在于 CLI help 中；页面不发明命令，也不替你执行命令。" }
+    cli-title { en "CLI" zh "CLI 命令" }
+    cmd-limit { en "Newest 20 entries (the CLI default)" zh "最新 20 条（CLI 默认）" }
+    cmd-list { en "Whole ledger (paged by default)" zh "整个账本（默认分页）" }
+    cmd-all { en "Every entry" zh "全部条目" }
+    cmd-type-creator { en "Filter by type: creator_share" zh "按类型筛选：creator_share" }
+    cmd-type-hub { en "Filter by type: hub_share" zh "按类型筛选：hub_share" }
+    cmd-type-protocol { en "Filter by type: protocol_fee" zh "按类型筛选：protocol_fee" }
+    cmd-type-refund { en "Filter by type: refund" zh "按类型筛选：refund" }
+    cmd-settle { en "Settle a paid order (operator step)" zh "结算已支付订单（operator 步骤）" }
+    cmd-order-show { en "Read the order behind a row" zh "读取某行对应的订单" }
+    cmd-ledger-order { en "This order's entries (O(1), deterministic ids)" zh "该订单的条目（O(1)，确定性 id）" }
+    cmd-ledger-order-type { en "This order's entries of one type" zh "该订单某一类型的条目" }
+    desc { en "Settlements and the append-only ledger: the two records behind every split, with the exact CLI reading of each." zh "结算与账本：每一笔分成背后的两类记录，以及读取它们的准确 CLI 口径。" }
+    gate-desc { en "Sign in with DID Wallet to view settlements and the ledger." zh "使用 DID Wallet 登录后查看结算与账本。" }
+    gate-title { en "Economy" zh "经济" }
+    hash-note { en "transactionHash is shown exactly as stored. It is empty with the manual payment adapter and before settlement; empty is rendered as an em dash, never as a made-up hash (this page fabricates nothing)." zh "transactionHash 按记录原样显示：manual 支付适配器下与结算前为空；空值渲染为一个破折号，绝不用编造的哈希补全（本页不伪造任何值）。" }
+    withheld-note { en "hubShareWithheld true means the Hub DID had no verified attribution, so the Hub share folds into the creator (spec §30/§33). The raw boolean is shown on every row that carries the field — records written before the field existed show nothing, and the page never claims a split the records do not contain." zh "hubShareWithheld 为 true 表示 Hub DID 没有可验证的归因，Hub 份额折入创作者（spec §30/§33）。凡带该字段的行都显示原始布尔值——早于该字段写入的记录显示为空，记录里没有的分成，页面不做任何断言。" }
+    hub-share-withheld { en "hubShareWithheld (raw)" zh "hubShareWithheld（原始值）" }
+    kind-note { en "Ledger entry ids are deterministic: <orderId>:<type> for shares and fees, <orderId>:refund:<origin> for reversals (spec §90/§91) — that is what makes a per-order read O(1)." zh "账本条目的 id 是确定性的：分成与手续费为 <orderId>:<type>，冲正为 <orderId>:refund:<origin>（spec §90/§91）——这正是按订单读取为 O(1) 的原因。" }
+    label-amount { en "amount (raw)" zh "amount（原始值）" }
+    label-asset { en "asset" zh "asset" }
+    label-created { en "createdAt" zh "createdAt" }
+    label-from { en "from" zh "from" }
+    label-hash { en "transactionHash (raw)" zh "transactionHash（原始值）" }
+    label-id { en "id" zh "id" }
+    label-order-id { en "orderId" zh "orderId" }
+    label-policy-version { en "policyVersion" zh "policyVersion" }
+    label-status-raw { en "status (raw value)" zh "status（原始值）" }
+    label-to { en "to" zh "to" }
+    label-type-raw { en "type (raw value)" zh "type（原始值）" }
+    legend-settlement-fields { en "Settlement fields: orderId, creatorAmount, hubAmount, protocolAmount, asset, amount, policyVersion, status, transactionHash, hubShareWithheld, createdAt (world/settlement.yaml)." zh "结算字段：orderId、creatorAmount、hubAmount、protocolAmount、asset、amount、policyVersion、status、transactionHash、hubShareWithheld、createdAt（world/settlement.yaml）。" }
+    legend-ledger-fields { en "Ledger fields: id, orderId, type, from, to, asset, amount, status, policyVersion, transactionHash, createdAt (world/ledger-entry.yaml). No field is omitted." zh "账本字段：id、orderId、type、from、to、asset、amount、status、policyVersion、transactionHash、createdAt（world/ledger-entry.yaml）。没有省略任何字段。" }
+    ledger-empty { en "The ledger only grows: a settled paid order appends creator_share / hub_share / protocol_fee entries, a refund appends refund reversals. See the commands above to read them." zh "账本只增：已支付订单结算会追加 creator_share / hub_share / protocol_fee 条目，退款会追加 refund 冲正条目。用上方命令读取。" }
+    ledger-fields-title { en "Ledger entries" zh "账本条目" }
+    ledger-note { en "The list below is whatever the AFS directory currently holds; it makes no claim about being complete. Use ledger list --all (totalCount) or --limit <n> to bound or widen it." zh "下方列表即 AFS 目录当前的内容，不声称完整。用 ledger list --all（看 totalCount）或 --limit <n> 收窄 / 放宽口径。" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    paging-desc { en "CLI paging: no flags = the newest 20 entries; --limit <n> = the newest n; --all = everything. The JSON output carries count, totalCount, truncated and a hint — the page shows a list, not a total, so it never claims to show the whole ledger." zh "CLI 分页口径：不带参数 = 最新 20 条；--limit <n> = 最新 n 条；--all = 全量。JSON 输出带 count、totalCount、truncated 与 hint——本页只显示列表、不显示总数，因此不声称展示全量。" }
+    paging-title { en "Paging is a CLI decision" zh "分页口径以 CLI 为准" }
+    readonly-title { en "Read-only, append-only" zh "只读、只增不改" }
+    row-cmds { en "Row commands" zh "行级命令" }
+    settlements-empty { en "No settlement yet: settle --order <id> writes one settlement plus its ledger entries (payment and settlement are separate phases, spec §89)." zh "尚无结算：settle --order <id> 会写入一份结算记录及其账本条目（支付与结算是两个阶段，spec §89）。" }
+    settlements-title { en "Settlements" zh "结算" }
+    status-note { en "type and status are shown as the record's raw values (type: creator_share | hub_share | protocol_fee | refund; status: settled | reversed). The label is neutral on purpose — this platform cannot switch copy by record value (arc-contracts §28.8), so the raw value is the truth and the definition is written here once." zh "type 与 status 显示记录原始值（type：creator_share | hub_share | protocol_fee | refund；status：settled | reversed）。标签刻意保持中性——本平台无法按记录值切换文案（arc-contracts §28.8），因此原始值即事实，定义在此集中写明。" }
+    title { en "Settlements & ledger" zh "结算与账本" }
+  }
+  view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
+    view style={gap: "0"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dledger&cancel_to=%2F%3Fpage%3Dledger" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-tags)" -> page tags style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+              p :desc intent=muted
+            }
+            view gap=sm size={flex: 1} style={overflowY: auto} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :ledger-fields-title level=3 style={fontSize: "var(--type-body)"}
+                p :legend-ledger-fields scale=sm intent=muted
+                p :ledger-note scale=sm intent=muted
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:ledger-empty from "/instance/app/arcblog/economy/ledger" {
+                  row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      key-value-list dense=true fields=[{label: "$t(ledger.label-id)", value: "${entry.content.id}", monospace: true, copyable: true}, {label: "$t(ledger.label-order-id)", value: "${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.label-type-raw)", value: "${entry.content.type}"}, {label: "$t(ledger.label-from)", value: "${entry.content.from}"}, {label: "$t(ledger.label-to)", value: "${entry.content.to}"}, {label: "$t(ledger.label-amount)", value: "${entry.content.amount}"}, {label: "$t(ledger.label-asset)", value: "${entry.content.asset}"}, {label: "$t(ledger.label-status-raw)", value: "${entry.content.status}"}, {label: "$t(ledger.label-policy-version)", value: "${entry.content.policyVersion}"}, {label: "$t(ledger.label-hash)", value: "${entry.content.transactionHash}", monospace: true}, {label: "$t(ledger.label-created)", value: "${entry.content.createdAt}"}]
+                      row gap=xs cross=center {
+                        p :row-cmds scale=sm intent=muted
+                      }
+                      row gap=xs cross=center {
+                        p :label-created scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.createdAt}" timeMode=relative
+                        }
+                      }
+                      key-value-list dense=true fields=[{label: "$t(ledger.cmd-ledger-order)", value: "node scripts/arcblog-economy.mjs ledger list --order ${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.cmd-ledger-order-type)", value: "node scripts/arcblog-economy.mjs ledger list --order ${entry.content.orderId} --type ${entry.content.type}", monospace: true, copyable: true}, {label: "$t(ledger.cmd-order-show)", value: "node scripts/arcblog-economy.mjs order show --id ${entry.content.orderId}", monospace: true, copyable: true}]
+                    }
+                  }
+                }
+                p :ledger-empty scale=sm intent=muted
+                p :hash-note scale=sm intent=muted
+                p :amount-note scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :readonly-title level=3 style={fontSize: "var(--type-body)"}
+                p :append-only scale=sm intent=muted
+                p :kind-note scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :paging-title level=3 style={fontSize: "var(--type-body)"}
+                p :paging-desc scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :cli-title level=3 style={fontSize: "var(--type-body)"}
+                p :cli-desc scale=sm intent=muted
+                key-value-list dense=true fields=[{label: "$t(ledger.cmd-list)", value: "node scripts/arcblog-economy.mjs ledger list", monospace: true, copyable: true}, {label: "$t(ledger.cmd-limit)", value: "node scripts/arcblog-economy.mjs ledger list --limit 20", monospace: true, copyable: true}, {label: "$t(ledger.cmd-all)", value: "node scripts/arcblog-economy.mjs ledger list --all", monospace: true, copyable: true}, {label: "$t(ledger.cmd-type-creator)", value: "node scripts/arcblog-economy.mjs ledger list --type creator_share", monospace: true, copyable: true}, {label: "$t(ledger.cmd-type-hub)", value: "node scripts/arcblog-economy.mjs ledger list --type hub_share", monospace: true, copyable: true}, {label: "$t(ledger.cmd-type-protocol)", value: "node scripts/arcblog-economy.mjs ledger list --type protocol_fee", monospace: true, copyable: true}, {label: "$t(ledger.cmd-type-refund)", value: "node scripts/arcblog-economy.mjs ledger list --type refund", monospace: true, copyable: true}, {label: "$t(ledger.cmd-settle)", value: "node scripts/arcblog-economy.mjs settle --order <id>", monospace: true, copyable: true}, {label: "$t(ledger.cmd-order-show)", value: "node scripts/arcblog-economy.mjs order show --id <id>", monospace: true, copyable: true}]
+                p :status-note scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :settlements-title level=3 style={fontSize: "var(--type-body)"}
+                p :legend-settlement-fields scale=sm intent=muted
+                p :withheld-note scale=sm intent=muted
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:settlements-empty from "/instance/app/arcblog/economy/settlements" {
+                  row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      key-value-list dense=true fields=[{label: "$t(ledger.label-order-id)", value: "${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.label-amount)", value: "${entry.content.amount}"}, {label: "$t(ledger.label-asset)", value: "${entry.content.asset}"}, {label: creatorAmount, value: "${entry.content.creatorAmount}"}, {label: hubAmount, value: "${entry.content.hubAmount}"}, {label: protocolAmount, value: "${entry.content.protocolAmount}"}, {label: "$t(ledger.label-policy-version)", value: "${entry.content.policyVersion}"}, {label: "$t(ledger.label-status-raw)", value: "${entry.content.status}"}, {label: "$t(ledger.label-hash)", value: "${entry.content.transactionHash}", monospace: true}, {label: "$t(ledger.label-created)", value: "${entry.content.createdAt}"}]
+                      row gap=xs cross=center {
+                        p :hub-share-withheld scale=sm intent=muted
+                        p "${entry.content.hubShareWithheld}" scale=sm
+                      }
+                      row gap=xs cross=center {
+                        p :label-created scale=sm intent=muted
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.createdAt}" timeMode=relative
+                        }
+                      }
+                      row gap=xs cross=center {
+                        p :row-cmds scale=sm intent=muted
+                      }
+                      key-value-list dense=true fields=[{label: "$t(ledger.cmd-ledger-order)", value: "node scripts/arcblog-economy.mjs ledger list --order ${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.cmd-order-show)", value: "node scripts/arcblog-economy.mjs order show --id ${entry.content.orderId}", monospace: true, copyable: true}]
+                    }
+                  }
+                }
+                p :settlements-empty scale=sm intent=muted
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

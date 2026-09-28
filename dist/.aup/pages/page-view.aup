@@ -7,7 +7,7 @@ page page-view {
   view gap=lg {
     view gap=lg propBind={page: "/instance/app/arcblog/pages/$params.slug.json"} {
       row gap=sm {
-        view href="/posts" style={cursor: pointer, color: "var(--color-dim)"} {
+        view href="/posts" style={cursor: pointer, color: "var(--color-dim)", padding: "3px 0"} {
           p :back scale=sm
         }
       }
@@ -20,6 +20,6 @@ page page-view {
         p "${state.page.body}" format=markdown
       }
     }
-    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "© 2026 ArcBlog"}
   }
 }

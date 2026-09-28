@@ -5,7 +5,7 @@
 //   product add|list|show               Product records (spec §41)
 //   order create|list|show|pay          Order records (spec §42); payment only
 //   settle --order <id>                 Settlement + append-only ledger entries
-//   ledger list [--order <id>]          the economic ledger (spec §91)
+//   ledger list [--order <id>] [--type <t>]   the economic ledger (spec §91)
 //
 // Payment and settlement are deliberately separate phases (spec §89): `order pay`
 // records that money moved, `settle` decides where it goes. Settlement refuses an
@@ -418,6 +418,34 @@ function commandSettle(opts, instance) {
 // which matters because the ledger is append-only and grows forever (spec §92).
 const LEDGER_TYPES = ['creator_share', 'hub_share', 'protocol_fee'];
 
+// The `type` values a ledger entry can really carry (spec §91). `refund` is the
+// reversal type written by refundLedgerEntriesFor; `payment` / `tip` /
+// `settlement` are spec §15.7's wording for stages and an order `kind`, never
+// records in this ledger — see REQ-017 §1.2. Only the real four are accepted, so
+// `--type payment` fails closed instead of silently returning nothing.
+const LEDGER_ENTRY_TYPES = ['creator_share', 'hub_share', 'protocol_fee', 'refund'];
+
+/**
+ * True when a deterministic ledger id can hold an entry of `type`.
+ *
+ * Ids are `<orderId>:<type>` for shares/fees and `<orderId>:refund:<origin>` for
+ * reversals (spec §90/§91), so the id identifies the type without reading every
+ * record — the ledger only grows (spec §92), so a type filter must not turn into a
+ * full-directory read. The record's own `type` is still what the caller keeps
+ * (see commandLedgerList), which is what makes this a narrowing, not proof.
+ *
+ * A reversal id ends with the *origin* type (`o1:refund:creator_share`), so the
+ * `:refund:` test must come first or `--type creator_share` would count reversal
+ * ids it then drops — making `totalCount`/`truncated` lie. The order-id part is
+ * operator-chosen, and `ledgerEntriesForOrder` above already assumes it holds no
+ * `:refund:` segment; the same assumption applies here.
+ */
+function ledgerIdMatchesType(id, type) {
+  const isRefund = id.includes(':refund:');
+  if (type === 'refund') return isRefund;
+  return !isRefund && id.endsWith(`:${type}`);
+}
+
 function ledgerEntriesForOrder(orderId, instance) {
   const out = [];
   const ids = [
@@ -434,9 +462,23 @@ function ledgerEntriesForOrder(orderId, instance) {
 function commandLedgerList(opts, instance) {
   const orderId = optString(opts.order).trim();
 
+  // `--type <t>` is consumed, not silently ignored: parseArgs accepts any flag,
+  // so before this an unknown type looked exactly like an empty ledger (REQ-017
+  // §1.2 measured `--type refund` exiting 0 with unchanged output). A missing or
+  // unknown value fails closed with the real value set (spec §91).
+  const type = opts.type === undefined ? '' : optString(opts.type).trim();
+  if (opts.type !== undefined && !type) {
+    fail('VALIDATION', `ledger list --type requires a value (use ${LEDGER_ENTRY_TYPES.join('|')})`);
+  }
+  if (type && !LEDGER_ENTRY_TYPES.includes(type)) {
+    fail('VALIDATION', `unknown ledger type: ${type} (use ${LEDGER_ENTRY_TYPES.join('|')})`);
+  }
+  // The record is authoritative; the id suffix only narrows which files to read.
+  const keepType = (entry) => !type || entry.type === type;
+
   // One order: read only the (at most) three entries it can have.
   if (orderId) {
-    const entries = ledgerEntriesForOrder(orderId, instance);
+    const entries = ledgerEntriesForOrder(orderId, instance).filter(keepType);
     console.log(
       JSON.stringify(
         { ok: true, path: LEDGER_DIR, orderId, count: entries.length, total: sumLedger(entries), entries },
@@ -456,11 +498,13 @@ function commandLedgerList(opts, instance) {
   const ids = list(LEDGER_DIR, instance)
     .map((entry) => String(entry?.id ?? '').replace(/\.json$/, ''))
     .filter(Boolean)
-    .sort();
+    .sort()
+    .filter((id) => !type || ledgerIdMatchesType(id, type));
   const shown = limit > 0 ? ids.slice(-limit) : ids;
   const entries = shown
     .map((id) => readJson(`${LEDGER_DIR}/${id}.json`, instance)?.value)
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter(keepType);
   console.log(
     JSON.stringify(
       {
@@ -492,12 +536,14 @@ Usage:
   node scripts/arcblog-economy.mjs product list | product show --id <id>
   node scripts/arcblog-economy.mjs product remove --id <id>   # refused while orders reference it (spec §50)
   node scripts/arcblog-economy.mjs order create --id <id> --product-id <id> [--buyer-did <did>] [--hub-did <did>]
-  node scripts/arcblog-economy.mjs order list | order show --id <id>
+  node scripts/arcblog-economy.mjs order list
+  node scripts/arcblog-economy.mjs order show --id <id>
   node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
   node scripts/arcblog-economy.mjs order refund --id <id> [--reason <text>]
   node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
   node scripts/arcblog-economy.mjs settle --order <id>
-  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--limit <n>|--all] [--limit <n>|--all]
+  node scripts/arcblog-economy.mjs ledger list [--order <id>] [--type <t>] [--limit <n>|--all]
+                                              # --type <t>: ${LEDGER_ENTRY_TYPES.join('|')} (spec §91)
   node scripts/arcblog-economy.mjs access check --content <id> --reader <did>
   node scripts/arcblog-economy.mjs access read --content <id> --reader <did>   # paid full text (spec §86)
   node scripts/arcblog-economy.mjs access list [--content <id>] [--reader <did>]

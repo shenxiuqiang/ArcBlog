@@ -1,7 +1,7 @@
 page policy {
   i18n {
     desc { en "The split policy and the product catalogue." zh "分成策略与商品目录。" }
-    gate-desc { en "Sign in with DID Wallet to view the economy and grants." zh "使用 DID Wallet 登录后查看经济与授权。" }
+    gate-desc { en "Sign in with DID Wallet to view the split policy and products." zh "使用 DID Wallet 登录后查看分成策略与商品。" }
     gate-title { en "Economy" zh "经济" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     policy { en "Settlement policy" zh "结算策略" }
@@ -84,11 +84,19 @@ page policy {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

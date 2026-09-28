@@ -278,6 +278,7 @@ Usage:
   node scripts/arcblog-network.mjs hub approve --hub-did <did>     # applied → indexed
   node scripts/arcblog-network.mjs hub reject --hub-did <did>      # applied → removed (tombstone)
   node scripts/arcblog-network.mjs hub list
+  node scripts/arcblog-network.mjs hub refresh            # §75/§76: derive fresh/stale/never/offline
   node scripts/arcblog-network.mjs hub show --hub-did <did>
   node scripts/arcblog-network.mjs hub sync --hub-did <did> [--version <n>] [--hash <h>] \\
                                           [--status ${SYNC_STATUSES.join('|')}] [--error <message>]

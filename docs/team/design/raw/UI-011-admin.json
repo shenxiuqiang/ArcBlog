@@ -1,0 +1,4487 @@
+{
+  "meta": {
+    "mode": "admin",
+    "origin": "http://arcblog.localhost:4939",
+    "viewport": "1803x908@1",
+    "waitMs": 3500,
+    "pagesBefore": 1,
+    "pagesDuring": 1,
+    "pagesAfter": 1,
+    "head": null,
+    "gateLock": null,
+    "navPages": null,
+    "sourceMtime": null,
+    "startedAt": "2026-09-28T04:35:02.776Z",
+    "steps": [
+      {
+        "page": "general",
+        "url": "http://arcblog.localhost:4939/?page=general",
+        "tookMs": 3551,
+        "gotUrl": "http://arcblog.localhost:4939/?page=general",
+        "sameDeepLink": true
+      },
+      {
+        "page": "diagnostics",
+        "url": "http://arcblog.localhost:4939/?page=diagnostics",
+        "tookMs": 3565,
+        "gotUrl": "http://arcblog.localhost:4939/?page=diagnostics",
+        "sameDeepLink": true
+      }
+    ],
+    "finishedAt": "2026-09-28T04:35:09.893Z"
+  },
+  "pages": {
+    "general": {
+      "url": "http://arcblog.localhost:4939/?page=general",
+      "title": "ArcBlog",
+      "lang": "en",
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "innerW": 1803,
+      "innerH": 908,
+      "dpr": 1,
+      "tokens": {
+        "--color-bg": "#fafaf8",
+        "--color-surface": "#ffffff",
+        "--color-text": "#1a1a1f",
+        "--color-dim": "#6b6b78",
+        "--color-border": "rgba(0,0,0,.08)",
+        "--color-accent": "#2a6e00",
+        "--color-accent-bg": "rgba(42,110,0,.08)",
+        "--color-success": "#0f766e",
+        "--color-warning": "#a16207",
+        "--color-danger": "#c53030",
+        "--color-info": "#2563eb",
+        "--card-bg": "#f0efec",
+        "--card-border": "1px solid rgba(0,0,0,.08)",
+        "--radius-sm": "4px",
+        "--radius-md": "8px",
+        "--radius-lg": "10px",
+        "--type-display": "2rem",
+        "--type-heading": "1.35rem",
+        "--type-subheading": "1.0625rem",
+        "--type-body": ".9375rem",
+        "--type-small": ".75rem",
+        "--type-caption": ".8125rem",
+        "--space-block": "1.25rem",
+        "--aup-content-max": "1200px"
+      },
+      "pageScroll": {
+        "de_scrollH": 908,
+        "de_clientH": 908,
+        "de_scrollW": 1803,
+        "de_clientW": 1803,
+        "body_overflowY": "visible"
+      },
+      "activeCount": 1,
+      "activeText": "General",
+      "activeBox": {
+        "x": 0,
+        "y": 880.5,
+        "w": 269.44,
+        "h": 34,
+        "right": 269.44,
+        "bottom": 914.5
+      },
+      "activeAria": "page",
+      "activeBg": "rgba(42, 110, 0, 0.08)",
+      "activeColor": "rgb(42, 110, 0)",
+      "activePad": "8px 20px 8px 32px",
+      "navPadNonActive": "8px 20px 8px 32px",
+      "sidebar": {
+        "w": 270.44,
+        "clientH": 860,
+        "scrollH": 1021,
+        "overflow": 161,
+        "rows": 23,
+        "overflowY": "auto",
+        "scrollbarWidth": 1.44,
+        "footerReach": {
+          "lastChildText": "ArcBlog\nAbout\nRSS\n© 2026 ArcBlog",
+          "lastChildBottom": 907.5,
+          "innerHeight": 908,
+          "reachable": true,
+          "scrollTopAfter": 161,
+          "scrollH": 1021,
+          "clientH": 860
+        }
+      },
+      "contentCol": {
+        "candidates": 1,
+        "rowGap": "10px",
+        "columnGap": "10px",
+        "overflowY": "auto",
+        "clientH": 759,
+        "scrollH": 1793,
+        "clientW": 1471,
+        "padding": "0px",
+        "linksWithoutTarget": 0
+      },
+      "wrapperGap": "20px",
+      "cards": {
+        "n": 4,
+        "pad": [
+          "14px"
+        ],
+        "gap": [
+          "10px"
+        ],
+        "radius": [
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "border": [
+          "1px solid rgba(0, 0, 0, 0.08)"
+        ],
+        "bg": [
+          "rgb(240, 239, 236)"
+        ],
+        "widths": [
+          728.28,
+          728.28,
+          728.28,
+          728.28
+        ]
+      },
+      "cardGrid": {
+        "cols": "1803px",
+        "gap": "0px",
+        "alignItems": "normal",
+        "children": 1
+      },
+      "headings": [
+        {
+          "tag": "H2",
+          "text": "General",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "21.25px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 300.44,
+            "y": 62,
+            "w": 1470.56,
+            "h": 21.25,
+            "right": 1771,
+            "bottom": 83.25
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "What belongs here",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 150,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 172.5
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Site basics",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 150,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 172.5
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Site name",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 339.81,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 362.31
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Language",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 464.89,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 487.39
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Timezone",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 616.16,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 638.66
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Stored records",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 786.61,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 809.11
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Language",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 878.48,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 900.98
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Site name",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 1003.55,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1026.05
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Timezone",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 1128.61,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1151.11
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Instance switches",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1298.86,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 1321.36
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Comments",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1363.55,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 1386.05
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "RSS",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1466.61,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 1489.11
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Agent Access (master switch)",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1569.67,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 1592.17
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Agent Access",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1680.73,
+            "w": 102.38,
+            "h": 22.5,
+            "right": 417.81,
+            "bottom": 1703.23
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Comments",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1764.23,
+            "w": 82.77,
+            "h": 22.5,
+            "right": 398.2,
+            "bottom": 1786.73
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "RSS",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1847.73,
+            "w": 30.03,
+            "h": 22.5,
+            "right": 345.47,
+            "bottom": 1870.23
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Initialize records",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 1298.86,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1321.36
+          }
+        }
+      ],
+      "intents": [
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"13px\"}",
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"15px\"}",
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"12.8px\"}"
+      ],
+      "intentEls": [
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Content",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Site",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Operations",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Economy",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Settings",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "ArcBlog",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "© 2026 ArcBlog",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "15px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Instance-level General settings: site na",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "These are Instance-level values: they ar",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Site-level values. They live in this blo",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Each field offers only its own record’s ",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Channel title of the generated RSS feed.",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Value of the RSS <language> element of t",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Allowed values: en, zh",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "IANA timezone used for the <pubDate>/<la",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Allowed values: UTC, Asia/Shanghai, Asia",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "What is actually stored under /instance/",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Value of the RSS <language> element of t",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Allowed values: [ \"en\", \"zh\" ]",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Channel title of the generated RSS feed.",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Allowed values:",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "IANA timezone used for the <pubDate>/<la",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Allowed values: [ \"UTC\", \"Asia/Shanghai\"",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Instance-level master switches. Every sw",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "No consumer yet — ArcBlog has no comment",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Consumed by scripts/arcblog-rss.mjs: whe",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Consumed by scripts/arcblog-agent.mjs: w",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "true",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "false",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Stored value",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "true",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Create only the records that are missing",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        }
+      ],
+      "keyValues": 0,
+      "copyBtns": [],
+      "emptyText": [],
+      "didEls": [],
+      "scrollEls": [
+        {
+          "tag": "DIV",
+          "id": "general-view-1",
+          "sw": 1502,
+          "cw": 1200
+        },
+        {
+          "tag": "DIV",
+          "id": "general-view-1-view-1",
+          "sw": 1470,
+          "cw": 1136
+        }
+      ],
+      "buttonList": [
+        {
+          "tag": "BUTTON",
+          "text": "Save",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 1696.88,
+            "y": 394.5,
+            "w": 59.13,
+            "h": 60.39,
+            "right": 1756,
+            "bottom": 454.89
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Save",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 1696.88,
+            "y": 543.77,
+            "w": 59.13,
+            "h": 62.39,
+            "right": 1756,
+            "bottom": 606.16
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Save",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 1696.88,
+            "y": 714.22,
+            "w": 59.13,
+            "h": 62.39,
+            "right": 1756,
+            "bottom": 776.61
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "On",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 315.44,
+            "y": 1708.23,
+            "w": 46.53,
+            "h": 29,
+            "right": 361.97,
+            "bottom": 1737.23
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Off",
+          "variant": null,
+          "cls": "aup-action",
+          "box": {
+            "x": 366.97,
+            "y": 1708.23,
+            "w": 47.66,
+            "h": 29,
+            "right": 414.63,
+            "bottom": 1737.23
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "On",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 315.44,
+            "y": 1791.73,
+            "w": 46.53,
+            "h": 29,
+            "right": 361.97,
+            "bottom": 1820.73
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Off",
+          "variant": null,
+          "cls": "aup-action",
+          "box": {
+            "x": 366.97,
+            "y": 1791.73,
+            "w": 47.66,
+            "h": 29,
+            "right": 414.63,
+            "bottom": 1820.73
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "On",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 315.44,
+            "y": 1875.23,
+            "w": 46.53,
+            "h": 29,
+            "right": 361.97,
+            "bottom": 1904.23
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Off",
+          "variant": null,
+          "cls": "aup-action",
+          "box": {
+            "x": 366.97,
+            "y": 1875.23,
+            "w": 47.66,
+            "h": 29,
+            "right": 414.63,
+            "bottom": 1904.23
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Create basics",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 1057.72,
+            "y": 1440.3,
+            "w": 120.53,
+            "h": 29,
+            "right": 1178.25,
+            "bottom": 1469.3
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Create switches",
+          "variant": "secondary",
+          "cls": "aup-action",
+          "box": {
+            "x": 1188.25,
+            "y": 1440.3,
+            "w": 137.91,
+            "h": 29,
+            "right": 1326.16,
+            "bottom": 1469.3
+          },
+          "fs": "13.6px",
+          "pad": "5px 12px",
+          "radius": "8px",
+          "alignSelf": "auto",
+          "display": "flex",
+          "parentDisplay": "flex",
+          "parentAlign": "normal",
+          "parentW": 698.28
+        }
+      ],
+      "cardGrids": [
+        {
+          "cols": 1,
+          "gap": "0px",
+          "alignItems": "normal",
+          "children": 1,
+          "w": 1803,
+          "firstW": 1803
+        },
+        {
+          "cols": 2,
+          "gap": "14px",
+          "alignItems": "start",
+          "children": 4,
+          "w": 1470.56,
+          "firstW": 728.28
+        }
+      ],
+      "listRows": [
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 1057.72,
+            "y": 870.48,
+            "w": 698.28,
+            "h": 115.06,
+            "right": 1756,
+            "bottom": 985.55
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 1057.72,
+            "y": 995.55,
+            "w": 698.28,
+            "h": 115.06,
+            "right": 1756,
+            "bottom": 1110.61
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 1057.72,
+            "y": 1120.61,
+            "w": 698.28,
+            "h": 134.25,
+            "right": 1756,
+            "bottom": 1254.86
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 315.44,
+            "y": 1672.73,
+            "w": 698.28,
+            "h": 73.5,
+            "right": 1013.72,
+            "bottom": 1746.23
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        }
+      ],
+      "kvSample": [],
+      "sampleTexts": [
+        {
+          "t": "▾",
+          "fs": "10px",
+          "ff": "Arial",
+          "color": "rgb(107, 107, 120)"
+        },
+        {
+          "t": "Dashboard",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Studio",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Pages",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Write",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Heroes",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Categories",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Tags",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "SEO",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Feeds",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Appearance",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Operations",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Hub console",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Media",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Agents",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Orders",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Policy",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Access",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Settlements & ledger",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Factory",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "General",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(42, 110, 0)"
+        },
+        {
+          "t": "Diagnostics",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "About",
+          "fs": "13px",
+          "ff": "Sora",
+          "color": "rgb(107, 107, 120)"
+        },
+        {
+          "t": "RSS",
+          "fs": "13px",
+          "ff": "Sora",
+          "color": "rgb(107, 107, 120)"
+        },
+        {
+          "t": "Save",
+          "fs": "13.6px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Save",
+          "fs": "13.6px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        }
+      ],
+      "runtimeEmptyEnglish": false,
+      "domShape": null,
+      "kvRows": [],
+      "fontSizes": [
+        "10px",
+        "12px",
+        "12.8px",
+        "13px",
+        "13.3333px",
+        "13.6px",
+        "14.4px",
+        "15px",
+        "16px",
+        "17px"
+      ],
+      "fontFamilies": [
+        "Sora",
+        "\"SF Mono\"",
+        "Arial"
+      ],
+      "fontOutliers": [
+        {
+          "tag": "HTML",
+          "cls": "",
+          "fs": "16px",
+          "ff": "\"PingFang SC\"",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "BODY",
+          "cls": "",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "active full-page",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-title",
+          "fs": "16px",
+          "ff": "\"SF Mono\"",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-action",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-action",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-user-menu-trigger",
+          "fs": "13.3333px",
+          "ff": "Arial",
+          "text": "▾"
+        },
+        {
+          "tag": "SPAN",
+          "cls": "aup-app-header-user-avatar",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "IMG",
+          "cls": "",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "cls": "aup-app-header-user-menu-arrow",
+          "fs": "10px",
+          "ff": "Arial",
+          "text": "▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        }
+      ],
+      "monoList": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "HEADER",
+          "cls": "aup-app-header",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-bar",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "A",
+          "cls": "aup-app-header-brand-link",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-title",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "16px",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-strip-right",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-user-menu",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "▾"
+        }
+      ],
+      "leakedAdminKeys": [
+        "Site basics",
+        "Stored records",
+        "Instance switches",
+        "Initialize records",
+        "What belongs here"
+      ],
+      "buttons": {
+        "n": 11,
+        "primary": 0,
+        "primaryTexts": [],
+        "variants": [
+          "secondary",
+          null
+        ],
+        "radius": [
+          "8px"
+        ],
+        "heights": [
+          60.39,
+          62.39,
+          29
+        ],
+        "fs": [
+          "13.6px"
+        ],
+        "pad": [
+          "5px 12px"
+        ]
+      },
+      "smallHitAreas": [],
+      "clickableCount": 14,
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "box": {
+            "x": 1057.72,
+            "y": 418.89,
+            "w": 634.16,
+            "h": 36,
+            "right": 1691.88,
+            "bottom": 454.89
+          },
+          "radius": "8px",
+          "fs": "14.4px",
+          "pad": "8px 12px",
+          "border": "1px rgba(0, 0, 0, 0.08)"
+        },
+        {
+          "tag": "SELECT",
+          "type": "select-one",
+          "box": {
+            "x": 1057.72,
+            "y": 568.16,
+            "w": 634.16,
+            "h": 38,
+            "right": 1691.88,
+            "bottom": 606.16
+          },
+          "radius": "8px",
+          "fs": "14.4px",
+          "pad": "8px 12px",
+          "border": "1px rgba(0, 0, 0, 0.08)"
+        },
+        {
+          "tag": "SELECT",
+          "type": "select-one",
+          "box": {
+            "x": 1057.72,
+            "y": 738.61,
+            "w": 634.16,
+            "h": 38,
+            "right": 1691.88,
+            "bottom": 776.61
+          },
+          "radius": "8px",
+          "fs": "14.4px",
+          "pad": "8px 12px",
+          "border": "1px rgba(0, 0, 0, 0.08)"
+        }
+      ],
+      "gate": null,
+      "contrastTargets": {
+        "pageTitle": {
+          "text": "General",
+          "box": {
+            "x": 300.44,
+            "y": 62,
+            "w": 1470.56,
+            "h": 21.25,
+            "right": 1771,
+            "bottom": 83.25
+          },
+          "fg": "rgb(26, 26, 31)",
+          "bg": "rgb(250, 250, 248)",
+          "bgChain": "250,250,248@1",
+          "ratio": 16.59,
+          "fontSize": "17px",
+          "fontWeight": "600"
+        },
+        "cardHeading": {
+          "text": "What belongs here",
+          "box": {
+            "x": 315.44,
+            "y": 150,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 172.5
+          },
+          "fg": "rgb(26, 26, 31)",
+          "bg": "rgb(240, 239, 236)",
+          "bgChain": "240,239,236@1",
+          "ratio": 15.08,
+          "fontSize": "15px",
+          "fontWeight": "600"
+        },
+        "pageDesc": null,
+        "dimSmall": null,
+        "body": null,
+        "platformKV": null,
+        "inCardDim": null
+      },
+      "textLen": 4227,
+      "textHead": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | Policy | Access | Settlements & ledger | Factory | Settings | General | Di"
+    },
+    "diagnostics": {
+      "url": "http://arcblog.localhost:4939/?page=diagnostics",
+      "title": "ArcBlog",
+      "lang": "en",
+      "tone": "editorial",
+      "palette": "natural",
+      "mode": "light",
+      "innerW": 1803,
+      "innerH": 908,
+      "dpr": 1,
+      "tokens": {
+        "--color-bg": "#fafaf8",
+        "--color-surface": "#ffffff",
+        "--color-text": "#1a1a1f",
+        "--color-dim": "#6b6b78",
+        "--color-border": "rgba(0,0,0,.08)",
+        "--color-accent": "#2a6e00",
+        "--color-accent-bg": "rgba(42,110,0,.08)",
+        "--color-success": "#0f766e",
+        "--color-warning": "#a16207",
+        "--color-danger": "#c53030",
+        "--color-info": "#2563eb",
+        "--card-bg": "#f0efec",
+        "--card-border": "1px solid rgba(0,0,0,.08)",
+        "--radius-sm": "4px",
+        "--radius-md": "8px",
+        "--radius-lg": "10px",
+        "--type-display": "2rem",
+        "--type-heading": "1.35rem",
+        "--type-subheading": "1.0625rem",
+        "--type-body": ".9375rem",
+        "--type-small": ".75rem",
+        "--type-caption": ".8125rem",
+        "--space-block": "1.25rem",
+        "--aup-content-max": "1200px"
+      },
+      "pageScroll": {
+        "de_scrollH": 908,
+        "de_clientH": 908,
+        "de_scrollW": 1803,
+        "de_clientW": 1803,
+        "body_overflowY": "visible"
+      },
+      "activeCount": 1,
+      "activeText": "Diagnostics",
+      "activeBox": {
+        "x": 0,
+        "y": 915.5,
+        "w": 269.44,
+        "h": 34,
+        "right": 269.44,
+        "bottom": 949.5
+      },
+      "activeAria": "page",
+      "activeBg": "rgba(42, 110, 0, 0.08)",
+      "activeColor": "rgb(42, 110, 0)",
+      "activePad": "8px 20px 8px 32px",
+      "navPadNonActive": "8px 20px 8px 32px",
+      "sidebar": {
+        "w": 270.44,
+        "clientH": 860,
+        "scrollH": 1021,
+        "overflow": 161,
+        "rows": 23,
+        "overflowY": "auto",
+        "scrollbarWidth": 1.44,
+        "footerReach": {
+          "lastChildText": "ArcBlog\nAbout\nRSS\n© 2026 ArcBlog",
+          "lastChildBottom": 907.5,
+          "innerHeight": 908,
+          "reachable": true,
+          "scrollTopAfter": 161,
+          "scrollH": 1021,
+          "clientH": 860
+        }
+      },
+      "contentCol": {
+        "candidates": 1,
+        "rowGap": "10px",
+        "columnGap": "10px",
+        "overflowY": "auto",
+        "clientH": 737,
+        "scrollH": 4291,
+        "clientW": 1471,
+        "padding": "0px",
+        "linksWithoutTarget": 0
+      },
+      "wrapperGap": "20px",
+      "cards": {
+        "n": 9,
+        "pad": [
+          "14px"
+        ],
+        "gap": [
+          "10px"
+        ],
+        "radius": [
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "border": [
+          "1px solid rgba(0, 0, 0, 0.08)"
+        ],
+        "bg": [
+          "rgb(240, 239, 236)"
+        ],
+        "widths": [
+          1470.56,
+          1470.56,
+          1470.56,
+          728.28,
+          728.28,
+          728.28,
+          728.28,
+          728.28,
+          1470.56
+        ]
+      },
+      "cardGrid": {
+        "cols": "1803px",
+        "gap": "0px",
+        "alignItems": "normal",
+        "children": 1
+      },
+      "headings": [
+        {
+          "tag": "H2",
+          "text": "Diagnostics & maintenance",
+          "fs": "17px",
+          "fw": "600",
+          "lh": "21.25px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 300.44,
+            "y": 62,
+            "w": 1470.56,
+            "h": 21.25,
+            "right": 1771,
+            "bottom": 83.25
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "How to read this page",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 172.5,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 195
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Last self-check (recorded)",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 378.38,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 400.88
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Every check, one row each",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 761.06,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 783.56
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "authorship",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 852.94,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 875.44
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "categories",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 976.81,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 999.31
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "de-identification",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1100.69,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1123.19
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "node-identity",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1224.56,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1247.06
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "node-profile",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1348.44,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1370.94
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "resources",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1472.31,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1494.81
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "space-app",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1596.19,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1618.69
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "space-layout",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1720.06,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1742.56
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "test-records",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 1843.94,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 1866.44
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Storage & index",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 2019.31,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 2041.81
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Permissions (platform boundary)",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 2019.31,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 2041.81
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Logs",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 2446.75,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 2469.25
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Data export & backup",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 1057.72,
+            "y": 2446.75,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 2469.25
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "First-line troubleshooting",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 2961.56,
+            "w": 698.28,
+            "h": 22.5,
+            "right": 1013.72,
+            "bottom": 2984.06
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "Background work (intent queue)",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 3621.44,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 3643.94
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "acquire · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 3805.31,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 3827.81
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "acquire · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 3905,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 3927.5
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "acquire · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 4004.69,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 4027.19
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "acquire · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 4104.38,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 4126.88
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "acquire · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 4204.06,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 4226.56
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "claim · studio",
+          "fs": "15px",
+          "fw": "600",
+          "lh": "22.5px",
+          "color": "rgb(26, 26, 31)",
+          "box": {
+            "x": 315.44,
+            "y": 4303.75,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 4326.25
+          }
+        }
+      ],
+      "intents": [
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"13px\"}",
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"15px\"}",
+        "{\"i\":\"muted\",\"c\":\"rgb(107, 107, 120)\",\"fs\":\"12.8px\"}"
+      ],
+      "intentEls": [
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Content",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Site",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Operations",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Economy",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "Settings",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "ArcBlog",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "© 2026 ArcBlog",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "15px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Self-check results, storage and index, p",
+          "ratio": 5.02,
+          "bg": "rgb(250, 250, 248)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "An AUP page cannot execute server-side c",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Source: /instance/app/arcblog/config/dia",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Recorded at",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "If this list is empty, no snapshot exist",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Source: one record per check under /inst",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "37 records, all attributed",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "3 (technology, design, life)",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "AFS_DID_SPACE_SCOPE_SECRET unset — scope",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "did=did:blocklet:arcblog auth=blocklet",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "name=ArcBlog roles=basic",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "4/4 present",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "ArcBlog (instance): 995 files, 376262 by",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "arc space check exited 1 — layout or ind",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "7 test records (drafts 7) — clean up aft",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "13px",
+          "fw": "500",
+          "color": "rgb(107, 107, 120)",
+          "text": "If this list is empty, no snapshot exist",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "`arc space check` is read-only and answe",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Do not pipe that command: its JSON repor",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "This platform gives the app exactly two ",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "The daemon log is the only log surface. ",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "The AFS records are the source of truth;",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Keep an OFFLINE copy, outside this repo:",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Symptom → command or criterion. Every ro",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "Source: the records under /instance/app/",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        },
+        {
+          "tag": "DIV",
+          "intent": "muted",
+          "fs": "12.8px",
+          "fw": "300",
+          "color": "rgb(107, 107, 120)",
+          "text": "No heartbeat record exists anywhere in t",
+          "ratio": 4.57,
+          "bg": "rgb(240, 239, 236)"
+        }
+      ],
+      "keyValues": 1,
+      "copyBtns": [
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1012.08,
+            "y": 266.38,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 284.38
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 997.05,
+            "y": 307.88,
+            "w": 18,
+            "h": 18,
+            "right": 1015.05,
+            "bottom": 325.88
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1012.08,
+            "y": 652.06,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 670.06
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 635.38,
+            "y": 2140.13,
+            "w": 18,
+            "h": 18,
+            "right": 653.38,
+            "bottom": 2158.13
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 772.31,
+            "y": 2189.38,
+            "w": 18,
+            "h": 18,
+            "right": 790.31,
+            "bottom": 2207.38
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 771.78,
+            "y": 2256.63,
+            "w": 18,
+            "h": 18,
+            "right": 789.78,
+            "bottom": 2274.63
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 616.16,
+            "y": 2323.88,
+            "w": 18,
+            "h": 18,
+            "right": 634.16,
+            "bottom": 2341.88
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1640.27,
+            "y": 2159.31,
+            "w": 18,
+            "h": 18,
+            "right": 1658.27,
+            "bottom": 2177.31
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 632.33,
+            "y": 2559.81,
+            "w": 18,
+            "h": 18,
+            "right": 650.33,
+            "bottom": 2577.81
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 688.34,
+            "y": 2601.31,
+            "w": 18,
+            "h": 18,
+            "right": 706.34,
+            "bottom": 2619.31
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 676.16,
+            "y": 2642.81,
+            "w": 18,
+            "h": 18,
+            "right": 694.16,
+            "bottom": 2660.81
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 719.94,
+            "y": 2684.31,
+            "w": 18,
+            "h": 18,
+            "right": 737.94,
+            "bottom": 2702.31
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1686.09,
+            "y": 2586.75,
+            "w": 18,
+            "h": 18,
+            "right": 1704.09,
+            "bottom": 2604.75
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1620.8,
+            "y": 2652.75,
+            "w": 18,
+            "h": 18,
+            "right": 1638.8,
+            "bottom": 2670.75
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1377.66,
+            "y": 2718.75,
+            "w": 18,
+            "h": 18,
+            "right": 1395.66,
+            "bottom": 2736.75
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1514.06,
+            "y": 2793.75,
+            "w": 18,
+            "h": 18,
+            "right": 1532.06,
+            "bottom": 2811.75
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1018.88,
+            "y": 3715.31,
+            "w": 18,
+            "h": 18,
+            "right": 1036.88,
+            "bottom": 3733.31
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        },
+        {
+          "cls": "aup-copy-btn",
+          "title": "Copy",
+          "box": {
+            "x": 1036.94,
+            "y": 3756.81,
+            "w": 18,
+            "h": 18,
+            "right": 1054.94,
+            "bottom": 3774.81
+          },
+          "fs": "11.52px",
+          "ff": "Arial",
+          "radius": "3px",
+          "opacity": "0.55"
+        }
+      ],
+      "emptyText": [
+        "An AUP page cannot execute server-side code — provider mounts are not loaded on this platform (arc-contracts §26.1/§26.2). So this page only visualises the last recorded self-check and offers commands you copy and run yourself; every value comes from an AFS record or is a literal command string. If the self-check card below stays empty, no snapshot has been recorded yet (no snapshot = 尚未运行): run the record command first.",
+        "If this list is empty, no snapshot exists yet — run the record command above. Empty is not the same as “all checks passed”.",
+        "If this list is empty, no snapshot exists yet — run the record command above. Empty is not the same as “all checks passed”."
+      ],
+      "didEls": [],
+      "scrollEls": [
+        {
+          "tag": "DIV",
+          "id": "diagnostics-view-1",
+          "sw": 1502,
+          "cw": 1200
+        },
+        {
+          "tag": "DIV",
+          "id": "diagnostics-view-1-view-1",
+          "sw": 1470,
+          "cw": 1136
+        }
+      ],
+      "buttonList": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1012.08,
+            "y": 266.38,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 284.38
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 1021.22
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 997.05,
+            "y": 307.88,
+            "w": 18,
+            "h": 18,
+            "right": 1015.05,
+            "bottom": 325.88
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 1021.22
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1012.08,
+            "y": 652.06,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 670.06
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 1021.22
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 635.38,
+            "y": 2140.13,
+            "w": 18,
+            "h": 18,
+            "right": 653.38,
+            "bottom": 2158.13
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 772.31,
+            "y": 2189.38,
+            "w": 18,
+            "h": 18,
+            "right": 790.31,
+            "bottom": 2207.38
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 771.78,
+            "y": 2256.63,
+            "w": 18,
+            "h": 18,
+            "right": 789.78,
+            "bottom": 2274.63
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 616.16,
+            "y": 2323.88,
+            "w": 18,
+            "h": 18,
+            "right": 634.16,
+            "bottom": 2341.88
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1640.27,
+            "y": 2159.31,
+            "w": 18,
+            "h": 18,
+            "right": 1658.27,
+            "bottom": 2177.31
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 632.33,
+            "y": 2559.81,
+            "w": 18,
+            "h": 18,
+            "right": 650.33,
+            "bottom": 2577.81
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 688.34,
+            "y": 2601.31,
+            "w": 18,
+            "h": 18,
+            "right": 706.34,
+            "bottom": 2619.31
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 676.16,
+            "y": 2642.81,
+            "w": 18,
+            "h": 18,
+            "right": 694.16,
+            "bottom": 2660.81
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 719.94,
+            "y": 2684.31,
+            "w": 18,
+            "h": 18,
+            "right": 737.94,
+            "bottom": 2702.31
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1686.09,
+            "y": 2586.75,
+            "w": 18,
+            "h": 18,
+            "right": 1704.09,
+            "bottom": 2604.75
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1620.8,
+            "y": 2652.75,
+            "w": 18,
+            "h": 18,
+            "right": 1638.8,
+            "bottom": 2670.75
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1377.66,
+            "y": 2718.75,
+            "w": 18,
+            "h": 18,
+            "right": 1395.66,
+            "bottom": 2736.75
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1514.06,
+            "y": 2793.75,
+            "w": 18,
+            "h": 18,
+            "right": 1532.06,
+            "bottom": 2811.75
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 486.77
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1018.88,
+            "y": 3715.31,
+            "w": 18,
+            "h": 18,
+            "right": 1036.88,
+            "bottom": 3733.31
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 1021.22
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "variant": null,
+          "cls": "aup-copy-btn",
+          "box": {
+            "x": 1036.94,
+            "y": 3756.81,
+            "w": 18,
+            "h": 18,
+            "right": 1054.94,
+            "bottom": 3774.81
+          },
+          "fs": "11.52px",
+          "pad": "0px",
+          "radius": "3px",
+          "alignSelf": "auto",
+          "display": "inline-flex",
+          "parentDisplay": "block",
+          "parentAlign": "normal",
+          "parentW": 1021.22
+        }
+      ],
+      "cardGrids": [
+        {
+          "cols": 1,
+          "gap": "0px",
+          "alignItems": "normal",
+          "children": 1,
+          "w": 1803,
+          "firstW": 1803
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "14px",
+          "alignItems": "start",
+          "children": 5,
+          "w": 1470.56,
+          "firstW": 728.28
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 698.28,
+          "firstW": 195.52
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        },
+        {
+          "cols": 2,
+          "gap": "16px",
+          "alignItems": "center",
+          "children": 2,
+          "w": 1440.56,
+          "firstW": 403.34
+        }
+      ],
+      "listRows": [
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 315.44,
+            "y": 443.06,
+            "w": 1440.56,
+            "h": 248.5,
+            "right": 1756,
+            "bottom": 691.56
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 315.44,
+            "y": 844.94,
+            "w": 1440.56,
+            "h": 113.88,
+            "right": 1756,
+            "bottom": 958.81
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 315.44,
+            "y": 968.81,
+            "w": 1440.56,
+            "h": 113.88,
+            "right": 1756,
+            "bottom": 1082.69
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        },
+        {
+          "cls": "aup-view aup-list-template-item",
+          "box": {
+            "x": 315.44,
+            "y": 1092.69,
+            "w": 1440.56,
+            "h": 113.88,
+            "right": 1756,
+            "bottom": 1206.56
+          },
+          "pad": "8px 0px",
+          "borderBottom": "1px rgba(0, 0, 0, 0.08)",
+          "gap": "5px",
+          "br": "rgba(0, 0, 0, 0)",
+          "flexDirection": "column"
+        }
+      ],
+      "kvSample": [],
+      "sampleTexts": [
+        {
+          "t": "▾",
+          "fs": "10px",
+          "ff": "Arial",
+          "color": "rgb(107, 107, 120)"
+        },
+        {
+          "t": "Dashboard",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Studio",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Pages",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Write",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Heroes",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Categories",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Tags",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "SEO",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Feeds",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Appearance",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Operations",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Hub console",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Media",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Agents",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Orders",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Policy",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Access",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Settlements & ledger",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Factory",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "General",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(26, 26, 31)"
+        },
+        {
+          "t": "Diagnostics",
+          "fs": "14.4px",
+          "ff": "Sora",
+          "color": "rgb(42, 110, 0)"
+        },
+        {
+          "t": "About",
+          "fs": "13px",
+          "ff": "Sora",
+          "color": "rgb(107, 107, 120)"
+        },
+        {
+          "t": "RSS",
+          "fs": "13px",
+          "ff": "Sora",
+          "color": "rgb(107, 107, 120)"
+        }
+      ],
+      "runtimeEmptyEnglish": false,
+      "domShape": [
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "role": null,
+          "display": "inline-flex",
+          "cols": "none",
+          "gap": "normal",
+          "pad": "0px",
+          "align": "center",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-kv-value",
+          "role": null,
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "pad": "0px",
+          "align": "normal",
+          "text": "node scripts/arcblog-doctor.mjs --record"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-kv-row aup-kv-mono",
+          "role": null,
+          "display": "grid",
+          "cols": "403.344px 1021.22px",
+          "gap": "16px",
+          "pad": "10px 0px",
+          "align": "center",
+          "text": "Run the self-check and record it ⏎ node scripts/arcblog-doctor.mjs --rec"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-kv",
+          "role": null,
+          "display": "flex",
+          "cols": "none",
+          "gap": "0px",
+          "pad": "0px",
+          "align": "normal",
+          "text": "Run the self-check and record it ⏎ node scripts/arcblog-doctor.mjs --rec"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "role": null,
+          "display": "flex",
+          "cols": "none",
+          "gap": "10px",
+          "pad": "14px",
+          "align": "normal",
+          "text": "How to read this page ⏎ An AUP page cannot execute server-side code — pr"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "role": null,
+          "display": "flex",
+          "cols": "none",
+          "gap": "10px",
+          "pad": "0px",
+          "align": "normal",
+          "text": "How to read this page ⏎ An AUP page cannot execute server-side code — pr"
+        }
+      ],
+      "kvRows": [
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "node scripts/arcblog-doctor.mjs --record",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        },
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "node scripts/arcblog-doctor.mjs --help",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        },
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "node scripts/arcblog-doctor.mjs --record",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        },
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "arc space check",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        },
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "arc space check --folder <space-dir>",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        },
+        {
+          "cls": "aup-kv-value",
+          "display": "block",
+          "cols": "none",
+          "gap": "normal",
+          "text": "arc space repair --folder <space-dir>",
+          "monoCount": 0,
+          "monoFont": null,
+          "labelCls": null
+        }
+      ],
+      "fontSizes": [
+        "10px",
+        "11.52px",
+        "12px",
+        "12.8px",
+        "13px",
+        "13.3333px",
+        "14.4px",
+        "15px",
+        "16px",
+        "17px"
+      ],
+      "fontFamilies": [
+        "Sora",
+        "\"SF Mono\"",
+        "Arial"
+      ],
+      "fontOutliers": [
+        {
+          "tag": "HTML",
+          "cls": "",
+          "fs": "16px",
+          "ff": "\"PingFang SC\"",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "BODY",
+          "cls": "",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "active full-page",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "ArcBlog\n▾\nContent\nDashboard\nStudio"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-title",
+          "fs": "16px",
+          "ff": "\"SF Mono\"",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-action",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-action",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": "[object SVGAnimatedString]",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-app-header-user-menu-trigger",
+          "fs": "13.3333px",
+          "ff": "Arial",
+          "text": "▾"
+        },
+        {
+          "tag": "SPAN",
+          "cls": "aup-app-header-user-avatar",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "IMG",
+          "cls": "",
+          "fs": "12px",
+          "ff": "Arial",
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "cls": "aup-app-header-user-menu-arrow",
+          "fs": "10px",
+          "ff": "Arial",
+          "text": "▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": "Content\nDashboard\nStudio\nPages\nWri"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "fs": "16px",
+          "ff": "Sora",
+          "text": ""
+        }
+      ],
+      "monoList": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "HEADER",
+          "cls": "aup-app-header",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-bar",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog\n▾"
+        },
+        {
+          "tag": "A",
+          "cls": "aup-app-header-brand-link",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-title",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "16px",
+          "text": "ArcBlog"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-strip-right",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "▾"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-app-header-user-menu",
+          "ff": "\"SF Mono\", Consolas, \"JetBrain",
+          "fs": "13px",
+          "text": "▾"
+        }
+      ],
+      "leakedAdminKeys": [
+        "Last self-check",
+        "Every check",
+        "Storage & index",
+        "Permissions (platform boundary)",
+        "First-line troubleshooting",
+        "Background work"
+      ],
+      "buttons": {
+        "n": 18,
+        "primary": 0,
+        "primaryTexts": [],
+        "variants": [
+          null
+        ],
+        "radius": [
+          "3px"
+        ],
+        "heights": [
+          18
+        ],
+        "fs": [
+          "11.52px"
+        ],
+        "pad": [
+          "0px"
+        ]
+      },
+      "smallHitAreas": [
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1012.08,
+            "y": 266.38,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 284.38
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 997.05,
+            "y": 307.88,
+            "w": 18,
+            "h": 18,
+            "right": 1015.05,
+            "bottom": 325.88
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1012.08,
+            "y": 652.06,
+            "w": 18,
+            "h": 18,
+            "right": 1030.08,
+            "bottom": 670.06
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 635.38,
+            "y": 2140.13,
+            "w": 18,
+            "h": 18,
+            "right": 653.38,
+            "bottom": 2158.13
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 772.31,
+            "y": 2189.38,
+            "w": 18,
+            "h": 18,
+            "right": 790.31,
+            "bottom": 2207.38
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 771.78,
+            "y": 2256.63,
+            "w": 18,
+            "h": 18,
+            "right": 789.78,
+            "bottom": 2274.63
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 616.16,
+            "y": 2323.88,
+            "w": 18,
+            "h": 18,
+            "right": 634.16,
+            "bottom": 2341.88
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1640.27,
+            "y": 2159.31,
+            "w": 18,
+            "h": 18,
+            "right": 1658.27,
+            "bottom": 2177.31
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 632.33,
+            "y": 2559.81,
+            "w": 18,
+            "h": 18,
+            "right": 650.33,
+            "bottom": 2577.81
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 688.34,
+            "y": 2601.31,
+            "w": 18,
+            "h": 18,
+            "right": 706.34,
+            "bottom": 2619.31
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 676.16,
+            "y": 2642.81,
+            "w": 18,
+            "h": 18,
+            "right": 694.16,
+            "bottom": 2660.81
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 719.94,
+            "y": 2684.31,
+            "w": 18,
+            "h": 18,
+            "right": 737.94,
+            "bottom": 2702.31
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1686.09,
+            "y": 2586.75,
+            "w": 18,
+            "h": 18,
+            "right": 1704.09,
+            "bottom": 2604.75
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1620.8,
+            "y": 2652.75,
+            "w": 18,
+            "h": 18,
+            "right": 1638.8,
+            "bottom": 2670.75
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1377.66,
+            "y": 2718.75,
+            "w": 18,
+            "h": 18,
+            "right": 1395.66,
+            "bottom": 2736.75
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1514.06,
+            "y": 2793.75,
+            "w": 18,
+            "h": 18,
+            "right": 1532.06,
+            "bottom": 2811.75
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1018.88,
+            "y": 3715.31,
+            "w": 18,
+            "h": 18,
+            "right": 1036.88,
+            "bottom": 3733.31
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "aup-copy-btn",
+          "text": "Copy",
+          "box": {
+            "x": 1036.94,
+            "y": 3756.81,
+            "w": 18,
+            "h": 18,
+            "right": 1054.94,
+            "bottom": 3774.81
+          }
+        }
+      ],
+      "clickableCount": 18,
+      "inputs": [],
+      "gate": null,
+      "contrastTargets": {
+        "pageTitle": {
+          "text": "Diagnostics & maintenance",
+          "box": {
+            "x": 300.44,
+            "y": 62,
+            "w": 1470.56,
+            "h": 21.25,
+            "right": 1771,
+            "bottom": 83.25
+          },
+          "fg": "rgb(26, 26, 31)",
+          "bg": "rgb(250, 250, 248)",
+          "bgChain": "250,250,248@1",
+          "ratio": 16.59,
+          "fontSize": "17px",
+          "fontWeight": "600"
+        },
+        "cardHeading": {
+          "text": "How to read this page",
+          "box": {
+            "x": 315.44,
+            "y": 172.5,
+            "w": 1440.56,
+            "h": 22.5,
+            "right": 1756,
+            "bottom": 195
+          },
+          "fg": "rgb(26, 26, 31)",
+          "bg": "rgb(240, 239, 236)",
+          "bgChain": "240,239,236@1",
+          "ratio": 15.08,
+          "fontSize": "15px",
+          "fontWeight": "600"
+        },
+        "pageDesc": null,
+        "dimSmall": null,
+        "body": null,
+        "platformKV": null,
+        "inCardDim": null
+      },
+      "textLen": 8377,
+      "textHead": "ArcBlog | ▾ | Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Agents | Economy | Orders | Policy | Access | Settlements & ledger | Factory | Settings | General | Di"
+    }
+  }
+}

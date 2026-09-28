@@ -1,0 +1,50 @@
+UI-011 contrast (WCAG 2.1 relative luminance; alpha composited before comparison)
+source tokens: general page, 1803x908, admin, lang=en, HEAD-relative instance
+tone/palette/mode: editorial/natural/light
+
+== token table (measured on :root) ==
+  --color-bg          #fafaf8
+  --color-surface     #ffffff
+  --color-text        #1a1a1f
+  --color-dim         #6b6b78
+  --color-border      rgba(0,0,0,.08)
+  --color-accent      #2a6e00
+  --color-accent-bg   rgba(42,110,0,.08)
+  --color-success     #0f766e
+  --color-warning     #a16207
+  --color-danger      #c53030
+  --color-info        #2563eb
+  --card-bg           #f0efec
+
+== token pairs ==
+  --color-text on page --color-bg           #1a1a1f on #fafaf8   16.59  AA4.5=PASS  UI3.0=PASS
+  --color-dim on page --color-bg            #6b6b78 on #fafaf8    5.02  AA4.5=PASS  UI3.0=PASS
+  --color-accent on page --color-bg         #2a6e00 on #fafaf8    6.04  AA4.5=PASS  UI3.0=PASS
+  --color-success on page --color-bg        #0f766e on #fafaf8    5.24  AA4.5=PASS  UI3.0=PASS
+  --color-warning on page --color-bg        #a16207 on #fafaf8    4.71  AA4.5=PASS  UI3.0=PASS
+  --color-danger on page --color-bg         #c53030 on #fafaf8    5.23  AA4.5=PASS  UI3.0=PASS
+  --color-info on page --color-bg           #2563eb on #fafaf8    4.95  AA4.5=PASS  UI3.0=PASS
+  --color-text on card --card-bg            #1a1a1f on #f0efec   15.08  AA4.5=PASS  UI3.0=PASS
+  --color-dim on card --card-bg             #6b6b78 on #f0efec    4.57  AA4.5=PASS  UI3.0=PASS
+  --color-accent on card --card-bg          #2a6e00 on #f0efec    5.49  AA4.5=PASS  UI3.0=PASS
+  --color-success on card --card-bg         #0f766e on #f0efec    4.76  AA4.5=PASS  UI3.0=PASS
+  --color-warning on card --card-bg         #a16207 on #f0efec    4.28  AA4.5=FAIL  UI3.0=PASS
+  --color-danger on card --card-bg          #c53030 on #f0efec    4.76  AA4.5=PASS  UI3.0=PASS
+  --color-info on card --card-bg            #2563eb on #f0efec    4.49  AA4.5=FAIL  UI3.0=PASS
+  --color-text on surface --color-surface   #1a1a1f on #ffffff   17.33  AA4.5=PASS  UI3.0=PASS
+  --color-dim on surface --color-surface    #6b6b78 on #ffffff    5.25  AA4.5=PASS  UI3.0=PASS
+  --color-accent on surface --color-surface #2a6e00 on #ffffff    6.31  AA4.5=PASS  UI3.0=PASS
+  --color-success on surface --color-surface#0f766e on #ffffff    5.47  AA4.5=PASS  UI3.0=PASS
+  --color-warning on surface --color-surface#a16207 on #ffffff    4.92  AA4.5=PASS  UI3.0=PASS
+  --color-danger on surface --color-surface #c53030 on #ffffff    5.47  AA4.5=PASS  UI3.0=PASS
+  --color-info on surface --color-surface   #2563eb on #ffffff    5.17  AA4.5=PASS  UI3.0=PASS
+
+== measured element pairs (getComputedStyle, from UI-011-admin.json) ==
+  [general] pageTitle    "General" rgb(26, 26, 31) on rgb(250, 250, 248)   16.59  AA4.5=PASS  fs=17px
+  [general] cardHeading  "What belongs here" rgb(26, 26, 31) on rgb(240, 239, 236)   15.08  AA4.5=PASS  fs=15px
+  [diagnostics] pageTitle    "Diagnostics & maintenance" rgb(26, 26, 31) on rgb(250, 250, 248)   16.59  AA4.5=PASS  fs=17px
+  [diagnostics] cardHeading  "How to read this page" rgb(26, 26, 31) on rgb(240, 239, 236)   15.08  AA4.5=PASS  fs=15px
+
+== reference pairs quoted in UI-007 §4 / the standard ==
+  --color-info #2563eb on --card-bg #f0efec      4.49  (UI-007 4.49 — gate-desc was later changed to intent=muted)
+  --color-dim  #6b6b78 on --card-bg #f0efec      4.57  (muted body text inside cards, measured 4.57)

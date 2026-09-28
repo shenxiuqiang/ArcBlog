@@ -1,0 +1,2140 @@
+{
+  "meta": {
+    "locale": "en",
+    "viewport": "1803x908",
+    "targetId": "1F2B2046662C9362703896A73C794B45",
+    "chrome": "Chrome/153.0.8010.54",
+    "startedAt": "2026-09-28T05:51:05.567Z",
+    "finishedAt": "2026-09-28T05:52:17.861Z"
+  },
+  "pages": {
+    "dashboard": {
+      "url": "http://arcblog.localhost:4939/?page=dashboard",
+      "lang": "en",
+      "col": {
+        "id": "dashboard-view-1-view-1-row-2-view-2-view-2",
+        "h": 724,
+        "y": 170,
+        "clientH": 724,
+        "scrollH": 724,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "dashboard-view-1-view-1-row-2-view-2-view-2-view-1-view-3-afs-list-2"
+      },
+      "card": {
+        "n": 13,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(26, 26, 31)",
+          "rgba(42, 110, 0, 0.08)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 25,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H2:15px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "18.75px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 3,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "posts": {
+      "url": "http://arcblog.localhost:4939/?page=posts",
+      "lang": "en",
+      "col": {
+        "id": "posts-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 749,
+        "y": 145,
+        "clientH": 749,
+        "scrollH": 2786,
+        "scrollTop": 0,
+        "maxScroll": 2037
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 72,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "8px 16px",
+          "14px",
+          "5px 12px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "8px",
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(26, 26, 31)",
+          "rgb(240, 239, 236)",
+          "rgba(42, 110, 0, 0.08)",
+          "color(srgb 0.772549 0.188235 0.188235 / 0.12)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgb(26, 26, 31)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(197, 48, 48)"
+        ]
+      },
+      "btn": {
+        "n": 87,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px",
+          "5px 12px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          36,
+          29
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px",
+          "H2:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px",
+          "18.75px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 30,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "pages": {
+      "url": "http://arcblog.localhost:4939/?page=pages",
+      "lang": "en",
+      "col": {
+        "id": "pages-view-1-view-1-row-2-view-2-view-2",
+        "h": 759,
+        "y": 135,
+        "clientH": 759,
+        "scrollH": 759,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "pages-view-1-view-1-row-2-view-2-view-2-view-1-view-3-afs-list-2"
+      },
+      "card": {
+        "n": 11,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 12px",
+          "8px 16px",
+          "5px 12px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(250, 250, 248)",
+          "rgb(26, 26, 31)",
+          "rgba(42, 110, 0, 0.08)",
+          "color(srgb 0.772549 0.188235 0.188235 / 0.12)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)",
+          "1px rgb(197, 48, 48)"
+        ]
+      },
+      "btn": {
+        "n": 24,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px",
+          "5px 12px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          36,
+          29
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 1,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "compose": {
+      "url": "http://arcblog.localhost:4939/?page=compose",
+      "lang": "en",
+      "col": {
+        "id": "compose-view-1-view-1-row-2-view-2-view-3",
+        "h": 744,
+        "y": 150,
+        "clientH": 744,
+        "scrollH": 1463,
+        "scrollTop": 0,
+        "maxScroll": 719
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 22,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 12px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(250, 250, 248)",
+          "rgba(42, 110, 0, 0.08)",
+          "rgb(26, 26, 31)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 23,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "heroes": {
+      "url": "http://arcblog.localhost:4939/?page=heroes",
+      "lang": "en",
+      "col": {
+        "id": "heroes-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 1192,
+        "scrollTop": 0,
+        "maxScroll": 478
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 20,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "5px 12px",
+          "8px 12px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "color(srgb 0.772549 0.188235 0.188235 / 0.12)",
+          "rgb(250, 250, 248)",
+          "rgb(26, 26, 31)",
+          "rgba(42, 110, 0, 0.08)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(197, 48, 48)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 25,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "5px 12px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          29,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 2,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "categories": {
+      "url": "http://arcblog.localhost:4939/?page=categories",
+      "lang": "en",
+      "col": {
+        "id": "categories-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 749,
+        "y": 145,
+        "clientH": 749,
+        "scrollH": 2009,
+        "scrollTop": 0,
+        "maxScroll": 1260
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 28,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 12px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(250, 250, 248)",
+          "rgb(26, 26, 31)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 22,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 3,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "tags": {
+      "url": "http://arcblog.localhost:4939/?page=tags",
+      "lang": "en",
+      "col": {
+        "id": "tags-view-1-view-1-row-2-view-2-view-1-view-3",
+        "h": 277.44,
+        "y": 616.56,
+        "clientH": 277,
+        "scrollH": 786,
+        "scrollTop": 0,
+        "maxScroll": 509
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "tags-view-1-view-1-row-2-view-2-view-1-view-2-afs-list-4"
+      },
+      "card": {
+        "n": 12,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "5px 12px",
+          "8px 12px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgba(42, 110, 0, 0.08)",
+          "rgb(250, 250, 248)",
+          "rgb(26, 26, 31)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 24,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "5px 12px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          29,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 1,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "seo": {
+      "url": "http://arcblog.localhost:4939/?page=seo",
+      "lang": "en",
+      "col": {
+        "id": "seo-view-1-view-1-row-2-view-2-view-2",
+        "h": 759,
+        "y": 135,
+        "clientH": 759,
+        "scrollH": 759,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 9,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 12px",
+          "8px 16px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(250, 250, 248)",
+          "rgb(26, 26, 31)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)"
+        ]
+      },
+      "btn": {
+        "n": 22,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34,
+          36
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "feeds": {
+      "url": "http://arcblog.localhost:4939/?page=feeds",
+      "lang": "en",
+      "col": {
+        "id": "feeds-view-1-view-1-row-2-view-2-view-2",
+        "h": 759,
+        "y": 135,
+        "clientH": 759,
+        "scrollH": 759,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 4,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px"
+        ],
+        "lh": [
+          "21.25px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "appearance": {
+      "url": "http://arcblog.localhost:4939/?page=appearance",
+      "lang": "en",
+      "col": {
+        "id": "appearance-view-1-view-1-row-2-view-2-view-2",
+        "h": 789.5,
+        "y": 104.5,
+        "clientH": 790,
+        "scrollH": 790,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 7,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "10px 40px 10px 10px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "0px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none",
+          "color(srgb 0.101961 0.101961 0.121569 / 0.08) 0px 1px 2px 0px"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "color(srgb 0.987255 0.987255 0.982157)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:21.6px",
+          "H3:15px"
+        ],
+        "lh": [
+          "27px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "operations": {
+      "url": "http://arcblog.localhost:4939/?page=operations",
+      "lang": "en",
+      "col": {
+        "id": "operations-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 714,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 8,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H2:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "18.75px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 2,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "hub": {
+      "url": "http://arcblog.localhost:4939/?page=hub",
+      "lang": "en",
+      "col": {
+        "id": "hub-view-1-view-1-row-2-view-2-view-2",
+        "h": 759,
+        "y": 135,
+        "clientH": 759,
+        "scrollH": 2562,
+        "scrollTop": 0,
+        "maxScroll": 1803
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 40,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "5px 12px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgba(42, 110, 0, 0.08)",
+          "color(srgb 0.772549 0.188235 0.188235 / 0.12)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(197, 48, 48)"
+        ]
+      },
+      "btn": {
+        "n": 33,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "5px 12px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          29
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 5,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": [
+        "18x18"
+      ]
+    },
+    "media": {
+      "url": "http://arcblog.localhost:4939/?page=media",
+      "lang": "en",
+      "col": {
+        "id": "media-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 1166,
+        "scrollTop": 0,
+        "maxScroll": 452
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "media-view-1-view-1-row-2-view-2-view-1-view-2-view-1-view-3-afs-list-1"
+      },
+      "card": {
+        "n": 9,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "agents": {
+      "url": "http://arcblog.localhost:4939/?page=agents",
+      "lang": "en",
+      "col": {
+        "id": "agents-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 2128,
+        "scrollTop": 0,
+        "maxScroll": 1414
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "agents-view-1-view-1-row-2-view-2-view-1-view-2-view-1-view-4-afs-list-1"
+      },
+      "card": {
+        "n": 10,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "orders": {
+      "url": "http://arcblog.localhost:4939/?page=orders",
+      "lang": "en",
+      "col": {
+        "id": "orders-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 1054,
+        "scrollTop": 340,
+        "maxScroll": 340
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "orders-view-1-view-1-row-2-view-2-view-1-view-2-view-4-afs-list-3"
+      },
+      "card": {
+        "n": 14,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "policy": {
+      "url": "http://arcblog.localhost:4939/?page=policy",
+      "lang": "en",
+      "col": {
+        "id": "policy-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 714,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "policy-view-1-view-1-row-2-view-2-view-1-view-2-view-1-view-2-afs-list-2"
+      },
+      "card": {
+        "n": 6,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H2:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "18.75px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "access": {
+      "url": "http://arcblog.localhost:4939/?page=access",
+      "lang": "en",
+      "col": {
+        "id": "access-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 714,
+        "scrollTop": 0,
+        "maxScroll": 0
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "access-view-1-view-1-row-2-view-2-view-1-view-2-view-1-view-2-afs-list-1"
+      },
+      "card": {
+        "n": 5,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px"
+        ],
+        "lh": [
+          "21.25px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "ledger": {
+      "url": "http://arcblog.localhost:4939/?page=ledger",
+      "lang": "en",
+      "col": {
+        "id": "ledger-view-1-view-1-row-2-view-2-view-1-view-2",
+        "h": 714,
+        "y": 180,
+        "clientH": 714,
+        "scrollH": 2450,
+        "scrollTop": 808,
+        "maxScroll": 1736
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "DIV",
+        "cls": "aup-list",
+        "id": "ledger-view-1-view-1-row-2-view-2-view-1-view-2-view-5-afs-list-4"
+      },
+      "card": {
+        "n": 24,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "factory": {
+      "url": "http://arcblog.localhost:4939/?page=factory",
+      "lang": "en",
+      "col": {
+        "id": "factory-view-1-view-1-row-2-view-2",
+        "h": 860,
+        "y": 48,
+        "clientH": 860,
+        "scrollH": 1649,
+        "scrollTop": 0,
+        "maxScroll": 789
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 29,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 16px",
+          "5px 12px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(26, 26, 31)",
+          "rgba(42, 110, 0, 0.08)",
+          "color(srgb 0.772549 0.188235 0.188235 / 0.12)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)",
+          "1px rgb(26, 26, 31)",
+          "1px rgb(197, 48, 48)"
+        ]
+      },
+      "btn": {
+        "n": 31,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "8px 16px",
+          "5px 12px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          36,
+          29
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 6,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    },
+    "general": {
+      "url": "http://arcblog.localhost:4939/?page=general",
+      "lang": "en",
+      "col": {
+        "id": "general-view-1-view-1-row-2-view-2-view-2",
+        "h": 759,
+        "y": 135,
+        "clientH": 759,
+        "scrollH": 1793,
+        "scrollTop": 0,
+        "maxScroll": 1034
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 21,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px",
+          "8px 12px",
+          "5px 12px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "8px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)",
+          "rgb(250, 250, 248)",
+          "rgba(42, 110, 0, 0.08)",
+          "rgb(255, 255, 255)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 32,
+        "radius": [
+          "0px",
+          "8px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px",
+          "5px 12px"
+        ],
+        "fs": [
+          "14.4px",
+          "13.6px"
+        ],
+        "h": [
+          34,
+          60.39,
+          62.39,
+          29
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 0,
+      "copyBtn": [],
+      "qrBtn": []
+    },
+    "diagnostics": {
+      "url": "http://arcblog.localhost:4939/?page=diagnostics",
+      "lang": "en",
+      "col": {
+        "id": "diagnostics-view-1-view-1-row-2-view-2-view-2",
+        "h": 736.5,
+        "y": 157.5,
+        "clientH": 737,
+        "scrollH": 4291,
+        "scrollTop": 0,
+        "maxScroll": 3554
+      },
+      "colCount": 1,
+      "focus": {
+        "tag": "BODY",
+        "cls": "",
+        "id": null
+      },
+      "card": {
+        "n": 30,
+        "pads": [
+          "0px",
+          "2px 6px 2px 2px",
+          "14px"
+        ],
+        "gaps": [
+          "6px",
+          "4px",
+          "10px",
+          "normal"
+        ],
+        "radius": [
+          "4px",
+          "999px",
+          "10px",
+          "3px"
+        ],
+        "shadow": [
+          "none"
+        ],
+        "bg": [
+          "rgba(0, 0, 0, 0)",
+          "rgb(240, 239, 236)"
+        ],
+        "border": [
+          "1px rgba(0, 0, 0, 0)",
+          "1px rgba(0, 0, 0, 0.08)"
+        ]
+      },
+      "btn": {
+        "n": 21,
+        "radius": [
+          "0px"
+        ],
+        "pad": [
+          "8px 20px 8px 32px"
+        ],
+        "fs": [
+          "14.4px"
+        ],
+        "h": [
+          34
+        ],
+        "alignSelf": [
+          "auto"
+        ],
+        "styleAttrs": [
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;",
+          "border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 0px; padding: 8px 20px 8px 32px;"
+        ]
+      },
+      "head": {
+        "sizes": [
+          "H2:17px",
+          "H3:15px"
+        ],
+        "lh": [
+          "21.25px",
+          "22.5px"
+        ]
+      },
+      "doc": {
+        "sw": 1803,
+        "cw": 1803,
+        "sh": 908,
+        "ch": 908
+      },
+      "timeCount": 16,
+      "copyBtn": [
+        "18x18"
+      ],
+      "qrBtn": []
+    }
+  }
+}

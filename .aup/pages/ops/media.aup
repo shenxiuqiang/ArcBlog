@@ -2,7 +2,7 @@ page media {
   i18n {
     admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
     desc { en "The upload index and where each file is referenced." zh "上传索引与引用关系。" }
-    gate-desc { en "Sign in with DID Wallet to view node health, Hubs, economy and agent state." zh "使用 DID Wallet 登录后查看节点健康、Hub、经济与 Agent 状态。" }
+    gate-desc { en "Sign in with DID Wallet to view the media index." zh "使用 DID Wallet 登录后查看媒体索引。" }
     gate-title { en "Operations" zh "运维" }
     index-note { en "Each row is one index record under /instance/app/arcblog/media: id, title, AFS path, MIME type, byte size, indexed time. The path is the direct answer to \"where is it\" — select the text to copy it, this console has no clipboard primitive. The record only carries the AFS path: no public URL is shown, because the index does not store one and none is invented here." zh "每行是 /instance/app/arcblog/media 下的一条索引记录：id、标题、AFS 路径、MIME 类型、字节大小、索引时间。路径就是「它在哪」的直接答案——请选中文本手动复制，本控制台没有剪贴板原语。记录只承载 AFS 路径：页面不显示公开 URL，因为索引里没有该字段，也不得臆造。" }
     index-title { en "Upload index" zh "上传索引" }
@@ -99,11 +99,19 @@ page media {
             p " "
           }
           p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
           action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
           action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

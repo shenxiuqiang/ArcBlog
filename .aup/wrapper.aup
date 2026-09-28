@@ -12,6 +12,8 @@ page wrapper {
     nav-tags { en "Tags" zh "标签" }
     nav-feeds { en "Feeds" zh "分发" }
     nav-policy { en "Policy" zh "分成策略" }
+    nav-orders { en "Orders" zh "订单" }
+    nav-ledger { en "Settlements & ledger" zh "结算与账本" }
     nav-access { en "Access" zh "访问授权" }
     nav-factory { en "Factory" zh "工厂" }
     nav-group-content { en "Content" zh "内容" }
@@ -37,7 +39,7 @@ page wrapper {
   }
   view style={gap: "0"} {
     view mode=shell style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "48px", minHeight: "48px", maxHeight: "48px", padding: "0"} {
-      app-header site-header variant=compact brand={title: ArcBlog, href: "/"} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, href: "/?page=dashboard"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
+      app-header site-header variant=compact brand={title: ArcBlog, href: "/?page=index"} actions=[{kind: theme-toggle, icon: sun, ariaLabel: "$t(wrapper.theme-label)"}, {kind: locale-switcher, locales: [en, zh], labels: {en: EN, zh: "中文"}}, {kind: user-menu, items: [{id: console, label: "$t(wrapper.nav-console)", icon: grid, href: "/?page=dashboard"}]}] events={user-menu-item: {target: _root, set: {page: $args.exec}}, nav-click: {target: _root, set: {page: $args.src}}}
     }
     slot content
     frame theme-bridge-frame src="/p/en/theme-bridge/" bridge=true overlay=true loading=eager

@@ -490,3 +490,87 @@ test('live subscription: pay grants time-boxed access, renewal extends it', () =
   const grants = json(run(['access', 'list', '--content', contentId, '--reader', 'did:key:zSubReader']).stdout);
   assert.equal(grants.count, 2);
 });
+
+// --- ledger list --type (REQ-017 §2.1④, R15-D) --------------------------------
+// `parseArgs` accepts any flag silently, so before this `--type` looked exactly
+// like an empty ledger: exit 0, unchanged output. These cases pin the three
+// things that make it real — it filters, it fails closed, and it leaves the
+// untyped CLI semantics byte-identical.
+
+const LEDGER_TYPES = ['creator_share', 'hub_share', 'protocol_fee', 'refund'];
+
+test('live: ledger list --type really filters (equals the full listing filtered by type)', () => {
+  const fullResult = run(['ledger', 'list', '--all']);
+  assert.equal(fullResult.status, 0, fullResult.stderr);
+  const full = json(fullResult.stdout);
+  assert.equal(full.truncated, false);
+
+  for (const type of LEDGER_TYPES) {
+    const typedResult = run(['ledger', 'list', '--all', '--type', type]);
+    assert.equal(typedResult.status, 0, typedResult.stderr);
+    const typed = json(typedResult.stdout);
+    const expected = full.entries.filter((entry) => entry.type === type);
+    assert.deepEqual(
+      typed.entries.map((entry) => entry.id),
+      expected.map((entry) => entry.id),
+      `--type ${type} must equal the full listing filtered by type`,
+    );
+    assert.equal(typed.count, expected.length);
+    assert.equal(typed.totalCount, expected.length);
+    assert.equal(typed.truncated, false);
+    for (const entry of typed.entries) assert.equal(entry.type, type);
+  }
+
+  // the default page is the newest 20 of the *filtered* set, and says so
+  const paged = json(run(['ledger', 'list', '--type', 'creator_share']).stdout);
+  const creators = full.entries.filter((entry) => entry.type === 'creator_share');
+  assert.equal(paged.totalCount, creators.length);
+  assert.equal(paged.count, Math.min(20, creators.length));
+  assert.equal(paged.truncated, creators.length > 20);
+  assert.deepEqual(paged.entries.map((entry) => entry.id), creators.slice(-20).map((entry) => entry.id));
+
+  // untyped semantics unchanged: no flag is exactly --limit 20 (newest first)
+  const plain = run(['ledger', 'list']);
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.equal(plain.stdout, run(['ledger', 'list', '--limit', '20']).stdout);
+});
+
+test('ledger list --type fails closed on an unknown or missing value', () => {
+  for (const args of [
+    ['ledger', 'list', '--type', 'payment'], // spec §15.7 wording, never a real entry type
+    ['ledger', 'list', '--type', 'bogus'],
+    ['ledger', 'list', '--type'], // flag present without a value
+  ]) {
+    const result = run(args);
+    assert.notEqual(result.status, 0, `${args.join(' ')} must not exit 0`);
+    const output = `${result.stdout}${result.stderr}`;
+    assert.match(output, /VALIDATION/);
+    for (const type of LEDGER_TYPES) assert.match(output, new RegExp(type), `${type} must be listed as allowed`);
+  }
+});
+
+test('live: ledger list --order --type narrows to one order and keeps both branch shapes', () => {
+  const stamp = Date.now();
+  const orderId = `econ-test-type-order-${stamp}`;
+  const productId = `econ-test-type-product-${stamp}`;
+
+  assert.equal(run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zTypeFilter', '--price-amount', '2.000000']).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zTypeBuyer']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+  assert.equal(run(['settle', '--order', orderId]).status, 0);
+
+  const scoped = json(run(['ledger', 'list', '--order', orderId]).stdout);
+  assert.equal(scoped.orderId, orderId);
+  assert.equal(scoped.count, 2); // creator_share + protocol_fee (no Hub → hub share withheld)
+  assert.ok(scoped.entries.every((entry) => entry.orderId === orderId));
+
+  const creator = json(run(['ledger', 'list', '--order', orderId, '--type', 'creator_share']).stdout);
+  assert.deepEqual(Object.keys(creator).sort(), Object.keys(scoped).sort(), 'scoped branch shape is unchanged');
+  assert.equal(creator.count, 1);
+  assert.equal(creator.entries[0].type, 'creator_share');
+
+  const refund = json(run(['ledger', 'list', '--order', orderId, '--type', 'refund']).stdout);
+  assert.equal(refund.count, 0);
+  assert.deepEqual(refund.entries, []);
+  assert.equal(refund.total, '0');
+});
