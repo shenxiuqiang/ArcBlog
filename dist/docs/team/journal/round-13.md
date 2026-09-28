@@ -1,7 +1,7 @@
 # Round 13 — 精简轮：V3 路径 A-ii 实施 + `compose-edit` 视觉债 R1/R2/R3 + Hub 注册界面
 
 - **日期**：2026-09-28（**计划节 + 结果节均已写**：计划 = PM `task-39`，结果 = PM `task-43`）
-- **Lead 提交**：**（留空，由 Lead 填）** —— 轮末统一 `git commit`（PM 不提交）
+- **Lead 提交**：`e521a5a` — *fix(a11y): implement the V3 destructive-contrast fix (12.65/5.47) + Hub registration surface*（39 个产物路径：`.aup` 2 页 + locales、`.web/components/theme-bridge/script.js`**+7 行**、`scripts`/`dist` 镜像、UI-010/UI-009/标准 V1.8、REQ-015/016、round-13、test-report、BUG-029、arc-contracts §29.6/§29.7、checklist 第 109 行 ✅；未跟踪的 `docs/dsh-workflow-and-ralph.md` 与 dist 镜像**未纳入**）。**Lead 收口门**（无 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`console-nav --check` pages 19、`arc blocklet build` 后 `diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` 一致、`.gate-lock` 未入库。**Lead 追加落笔**：checklist 第 109 行 🟡→✅（+5 条降级登记）+ 维护记录 → **✅79 / 🟡10 / ⬜13 / ⚪2 = 104**（D 组 18/6）；`arc-contracts.md` **§29.6**（`action` 的 style 只转发部分键，`minHeight` 被丢弃 → 命中区只能靠 padding）与 **§29.7**（`hub list/show` 读取即回写 `freshness.checkedAt`/`updatedAt`）。**在提交时修正了一次自身的暂存遗漏**：首轮提交漏了 `.web` 源文件（只有 dist 镜像），已 amend 补上并复核 `git show --stat` 含 `.web/components/theme-bridge/script.js` +7
 - **清单变化**：**（状态列待 Lead 落笔）** 建议唯一变更 = 第 **109** 行「Hub 注册（Studio 侧列表 / 申请 / 被收录）」**🟡 → ✅**（附 5 条降级 / 缺口登记）→ **✅78→79 ｜ 🟡11→10 ｜ ⬜13 ｜ ⚪2 = 104 行**（总行数不变；D 组 **17→18 ✅ / 7→6 🟡**）。PM 独立复算：逐行按 `## A.`…`## H.` 分段统计与 `docs/ArcBlog-feature-checklist.md:29-41` 总览表**逐项相等（差异 0）**。其余 103 行无变更；**本轮无新增清单行**（BUG-029 属 CLI `--help` 可发现性，不新增行）。
 - **轮次性质**：**精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮已恢复（当前 6/8）** —— 由人类恢复后 Lead 重新武装长时目标并建 R13 任务板 `task-39`…`task-43`，下发 **L-R13-1…L-R13-5**。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）。
 
