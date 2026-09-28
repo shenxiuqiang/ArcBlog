@@ -353,6 +353,8 @@ Danger      需确认           删除、撤销质押、退款
 
 > **已知现状 · destructive 按钮文字对比度 3.99:1（Lead D23 裁定：本轮不修，记为 R12 设计项）**：行内 `variant=destructive size=sm` 按钮的文字 `--color-danger`（`#c53030`）叠在该 variant 自带的 danger 12% 淡化底上（合成 `rgb(235,216,213)`），实测对比度 **3.99:1 < WCAG 2.1 AA 正文 4.5:1**（13.6px 正常字重，无大字豁免）；受影响可见按钮 `?page=posts` 34 个（首屏 30）、`?page=hub` 4 个、`?page=factory` 6 个。这是**平台 variant 的运行时色值 + 页面用法的组合**，不是令牌本身选错——`--color-danger` 单独用在页面底 / 卡片底上分别是 **5.23:1 / 4.76:1**（均达标）。Lead **D23**（Round 11，2026-09-28）裁定**本轮不修**，记为 **R12 设计项**（需要令牌级方案：加深危险色，或文字改用 `--color-text`、只让描边/图标承担红色）；在 R12 给出方案前**不改任何主题令牌**。实测与复现见 UI-007 §4 与 V3。
 
+> **V3 方案指向（Round 12 · UI-009；本轮只提议、未实施，L-R12-2）**：见 [UI-009](team/design/UI-009-v3-contrast-and-visual-debt.md)。本轮实测更正两点事实——① 平台 destructive 规则消费的是 **`--color-error`**（`:root{--color-danger:var(--color-error)}`，改写 `--color-danger` 对按钮**无效**）；② **`.web/themes/*/tokens.json` 不参与控制台**（控制台只加载 Google Fonts + `aup-core.css` + `aup-app.css`）。因此令牌路径必须落在 `--color-error` 上，或改走「文字中性、红由描边 + 图标承担」的用法路径（UI-009 §3/§4）。
+
 ### 4.4 空状态
 
 空状态是**引导页**，不是"暂无数据"四个字：

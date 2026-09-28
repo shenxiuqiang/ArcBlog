@@ -43,6 +43,9 @@
     "dashboard": {
       "tree": "pages/admin/dashboard.aup"
     },
+    "diagnostics": {
+      "tree": "pages/admin/diagnostics.aup"
+    },
     "general": {
       "tree": "pages/admin/general.aup"
     },

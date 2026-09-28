@@ -1,0 +1,255 @@
+page diagnostics {
+  i18n {
+    title { en "Diagnostics & maintenance" zh "诊断与维护" }
+    desc { en "Self-check results, storage and index, permissions, background work, logs, backup and first-line troubleshooting — readable without logging into the server. Every command here is copy-and-run; this page executes nothing." zh "自检结果、存储与索引、权限、后台任务、日志、备份与常见问题自助定位——不必登录服务器就能看懂。这里的命令一律「复制后自行执行」；本页不执行任何命令。" }
+    gate-desc { en "Sign in with DID Wallet to see this instance's diagnostics." zh "使用 DID Wallet 登录后查看本实例的诊断信息。" }
+    gate-title { en "Settings" zh "设置" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    honesty-title { en "How to read this page" zh "本页的形态" }
+    honesty-desc { en "An AUP page cannot execute server-side code — provider mounts are not loaded on this platform (arc-contracts §26.1/§26.2). So this page only visualises the last recorded self-check and offers commands you copy and run yourself; every value comes from an AFS record or is a literal command string. If the self-check card below stays empty, no snapshot has been recorded yet (no snapshot = 尚未运行): run the record command first." zh "AUP 页面无法执行服务端代码——本平台的 provider 挂载未生效（arc-contracts §26.1/§26.2）。因此本页只做「最近一次自检结果可视化 + 命令一键复制」：每个取值要么来自 AFS 记录，要么是字面命令字符串，页内没有任何按钮会去跑命令。若下方自检卡始终为空，说明尚未运行（no snapshot）：请先执行记录命令。" }
+    cmd-record { en "Run the self-check and record it" zh "运行自检并落成记录" }
+    cmd-record-help { en "List the checks and the record shape" zh "查看检查项清单与记录形状" }
+    snapshot-title { en "Last self-check (recorded)" zh "最近一次自检（已记录）" }
+    snapshot-desc { en "Source: /instance/app/arcblog/config/diagnostics/summary/last-run.json, written by the record command above and live-subscribed. Freshness: the recorded-at time below. The page never runs the check itself." zh "数据来源：/instance/app/arcblog/config/diagnostics/summary/last-run.json，由上方记录命令写入并实时订阅。新鲜度：以下记录时间。页面本身从不运行自检。" }
+    snapshot-ranat { en "Recorded at" zh "记录时间" }
+    snapshot-ok { en "Overall ok" zh "总体结论 ok" }
+    snapshot-count { en "Checks recorded" zh "已记录检查项" }
+    snapshot-failed { en "Failed (severity error)" zh "失败（severity error）" }
+    snapshot-warnings { en "Warnings" zh "警告" }
+    snapshot-command { en "Command that produced it" zh "产生该记录的命令" }
+    checks-title { en "Every check, one row each" zh "全部检查项，逐条一行" }
+    checks-desc { en "Source: one record per check under /instance/app/arcblog/config/diagnostics/checks/, live-subscribed. `severity` and `ok` are shown as text, so the state never depends on colour alone. The row count is whatever the last run recorded — this page hard-codes no number." zh "数据来源：/instance/app/arcblog/config/diagnostics/checks/ 下每个检查项一条记录，实时订阅。`severity` 与 `ok` 都以文字呈现，状态不只依赖颜色。行数等于上次记录的检查项数——本页不写死任何数字。" }
+    checks-hint { en "If this list is empty, no snapshot exists yet — run the record command above. Empty is not the same as “all checks passed”." zh "若此列表为空，说明还没有快照——请先执行上方的记录命令。「空」不等于「全部通过」。" }
+    check-severity { en "severity" zh "严重度" }
+    check-ok { en "ok" zh "ok" }
+    storage-title { en "Storage & index" zh "存储与索引" }
+    storage-desc { en "`arc space check` is read-only and answers through its EXIT CODE: 0 = every layout is files and the index is fresh; non-zero = something needs migrating or has drifted. The self-check above records that verdict as the `space-layout` check." zh "`arc space check` 只读，结论看退出码：0 = 所有布局已是 files 且索引新鲜；非零 = 有空间待迁移或索引已漂移。上方自检把它记录为 `space-layout` 检查项。" }
+    storage-warn { en "Do not pipe that command: its JSON report grows past 64KB and the CLI truncates piped output, so a captured fragment is not a report (arc-contracts §4.1a). Run it bare and read the exit code." zh "不要给该命令加管道：它的 JSON 报告会超过 64KB，CLI 会截断管道输出，截下来的片段不能当报告（arc-contracts §4.1a）。直接运行，看退出码。" }
+    cmd-check { en "Audit storage and index (read-only)" zh "审计存储与索引（只读）" }
+    cmd-check-folder { en "Audit one claimed folder only" zh "只审计一个已声明目录" }
+    cmd-repair { en "Rebuild one folder's ledger from disk (`--index` is the default; `--no-index` fails closed)" zh "从磁盘重建某个目录的账本（`--index` 为默认；`--no-index` 会 fail closed）" }
+    cmd-list { en "List app spaces with file counts" zh "列出应用空间与文件数" }
+    perm-title { en "Permissions (platform boundary)" zh "权限（平台边界）" }
+    perm-desc { en "This platform gives the app exactly two roles: guest and admin (`blocklet.yaml` replicated.readRole / minRole). There is no finer-grained read grant and no member tier (arc-contracts §13; SPEC-REVIEW-001 §B6), so a lock-down must be expressed by the directory prefix a record lives under. The authoritative matrix is scripts/arcblog-permissions.test.mjs, which runs inside the fast tier (`npm test`) — it is not a doctor check." zh "本平台只给本应用两档角色：guest 与 admin（`blocklet.yaml` 的 replicated.readRole / minRole）。没有更细的读取授权，也没有会员档（arc-contracts §13；SPEC-REVIEW-001 §B6），因此收权只能通过「记录所在目录前缀」表达。权威矩阵是 scripts/arcblog-permissions.test.mjs，随快层（`npm test`）运行——它不是一个 doctor 检查项。" }
+    cmd-perm { en "Re-run the guest permission matrix alone" zh "单独重跑访客权限矩阵" }
+    logs-title { en "Logs" zh "日志" }
+    logs-desc { en "The daemon log is the only log surface. ArcBlog keeps no separate log file: the operational CLIs print JSON to stdout and the page data surfaces record their results in AFS instead. Commands verified against `arc service logs --help`." zh "唯一的日志面是 daemon 日志。ArcBlog 没有独立日志文件：运维 CLI 把 JSON 打到 stdout，页面数据面则把结果写进 AFS。命令已对照 `arc service logs --help` 核验。" }
+    cmd-logs { en "Recent daemon log" zh "最近的 daemon 日志" }
+    cmd-logs-follow { en "Follow new lines" zh "持续跟踪新日志" }
+    cmd-logs-json { en "Structured log lines" zh "结构化日志" }
+    cmd-logs-instance { en "A named instance" zh "指定实例" }
+    backup-title { en "Data export & backup" zh "数据导出与备份" }
+    backup-desc { en "The AFS records are the source of truth; dist/ is rebuildable from source with `arc blocklet build`, so backing up dist/ alone is not a backup. `arc space sync` makes `--to` converge toward `--from` and is additive by default — `--mirror` DELETES destination-only files. Both `--from` and `--to` are required, so preview with `--dry-run` first." zh "AFS 记录才是真源；dist/ 用 `arc blocklet build` 可由源码重建，所以只备份 dist/ 不算备份。`arc space sync` 让 `--to` 向 `--from` 收敛，默认 additive——`--mirror` 会删除目的端多余文件。`--from` 与 `--to` 都是必填，先用 `--dry-run` 预演。" }
+    backup-key { en "Keep an OFFLINE copy, outside this repo: node.key (content signing key) and .env.local (chain configuration). They are not AFS records; losing them loses the node identity / chain credentials. Never commit them and never write them into AFS." zh "必须在仓库之外离线备份两份：node.key（内容签名密钥）与 .env.local（链配置）。它们不是 AFS 记录；丢了就等于丢了节点身份 / 链上凭据。绝不提交、绝不写进 AFS。" }
+    cmd-sync-dry { en "Preview a mirror export (writes nothing)" zh "预演镜像导出（不写任何东西）" }
+    cmd-sync { en "Mirror the space into an offline directory (`--mirror` deletes destination-only files)" zh "把空间镜像到离线目录（`--mirror` 会删目的端多余文件）" }
+    faq-title { en "First-line troubleshooting" zh "常见问题自助定位" }
+    faq-desc { en "Symptom → command or criterion. Every row points at an existing authority (an arc-contracts section or a CLI); none of it is an automatic diagnosis." zh "症状 → 命令或判据。每条都指向已有权威落点（arc-contracts 章节或 CLI）；没有任何一条是自动诊断。" }
+    faq-1 { en "A save looked accepted but the record is unchanged" zh "保存看似成功但记录没变" }
+    faq-1-v { en "The toast is not evidence — read the record back (arc-contracts §29.4): arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json" zh "toast 不是证据——回读记录才是（arc-contracts §29.4）：arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json" }
+    faq-2 { en "A write was refused" zh "写入被拒" }
+    faq-2-v { en "Conditional, not absolute: it depends on the record's origin, the write mode and the daemon process (arc-contracts §29.2). Probe before deleting anything — delete + recreate loses createdAt." zh "条件性而非绝对：与记录来源、写入模式和当时的 daemon 进程相关（arc-contracts §29.2）。先探针再动手——删除重建会丢掉 createdAt。" }
+    faq-3 { en "A record disappeared from a filtered list" zh "记录在筛选列表里消失" }
+    faq-3-v { en "`filter` / `serverFilters` push a query to the index, and editing a record leaves its index entry stale (arc-contracts §15) — re-check through the directory listing: arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json" zh "`filter` / `serverFilters` 会下推为服务端索引查询，而编辑记录会留下陈旧索引（arc-contracts §15）——改用目录列表复核：arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json" }
+    faq-4 { en "?page=<id> silently lands on the public home" zh "?page=<id> 静默回落公开首页" }
+    faq-4-v { en "That id is not a registered page. The authoritative page set is the sidebar model — verify with: node scripts/arcblog-console-nav.mjs --check" zh "该 id 不是已注册页面。权威页面集合就是侧栏模型——用这条命令核验：node scripts/arcblog-console-nav.mjs --check" }
+    faq-5 { en "A read is denied for a signed-in session" zh "已登录会话读取被拒" }
+    faq-5-v { en "The record's directory prefix decides: check replicated.readRole / minRole in blocklet.yaml (arc-contracts §13). There is no third role to grant." zh "取决于记录所在目录前缀：查看 blocklet.yaml 的 replicated.readRole / minRole（arc-contracts §13）。没有第三档角色可授。" }
+    faq-6 { en "Storage keeps growing" zh "存储持续膨胀" }
+    faq-6-v { en "Audit first (read-only), then rebuild one folder's ledger: arc space check → arc space repair --folder <space-dir>. Dev-instance test residue: node scripts/arcblog-clean.mjs (dry-run by default)." zh "先审计（只读），再重建某个目录的账本：arc space check → arc space repair --folder <space-dir>。开发实例的测试残留：node scripts/arcblog-clean.mjs（默认 dry-run）。" }
+    faq-7 { en "A publish never reached the public site" zh "发布没有到达公开站点" }
+    faq-7-v { en "Record a self-check and read space-layout / resources (node scripts/arcblog-doctor.mjs --record); for Hub state use node scripts/arcblog-network.mjs hub refresh." zh "记录一次自检并看 space-layout / resources（node scripts/arcblog-doctor.mjs --record）；Hub 侧用 node scripts/arcblog-network.mjs hub refresh。" }
+    intents-title { en "Background work (intent queue)" zh "后台任务（意图队列）" }
+    intents-desc { en "Source: the records under /instance/app/arcblog/config/chain-intents/, live-subscribed. A console chain button only writes an intent; node scripts/arcblog-chain-worker.mjs run (or watch) signs it on the chain — the key stays on the node — and writes the outcome back." zh "数据来源：/instance/app/arcblog/config/chain-intents/ 下的记录，实时订阅。控制台的链上按钮只写一条意图；node scripts/arcblog-chain-worker.mjs run（或 watch）负责在链上签名——私钥留在节点上——并回写结果。" }
+    intents-noheartbeat { en "No heartbeat record exists anywhere in this codebase, so this page shows no fake green light and no invented last-seen time. The newest updatedAt below is only an activity proxy. Empty means no chain intent has ever been recorded here — a normal state, not an error." zh "本仓库不存在任何心跳记录，因此本页不画假绿灯，也不编造最后可见时间。下方最新的 updatedAt 只是活动代理。为空表示这里从未记录过链上意图——正常状态，不是错误。" }
+    intents-status { en "status" zh "状态" }
+    intents-updated { en "updatedAt" zh "更新时间" }
+    cmd-worker-run { en "Drain pending intents once" zh "一次性排空待处理意图" }
+    cmd-worker-watch { en "Keep draining (long-running process)" zh "持续排空（长驻进程）" }
+  }
+  view gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Ddiagnostics&cancel_to=%2F%3Fpage%3Ddiagnostics" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-tags)" -> page tags style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-diagnostics)" -> page diagnostics active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=xs {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :honesty-title level=3 style={fontSize: "var(--type-body)"}
+              p :honesty-desc scale=sm intent=muted
+              key-value-list diag-record-cmds dense=true fields=[{label: "$t(diagnostics.cmd-record)", value: "node scripts/arcblog-doctor.mjs --record", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-record-help)", value: "node scripts/arcblog-doctor.mjs --help", monospace: true, copyable: true}]
+            }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :snapshot-title level=3 style={fontSize: "var(--type-body)"}
+              p :snapshot-desc scale=sm intent=muted
+              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/diagnostics/summary" {
+                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                  row gap=xs cross=center {
+                    p :snapshot-ranat scale=sm intent=muted
+                    time mode=display value="${entry.content.ranAt}" timeMode=relative
+                  }
+                  key-value-list dense=true fields=[{label: "$t(diagnostics.snapshot-ok)", value: "${entry.content.ok}"}, {label: "$t(diagnostics.snapshot-count)", value: "${entry.content.count}"}, {label: "$t(diagnostics.snapshot-failed)", value: "${entry.content.failed}", hideWhenEmpty: true}, {label: "$t(diagnostics.snapshot-warnings)", value: "${entry.content.warnings}", hideWhenEmpty: true}, {label: "$t(diagnostics.snapshot-command)", value: "${entry.content.command}", monospace: true, copyable: true}]
+                }
+              }
+              p :checks-hint scale=caption intent=muted
+            }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :checks-title level=3 style={fontSize: "var(--type-body)"}
+              p :checks-desc scale=sm intent=muted
+              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/diagnostics/checks" {
+                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                  h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
+                  p "$t(diagnostics.check-severity): ${entry.content.severity} · $t(diagnostics.check-ok): ${entry.content.ok}" scale=sm
+                  p "${entry.content.detail}" scale=sm intent=muted
+                  view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                    time mode=display value="${entry.content.ranAt}" timeMode=relative
+                  }
+                }
+              }
+              p :checks-hint scale=caption intent=muted
+            }
+            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :storage-title level=3 style={fontSize: "var(--type-body)"}
+                p :storage-desc scale=sm intent=muted
+                key-value-list diag-storage-cmds dense=true fields=[{label: "$t(diagnostics.cmd-check)", value: "arc space check", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-check-folder)", value: "arc space check --folder <space-dir>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-repair)", value: "arc space repair --folder <space-dir>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-list)", value: "arc space list", monospace: true, copyable: true}]
+                p :storage-warn scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :perm-title level=3 style={fontSize: "var(--type-body)"}
+                p :perm-desc scale=sm intent=muted
+                key-value-list diag-perm-cmds dense=true fields=[{label: "$t(diagnostics.cmd-perm)", value: "npm run test:file -- scripts/arcblog-permissions.test.mjs", monospace: true, copyable: true}]
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :logs-title level=3 style={fontSize: "var(--type-body)"}
+                p :logs-desc scale=sm intent=muted
+                key-value-list diag-logs-cmds dense=true fields=[{label: "$t(diagnostics.cmd-logs)", value: "arc service logs", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-follow)", value: "arc service logs --follow", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-json)", value: "arc service logs --json", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-instance)", value: "arc service logs -i <instance>", monospace: true, copyable: true}]
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :backup-title level=3 style={fontSize: "var(--type-body)"}
+                p :backup-desc scale=sm intent=muted
+                key-value-list diag-backup-cmds dense=true fields=[{label: "$t(diagnostics.cmd-sync-dry)", value: "arc space sync --from <space-dir> --to <dir> --mirror --dry-run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-sync)", value: "arc space sync --from <space-dir> --to <dir> --mirror", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-check)", value: "arc space check", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-repair)", value: "arc space repair --folder <space-dir>", monospace: true, copyable: true}]
+                p :backup-key scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :faq-title level=3 style={fontSize: "var(--type-body)"}
+                p :faq-desc scale=sm intent=muted
+                key-value-list diag-faq dense=true fields=[{label: "$t(diagnostics.faq-1)", value: "$t(diagnostics.faq-1-v)"}, {label: "$t(diagnostics.faq-2)", value: "$t(diagnostics.faq-2-v)"}, {label: "$t(diagnostics.faq-3)", value: "$t(diagnostics.faq-3-v)"}, {label: "$t(diagnostics.faq-4)", value: "$t(diagnostics.faq-4-v)"}, {label: "$t(diagnostics.faq-5)", value: "$t(diagnostics.faq-5-v)"}, {label: "$t(diagnostics.faq-6)", value: "$t(diagnostics.faq-6-v)"}, {label: "$t(diagnostics.faq-7)", value: "$t(diagnostics.faq-7-v)"}]
+              }
+            }
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :intents-title level=3 style={fontSize: "var(--type-body)"}
+              p :intents-desc scale=sm intent=muted
+              key-value-list diag-intent-cmds dense=true fields=[{label: "$t(diagnostics.cmd-worker-run)", value: "node scripts/arcblog-chain-worker.mjs run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-worker-watch)", value: "node scripts/arcblog-chain-worker.mjs watch", monospace: true, copyable: true}]
+              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                  h3 "${entry.content.action} · ${entry.content.role}" style={fontSize: "var(--type-body)"}
+                  p "$t(diagnostics.intents-status): ${entry.content.status}" scale=sm
+                  view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                    time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                  }
+                }
+              }
+              p :intents-noheartbeat scale=sm intent=muted
+            }
+          }
+        }
+      }
+    }
+  }
+}

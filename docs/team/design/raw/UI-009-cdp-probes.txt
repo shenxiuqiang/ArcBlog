@@ -1,0 +1,126 @@
+# UI-009 raw CDP probe output (Round 12, 2026-09-28)
+#
+# Hardware/software: shared debug Chrome CDP at http://127.0.0.1:9333 (Chrome 153), daemon
+#   arc 2.0.0-beta.50 on :4939 (http://arcblog.localhost:4939). Admin session. Viewport forced
+#   to 1803x908 (deviceScaleFactor 1). ONE existing page target reused for every run
+#   (Page.navigate per page, NO Target.createTarget); each run ends by navigating it back to
+#   about:blank. Every probe prints [targets before]/[targets after] page counts.
+#
+# Write discipline: no repo write, no AFS write, no `arc`/test invocation from these scripts;
+#   the only mutations are temporary in-page CSS custom-property overrides and one injected
+#   <style id="ui009-style"> (removed before each run ends).
+#
+# Commands (scripts intentionally kept out of the repo, per team convention -> /tmp):
+#   node /tmp/ui009-probe7.mjs   # post-lock: stylesheets, rules, var-override proof, injected CSS,
+#                                #   forced :hover, 16-page counts, compose-edit R1/R2, preview
+#   node /tmp/ui009-probe8.mjs   # hover without injection + 4-rule draft (4th rule was wrong) + ghost box
+#   node /tmp/ui009-probe9.mjs   # exact 3-rule draft verified (rest + hover) + ghost button attributes
+#   node /tmp/ui009-probe10.mjs  # final 3-rule draft with hover:var(--color-surface) (recommended; 5.47:1)
+#
+# Timeline: Dev(task-35) held docs/team/.gate-lock 10:24-10:36; probes 1-6 ran 10:24-10:31 while that
+#   lock was held (platform-level facts only); probes 7-9 ran 10:38-10:42 with the lock released and
+#   no other writer/browser user active.
+#
+# Earlier runs (same tab, pre-lock) established: the console loads only Google Fonts + aup-core.<hash>.css
+#   + aup-app.<hash>.css (no .web/themes/**); the destructive rule consumes var(--color-error);
+#   --color-danger is only an alias. Verbatim excerpts of those runs:
+#     LINKS=["https://fonts.googleapis.com/css2?...","http://arcblog.localhost:4939/aup-core.d36197840205e143.css","http://arcblog.localhost:4939/aup-app.9857541a88153ff4.css"]
+#     destructiveCount 10:25-10:27 -> posts 37 | pages 1 | heroes 2 | categories 3 | hub 4 | factory 6 | tags 0 | operations 0
+#     transitionDuration = "0.15s, 0.15s, 0.15s"   <-- why a naive read right after a change returns the OLD value
+#
+
+==========================================================================================
+== PROBE 7 (post-lock)
+==========================================================================================
+[targets before] pages=1 ["about:blank"]
+=== P1 stylesheets / tokens (?page=posts) ===
+{"links":["https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;900&family=Rubik:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap","http://arcblog.localhost:4939/aup-core.d36197840205e143.css","http://arcblog.localhost:4939/aup-app.9857541a88153ff4.css"],"styles":[{"id":"pb3d-aup-styles","len":4929},{"id":"arcblog-chrome-style","len":267}],"attrs":{"tone":"editorial","palette":"natural","mode":"light"},"tokens":{"--card-bg":"#f0efec","--color-bg":"#fafaf8","--color-surface":"#ffffff","--surface-muted":"#f0efec","--color-text":"#1a1a1f","--color-dim":"#6b6b78","--color-error":"#c53030","--color-danger":"#c53030","--color-on-accent":"#09090b"}}
+=== P2 destructive rules (verbatim, truncated 220) ===
+[".aup-action[data-variant=\"destructive\"] { background: color-mix(in srgb,var(--color-error) 12%,transparent); border-color: var(--color-error); color: var(--color-error); }",".aup-action[data-variant=\"destructive\"]:hover { background: var(--color-error); color: var(--color-on-accent, var(--color-bg)); }",".aup-action[data-variant=\"ghost\"] { background: transparent; border-color: transparent; }",".aup-action[data-variant=\"ghost\"]:hover { background: var(--color-surface); border-color: var(--color-border); transform: none; box-shadow: none; }",".aup-action[data-variant=\"danger-ghost\"] { background: transparent; border-color: transparent; color: var(--color-dim); }",".aup-action[data-variant=\"danger-ghost\"]:hover { background: color-mix(in srgb,var(--color-error) 14%,transparent); border-color: var(--color-error); color: var(--color-error); transform: none; box-shadow: none; }",".aup-action[data-variant=\"secondary\"] { background: var(--color-accent-bg); border: 1px solid var(--color-border); color: var(--color-text); font-weight: 500; }",".aup-action[data-variant=\"secondary\"]:hover { background: var(--hover-bg); border-color: var(--color-border); }",".aup-action[data-variant=\"entity-primary-action\"], .aup-action[data-variant=\"entity-secondary-action\"], .aup-action[data-variant=\"entity-icon-action\"] { height: 36px; min-height: 36px; border-radius: var(--radius-sm, 6px",".aup-action[data-variant=\"entity-primary-action\"], .aup-action[data-variant=\"entity-secondary-action\"] { padding: 0px 12px; gap: 8px; }",".aup-action[data-variant=\"entity-secondary-action\"], .aup-action[data-variant=\"entity-icon-action\"] { border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); }",".aup-action[data-variant=\"entity-primary-action\"] .aup-icon-svg, .aup-action[data-variant=\"entity-secondary-action\"] .aup-icon-svg, .aup-action[data-variant=\"entity-icon-action\"] .aup-icon-svg { width: 15px; height: 15px",".aup-action[data-variant=\"entity-secondary-action\"]:hover, .aup-action[data-variant=\"entity-icon-action\"]:hover { background: var(--color-surface-2); box-shadow: none; transform: none; }",".aup-action[data-variant~=\"detail-icon-button\"]:hover, .aup-action[data-variant~=\"detail-toolbar-button\"]:hover, .aup-action[data-variant~=\"detail-secondary-action\"]:hover, .aup-action[data-variant~=\"detail-footer-action",".aup-action[data-variant~=\"detail-primary-action\"], .aup-action[data-variant~=\"detail-secondary-action\"] { width: 100%; min-height: 36px; border-radius: 6px; padding: 0px 14px; justify-content: center; font-size: 13px; f",".aup-action[data-variant~=\"detail-secondary-action\"] { min-height: 34px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); }",".aup-view[data-variant=\"settings-sidebar\"] .aup-action[data-variant=\"secondary\"] { background: var(--color-accent-bg); color: var(--color-accent); font-weight: var(--heading-weight); }",".aup-view[data-variant=\"settings-sidebar\"] .aup-action[data-variant=\"secondary\"]::before { content: \"\"; position: absolute; left: -1px; top: var(--space-element); bottom: var(--space-element); width: var(--settings-nav-r"]
+=== P3 baseline ===
+{"text":"Remove from public","color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(197, 48, 48)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#c53030"}
+=== P4 set --color-danger #00ff00 (expect NO change) ===
+{"text":"Remove from public","color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(197, 48, 48)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#00ff00"}
+=== P5 set --color-error #8b1a1a (expect full change) ===
+{"text":"Remove from public","color":"rgb(139, 26, 26)","bg":"color(srgb 0.545098 0.101961 0.101961 / 0.12)","border":"1px solid rgb(139, 26, 26)","icon":"rgb(139, 26, 26)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#8b1a1a","varDanger":"#8b1a1a"}
+=== P6 set --color-error #00ff00 ===
+{"text":"Remove from public","color":"rgb(0, 255, 0)","bg":"color(srgb 0 1 0 / 0.12)","border":"1px solid rgb(0, 255, 0)","icon":"rgb(0, 255, 0)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#00ff00","varDanger":"#00ff00"}
+=== P7 restore check ===
+{"text":"Remove from public","color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(197, 48, 48)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#c53030"}
+=== P8 inject A-ii draft CSS (rest text neutral, red border/icon kept) ===
+{"text":"Remove from public","color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(197, 48, 48)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#c53030"}
+=== P9 forced :hover under the injected CSS (CDP CSS.forcePseudoState) ===
+{"text":"Remove from public","color":"rgb(9, 9, 11)","bg":"rgb(197, 48, 48)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(9, 9, 11)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#c53030"}
+=== P10 remove injected CSS ===
+removed
+{"text":"Remove from public","color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"1px solid rgb(197, 48, 48)","icon":"rgb(197, 48, 48)","fs":"13.6px/500","radius":"8px","w":185,"h":29,"styleAttr":"border-radius: var(--radius-md, 8px);","transition":"0.15s, 0.15s, 0.15s","varError":"#c53030","varDanger":"#c53030"}
+=== P11 counts (visible destructive, one tab) ===
+posts {"url":"http://arcblog.localhost:4939/?page=posts","all":37,"visible":37}
+pages {"url":"http://arcblog.localhost:4939/?page=pages","all":1,"visible":1}
+compose {"url":"http://arcblog.localhost:4939/?page=compose","all":0,"visible":0}
+heroes {"url":"http://arcblog.localhost:4939/?page=heroes","all":2,"visible":2}
+categories {"url":"http://arcblog.localhost:4939/?page=categories","all":0,"visible":0}
+tags {"url":"http://arcblog.localhost:4939/?page=tags","all":0,"visible":0}
+seo {"url":"http://arcblog.localhost:4939/?page=seo","all":0,"visible":0}
+feeds {"url":"http://arcblog.localhost:4939/?page=feeds","all":0,"visible":0}
+appearance {"url":"http://arcblog.localhost:4939/?page=appearance","all":0,"visible":0}
+operations {"url":"http://arcblog.localhost:4939/?page=operations","all":0,"visible":0}
+hub {"url":"http://arcblog.localhost:4939/?page=hub","all":4,"visible":4}
+media {"url":"http://arcblog.localhost:4939/?page=media","all":0,"visible":0}
+agents {"url":"http://arcblog.localhost:4939/?page=agents","all":0,"visible":0}
+policy {"url":"http://arcblog.localhost:4939/?page=policy","all":0,"visible":0}
+access {"url":"http://arcblog.localhost:4939/?page=access","all":0,"visible":0}
+factory {"url":"http://arcblog.localhost:4939/?page=factory","all":6,"visible":6}
+=== P12 compose-edit R1/R2 ===
+{"url":"http://arcblog.localhost:4939/?page=compose-edit","h2":[{"t":"Edit post","fs":"21.6px","parentPad":"14px"}],"actions":[{"label":"","variant":null,"radius":"4px","h":28},{"label":"","variant":null,"radius":"4px","h":28},{"label":"EN","variant":null,"radius":"4px","h":0},{"label":"中文","variant":null,"radius":"4px","h":0},{"label":"▾","variant":null,"radius":"999px","h":34},{"label":"User Center","variant":null,"radius":"4px","h":0},{"label":"Admin Console","variant":null,"radius":"4px","h":0},{"label":"Management","variant":null,"radius":"4px","h":0},{"label":"Sign Out","variant":null,"radius":"4px","h":0},{"label":"Back to studio","variant":"ghost","radius":"32px","h":19}],"bodyHas":"ArcBlog\n▾\nEdit post\nDraft not found.\nBack to studio"}
+=== P13 preview (no real draft slug) ===
+{"url":"http://arcblog.localhost:4939/preview/x","all":0,"visible":0}
+[targets after] pages=1 ["about:blank"]
+
+==========================================================================================
+== PROBE 8 (post-lock)
+==========================================================================================
+[targets before] pages=1 ["about:blank"]
+=== Q1 platform hover WITHOUT any injection (expect --color-on-accent #09090b on solid red) ===
+hover(no injection) {"color":"rgb(9, 9, 11)","bg":"rgb(197, 48, 48)","border":"rgb(197, 48, 48)","icon":"rgb(9, 9, 11)"}
+rest (no injection)  {"color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"rgb(197, 48, 48)","icon":"rgb(197, 48, 48)"}
+=== Q2 3-rule A-ii draft: rest text, rest icon (not hover), hover text ===
+injected
+rest   {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"rgb(197, 48, 48)","icon":"rgb(197, 48, 48)"}
+hover  {"color":"rgb(250, 250, 248)","bg":"rgb(197, 48, 48)","border":"rgb(197, 48, 48)","icon":"rgb(9, 9, 11)"}
+rest2  {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"rgb(197, 48, 48)","icon":"rgb(197, 48, 48)"}
+removed
+after remove {"color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","border":"rgb(197, 48, 48)","icon":"rgb(197, 48, 48)"}
+=== Q3 compose-edit ghost "Back to studio" box ===
+{"tag":"BUTTON","cls":"aup-action","variant":"ghost","display":"flex","padding":"0px","minHeight":"0px","height":"19px","fontSize":"13px","lineHeight":"normal","borderRadius":"32px","boxSizing":"border-box","color":"rgb(107, 107, 120)","background":"rgba(0, 0, 0, 0)","rect":{"w":115,"h":19},"parentPad":"14px","parentGap":"10px","parentDisplay":"flex","cardOf":{"depth":1,"pad":"14px","display":"flex"}}
+[targets after] pages=1
+
+==========================================================================================
+== PROBE 9 (post-lock)
+==========================================================================================
+[targets before] pages=1
+=== R1 exact 3-rule CSS ===
+injected
+rest  {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+hover {"color":"rgb(250, 250, 248)","bg":"rgb(197, 48, 48)","icon":"rgb(250, 250, 248)"}
+rest2 {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+removed
+after {"color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+=== R2 ghost action attributes ===
+{"attrs":{"class":"aup-action","data-variant":"ghost","data-kind":"back","data-aup-id":"compose-edit-view-1-view-1-view-2-view-1-action-3"},"rect":{"w":115,"h":19},"radius":"32px","fontSize":"13px","color":"rgb(107, 107, 120)","padding":"0px","minHeight":"0px"}
+[targets after] pages=1
+
+==========================================================================================
+== PROBE 10 (post-lock) — FINAL 3-rule draft: hover uses var(--color-surface)
+==========================================================================================
+[targets before] pages=1
+=== R1 exact 3-rule CSS ===
+injected
+rest  {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+hover {"color":"rgb(255, 255, 255)","bg":"rgb(197, 48, 48)","icon":"rgb(255, 255, 255)"}
+rest2 {"color":"rgb(26, 26, 31)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+removed
+after {"color":"rgb(197, 48, 48)","bg":"color(srgb 0.772549 0.188235 0.188235 / 0.12)","icon":"rgb(197, 48, 48)"}
+=== R2 ghost action attributes ===
+{"attrs":{"class":"aup-action","data-variant":"ghost","data-kind":"back","data-aup-id":"compose-edit-view-1-view-1-view-2-view-1-action-3"},"rect":{"w":115,"h":19},"radius":"32px","fontSize":"13px","color":"rgb(107, 107, 120)","padding":"0px","minHeight":"0px"}
+[targets after] pages=1

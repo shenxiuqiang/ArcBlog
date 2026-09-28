@@ -1,5 +1,7 @@
 page categories {
   i18n {
+    add-note { en "A page write stores sort=0; adjust it afterwards with the CLI sort command above. The CLI accepts only lowercase letters, digits and hyphens (slugify)." zh "页面写入的记录 sort=0；之后请用上方 CLI 排序命令调整。CLI 只接受小写字母、数字与连字符（slugify）。" }
+    add-title { en "Add a category" zh "新增分类" }
     cat-add { en "Add category" zh "添加分类" }
     cat-added { en "Category saved." zh "分类已保存。" }
     cat-empty { en "No categories yet." zh "还没有分类。" }
@@ -7,14 +9,28 @@ page categories {
     cat-f-name { en "Name" zh "名称" }
     cat-f-slug { en "Slug" zh "标识（slug）" }
     cat-remove { en "Remove" zh "删除" }
-    cat-remove-msg { en "Existing posts keep their category text, but the publish validator will reject it afterwards." zh "已有文章会保留其分类文本，但发布校验器之后会拒绝该分类。" }
+    cat-remove-msg { en "Never delete a category while posts still reference it. Migrate first: node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to> — the CLI refuses a bare remove while references exist. A page-side delete is not offered here, because it cannot prove the reference count is 0 and a dangling category is forbidden (spec §15.4)." zh "不要在文章仍有引用时删除分类。先迁移：node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to>——仍有引用时 CLI 会拒绝裸删除。本页不提供直删动作：页面无法证明引用计数为 0，而悬空分类是被禁止的（spec §15.4）。" }
     cat-remove-title { en "Remove this category?" zh "删除该分类？" }
     cat-removed { en "Category removed." zh "分类已删除。" }
     cat-slug-hint { en "Lowercase letters, digits and hyphens, e.g. technology." zh "小写字母、数字与连字符，例如 technology。" }
-    desc { en "Taxonomy used by the publish validator and the public feed." zh "发布校验器与公开信息流使用的分类法。" }
+    cmd-list { en "List categories in sort order" zh "按排序列出分类" }
+    cmd-merge { en "Merge this category into another (migrates every referencing post)" zh "把该分类合并到另一个（迁移所有引用文章）" }
+    cmd-remove-migrate { en "Migrate the references, then remove it (never leaves a dangling category)" zh "先迁移引用再删除（绝不留下悬空分类）" }
+    cmd-remove-zero { en "Remove only when usage is 0" zh "仅当 usage 为 0 时删除" }
+    cmd-sort { en "Change the sort value" zh "修改排序值" }
+    cmd-usage { en "Count posts/drafts referencing this category" zh "统计引用该分类的文章/草稿" }
+    desc { en "Taxonomy used by the publish validator and the public feed. This page shows the records and hands you the CLI commands; the CLI is what enforces “never leave a dangling category”." zh "发布校验器与公开信息流使用的分类法。本页展示记录并给出 CLI 命令；「绝不留下悬空分类」由 CLI 强制。" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
     gate-title { en "Site" zh "站点" }
+    gov-desc { en "This page performs no merge and no delete: a page-side delete cannot prove the reference count is 0, and a dangling category is forbidden (spec §15.4). The CLI enforces the migration, so the interface exposes only what the CLI really supports (merge / remove --migrate-to)." zh "本页不执行合并，也不执行删除：页面直删无法证明引用计数为 0，而悬空分类是被禁止的（spec §15.4）。迁移由 CLI 强制，因此界面只暴露 CLI 真正支持的能力（merge / remove --migrate-to）。" }
+    gov-title { en "Governance commands (copy and run)" zh "治理命令（复制后执行）" }
+    list-desc { en "One row per record under /instance/app/arcblog/categories/ (live-subscribed), showing the stored sort value. Reference counts are deliberately NOT displayed: a page-side count could only come from the query index, which goes stale after an edit (arc-contracts §15), so each row gives you the usage command instead — it scans the records directly." zh "来自 /instance/app/arcblog/categories/ 的每条记录一行（实时订阅），显示记录里的 sort 值。本页刻意不显示引用计数：页面侧计数只能来自查询索引，而索引在编辑后会陈旧（arc-contracts §15），因此每行给出 usage 命令——它直接扫描记录。" }
+    list-empty-hint { en "An empty list means no category record exists yet — the publish validator then falls back to the built-in technology / design / life." zh "列表为空说明还没有分类记录——发布校验器此时回退到内置的 technology / design / life。" }
+    list-title { en "All categories" zh "全部分类" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    sort-desc { en "`sort` is a real record field and the CLI lists by (sort, slug): technology 10 / design 20 / life 30. This page never edits it — change it with the CLI command here. Ordering is CLI-only: this page exposes no other reordering interface." zh "`sort` 是真实记录字段，CLI 按 (sort, slug) 列出：technology 10 / design 20 / life 30。本页不改它——用这里的 CLI 命令修改。排序仅 CLI 可改：本页不提供任何其他重排界面。" }
+    sort-title { en "Sorting is CLI-only" zh "排序仅 CLI 可改" }
+    sort-value { en "sort" zh "排序" }
     title { en "Categories" zh "分类" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -102,6 +118,10 @@ page categories {
           }
           p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
           action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
             p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
             action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
@@ -111,25 +131,41 @@ page categories {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+            view gap=xs {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
               p :desc intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:cat-empty from "/instance/app/arcblog/categories" {
-                  row cross=center role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
-                    view gap=xs size={flex: 1} style={minWidth: 0} {
-                      h3 "${entry.content.name}" style={fontSize: "var(--type-body)"}
-                      p "${entry.content.slug}" scale=sm intent=muted
-                      p "${entry.content.description}" scale=sm intent=muted
-                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                        time mode=display value="${entry.content.createdAt}" timeMode=relative
-                      }
+                h3 :gov-title level=3 style={fontSize: "var(--type-body)"}
+                p :gov-desc scale=sm intent=muted
+                key-value-list cat-gov-cmds dense=true fields=[{label: "$t(categories.cmd-list)", value: "node scripts/arcblog-category.mjs list", monospace: true, copyable: true}, {label: "$t(categories.cmd-usage)", value: "node scripts/arcblog-category.mjs usage --slug <slug>", monospace: true, copyable: true}, {label: "$t(categories.cmd-merge)", value: "node scripts/arcblog-category.mjs merge --from <from> --to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-migrate)", value: "node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-sort)", value: "node scripts/arcblog-category.mjs add --slug <slug> --update --sort <n>", monospace: true, copyable: true}]
+                p :cat-remove-msg scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :sort-title level=3 style={fontSize: "var(--type-body)"}
+                p :sort-desc scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :list-title level=3 style={fontSize: "var(--type-body)"}
+                p :list-desc scale=sm intent=muted
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/categories" {
+                  view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    h3 "${entry.content.name}" style={fontSize: "var(--type-body)"}
+                    p "${entry.content.slug}" scale=sm intent=muted
+                    p "$t(categories.sort-value): ${entry.content.sort}" scale=sm
+                    p "${entry.content.description}" scale=sm intent=muted
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                      time mode=display value="${entry.content.createdAt}" timeMode=relative
                     }
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:cat-remove path="/instance/app/arcblog/categories/${entry.content.slug}.json" confirm={title: :cat-remove-title, message: :cat-remove-msg} onSuccessToast={intent: success, message: "$t(heroes-admin.cat-removed)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                    key-value-list dense=true fields=[{label: "$t(categories.cmd-usage)", value: "node scripts/arcblog-category.mjs usage --slug ${entry.content.slug}", monospace: true, copyable: true}, {label: "$t(categories.cmd-merge)", value: "node scripts/arcblog-category.mjs merge --from ${entry.content.slug} --to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-migrate)", value: "node scripts/arcblog-category.mjs remove --slug ${entry.content.slug} --migrate-to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-zero)", value: "node scripts/arcblog-category.mjs remove --slug ${entry.content.slug}", monospace: true, copyable: true}]
                   }
                 }
+                p :list-empty-hint scale=caption intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :add-title level=3 style={fontSize: "var(--type-body)"}
+                p :add-note scale=sm intent=muted
                 input type=text label=:cat-f-slug name=catSlug required=true state={value: ""}
                 p :cat-slug-hint intent=muted scale=caption
                 input type=text label=:cat-f-name name=catName required=true state={value: ""}

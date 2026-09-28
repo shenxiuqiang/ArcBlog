@@ -1179,7 +1179,7 @@ view {
 | `hero-carousel-frame` | 首页 hero 组件与验收测试按 id 寻址 | 组件挂不上、验收测试失败 |
 | `theme-bridge-frame`（wrapper 内） | 主题桥接 iframe 按 id/窗口寻址 | 主题桥接失效 |
 
-仓库里本来就有守卫 `scripts/arcblog-runtime-ids.test.mjs`（3 个用例），正是它把这次回归拦住了。**结论：不要无脑跑 `arc dsl lint --fix`**；若跑了，必须把这几个 id 加回来并重跑该守卫。仓库里保留的 `unreferenced_explicit_id` 警告**全部是这些运行时 id —— 有意为之，不是待办**。计数**以 `arc dsl lint` 实测为准，不要写死**（曾记 24 条、后记 10 条，2026-09-28 实测 **16 条**：`factory.aup` 7 / `agents.aup` 6 / `wrapper.aup` 2 / `index.aup` 1）。
+仓库里本来就有守卫 `scripts/arcblog-runtime-ids.test.mjs`（3 个用例），正是它把这次回归拦住了。**结论：不要无脑跑 `arc dsl lint --fix`**；若跑了，必须把这几个 id 加回来并重跑该守卫。仓库里保留的 `unreferenced_explicit_id` 警告**全部是这些运行时 id —— 有意为之，不是待办**。计数**以 `arc dsl lint` 实测为准，不要写死**：它随控制台页数增长（历史记录里出现过 24 / 10 两个数；2026-09-28 实测从 **16 → 24**，新增的来自 `diagnostics.aup` 的 7 个 `key-value-list` id 与 `categories.aup` 1 个）。
 
 （可安全清掉的是另一类：侧栏 15×15 行与分隔线的 id、`page-root`、各页 `console-nav*` —— 它们确实只被生成器用过，现在生成器已改为不输出 id。）
 

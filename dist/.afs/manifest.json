@@ -16,21 +16,21 @@
     },
     {
       "path": ".aup/app.json",
-      "size": 1787,
+      "size": 1859,
       "contentType": "application/json",
-      "sha256": "78a98bc5a4b902ae3a56830c553294e1df35aa3a4382cba170b82e25334f5f3d"
+      "sha256": "7f853ba0a41a1dd4a4302487d346ac32646877eb8e26eb5739a9f1b30f257da2"
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 42435,
+      "size": 53054,
       "contentType": "application/json",
-      "sha256": "46b04115aec1074bb1aa10d9793c584e3b867cc79adea34d8a7a8e364dda4383"
+      "sha256": "138d13c774fe9a54c64f2fb3e2e5e284999431aaee2c1d3644d19b427cd27a77"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 41361,
+      "size": 51289,
       "contentType": "application/json",
-      "sha256": "da3295c51bb698028637285c1804b0f94a8f4b65c5083e155d434a16943209d6"
+      "sha256": "ea3b99d8ec49d000bdf4828256f6b77a256303849a8579645a695e5fee91341f"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -202,9 +202,9 @@
     },
     {
       "path": ".aup/pages/admin/appearance.aup",
-      "size": 8775,
+      "size": 9074,
       "contentType": "application/octet-stream",
-      "sha256": "0012ed3cd2a98bfbabd44f46a997a7758e127816775dd0f0c946530e613d5baa"
+      "sha256": "102533ad4f918ee7748b529ca3b90e4d24289bb7fc8b424308fff5a05e7d92d5"
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
@@ -214,33 +214,39 @@
     },
     {
       "path": ".aup/pages/admin/compose.aup",
-      "size": 15236,
+      "size": 15535,
       "contentType": "application/octet-stream",
-      "sha256": "a696139879b1b9b802f5906ae3afa86f77b01d5c98ce51af647a996fbae01ee9"
+      "sha256": "3277f2c209ae01b13e588fcbacc75ff1238d9ed0861c2d1de0ab5f8bf6428cfe"
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 17076,
+      "size": 17375,
       "contentType": "application/octet-stream",
-      "sha256": "15bb08cf30f9466fedadbb6fb6679e2f80ba6e2e8864a99a7feb921cd5ca89f3"
+      "sha256": "9d66e1926e12e808b350b7e1ecbece1e137f49c07821ef593d3eeee79fb7d81e"
+    },
+    {
+      "path": ".aup/pages/admin/diagnostics.aup",
+      "size": 31195,
+      "contentType": "application/octet-stream",
+      "sha256": "1727c7d790823216df0e78573387cfb77d4e67a15b8c8fc2b336586ca688ee96"
     },
     {
       "path": ".aup/pages/admin/general.aup",
-      "size": 26753,
+      "size": 27052,
       "contentType": "application/octet-stream",
-      "sha256": "ff2d766869a35040fd1b48486453576ac0d947b2a9df9904cd3c921744ae3316"
+      "sha256": "a4ece47638be53000a02f9e22885b1cdcd382e54a7c35f43912d0639d0032cbf"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 18510,
+      "size": 18809,
       "contentType": "application/octet-stream",
-      "sha256": "a66e2475a375d70fcde7af550348953e8236dff96ee8e39b56b911f74e89a510"
+      "sha256": "fe9706b64a8e3db339d636b204702e742d94886cc18c596dab4b97ead2fe7cd2"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 25518,
+      "size": 25817,
       "contentType": "application/octet-stream",
-      "sha256": "9a7025125d9c008187a49216dadd84a030b3134393ccfda5264df140422b5cd1"
+      "sha256": "f987fe8fb8ddd390702a40da53dddf95acc2761ed32371105406212c20f6e320"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -256,15 +262,15 @@
     },
     {
       "path": ".aup/pages/economy/access.aup",
-      "size": 10607,
+      "size": 10906,
       "contentType": "application/octet-stream",
-      "sha256": "a939a7b7af9fd89b44d651feaeffeb8bdb7c0a5a3bc27d70ba470f85ab9fa13e"
+      "sha256": "39fb38e1298671ea401bc22027716323ccdc328ea967943ae963b15f770cbc63"
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 11508,
+      "size": 11807,
       "contentType": "application/octet-stream",
-      "sha256": "58ef439f99dc45fbadb6e34ba392833b0c4e721825840af0a246798310969e0e"
+      "sha256": "8306e9f3f700375591c9a8b694951017e0df9685faa5e5cb4d5062bfb50f6e90"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -280,33 +286,33 @@
     },
     {
       "path": ".aup/pages/ops/agents.aup",
-      "size": 21112,
+      "size": 21411,
       "contentType": "application/octet-stream",
-      "sha256": "86ce2644fedd69f35de30a7a20e2629bc31284975abe814e81ce76ab69cc94ed"
+      "sha256": "e012b1883a78d0611eaba3443a6fb83e93fe06000aadc3a6dd86b82e1166a4e8"
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 22902,
+      "size": 23201,
       "contentType": "application/octet-stream",
-      "sha256": "54b5bacdfae9c74861bc7df6ad1b87f505fa56bf2d04375335db0e2c2e6dd46e"
+      "sha256": "7dfd80117c05d19f81884a40ce2a1985812873ab36046cc202b1c5b7fb3d338a"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 17007,
+      "size": 17306,
       "contentType": "application/octet-stream",
-      "sha256": "3a4cc495b7a15bff3ae2e3467342b6372b5b3182932ccf82e3a1df64debfd0b5"
+      "sha256": "2f447f7fa4c7614de56536cbb9d28845b7addec990ef6ebd416337e51f5404f5"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 18901,
+      "size": 19200,
       "contentType": "application/octet-stream",
-      "sha256": "a9be642f0ff44390fe327450765fd9bc497433f7fe1ac548ac2abf04a3f2df62"
+      "sha256": "502661f1bb8ed28f44dbaaa69c97b998da7aa84ae307dc8454fb00f2355f67ee"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
-      "size": 13131,
+      "size": 13430,
       "contentType": "application/octet-stream",
-      "sha256": "6ec4f9f58c906dceb6f11a990b7b4fd75c78f13db90357431f1b4de7f291cb2f"
+      "sha256": "32ae413eada2bdac2aea005ba6590ad6b0c5c22d1a181186e27fd7341b842d7a"
     },
     {
       "path": ".aup/pages/page-view.aup",
@@ -346,33 +352,33 @@
     },
     {
       "path": ".aup/pages/site/categories.aup",
-      "size": 11973,
+      "size": 18356,
       "contentType": "application/octet-stream",
-      "sha256": "6d10159da4d3bbb245163f16299ee8c387905632de267c77b9187870c1aae412"
+      "sha256": "0a97b54ababf631e54e7d4fab9f6745ba3981ab80cbaa64f2d0785e5c6f16e53"
     },
     {
       "path": ".aup/pages/site/feeds.aup",
-      "size": 9521,
+      "size": 9820,
       "contentType": "application/octet-stream",
-      "sha256": "7f7918678638e25c3941159fd96d726b3c3f33676032dc961b5ceb9f62097016"
+      "sha256": "2b7a6f5fd1acb2d8507250a723f3beedfcf51bfa2b744222b131efbb0840c761"
     },
     {
       "path": ".aup/pages/site/heroes.aup",
-      "size": 17152,
+      "size": 17451,
       "contentType": "application/octet-stream",
-      "sha256": "8004b7f26c868c03db81142c10aca4efd9546456cbe1177724163c9afc921b33"
+      "sha256": "cf7c1b4ed48d650f6b67356a023b01238599a453f86971af0c29f78e4968a402"
     },
     {
       "path": ".aup/pages/site/seo.aup",
-      "size": 10935,
+      "size": 11234,
       "contentType": "application/octet-stream",
-      "sha256": "d620114977eca37a80b3f0be0a009dcec675220859400993c8b787f554ee1cc8"
+      "sha256": "5ef5a11d2e1a3aa4779c80bba66fb0380f898c1553906dd0d8f9d9ab2f73bf4e"
     },
     {
       "path": ".aup/pages/site/tags.aup",
-      "size": 20363,
+      "size": 20662,
       "contentType": "application/octet-stream",
-      "sha256": "208334a25b713da7bf19326e036eef33d50542e7ec3253995040a508ec5fa138"
+      "sha256": "cb9e6c691d897fd35b3a72e5a79330fd99a0372d254fbdc1eaddc4565433e0cc"
     },
     {
       "path": ".aup/pages/store.aup",
@@ -388,9 +394,9 @@
     },
     {
       "path": ".aup/wrapper.aup",
-      "size": 2412,
+      "size": 2474,
       "contentType": "application/octet-stream",
-      "sha256": "3ad7dfcdd90e21565db25a05ffe29a63a037f9599df35b6d6b999bef4d47c7ba"
+      "sha256": "47b25596087254d7d0078e3d2e0073f8138033c0920f66e9f8d364fbd4479486"
     },
     {
       "path": ".aup/wrapper.json",
@@ -1312,27 +1318,27 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 28233,
+      "size": 28271,
       "contentType": "text/markdown",
-      "sha256": "a80faab5d47bc613e05dd66bae2425ff9c0c2adbcd46d4583b687f5e21dcfa59"
+      "sha256": "5a3bff2c0f645ea328024c6f024e3ccd80d501d39faf41c86b0c7db15ddba666"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 129509,
+      "size": 129582,
       "contentType": "text/markdown",
-      "sha256": "0b0938b7eb32a7e1ba6d6b8be7554caea10c7e71f5b3f42de5e27a77510217f9"
+      "sha256": "64f7d9b866441933274e65e924c5dc85c74387b4c357f2b8969d64bdb28329c4"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 55977,
+      "size": 56602,
       "contentType": "text/markdown",
-      "sha256": "41b12dca5a587f6d23f58f44587aeb5904ac38db9db22acf9f60fee7d161bcb5"
+      "sha256": "7482666c0f4c4abdfee757d471658d270136f958e7db540ff41e9e3cbf45d6df"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 47639,
+      "size": 51095,
       "contentType": "text/markdown",
-      "sha256": "d1af72b530a5e95ee23f8f5d00f6e9b3a64eea17f8506cadef7604351a2b5049"
+      "sha256": "8288ed940cd85de8a85249ca6c70668fd4fa4a4a16ceb08215628e2abadf768b"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1444,9 +1450,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 253678,
+      "size": 297160,
       "contentType": "text/markdown",
-      "sha256": "53687e022ad30f56b0a9efc997e380ebec8f06e0d20e355233246b10284829a0"
+      "sha256": "4f203ddc555fd82ca0dc538a3579379eaa790348a349f7bfe6cb5daa21a78760"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1617,6 +1623,12 @@
       "sha256": "ce3113d77cae7a4ff01249041a600e678dc1ed28a377339f7767de39cced4c1a"
     },
     {
+      "path": "docs/team/bugs/BUG-028-ui009-destructive-line-numbers-stale.md",
+      "size": 3364,
+      "contentType": "text/markdown",
+      "sha256": "5bab7b85ce6ff8c7b11a4b27aa8cab23b155181c796600d2e014b8e7e31bbd18"
+    },
+    {
       "path": "docs/team/design/raw/UI-007-admin.json",
       "size": 376894,
       "contentType": "application/json",
@@ -1639,6 +1651,36 @@
       "size": 15768,
       "contentType": "text/plain",
       "sha256": "bfc82931f94c53699beb771a720ed5dddf5403f687192b31dabe4ea31d8c83ed"
+    },
+    {
+      "path": "docs/team/design/raw/UI-009-cdp-probes.txt",
+      "size": 16119,
+      "contentType": "text/plain",
+      "sha256": "34abf753b8ff91e4cb1f48e2c86008d0fbf4303a7615889b55ba41d0b67a0be9"
+    },
+    {
+      "path": "docs/team/design/raw/UI-009-contrast-output.txt",
+      "size": 5272,
+      "contentType": "text/plain",
+      "sha256": "95a1f0e8682d5364fdbf6834d3d5b3a31f1761e447cef8296fe2db60c81f35de"
+    },
+    {
+      "path": "docs/team/design/raw/UI-009-contrast.mjs",
+      "size": 8139,
+      "contentType": "text/javascript",
+      "sha256": "de08702639632bd27febb93a34fd49a5f5010deacd7b6f97784940b65c66a95b"
+    },
+    {
+      "path": "docs/team/design/raw/UI-009-platform-token-source.txt",
+      "size": 5561,
+      "contentType": "text/plain",
+      "sha256": "c0e517ac33e451592374139fd199308f7dee5b7f09b902178d62c05c4da50318"
+    },
+    {
+      "path": "docs/team/design/raw/UI-009-platform-tokens.json",
+      "size": 23992,
+      "contentType": "application/json",
+      "sha256": "e251c0f0d2f104063f6bfd2f8ef3111589ba342581d87885524ae147f09faaad"
     },
     {
       "path": "docs/team/design/review-console.md",
@@ -1719,10 +1761,16 @@
       "sha256": "882fb3bbfccde98ce01dae386fa4a21dd9a122dea4581d07a1419eef685bf658"
     },
     {
-      "path": "docs/team/journal/README.md",
-      "size": 11016,
+      "path": "docs/team/design/UI-009-v3-contrast-and-visual-debt.md",
+      "size": 44526,
       "contentType": "text/markdown",
-      "sha256": "58d9610b47d6b3c904ce4f7cac067044e39692976695a7625eb6376299ea58d9"
+      "sha256": "778216f9714cd40671f5a549ddd162d67f4578d5bda0456b0cad222e9a5aabc2"
+    },
+    {
+      "path": "docs/team/journal/README.md",
+      "size": 13683,
+      "contentType": "text/markdown",
+      "sha256": "d26742d9cf7ac06653d9db597dfe42bf7c77dcf557d8f63a27f72c5bc8bbe0e4"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -1735,6 +1783,12 @@
       "size": 32587,
       "contentType": "text/markdown",
       "sha256": "4cbbf1679a114c85d549cc7c7eed2c68a9b3c3ed417c59ea1e3b6ec785332107"
+    },
+    {
+      "path": "docs/team/journal/round-12.md",
+      "size": 28407,
+      "contentType": "text/markdown",
+      "sha256": "c6998fbc1c8a35cda1edb60be4d8f0358acb232d6ae9fdb1c26dc395110dfaea"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -1845,6 +1899,18 @@
       "sha256": "d61e7e6aeaa8e6a57ca3a3fb6fee55bb2079d246462351bea42fdaf35d567338"
     },
     {
+      "path": "docs/team/requirements/REQ-013-diagnostics-and-categories.md",
+      "size": 39081,
+      "contentType": "text/markdown",
+      "sha256": "6ddd61ce30ce9ff893c0c718ffa8d2f560d7fd96ca94a2cd99d0685a4a00cb9a"
+    },
+    {
+      "path": "docs/team/requirements/REQ-014-v3-contrast-and-visual-debt.md",
+      "size": 21880,
+      "contentType": "text/markdown",
+      "sha256": "e7e895b2a7155fdfd52b523e82470ca3e2356861a3230737476e68d464abcd86"
+    },
+    {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
       "size": 18476,
       "contentType": "text/markdown",
@@ -1933,6 +1999,12 @@
       "size": 37616,
       "contentType": "text/markdown",
       "sha256": "0e6ba8817ccc3ffa83bee876dfa4e1a2b31eb01d1045ef5ebb1c5cf50a870fd3"
+    },
+    {
+      "path": "docs/team/test-reports/round-12.md",
+      "size": 46061,
+      "contentType": "text/markdown",
+      "sha256": "8db2fac0f263c11472d2b132720ab2a1624eb0b14558b36d184ff05688ca67ae"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -2146,9 +2218,9 @@
     },
     {
       "path": "scripts/arcblog-doctor.mjs",
-      "size": 5316,
+      "size": 8477,
       "contentType": "text/javascript",
-      "sha256": "0b988b5e96eb9b57f52fc8136ff631f8750f8a9421fab0e72813affb55bb90f3"
+      "sha256": "0ef866a2ccebd7745105e0787c0a40e82565d481bf46933cebe7fadcb9a41a47"
     },
     {
       "path": "scripts/arcblog-doctor.test.mjs",
@@ -2320,9 +2392,9 @@
     },
     {
       "path": "scripts/arcblog-settings.test.mjs",
-      "size": 3851,
+      "size": 12050,
       "contentType": "text/javascript",
-      "sha256": "8080d25ec12a942d02ac8c36542f29c00b0630b515b186e825a9ca45a940add9"
+      "sha256": "d0ae3e68ac32f9f6e502c1ab394a8d3feadaa804fbf83a46890e17c9b5236cec"
     },
     {
       "path": "scripts/arcblog-tags.mjs",
@@ -2350,9 +2422,9 @@
     },
     {
       "path": "scripts/console-nav.mjs",
-      "size": 10040,
+      "size": 10558,
       "contentType": "text/javascript",
-      "sha256": "99e270d94312e39269b6c25616aca62490e94f32cf9ce76b231dd3e5e6bc02a0"
+      "sha256": "a890aad139006e468f3e43bee90f6186b8c96e5404b73259cfcb1fcda4eede9c"
     },
     {
       "path": "scripts/lib/agents.mjs",

@@ -1,0 +1,48 @@
+# UI-009 raw evidence — token source for V3 (destructive button contrast)
+# Fetched over HTTP from the running daemon (read-only; no AUP/AFS/repo access):
+#   curl -s http://arcblog.localhost:4939/aup-core.d36197840205e143.css  ->  aup-core.d36197840205e143.css
+# bytes=268506  sha256=d36197840205e14349536f9691ae3b829f5e53525065bc05e27f1d1f9cbf2b22
+# The console page loads exactly 3 stylesheets: Google Fonts, aup-core.<hash>.css, aup-app.<hash>.css.
+# No .web/themes/*/tokens.json is loaded into the console (CDP: [...document.querySelectorAll("link[rel=stylesheet]")])
+
+## Rules that produce the destructive / ghost / secondary variants (verbatim, minified)
+.aup-action[data-variant=destructive]{background:color-mix(in srgb,var(--color-error) 12%,transparent);border-color:var(--color-error);color:var(--color-error)}
+.aup-action[data-variant=destructive]:hover{background:var(--color-error);color:var(--color-on-accent, var(--color-bg))}
+.aup-action[data-variant=secondary]{background:var(--color-accent-bg);border:1px solid var(--color-border);color:var(--color-text);font-weight:500}
+.aup-action[data-variant=secondary]:hover{background:var(--hover-bg);border-color:var(--color-border)}
+.aup-action[data-variant=ghost]{background:transparent;border-color:transparent}
+.aup-action[data-variant=ghost]:hover{background:var(--color-surface);border-color:var(--color-border);transform:none;box-shadow:none}
+.aup-action[data-variant=danger-ghost]{background:transparent;border-color:transparent;color:var(--color-dim)}
+.aup-action[data-variant=danger-ghost]:hover{background:color-mix(in srgb,var(--color-error) 14%,transparent);border-color:var(--color-error);color:var(--color-error);transform:none;box-shadow:none}
+
+## Why --color-danger is NOT the lever (observed via CDP CSSOM)
+# one loaded sheet carries:  :root { --color-fg: var(--color-text); --color-text-muted: var(--color-dim);
+#   --color-muted: var(--color-dim); --color-danger: var(--color-error); --color-surface-2: var(--surface-muted); }
+# NOTE (limited verification): that alias rule is NOT present in the aup-core.css / aup-app.css text fetched above,
+# so it comes from a runtime-injected style layer whose exact owner was not pinned this round.
+# The functional proof does not depend on the owner (measured live, probe #4):
+#   set --color-danger:#00ff00 on <html> -> button color stays rgb(197,48,48)  (alias proven inert)
+#   set --color-error:#8b1a1a  on <html> -> button color becomes rgb(139,26,26) (this IS the lever)
+
+## :root card-bg fallback (verbatim)
+:root{--card-bg: var(--color-surface, #f8fafc);--card-border: 1px solid var(--color-border, #e2e8f0);--shadow-card: 0 2px 8px rgba(0,0,0,.08);--shadow-hover: 0 4px 16px rgba(0,0,0,.12);--backdrop: none;--transition: .2s ease;--radius-sm: .25rem;--radius-md: .375rem;--radius-lg: .5rem;--hover: color-mix(in srgb, var(--color-text, #18181b) 6%, transparent);--color-accent-bg: color-mix(in srgb, var(--color-accent, #6366f1) 10%, transparent);--font-heading: var(--font-body, system-ui, -apple-system, sans-serif);--heading-weight: 700;--heading-spacing: normal;--heading-transform: none;--heading-gradient: var(--color-accent, #6366f1);--glow: none;--color-assistant: var(--color-accent, #6366f1);--color-error: #ef4444;--color-success: #22c55e;--accent-fg: #fff;--msg-font-size: var(--type-body, .95rem);--hover-bg: color-mix(in srgb, var(--color-text, #18181b) 6%, transparent);--error-bg: rgba(220,38,38,.1);--muted: var(--color-dim, #64748b);--page-gutter: 32px}
+
+## tone blocks -> --card-bg / --card-border
+[data-tone=editorial]  --card-bg: var(--color-surface)   --card-border: 1px solid var(--color-border)
+[data-tone=clean]  --card-bg: var(--surface-muted)   --card-border: 1px solid var(--color-border)
+[data-tone=bold]  --card-bg: var(--color-surface)   --card-border: 3px solid var(--color-text)
+[data-tone=mono]  --card-bg: var(--color-surface)   --card-border: 1px solid var(--color-border)
+NOTE: source order decides :root vs [data-tone=editorial] for --card-bg; the live measured value on
+      ?page=posts (tone editorial, palette natural, light) is #f0efec == --surface-muted.
+
+## palette blocks (theme-bridge RANGES.palette x mode) — the values a token override must cover
+[data-palette=natural][data-mode=light]      error #c53030   bg #fafaf8   surface #ffffff   muted #f0efec   text #1a1a1f dim #6b6b78
+[data-palette=natural][data-mode=dark]       error #f07178   bg #0a0a0f   surface #1a1a25   muted #22222d   text #e8e6f0 dim #8b89a0
+[data-palette=neutral][data-mode=light]      error #c92a2a   bg #fafafa   surface #ffffff   muted #f4f4f5   text #18181b dim #71717a
+[data-palette=neutral][data-mode=dark]       error #e5484d   bg #09090b   surface #18181b   muted #1c1c1f   text #f4f4f5 dim #a1a1aa
+[data-palette=warm][data-mode=light]         error #c53030   bg #f5f3ef   surface #fefdfb   muted #eeebe6   text #2c2418 dim #736756
+[data-palette=warm][data-mode=dark]          error #f07178   bg #0a0e14   surface #131820   muted #1c2130   text #b3b1ad dim #8a939d
+[data-palette=vivid][data-mode=light]        error #dc2626   bg #f0f4ff   surface #ffffff   muted #e8edf8   text #1a1a2e dim #5a6078
+[data-palette=vivid][data-mode=dark]         error #f87171   bg #0a0e1a   surface #111827   muted #192030   text #e8edf5 dim #8892a8
+[data-palette=electric][data-mode=light]     error #dc2626   bg #ffffff   surface #F8FAFC   muted #edf2f7   text #0F172A dim #475569
+[data-palette=electric][data-mode=dark]      error #f87171   bg #0B1120   surface #131C2E   muted #1a2535   text #E2E8F0 dim #94A3B8

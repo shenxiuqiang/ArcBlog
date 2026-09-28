@@ -17,7 +17,9 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
-> 🛑 **R12 起需人工恢复**：**Round 10 是长时目标（`create_goal` 自动续轮，`max_goal_rounds=3`）的最后一轮自动续轮**，自动续轮到此为止；**Round 11 已由人类恢复并执行完毕**（结果见下方「本轮：Round 11」）。**Round 10 结果 = 交付通过 + QA-005 放行（`VERDICT=pass, BLOCKING=0`）**：REQ-009 / REQ-010 均验收通过、BUG-016 修复闭环、BUG-017 与 D14 文案落地；新增 3 条 P3（BUG-018/019/020，全部文档/判据层、不阻断）。**Round 11 结果 = QA-006 放行（`VERDICT=pass, BLOCKING=0`）+ checklist 重基线（✅80→75 / 🟡9→14 / ⬜9→13 / ⚪2 = 104 行）+ §15.9 通用设置页（第 18 页）+ 像素走查（V1–V9/D1–D5）+ 新增 5 条 P2（全部在新建页，PM 均裁「本轮修」、待 Lead 开 R11F）+ R12–R15 路线表**。**Round 11F（修复窗口，Lead D20 开窗）= BUG-021…025 全部修复 + UI-007 V1/V2/V4–V9 机械偏差修复 + V3/V8 口径裁定 + D1–D5 落标准（V1.7）；QA 独立复验 [round-11-reverify.md](test-reports/round-11-reverify.md) 判 `VERDICT=fail, BLOCKING=1` —— **功能面全绿，唯一阻断 = BUG-027**（`.aup/man` 改名晚于最后一次 build → `dist/.aup/man` 漂移；修复 = 一条命令 `arc blocklet build` + 复跑 `diff -r .aup dist/.aup` / `arc dsl validate --json`），另新开 **BUG-026**（compose-edit gate 指向不存在的 `?page=admin`，P2 既有）**。**R12 不会再自动开始**——必须由人类在本会话说「**继续 / resume**」（Lead 执行 `update_goal action=resume`）或重新下达轮次目标。恢复后从 **「R12–R15 实施路线表」（#1 设置收口 → #2 诊断页 → #3 §111 探针）**、排队区 #16 与「🎯 目标收尾」④ 取用候选。
+> ✅ **自动续轮已恢复（当前 5/8），R12 执行中**（2026-09-28：人类恢复 → Lead 重新武装长时目标并建 R12 任务板 `task-34`…`task-38`）。**R12 = 可运营性轮（精简轮）**：REQ-013「§15.9 诊断与维护页（诚实形态）+ §15.4 分类治理界面 + 既有 live 文件的 settings/diagnostics 用例」（Dev `task-35`）/ REQ-014（= **UI-009**）「V3 令牌级方案（**只提议**）+ 剩余视觉债」（UI `task-36`）/ QA-007 独立验证（`task-37`，`blocked_by task-35 + task-36`）/ PM `task-34`（规划）+ `task-38`（裁决）。**门规不变**：不跑全量 `npm run test:live`；门 = `arc dsl validate --json`（issues=[]）+ `npm test`（28/28）+ 改了 `.aup` 的 `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check` + `arc dsl generate --check`；**浏览器全程复用同一标签页**。**R11/R11F 已收口**：Lead 的收尾 `arc blocklet build` 关闭唯一阻断 **BUG-027**（提交 `a193a49`；PM 本轮复核 `diff -r .aup dist/.aup` 无输出），checklist 第 119 行已 ✅、**BUG-026 已修**；清单现网 **✅76 / 🟡13 / ⬜13 / ⚪2 = 104 行**。**R12 已收官（2026-09-28 轮末，PM）**：交付通过 + QA-007 独立验证**放行**（`VERDICT=pass, BLOCKING=0`，无 P0/P1/未裁决 P2）——诊断页 **`?page=diagnostics`**（第 19 个控制台页，诚实形态）+ **§15.4 分类治理界面** + 既有 live 文件 5 条用例（8/8，`npm test` 仍 28/28）；UI-009 只出 **V3 令牌级方案（未实施）**；新增 **BUG-028（P3）→ 裁「下一轮修」**；checklist 建议第 **121/103** 行 🟡→✅（附降级登记）→ **✅78 / 🟡11 / ⬜13 / ⚪2 = 104**；**R13 排期**见「Round 13 排期」节（首项 = V3 路径 A-ii，待 Lead 批准）。
+>
+> 📌 **以下为历史横幅（R10 轮末原文，保留备查；其中「R12 不会再自动开始」一句已作废）**：**Round 10 是长时目标（`create_goal` 自动续轮，`max_goal_rounds=3`）的最后一轮自动续轮**，自动续轮到此为止；**Round 11 已由人类恢复并执行完毕**（结果见下方「本轮：Round 11」）。**Round 10 结果 = 交付通过 + QA-005 放行（`VERDICT=pass, BLOCKING=0`）**：REQ-009 / REQ-010 均验收通过、BUG-016 修复闭环、BUG-017 与 D14 文案落地；新增 3 条 P3（BUG-018/019/020，全部文档/判据层、不阻断）。**Round 11 结果 = QA-006 放行（`VERDICT=pass, BLOCKING=0`）+ checklist 重基线（✅80→75 / 🟡9→14 / ⬜9→13 / ⚪2 = 104 行）+ §15.9 通用设置页（第 18 页）+ 像素走查（V1–V9/D1–D5）+ 新增 5 条 P2（全部在新建页，PM 均裁「本轮修」、待 Lead 开 R11F）+ R12–R15 路线表**。**Round 11F（修复窗口，Lead D20 开窗）= BUG-021…025 全部修复 + UI-007 V1/V2/V4–V9 机械偏差修复 + V3/V8 口径裁定 + D1–D5 落标准（V1.7）；QA 独立复验 [round-11-reverify.md](test-reports/round-11-reverify.md) 判 `VERDICT=fail, BLOCKING=1` —— **功能面全绿，唯一阻断 = BUG-027**（`.aup/man` 改名晚于最后一次 build → `dist/.aup/man` 漂移；修复 = 一条命令 `arc blocklet build` + 复跑 `diff -r .aup dist/.aup` / `arc dsl validate --json`），另新开 **BUG-026**（compose-edit gate 指向不存在的 `?page=admin`，P2 既有）**。~~**R12 不会再自动开始**~~ **（2026-09-28 已作废：人类已恢复，自动续轮重新武装，R12 执行中——见文件顶部横幅与下方「本轮：Round 12」）**。恢复后从 **「R12–R15 实施路线表」（#1 设置收口 → #2 诊断页 → #3 §111 探针）**、排队区 #16 与「🎯 目标收尾」④ 取用候选。
 
 
 ---
@@ -371,6 +373,157 @@ $ node scripts/arcblog-agent.mjs check → exit 0
 
 ---
 
+## 本轮：Round 12 ｜ **可运营性轮（精简轮）** — 诊断与维护页 + 分类治理界面 + V3 令牌级方案
+
+> **轮次性质**：由**人类 2026-09-27 裁定持续有效的精简轮**；**自动续轮已恢复（当前 5/8）**（2026-09-28 人类恢复 → Lead 重新武装目标并建任务板）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）；本条小节即 `task-34` 的产物，轮末裁决为 `task-38`。
+> **门规（照此执行）**：门 = `arc dsl validate --json`（**issues=[]**）+ `npm test`（**28/28**，~1s，不写实例）+ 改了 `.aup` 的 **`arc blocklet build`**（并核对 `diff -r .aup dist/.aup` 无输出）+ `node scripts/arcblog-console-nav.mjs --check`（**18→19 页，以实测为准**）+ `arc dsl generate --check`（无漂移）。**禁止跑全量 `npm run test:live`**；只有触及 **CLI / AFS 记录 / 链适配器 / daemon 路由**时才**定向单跑**受影响的那一个测试文件（写实例前先在 `docs/team/.gate-lock` 写一行 owner+时间，跑完删除）。**浏览器标签页纪律（2026-09-28 实测事故）**：整个 sweep **复用同一个标签页**（`Page.navigate` 换页），禁止每页新开 tab；探针结束关闭自己开的 target（上一轮曾攒到 53 个 tab 把调试 Chrome 拖到濒临崩溃）。
+
+**目标（可验收）**：① **Dev（REQ-013）** 交付 **§15.9「设置 - 诊断与维护」页**（清单第 **121** 行 🟡）——**诚实形态 = 结果可视化 + 命令一键复制**，`doctor` 结果 / 存储·权限摘要 / 后台任务与意图队列 / 日志指引 / 备份导出三命令 / 常见问题自助定位；同时补齐 **§15.4 分类治理界面**（清单第 **103** 行 🟡：`merge` / `remove --migrate-to`；排序按记录真实 `sort` 字段如实处理），并在**既有 live 文件** `scripts/arcblog-settings.test.mjs` 补 `general install|show|set` 与诊断数据源用例。② **UI（REQ-014 = UI-009）** 只出 **V3 令牌级方案（只提议）** + 剩余视觉债清单。③ **QA-007** 独立验证（自跑门 + 自造探针 + AFS 复核，不采信自述）。④ **PM（`task-34`/`task-38`）** 规划与轮末裁决。
+
+**入选理由**：R11 的 `SPEC-REVIEW-001` §B.13 把「诊断与维护页完全没有界面」定为**可运营性缺口**（spec §15.9 的存在理由就是「把『登录服务器敲命令』降成『后台点几下』」，而当前形态**恰好等于它要消灭的形态**）；该页同时是 §B 六个缺口的**共同落点**（**B2 备份 / B3 诊断 / B4 日志 / B6 权限 / B11 灾难恢复 / B12 后台任务**）。分类界面是 §15.4「绝不产生悬空分类」的界面层缺口（`categories.aup:130` 的裸删除会让文章分类悬空），而 CLI `merge` / `remove --migrate-to` **已完整**（实测 `--help` 见 REQ-013 §1）。两项都在 Dev 的 `.aup/pages/**` 写范围内、**互不重叠**；V3 是 UI-007 唯一未收口的设计项（Lead D23 顺延 R12，**只由 UI 出令牌级方案**）。写范围 `docs/team/requirements/**`（PM）∥ `.aup/pages/**`+`scripts/**`+`dist/**`（Dev）∥ `docs/ArcBlog-admin-ui-design.md`+`docs/team/design/**`（UI）→ 可真并行，QA 串行等两者。
+
+| ID | 需求 | 规格 | 角色 | 状态 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| **REQ-013** | **§15.9 诊断与维护页**（诚实形态 = 结果可视化 + 命令复制；含 doctor 结果、存储/权限摘要、后台任务与意图队列、日志指引、备份导出三命令、常见问题自助定位）+ **§15.4 分类治理界面**（`merge` / `remove --migrate-to`；排序按记录真实 `sort` 字段）+ 在**既有** live 文件补 `general install\|show\|set` 与诊断数据源用例 | **§15.9**（spec L1247–L1294）／**§15.4**／§12／§110／§111；checklist 第 **121** 行（🟡）+ 第 **103** 行（🟡） | Dev | ✅ 完成（QA-007 放行） | **R12 终态（PM `task-38`，2026-09-28）**：交付通过 + QA-007 独立验证**放行**（`VERDICT=pass, BLOCKING=0`，无 P0/P1/未裁决 P2），**A0–A11 / B1–B6 / C1–C3 / D1–D5 全部有结论**。真实页 id = **`diagnostics`**（`.aup/app.json` `"tree":"pages/admin/diagnostics.aup"`；L-R12-1 探针原始输出见 [round-12.md](test-reports/round-12.md) §2.2 —— `settings` 由 `arc dsl lint` 捕获、validate 不捕获）；诚实形态 = 9 个 doctor check 可视化（渲染 9 行 = 实时 `checks.length`，**不写死件数**）+ 18 个 `.aup-copy-btn` / 8 个 `key-value-list`，页面 **0 处 `exec`/`events` 接线**（静态复核），常驻「本页不执行任何命令」+「无快照 / 尚未运行」占位 +「无心跳记录」；分类页**零直删**（`grep -n "delete"` 仅剩两段说明文案），逐行给真实 slug 的 `usage`/`merge`/`remove --migrate-to` 命令，排序如实走「仅 CLI」分支（无拖拽/批量重排）；guest 三条负面全通过（读 `config/*` 403、写/删分类 401 且记录不变）。**三类证据**：**浏览器实测** = A2/A3/A3b/A5/A7 负面/A8/B1–B5/C1–C3（QA CDP 单标签页）；**静态复核** = A0 门 5/5 + A1 页 id + A4 零接线 + A6/A9/A10/A11 + locale parity **669/669**（`diagnostics.*` 66 / `categories.*` 32）；**受限未验证** = 真实钱包回跳 / `arc space repair --index` / `--mirror` 真导出 / 硬件 hover / dark·非 admin·zh 逐页。**遗留**：BUG-028 属 REQ-014 文档行号（非本交付物）；O1–O5 观察见 🐞 区。REQ: [requirements/REQ-013-diagnostics-and-categories.md](requirements/REQ-013-diagnostics-and-categories.md)；任务 **`task-35`**；**依赖**：无前置任务（R11F 已收尾、BUG-027 已闭环）；**写范围** `.aup/pages/admin/<新诊断页>.aup`、`.aup/pages/site/categories.aup`、`scripts/console-nav.mjs`、`scripts/arcblog-doctor.mjs` / `scripts/lib/doctor.mjs`（诊断数据源，如选此路径）、`scripts/arcblog-settings.test.mjs`（**既有文件**）、`.aup/locales/**`（生成）、`dist/**`（build）；**不动 `blocklet.yaml` / `world/**` / `scripts/arcblog-lifecycle.mjs`**（判需改动 → 停手上报）｜**页 id 先探针实测（L-R12-1）**：先 `diagnostics`、再 `maintenance`，原始 `arc dsl validate --json` 输出必须贴进回报；`settings-diagnostics` **未经验证不得先用**｜**诚实形态（L-R12-5）**：AUP 不能执行任意服务端代码（`arc-contracts` §26.2 provider 挂载未生效）→ 页面**不得声称能跑命令**｜**分类（L-R12-4）**：只暴露 CLI 真正支持的 `merge` / `remove --migrate-to`；`sort` 字段**实测存在**（`technology 10 / design 20 / life 30`，`listCategories` 按 `(sort, slug)` 排序）故可如实暴露，但**不得虚构拖拽/批量重排接口** |
+| **REQ-014**（= **UI-009**） | **V3 令牌级方案（只提议，不实施）+ 剩余视觉债清单** | UI 标准 §3.1 / §3.4 / §4.3 / §9；[UI-007](design/UI-007-console-pixel-walkthrough.md) §V3 / §4 / §9 | UI | ✅ 完成（只提议、零实施） | **R12 终态（PM `task-38`，2026-09-28）**：交付 [UI-009](design/UI-009-v3-contrast-and-visual-debt.md)（**实际交付名 = `UI-009-v3-contrast-and-visual-debt.md`**，492 行；REQ 字面名 `…-token-proposal-…` 从未创建 → QA 观察 O6，**PM 已就地订正 REQ-014**，判「命名不一致」非缺失）。QA-007 独立复验 **A1–A9 全通过**：比值可独立复算（`3.99 FAIL / 3.64 FAIL / 12.65 PASS / 5.47 PASS`，中间量 `L=0.1420/0.7161/0.0028/0.0106` 逐位一致）；推荐 **A-ii** 不依赖未验证假设（不要求先改令牌、不依赖平台读 `--color-danger`）；`.web` **零改动**、spec 零改动、标准仅 2 insertions（1 段方案指向）。**新发现（价值点）**：hover 态也破 AA（`--color-on-accent #09090b` on 实心 `#c53030` = **3.64:1**，此前 UI-007/REQ-014 按回落 `--color-bg` 推断为 5.23，与实测不符）；根因定性 = 平台规则消费 `var(--color-error)`，`--color-danger` 只是别名、改写无效。**新增缺陷 [BUG-028](bugs/BUG-028-ui009-destructive-line-numbers-stale.md)（P3）**：§1.4①「最终」列沿用 10:20 行号（7 个控制台页整体 −4）→ **裁「下一轮修（R13，UI）」**。**三类证据**：**静态复核** = 脚本复算 + `git diff --name-only -- .web` 空 + 标准 diff 2 insertions；**浏览器实测** = 平台 CSS 原文 + hover 强制态（1803×908）+ A-ii 端到端（12.65/5.47）；**受限未验证** = dark 未测 / 平台是否读 `--color-danger` / 4 页实例计数 / 3.99 vs 4.14 方法差未统一。REQ: [requirements/REQ-014-v3-contrast-and-visual-debt.md](requirements/REQ-014-v3-contrast-and-visual-debt.md)；任务 **`task-36`**；**写范围** `docs/team/design/**`（UI-009 正文 + 计算脚本/原始数据可落 `design/raw/**`）、`docs/ArcBlog-admin-ui-design.md`（**仅登记方案指向，若需改口径 → 停手上报**）｜**L-R12-2：本轮不改令牌、不改 `.aup`**，实施留到 Lead 批准后的下一轮｜方案必须含**对比度计算 + 影响面 + 明确推荐项**；`--color-danger` **不在任何 `.web/themes/*/tokens.json`**（实测 grep：令牌文件只定义 `--color-dim/--color-accent/--color-surface/--color-bg/--color-border/--color-text`）→ 若推荐「在 tokens.json 声明 `--color-danger`」，必须**先证平台 variant 会读它**，否则推荐项须退回「只用已定义令牌」的用法路径并写明证据缺口 |
+| **QA-007** | **Round 12 独立验证**：自跑门 + 自造探针 + AFS 复核（**不采信自述**）；含 DOM 断言、CLI 对照、**guest 越权**负面用例 | REQ-013 / REQ-014 的验收标准 | QA | ✅ 完成（**放行**） | **R12 终态（PM `task-38`，2026-09-28）**：报告 [test-reports/round-12.md](test-reports/round-12.md)（543 行，末行机读 **`VERDICT=pass, BLOCKING=0`**）——**REQ-013**：A0–A11 / B1–B6 / C1–C3 / D1–D5 **全部通过**（A3b 用**真实缺快照模拟**验证并复原；B5 = 移除裸删除 + CLI `CONFLICT` 负例，悬空差集 ∅）；**REQ-014**：A1–A9 **全通过**（A2 独立复算；A4 根因独立复现；A6 零改动成立）。**门 5/5** + **定向 live 26/26**（`settings` **8/8**、`doctor` **12/12**，`.gate-lock` 串行、**未跑全量**）+ **19/19 控制台页无回归** + guest 越权三条负面 + **单标签页纪律自证**（page 计数恒 1；guest 隔离 target 用后即关）+ 实例清理自证。**新增缺陷仅 1 条 = BUG-028（P3，不阻断）**；另 6 条观察（O1–O6）+ D4 既有残渣 1 条 → PM 逐条裁决见 🐞 区。**PM 轮末只读复核门与本报告一致**（validate issues [] / 28-28 / pages 19 / generate 0 漂移 / `.aup↔dist` SAME）。任务 **`task-37`**；**依赖**：`task-35`（Dev 交付）+ `task-36`（UI 定稿）**均 complete 后才 ready**；**写范围** `docs/team/test-reports/**`、`docs/team/bugs/**`、`docs/team/.gate-lock`（临时）｜需 admin 会话（真实点击 + AFS 复核）+ 无 cookie 隔离上下文（guest 越权）；写实例前落锁、跑完删锁并逐条清理探针；**不跑全量 live**；**单标签页纪律**；报告落 `test-reports/round-12.md`（末行机读结论） |
+
+> **本轮裁定（Lead 2026-09-28，**照此执行**）**
+>
+> | # | 裁定 | 摘要 | 落点 |
+> | - | ---- | ---- | ---- |
+> | **L-R12-1** | **诊断页页 id 必须先探针实测** | `settings` 是 AUP 保留字（R11 已实测 `invalid_settings_dsl`）；`settings-diagnostics` 是否也被 `settings {` 声明解析**未经验证**（R11 只是推测）→ **先试 `diagnostics`，再试 `maintenance`**，把 `arc dsl validate --json` 的**原始输出**贴进报告，再落笔 | REQ-013 §2.1① / `task-35` |
+> | **L-R12-2** | **V3 本轮只出令牌级方案** | **不改令牌、不改 `.aup`**；实施留到 Lead 批准后的下一轮 | REQ-014 §2 / `task-36` |
+> | **L-R12-3** | **spec 修订 C-01/C-02/C-03 仍待用户批准 → 本轮不得改 spec** | 一切按现有降级口径执行（HTTP→AFS、公开面动态部分留 AUP、逐条静态 SEO 记平台受限） | 全员；`docs/ArcBlog-product-technical-spec.md` 本轮零改动 |
+> | **L-R12-4** | **分类界面只暴露 CLI 真正支持的能力** | `merge` / `remove --migrate-to`；排序**仅当记录或接口确有 `sort` 字段**，否则**如实说明没有**，**不得虚构** | REQ-013 §2.1② / `task-35` |
+> | **L-R12-5** | **诊断页必须是诚实形态** | AUP **不能执行任意服务端代码**（provider 挂载未生效，`arc-contracts` §26.2）→ 页面做「**结果可视化 + 命令一键复制**」，**不得声称页内能跑命令** | REQ-013 §2.1① / `task-35` |
+
+> **PM 侧配套任务（同一轮，不在上表内）**：**`task-34`** = 本轮规划（本小节 + [REQ-013](requirements/REQ-013-diagnostics-and-categories.md) / [REQ-014](requirements/REQ-014-v3-contrast-and-visual-debt.md) 新建 + [journal/round-12.md](journal/round-12.md) 计划节）— ✅ 已完成；**`task-38`** = 轮末裁决（QA 报告后逐条裁决新 BUG + 写 `journal/round-12.md` 结果节 + 更新本文件 + checklist 建议 + R13 排期）— ✅ **已完成**（BUG-028 裁「下一轮修」、O1–O6/D4 逐条裁决、REQ-013/REQ-014 各加 §7 结果记录、R13 排期落盘；**PM 不调用 `team_task_*`**）。本轮「🟥 同时最多 2 项」按写范围满足：`task-35`（`.aup/**`+`scripts/**`）与 `task-36`（`docs/team/design/**`）不重叠。
+
+**本轮明确不做（防蔓延）**
+
+1. **不跑全量 `npm run test:live`**（用户 2026-09-27 裁定，持续有效）；**不新增测试文件**（新文件默认 live 层，会破坏 `npm test` 28/28 基线）——用例补进**既有** `scripts/arcblog-settings.test.mjs`。
+2. **不改 `docs/ArcBlog-product-technical-spec.md`**（只有人类可改；C-01/C-02/C-03 待批 → L-R12-3）。
+3. **不改主题令牌、不改 `.aup` 做 V3**（L-R12-2）；**不改 `blocklet.yaml` 权限表**（诊断/分类页只读公开面 + 管理面）；**不改 AFS 记录形态**（判需要 → 停手上报）。
+4. **不虚构 ARC API**（spec §150 / 铁律 1）：页面出现的每条命令都必须先在 `arc <cmd> --help` 或 `docs/arc-contracts.md` 有据（本轮 PM 已实测 `arc space sync|check|repair`、`arc service logs`、`node scripts/arcblog-category.mjs --help`、`node scripts/arcblog-doctor.mjs` 的真实输出，见 REQ-013 §1）。
+5. **不动 BUG-026/027 的既有结论**（均已在 R11F 收尾批次闭环）；**不重开** V1/V2/V4–V9、D1–D5、BUG-021…025。
+6. 浏览器**只开一个标签页**、只在验收要求 DOM 断言时启动。
+
+**写范围冲突矩阵（R12 派活必须照此）**
+
+| 批次 | 成员 / 任务 | 本轮写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A** | Dev / `task-35`（REQ-013） | `.aup/pages/admin/<新诊断页>.aup`、`.aup/pages/site/categories.aup`、`scripts/console-nav.mjs`、`scripts/arcblog-doctor.mjs` / `scripts/lib/doctor.mjs`（如选诊断数据源路径）、`scripts/arcblog-settings.test.mjs`（既有文件）、`.aup/locales/**`（生成）、`dist/**`（build） | 同一 owner 串行；**改了 CLI/记录 → 先 `docs/team/.gate-lock` 再定向单跑**（`arcblog-settings` + `arcblog-doctor`，**不跑全量 live**）；`.aup` 改动完成后 `arc blocklet build`（**build 必须晚于自己的最后一次写盘**，R7/R9/R10/R11F 同教训） |
+| **B** | UI / `task-36`（REQ-014 = UI-009） | `docs/team/design/**`（UI-009 + `raw/**`：对比度计算输入/输出）、`docs/ArcBlog-admin-ui-design.md`（仅登记，若需改口径 → 停手上报） | 与 A **可并行**；**不改令牌、不改 `.aup`**；纯 docs，不加锁、不开浏览器 |
+| **C** | QA / `task-37`（QA-007） | `docs/team/test-reports/**`、`docs/team/bugs/**`、`docs/team/.gate-lock`（临时） | **`blocked_by` A + B 定稿**（验证对象不得在脚下移动）；需 admin 会话 + guest 隔离上下文；单标签页；真实点击 + AFS 复核；**不跑全量 live** |
+| **D** | PM / `task-34` + `task-38` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划（本轮）+ 轮末裁决；**不调用 `team_task_*`** |
+
+**PM 轮初只读复核门（2026-09-28，未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ arc dsl validate --json          → "issues": []                                          [exit=0]
+$ npm test                         → tests 28 / pass 28 / fail 0                            [exit=0]（fast tier passed — this is the gate）
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":18}    [exit=0]
+$ arc dsl generate --check         → Would generate 0 file(s) (dry-run) — nothing to change [exit=0]
+$ diff -r .aup dist/.aup           → （无输出，SAME）                                        [exit=0]  ← BUG-027 已由 Lead 的收尾 build 关闭
+$ git status --short               → 只有 ?? docs/dsh-workflow-and-ralph.md 与 ?? dist/docs/dsh-workflow-and-ralph.md（**非本轮产物，Lead 不得 `git add -A` 卷入**）
+$ node scripts/arcblog-doctor.mjs  → ok:true / checks:9（resources…test-records）/ failed:[] / warnings:["space-layout","de-identification","test-records"]
+$ node scripts/arcblog-category.mjs list → count:3；technology sort=10 / design sort=20 / life sort=30（**`sort` 字段真实存在**，L-R12-4 依据）
+```
+
+**PM 轮末只读复核门（终态，2026-09-28；未写实例、未加锁、未跑任何 live 文件）— 真实输出**
+
+```text
+$ arc dsl validate --json                    → "issues": []                                          [exit=0]
+$ npm test                                   → tests 28 / pass 28 / fail 0                           [exit=0]
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":19}               [exit=0]  ← 18→19
+$ arc dsl generate --check                   → Would generate 0 file(s) (dry-run) — nothing to change [exit=0]
+$ diff -r .aup dist/.aup                     → （无输出，SAME）                                       [exit=0]
+$ arc dsl lint | grep -c WARNING             → 24（全部 unreferenced_explicit_id；新增 8 条）           [exit=0]
+$ diff -rq docs dist/docs                    → 3 differ + 3 only-in-docs（**Lead 轮末必须再 build**）    [exit=1]
+$ ls docs/team/.gate-lock                    → No such file or directory                              [exit=1]
+$ git status --short | wc -l                 → 78（55 tracked-modified + 23 untracked；matches Dev 清点）
+```
+
+---
+
+### Round 12 checklist 建议（**只建议**；checklist 由 Lead 落笔，PM 本轮零编辑）
+
+**① 第 121 行「设置 - 诊断与维护」（§15.9）：建议 🟡 → ✅（附降级 / 缺口登记）**
+
+- **前置已满足**：QA-007 独立验证 **放行**（`VERDICT=pass, BLOCKING=0`），A0–A11 / B1–B6 / C1–C3 / D1–D5 **全部有明确结论**；门 5/5（`arc dsl validate` issues=[]、`npm test` 28/28、`console-nav --check` pages 19、`arc dsl generate --check` 无漂移、`diff -r .aup dist/.aup` 无输出）；**PM 轮末只读复核与 QA 一致**（[REQ-013](requirements/REQ-013-diagnostics-and-categories.md) §7.5）。
+- **诚实边界（必须写进备注）**：页面只做「**结果可视化 + 命令一键复制**」——**页内不能执行命令**（AUP 不能执行任意服务端代码，provider 挂载未生效，`arc-contracts` §26.1/§26.2 + **L-R12-5**）；静态 `grep -nE 'exec|events=' .aup/pages/admin/diagnostics.aup` **0 处接线**（4 处命中全在文案/命令字符串里）。
+- **降级与缺口登记（不得省略）**：
+  1. **诊断数据源 = AFS 快照**：`config/diagnostics/{summary,checks}`（admin-only，复用 `config` 前缀），由 `node scripts/arcblog-doctor.mjs --record` 落盘；**无快照时显示「尚未运行 / no snapshot」占位、不伪造 `ok:true`**（QA 真实模拟并复原）。
+  2. **doctor 件数如实**：页面渲染 **9** 行 = 实时 `checks.length`（`doctor --help` 只列 8，`test-records` 未列 → help 缺口登记，**不阻断**）。
+  3. **心跳不存在**：全仓无 heartbeat / lastRun 写入点 → 页面如实写「无心跳记录」（中英），只用意图队列当活动代理，**不画假绿灯**。
+  4. **受限未验证**：`arc space repair --index` 真修复、`arc space sync --mirror` 真导出、真实 DID Wallet 登录回跳（无钱包）、真实硬件 hover（用 `CSS.forcePseudoState`）、深色模式 / 非 admin 已登录 / zh 管理端逐页复核。
+  5. **既有残渣**：`arcblog-clean` 报 **7 条** `agent-surface-draft-*`（createdAt `00:53–02:00Z`，**早于本轮工作窗口 02:20Z**）→ **非本轮残留**，属运营清理（Lead/运营）。
+  6. **同组依赖**：第 **119** 行已由 Lead 落 ✅；本行 ✅ 后「设置」组含 121 首次成组，但 §15.9 的「角色与能力」仍 🟡（第 **120** 行，R13–R14）。
+  7. **非阻断观察**：`hideWhenEmpty` 对空数组不生效（O2，平台行为）、lint 新增 8 条 `unreferenced_explicit_id`（O3，非门禁）→ 见 🐞 区。
+- **计数**：第 121 行落 ✅（与第 103 行同批）→ **✅ 76→78 ｜ 🟡 13→11 ｜ ⬜ 13 ｜ ⚪ 2 = 104 行**；**D 组 15→17 ✅ / 9→7 🟡**（27 不变）。**总览表与正文必须同时改**（L-R11-1 口径：每个状态变更附可执行验证命令 + 真实输出）。
+
+**② 第 103 行「分类与标签管理界面」（§15.4）：建议 🟡 → ✅（分类侧收口，附降级登记）**
+
+- **前置已满足**：REQ-013 §3.2 **B1–B6 全通过**——三行与 `arcblog-category.mjs list` 逐字段一致（`technology 10 / design 20 / life 30`）；**零直删**（`grep -n "delete" .aup/pages/site/categories.aup` 仅剩两段说明文案；页面唯一写动作 = **新增分类**，QA 真实点击成功并经 CLI 删除清理）；逐行真实 slug 的 `usage --slug` / `merge --from --to` / `remove --slug --migrate-to` / 零引用 `remove --slug` 命令与 `--help` **逐字一致**；排序如实走分支 **(ii) 仅 CLI**（页面明写「排序仅 CLI 可改」+ `add --update --sort <n>`），**无**拖拽 / 批量重排 / 自动编号；旧误导文案 `cat-remove-msg` 已改为**前置警告 + 迁移命令**。CLI 负例：裸 `remove --slug technology` → exit 1 `CONFLICT`「used by 30 post(s) — pass --migrate-to」；**悬空差集 = ∅**。
+- **降级与缺口登记（不得省略）**：
+  1. **不显示引用计数**（B2 允许的替代形态）：逐行给 `usage --slug <真实 slug>` 命令，不给可能陈旧的索引计数（避免与 CLI 目录扫描口径不一致）。
+  2. **排序仅 CLI**（L-R12-4 允许分支 ii）：`sort` 字段真实存在且如实显示，但页面不可改。
+  3. **列表行序 ≠ sort 序**（QA O1）：页面行序是 AFS id 序（design/life/technology），CLI `list` 是 `(sort, slug)` 序 → **页面未声称自身顺序**且有「排序仅 CLI」文案 → PM 裁 **不修（无缺陷）**；可选改进 = 排序卡补一句「本列表按记录 id 顺序」（不单独派工）。
+  4. **实现侧残留**：诊断页与分类页共产生 8 条新 `unreferenced_explicit_id` lint 警告（总数 24，非门禁）→ 🐞 区 O3。
+- **计数**：与第 121 行同批（见上）。
+
+**③ `## 维护记录` 追加一行（轮末由 Lead 写；建议文案）**
+
+> `2026-09 | 可运营性轮次 12（人类恢复；精简轮）：① Dev（REQ-013）= §15.9「设置 - 诊断与维护」页 **`?page=diagnostics`**（第 19 个控制台页；诚实形态 = 9 个 doctor check 可视化 + 18 个复制控件，页内 **0 处命令执行接线**，无快照不伪造、无心跳不画绿灯）+ §15.4 **分类治理界面**（移除裸删除、逐行真实 slug 的 `merge` / `remove --migrate-to` / `usage` 命令、排序如实走「仅 CLI」）+ 既有 live 文件 `scripts/arcblog-settings.test.mjs` 补 5 条用例（**8/8**，`npm test` 仍 **28/28**）；② UI（REQ-014 = UI-009）只出 **V3 令牌级方案**（静息 **3.99** / hover **3.64** 双破线；推荐 **A-ii**：theme-bridge 3 条 CSS，静息 **12.65** / hover **5.47**，10 个 palette/mode 组合复算全达标；**不动令牌、不动 `.aup`**）+ 剩余视觉债 R1/R2/R3；③ QA-007 独立验证 **`VERDICT=pass, BLOCKING=0`**（A0–A11 / B1–B6 / C1–C3 / D1–D5 全绿；定向单跑 settings **8/8** + doctor **12/12**；guest 403/401；单标签页纪律），新增 **BUG-028（P3，UI-009 行号沿用旧快照）→ 裁「下一轮修」**；④ checklist：第 **121** 行与第 **103** 行建议 🟡→✅（附降级登记）→ **✅ 78 / 🟡 11 / ⬜ 13 / ⚪ 2 = 104**；⑤ 本轮 **spec 零改动**（L-R12-3：C-01/C-02/C-03 仍待用户批准）。**R13 首项 = V3 路径 A-ii（待 Lead 批准）+ compose-edit 视觉债 R1/R2/R3**`
+
+**④ 本轮不新增 / 不改变其它清单行**：BUG-028、QA 观察 O1–O6、REQ-014 均属**质量 / 文档层**（不新增行）；第 **119** 行已由 Lead 落 ✅（R11F）；第 **120** 行（角色与能力）状态不变。
+
+---
+
+## 缺陷（🐞）— Round 12 QA 新增，PM 已逐条裁决（2026-09-28）
+
+> **大前提**：QA-007 **放行**（[round-12.md](test-reports/round-12.md) 末行 **`VERDICT=pass, BLOCKING=0`**），**无 P0 / 无 P1 / 无未裁决 P2**。本轮新增缺陷仅 **1 条（BUG-028，P3）**；另 QA §7 有 **6 条非阻断观察（O1–O6）**、§6 八条受限未验证、D4 既有残渣 1 条 —— **全部逐条裁决，不留悬挂**。
+> **裁决口径**（[`roles/pm.md`](roles/pm.md) §6.2）：三选一 + 理由 + spec/标准章节 + 落点。**本轮无修复窗口**（PM 无 `team_task_*` 权限，开窗由 Lead 决定）→ 需改源码 / 设计文书的裁决一律「**下一轮修**」；能在 PM 写范围内内联修掉的本轮已执行（REQ-014 命名订正 = O6）。
+
+| BUG | 级别 | 标题 | 裁决 | 理由 + spec / 标准章节 | 落点 / 依赖 |
+| --- | ---- | ---- | ---- | --- | --- |
+| **[BUG-028](bugs/BUG-028-ui009-destructive-line-numbers-stale.md)** | **P3** | UI-009 §1.4① 的「10:41（本轮最终）」列**沿用 10:20 的行号**：7 个控制台页整体少 4 行（`posts 179→183 / 216→220`、`pages 165→169 / 192→196`、`heroes 148→152`、`tags 174→178`、`factory 210→214`、`hub 156→160`；`preview.aup:36` 正确） | **下一轮修（R13，UI）** | **文档准确性缺陷，非实现缺陷**：使用点**数量（9）与文件集合正确**、对比度结论不受影响、不阻断本轮放行；但下一轮按 UI-009 派工的人会打开**错误的行**，照抄进标准 / 新 REQ 会把错误固化（[REQ-014](requirements/REQ-014-v3-contrast-and-visual-debt.md) §3 A3「影响面 = `grep` 真值并列出全部 `文件:行`」+ UI 标准 §9 可复核性）。**成本 = 实施 A-ii 前重跑一次 `grep` 并逐行校正**；与 R13-1（A-ii 实施）**同批、同写范围 → 不单独开窗** | `docs/team/design/UI-009-v3-contrast-and-visual-debt.md` §1.4①「10:41（本轮最终）」列 + §8 S2。**PM 本轮独立复跑**：`grep -rn "variant=destructive" .aup/pages --include=*.aup` → **9 处 / 7 文件** = `pages.aup:169,196`、`posts.aup:183,220`、`heroes.aup:152`、`tags.aup:178`、`factory.aup:214`、`hub.aup:160`、`preview.aup:36`（与 BUG-028 逐条一致，全部 **+4**、preview 不变） |
+
+### QA round-12 §7 观察 O1–O6 + D4 既有残渣 —— PM 一并裁决（不允许挂着）
+
+| # | 观察 | PM 裁决 | 说明 / 落点 |
+| - | ---- | ------- | ----------- |
+| **O1** | 分类页行序 = AFS id 序（design / life / technology），不是 CLI 的 `(sort, slug)` 序（10/20/30） | **不修（无缺陷）** | 页面**未声称**自身顺序，且排序卡明写「排序仅 CLI 可改」——符合 [REQ-013](requirements/REQ-013-diagnostics-and-categories.md) §2.1② 4(**ii**) 允许分支；spec §15.4 只要求「绝不产生悬空分类」+ 治理入口，未规定列表行序。**可选改进（不单独派工）**：R13 若做分类相关批次，可在排序卡补一句「本列表按记录 id 顺序，排序以 CLI `list` 为准」 |
+| **O2** | `hideWhenEmpty` 对**空数组**不生效：快照卡把 `failed: []` 渲染成 `Failed (severity error) []`（Dev 曾标为未验证） | **不修（平台行为，无缺陷）** | 渲染 `[]` 是**如实**的（不是伪造结论）；A 块只要求显示全部 check 与生成时间。修法要么改 AFS 记录形态（`failed` 存计数）要么改文案 → 按 REQ-013 §2.2 第 5 条「**判需改 AFS 记录形态 → 停手上报**」不做。**建议 Lead 在 `arc-contracts.md` 留档**（与 §28.x 同族平台原语；Lead 写范围 → 登记为 **D28 追加项**） |
+| **O3** | `arc dsl lint` 警告 **24 条**（文档基线 16）：本轮新增 **8 条** `unreferenced_explicit_id`（`diagnostics.aup` 7 个 `diag-*-cmds`/`diag-faq` + `categories.aup:142 cat-gov-cmds`），与既有 agents/factory 同形 | **不修（非门禁；`--fix` 被明令禁止）** | lint **不在 `npm test`**、不影响任何门；**禁止整体 `arc dsl lint --fix`**（会删 runtime 寻址 id —— `arc-contracts` §25.4，`scripts/arcblog-runtime-ids.test.mjs` 守）。**PM 本轮实测：24 条全部为 `unreferenced_explicit_id`**（`arc dsl lint \| grep -c WARNING` = 24）→ 文档里的「24 / 16 / 10」三处计数**都应改成「以实测为准、不写死」**（= **C-11a / C-11b 仍未结，交 Lead**）。**不新开 BUG**；R13 可选 Dev 项「按页只删显式 id」（低优先、不单独派工） |
+| **O4** | `dist/docs/**` 相对 `docs/**` 陈旧（本轮新增 `round-12.md` / `BUG-028` / `UI-009` 等 3 differ + 3 only-in-docs）；**`.aup` 门禁差异 = 0** | **不修（流程项，Lead 轮末执行）** | 风险 **R-9** 已按预期发生且**可预期**：`.aup` / `scripts` / `world` / `blocklet.yaml` 全部 SAME。**Lead 轮末必做**：再 `arc blocklet build` 一次（**必须晚于 PM/QA/UI 最后写盘**）→ 同时把 QA/PM 的 round-12 文档带进 `dist/docs/**`；`dist/**` 不属任何 teammate 写范围 |
+| **O5** | 意图队列里 `pending` 记录 `mujkccy6-r1nd` **无 `updatedAt`** → 页面相对时间显示 "just now" | **不修（既有数据形态）** | 由 `scripts/arcblog-chain-worker.mjs` 写入的历史记录（非本轮代码）；页面已如实写明「无心跳记录」，该行不构成任何达标/不达标断言。spec §111 的调度可视化属 **R13-4**（§111 探针）范围，不在本 REQ |
+| **O6** | [REQ-014](requirements/REQ-014-v3-contrast-and-visual-debt.md) §2.1①/§3 A1 的字面文件名 `UI-009-v3-token-proposal-and-visual-debt.md` 与实际交付名 `UI-009-v3-contrast-and-visual-debt.md` 不一致 | **本轮修（PM 内联，已执行）** | **验收判据可满足性教训**（同 BUG-015 / BUG-019 / BUG-020）：按字面名判「缺失」会误红。已在 REQ-014 §2.1① / §3 A1 / §5 / **§7.1** 就地订正为**实际名**（原字面名保留、历史不改写）→ **下一轮按实际名检索** |
+| **D4** | 实例残留：`arcblog-clean` 报 **7 条** `agent-surface-draft-*`（createdAt `2026-09-28T00:53–02:00Z`，**早于**本轮 Dev/UI 工作窗口 `02:20–03:00Z`） | **不修（既有残渣，非本轮引入）** | QA 只动六条 General 记录并已复位、探针分类 `qa12probe` 已 CLI 删除、`.gate-lock` 已删。7 条草稿属**运营清理**（`node scripts/arcblog-clean.mjs --confirm`）→ 交 Lead/运营，**不立项** |
+
+**QA §6 八条受限未验证 + §0 七条边界 —— PM 一并裁决（不允许挂着）**
+
+| 项 | 裁决 | 说明 |
+| -- | ---- | ---- |
+| 真实 DID Wallet 登录回跳（无钱包） | **不修（如实登记已足够）** | 只证明 gate 的 `return_to/cancel_to` 指向**真实存在且可渲染**的页 id（`?page=diagnostics`）；钱包环境缺失非 ArcBlog 缺陷 |
+| `arc space repair --index` 真修复 / `arc space sync --mirror` 真导出 | **不修（风险明确，不做形式化补证）** | 前者改索引、后者写目的目录；页面只给命令文本并已与 `--help` 逐字核对——与 R9F「不为形式化补证去动真实数据」同口径 |
+| 真实硬件 hover（用 `CSS.forcePseudoState`） | **不修（方法约定）** | computed 值可信；G3 成立，UI-009 与 QA 同法 |
+| 深色模式 / 非 admin 已登录 / zh 管理端逐页复核 | **不修（R11 起延续的受限项）** | 如实登记；不阻断 ✅（与第 119 行同口径） |
+| `?page=compose-edit` 正向分支（有草稿 slug）与 `preview.aup:36` 合成底 | **不修（登记）** | 与 UI-009 G5 一致；R13 实施 A-ii / 修 R1–R3 时顺带覆盖 |
+| REQ-014 推荐路径未实施 | **不修（本轮按 L-R12-2 只提议）** | 实施 = R13-1，需 Lead 批准 |
+| `dist/docs/**` 不同步 | **不修（流程项）** | = O4 |
+
+**QA §9「需要谁做什么（非阻断）」三条 —— PM 答复**
+
+| # | QA 请求 | PM 答复 |
+| - | ------- | ------- |
+| 1 | UI 下一轮刷新 BUG-028 的行号 | **采纳**：裁「下一轮修（R13-3）」，与 R13-1（A-ii 实施）同批 |
+| 2 | PM 同步 REQ-014 字面文件名（O6）并把 O1–O5 并入 backlog 建议 | **已执行**：REQ-014 §2.1① / §3 A1 / §5 / §7.1 就地订正；O1–O5 与本表一并裁决（backlog 🐞 区 + Round 12 checklist 建议） |
+| 3 | Lead 轮末统一 `arc blocklet build`，把 `dist/docs/**` 与本报告 / BUG-028 对齐 | **采纳并登记**：= O4 / **R11F 的 BUG-027 同教训**；Lead 轮末必须**晚于所有人写盘**再 build |
+
+---
+
 ## 缺陷（🐞）— Round 11 QA 新增，PM 已逐条裁决（2026-09-28）
 
 > **大前提**：QA-006 **放行**（[round-11.md](test-reports/round-11.md) §9 `VERDICT=pass, BLOCKING=0`），**无 P0**。5 条新增缺陷**全部 P2、全部落在本轮新建的 `?page=settings-general` 页面内**，均不阻断功能。
@@ -476,6 +629,7 @@ $ node scripts/arcblog-agent.mjs check → exit 0
 > **门规不变**：不跑全量 live；改 `.aup` 加 `arc blocklet build`；触及 CLI / AFS 记录 / 适配器 / 路由 → `.gate-lock` + 定向单跑；浏览器只在需要 DOM 断言时开。
 > **前置**：**R11F 已由 Lead D20 开窗并执行完毕**（BUG-021…025 全部修复 + UI-007 V 批 + D1–D5 落标准），**当前终态 `VERDICT=fail, BLOCKING=1` = 唯一阻断 BUG-027**（一条命令 `arc blocklet build` 即可改判）→ **R12 开工前先让 R11F 收尾**（build + 复跑两命令；若 Lead 采纳 PM 对 BUG-026 的裁决则并入同批，否则 BUG-026 为 R12 首项）。
 > **R12 依赖状态**：**D20/D21/D22/D23/D24/D25/D27 已裁定**（见「R11F 裁定登记」）；**V2/V8/D1–D5 已落地**，R12 只剩 **V3（D23 已裁：需 UI 令牌级方案）**；**仍需人类批准**：spec 修订 **C-01 / C-02 / C-03**（P0/P1，后续每轮 agent 的前提）+ C-14/C-05（决定 R12 两个立项口径）+ C-08（产品/法务）；**C-13/C-12/C-04/C-07 为对应行依赖**。
+> **R12 终态（PM，2026-09-28 轮末）**：本表 **#2 / #4 / #6 已交付并经 QA-007 放行**（诊断页 `?page=diagnostics` + 分类治理界面 + 既有 live 文件 5 条新用例）；**#1 已由 R11F + 本轮单测收口**；**#7 / #19 剩余部分（compose-edit R1/R2/R3）+ #8 剩余（V3）转入 R13**；**#3（§111 探针）等未完成项**见下方「**Round 13 排期**」。本轮 **spec 零改动**（L-R12-3 遵守）、**令牌零改动**（L-R12-2 遵守）、**不跑全量 live**（门规遵守）、浏览器全程单标签页。
 
 | # | spec 章节 | 目标状态 | 交付物 | 写范围 | 依赖 | 预估轮次 | 需要人类批准 |
 | - | --- | --- | --- | --- | --- | --- | --- |
@@ -503,6 +657,44 @@ $ node scripts/arcblog-agent.mjs check → exit 0
 > **仍需人类批准的 spec 修订（不批则对应立项口径悬空）**：**C-01 / C-02 / C-03（P0/P1）** = 后续每轮 agent 的前提（HTTP 端点、Web Device 静态面、§15.1 一事一页口径）→ **建议最先批**；**C-14（§111 cron 字段）** = #3 立项前提；**C-05（§21 可见性）** = #10 立项前提；**C-13（§15.9 诊断诚实形态）** + **C-12（§15.10 能力驱动菜单）** + **C-04/C-07（RSS 路径 / 逐条静态 SEO）** = #2/#13/#12 口径；**C-08（许可证）** 单独走产品/法务。**无需用户批准、仍需 Lead 落笔**：**D28 / C-11a–d**（`arc-contracts.md §29.2` 更正 + lint 计数 24/10 → 实测 16 + `.aup/man` 存根去向）。**已裁定、无需再批**：D20/D21/D22/D23/D24/D25/D27（R11F）。
 
 > **为什么 #1/#2 排最前**：`SPEC-REVIEW-001` B 节把「通用设置」列为**可运营性的唯一自助入口**（spec §15.9 存在理由：「登录服务器敲命令」→「后台点几下」）。#1 让通用页可信——**R11F 已修掉三处**（选项外值可进公开 RSS = BUG-023 页面 + 读取侧双侧闭环；未登录运营者被送错页 = BUG-021；诱导删记录的文案 = BUG-022），**只剩收尾与自动化覆盖**；#2 补上诊断/备份/日志/权限矩阵——即 B2/B4/B5/B7/B11/B12 六个缺口的**共同落点**。
+
+---
+
+### Round 13 排期（PM 轮末重排，2026-09-28；从上方 R12–R15 表的**未完成项**取用）
+
+> **本轮（R12）交付结果**：R12 路线 **#2（§15.9 诊断与维护）、#4（§15.4 分类界面）、#6（新 CLI 自动化覆盖）已交付并经 QA-007 放行**；**#1 与 #7/#19 的剩余部分**见下表「已移出 / 已转出」。**未完成项全部排入 R13**，逐项标注写范围 / 依赖 / 需谁批准。
+
+**① R12 已交付 / 已移出（不再排期）**
+
+| 原行 | 结论 | 证据 |
+| --- | --- | --- |
+| **#1** §15.9 通用 | **已移出**：R11F 已闭环三处（BUG-021/022/023）+ BUG-024/025；**剩余的单测用例（原 #6）R12 已完成**；checklist 第 119 行已由 Lead 落 ✅ | `scripts/arcblog-settings.test.mjs` 定向单跑 **8/8**（[round-12.md](test-reports/round-12.md) §2.9） |
+| **#2** §15.9 诊断与维护 | **R12 已交付**：`?page=diagnostics`（第 19 页，**A0–A11 全通过**，诚实形态 + 无快照不伪造 + 无心跳不画绿灯） | QA-007 放行；checklist 第 121 行建议 ✅（见下节） |
+| **#4** §15.4 分类界面 | **R12 已交付**：零直删 + 真实 slug 的 `merge` / `remove --migrate-to` / `usage` 命令 + 排序如实走「仅 CLI」（**B1–B6 全通过**） | REQ-013 §3.2；checklist 第 103 行建议 ✅ |
+| **#6** 质量（新 CLI 自动化覆盖） | **R12 已交付**：**既有** live 文件补 5 条用例（原 3 条不动），`npm test` 仍 **28/28** | 定向单跑 8/8；`git status --short scripts/*.test.mjs` 只有该文件 M |
+| **#7** 控制台视觉一致 | **已移出主项**：R11F 已修 V1/V4–V9 + BUG-024/026；**剩余（compose-edit 范围外观察）→ 转入 R13-2 / R13-3** | R11F 复验 + QA-007 A6 |
+| **#19** gate 先例 | **BUG-026 已由 R11F 修复**（`compose-edit.aup:34` = `%2F%3Fpage%3Dcompose-edit`，PM 本轮复读确认）；**剩余 h2 / 按钮 → 转入 R13-2** | R11F 复验；`compose-edit.aup:31/:39/:41` 仍无 `fontSize`/`borderRadius` |
+
+**② Round 13 排序（写范围 / 依赖 / 批准三级标注）**
+
+| # | 项 | 来源 | 角色 · 写范围 | 依赖 | 需谁批准 |
+| - | -- | ---- | ------------- | ---- | -------- |
+| **R13-1** | **V3 实施：路径 A-ii**（theme-bridge 3 条 CSS：静息文字 `--color-text`、hover `--color-surface`，红只留 1px 描边 + 图标；实测静息 12.65 / hover 5.47，10 个 palette/mode 组合复算全达标） | [REQ-014](requirements/REQ-014-v3-contrast-and-visual-debt.md) §4.1 / [UI-009](design/UI-009-v3-contrast-and-visual-debt.md) | **UI**：`.web/components/theme-bridge/**` + `docs/ArcBlog-admin-ui-design.md`（同步 §3.1/§3.4/§4.3/§9 现状条目） | **需 Lead 批准 A-ii**（L-R12-2 的实施门槛）；批准后由 QA 复算 12.65/5.47 + hover 实测复验 | **Lead**（非用户） |
+| **R13-2** | **compose-edit 视觉债 R1/R2/R3**：`:31` gate h2 21.6px→**15px**（全仓 20 处 gate 标题唯一漏 `style` 者）、`:39` not-found h2 21.6px→**17px**（判据待定）、`:41` ghost 按钮 32px→**8px**、命中区 115×19→**≥24px（WCAG 2.5.8）** | UI-009 §6.1–§6.3；UI 标准 §3.4/§4.3；R11F 复验「范围外观察」 | **Dev**：`.aup/pages/admin/compose-edit.aup`（`:31/:39/:41`）+ 生成 locales + `dist/**` | R1 的 `:39` 判据歧义（卡内 h2 承担页面标题）→ **需 Lead 补标准判据**；R3 命中区由平台 `data-kind=back` 配方决定 → 做不到就如实登记 | **Lead**（判据）；实现本身无需用户批准 |
+| **R13-3** | **BUG-028 行号刷新**（UI-009 §1.4①「最终」列 + §8 S2 → 重跑 `grep` 校正） | [BUG-028](bugs/BUG-028-ui009-destructive-line-numbers-stale.md) | **UI**：`docs/team/design/UI-009-*.md` | 与 R13-1 **同批**（实施 A-ii 时顺手）；**不得**把旧行号抄进标准 / 新 REQ | 否 |
+| **R13-4** | **§111 调度探针**（manifest 是否真有 `cron`；daemon `/scheduler` 是否有可用入口）→ 结论 + 落地或降级留档 | R12 路线 #3 / [SPEC-APPROVAL-001](requirements/SPEC-APPROVAL-001-spec-revision-requests.md) **C-14** | **Dev**：`scripts/arcblog-chain-worker.mjs` / `scripts/lib/network.mjs`；写实例探针 → `.gate-lock` | **C-14 待人类批准**（spec §111 措辞）；探针写实例 | **用户**（C-14） |
+| **R13-5** | **Hub 注册界面**（申请流 `register` + 被收录列表 `approve`/`reject`/`add`/`remove`；CLI 已完整） | 清单 **109** 🟡 / §15.6、§70.1–70.2 / R12 路线 **#9** | **Dev**：`.aup/pages/ops/hub.aup` + locales + `dist/**` | 无 | 否 |
+| **R13-6** | **订单 / 账本界面 + CLI `ledger list --type`**（订单列表 + 详情回答六问；结算/账本列表） | 清单 **113/114** 🟡 / §15.7、§50、§91–§92 / R12 路线 **#5** | **Dev**：`.aup/pages/economy/**`（新页）+ `scripts/console-nav.mjs` + `scripts/arcblog-economy.mjs`（**触及 CLI → `.gate-lock` + 定向单跑**）+ locales + `dist/**` | 无 | 否 |
+| **R13-7** | **[REQ-011](requirements/REQ-011-media-upload-observability-and-copy-hygiene.md) 媒体上传可观测性 + 文案去不可复现引用**（排队 **#16**） | QA round-10 §7-1/§7-3/§7-5 | **Dev**（`.aup/pages/ops/media.aup`）+ **QA**；写实例需 `.gate-lock` | 与 R13-5/6 同 `.aup/pages/**` 族 → **串行** | 否 |
+| **R13-8** | **Dashboard 网络概览 + 异常提醒条**（并按角色分列） | 清单 **123** ⬜ / §15.3 / R12 路线 **#14** | **Dev**：`.aup/pages/admin/dashboard.aup` + locales + `dist/**` | 无（顺带文档化卡片计数口径） | 否 |
+| **R13-9** | **平台事实 / 计数沉淀**：`hideWhenEmpty` 空数组行为（O2）、lint 计数改为「以实测为准」（C-11a/C-11b，**R12 实测 24**）、`arc-contracts.md §29.2` 限定（C-11c/D28）、`.aup/man/*.yaml` 存根去向（C-11d） | 本文件 🐞 区（Round 12 O2/O3）+ 「需要决策才能动的」D28 | **Lead**（`docs/arc-contracts.md` / `CLAUDE.md`） | 无 | 否（Lead 写范围） |
+
+**③ 仍待人类批准、本轮未排期（不批则对应行口径悬空）**
+
+- **C-01 / C-02 / C-03（P0/P1）**：建议**最先批**（后续每轮 agent 的前提；L-R12-3 本轮照旧不批不改）。
+- **C-05**（§21 可见性）→ 决定 R12 路线 #10 是否 ⬜ 或 ⛔；**C-12**（§15.10 能力驱动菜单）→ #13 / #15；**C-04 / C-07**（RSS 路径 / 逐条静态 SEO）→ #12；**C-08** 走产品 / 法务。
+- **C-13**（§15.9 诊断诚实形态）：**未批不影响本行**——R12 已按现有降级口径（结果可视化 + 命令复制）交付并通过验收；建议随 C-01/C-02/C-03 一并批，以免 checklist 备注与 spec 原文长期落差。
+- **未排期的大项**仍留在上方 R12–R15 表：#10（§21，依赖 C-05）、#11（§15.9 角色与能力，R13–R14，依赖 D-链）、#12（§126/§124，依赖 C-04/C-07）、#13（§15.10，依赖 C-12）、#14（§15.3 → 已提为 R13-8）、#15（§15.5，依赖 C-12）、#16（§113/§16/§51 → R14）、#17（§152/§149 → R14）、#18（§104 等 → R15 / 待决策）。
 
 ---
 

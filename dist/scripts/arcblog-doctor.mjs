@@ -7,7 +7,18 @@
 // records. Exit code 1 only for broken contracts; authorship gaps and similar
 // honest limitations are reported as warnings.
 
-import { INSTANCE_ROOT, arcCapture, list, optString, parseArgs, parseJsonLoose, readJson, resolveInstance } from './lib/arc.mjs';
+import {
+  INSTANCE_ROOT,
+  arcCapture,
+  list,
+  nowIso,
+  optString,
+  parseArgs,
+  parseJsonLoose,
+  readJson,
+  resolveInstance,
+  writeJson,
+} from './lib/arc.mjs';
 import { listCategories } from './lib/categories.mjs';
 import { blockletIdentifiers } from './lib/manifest.mjs';
 import {
@@ -26,6 +37,28 @@ import {
 
 const NODE_PROFILE_PATH = `${INSTANCE_ROOT}/node/profile.json`;
 const NODE_IDENTITY_PATH = `${INSTANCE_ROOT}/node/identity.json`;
+
+// --- self-check snapshot (spec §15.9 diagnostics page) ----------------------
+//
+// The AUP runtime cannot execute server-side code (provider mounts are not
+// loaded on this platform — arc-contracts §26.1/§26.2), so `?page=diagnostics`
+// cannot run this doctor itself. `--record` is the explicit, copyable bridge:
+// it writes the verdict into AFS, and the page visualises it.
+//
+// Layout (the whole `config` prefix is already admin-only, so no permission
+// table change is needed):
+//   config/diagnostics/summary/last-run.json -> { ok, ranAt, command, count, failed, warnings, ids, … }
+//   config/diagnostics/checks/<id>.json      -> { id, severity, ok, detail, ranAt, command }
+//
+// Both live in a *directory* on purpose. An AUP page can only iterate a list
+// (`afs-list`), and a single-record `propBind` card has a measured first-paint
+// race (arc-contracts §21.11): opened fresh it renders empty values until a page
+// switch or a data event. A subscribed one-row list renders correctly on the
+// first open, so the summary is stored as the only record of its directory.
+const DIAG_DIR = `${INSTANCE_ROOT}/config/diagnostics`;
+const DIAG_SUMMARY_PATH = `${DIAG_DIR}/summary/last-run.json`;
+const DIAG_CHECK_DIR = `${DIAG_DIR}/checks`;
+const RECORD_COMMAND = 'node scripts/arcblog-doctor.mjs --record';
 
 /** Instances store dirs as `<dir>/<slug>.json`; read them back as values. */
 function recordsIn(dir, instance) {
@@ -69,9 +102,17 @@ function help() {
   console.log(`ArcBlog instance doctor (spec §149 Phase 5)
 
 Usage:
-  node scripts/arcblog-doctor.mjs [--instance <name>]
+  node scripts/arcblog-doctor.mjs [check] [--record] [--instance <name>]
 
-Checks:
+  --record            also write the result to AFS so ?page=diagnostics can
+                      show it: config/diagnostics/summary/last-run.json plus one
+                      record per check at config/diagnostics/checks/<id>.json.
+                      Record shape (summary): { ok, ranAt, command, instance,
+                      root, count, failed, warnings, ids }.
+                      Record shape (check):   { id, severity, ok, detail,
+                      ranAt, command }.
+
+Checks (9 — this list is the authoritative set):
   resources          the spec §12 directories exist under ${INSTANCE_ROOT}
   node-profile       node/profile.json exists and validates
   node-identity      node/identity.json exists and validates
@@ -80,9 +121,44 @@ Checks:
   space-layout       arc space check: roots present, layouts migrated, no drift
   space-app          this blocklet has a DID Space entry (warning only)
   de-identification  AFS_DID_SPACE_SCOPE_SECRET is set (warning only)
+  test-records       counts live-test residue left in the dev instance (warning only)
 
 Exit code: 1 when an "error" check fails; 0 otherwise (warnings are reported).
 `);
+}
+
+/**
+ * Write the current verdict into AFS for the diagnostics page.
+ *
+ * Split into a summary record (freshness + counts) and one record per check
+ * (the only shape an `afs-list` can iterate). `ranAt` and `command` are copied
+ * onto every record so a single visible row still carries its own freshness.
+ */
+function recordSnapshot({ checks, verdict, instance }) {
+  const ranAt = nowIso();
+  const command = RECORD_COMMAND;
+  writeJson(
+    DIAG_SUMMARY_PATH,
+    {
+      ok: verdict.ok,
+      ranAt,
+      command,
+      instance: instance || 'default',
+      root: INSTANCE_ROOT,
+      count: checks.length,
+      failed: verdict.failed,
+      warnings: verdict.warnings,
+      ids: checks.map((check) => check.id),
+    },
+    instance,
+  );
+  const recorded = [];
+  for (const check of checks) {
+    const path = `${DIAG_CHECK_DIR}/${check.id}.json`;
+    writeJson(path, { ...check, ranAt, command }, instance);
+    recorded.push({ id: check.id, path });
+  }
+  return { ranAt, command, summaryPath: DIAG_SUMMARY_PATH, checks: recorded };
 }
 
 /**
@@ -129,13 +205,16 @@ function testCounts(instance) {
       checkTestRecords(testCounts(instance)),
     ];
     const verdict = summarize(checks);
-    console.log(
-      JSON.stringify(
-        { ok: verdict.ok, instance: instance || 'default', root: INSTANCE_ROOT, checks, failed: verdict.failed, warnings: verdict.warnings },
-        null,
-        2,
-      ),
-    );
+    const payload = {
+      ok: verdict.ok,
+      instance: instance || 'default',
+      root: INSTANCE_ROOT,
+      checks,
+      failed: verdict.failed,
+      warnings: verdict.warnings,
+    };
+    if (args.record) payload.recorded = recordSnapshot({ checks, verdict, instance });
+    console.log(JSON.stringify(payload, null, 2));
     if (!verdict.ok) process.exit(1);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

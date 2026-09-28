@@ -73,7 +73,16 @@ export const CONSOLE_MENU = [
   // `settings-*` prefix if one is ever needed.
   {
     group: 'nav-group-settings',
-    items: [{ label: 'nav-settings', page: 'general' }],
+    items: [
+      { label: 'nav-settings', page: 'general' },
+      // spec §15.9 "设置 - 诊断与维护": the honest form is result visualisation +
+      // copyable commands, never in-page execution (arc-contracts §26.1/§26.2).
+      // The page id is `diagnostics` — probed against `arc dsl validate --json`
+      // (issues []) in Round 12, before `maintenance` (also clean) was dropped as
+      // the second candidate. `settings` stays reserved; `settings-diagnostics`
+      // was never needed.
+      { label: 'nav-diagnostics', page: 'diagnostics' },
+    ],
   },
 ];
 
