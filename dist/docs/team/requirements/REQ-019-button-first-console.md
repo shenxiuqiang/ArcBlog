@@ -447,3 +447,139 @@ state=page:index: /?page=saved 后裸 / → ?locale=zh&page=saved，标题「阅
 | 受限未验证（如实登记） | ① **en locale 未再真实点击**（全部真实点击在 zh admin context；en 文案由 `generate` 产出、i18n/死键门全绿）；② `arcblog-clean.test.mjs` 最后一条破坏性用例（= BUG-053）；③ `--confirm` 对**目录条目**（15 个 `config/chain-intents-worker-*`）的删除语义（**按 L-R19-5 刻意不验**）；④ 全量 `npm run test:live`（明文禁止） |
 
 > **BUG-051 / BUG-048 的关闭判据**不在本节：它们是**独立缺陷**（同轮修），判据逐条登记在 [backlog](../../backlog.md)「本轮：Round 19」→「**BUG-051 关闭判据**」/「**BUG-048 关闭判据**」两张表。
+
+---
+
+## 12. 第三批口径（Round 21：`?page=hub` hub 注册 / 索引重建按钮化）
+
+> **本节是第三批的「需求 + 验收标准」落点**：范围（做 / 明确不做）、**B1–B6 沿用**、**hub 特有判据 H1–H2**、依赖、写范围、结果预留。
+> **Lead 裁定（Round 21）**：**L-R21-1**（第三批与范围）/ **L-R21-2**（REQ-021 P1，独立 REQ）/ **L-R21-3**（零链写零资金）/ **L-R21-4**（BUG-056 同轮）/ **L-R21-5**（复用既有契约）/ **L-R21-6**（本轮不做 → R22）；任务板上 **`task-88`（Dev）/ `task-89`（QA，`blocked_by task-88`）/ `task-90`（PM 裁决）**，规划 = `task-87`。
+> **与前两批的关系**：**同一条需求线的第三个批次**，**照抄已交付并经 AFS 前后对比验证的队列 / worker 契约**，不重新设计；第一批判据（B1–B6）**原样沿用**，只补 hub 特有的两条。**排序依据** = [backlog](../../backlog.md)「Round 19 结论」§4 的 **B3-1**（首选）+「Round 20 结论」§5 第 4 条（`index rebuild` 实测 **19s**）。
+
+### 12.1 背景
+
+`?page=hub` 今天**一半能点、一半要复制命令**：
+
+- **审批面（A 面）已是页面直写**：`.aup/pages/ops/hub.aup:185`（Approve → `relation: indexed`）/ `:186`（Terminate → `relation: removed`）/ `:187`（Purge → `/.actions/delete`），三条真按钮 + `confirm` + toast；
+- **注册 / 索引面（B 面）仍是 CLI 文案卡**：`:200` 的 `hub register --hub-did <did> …` 与 `:207` 的 `hub add …` + `hub index rebuild` + `hub sync …` —— 对一个没有技术基础的用户，**等于「功能不存在」**（用户原话，见 [journal/round-14.md](../journal/round-14.md)）。
+
+**为什么走队列而不是页面直写**：`hub/registrations/<id>.json` 的 **id 由 `hubDid` 哈希派生**（`scripts/lib/network.mjs:141` → `hubRegistrationId`），**AUP 页面算不出哈希**（本 REQ §9.6 未决 3 的同类平台受限面；checklist 第 **109** 行备注「DID 哈希关系 id 只能 CLI」= **D29**）→ 页面只能写「意图」，由本机 worker 派生 id 并落记录。`hub index rebuild` 是**全量扫描 + 墓碑**（`scripts/arcblog-network.mjs:225-256`：`:227` `publishedPosts` → `:233` 逐篇 `readJson` → `:245` 逐条 `listContentIndex` → `:249` 写墓碑），**R20 实测单 tick 19s**（3 篇已发布 + 43 条 drafts），因此必须**披露耗时**（H1）。
+
+**业务闸门已经存在**（worker 不重造规则）：`commandHubRegister:100` / `commandHubAdd:110` 对已存在且未 `--update` 的 `hubDid` 直接 `fail('CONFLICT', 'hub already registered: … (use --update)')`；`:98` / `:108` 只做**非空**校验（**无 DID 形态校验**）。
+
+### 12.2 做（范围）
+
+1. **「提交申请」（Studio → Hub，`hub register`）**：页级按钮（带 `confirm`，需填 `hubDid`，可选 `endpoint`）→ 写一条 `action: "register"` 的意图记录到 `config/hub-intents/<id>.json` → worker 派生哈希 id 并落 `hub/registrations/<id>.json`（`relation: "applied"`、`direction: "studio"`）。
+2. **「主动收录」（Hub → Studio，`hub add`）**：页级按钮（带 `confirm`）→ `action: "add"` 意图 → worker 落 `relation: "indexed"`、`direction: "hub"`。
+3. **「重建索引」（`hub index rebuild`）**：页级按钮（带 `confirm`）→ `action: "indexRebuild"` 意图 → worker 执行派生索引 + 墓碑，**并把实测耗时 `elapsedMs` 与计数（published / upserted / skipped / tombstoned）写回终态记录**；**页面在按钮旁与队列卡上披露实测耗时**（见 **H1**）。
+4. **队列区（`afs-list` 订阅 `config/hub-intents`）**：逐行显示 `action` / 目标（`hubDid` 或「—」）/ `status` 原文 / `message` /（`indexRebuild` 的）`elapsedMs`；**与 AFS 记录逐字一致**。
+5. **worker 通道**：`node scripts/arcblog-network.mjs apply`（一次性排空）/ `watch`（常驻）/ `queue`（**只读**，含 D38 非 `.json` 诊断）；终态 + 原因**回写意图记录自身**；语义与 `arcblog-category.mjs` / `arcblog-media.mjs` 的 `apply|watch|queue` 对齐。
+6. **CLI 折叠为「高级」备选**：`:200` / `:207` 两张命令卡**保留但默认收起**（沿用 `factory.aup:243-259` 与第二批的折叠范式）；`hub sync`（**:207 第三行**）**本次不做按钮**，仍留在折叠区（它是**声明值**，见 REQ-022 结论）。
+7. **诚实标注**：页面明写「按钮只入队，由本机 worker 执行」+ 给出 worker 命令（`node scripts/arcblog-network.mjs watch`）；**不得出现「点了没有执行路径」的假按钮**；**不得**把「登记成功」写成「已同步」（REQ-022 口径）。
+8. **不回归**：`:185` / `:186` / `:187` 三条既有直写**保持现状**，本批不得改动其语义或落点。
+
+### 12.3 明确不做（防蔓延）
+
+1. **不做全站按钮化**：只 `?page=hub` 的 3 个动作；`?page=pages` / `?page=orders` / `?page=agents` / `?page=factory` 等**一律不动**（`?page=factory` 只做 [BUG-056](../../bugs/BUG-056-factory-queue-empty-same-shape-as-052.md) 的文案口径统一）。
+2. **不按钮化 `hub sync` / `hub refresh` / `hub remove` / `hub show`**：`sync` 是声明值、`refresh` 是本地重算、`remove` 破坏性、`show` 只读；本批不做（`show` 属只读信息，可留在折叠区）。
+3. **不实现跨节点真同步 / 不改传输层**（REQ-022 结论 = ① 平台支持 + 我们未实现；[REQ-022b](../../requirements/REQ-022b-inter-node-afs-client.md) 属 R22）。
+4. **不为 `index rebuild` 做后台任务 / 进度条**：平台无此原语 → 走队列 + **耗时披露**；**不得假装即时、不得写固定耗时承诺**。
+5. **不改 `blocklet.yaml`**：队列落 **`config/hub-intents`**（`config` 整树 admin-only，零集合声明改动）；**禁止**挂在 guest 可读前缀下（`arc-contracts.md §13`）；**不得**落在 `hub/` 前缀下（那是 guest 可读的 `hub/registrations` 同族语义面）。
+6. **不改 CLI 既有语义**：`register` / `add` / `index rebuild` 的**参数、守卫、输出形状**（除新增计时字段）保持不变；**新增 DID 形态校验只允许在队列 / 意图层**（见 H2），**CLI 侧行为不变**。
+7. **不改 tags / categories / media 既有范式**（已收口）。
+8. **不做** REQ-021 P1 之外阶段二内容（P2-a 真链小额需用户逐笔批准）/ §83 四棵树 / I 组 6 项 / 旧队列 BUG-032·033·034·036·037·038 / REQ-022b（L-R21-6）。
+9. **不新增测试文件**（新文件默认 live、会破快层基线）；**不动 `FAST_TESTS`**；**不跑全量 `npm run test:live`**。
+10. **不改** spec / checklist 状态列 / `arc-contracts.md` / `docs/ArcBlog-admin-ui-design.md`；**不改** `.aup/wrapper.aup`。
+11. **零链写、零资金**（L-R21-3）：**不得对 live `config/chain-intents` 调用 `run` / `watch`**；零广播、零 mint/stake/claim/revoke；`arc space sync --mirror` / `arc space rm` 不跑；私钥 / Mnemonic 不打印不落盘；**不删** `node.key` / `.env.local`。
+12. **不 `git commit` / `git push` / `git reset --hard` / `git add -A`**。
+
+### 12.4 队列与词表契约（L-R21-5 —— **复用，不许再造一套**）
+
+| 契约 | 取值 / 形态 |
+| --- | --- |
+| **状态词表** | **唯一来源 = `scripts/lib/intents.mjs`**（**D36**）：canonical = `pending \| running \| applied \| rejected \| noop`；终态 = `applied \| rejected \| noop`；**不得在 `arcblog-network.mjs` 里写字面状态词**（用 `INTENT_STATUS.*`）；`running` 为**允许的在途态**（非终态） |
+| **队列条目命名** | **必须 `<id>.json`**（**D38**）；读取端（`queue` / `apply` / `watch`）对**非 `.json` 条目显式诊断**（`queueEntryIgnored` + `{path, reason}`），**不得静默忽略** |
+| **队列落点** | `/instance/app/arcblog/config/hub-intents`（admin-only；同族先例 `config/category-intents` / `config/media-intents` / `config/chain-intents`） |
+| **记录形状（最小）** | `{ id, action: "register" \| "add" \| "indexRebuild", hubDid?（register/add）, endpoint?（可选）, status: "pending", message: "", requestedVia: "console", requestedAt, changed: [], elapsedMs: null, counts?（indexRebuild 终态：published/upserted/skipped/tombstoned）, code?（终态失败码）, … }`；页面侧**不得写** `requestedBy: $session.did`（BUG-003：`$session.*` 在 `exec content` 内落字面量）；记录内 `grep '\$session\.'` 必须为 **0** |
+| **`elapsedMs` 语义（H1）** | `pending` / `running` 态为 `null`（或缺失）；**终态 `applied` 必为实测数字**；`rejected` / `noop` **可选**（若该动作未跑扫描则 `null` + `message` 说明）；**不得填 0 或估算值** |
+| **worker 形态** | `apply`（一次性）/ `watch`（常驻）/ `queue`（只读）；终态 + `message` 非空回写；幂等（**同一条意图记录**同内容幂等 / 异内容 `CONFLICT`）；**同一时刻只有一个 worker 消费（`.gate-lock` 约定）** |
+| **与既有直写的边界** | 队列**只承载** `register` / `add` / `indexRebuild`；`:185`/`:186`/`:187` 的 Approve / Reject / Purge **不进队列**、不得改动 |
+
+### 12.5 验收标准（**B1–B6 沿用 + H1–H2 hub 特有**；QA 逐条判，缺一条即不放行）
+
+> **证据形态 = AFS 前后对比**（`arc-contracts.md §29.4`：**toast 不是证据**）。**三类证据分开标注**（浏览器实测 / 静态复核 / 受限未验证）。**每个「已验证」必须附真实命令 + 真实输出**。
+> **B1–B6 与本文 §11.5 逐字同口径**（只把「目标数据」换成 hub 域对象），完整可执行写法见 [backlog](../../backlog.md)「本轮：Round 21」→「第三批判据」。
+
+| # | 验收标准 | 验证方式（可执行） |
+| - | -------- | ------------------ |
+| **B1** | **① 主路径是按钮，CLI 只作折叠的高级备选** | 浏览器实测（admin context，真实点击）：`?page=hub` 出现「提交申请」「主动收录」「重建索引」三个按钮（各带 `confirm`）；三个动作**只靠点击**即可入队；命令卡默认收起（`copyableBeforeExpand = 0` 或等价观测），展开后可见（`:200` / `:207`）；**CLI 不是唯一路径**；静态复核三处 `events={click: {exec: "/.actions/write", …}}` |
+| **B2** | **② 点按钮 → AFS 意图记录（含 `status`/来源/原因）→ worker 执行 → 目标数据真的改变** | `arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/config/hub-intents/<id>.json` 含 `action` / 目标 / `status:"pending"` / `requestedVia:"console"` / `requestedAt`；`grep -c '\$session\.' <记录>` = **0**；`apply` 后**再读** `hub/registrations/`（register/add）或 `hub/index/`（rebuild）确认**记录真的新增 / 更新**；**入队未 apply 时逐字节不变**；终态三档 + `message` 非空 |
+| **B3** | **③ 队列状态页面可见且与 AFS 一致** | 浏览器读页面队列区文本 + `arc afs` 逐条读；**抽 ≥3 条逐字比对**（动作 / 目标 / `status` /（rebuild 的）`elapsedMs`） |
+| **B4** | **④ 负例 fail-closed（≥3 条，数据不得改变）** | 空 / 缺失 `hubDid` → `rejected` + `VALIDATION` + 零改动；畸形意图记录（未知 `action` / 缺 `id`）→ `rejected`；**仍被登记的重复 `hubDid`**（H2②）→ `rejected` + `CONFLICT` + 零改动。三条均**不得留 `pending`** |
+| **B5** | **⑤ 平台受限面如实标注、禁止假按钮、落点约束** | 页面常驻「已排队，由本机 worker 执行」+ worker 命令；每个按钮都有**真实写入 + 真实消费路径**；队列落 `config/hub-intents`；guest 无 cookie 读队列路径 → **403**（`role 'guest' is below readRole 'admin'`）；`npm test` 内 `scripts/arcblog-permissions.test.mjs` 仍 **6/6**；**`blocklet.yaml` 零改动**；公开面（`node/discovery.json`）不因队列多出条目 |
+| **B6** | **⑥ 幂等（重复点不重复执行）** | **同一条意图记录**再次被消费（或同意图 `apply` 两次）→ 目标**只被执行一次**；第二次终态 = **`noop`** + 原因非空；同 id 同内容幂等 / 异内容 `CONFLICT`（`arcblog-tags.mjs:225-235` 口径，**不覆盖 pending**） |
+| **H1** | **⑦（hub 特有）`index rebuild` 的耗时必须在页面与终态 `message` 里披露（`elapsedMs`）** | ① 页面**入队前**常驻披露该动作是**全量扫描**并给出**实测量级**（不得写「即时」；R20 单 tick **19s**，3 篇已发布 + 43 条 drafts；**不得**把 19s 写成固定承诺）；② worker 写回**终态记录**的 `elapsedMs` 为**真实数字** + `message` 含耗时；③ **页面队列卡显示该 `elapsedMs`**（抽 ≥1 条与 AFS 逐字比对）；④ QA **自己重跑一次** `indexRebuild` 并记录耗时用于对照；⑤ `pending` / `running` 态 `elapsedMs` 为 `null`，终态才是实测值 |
+| **H2** | **⑧（hub 特有）`register` / `add` 的重复与非法 DID 必须 `rejected` + 原因 + 零改动** | ① **空 / 缺失 DID** → `rejected` + `VALIDATION` + `message` 非空 + `hub/registrations/` 逐字节不变；② **非空但形态非法**（如 `not-a-did`）→ **队列 / 意图层新增显式形态校验**（`did:` 前缀或平台 `z…` 账户形态）→ `rejected` + `VALIDATION` + 零改动；⚠️ **该守卫是新增规则，必须在结果里显式登记**（CLI 只有非空校验：`arcblog-network.mjs:98/:108`，**不得声称 CLI 已校验格式**）；③ **重复**：目标 `hubDid` 已有 registration 且**未显式选择「更新」** → `rejected` + `CONFLICT` + `message` 含 `already registered`（与 CLI `:100/:110` 同因）+ **记录逐字节不变**；④ 只有**显式「更新」路径**才允许 `applied`，且 `changed` 列出真实变化字段；⑤ ①②③**不得留 `pending`**；⑥ 零改动用 `arc afs` 前后逐字节比对（或 `ifMatch` / version 三方一致）证明 |
+
+**门（第三批必须全绿）**：`arc dsl validate --json`（`issues: []`）+ `npm test`（**35/35**，基线不得降）+ `arc dsl generate --check`（0 漂移）+ `arc blocklet build` + `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `diff -r .aup dist/.aup`（改了 `.web` 再加 `diff -r .web dist/.web`）。**`.aup` 改动对运行中 daemon 不生效**（`arc-contracts §35`）→ 页面验收必须 **restart + `arc blocklet run <repo>` 复挂**，**重启前后记录 pid**，并以一条 `/instance` 读证明恢复。
+
+### 12.6 依赖
+
+| 依赖 | 状态 | 影响 |
+| --- | --- | --- |
+| 第一批 / 第二批范式（`config/category-intents`、`config/media-intents` + `apply\|watch\|queue`） | ✅ 已交付并经 R18/R19 QA 以 AFS 前后对比验证 | **照抄对象**；本批不重复设计 |
+| `scripts/lib/intents.mjs`（**D36** 词表 + 读取端兼容） | ✅ 已存在（R18F） | 本批**唯一**状态词来源；**不得**再写字面状态词 |
+| **D38** 队列 `.json` 约定 + 非 `.json` 显式诊断 | ✅ 已收口（BUG-049 关闭） | 本批 `queue` / `apply` / `watch` 三处读取端都要照做 |
+| `scripts/arcblog-network.mjs` 的 `hub register\|add\|index rebuild`（含 `:100` / `:110` 的 `CONFLICT` 守卫） | ✅ 已存在 | worker 的**唯一业务执行者**；**缺 `apply` / `watch` / `queue`** → 本批新增；**不重造业务规则** |
+| `config/hub-intents` 队列根 | ❌ **尚不存在**（PM 轮初只读实测：全仓库零命中） | 本批新建；admin-only 同族 → **零 `blocklet.yaml` 改动** |
+| `scripts/arcblog-network.test.mjs` | ✅ 存在（**live**，不在 `FAST_TESTS`；历史基线 **15/15**） | 触及 CLI / 队列 → **先 `docs/team/.gate-lock` 写一行**，再 `npm run test:file -- scripts/arcblog-network.test.mjs`，**跑完删锁** |
+| `scripts/arcblog-permissions.test.mjs` | ✅ 存在（**在 `FAST_TESTS`**，`npm test` 内含） | 权限基线 **6/6**；本批**预期零 `blocklet.yaml` 改动** |
+| BUG-052 的「常驻说明」范式（media / categories 三处） | ✅ 已闭环（R20） | 同轮 [BUG-056](../../bugs/BUG-056-factory-queue-empty-same-shape-as-052.md) 的**措辞对照样本**；批准合批一次 `generate` + `build` |
+| 浏览器 admin 会话 | ✅ 可用 | guest 无侧栏 → 真实点击必须用 admin context（**单 tab 纪律**：复用同标签页、每身份/每语言新 context、结束关 target） |
+| **同轮 REQ-021 P1（`task-88`）** | 🟥 同轮（同人） | **`task-88` 内串行**：本批 → REQ-021 P1 →（BUG-056 与第一批次合批 build）；**P1 是纯 `scripts/**` 只读，与本批 `.aup/**` 写范围不重叠**，但**同一 owner 串行**；**不得**把任一 worker 指向 `config/chain-intents` |
+
+### 12.7 写范围
+
+| 批次 | 成员 / 任务 | 写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A（唯一写者）** | Dev / `task-88` | `.aup/pages/ops/hub.aup`、`.aup/pages/ops/factory.aup`（同轮 BUG-056）、生成的 `.aup/locales/**` 与 `.aup/app.json`/`wrapper.json`（由 `arc dsl generate --write` 生成）、`scripts/arcblog-network.mjs`（+ `scripts/lib/network.mjs` 如需）、既有 `scripts/*.test.mjs`（**仅追加用例，不新增文件**）、`dist/**`（build）、`docs/team/.gate-lock`（临时） | 触及 CLI/AFS → **先 `.gate-lock` + 定向单跑 + 跑完删锁**；**不新增测试文件**；`blocklet.yaml` **预期零改动**（越界即停并上报）；**不改 `:185`/`:186`/`:187` 既有直写**；**零链写**；**`.aup` 只 build 一次**（与 BUG-056 合批） |
+| **B（后）** | QA / `task-89` | `docs/team/test-reports/round-21.md`、`docs/team/test-reports/raw/**`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时） | **`blocked_by task-88`**；**以 AFS 为准**；**H1 自己重跑 `indexRebuild` 记耗时**；单 tab 自证；不跑全量 live；三类证据分开标注；残留逐条清理或登记 |
+| **C** | PM / `task-87` + `task-90` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划 + 轮末逐条裁决；**不调用 `team_task_*`**；不写源码 / `blocklet.yaml` / checklist 状态列 |
+
+### 12.8 结果记录（**Round 21 轮末已回填**：Dev `task-88` → QA `task-89` → PM `task-90`，2026-09-28）
+
+> **PM 判定 = 达标（放行）**：B1–B6 + H1–H2 **逐条通过**，证据形态为**浏览器真实点击 + `arc afs` 前后对比**（`arc-contracts.md §29.4`：toast 不是证据）；**两条主项判据（H1 耗时披露 / H2 重复与非法 DID）均达成**；**既有 Approve / Reject / Purge 零回归**；**CLI 折叠为「高级」**。**唯一残留 = [BUG-057](../../bugs/BUG-057-hub-intent-message-duplicated-no-data-changed.md)（P3 文案）→ R22 修**，不影响任一条判据的成立。**历史原文不改写。**
+
+| 项 | 状态 | 证据 / 备注 |
+| -- | ---- | ----------- |
+| 队列落点 / 词表 / D38 诊断 | ✅ **通过** | 落点 = `/instance/app/arcblog/config/hub-intents`（页面三处 `/.actions/write` 的 `path` 字面量：**PM 只读复核** `.aup/pages/ops/hub.aup:252/:253/:254`）；词表走 `INTENT_STATUS.*`（`queue` / `apply` / `watch` 三通道，**PM 只读复核** `scripts/arcblog-network.mjs:755-757`）；D38 非 `.json` 条目 `queueEntryIgnored:1` + `{path, reason}`（QA `raw/round-21/23-d38-b6.txt`）；**`blocklet.yaml` 零改动**（PM `git status --porcelain -- blocklet.yaml` **空输出**）；guest 无 cookie：`config` / `config/hub-intents` / `hub/registrations` **全 403** |
+| 意图记录形状 | ✅ **通过** | 页面入队原文：`{id, action, hubDid, endpoint, update, status:"pending", message:"", changed:[], counts:null, elapsedMs:null, requestedVia:"console", requestedAt}`；`grep '\$session\.'` = **0**、无 `requestedBy` 键；`apply` 后终态含 `status` / `message` / `changed`。**PM 只读复核**：页面模板写的是 `requestedVia: console` + `"${generate.timeiso}"`（`.aup/pages/ops/hub.aup:252-254`），无 `$session.*` |
+| **B1** 按钮主路径 + CLI 折叠 | ✅ **通过** | 三个按钮（提交申请 / 主动收录 / 重建索引）各带 `confirm`；点开对话框**未写入**、确认后才写；折叠态 `advancedCardFolded=true`（命令卡默认收起）、展开后 `syncCard/registerCard=true`；en 版按钮 `["Apply","Index a Studio","Rebuild index"]` + `Show advanced (CLI)`。**PM 只读复核**按钮 `events`（`:252/:253/:254`）与 `:305` 的折叠 `key-value-list` |
+| **B2** 按钮 → 意图 → worker → 数据真的改变 | ✅ **通过** | 入队记录见上行；**入队未 apply 时** `hub show` exit 1、registrations 不变；`apply` 后 `hub show` → `{relation:"applied", direction:"studio"}`、终态 `status:"applied"` + `changed` 列 11 个真实字段 + `message` 非空（QA `raw/round-21/14-hub-e2e.txt`） |
+| **B3** 队列状态页面可见且与 AFS 一致 | ✅ **通过** | 自建 3 条终态意图（`applied` / `applied+elapsedMs 17994` / `rejected`）→ 页面文本命中每条 `action`+`status`+`message`+`elapsedMs`，与 `queue` CLI 报告**逐字一致**；图例四档在页 |
+| **B4** 负例 fail-closed ≥3 条 | ✅ **通过** | ① 空 DID → `rejected` + `VALIDATION`；② 畸形 DID `not-a-did` → `rejected` + `VALIDATION`；③ 已登记重复（未选 update）→ `rejected` + `CONFLICT` +「already registered… no data changed」；三条 `changed:[]`，③ 的 registration **逐字节不变**；无 `pending` 残留 |
+| **B5** 诚实标注 / 禁止假按钮 / 落点 / guest 403 | ✅ **通过** | 页面常驻 `worker-note`「按钮只入队——本页不执行任何动作…成功 toast 不是证据」（PM 只读复核 `.aup/pages/ops/hub.aup:83`）+ worker 命令提示；落点 `config/hub-intents`；三个按钮都有真实消费路径；guest 403（三条路径）；**公开面 `node/discovery.json` 不因队列变化**；`arcblog-permissions.test.mjs` 含在 `npm test` 的 35/35 内 |
+| **B6** 幂等 | ✅ **通过** | ① 同一条记录被消费两次：第一次 `applied`（`elapsedMs 19798`）→ 第二次 `status:"noop"` +「already applied at … — not executed again」且**未重跑**；② CLI `apply` 连跑两次 → 第二次 `{"applied":0}`；③ 同 id 异内容 → `CONFLICT` exit 1（不覆盖 pending） |
+| **H1 耗时披露** | ✅ **通过** | ① **页面入队前**常驻 `index-cost`：「全量扫描…**Round 20 实测：3 篇已发布 + 43 条草稿约 19 秒。这是量级、不是承诺**；worker 会把真实 elapsedMs 写回…」（PM 只读复核 `.aup/pages/ops/hub.aup:72` 文案 + `:256` 无条件渲染；en 同句）；② 终态 `elapsedMs` **真实数字**：`18314`（页面触发）/ `18299`（QA 自己 CLI 重跑，wall 20174ms）/ `17994` / `19798`，`message` 含耗时；③ 页面队列卡渲染 `实测耗时 17994 毫秒（本机 worker 实测）`，与 AFS 逐字一致；④ QA **自己重跑**并有对照；⑤ `pending` 态 `elapsedMs:null`、终态才是实测值 |
+| **H2 重复 / 非法 DID** | ✅ **通过** | ① 空 / 缺失 DID → `rejected` + `VALIDATION` + `message` 非空 + registrations 逐字节不变；② 非空形态非法 → **新增队列层文本形态守卫**（`did:` 前缀或平台 `z…` 形态；**已显式登记：该守卫只做文本形态检查、不解析链，CLI 侧仍只有非空校验 `:98/:108`**，页面 `guard-note` 同样写明）；③ 重复未 `--update` → `rejected` + `CONFLICT` +「already registered」+ 记录逐字节不变（与 CLI `:100/:110` 同因）；④ 显式 `--update` → `applied` + `changed:["direction","endpoint","relation","updatedAt"]`（`relation applied→indexed`、`direction studio→hub`）；⑤ 三类负例**均无 `pending` 残留**；⑥ 零改动以 `arc afs` 前后逐字节比对证明。**残留 = [BUG-057](../../bugs/BUG-057-hub-intent-message-duplicated-no-data-changed.md)（P3，仅 ① 的 `message` 后缀重复）** |
+| Approve / Reject / Purge 零回归 | ✅ **通过** | QA 独立探针（`input[name="ePath"]` 锚定，不用无判别力的 `[role="item"]`）真实点击 + confirm：终止 → `relation:"removed"` + `removedAt` 有值；通过 → `relation:"indexed"`；彻底删除 → 记录消失（`hub show` exit 1）。**PM 只读复核** `.aup/pages/ops/hub.aup:221/:222` 的 `tree-merge` 直写仍在（`:187` purge 的 `/.actions/delete` 未动） |
+| 门原始输出 | ✅ **全绿** | **QA 自跑**（`raw/round-21/26-29`）+ **PM 轮末只读复核（2026-09-28）**：`arc dsl validate --json` → `"issues": []`；`npm test` → **tests 35 / pass 35 / fail 0**（`duration_ms 1026.325375`）；`arc dsl generate --check` → `Would generate 0 file(s) (dry-run) — nothing to change`；`node scripts/arcblog-console-nav.mjs --check` → `{"ok":true,…,"pages":21}`；`diff -r .aup dist/.aup` / `diff -r .web dist/.web` / `diff -r world dist/world` → **全空 exit 0**；`docs/team/.gate-lock` → `No such file or directory`。**`arc blocklet build` + `arc-contracts §35` 的 restart + `arc blocklet run <repo>` 复挂 + pid 前后（85410 → 17364）由 Dev 执行、QA 以运行期新 DOM 自证**（PM 不跑 build、不重启） |
+| 定向 live 单跑 | ✅ **通过（未跑全量）** | QA 持 `.gate-lock` 串行：`npm run test:file -- scripts/arcblog-network.test.mjs` → **24/24 pass / fail 0**（历史基线 15/15，只增不减）、`arcblog-economy.test.mjs` → **40/40**（原 30/30）；锁跑完即删（PM 复核不存在）；**未跑全量 `npm run test:live`** |
+| 新增 BUG | ✅ **已逐条裁决** | [BUG-057](../../bugs/BUG-057-hub-intent-message-duplicated-no-data-changed.md)（P3，本批）→ **下一轮修（R22-7）**；[BUG-058](../../bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md) / [BUG-059](../../bugs/BUG-059-hub-ui-budget-ctrl-over-standard.md) 见 [REQ-021 §14.6](REQ-021-chain-backed-orders.md) 与 backlog 🐞 区 |
+| 受限未验证（如实登记） | ⚠️ **已登记，不当作通过** | **U5** = `?page=hub` 的 **en 仅运行期 DOM 只读复核**（真实点击全在 zh admin context）；**U7** = `index rebuild` 耗时只代表本机本实例本次（3 篇已发布 + 43/45 drafts），页面已写「量级、不是承诺」；**U8** = restart 由 Dev 执行、QA 未重复自己的重启流程；**目录事实** = QA 清场后 `config/hub-intents` 目录不存在（PM 只读复核 `LIST_ERROR exec Path not found`）→ 该目录为「首次写入时创建」，不是缺陷，登记备查 |
+
+### 12.9 第四批建议（PM，Round 21 轮末 · **仅建议，不派发**）
+
+> **前置事实**：三批已交付并放行 —— 第一批 `?page=categories`（R18/R18F）、第二批 `?page=media`（R19）、第三批 `?page=hub` 注册 / 索引面（R21）。**三批的共同范式已稳定**：页面只写 `config/<domain>-intents/<id>.json` → worker `queue|apply|watch` 执行 → **以 AFS 前后对比验收**、CLI 折叠为「高级」、词表唯一 D36、队列条目 `<id>.json`（D38）。
+> **R22 = 收口轮**（Lead L-R21-6），**第四批不在 R22**；本表进 backlog「排队（🟨）」等后续窗口，按「用户价值 × 平台可行性 × 链风险」排序。
+
+| # | 候选 | 规格来源 | 为什么是它 | 已知约束 / 前置 |
+| - | ---- | -------- | ---------- | -------------- |
+| **B4-1** | `?page=pages` 的上下线（`Bring online` / `Take offline`） | spec §15.4；[BUG-017](../../bugs/BUG-017-pages-bring-online-legacy-root-authority-refused.md) 的 D13 两条路径、[BUG-033](../../bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（同页 0 宽回归） | 与 hub 注册面**同形**：页面算不出目标、需要 worker 派生 / 迁移；**零链风险**；且能顺带收 BUG-033 的页面结构债 | 需先定「复制 vs 移动」口径续篇（R10 D14 只结了页面 Publish）；`.aup/pages/admin/pages.aup` + 一个 `pages-intents` worker |
+| **B4-2** | `?page=hub` 的 `hub refresh`（本地重算 fresh/stale/never/offline） | spec §75–§76；`scripts/arcblog-network.mjs hub refresh` **已存在** | **纯本地重算、零链写、零资金**，是「按钮化」里风险最低的一个；第三批按范围刻意未做（§12.3 第 2 条） | 需复用第三批的队列（可挂在 `config/hub-intents` 的 `refresh` action 上，需扩词表外的 action 名 → **需要 PM/Lead 口径**） |
+| **B4-3** | `?page=posts` 行内 Publish / Delete（BUG-012 已修，但语义与草稿边界仍需按钮化） | spec §15.4；REQ-019 §11.3 B3-2（**口径未定**） | 用户价值最高（最高频动作），但**跨目录移动语义 + 草稿边界**是产品决策，不是技术实现 | **前置 = 需求裁决**（复制 vs 移动）；不得在口径未定时动手（R10 D14 续） |
+| **B4-4** | `?page=agents` 的授权 / 撤销按钮 | spec §61 / §130；REQ-019 §11.3 B3-3 | 当前页只有 CLI；但**平台对 agent 写面是否可达尚未探针** | **前置 = 一次性只读探针**（越界即停）；`agent.admin` 永不允许授权 |
+| **B4-5** | `?page=orders` 退款按钮 | spec §90；REQ-019 §11.3 B3-4 | **必须等 REQ-021 P2-b（链上退款）** —— 现在按钮化只能做「本地退款事件」 | **前置 = REQ-021 P2-a / P2-b 用户批准**；**本轮及 R22 一律不碰** |
+| **B4-6** | `?page=media` 的 `media add --path` 形态 | REQ-019 §11.3 B3-5；[BUG-054](../../bugs/BUG-054-media-intent-ids-not-normalized-in-record.md) 选项① | 第二批的遗留面；收益低（记录更整齐） | 低优先；会改记录形状 → `.gate-lock` + 定向单跑 |
+
+**共同不变量（第四批必须继承）**：① 页面**只写意图**，不直写目标记录；② **AFS 前后对比 = 唯一证据**（toast 不作数）；③ 词表唯一 `scripts/lib/intents.mjs`（D36）、条目 `<id>.json`（D38）、非 `.json` 显式诊断；④ CLI 折叠为「高级」、**不是唯一路径**；⑤ 平台受限面**如实标注**、禁止假按钮；⑥ 触及链的动作必须先有**单独的只读阶段 + 用户逐笔批准**（L-R21-3 口径）；⑦ 页面写 `config/**`（admin-only）→ **`blocklet.yaml` 零改动**为默认。

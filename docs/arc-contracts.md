@@ -1892,3 +1892,33 @@ Studio 的 registration 记录**只有 `sync.*` 与 `updatedAt` 变化**（其�
 **(6) 一台机器上跑两台 daemon 的成本（实测）**：Studio RSS ≈ **419 MB**、Hub ≈ **349 MB**，
 `~/.afs-hub` 3.4 MB（初始）；端口默认 4939/4941 互不冲突。回滚 = `arc service stop -i <name>`（可逆）→
 `arc service delete -i <name>`（删除记录与数据，不可逆；实测 `~/.afs-hub` 一并消失）。`arc service gc` **不是**回滚手段。
+
+---
+
+## 36. 意图队列里的「耗时披露」、只读对账的四分类，与只读 guard（Round 21 实测）
+
+**(1) 全量扫描类动作必须披露实测耗时（不是承诺）。** `hub index rebuild` 是逐条扫描 + 重算派生索引；
+页面在**入队前**就写明「全量扫描、量级约 19 秒（R20 实测）、这不是承诺」，worker 把**真实耗时**写进终态
+（`elapsedMs`：本机实测 17710 / 17998 / 18314 / 18299 / 17994 / 19798 ms，随数据量波动），`pending`/`running` 态为 `null`。
+页面队列卡与 AFS 记录的 `elapsedMs` 必须逐字一致（不许页面自己算一个数）。**任何"会跑几十秒"的按钮都要照此办理。**
+
+**(2) 只读对账的四个分类（`verified` / `mismatch` / `not-on-chain` / `no-hash`）**，判定顺序固定：
+1. 记录里**没有哈希** → `no-hash`（页面/CLI 显示「未上链 / 待验证」）；
+2. **适配器是 `mock`/`manual`，或本次未查链** → 同样**不得**声称已验证（输出 `queried:false` + 原因）；
+3. 查到了 → **存在性一律判 `info != null`**（`getTx` 对未知哈希返回 `{code:'OK', info:null}`，**调用成功≠存在**）：
+   没有 `info` → `not-on-chain`；有 `info` 且关键字段一致 → `verified`；**有 `info` 但字段不符 → `mismatch`**
+   （**只标记、绝不改写记录**）。
+计数必须自洽（四类之和 = 总数），且**报告里不许出现「链上已验证」**——除非真的是 `verified` 那几条。
+
+**(3) 只读 guard 是一个可复用的实现范式**：脚本内维护只读方法白名单
+（`getTx` / `getAccountTokens` / `getAccountState` / `listTransactions` …），在建立客户端时对**所有 `send*`/`transfer`/`mint*`/
+`stake*`/`claim*`/`revoke*` 方法做代理拦截，命中即抛 `READ_ONLY_GUARD`（实测对 38 个 `send*Tx` 里的 9 个写方法全部拦住，
+被拒调用**从未到达真实 client**）。配合「余额 + `nonce` + 链上窗口前后逐值不变」与「`world/**` + `node/factories.json`
+的 sha256 前后一致」构成零写入自证三件套。
+
+**(4) 队列目录都是「首次写入时创建」**：`config/hub-intents`（R21 新增，注册/主动收录/索引重建）与
+`config/category-intents`、`config/media-intents` 一样，清空后目录可能不存在（`LIST_ERROR Path not found`
+与「空目录」在 AFS 列表 API 上不可区分）——**读队列要当成 0 条处理，不要报错**。
+
+**(5) 记账卫生（本轮踩到）**：持 `docs/team/.gate-lock` 期间跑 `arc blocklet build` 会把临时锁文件镜像到
+`dist/docs/team/.gate-lock`。**提交前必须删掉该镜像**，否则会把"正在跑测试"的临时状态带进仓库。

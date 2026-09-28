@@ -24,6 +24,13 @@ import {
   validateRefundEvent,
   validateSettlementPolicy,
 } from './lib/economy.mjs';
+import {
+  classifyTx,
+  createReadOnlyGuard,
+  fromBaseUnits,
+  normalizeAmount,
+  summarize,
+} from './lib/chain-orders.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -573,4 +580,227 @@ test('live: ledger list --order --type narrows to one order and keeps both branc
   assert.equal(refund.count, 0);
   assert.deepEqual(refund.entries, []);
   assert.equal(refund.total, '0');
+});
+
+// --- REQ-021 stage-2 P1: read-only chain reconciliation (§14) ---------------
+//
+// Pure classification + the read-only guard run without a daemon. The CLI
+// assertions at the end run under the DEFAULT adapter (mock), which is exactly
+// where the honesty rule matters: nothing may be reported as chain-verified.
+
+/** A synthetic TransactionInfo: `amount` is 1 ABT (6 decimals) received by zReceiver. */
+function txInfo(overrides = {}) {
+  return {
+    hash: 'ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D',
+    code: 'OK',
+    receiver: 'zReceiver',
+    receipts: [{ address: 'zReceiver', changes: [{ action: 'transfer', value: '1000000', symbol: 'ABT', decimal: 6 }] }],
+    tokenSymbols: [{ symbol: 'ABT', address: 'zToken', decimal: 6 }],
+    ...overrides,
+  };
+}
+
+test('classifyTx: no hash is "no-hash", and a missing transaction is judged by info != null', () => {
+  assert.equal(classifyTx({ hash: '' }).category, 'no-hash');
+  assert.equal(classifyTx({ hash: '   ' }).category, 'no-hash');
+
+  // The platform answers an UNKNOWN hash with code "OK" + info null, so
+  // "the call succeeded" would call any garbage hash on-chain (arc-contracts §32).
+  const unknown = classifyTx({ hash: 'H', info: null });
+  assert.equal(unknown.category, 'not-on-chain');
+  assert.equal(unknown.queried, true);
+  assert.match(unknown.message, /info: null/);
+
+  // A deliberately unqueried hash (mock adapter) is never "verified" either.
+  const skipped = classifyTx({ hash: 'H', queried: false, notQueriedReason: 'mock is a simulation' });
+  assert.equal(skipped.category, 'not-on-chain');
+  assert.equal(skipped.queried, false);
+  assert.match(skipped.message, /not queried: mock is a simulation/);
+});
+
+test('classifyTx: verified needs the hash, the inner code "OK" and every expected field', () => {
+  const info = txInfo();
+  // bare hash: existence + hash + inner code only, and it says so
+  const bare = classifyTx({ hash: info.hash, info });
+  assert.equal(bare.category, 'verified');
+  assert.ok(bare.basis.some((b) => /existence only/.test(b)));
+
+  const full = classifyTx({ hash: info.hash, info, expected: { amount: '1', asset: 'ABT', receiver: 'zReceiver' } });
+  assert.equal(full.category, 'verified', JSON.stringify(full.findings));
+  assert.ok(full.basis.includes('info.receipts[].changes[]'));
+  assert.ok(full.basis.includes('info.tokenSymbols'));
+
+  // each disagreement is a mismatch, not a pass
+  assert.equal(classifyTx({ hash: info.hash, info: txInfo({ code: 'INVALID' }) }).category, 'mismatch');
+  assert.equal(classifyTx({ hash: 'OTHERHASH', info }).category, 'mismatch');
+  assert.equal(classifyTx({ hash: info.hash, info, expected: { amount: '2' } }).category, 'mismatch');
+  assert.equal(classifyTx({ hash: info.hash, info, expected: { asset: 'USDC' } }).category, 'mismatch');
+  assert.equal(classifyTx({ hash: info.hash, info, expected: { receiver: 'zElsewhere' } }).category, 'mismatch');
+});
+
+test('classifyTx: mismatch lists the field-by-field difference and is marked SYNTHETIC when probed', () => {
+  const info = txInfo();
+  const result = classifyTx({ hash: info.hash, info, expected: { amount: '2' }, synthetic: true });
+  assert.equal(result.category, 'mismatch');
+  assert.equal(result.synthetic, true);
+  assert.deepEqual(result.findings.map((f) => f.field), ['amount']);
+  assert.equal(result.findings[0].record, '2');
+  assert.equal(result.findings[0].chain, '1');
+  assert.match(result.message, /NOT rewritten/);
+});
+
+test('stake/claim facts come from receipts, where sender/receiver are empty (arc-contracts §32)', () => {
+  const info = txInfo({
+    receiver: '',
+    receipts: [{ address: 'zStakeAddress', changes: [{ action: 'transfer', value: '1', symbol: 'ABT', decimal: 6 }] }],
+  });
+  const matched = classifyTx({ hash: info.hash, info, expected: { receiver: 'zStakeAddress', amount: '0.000001', asset: 'ABT' } });
+  assert.equal(matched.category, 'verified', JSON.stringify(matched.findings));
+  const wrong = classifyTx({ hash: info.hash, info, expected: { receiver: 'zNowhere' } });
+  assert.equal(wrong.category, 'mismatch');
+  assert.deepEqual(wrong.findings.map((f) => f.field), ['receiver']);
+});
+
+test('summarize keeps the four-way total self-consistent (verified+mismatch+not-on-chain+no-hash=total)', () => {
+  const totals = summarize([
+    { category: 'verified' },
+    { category: 'mismatch' },
+    { category: 'not-on-chain' },
+    { category: 'no-hash' },
+    { category: 'no-hash' },
+  ]);
+  assert.equal(totals.verified, 1);
+  assert.equal(totals.mismatch, 1);
+  assert.equal(totals['not-on-chain'], 1);
+  assert.equal(totals['no-hash'], 2);
+  assert.equal(totals.total, 5);
+  assert.equal(totals.countsConsistent, true);
+  assert.deepEqual(summarize([]), { verified: 0, mismatch: 0, 'not-on-chain': 0, 'no-hash': 0, total: 0, countsConsistent: true });
+});
+
+test('fromBaseUnits / normalizeAmount convert chain units without drift', () => {
+  assert.equal(fromBaseUnits('1000000', 6), '1');
+  assert.equal(fromBaseUnits('1234500', 6), '1.2345');
+  assert.equal(fromBaseUnits('1', 18), '0.000000000000000001');
+  assert.equal(fromBaseUnits('0', 18), '0');
+  assert.equal(normalizeAmount('10.0'), '10');
+  assert.equal(normalizeAmount('0.100000'), '0.1');
+  assert.equal(normalizeAmount(''), '');
+});
+
+test('R1: the read-only guard refuses any non-whitelisted client method (fail-closed)', async () => {
+  const calls = [];
+  const violations = [];
+  const fake = {
+    getTx: async () => ({ code: 'OK', info: null }),
+    sendTx: async () => {
+      throw new Error('a write reached the client');
+    },
+    transfer: async () => {
+      throw new Error('a write reached the client');
+    },
+  };
+  const { client } = createReadOnlyGuard(fake, { calls, violations });
+
+  const response = await client.getTx({ hash: 'H' });
+  assert.equal(response.code, 'OK');
+  assert.deepEqual(calls, ['getTx']);
+
+  // The refusal is synchronous: the call cannot even build a promise, let
+  // alone reach the network.
+  assert.throws(() => client.sendTx({}), (err) => err.code === 'READ_ONLY_GUARD');
+  assert.throws(() => client.transfer({}), (err) => err.code === 'READ_ONLY_GUARD');
+  assert.deepEqual(violations, ['sendTx', 'transfer']);
+  // the refused calls never reached the fake client
+  assert.deepEqual(calls, ['getTx']);
+});
+
+test('live: settlement reconcile under the mock adapter never claims a chain verification (V2)', () => {
+  const res = run(['settlement', 'reconcile', '--json']);
+  assert.equal(res.status, 0, res.stderr);
+  const report = json(res.stdout);
+  assert.equal(report.ok, true);
+  assert.equal(report.chain.adapter, 'mock');
+  assert.equal(report.chain.simulated, true);
+  assert.equal(report.chain.queried, false);
+  assert.equal(report.totals.verified, 0, 'a simulation is never verified');
+  assert.equal(report.totals.countsConsistent, true);
+  assert.deepEqual(report.changedRecords, []);
+  assert.deepEqual(report.readOnly.methods, [], 'the chain must not be queried under mock');
+  assert.deepEqual(report.readOnly.violations, []);
+  for (const row of report.rows) {
+    assert.ok(['not-on-chain', 'no-hash'].includes(row.category), `${row.id}: ${row.category}`);
+    assert.match(row.message, /no transaction hash|not queried/);
+  }
+
+  // the human-readable mode is the same report and never says "链上已验证"
+  const text = run(['settlement', 'reconcile']).stdout;
+  assert.match(text, /read-only chain reconciliation/);
+  assert.match(text, /totals: verified 0/);
+  assert.match(text, /read-only: methods=\[\]/);
+  assert.equal(text.includes('链上已验证'), false);
+
+  // …and the same holds for a bare mock hash
+  const bare = json(run(['order', 'verify', '--tx-hash', '0xte32482c95fb67c26b0834619c44ac321b5428e', '--json']).stdout);
+  assert.equal(bare.rows[0].category, 'not-on-chain');
+  assert.equal(bare.rows[0].queried, false);
+  assert.equal(bare.totals.verified, 0);
+});
+
+test('live: order verify --id and settlement reconcile --order follow a real settled order read-only (V4)', () => {
+  const stamp = Date.now();
+  const productId = `p1-verify-product-${stamp}`;
+  const orderId = `p1-verify-order-${stamp}`;
+  const contentId = `p1-verify-content-${stamp}`;
+  assert.equal(run(['product', 'add', '--id', productId, '--creator-did', 'did:key:zP1Creator', '--price-amount', '2', '--content-id', contentId]).status, 0);
+  assert.equal(run(['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zP1Buyer']).status, 0);
+  assert.equal(run(['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
+  assert.equal(run(['settle', '--order', orderId]).status, 0);
+
+  // `order verify --id` reads the settlement's hash (the order itself has none)
+  const verify = json(run(['order', 'verify', '--id', orderId, '--json']).stdout);
+  assert.equal(verify.rows.length, 1);
+  assert.equal(verify.rows[0].id, orderId);
+  assert.equal(verify.rows[0].kind, 'order');
+  assert.equal(verify.rows[0].category, 'no-hash');
+  assert.equal(verify.rows[0].hash, '');
+  assert.equal(verify.rows[0].queried, false, 'mock never queries');
+  assert.equal(verify.rows[0].expected.amount, '2');
+  assert.equal(verify.rows[0].expected.receiver, 'did:key:zP1Creator');
+  assert.deepEqual(verify.changedRecords, []);
+  assert.ok(verify.resources.orders.count >= 1);
+  assert.equal(verify.totals.verified, 0);
+
+  // the scoped batch path agrees with the single-record path
+  const scoped = json(run(['settlement', 'reconcile', '--order', orderId, '--json']).stdout);
+  assert.equal(scoped.rows.length, 1);
+  assert.equal(scoped.rows[0].kind, 'settlement');
+  assert.equal(scoped.rows[0].category, 'no-hash');
+  assert.equal(scoped.totals.total, 1);
+  assert.equal(scoped.totals.countsConsistent, true);
+  assert.equal(scoped.totals.verified, 0);
+
+  // an unknown order reports 0 records with a reason instead of crashing
+  const missingOrder = json(run(['settlement', 'reconcile', '--order', `nothing-${stamp}`, '--json']).stdout);
+  assert.equal(missingOrder.rows.length, 0);
+  assert.match(missingOrder.note, /no settlement record for order/);
+  assert.equal(missingOrder.totals.countsConsistent, true);
+});
+
+test('order verify needs a target, fails closed on a missing order, and documents its exit codes', () => {
+  const none = run(['order', 'verify']);
+  assert.equal(none.status, 1);
+  assert.equal(json(none.stderr).code, 'VALIDATION');
+  assert.match(json(none.stderr).error, /--id <orderId> or --tx-hash <hash>/);
+
+  const missing = run(['order', 'verify', '--id', 'no-such-order-p1']);
+  assert.equal(missing.status, 1);
+  assert.equal(json(missing.stderr).code, 'NOT_FOUND');
+
+  // the read-only contract is stated in --help, including the exit codes
+  const help = run(['--help']);
+  assert.equal(help.status, 0);
+  assert.match(help.stdout, /settlement reconcile/);
+  assert.match(help.stdout, /READ_ONLY_METHODS/);
+  assert.match(help.stdout, /Exit codes: 0 = a report was/);
 });

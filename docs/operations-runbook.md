@@ -314,6 +314,40 @@ the only safe repair path when the queue holds an intent you do not want to exec
 executed by either. A `running` record is drained again on purpose — a worker that died
 mid-flight must not strand the intent forever.
 
+### Hub registration and the index rebuild from the console (REQ-019 third batch)
+
+`?page=hub` is the **primary** path for the register/index face: **Apply**
+(`hub register`), **Index a Studio** (`hub add`) and **Rebuild index**
+(`hub index rebuild`). A button does not write a relation itself — the record id
+is `SHA-256(hubDid)` and the page has no hashing primitive — so each click writes
+ONE intent record and this node's worker derives the id and performs the action:
+
+```bash
+node scripts/arcblog-network.mjs watch      # the worker (long-running); `apply` drains once
+node scripts/arcblog-network.mjs queue      # READ-ONLY: what is queued + every terminal status
+node scripts/arcblog-network.mjs request --action register --hub-did did:key:zHub [--endpoint <url>] [--update]
+node scripts/arcblog-network.mjs request --action indexRebuild
+```
+
+| Piece | Where |
+| --- | --- |
+| The queue (admin-only, one record per click) | `/instance/app/arcblog/config/hub-intents/<timeiso>.json` |
+| Intent shape | `{id, action: register\|add\|indexRebuild, hubDid, endpoint, update, status, message, changed, counts, elapsedMs, requestedVia, requestedAt}` |
+| Terminal status written back by the worker | `applied` (+ `changed` field names) · `rejected` (+ `code` and a reason, **zero data change**) · `noop` (identical fields / already done) |
+| What `indexRebuild` adds | the real `elapsedMs` **and** `counts {published, upserted, skipped, tombstoned}` — it is a full scan of every published post and index entry (measured ≈19 s in Round 20), so `pending` carries no number and no estimate |
+
+The queue lives under the admin-only `config/` tree (like `config/category-intents`
+and `config/chain-intents`), never under the guest-readable `hub/` prefix — so no
+permission change is needed. Approve / Terminate / Purge on the same page stay
+**page-direct writes**: they are not queue actions and did not change.
+
+The queue layer adds one guard the CLI does not have (REQ-019 §12 H2): an empty
+DID, a DID that is neither `did:<method>:<id>` nor the platform's `z…` account
+form, and a duplicate — unless the intent explicitly asks to update — are all
+`rejected` with a reason and zero data change. The CLI's own `hub register` /
+`hub add` still only check non-emptiness. A `running` record is drained again on
+purpose (a worker that died mid-flight must not strand the intent).
+
 ## Economy (Phase 8 / MVP-3)
 
 ```bash
@@ -351,6 +385,49 @@ Rules the commands enforce:
   *verified* attribution exists for that content + hub DID, the hub share is
   withheld and folded into the creator (`hubShareWithheld: true`). A hub DID on
   its own is a claim, not evidence.
+
+### Read-only reconciliation (REQ-021 stage-2 P1) — zero chain writes, zero funds
+
+`order verify` and `settlement reconcile` answer "is this record's hash really on
+chain, and do the numbers agree?" without writing a record and without sending a
+transaction:
+
+```bash
+node scripts/arcblog-economy.mjs settlement reconcile [--order <orderId>] [--all] [--limit 20] [--json]
+node scripts/arcblog-economy.mjs order verify --id <orderId> [--json]
+node scripts/arcblog-economy.mjs order verify --tx-hash <hash> [--json]
+# a labelled SYNTHETIC probe: the hash stays real, only the expected value is supplied
+node scripts/arcblog-economy.mjs order verify --tx-hash <hash> --expect-amount 999 [--json]
+# real read-only queries: no mnemonic is read, and the wallet is never loaded
+ARCBLOG_CHAIN_ENV=beta node scripts/arcblog-economy.mjs order verify --adapter ocap --tx-hash <hash>
+```
+
+Exactly four classifications exist (REQ-021 §14.2), decided in this order:
+
+| Category | Condition | Output |
+| --- | --- | --- |
+| `verified` | hash present, `getTx(hash).info != null`, **and** every checked field agrees (`info.hash`, inner `info.code === "OK"`, amount / asset from `receipts[].changes[]` + `tokenSymbols[].decimal`, counterparty from receipts because stake/claim leave `sender`/`receiver` empty) | 链上一致 |
+| `mismatch` | hash present, `info != null`, a field disagrees | 只标记，附逐字段差异，**绝不改写**记录或链上事实 |
+| `not-on-chain` | hash present, `info === null` (the query itself still answered `code: "OK"`) | 未上链 / 待验证 |
+| `no-hash` | the record has no hash (missing or empty, e.g. today's `settlement.transactionHash: ""`) | 未上链 / 待验证（无哈希） |
+
+Honesty rules that are part of the contract:
+
+- **Existence is `info != null`**, never "the call succeeded" — the platform
+  answers an unknown hash with `{code:"OK", info:null}` (`arc-contracts.md` §32).
+- **Under `--adapter mock` / `manual`, or for a record that declares a simulated
+  adapter, the chain is not queried at all** and every row reads
+  "未上链 / 待验证". A simulation is never reported as `verified`.
+- **A script-level read-only guard** (`READ_ONLY_METHODS` in
+  `scripts/lib/chain-orders.mjs`) refuses any other client method — a `sendTx` /
+  `transfer` call throws `READ_ONLY_GUARD` before it reaches the network, and the
+  report prints the methods it actually called plus `changedRecords: []`.
+- The before/after fingerprint (`getAccountTokens` + `getAccountState.nonce`) is
+  printed as evidence that nothing moved; when there is no recorded owner address
+  to read, it says "不适用 + 原因" instead of faking a check.
+- Exit codes: **0** = a report was produced (including `mismatch` rows or 0
+  records / a directory that does not exist yet); **1** = the command could not
+  run (`VALIDATION` / `NOT_FOUND` / `CHAIN_UNAVAILABLE`).
 
 ## Hub attribution (spec §30–§33)
 

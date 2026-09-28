@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 77044,
+      "size": 80606,
       "contentType": "application/json",
-      "sha256": "3535a7a709ac795d855a7b86f78e41887024b9da8492347e78eeab66c3c3807a"
+      "sha256": "451791423a2ddc2750471c075e97b105ff263e9bd232f2d924b350f21cd73636"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 74475,
+      "size": 77913,
       "contentType": "application/json",
-      "sha256": "e84c0242d6c6ee1ff57bf4d797fd81e6c91d1e33f5fed99d2babcea681cf2390"
+      "sha256": "e6e9d576168c577b2feb195c206ea409f64d6c5a7c130cf3bb6a8c95e310db38"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -304,15 +304,15 @@
     },
     {
       "path": ".aup/pages/ops/factory.aup",
-      "size": 29484,
+      "size": 30291,
       "contentType": "application/octet-stream",
-      "sha256": "37384a63b142a24d26d6ac26c13a84974dc9ae3231703074efa78067c3811be4"
+      "sha256": "3a2816907bc603d25fdc5264d26ba661102a551cfa40cea053e9e000920027e8"
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 23413,
+      "size": 36320,
       "contentType": "application/octet-stream",
-      "sha256": "7a2304cdc7242c0037c888d2ed8427ae1a5fe6aa786db76b78cf25e627acf29c"
+      "sha256": "971157761eadbf2930ef83b879ecc4f3c2920cc45b55533665c7f3d95ae1e060"
     },
     {
       "path": ".aup/pages/ops/media.aup",
@@ -1342,9 +1342,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 162857,
+      "size": 165594,
       "contentType": "text/markdown",
-      "sha256": "649407a795079cb1df2990859f1062ca23fd49be3574e39caf67688f2ec5fc39"
+      "sha256": "992ce7f933a3410e05cf9a8fa61e3a1089c27608fa545c895bd2ee25ee1b1593"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1354,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 75408,
+      "size": 78300,
       "contentType": "text/markdown",
-      "sha256": "e4c34e1ba778501f3ed21d53cecad7e53108020c495c791c57717f38b7b6a46a"
+      "sha256": "f06f0f27ff9b79da629d7f91a4c94a9fb8d2827d937a9c9e07dc9ff9766a1bee"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1426,9 +1426,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 41576,
+      "size": 46856,
       "contentType": "text/markdown",
-      "sha256": "37cd81dada9e03fb78e4b4bdfdeafe47a8932b98089a02a47c4c6b6d59dc494d"
+      "sha256": "311c3fb35b3d56634fe6c9f2f51f9880ada913108739ad6e8d95b5af1d7feb3f"
     },
     {
       "path": "docs/persistence.md",
@@ -1468,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 864098,
+      "size": 930381,
       "contentType": "text/markdown",
-      "sha256": "45d390a7820f404b0261be9628f1e9f63f8724507709e7966bdf92d096674c9d"
+      "sha256": "447f21e8fc7ff74e86581ec214036e5b88b0e878b9c485184efee840a1c8daf8"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1810,9 +1810,27 @@
     },
     {
       "path": "docs/team/bugs/BUG-056-factory-queue-empty-same-shape-as-052.md",
-      "size": 4277,
+      "size": 7694,
       "contentType": "text/markdown",
-      "sha256": "c149c6556987565616faab938e0c837ed5fabe9d15ffc23dff640fa031372de4"
+      "sha256": "89f1ee5fe2294f0e5d46a44282d677ac441ee31655021aa2782bb52120f4853d"
+    },
+    {
+      "path": "docs/team/bugs/BUG-057-hub-intent-message-duplicated-no-data-changed.md",
+      "size": 4032,
+      "contentType": "text/markdown",
+      "sha256": "f544ee3fd69b2e9dcbe37329478397f49f76a5f74114500d5ae45927c3b66fce"
+    },
+    {
+      "path": "docs/team/bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md",
+      "size": 4461,
+      "contentType": "text/markdown",
+      "sha256": "9d92fb852116967102d41bd1e2d23f4667cd2855286cf639d79ab8a0eb08cd07"
+    },
+    {
+      "path": "docs/team/bugs/BUG-059-hub-ui-budget-ctrl-over-standard.md",
+      "size": 4334,
+      "contentType": "text/markdown",
+      "sha256": "b12bc2833cd68b6ae92913073a6b958f8968f034e617cec950906c0171f18f0b"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2524,9 +2542,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 55372,
+      "size": 63168,
       "contentType": "text/markdown",
-      "sha256": "0b9fcb55858daba26e69419b3c0766ed9991f188231bb0f26c0f7936666ea59c"
+      "sha256": "d2bcd18611f0479e91b4ee7185a42d571549720bd9d9204afdaffbad83571e71"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2593,6 +2611,12 @@
       "size": 35231,
       "contentType": "text/markdown",
       "sha256": "72e56248ccd21a785299b2fbf05ddf40833f55350e95b684c64bde948e8dd19f"
+    },
+    {
+      "path": "docs/team/journal/round-21.md",
+      "size": 45255,
+      "contentType": "text/markdown",
+      "sha256": "c8a225113b3f1ca4f316a2163e89addee2d9a33472ffc4d1583c5c8945da20ea"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -2824,9 +2848,9 @@
     },
     {
       "path": "docs/team/requirements/REQ-019-button-first-console.md",
-      "size": 73367,
+      "size": 103690,
       "contentType": "text/markdown",
-      "sha256": "d38bcdce2eddce28428bd8bfd9380439dc3f6b07082525d1bf8b96e8293e41ce"
+      "sha256": "8291ef5a70d09a0da72f400223fa42ed9f0834fed87a7c99b9994de1d85576e2"
     },
     {
       "path": "docs/team/requirements/REQ-020-toolbar-content-spacing-public.md",
@@ -2842,9 +2866,9 @@
     },
     {
       "path": "docs/team/requirements/REQ-021-chain-backed-orders.md",
-      "size": 88360,
+      "size": 111117,
       "contentType": "text/markdown",
-      "sha256": "9a3a0a8e4eb294b91a20eeae0c7ac5a38c9dd4ac2958d151e38756f08461174b"
+      "sha256": "c7cb4bc461f8e999db1d4a42de6363a1c7119e8601bf6dfc2dfa228bba8e8f75"
     },
     {
       "path": "docs/team/requirements/REQ-022-two-node-studio-hub-testbed.md",
@@ -4365,6 +4389,336 @@
       "sha256": "48d54fdb96d65daf7768942d43a3dcac0831213164119475ebf110d9b963609a"
     },
     {
+      "path": "docs/team/test-reports/raw/round-21/01-gates-static.txt",
+      "size": 364,
+      "contentType": "text/plain",
+      "sha256": "6d86aeb6cba8d8831c334ebb4c1c2554354569000a48f0507202fb89dd44fef3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/02-targeted-live.txt",
+      "size": 9801,
+      "contentType": "text/plain",
+      "sha256": "14dd1489ef775151d56613bef1596de04b80bd68417c7789dd0374251425915f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/03-r1-guard.txt",
+      "size": 368,
+      "contentType": "text/plain",
+      "sha256": "70cfa539018ff0a1290f423c47fe9640dc061a09000e87391fc1703e4ba4b852"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/04-r1-guard-real-client.txt",
+      "size": 7761,
+      "contentType": "text/plain",
+      "sha256": "dd176fa7faf60afdd4aa8dfa36af0042b5bc6a9769b1e2ecbfad60646bb0cbbd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/05-factories-before.json",
+      "size": 8433,
+      "contentType": "application/json",
+      "sha256": "58f12dbd83dc7a966ceecc42f24a6005b339bc7170575ec9e2ec22f05a6b9293"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/05-instance-baseline.txt",
+      "size": 5765,
+      "contentType": "text/plain",
+      "sha256": "58aad9044c506ae0a25378f794f778e2150c632f159b39e7b92f2442f80a649d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/06-fingerprint-after.json",
+      "size": 397,
+      "contentType": "application/json",
+      "sha256": "1bd826157c3ffadaec79838ccb11f1a79a70d9f9ef9ff7608f2374f76811f490"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/06-fingerprint-before.json",
+      "size": 398,
+      "contentType": "application/json",
+      "sha256": "8701bc60fd0bc948da097a479d84dd0cc7a473f0fe5f9c0af679e7c2a7a8bb37"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/06-fingerprint-compare.txt",
+      "size": 221,
+      "contentType": "text/plain",
+      "sha256": "2741010ce4360c8ec3977c52fc24e84276c3f05f4d7fde1887d0a7238a07104e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/07-v1-txhash-paths.txt",
+      "size": 8158,
+      "contentType": "text/plain",
+      "sha256": "3ba80c9d696d24d2ee1a392961eed6dc5440df3d9ad5cb63d862a6ddadf77841"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-after-all.json",
+      "size": 32378,
+      "contentType": "application/json",
+      "sha256": "64a6f399c67b613b3a245c014d3848ba5735dfc5ab2c111e8cdfa8dfc89aba21"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-after-p1.json",
+      "size": 32377,
+      "contentType": "application/json",
+      "sha256": "2bddd27530ddda7df5dcc8dbb0645ef1eba58ff7f7d69d6c49de22457892f9ae"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-before-p1.json",
+      "size": 32378,
+      "contentType": "application/json",
+      "sha256": "e24aac99c43217f98a99524568c255903366ae56a5ad6a1ad94485fb58d05786"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-before-v1.json",
+      "size": 32378,
+      "contentType": "application/json",
+      "sha256": "fd2d9e973897c180397155500e4f569cb56b32e4a7948ae3e4cd3938f7c93f1e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-compare.txt",
+      "size": 808,
+      "contentType": "text/plain",
+      "sha256": "f2d90826a07655c2f3c2afa25196b8e24f67db7435e14589158074e0f6456bce"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/08-afs-snapshot-final-compare.txt",
+      "size": 774,
+      "contentType": "text/plain",
+      "sha256": "e804a8e9892268c21ba014f522787810c79b9a7e66c18d439a10237dede7c82b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/09-v2-mock-reconcile.txt",
+      "size": 7001,
+      "contentType": "text/plain",
+      "sha256": "36ad884238785ed6c837744c7270c784cf8883ed66a192a9127ba5ed9c877f7e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/10-v1d-v4a.txt",
+      "size": 2576,
+      "contentType": "text/plain",
+      "sha256": "aca39c36a75ee018baeb3d62eb0607970f78ac3e1c92651eb6ff948ced0c9d08"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/11-negative-paths.txt",
+      "size": 1262,
+      "contentType": "text/plain",
+      "sha256": "68658ff2c817a58e9e2eb2f8871ce98192a6ef779eb12a7ea8a174ac02c432c9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/12-v2-forbidden-phrases.txt",
+      "size": 1060,
+      "contentType": "text/plain",
+      "sha256": "6372420256e51442fad06b02ef327921441c83f31f1b9e5510aeb339fa832dc6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/13-v1-verified-human.txt",
+      "size": 998,
+      "contentType": "text/plain",
+      "sha256": "80786e76fdd3b0710a81ffc8234636c3b224ab877fe55e008656b2d465092a4e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/14-hub-e2e.json",
+      "size": 34261,
+      "contentType": "application/json",
+      "sha256": "83144256313749046581c492608a615578a6faf2b36f01a2e081dcdb7da87a4b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/14-hub-e2e.txt",
+      "size": 12049,
+      "contentType": "text/plain",
+      "sha256": "615080751169a01fa8b06493999d0f4cf235aeaf5f3285d6eb2e95fee3aa39ac"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/15-orphan-cleanup.txt",
+      "size": 308,
+      "contentType": "text/plain",
+      "sha256": "160e316daaf388f5ee8c52a56bba2b442e7d6d962b8bfc5a6c695df052d3fe72"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/16-hub-fold-check.txt",
+      "size": 1260,
+      "contentType": "text/plain",
+      "sha256": "9756f4d455b831d841b4594df0467713d9a141fa4f415ab202d20f0d26544bb3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/17-factory-regression.json",
+      "size": 5048,
+      "contentType": "application/json",
+      "sha256": "0f72e05b1eee9f8e76a9f1b1ff42495c980a01b1cabbb6855d72bfe0ddfde8e2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/17-factory-regression.txt",
+      "size": 3824,
+      "contentType": "text/plain",
+      "sha256": "0f09f7ad51775fea0d6d54248ae423d98dc9033c61b6d51cbf22d1854ea9d58c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/18-hub-rows-regression.json",
+      "size": 19382,
+      "contentType": "application/json",
+      "sha256": "b9d006e5d4b5e691f008b0479b24a043eed32534dfd41b949bd8e051595836bf"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/18-hub-rows-regression.txt",
+      "size": 5939,
+      "contentType": "text/plain",
+      "sha256": "7d28a57f4a5625401b2b10035554d33a6264caabf9ea665aff5b0ef48a74118c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/19-factory-rows.json",
+      "size": 6009,
+      "contentType": "application/json",
+      "sha256": "55ae9ff3fb105bd45849ed93bb89daece2649dd74021da0ddc959e131e144e2d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/19-factory-rows.txt",
+      "size": 6023,
+      "contentType": "text/plain",
+      "sha256": "2631932056774418b0afeba7b511f9720914dec61b757057848a9523a5c6d80e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/20-bug056-static.txt",
+      "size": 1504,
+      "contentType": "text/plain",
+      "sha256": "111542976f301f259110952fbd625c22876de012c45102c0abcd035212f24c35"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/21-build-diff.txt",
+      "size": 1789,
+      "contentType": "text/plain",
+      "sha256": "1f1d511f9989ccfb30aa5b1998618791a80533fb635294f779b0dd3c3ec237ef"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/22-final-state.txt",
+      "size": 4920,
+      "contentType": "text/plain",
+      "sha256": "02a6faf23b77c7650ff9c895b4e035f6dc321c671a10ff8b61da15aa2ce748fd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/23-d38-b6.txt",
+      "size": 5586,
+      "contentType": "text/plain",
+      "sha256": "496b7947998b387903c7018190da79fa4fb6d27318fe425320b71bd4d4d9ee31"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/24-v1-other-hashes.txt",
+      "size": 1509,
+      "contentType": "text/plain",
+      "sha256": "04f7b1b6040aaec7587b2210a6f01e9bc4611904a2e0cf975b4ac937bff163d5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/25-hub-en-and-conflict.txt",
+      "size": 1911,
+      "contentType": "text/plain",
+      "sha256": "ee2da02f4f2f336c0320c046ca88e9f9858619177ec5dbc7955d4b2498519793"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/26-final-gates.txt",
+      "size": 518,
+      "contentType": "text/plain",
+      "sha256": "5b47d977ad8562258cc0a1ae0386a9f6129d5eec0aa0a224a5d17ae616d3bd29"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/26-validate.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/26-validate.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/27-npm-test.txt",
+      "size": 2991,
+      "contentType": "text/plain",
+      "sha256": "14d7e432340502918af344a7f07d94bdf6cf44b6e1d7e9438b04355aba439ccf"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/28-generate-check.txt",
+      "size": 114,
+      "contentType": "text/plain",
+      "sha256": "9ac2ec45b136ce9a7191a35c784e71a0ed719fb391b528f690651cfd9594a801"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/29-pid-instance-targets.txt",
+      "size": 1208,
+      "contentType": "text/plain",
+      "sha256": "32f9a983d1feb4124e905ae2ff911fd14f59f2881d8e0d3d85ec4de186a2b8b5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/30-final-build.txt",
+      "size": 1370,
+      "contentType": "text/plain",
+      "sha256": "169dad58730dd50007cc96e9828094f4734f7691724e55ad27b6d35e7bd4bc8c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/30-final-sync.txt",
+      "size": 702,
+      "contentType": "text/plain",
+      "sha256": "49edba2b759dc9df963fc145f36720e8c9b9d27fd5fb06eeedec30a7107b94dc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/31-npm-test-final.txt",
+      "size": 2999,
+      "contentType": "text/plain",
+      "sha256": "85ebb83c1322a32b2e220c4be690714a83ec1f63c08b29e6bfdb9a8b0c5521f6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/31-validate-final.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-afs-snapshot.mjs",
+      "size": 1914,
+      "contentType": "text/javascript",
+      "sha256": "846f0e414325758f6a07d0ae44f88b2dc8d121946b7a742e16388a8197590a8e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-chain-fingerprint.mjs",
+      "size": 2194,
+      "contentType": "text/javascript",
+      "sha256": "8c9f0a3c84e753a796110bf3aa26b430d9415200330397bad7d725b9935f064b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-d38-b6.mjs",
+      "size": 2543,
+      "contentType": "text/javascript",
+      "sha256": "adb731421112a2eac289766896af879e7caa1e5a36d529270786adb24eeaa43e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-factory-rows.mjs",
+      "size": 4947,
+      "contentType": "text/javascript",
+      "sha256": "29b570e8372aa9a1e84269fe255ad834d6408600239ea2aaaff0fa9c6c161979"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-hub-e2e.mjs",
+      "size": 22553,
+      "contentType": "text/javascript",
+      "sha256": "86b681479df0ae8180504016d53d7681e18fcff123897eb4ea69c65fbb88e607"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-hub-fold-check.mjs",
+      "size": 4078,
+      "contentType": "text/javascript",
+      "sha256": "4582d6175fa3679b9b86fb90b38951e63c936896dc0acaa40b961d2ef379e290"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-hub-rows-regression.mjs",
+      "size": 10493,
+      "contentType": "text/javascript",
+      "sha256": "156f1f04c7c70567a95e936fb777812fdacb88b3247bde0097333bb6549790e3"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-21/qa-regression-scan.mjs",
+      "size": 7293,
+      "contentType": "text/javascript",
+      "sha256": "d292f5587c4ed0291135a0f63418ce564f1c4720f33fcd2adeae9d4c82f7d3db"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -4459,6 +4813,12 @@
       "size": 26187,
       "contentType": "text/markdown",
       "sha256": "668d4ba5c55ec1a09e31e2f1b13e0d5151424e5f7ff4ae9613395939c7b1eaa9"
+    },
+    {
+      "path": "docs/team/test-reports/round-21.md",
+      "size": 37536,
+      "contentType": "text/markdown",
+      "sha256": "49d607ae54012924c72072586bbc96bff7eb5c3387392324ee5d3aa51c1935cc"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -4690,15 +5050,15 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 28012,
+      "size": 42773,
       "contentType": "text/javascript",
-      "sha256": "fbfcc24792d6991c539df99bd3ca1e434f6bf98bf350580c0db8044aab7d7b77"
+      "sha256": "a4760373add78f504b69bc60bfb31abaf4e2992ba9d185d3b9c8e01fb5fa4deb"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 29675,
+      "size": 40748,
       "contentType": "text/javascript",
-      "sha256": "eaef48d84f073c6fed2a798009ed99f5c9bca6257603033cc8409c4050e9049f"
+      "sha256": "15aa8284172232a6c94053c3b45412640d686143f884c6bfc4534333963f65ac"
     },
     {
       "path": "scripts/arcblog-factory.mjs",
@@ -4750,15 +5110,15 @@
     },
     {
       "path": "scripts/arcblog-network.mjs",
-      "size": 16526,
+      "size": 36422,
       "contentType": "text/javascript",
-      "sha256": "603e3929bb565186ff3ddaa9390a203533ef4c79ebaf7e68e50ffff168886ba4"
+      "sha256": "9a4254d0c16ce0dc1b0e1d81ef8175bf8afde1df2bbd6549b56eeb8c3266a9d4"
     },
     {
       "path": "scripts/arcblog-network.test.mjs",
-      "size": 15983,
+      "size": 28397,
       "contentType": "text/javascript",
-      "sha256": "806c60b1f01cbb033ca4840ac51ec9c2851d440183e9adc50d7cb565aeb6f80f"
+      "sha256": "c25e99a40fa969fc477be1660db79fbf042bfe6ece56a58c214ab79c78f73aed"
     },
     {
       "path": "scripts/arcblog-node-nft.mjs",
@@ -4923,6 +5283,12 @@
       "sha256": "5c42051137bd00493bc7b4332467ccb2900ebb4707a3cbd535400bee83d39008"
     },
     {
+      "path": "scripts/lib/chain-orders.mjs",
+      "size": 15559,
+      "contentType": "text/javascript",
+      "sha256": "d1cd224ffe1abfd0d498652123994af27983fc2637054fd3f966a0544609788e"
+    },
+    {
       "path": "scripts/lib/chain.mjs",
       "size": 38322,
       "contentType": "text/javascript",
@@ -5032,9 +5398,9 @@
     },
     {
       "path": "scripts/ui-budget-baseline.json",
-      "size": 2936,
+      "size": 2937,
       "contentType": "application/json",
-      "sha256": "155223f6fb8f2897e9221fbcf2b62fc1c959b42dcf84d335b527e006e729251f"
+      "sha256": "2632a4fa7e66f8d95eb15c6a6dbb063e4ac6899e5c62ed494ab99df921e060aa"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

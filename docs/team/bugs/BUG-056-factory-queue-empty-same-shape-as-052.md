@@ -6,7 +6,7 @@
 | 严重级 | **P3**（文案/一致性：当前**不影响渲染**——它只作 `afs-list emptyText`，而平台运行期不解析 `$t()`；但它是 BUG-052 同形的第三处，留着会让「同一类文案两种口径」长期存在） |
 | 发现轮次 | round-20（Dev 在 REQ-022 §7.2 登记为候选 **C-2**；QA `task-85` 独立复核后转为 BUG 入账） |
 | 关联 REQ | REQ-022-two-node-studio-hub-testbed.md §7.2 C-2；BUG-052（L-R20-4 只圈定 `media.aup` + `categories.aup`） |
-| 状态 | 待裁决（PM `task-86`） |
+| 状态 | **QA 复验（round-21，`task-89`）：已修复 —— C1/C2/C3/C5 通过、C4 部分通过（空队列态受限未验证，原因见文末）→ 建议 PM 关闭** |
 
 ## 复现命令与最小步骤
 
@@ -63,3 +63,32 @@ $ grep -rn 'queue-empty\|media-empty' .aup/pages/ops/media.aup .aup/pages/site/c
 - `.aup/locales/en.json:170`、`.aup/locales/zh.json:170`（`factory.queue-empty`）
 
 > QA 不修改上述文件。建议（仅建议，交 PM 裁决）：① 与 media/categories 统一为常驻说明措辞（R21 一并做）；或 ② 明确「`emptyText` 不求值 ⇒ 不影响渲染」并保留，在 arc-contracts 里登记该口径。两条都不阻断本轮。
+
+---
+
+## 复验记录（round-21，QA `task-89`；**独立重跑，不采信 Dev 自述**）
+
+> 原始输出：`docs/team/test-reports/raw/round-21/20-bug056-static.txt`（C1/C2/C3）、`17-factory-regression.txt`（C4/C5 + 21 页扫描）、`19-factory-rows.txt`（C5 AFS 对照）；探针：`raw/round-21/qa-regression-scan.mjs`、`raw/round-21/qa-factory-rows.mjs`（CDP 单 tab、每语言新 context、跑完 `leftOpen=[]`）。
+
+**修法（静态复核，C1/C2/C3）**
+
+- **C1 ✅**：`grep -n 'queue-empty\|queue-standing-note' .aup/pages/ops/factory.aup` → 只剩 `:66` 声明 `queue-standing-note` 与 `:251` 的**页级 `p :queue-standing-note`**（无条件、无 `visible`），`afs-list` 上的 `emptyText=:queue-empty` 已移除；全仓库（`.aup/pages`、`.aup/locales`、`dist/.aup/**`）`grep 'queue-empty'` **零命中**（`grep_exit=1`）。
+- **C2 ✅**：`.aup/locales/{en,zh}.json:891` 只有 `factory.queue-standing-note`，旧键 `factory.queue-empty` 已删；`arc dsl lint --json` → `dead_locale_keys = []`（45 条 issue 全为 `unreferenced_explicit_id`）。
+- **C3 ✅**：`git diff .aup/pages/ops/factory.aup` 的**新增行里没有任何 `visible`**（唯一 grep 命中是注释文字「no `visible` condition is possible」）。
+
+**运行期 DOM（C4；CDP 单 tab，`Page.navigate` 复用）**
+
+| 语言 | 常驻说明 | 旧空态措辞 | 队列实际非空 | `SESSION INIT FAILED` |
+| ---- | -------- | ---------- | ------------ | --------------------- |
+| zh | **1 条**（「凡是入队的链上意图都会出现在上方列表里…」） | **`[]`** | 是（`config/chain-intents` 6 条） | false |
+| en | **1 条**（"Every queued chain intent appears in the list above…"） | **`[]`** | 同上 | false |
+
+**C4 的空队列态 = 受限未验证（如实登记）**：`?page=factory` 的队列根是 **live `config/chain-intents`（6 条）**，其中 `pending.json` 与 5 条历史记录是 BUG-051 / REQ-021 的取证对象，**删除或搬移它们会改动链历史记录（越界）**，因此 QA 没有造「0 条」态。可替代的等效证据：该段落是**无条件页级 `p`**（C3 静态证明），与 round-20 已在 media/categories 两态实测通过的常驻说明同形；**非空态（本页唯一会出 BUG-052 同形矛盾的态）已实测通过**。
+
+**C5（其余功能零回归）**
+
+- `?page=factory` 队列行与 AFS 对照：6 条 `chain-intents` 记录的 `status` **6/6** 出现在页面文本（`rejected`/`applied`/`pending`，含那条 `pending` 的 `intent-mujkccy6-r1nd`）；页面**不渲染** `action`/`message` 字段是既有模板行为（行内只渲染 `status`/`role`/时间/`result.hash`/`error`），非本轮改动。
+- 21 页运行期扫描（admin、zh、单 tab）：**每页 `data-active="true"` = 1、`aria-current="page"` = 1、无 `SESSION INIT FAILED`**（`raw/round-21/17-factory-regression.txt`）。
+- 页面行动作仍可用：`?page=factory` 的「质押」按钮在 zh/en 两态都渲染（探针记录）；本轮**未点击**链上按钮（零链写红线）。
+
+**判定：C1/C2/C3/C5 通过，C4 部分通过（空态受限未验证 + 原因）→ 建议 PM 关闭**。QA 未修改任何源码；探针**未写实例**（`?page=factory` 全程只读）。

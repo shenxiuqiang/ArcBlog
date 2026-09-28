@@ -1,0 +1,176 @@
+### V2a settlement reconcile (default adapter = mock), human ###
+REQ-021 stage-2 P1 — read-only chain reconciliation (zero chain writes, zero funds)
+adapter: mock (simulated / operator-declared — never chain-verified)
+chainHost: (not configured)  network: mock  queried: false
+not queried: --adapter mock: this adapter carries simulated / operator-declared facts, not a chain — the chain is not queried and nothing can be reported as verified
+totals: verified 0 · mismatch 0 · not-on-chain 0 · no-hash 20 · total 20 (counts consistent: true)
+resources: orders: 33 record(s) under /instance/app/arcblog/economy/orders · settlements: 20 record(s) under /instance/app/arcblog/economy/settlements
+- settlement econ-test-order-1790621421633 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-order-1790621968235 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-order-1790622714245 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-rf-order-1790621456673 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-rf-order-1790622006111 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-rf-order-1790622757396 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-tip-1790621433662 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-tip-1790621980160 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-tip-1790622727063 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-type-order-1790621501147 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-type-order-1790622072420 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement econ-test-type-order-1790622841580 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement ledger-order-1790621445652 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement ledger-order-1790621995166 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement ledger-order-1790622746053 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement p1-verify-order-1790621934038 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement p1-verify-order-1790622125070 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement p1-verify-order-1790622910831 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement tip-1790161886 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+- settlement unattr2-order-1790162193 hash: (none) [no-hash] 未上链 / 待验证（no-hash） — the record carries no transaction hash
+read-only: methods=[] violations=0 changedRecords=0 writePath=none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)
+fingerprint: 不适用 + 原因: the chain was not queried (simulated adapter) — no balance / nonce was read, and no write path exists
+EXIT=0
+
+### V2b same, --json (totals + readOnly) ###
+{
+  "chain": {
+    "adapter": "mock",
+    "chainHost": "",
+    "network": "mock",
+    "simulated": true,
+    "queried": false,
+    "skippedReason": "--adapter mock: this adapter carries simulated / operator-declared facts, not a chain — the chain is not queried and nothing can be reported as verified"
+  },
+  "totals": {
+    "verified": 0,
+    "mismatch": 0,
+    "not-on-chain": 0,
+    "no-hash": 20,
+    "total": 20,
+    "countsConsistent": true
+  },
+  "methods": [],
+  "violations": [],
+  "changedRecords": [],
+  "rows": [
+    {
+      "id": "econ-test-order-1790621421633",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-order-1790621968235",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-order-1790622714245",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-rf-order-1790621456673",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-rf-order-1790622006111",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-rf-order-1790622757396",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-tip-1790621433662",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-tip-1790621980160",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-tip-1790622727063",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-type-order-1790621501147",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-type-order-1790622072420",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "econ-test-type-order-1790622841580",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "ledger-order-1790621445652",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "ledger-order-1790621995166",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "ledger-order-1790622746053",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "p1-verify-order-1790621934038",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "p1-verify-order-1790622125070",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "p1-verify-order-1790622910831",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "tip-1790161886",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    },
+    {
+      "id": "unattr2-order-1790162193",
+      "cat": "no-hash",
+      "hash": "(none)",
+      "queried": false
+    }
+  ]
+}
+EXIT=0

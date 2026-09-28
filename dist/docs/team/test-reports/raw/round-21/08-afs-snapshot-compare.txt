@@ -1,0 +1,13 @@
+FILE /instance/app/arcblog/node/factories.json IDENTICAL 56adc0b545ae2cda 56adc0b545ae2cda
+FILE /instance/app/arcblog/config/chain-intents/pending.json IDENTICAL 3f2e39fe5f9d9ba5 3f2e39fe5f9d9ba5
+DIR  /instance/app/arcblog/config/chain-intents IDENTICAL 6 -> 6
+DIR  /instance/app/arcblog/config/hub-intents IDENTICAL 0 -> 0
+DIR  /instance/app/arcblog/economy/settlements IDENTICAL 20 -> 20
+DIR  /instance/app/arcblog/economy/orders IDENTICAL 33 -> 33
+DIR  /instance/app/arcblog/economy/ledger IDENTICAL 42 -> 42
+DIR  /instance/app/arcblog/economy/products IDENTICAL 27 -> 27
+DIR  /instance/app/arcblog/hub/registrations IDENTICAL 5 -> 5
+DIR  /instance/app/arcblog/hub/index IDENTICAL 5 -> 5
+DIR  /instance/app/arcblog/drafts IDENTICAL 45 -> 45
+DIR  /instance/app/arcblog/posts IDENTICAL 3 -> 3
+TOTAL_DIFFS 0

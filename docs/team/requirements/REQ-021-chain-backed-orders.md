@@ -941,3 +941,119 @@ $ ls .route
 root
 web
 ```
+
+---
+
+## 14. 阶段二 P1 口径（Round 21：只读对账 CLI；**零链写 / 零资金**）
+
+> **位置说明（供读者）**：本节是 **Round 21 新增**的内容，物理上落在「附录 A」之后 —— **附录 A 是 Round 17 的 BUG-039 原始证据，保持原文未动**（PM 不改写历史证据）。**章节顺序 = §13 → 附录 A → §14**，引用以标题号为准。
+>
+> **本节是阶段二 P1 的「需求 + 关闭判据」落点**：范围（做 / 明确不做）、**四分类唯一口径**、**V1–V4 + R1 关闭判据**、mock 诚实性、只读自证、写范围、结果预留。
+> **Lead 裁定（Round 21）**：**L-R21-2**（P1 = 只读对账 CLI，四态清晰）/ **L-R21-3**（**零链写、零资金 = 硬红线**）/ **L-R21-5**（复用既有契约）/ **L-R21-6**（本轮不做 → R22）；任务板上 **`task-88`（Dev）/ `task-89`（QA，`blocked_by task-88`）/ `task-90`（PM 裁决）**，规划 = `task-87`。
+> **与 §7 / §12.1 的关系**：本节**不新增阶段**，只是把 §12.1 的 **P1 行**展开成**可判定的关闭判据**；**P2-a（真链小额演练，唯一必须真花钱的批准点）/ P2-b / P3 / P4 一律不在本轮**（需用户逐次批准）。
+> **不变量（每步都必须保持）**：mock/manual 绝不声称链上已验证；缺哈希显示「未上链 / 待验证」；**绝不伪造哈希**；幂等两键不变（`scripts/lib/economy.mjs:258` 正向 `<orderId>:<type>` + `:376` 退款反做 `<orderId>:refund:<type>`）；页面 / DSL 零链地址与代币符号（REQ-023）。
+
+### 14.1 背景与范围
+
+**背景**：阶段一（Round 17）已证实 **按哈希查交易可行**（4 个真实 beta 哈希 `getTx` 全部 `info != null`）、**未知哈希返回 `{"code":"OK","info":null}` 而非报错**、**余额只能走 `getAccountTokens`**（`state.balance` 为 `null`）、**`nonce` 可读**（§10.3:445-447）、**beta 无可用确认深度**（`height/index` 恒 0）、**`listTransactions` 是真正的回找入口**。但**订单 / 结算记录今天没有任何「链上对账」路径** —— `world/settlement.yaml:17` 有 `transactionHash` 字段，`scripts/lib/economy.mjs:239/:268/:387` 一律写 **空串**；`world/order.yaml` 只有 `paymentRef`。**PM 轮初只读实测**（[backlog](../../backlog.md)「本轮：Round 21」→「PM 现状盘点」G8–G11）：`scripts/**` 内 `order verify` / `settlement reconcile` / `reconcile` **零命中**、`scripts/lib/chain-orders.mjs` **不存在**、live `economy/orders` 目录 **不存在**（`LIST_ERROR exec Path not found: /app/arcblog/economy/orders`）、live `economy/settlements` **2 条且 `transactionHash:""`**。
+
+**做（范围）**：
+
+1. 新增 `scripts/lib/chain-orders.mjs`（**只读部分**）：链上事实读取 + **四分类**判定 + 只读白名单 guard；不写任何记录。
+2. `scripts/arcblog-economy.mjs` 新增**只读**子命令：
+   - `order verify [--id <orderId>|--order <orderId>] [--tx-hash <hash>] [--json]` —— 单条订单 / 单笔哈希对账；
+   - `settlement reconcile [--order <orderId>] [--all] [--limit <n>] [--json]` —— 批量对账结算记录。
+3. **报告 = 计数 + 逐条**（V4）；`mismatch` 附**差异明细**并**只标记不改写**。
+4. **只读自证**：脚本内**白名单 guard**（R1）+ 输出调用清单 / 零写入声明（V3）；用既有 **4 个真实哈希**做回归（V1①）。
+5. 既有 `scripts/arcblog-economy.test.mjs` **仅追加**用例（**不新增测试文件**、不动 `FAST_TESTS`）。
+
+**明确不做（P1 内）**：
+
+1. **不改** `order pay` / `order refund` / `tip create` / `settle` 的语义与参数（P1 = 纯新增只读命令）。
+2. **不写任何记录**：`mismatch` 只标记；**不改** `world/**`（`world/order.yaml` 不加 `txHash`/`txStatus`/`lastCheckedAt`，`world/settlement.yaml` 不变）—— 那是 **P2 的加法**，需 Lead 授权 + `.gate-lock` + 定向单跑。
+3. **不发任何交易**：无 `transfer` / `send*` / 广播；**零资金**；`mismatch` 的验证**只能用合成样本**（标注 `SYNTHETIC`，不落库、不伪造哈希）。
+4. **不做 P4 的按钮化 / UI**：`?page=orders` / `?page=ledger` 本轮不动（与 REQ-019 批次协调，P1 定稿后另议）。
+5. **不做** P2-a 真链小额演练（**唯一必须花钱的批准点**）、P2-b 链上退款、P3 链上支付（§44）。
+6. **不跑** `arc space sync --mirror` / `arc space rm`；**不得对 live `config/chain-intents` 调用 `run` / `watch`**（那条 `pending` 会触发真实链写）。
+7. **不改** spec / checklist 状态列 / `arc-contracts.md`；**不新增测试文件**；**不跑全量 `npm run test:live`**。
+8. **不 `git commit` / `git push` / `git reset --hard` / `git add -A`**；**不删** `node.key` / `.env.local`。
+
+### 14.2 四分类定义（**唯一口径，不得自创第五类**）
+
+> **判定顺序固定**：先判「是否有哈希」→ 再判「链上是否存在」→ 最后判「字段是否一致」。**存在性必须用 `info != null`**（§13 候选 #1：平台对未知哈希返回 `code:"OK"` + `info:null`，用「调用成功」判存在会把任何乱码哈希当成已上链）。
+
+| 分类 | 判定条件（唯一口径） | 输出要求 |
+| ---- | -------------------- | -------- |
+| **`verified`** | 记录**有哈希** 且 `getTx(hash).info != null` 且**字段一致**：① `info.hash` 与查询哈希逐字相等；② 内层 **`info.code === "OK"`**；③ **金额 / 资产**一致（`info.receipts[].changes[].value` 为最小单位字符串，结合 `info.tokenSymbols[].decimal` 折算后与记录 `amount` / `asset` 对齐）；④ **双方**一致（⚠️ `revoke_stake` / `claim_stake` 的 `sender` / `receiver` 为**空串**，事实在 `receipts[].changes[]`，**必须**以 receipts 为准；§13 候选 #5）；⑤ 不得使用 `height`/`index` 做「确认深度」判据（beta 恒 0，§13 候选 #4） | 列出实际核到的字段值 + 依据字段名 |
+| **`mismatch`** | 记录**有哈希**、`info != null`，但上述 ①②③④ 任一**不符** | **只标记 `mismatch`** + **差异明细**（字段名 / 记录值 / 链上值）；**绝不改写任何记录**（`getTx` 是只读 query）；**不得**把 `mismatch` 说成「未上链」，也**不得**说成「已验证」 |
+| **`not-on-chain`** | 记录**有哈希**，但 `getTx(hash).info === null`（**HTTP 层仍 `code:"OK"`**） | 输出「**未上链 / 待验证**」；**不得**写成「查询失败」或「已上链」；mock 残留哈希（如 `0xte32482c…`）落此类 |
+| **`no-hash`** | 记录**没有哈希**（字段缺失或空串，如 live `settlement.transactionHash === ""`） | 输出「**未上链 / 待验证（无哈希）**」；**不得**伪造哈希、**不得**把它计入 `verified`；可给出「缺哈希时的回找建议」（`listTransactions` 按账户 / 方向 / 类型 + 金额 + 时间，§13 候选 #7）**但不得声称已回找到** |
+
+**计数自洽**：`verified + mismatch + not-on-chain + no-hash == total`（total = 本次扫描的记录数 / 查询目标数）；四类整数打印在报告首部。
+
+### 14.3 关闭判据（**V1–V4 + R1**；QA 逐条判，缺一条即不放行）
+
+> **证据形态 = 原始 CLI 输出 + 链端点 / AFS 原始返回**（`arc-contracts.md §29.4`：toast 不是证据）。**每个「已验证」必须附真实命令 + 真实输出**；做不到的写「**受限未验证 + 原因**」。
+> **硬前提（L-R21-3）**：所有「已上链」结论只能来自**只读 query**；出现任何 `send*` / 广播 / 资金动作 → **判 fail 并升级 Lead**。完整可执行写法另见 [backlog](../../backlog.md)「本轮：Round 21」→「REQ-021 P1 关闭判据」。
+
+| # | 判据 | 验证方式（可执行） |
+| - | ---- | ------------------ |
+| **V1** | **四分类正确** | 四类**各 ≥1 条真实 / 已标注样本**：① `verified` = `node/factories.json` 的 `nodes.studio.{acquireTx,stakeTx,revokeTx,claimTx}` 4 个真实 beta 哈希（PM 轮初实测值：`ABDBD742…` / `0C2D0498…` / `E9971795…` / `631F210A…`）；② `not-on-chain` = `nodes.hub.acquireTx`（`0xte32482c95fb67c26b0834619c44ac321b5428e`，`adapter:"mock"`）→ `{"code":"OK","info":null}`；③ `no-hash` = live `economy/settlements/{tip-1790161886,unattr2-order-1790162193}.json`（`transactionHash:""`）；④ `mismatch` = **构造**的合成样本（显式 `SYNTHETIC` 标注、不落库、不伪造哈希）→ 分类 + 差异明细；**计数自洽** `verified+mismatch+not-on-chain+no-hash == total`；**存在性禁止**用「调用成功」判定 |
+| **V2** | **mock / manual 下不谎报** | adapter 为 `mock` / `manual`，或记录 / 节点被标 `simulated:true`（`node/factories.json` 的 `nodes.hub`：`adapter:"mock"`、`simulated:true`）→ 输出「**未上链 / 待验证**」，**不得**出现 `verified`；全量输出（含 `--json`）grep `链上已验证 / 已确认 / 已上链` → **命中 0**（唯一允许的命中是**否定式自证句**，须逐条列出）；**不得伪造哈希**；缺哈希必须显示「未上链 / 待验证」 |
+| **V3** | **只读自证（调用清单无 `send*` + 链上窗口 / 余额 / nonce 前后一致或说明不适用）** | ① **调用清单**逐条列出实际调用的 client 方法，**全部属只读集合**（`getTx` / `getAccountTokens` / `getAccountState` / `listTransactions` …）；**无** `send*`（`getTxSendMethods()` 的 38 个**一律不出现**）、**无** `transfer` / `sendTx` / 广播；② **前后一致**：运行前后各取一次 `getAccountTokens({address})` 余额 + `getAccountState({address}).nonce`（阶段一实测 `nonce` 可读，§10.3:445-447）→ **逐值相同**；链上窗口交易数（`listTransactions`）**不增加**；③ **不适用项显式说明**（如无网关 / 无资金 / 无订单记录 → 写「**不适用 + 原因**」，**不得**留空当已验证）；④ 输出 **`changedRecords: []`** 或等价的「零写入」声明；⑤ `node/factories.json` 与 `world/**` **逐字节不变**（`sha256` 或 `diff`）；⑥ 私钥 / Mnemonic **不打印、不落盘** |
+| **V4** | **报告可读（计数 + 逐条）** | 默认**人可读**：总计数（四类 + `total`）+ **逐条**（记录类型 / 来源路径 / `id`、哈希或「**无哈希**」、分类、依据字段）；`--json` 输出**机读**同构；`mismatch` 必附**差异明细**（字段名 / 记录值 / 链上值）；**缺数据不得崩**：live `economy/orders` **目录目前不存在**（PM 实测 `LIST_ERROR exec Path not found: /app/arcblog/economy/orders`）→ 必须如实报告「0 条 / 目录缺失」并给出明确的退出码语义（口径由 Dev 定，**须在结果里写清**）；单笔 `--tx-hash` 路径与批量路径都要能跑 |
+| **R1** | **（脚本内）只读白名单 guard** | 脚本内定义**只读方法白名单**并**运行期断言**：任何非白名单 client 调用 → **fail-closed**（抛错 + 非零退出），**不得**依赖「我们没写 send」的自述；QA **独立复核源码**并**触发一次非白名单调用**（测试替身 / 注入）证明其真的 fail-closed；不能触发时**写「受限未验证 + 原因」** |
+
+### 14.4 与 `arc-contracts.md` / `docs/error-codes.md` 的关系
+
+- 本节的所有平台事实沿用阶段一已实测的 §13 候选 #1 / #3 / #4 / #5 / #7（**不新造 API**；spec §150）。
+- A8 规则表已提议 `CHAIN_TIMEOUT` / `CHAIN_MISMATCH` 两个新码（**阶段一未落码**）。P1 **是否落 `CHAIN_MISMATCH`** 由 Dev 在结果里说明：**若落码 → 必须同步登记 `docs/error-codes.md` 的改动请求给 Lead**（PM 不写该文件）；若不落码 → 用既有 `VALIDATION` / `CHAIN_UNAVAILABLE` 并在报告里写清。
+
+### 14.5 依赖与写范围
+
+| 依赖 / 写范围 | 内容 |
+| --- | --- |
+| **写范围（Dev `task-88`）** | `scripts/lib/chain-orders.mjs`（**新，只读**）、`scripts/arcblog-economy.mjs`（**只加只读子命令**）、既有 `scripts/arcblog-economy.test.mjs`（**仅追加用例**）、`docs/team/.gate-lock`（临时） |
+| **不写** | `world/**`、`.aup/**`、`blocklet.yaml`、`pages/**`、`.web/**`、`docs/ArcBlog-*`（spec / checklist / arc-contracts） |
+| **定向单跑** | `.gate-lock` 下 `npm run test:file -- scripts/arcblog-economy.test.mjs`（**live**）；**跑完删锁** |
+| **前置（已具备）** | §10.2 / §10.3 字段形状已确认；4 个真实哈希可作回归样本；`arc-contracts §29.4` 证据口径；§13 候选 #1/#3/#4/#5/#7 |
+| **前置（环境）** | 只读链端点可达（阶段一已实测 `CHAIN_UNAVAILABLE` fail-closed 行为）；**不需要** wallet mnemonic 之外任何写权限；**不需要**资金 |
+| **同轮耦合** | 与 REQ-019 第三批同属 `task-88` → **同人串行**；写范围不重叠（`.aup/**` ↔ `scripts/**`） |
+| **门** | `arc dsl validate --json`（`issues: []`）+ `npm test`（**35/35**）+ `arc dsl generate --check` + `arc blocklet build`（同轮因 REQ-019 改了 `.aup` → 必跑）+ `node scripts/arcblog-console-nav.mjs --check` + `diff -r .aup dist/.aup` |
+
+### 14.6 结果记录（**Round 21 轮末已回填**：Dev `task-88` → QA `task-89` → PM `task-90`，2026-09-28）
+
+> **PM 判定 = 达标（放行）**：**V1–V4 + R1 逐条通过**。四分类各 ≥1 样本、计数自洽；`mismatch` **只标记不改写**；**mock/manual 下不谎报**（禁用措辞命中 0）；**只读自证成立**（调用清单无 `send*`、余额 / `nonce` / 窗口 / 记录逐字节不变、guard 在**真实 `@ocap/client` 实例**上 9/9 fail-closed）；**零链写、零资金 = 未发现任何真实交易**（L-R21-3 红线成立）。**唯一残留 = [BUG-058](../../bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md)（P3 机读字段语义）→ R22 修**，不影响任一条判据成立。**P1 = 只读**，**不改变**「§44 支付仍 🟡 / §43 结算已 ✅」的清单状态。**历史原文不改写。**
+
+| 项 | 状态 | 证据 / 备注 |
+| -- | ---- | ----------- |
+| **V1 四分类** | ✅ **通过** | ① `verified`：`node/factories.json` 的 `nodes.studio` 4 个真实 beta 哈希逐条 `order verify --tx-hash … --adapter ocap --json` → **4/4 `verified`**（`info != null` + `info.hash` 逐字相等 + `info.code:"OK"`）；② `not-on-chain`：mock 残留 `0xte32482c…` → `queried:true` + `info:null` → **`not-on-chain`**（不是「查询失败」、不是「已上链」）；③ `no-hash`：live `economy/settlements` **20 条**全 `transactionHash:""` → 20/20 `no-hash`；④ `mismatch`：**合成样本**（真哈希 + `--expect-amount 999`，输出显式 `SYNTHETIC`、不落库、不伪造哈希）→ `mismatch` + `findings[{field:"amount", record:"999", chain:"1"}]` +「the record was NOT rewritten」；⑤ **计数自洽**：`verified+mismatch+not-on-chain+no-hash == total` 在全部运行中 `countsConsistent:true`；⑥ **存在性判据 = `info != null`**（乱码哈希 → `not-on-chain` exit 0）。**受限 U2**：`mismatch` 只有合成样本（live 记录全无哈希） |
+| **V2 mock 不谎报** | ✅ **通过** | 默认 adapter（`mock`）：`chain.simulated=true`、`queried:false`、`totals.verified:0`、`readOnly.methods:[]`，20/20 行输出「**未上链 / 待验证（no-hash）**」；`nodes.hub`（`adapter:"mock"`/`simulated:true`）哈希经 `--adapter ocap` 查询 → `not-on-chain`，**无一处 `verified`**；全量输出（含 `--json`）grep `链上已验证` / `已确认` / `已上链` = **0 / 0 / 0**（python3 复核，同文件 `未上链` 命中 20 → 排除假阴）；真实 `verified` 用例的唯一中文标签是「**链上一致（verified）**」，**未使用被禁措辞**；**无伪造哈希** |
+| **V3 只读自证** | ✅ **通过** | ① **调用清单**实测只出现 `getTx` / `getAccountTokens` / `getAccountState`（+ QA 独立探针的 `listTransactions`），**无任何 `send*` / `transfer` / 广播**；`grep -rnE "\b(send[A-Za-z]*\|transfer\|broadcast)\s*\(" scripts/*.mjs scripts/lib/*.mjs`（去测试）只命中既有 `scripts/lib/chain.mjs:822 sendStakeTx`（node-NFT 适配器，与本命令无关）；② **前后指纹**：余额 `16154907215234937951`、`nonce` `1790498079479`、窗口 `total 188` **逐值相同**；③ 不适用项写「**不适用 + 原因**」（mock：`note` 明写未查链）——**但机读字段 `equal:true` 与之矛盾 → [BUG-058](../../bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md)**；④ `changedRecords: []` 全部成立；⑤ `node/factories.json` 与 `config/chain-intents/pending.json` 的 sha256 **前后逐字节相同**，10 个 AFS 目录**全 SAME、零增删**；⑥ 未打印 / 未落盘任何私钥或 Mnemonic |
+| **V4 报告可读** | ✅ **通过** | 人读模式：首部四类计数 + `counts consistent` + 逐条（`kind` / `id` / 哈希或「无哈希」/ 分类 / 依据）；`--json` 同构；`mismatch` 附差异明细；**缺数据不崩**：`economy/orders` 目录缺失 → `order verify` 无目标 `VALIDATION` exit 1、未知订单 `NOT_FOUND` exit 1、`--order`+`--all` 互斥 `VALIDATION` exit 1、未知结算 `0 条 + note` exit 0；**退出码语义已在 `--help` 写明（0 = 产出报告 / 1 = 命令无法运行）** |
+| **R1 只读 guard** | ✅ **通过（QA 在真实 client 上独立触发）** | 白名单常量 `["getTx","getAccountTokens","getAccountState","listTransactions"]`；QA 探针（测试替身 + **真实 `@ocap/client` 实例**）对 `sendTx` / `transfer` / `sendTransferV3Tx` / `sendStakeTx` / `stake` / `claimStake` / `revokeStake` / `mintAsset` / `createAssetFactory` **9/9 全部 `READ_ONLY_GUARD`**，`violations` 记录 9 个方法名，**被拒调用从未到达真实 client**；`getTxSendMethods().length = 38`（真实写侧方法全部被拦） |
+| `CHAIN_MISMATCH` 落码与否 | ✅ **口径已登记（不落码）** | 实现把 `mismatch` 作为**分类**（退出码 0），**未改 `docs/error-codes.md`** —— 与 §14.4「不落码 → 用既有码并在报告里写清」一致。**若 Lead 要求落码 → 由 Lead 登记 `docs/error-codes.md`**（PM 不写该文件） |
+| **零链写 / 零资金（L-R21-3）** | ✅ **通过** | 调用点静态复核（只有三个只读方法）+ guard 实测 + 链上指纹逐值不变 + `factories.json` / `pending.json` 逐字节不变 + 6 条 chain-intents 目录 6→6 零增删；**未对 live `config/chain-intents` 调用 `run` / `watch`**；`arc space sync --mirror` / `rm` **未跑**；**出现真实交易 = 0** |
+| 定向 live 单跑 | ✅ **通过（未跑全量）** | QA 持 `.gate-lock` 串行：`arcblog-economy.test.mjs` **40/40 pass / fail 0**（原 30/30，**只增不减**）；`npm test` 内含 35/35。**未跑全量 `npm run test:live`** |
+| 新增 BUG | ✅ **已逐条裁决** | [BUG-058](../../bugs/BUG-058-reconcile-fingerprint-equal-true-when-not-captured.md)（P3，`fingerprint.equal` 空真 + `before/after` 形状不符字段名）→ **下一轮修（R22-8）**；[BUG-059](../../bugs/BUG-059-hub-ui-budget-ctrl-over-standard.md)（P3，UI 预算页债）→ **不修（显式接受页债）+ 交 Lead 决策 ratchet 语义缺口**（见 backlog 🐞 区） |
+| 受限未验证（如实登记） | ⚠️ **已登记，不当作通过** | **U2** = `mismatch` 只有合成样本（live 全部无哈希）；**U3** = 「记录自带 `paymentAdapter: mock/manual`」的**记录级**跳过查链分支无 live 样本（适配器级已实测）；**U4** = 「记录被标 `simulated:true` 不做 `verified`」的路径无 live 样本（`nodes.hub` 是 node-NFT 事实，已用 `--tx-hash` 走 `not-on-chain` 间接覆盖）；**U6** = 全量 `npm run test:live` 明文禁止；**`memo` 回读**仍为 §0 勘误后的 **U6 受限**（沿用阶段一结论） |
+
+### 14.7 下一步：P2-a 真链小额演练（**唯一花钱的批准点；需用户逐笔批准**）
+
+> **状态 = ⬜ 未批准、未派发**。**P1（只读）已放行，P2-a 是阶段二里第一笔真正动钱的步骤**。**在用户逐笔书面批准之前，任何人不得发起交易**（L-R17-2 / L-R21-3 同口径：出现未经批准的真实交易 = 判 fail 并升级）。**R22 = 收口轮，默认不含 P2-a**（Lead L-R21-6）；若用户在 R22 期间批准，应作为**独立窗口**执行，不并入收口轮。
+
+**逐笔批准必须覆盖的九个要素（缺一不批）**：
+
+| # | 要素 | 说明 |
+| - | ---- | ---- |
+| 1 | **金额** | 最小单位（`value` 字符串）+ 人类可读折算；**单笔上限**；**累计上限**（本次窗口所有笔数之和） |
+| 2 | **资产 / 代币** | 代币 id + `decimal`（阶段一实测余额只能走 `getAccountTokens`；`getAccountState().state.balance` 为 `null`） |
+| 3 | **收款人** | 目标 DID / 地址原文（**不得**由脚本自行推导或从记录里取默认值） |
+| 4 | **付款账户** | 节点钱包地址（阶段一实测 `z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a`），确认它就是要动的那一个 |
+| 5 | **链环境** | `ARCBLOG_CHAIN_ENV=beta`（三件套 `network`+`chainHost`+`tokenId` 齐备、fail-closed 已实测）；**主网另需单独批准** |
+| 6 | **预期链上效果 + 验收读法** | 预期交易类型与 memo；**验收 = `getTx(<hash>).info != null` 且字段与记录一致**（复用 P1 的四分类；`verified` 的判定口径不变） |
+| 7 | **失败 / 超时口径** | 广播失败、超时、重复提交（幂等键 = 既有两键 `<orderId>:<type>` / `<orderId>:refund:<type>`，`scripts/lib/economy.mjs:258/:376`）分别怎么记录、要不要重试 |
+| 8 | **回滚口径（必须书面写明）** | **链上交易不可撤回**：不存在「链上回滚」，只能 ① 记账冲正（`<orderId>:refund:<type>` + `reverses`）② 反向转账（**需另一次批准**）。**批准时必须明确接受「不可逆」** |
+| 9 | **执行者 / 见证 / 留档** | 谁执行、在哪个实例、交易哈希写到哪里（`node/factories.json` / settlement `transactionHash` / 报告）与归档路径；**私钥 / Mnemonic 不打印、不落盘仓库** |
+
+**前置（先做再花钱，均为只读或本地）**：① P2 的**记录加法**（`world/order.yaml` / `world/settlement.yaml` 加 `txHash` / `txStatus` / `lastCheckedAt`）需 Lead 授权 + `.gate-lock` + 定向单跑（§14.1 明确不做）；② `CHAIN_TIMEOUT` / `CHAIN_MISMATCH` 是否落 `docs/error-codes.md` 由 Lead 决定；③ 先跑一次「**dry-run 叙事**」：用 P1 的只读命令把「即将发生什么」写成可核对清单，再请用户批准。

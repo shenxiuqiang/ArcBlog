@@ -1,0 +1,100 @@
+page=dashboard {"page":"dashboard","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":1350}
+page=posts {"page":"posts","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":3921}
+page=pages {"page":"pages","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":461}
+page=compose {"page":"compose","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":612}
+page=heroes {"page":"heroes","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":861}
+page=categories {"page":"categories","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":1471}
+page=tags {"page":"tags","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":2559}
+page=seo {"page":"seo","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":226}
+page=feeds {"page":"feeds","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":232}
+page=appearance {"page":"appearance","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":504}
+page=operations {"page":"operations","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":771}
+page=hub {"page":"hub","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":4184}
+page=media {"page":"media","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":2488}
+page=agents {"page":"agents","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":2940}
+page=orders {"page":"orders","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":40528}
+page=policy {"page":"policy","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":1957}
+page=access {"page":"access","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":1225}
+page=ledger {"page":"ledger","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":36436}
+page=factory {"page":"factory","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":2421}
+page=general {"page":"general","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":2261}
+page=diagnostics {"page":"diagnostics","activeData":1,"activeAria":1,"sessionFail":false,"bodyLen":5842}
+== factory zh ==
+{
+ "url": "http://arcblog.localhost:4939/?page=factory&locale=zh",
+ "lang": "zh",
+ "sessionFail": false,
+ "authenticated": true,
+ "standingNoteLines": [
+  "凡是入队的链上意图都会出现在上方列表里（最早在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。"
+ ],
+ "oldEmptyStateLines": [],
+ "queueRows": [],
+ "queueActionButtons": [
+  "质押"
+ ]
+}
+== factory AFS vs page (first 6) ==
+[
+ {
+  "name": "intent-mujk7d7z-2hv8.json",
+  "action": "acquire",
+  "status": "rejected",
+  "foundOnPage": false,
+  "pageRow": null
+ },
+ {
+  "name": "intent-mujk7tb0-asgd.json",
+  "action": "acquire",
+  "status": "rejected",
+  "foundOnPage": false,
+  "pageRow": null
+ },
+ {
+  "name": "intent-mujk8d8h-3lis.json",
+  "action": "acquire",
+  "status": "applied",
+  "foundOnPage": false,
+  "pageRow": null
+ },
+ {
+  "name": "intent-mujkc8nv-7e3r.json",
+  "action": "acquire",
+  "status": "rejected",
+  "foundOnPage": false,
+  "pageRow": null
+ },
+ {
+  "name": "intent-mujkccy6-r1nd.json",
+  "action": "acquire",
+  "status": "pending",
+  "foundOnPage": false,
+  "pageRow": null
+ },
+ {
+  "name": "pending.json",
+  "action": "claim",
+  "status": "applied",
+  "foundOnPage": false,
+  "pageRow": null
+ }
+]
+== factory en ==
+{
+ "url": "http://arcblog.localhost:4939/?page=factory",
+ "lang": "en",
+ "sessionFail": false,
+ "authenticated": true,
+ "standingNoteLines": [
+  "Every queued chain intent appears in the list above, oldest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet."
+ ],
+ "oldEmptyStateLines": [],
+ "queueRows": [],
+ "queueActionButtons": [
+  "Stake",
+  "Revoke (withdraw)",
+  "Claim back"
+ ]
+}
+== teardown == {"opened":2,"leftOpen":[]}
+PROBE_DONE

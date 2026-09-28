@@ -1,0 +1,391 @@
+== B1 folded == [object Object]
+== B1 register confirm dialog == {"clicked":"clicked","dialogOpen":true,"dialogText":"提交这条申请？\n入队一条意图：由本机 worker 向该 Hub 提交申请（通过前 relation 保持 applied）。本页自身不写收录关系。\nCancel\n提交申请","dialogButtons":["Cancel","提交申请"]}
+== B1 register confirmed == {"dialogOpen":true,"text":"提交这条申请？\n入队一条意图：由本机 worker 向该 Hub 提交申请（通过前 relation 保持 applied）。本页自身不写收录关系。\nCancel\n提交申请","buttons":["Cancel","提交申请"],"confirmLabel":"提交申请","dialogGone":true}
+== B2 intent record raw ==
+{
+  "id": "2026-09-28T19:26:08.360Z",
+  "action": "register",
+  "hubDid": "did:key:zR21QA1790623557497",
+  "endpoint": "https://hub.r21qa.example.com",
+  "update": "",
+  "status": "pending",
+  "message": "",
+  "changed": [],
+  "counts": null,
+  "elapsedMs": null,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:26:08.360Z"
+}
+== H1 rebuild confirmed == {"dialogOpen":true,"text":"重建内容索引？\n入队一条意图。随后由本机 worker 执行全量索引扫描——可能需要数十秒，并会 upsert 或写入墓碑。\nCancel\n重建索引","buttons":["Cancel","重建索引"],"confirmLabel":"重建索引","dialogGone":true}
+== H1 pending intent raw ==
+{
+  "id": "2026-09-28T19:26:13.973Z",
+  "action": "indexRebuild",
+  "hubDid": "",
+  "endpoint": "",
+  "update": "",
+  "status": "pending",
+  "message": "",
+  "changed": [],
+  "counts": null,
+  "elapsedMs": null,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:26:13.973Z"
+}
+== apply #1 ==
+{
+  "ok": true,
+  "action": "hub-apply",
+  "applied": 3,
+  "intents": [
+    {
+      "id": "2026-09-28T19:25:08.116Z",
+      "action": "register",
+      "target": "did:key:zR21QA1790623497292",
+      "status": "applied",
+      "changed": [
+        "direction",
+        "endpoint",
+        "hubDid",
+        "id",
+        "registeredAt",
+        "relation",
+        "removedAt",
+        "removedReason",
+        "status",
+        "sync",
+        "updatedAt"
+      ],
+      "elapsedMs": 912,
+      "appliedAt": "2026-09-28T19:26:20.858Z",
+      "message": "register: hub did:key:zR21QA1790623497292 registered (id c8d72ad6e0a1af67, relation applied, direction studio)"
+    },
+    {
+      "id": "2026-09-28T19:26:08.360Z",
+      "action": "register",
+      "target": "did:key:zR21QA1790623557497",
+      "status": "applied",
+      "changed": [
+        "direction",
+        "endpoint",
+        "hubDid",
+        "id",
+        "registeredAt",
+        "relation",
+        "removedAt",
+        "removedReason",
+        "status",
+        "sync",
+        "updatedAt"
+      ],
+      "elapsedMs": 934,
+      "appliedAt": "2026-09-28T19:26:22.117Z",
+      "message": "register: hub did:key:zR21QA1790623557497 registered (id c4fb57d0efe3cb47, relation applied, direction studio)"
+    },
+    {
+      "id": "2026-09-28T19:26:13.973Z",
+      "action": "indexRebuild",
+      "target": "(full content index)",
+      "status": "applied",
+      "changed": [
+        "elapsedMs",
+        "published",
+        "skipped",
+        "tombstoned",
+        "upserted"
+      ],
+      "counts": {
+        "published": 3,
+        "upserted": 0,
+        "skipped": 3,
+        "tombstoned": 0,
+        "elapsedMs": 18314
+      },
+      "elapsedMs": 18314,
+      "appliedAt": "2026-09-28T19:26:40.743Z",
+      "message": "index rebuild: scanned 3 published post(s) — upserted 0, skipped 3, tombstoned 0 in 18314ms (this is a full scan, run by the local worker)"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+== B2 terminal intent ==
+{
+  "id": "2026-09-28T19:26:08.360Z",
+  "action": "register",
+  "hubDid": "did:key:zR21QA1790623557497",
+  "endpoint": "https://hub.r21qa.example.com",
+  "update": "",
+  "status": "applied",
+  "message": "register: hub did:key:zR21QA1790623557497 registered (id c4fb57d0efe3cb47, relation applied, direction studio)",
+  "changed": [
+    "direction",
+    "endpoint",
+    "hubDid",
+    "id",
+    "registeredAt",
+    "relation",
+    "removedAt",
+    "removedReason",
+    "status",
+    "sync",
+    "updatedAt"
+  ],
+  "counts": null,
+  "elapsedMs": 934,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:26:08.360Z",
+  "appliedAt": "2026-09-28T19:26:22.117Z",
+  "updatedAt": "2026-09-28T19:26:22.117Z"
+}
+== H1 terminal intent ==
+{
+  "id": "2026-09-28T19:26:13.973Z",
+  "action": "indexRebuild",
+  "hubDid": "",
+  "endpoint": "",
+  "update": "",
+  "status": "applied",
+  "message": "index rebuild: scanned 3 published post(s) — upserted 0, skipped 3, tombstoned 0 in 18314ms (this is a full scan, run by the local worker)",
+  "changed": [
+    "elapsedMs",
+    "published",
+    "skipped",
+    "tombstoned",
+    "upserted"
+  ],
+  "counts": {
+    "published": 3,
+    "upserted": 0,
+    "skipped": 3,
+    "tombstoned": 0,
+    "elapsedMs": 18314
+  },
+  "elapsedMs": 18314,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:26:13.973Z",
+  "appliedAt": "2026-09-28T19:26:40.743Z",
+  "updatedAt": "2026-09-28T19:26:40.743Z"
+}
+== B2 hub show after apply ==
+{
+  "ok": true,
+  "registration": {
+    "id": "c4fb57d0efe3cb47",
+    "hubDid": "did:key:zR21QA1790623557497",
+    "endpoint": "https://hub.r21qa.example.com",
+    "status": "registered",
+    "relation": "applied",
+    "direction": "studio",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T19:26:21.490Z",
+    "updatedAt": "2026-09-28T19:26:21.490Z",
+    "freshness": null,
+    "sync": {
+      "status": "never",
+      "lastSync": "",
+      "lastVersion": null,
+      "lastHash": "",
+      "lastError": ""
+    }
+  }
+}
+== H1 QA rerun (wall 20174ms) ==
+{
+  "id": "r21qa-rebuild2-1790623557497",
+  "action": "indexRebuild",
+  "hubDid": "",
+  "endpoint": "",
+  "update": false,
+  "status": "applied",
+  "message": "index rebuild: scanned 3 published post(s) — upserted 0, skipped 3, tombstoned 0 in 18299ms (this is a full scan, run by the local worker)",
+  "changed": [
+    "elapsedMs",
+    "published",
+    "skipped",
+    "tombstoned",
+    "upserted"
+  ],
+  "counts": {
+    "published": 3,
+    "upserted": 0,
+    "skipped": 3,
+    "tombstoned": 0,
+    "elapsedMs": 18299
+  },
+  "elapsedMs": 18299,
+  "requestedVia": "cli",
+  "requestedBy": "did:key:zR21QA",
+  "requestedAt": "2026-09-28T19:26:42.978Z",
+  "updatedAt": "2026-09-28T19:27:03.454Z",
+  "appliedAt": "2026-09-28T19:27:03.453Z"
+}
+== H2 empty DID ==
+{
+  "id": "2026-09-28T19:27:05.903Z",
+  "action": "add",
+  "hubDid": "",
+  "endpoint": "",
+  "update": "",
+  "status": "rejected",
+  "message": "add: a hub did is required (hubDid) — no data changed — no data changed",
+  "changed": [],
+  "counts": null,
+  "elapsedMs": null,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:27:05.903Z",
+  "code": "VALIDATION",
+  "updatedAt": "2026-09-28T19:27:11.255Z"
+}
+== H2 malformed DID ==
+{
+  "id": "2026-09-28T19:27:14.317Z",
+  "action": "register",
+  "hubDid": "not-a-did",
+  "endpoint": "",
+  "update": "",
+  "status": "rejected",
+  "message": "register: hub did \"not-a-did\" is not a recognizable DID — expected did:<method>:<id> or the platform's z… account form (text shape only; this check does not resolve the DID on any chain) — no data changed",
+  "changed": [],
+  "counts": null,
+  "elapsedMs": null,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:27:14.317Z",
+  "code": "VALIDATION",
+  "updatedAt": "2026-09-28T19:27:19.346Z"
+}
+== H2 duplicate ==
+{
+  "id": "2026-09-28T19:27:23.067Z",
+  "action": "register",
+  "hubDid": "did:key:zR21QA1790623557497",
+  "endpoint": "",
+  "update": "",
+  "status": "rejected",
+  "message": "hub already registered: did:key:zR21QA1790623557497 (relation applied, direction studio, updated 2026-09-28T19:26:21.490Z) — pass update to overwrite (CLI: --update); no data changed",
+  "changed": [],
+  "counts": null,
+  "elapsedMs": null,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:27:23.067Z",
+  "code": "CONFLICT",
+  "updatedAt": "2026-09-28T19:27:28.709Z"
+}
+== H2 update ==
+{
+  "id": "2026-09-28T19:27:31.781Z",
+  "action": "add",
+  "hubDid": "did:key:zR21QA1790623557497",
+  "endpoint": "https://hub.updated.example.com",
+  "update": "yes",
+  "status": "applied",
+  "message": "add: hub did:key:zR21QA1790623557497 registered (id c4fb57d0efe3cb47, relation indexed, direction hub) — existing record updated",
+  "changed": [
+    "direction",
+    "endpoint",
+    "relation",
+    "updatedAt"
+  ],
+  "counts": null,
+  "elapsedMs": 931,
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T19:27:31.781Z",
+  "appliedAt": "2026-09-28T19:27:38.333Z",
+  "updatedAt": "2026-09-28T19:27:38.333Z"
+}
+== B6 re-apply (all terminal → noop) ==
+{
+  "ok": true,
+  "action": "hub-apply",
+  "applied": 0,
+  "intents": [],
+  "queueEntryIgnored": 0
+}
+== B3 page queue rows ==
+{"rows":[],"legend":"pending = 已入队 · applied = 数据已改变 · rejected = 已拒绝，零改动 · noop = 无需执行","standingNote":true}
+== B1 unfolded == {"before":{"syncCard":false,"registerCard":false},"after":{"syncCard":true,"registerCard":true,"cmdCount":11,"hideButton":true}}
+== regression Approve/Reject/Purge ==
+{
+  "rejectConfirm": "{\"error\":\"row not found\",\"rows\":[]}",
+  "afterReject": {
+    "id": "c4fb57d0efe3cb47",
+    "hubDid": "did:key:zR21QA1790623557497",
+    "endpoint": "https://hub.updated.example.com",
+    "status": "registered",
+    "relation": "indexed",
+    "direction": "hub",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T19:26:21.490Z",
+    "updatedAt": "2026-09-28T19:27:37.707Z",
+    "freshness": null,
+    "sync": {
+      "status": "never",
+      "lastSync": "",
+      "lastVersion": null,
+      "lastHash": "",
+      "lastError": ""
+    }
+  },
+  "approveConfirm": "{\"error\":\"row not found\",\"rows\":[]}",
+  "afterApprove": {
+    "id": "c4fb57d0efe3cb47",
+    "hubDid": "did:key:zR21QA1790623557497",
+    "endpoint": "https://hub.updated.example.com",
+    "status": "registered",
+    "relation": "indexed",
+    "direction": "hub",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T19:26:21.490Z",
+    "updatedAt": "2026-09-28T19:27:37.707Z",
+    "freshness": null,
+    "sync": {
+      "status": "never",
+      "lastSync": "",
+      "lastVersion": null,
+      "lastHash": "",
+      "lastError": ""
+    }
+  },
+  "purgeConfirm": "{\"error\":\"row not found\",\"rows\":[]}",
+  "afterPurge": {
+    "hubShowStatus": 0,
+    "regNames": [
+      "31caa15539047182.json",
+      "42b02720d0b6bb68.json",
+      "6d86a84e377ad736.json",
+      "8133a1ea682714e5.json",
+      "c4fb57d0efe3cb47.json",
+      "c8d72ad6e0a1af67.json",
+      "e8f453792619a8f9.json"
+    ]
+  }
+}
+== B5 guest ==
+{
+  "view": {
+    "href": "http://arcblog.localhost:4939/?page=hub&locale=zh",
+    "hasLoginGate": true,
+    "sidebarRows": 0,
+    "leaksQueue": false,
+    "leaksDid": false
+  },
+  "hubIntents": {
+    "status": 403,
+    "error": "Forbidden at /instance/app/arcblog/config/hub-intents: role 'guest' is below readRole 'admin'"
+  },
+  "config": {
+    "status": 403,
+    "error": "Forbidden at /instance/app/arcblog/config: role 'guest' is below readRole 'admin'"
+  },
+  "registrations": {
+    "status": 403,
+    "error": "Forbidden at /instance/app/arcblog/hub/registrations: role 'guest' is below readRole 'admin'"
+  }
+}
+== H1 page elapsedMs ==
+{"rebuildRows":[],"elapsedLabelPresent":true}
+== teardown == {"openedTargets":2,"leftOpen":[]}
+== cleanup == {"removedIntents":["2026-09-28T19:25:08.116Z.json","2026-09-28T19:26:08.360Z.json","2026-09-28T19:26:13.973Z.json","2026-09-28T19:27:05.903Z.json","2026-09-28T19:27:14.317Z.json","2026-09-28T19:27:23.067Z.json","2026-09-28T19:27:31.781Z.json","r21qa-rebuild2-1790623557497.json"],"removedRegistrations":["c4fb57d0efe3cb47.json","c8d72ad6e0a1af67.json"],"note":"","intentsAfter":[],"regsAfter":["31caa15539047182.json","42b02720d0b6bb68.json","6d86a84e377ad736.json","8133a1ea682714e5.json","e8f453792619a8f9.json"]}
+PROBE_DONE

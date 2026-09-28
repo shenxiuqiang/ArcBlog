@@ -1,0 +1,130 @@
+ArcBlog node network layer (spec §68–§74, §109–§113)
+
+Usage:
+  node scripts/arcblog-network.mjs discovery publish [--base-url <url>] [--update]
+  node scripts/arcblog-network.mjs discovery show
+  node scripts/arcblog-network.mjs health [--publish]
+  node scripts/arcblog-network.mjs hub register --hub-did <did> [--endpoint <url>] [--update]   # §70.1 Studio 申请 → applied
+  node scripts/arcblog-network.mjs hub add --hub-did <did> [--endpoint <url>] [--update]         # §70.2 Hub 主动收录 → indexed
+  node scripts/arcblog-network.mjs hub approve --hub-did <did>     # applied → indexed
+  node scripts/arcblog-network.mjs hub reject --hub-did <did>      # applied → removed (tombstone)
+  node scripts/arcblog-network.mjs hub list
+  node scripts/arcblog-network.mjs hub refresh            # §75/§76: derive fresh/stale/never/offline
+  node scripts/arcblog-network.mjs hub show --hub-did <did>
+  node scripts/arcblog-network.mjs hub sync --hub-did <did> [--version <n>] [--hash <h>] \
+                                          [--status never|ok|stale|error] [--error <message>]
+  node scripts/arcblog-network.mjs hub remove --hub-did <did> [--purge]   # removed tombstone; --purge deletes
+  node scripts/arcblog-network.mjs hub index rebuild      # §73/§119/§120: upsert + tombstone
+  node scripts/arcblog-network.mjs hub index list
+  node scripts/arcblog-network.mjs hub index search --query <text>
+
+The console page (?page=hub) cannot compose a registration path — the record id
+is SHA-256(hubDid) and the page has no hashing primitive — so its buttons write
+ONE intent record each under
+/instance/app/arcblog/config/hub-intents (nested inside the admin-only config/
+tree, so no permission change is needed):
+  node scripts/arcblog-network.mjs request --action register --hub-did <did> [--endpoint <url>] [--update]
+  node scripts/arcblog-network.mjs request --action add --hub-did <did> [--endpoint <url>] [--update]
+  node scripts/arcblog-network.mjs request --action indexRebuild
+  node scripts/arcblog-network.mjs queue
+  node scripts/arcblog-network.mjs apply
+  node scripts/arcblog-network.mjs watch [--interval <seconds>]
+
+`queue` prints that queue (read only), `apply` / `watch` execute it, and the
+outcome (pending | running | applied | rejected | noop + reason) is written back
+onto the record — the SAME vocabulary every other queue uses
+(scripts/lib/intents.mjs, D36). A queued DID that is empty or not DID-shaped is
+rejected with a reason and zero data change (a queue-side guard, not a CLI one:
+register/add still only check non-emptiness). An already-registered hub is
+rejected as CONFLICT unless the intent explicitly asks to update. `indexRebuild`
+runs the FULL scan and writes the measured `elapsedMs` + counts back onto the
+terminal record (the page discloses that cost before queueing).
+Queue entries must be named <id>.json; any other name is reported as a
+diagnostic (`queueEntryIgnored`) and never consumed (D38/BUG-049).
+
+Options:
+  --instance <name>   target a named ARC instance (default: default instance)
+
+Relations (spec §70.3): applied | indexed | removed. Removal keeps a tombstone.
+
+Protocol: arcblog. Discovery and health are AFS records under /instance/app/arcblog/node,
+hub registrations under /instance/app/arcblog/hub/registrations. They are published as AFS
+resources rather than an HTTP API because the AUP handler owns "/" and answers
+every path with the app shell (see docs/arc-contracts.md §7); AFS is what the
+runtime's Agent Access surfaces expose. Hub statuses: registered|active|error.
+
+{
+  "at": "2026-09-28T20:12:07.406Z",
+  "d38": {
+    "queue": {
+      "ok": true,
+      "path": "/instance/app/arcblog/config/hub-intents",
+      "count": 0,
+      "intents": [],
+      "queueEntryIgnored": 1,
+      "ignored": [
+        {
+          "path": "/instance/app/arcblog/config/hub-intents/qa-r21-noext",
+          "reason": "queue entries must be named <id>.json — \"qa-r21-noext\" has no .json extension, so no worker will ever consume it (D38)"
+        }
+      ]
+    },
+    "apply": {
+      "ok": true,
+      "action": "hub-apply",
+      "applied": 0,
+      "intents": [],
+      "queueEntryIgnored": 1,
+      "ignored": [
+        {
+          "path": "/instance/app/arcblog/config/hub-intents/qa-r21-noext",
+          "reason": "queue entries must be named <id>.json — \"qa-r21-noext\" has no .json extension, so no worker will ever consume it (D38)"
+        }
+      ]
+    },
+    "badEntryStillThere": true,
+    "diagnosed": true,
+    "notConsumed": true,
+    "removed": true
+  },
+  "b6": {
+    "firstApply": {
+      "status": "applied",
+      "elapsedMs": 19798
+    },
+    "secondConsume": {
+      "status": "noop",
+      "message": "already applied at 2026-09-28T20:12:30.569Z — not executed again"
+    },
+    "recordAfter": {
+      "id": "qa-r21-noop",
+      "action": "indexRebuild",
+      "hubDid": "",
+      "endpoint": "",
+      "update": false,
+      "status": "noop",
+      "message": "already applied at 2026-09-28T20:12:30.569Z — not executed again",
+      "changed": [
+        "elapsedMs",
+        "published",
+        "skipped",
+        "tombstoned",
+        "upserted"
+      ],
+      "counts": {
+        "published": 3,
+        "upserted": 0,
+        "skipped": 3,
+        "tombstoned": 0,
+        "elapsedMs": 19798
+      },
+      "elapsedMs": 19798,
+      "requestedVia": "cli",
+      "requestedBy": "",
+      "requestedAt": "2026-09-28T20:12:09.368Z",
+      "updatedAt": "2026-09-28T20:12:31.246Z",
+      "appliedAt": "2026-09-28T20:12:30.569Z"
+    },
+    "removed": true
+  }
+}

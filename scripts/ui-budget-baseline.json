@@ -100,12 +100,12 @@
   },
   "hub": {
     "blocks": 2,
-    "cards": 4,
+    "cards": 5,
     "nested": 0,
-    "ctrl": 4,
-    "styles": 21,
-    "i18n": 45,
-    "tech": 15
+    "ctrl": 13,
+    "styles": 32,
+    "i18n": 81,
+    "tech": 25
   },
   "media": {
     "blocks": 1,

@@ -1,0 +1,48 @@
+=== hub en DOM (read-only, no clicks) ===
+{
+ "matchingLines": [
+  "node scripts/arcblog-network.mjs hub show --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+  "node scripts/arcblog-network.mjs hub sync --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zExitTest1790483262699",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zExitTest1790483262699 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zNetHub1790267735950",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zNetHub1790267735950 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zExitTest1790434702401",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zExitTest1790434702401 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zUiFresh1790348264",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zUiFresh1790348264 --status error --error <message>",
+  "Run the worker once / keep it running: node scripts/arcblog-network.mjs watch"
+ ],
+ "regexCount": 11,
+ "advancedButton": [
+  "Show advanced (CLI)"
+ ],
+ "buttons": [
+  "Apply",
+  "Index a Studio",
+  "Rebuild index"
+ ],
+ "indexCostDisclosed": true,
+ "workerNoteDisclosed": true,
+ "bodyHasSyncCard": false
+}
+left_open=[]
+
+=== B6 same intent id, different content -> CONFLICT (independent) ===
+first_request_exit=0
+{
+  "ok": false,
+  "code": "CONFLICT",
+  "error": "intent \"qa-r21-conflict\" is still pending (register did:key:zR21Conflict1); run `apply` or `watch` first, or pick another --intent-id"
+}
+second_request_exit=1
+cleanup_exit=0
+
+=== hub-intents after cleanup ===
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/config/hub-intents",
+  "count": 0,
+  "intents": [],
+  "queueEntryIgnored": 0
+}

@@ -1,0 +1,131 @@
+sendTx(existsOnClient=true) -> READ_ONLY_GUARD
+transfer(existsOnClient=true) -> READ_ONLY_GUARD
+sendTransferV3Tx(existsOnClient=true) -> READ_ONLY_GUARD
+sendStakeTx(existsOnClient=true) -> READ_ONLY_GUARD
+stake(existsOnClient=true) -> READ_ONLY_GUARD
+claimStake(existsOnClient=true) -> READ_ONLY_GUARD
+revokeStake(existsOnClient=true) -> READ_ONLY_GUARD
+mintAsset(existsOnClient=true) -> READ_ONLY_GUARD
+createAssetFactory(existsOnClient=true) -> READ_ONLY_GUARD
+violations: ["sendTx","transfer","sendTransferV3Tx","sendStakeTx","stake","claimStake","revokeStake","mintAsset","createAssetFactory"]
+getTxSendMethods().length: 38
+GraphQL request attempt #1 failed, 3 retries left. [TypeError: fetch failed] {
+  attemptNumber: 1,
+  retriesLeft: 3,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at async pRetry (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:39:14)
+      at async Promise.all (index 0)
+      at async client.getContext (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@ocap/client/lib/extension.js:185:51)
+}
+GraphQL request attempt #1 failed, 3 retries left. [TypeError: fetch failed] {
+  attemptNumber: 1,
+  retriesLeft: 3,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at async pRetry (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:39:14)
+      at async Promise.all (index 1)
+      at async client.getContext (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@ocap/client/lib/extension.js:185:51)
+}
+GraphQL request attempt #2 failed, 2 retries left. [TypeError: fetch failed] {
+  attemptNumber: 2,
+  retriesLeft: 2,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at listOnTimeout (node:internal/timers:567:9)
+      at process.processTimers (node:internal/timers:541:7)
+}
+GraphQL request attempt #2 failed, 2 retries left. [TypeError: fetch failed] {
+  attemptNumber: 2,
+  retriesLeft: 2,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at async pRetry (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:39:14)
+      at async Promise.all (index 1)
+      at async client.getContext (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@ocap/client/lib/extension.js:185:51)
+}
+GraphQL request attempt #3 failed, 1 retries left. [TypeError: fetch failed] {
+  attemptNumber: 3,
+  retriesLeft: 1,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at listOnTimeout (node:internal/timers:567:9)
+      at process.processTimers (node:internal/timers:541:7)
+}
+GraphQL request attempt #3 failed, 1 retries left. [TypeError: fetch failed] {
+  attemptNumber: 3,
+  retriesLeft: 1,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at async pRetry (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:39:14)
+      at async Promise.all (index 1)
+      at async client.getContext (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@ocap/client/lib/extension.js:185:51)
+}
+GraphQL request attempt #4 failed, 0 retries left. [TypeError: fetch failed] {
+  attemptNumber: 4,
+  retriesLeft: 0,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at listOnTimeout (node:internal/timers:567:9)
+      at process.processTimers (node:internal/timers:541:7)
+}
+failed to warmup context fetch failed
+GraphQL request attempt #4 failed, 0 retries left. [TypeError: fetch failed] {
+  attemptNumber: 4,
+  retriesLeft: 0,
+  [cause]: Error: bad port
+      at makeNetworkError (node:internal/deps/undici/undici:10797:35)
+      at mainFetch (node:internal/deps/undici/undici:12173:22)
+      at fetching (node:internal/deps/undici/undici:12160:7)
+      at fetch (node:internal/deps/undici/undici:12031:20)
+      at fetch (node:internal/deps/undici/undici:16555:10)
+      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+      at NativeGraphqlClient._doRequest (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:299:23)
+      at async pRetry (/Users/shenxiuqiang/workspace/ArcBlog/node_modules/@arcblock/sdk-util/lib/index.js:39:14)
+      at async Promise.all (index 1)
+}

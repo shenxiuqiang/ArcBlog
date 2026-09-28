@@ -1,10 +1,11 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  HUB_REGISTRATIONS_DIR,
   HUB_STATUSES,
   PROTOCOL,
   PROTOCOL_VERSION,
@@ -338,5 +339,240 @@ test('live: hub refresh persists freshness, and health summarises it', () => {
     assert.equal(run(['hub', 'refresh', '--stale-after', '0']).status, 1);
   } finally {
     run(['hub', 'remove', '--hub-did', hubDid, '--purge']);
+  }
+});
+
+// --- REQ-019 third batch: the console's Hub intent queue (§12) ---------------
+//
+// The queue is ISOLATED per run (same convention as arcblog-media.test.mjs and
+// arcblog-chain-worker.test.mjs), so this suite never reads or writes the live
+// `config/hub-intents` queue the running console is watching. The CLI module is
+// imported dynamically AFTER the env var is set because `HUB_INTENTS_DIR` is
+// resolved at module-init time.
+
+const intentStamp = Date.now();
+const HUB_QUEUE = `/instance/app/arcblog/config/hub-intents-test-${intentStamp}`;
+process.env.ARCBLOG_HUB_INTENTS_PATH = HUB_QUEUE;
+const queueEnv = { ...process.env, ARCBLOG_HUB_INTENTS_PATH: HUB_QUEUE };
+const hubCli = await import('./arcblog-network.mjs');
+
+/** Run the CLI against this suite's isolated queue. */
+function runQ(args) {
+  return spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: repoRoot, env: queueEnv });
+}
+
+/** Hub registrations this run created, so `after()` can sweep them. */
+const createdHubDids = [];
+
+after(async () => {
+  const { list, remove } = await import('./lib/arc.mjs');
+  for (const entry of list(HUB_QUEUE)) {
+    const raw = typeof entry === 'string' ? entry : entry?.path ?? entry?.id ?? entry?.key ?? '';
+    const name = String(raw).split('/').pop();
+    if (name) remove(`${HUB_QUEUE}/${name}`);
+  }
+  for (const did of createdHubDids) {
+    run(['hub', 'remove', '--hub-did', did, '--purge']);
+  }
+});
+
+test('H2②: the queue-side DID shape guard is a NEW rule and accepts both real shapes', () => {
+  // did:<method>:<id> and the platform's z… account form
+  assert.equal(hubCli.isHubDidShape('did:key:z6MkTest'), true);
+  assert.equal(hubCli.isHubDidShape('did:blocklet:arcblog'), true);
+  assert.equal(hubCli.isHubDidShape('z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a'), true);
+  // …and refuses what the CLI's own non-emptiness check would let through
+  assert.equal(hubCli.isHubDidShape('not-a-did'), false);
+  assert.equal(hubCli.isHubDidShape('did:'), false);
+  assert.equal(hubCli.isHubDidShape('did:key'), false);
+  assert.equal(hubCli.isHubDidShape(''), false);
+  assert.equal(hubCli.isHubDidShape(undefined), false);
+});
+
+test('validateIntent keeps the three console actions and fails closed on an empty DID', () => {
+  assert.throws(() => hubCli.validateIntent({ action: 'register', hubDid: '' }), /a hub did is required/);
+  assert.throws(() => hubCli.validateIntent({ action: 'add', hubDid: 'not-a-did' }), /not a recognizable DID/);
+  assert.throws(() => hubCli.validateIntent({ action: 'purge', hubDid: 'did:key:z1' }), /unknown hub intent action/);
+  // the page's approve/reject/purge actions are NOT queue actions
+  assert.throws(() => hubCli.validateIntent({ action: 'approve' }), /unknown hub intent action/);
+  assert.deepEqual(hubCli.validateIntent({ action: 'indexRebuild' }), { action: 'indexRebuild', hubDid: '', endpoint: '', update: false });
+  assert.equal(hubCli.validateIntent({ action: 'register', hubDid: 'did:key:z6MkTest', update: 'yes' }).update, true);
+});
+
+test('network CLI exposes the third-batch queue worker surface', () => {
+  const help = run(['--help']);
+  assert.equal(help.status, 0);
+  assert.match(help.stdout, /request --action register/);
+  assert.match(help.stdout, /request --action indexRebuild/);
+  assert.match(help.stdout, /arcblog-network\.mjs queue/);
+  assert.match(help.stdout, /arcblog-network\.mjs apply/);
+  assert.match(help.stdout, /arcblog-network\.mjs watch/);
+  assert.match(help.stdout, /hub-intents/);
+
+  // the CLI's OWN behaviour is unchanged: register/add still only check non-emptiness
+  const bad = runQ(['request', '--action', 'nuke']);
+  assert.equal(bad.status, 1);
+  assert.equal(json(bad.stderr).code, 'VALIDATION');
+});
+
+test('live: a malformed-DID intent ends as rejected with a reason and zero registration change (H2②)', () => {
+  const before = json(run(['hub', 'list']).stdout).count;
+  const intentId = `bad-did-${intentStamp}`;
+  const requested = runQ(['request', '--action', 'register', '--hub-did', 'not-a-did', '--intent-id', intentId, '--endpoint', 'https://hub.example.com']);
+  assert.equal(requested.status, 0, requested.stderr);
+  const pending = json(requested.stdout).intent;
+  assert.equal(pending.status, 'pending');
+  assert.equal(pending.elapsedMs, '');
+  assert.equal(pending.requestedVia, 'cli');
+
+  // the queue is visible and nothing ran yet
+  const queued = json(runQ(['queue']).stdout);
+  assert.equal(queued.intents.find((intent) => intent.id === intentId).status, 'pending');
+
+  const applied = json(runQ(['apply']).stdout);
+  const row = applied.intents.find((intent) => intent.id === intentId);
+  assert.equal(row.status, 'rejected');
+  assert.equal(row.code, 'VALIDATION');
+  assert.match(row.message, /not a recognizable DID/);
+  assert.match(row.message, /no data changed/);
+  assert.equal(json(run(['hub', 'list']).stdout).count, before, 'no registration may have been created');
+});
+
+test('live: an empty-DID intent is rejected too (H2①), and the relation records stay byte-identical', async () => {
+  const { read } = await import('./lib/arc.mjs');
+  const before = json(run(['hub', 'list']).stdout).registrations.map((r) => read(`${HUB_REGISTRATIONS_DIR}/${r.id}.json`)?.content ?? '');
+  const intentId = `empty-did-${intentStamp}`;
+  assert.equal(runQ(['request', '--action', 'add', '--intent-id', intentId]).status, 0);
+
+  const row = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === intentId);
+  assert.equal(row.status, 'rejected');
+  assert.equal(row.code, 'VALIDATION');
+  assert.match(row.message, /a hub did is required/);
+  const after = json(run(['hub', 'list']).stdout).registrations.map((r) => read(`${HUB_REGISTRATIONS_DIR}/${r.id}.json`)?.content ?? '');
+  assert.deepEqual(after, before, 'zero change: every registration record is byte-identical');
+});
+
+test('live: a valid intent really writes the relation, a duplicate is CONFLICT, update is explicit (B2/H2③/H2④/B6)', async () => {
+  const { read, remove } = await import('./lib/arc.mjs');
+  const hubDid = `did:key:zR21QueueProbe${intentStamp}`;
+  const registrationPath = `${HUB_REGISTRATIONS_DIR}/${hubRegistrationId(hubDid)}.json`;
+  createdHubDids.push(hubDid);
+
+  // baseline: not registered
+  assert.equal(run(['hub', 'show', '--hub-did', hubDid]).status, 1);
+  assert.equal(read(registrationPath), null);
+
+  // 1) queue → apply → the registration record really appears (AFS before/after)
+  const firstId = `reg-${intentStamp}`;
+  assert.equal(runQ(['request', '--action', 'register', '--hub-did', hubDid, '--endpoint', 'https://hub.example.com', '--intent-id', firstId]).status, 0);
+  assert.equal(read(registrationPath), null, 'queueing must not write the relation');
+  const applied = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === firstId);
+  assert.equal(applied.status, 'applied');
+  assert.ok(applied.changed.includes('hubDid'), JSON.stringify(applied));
+  assert.equal(typeof applied.elapsedMs, 'number');
+  const stored = json(run(['hub', 'show', '--hub-did', hubDid]).stdout).registration;
+  assert.equal(stored.hubDid, hubDid);
+  assert.equal(stored.relation, 'applied');
+  assert.equal(stored.direction, 'studio');
+
+  // 2) a duplicate without an explicit update is CONFLICT, and changes nothing
+  const bytes = read(registrationPath).content;
+  const dupId = `dup-${intentStamp}`;
+  assert.equal(runQ(['request', '--action', 'add', '--hub-did', hubDid, '--intent-id', dupId]).status, 0);
+  const dup = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === dupId);
+  assert.equal(dup.status, 'rejected');
+  assert.equal(dup.code, 'CONFLICT');
+  assert.match(dup.message, /already registered/);
+  assert.equal(read(registrationPath).content, bytes, 'the rejected duplicate changed nothing');
+
+  // 3) only the explicit update path may apply
+  const updId = `upd-${intentStamp}`;
+  assert.equal(runQ(['request', '--action', 'add', '--hub-did', hubDid, '--update', '--intent-id', updId]).status, 0);
+  const updated = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === updId);
+  assert.equal(updated.status, 'applied');
+  assert.ok(updated.changed.includes('relation'), JSON.stringify(updated));
+  assert.equal(json(run(['hub', 'show', '--hub-did', hubDid]).stdout).registration.relation, 'indexed');
+
+  // 4) B6: consuming an already-terminal record again is a noop with a reason
+  const record = hubCli.listIntents('').find((intent) => intent.id === firstId);
+  const again = hubCli.applyIntent('', { ...record });
+  assert.equal(again.status, 'noop');
+  assert.match(again.message, /already applied/);
+  assert.equal(json(run(['hub', 'show', '--hub-did', hubDid]).stdout).registration.relation, 'indexed');
+
+  // 5) BUG-002: the same intent id with different content is refused while pending
+  const conflictId = `same-${intentStamp}`;
+  assert.equal(runQ(['request', '--action', 'register', '--hub-did', hubDid, '--update', '--intent-id', conflictId]).status, 0);
+  const conflicting = runQ(['request', '--action', 'register', '--hub-did', `did:key:zOther${intentStamp}`, '--intent-id', conflictId]);
+  assert.equal(conflicting.status, 1);
+  assert.equal(json(conflicting.stderr).code, 'CONFLICT');
+  assert.match(json(conflicting.stderr).error, /still pending/);
+
+  remove(registrationPath);
+});
+
+test('live: indexRebuild writes the measured elapsedMs and counts onto its terminal record (H1)', () => {
+  const intentId = `rebuild-${intentStamp}`;
+  const requested = runQ(['request', '--action', 'indexRebuild', '--intent-id', intentId]);
+  assert.equal(requested.status, 0, requested.stderr);
+  // pending carries no elapsed time — never a zero, never an estimate
+  assert.equal(json(requested.stdout).intent.elapsedMs, '');
+  assert.equal(json(runQ(['queue']).stdout).intents.find((intent) => intent.id === intentId).elapsedMs, '');
+
+  const row = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === intentId);
+  assert.equal(row.status, 'applied');
+  assert.equal(typeof row.elapsedMs, 'number');
+  assert.ok(row.elapsedMs > 0, `elapsedMs must be a real measurement, got ${row.elapsedMs}`);
+  assert.ok(row.counts && Number.isInteger(row.counts.published), JSON.stringify(row.counts));
+  assert.match(row.message, /index rebuild: scanned \d+ published post\(s\)/);
+  assert.match(row.message, new RegExp(`in ${row.elapsedMs}ms`));
+
+  // the same measurement is what the console reads back from AFS
+  const intentRecord = json(runQ(['queue']).stdout).intents.find((intent) => intent.id === intentId);
+  assert.equal(intentRecord.elapsedMs, row.elapsedMs);
+});
+
+test('live: a stale `running` claim is re-drained instead of being stranded (BUG-051 shape)', async () => {
+  const { remove, writeJson } = await import('./lib/arc.mjs');
+  const intentId = `stale-${intentStamp}`;
+  const path = `${HUB_QUEUE}/${intentId}.json`;
+  // A worker that dies mid-flight leaves `running` (an IN-FLIGHT state, never
+  // terminal): `apply` must pick it up again rather than ignore it forever.
+  writeJson(path, {
+    id: intentId,
+    action: 'register',
+    hubDid: 'not-a-did',
+    endpoint: '',
+    update: false,
+    status: 'running',
+    message: '',
+    changed: [],
+    counts: null,
+    elapsedMs: null,
+    requestedVia: 'cli',
+    requestedAt: new Date().toISOString(),
+  });
+  try {
+    const row = json(runQ(['apply']).stdout).intents.find((intent) => intent.id === intentId);
+    assert.ok(row, 'the in-flight record must be drained');
+    assert.equal(row.status, 'rejected');
+    assert.equal(row.code, 'VALIDATION');
+  } finally {
+    remove(path);
+  }
+});
+
+test('D38: a hub-intents entry without the .json extension is diagnosed, not consumed', async () => {
+  const { remove, writeJson } = await import('./lib/arc.mjs');
+  const badPath = `${HUB_QUEUE}/noext-probe-${intentStamp}`;
+  writeJson(badPath, { id: `noext-probe-${intentStamp}`, action: 'indexRebuild', status: 'pending' });
+  try {
+    const queued = json(runQ(['queue']).stdout);
+    assert.ok(queued.queueEntryIgnored >= 1, 'the diagnostic must be reported');
+    assert.ok(queued.ignored.some((entry) => entry.path === badPath));
+    assert.match(queued.ignored.find((entry) => entry.path === badPath).reason, /<id>\.json/);
+    assert.ok(!queued.intents.some((intent) => intent.id === `noext-probe-${intentStamp}`));
+  } finally {
+    remove(badPath);
   }
 });

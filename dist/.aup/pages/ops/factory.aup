@@ -63,7 +63,7 @@ page factory {
     confirm-claim-msg { en "The NFT returns to the owner wallet and the stake closes." zh "NFT 回到属主钱包，质押关闭。" }
     intent-queued { en "Intent queued — watch the queue below." zh "意图已入队 —— 留意下方队列。" }
     queue { en "Intent queue" zh "意图队列" }
-    queue-empty { en "No intent yet. Press an action above." zh "还没有意图。点上面的操作按钮。" }
+    queue-standing-note { en "Every queued chain intent appears in the list above, oldest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的链上意图都会出现在上方列表里（最早在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
     queue-admin { en "The queue lives in config/ (admin-only): only the blocklet owner can queue or watch chain operations." zh "队列位于 config/（仅管理员）：只有 Blocklet 属主可以入队或查看链上操作。" }
     queue-clear { en "Clear" zh "清除" }
     queue-clear-title { en "Clear this intent record?" zh "清除这条意图记录？" }
@@ -222,7 +222,7 @@ page factory {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :queue level=3 style={fontSize: "var(--type-body)"}
                 p :queue-admin intent=muted scale=sm
-                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:queue-empty autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       row gap=xs cross=center {
@@ -242,6 +242,13 @@ page factory {
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
                   }
                 }
+                // BUG-056 (BUG-052's shape, fixed in R21): a STANDING note, not
+                // an empty-state claim. The platform cannot probe a list's
+                // length (arc-contracts §21) and `afs-list emptyText` is not
+                // evaluated at runtime (§20), so an unconditional "nothing
+                // queued yet" could contradict a non-empty queue. Keep this
+                // paragraph unconditional — no `visible` condition is possible.
+                p :queue-standing-note scale=sm intent=muted
                 p :status-note scale=sm intent=muted
               }
             }

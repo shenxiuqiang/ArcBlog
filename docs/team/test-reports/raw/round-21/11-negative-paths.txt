@@ -1,0 +1,57 @@
+### N1 order verify with no target ###
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "order verify needs --id <orderId> or --tx-hash <hash>"
+}
+EXIT=1
+
+### N2 order verify --id <unknown> ###
+{
+  "ok": false,
+  "code": "NOT_FOUND",
+  "error": "order not found: no-such-order-p1"
+}
+EXIT=1
+
+### N3 settlement reconcile --order <unknown> ###
+{
+  "totals": {
+    "verified": 0,
+    "mismatch": 0,
+    "not-on-chain": 0,
+    "no-hash": 0,
+    "total": 0,
+    "countsConsistent": true
+  },
+  "note": "no settlement record for order nothing-1790622910831 (/instance/app/arcblog/economy/settlements/nothing-1790622910831.json)",
+  "rows": 0,
+  "exitCode": 0
+}
+EXIT=0
+
+### N4 settlement reconcile --order X --all (mutually exclusive) ###
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "settlement reconcile: --order and --all are mutually exclusive"
+}
+EXIT=1
+
+### N5 order verify --tx-hash <garbage> --adapter ocap (not-on-chain, NOT an error) ###
+{
+  "totals": {
+    "verified": 0,
+    "mismatch": 0,
+    "not-on-chain": 1,
+    "no-hash": 0,
+    "total": 1,
+    "countsConsistent": true
+  },
+  "row": {
+    "cat": "not-on-chain",
+    "queried": true,
+    "msg": "getTx returned info: null, so the hash is not on chain (the query itself succeeded)"
+  }
+}
+EXIT=0

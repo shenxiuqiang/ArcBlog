@@ -1,0 +1,17 @@
+{
+  "label": "before",
+  "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+  "balance": "16154907215234937951",
+  "nonce": "1790498079479",
+  "windowTotal": 188,
+  "methodsCalled": [
+    "getAccountTokens",
+    "getAccountState",
+    "listTransactions"
+  ],
+  "violations": [],
+  "adapter": "ocap",
+  "network": "beta",
+  "chainHost": "https://beta.abtnetwork.io/api/",
+  "settlementsOnDisk": 20
+}

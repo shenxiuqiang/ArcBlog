@@ -1,0 +1,23 @@
+=== C1: queue-empty / queue-standing-note in factory.aup ===
+66:    queue-standing-note { en "Every queued chain intent appears in the list above, oldest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的链上意图都会出现在上方列表里（最早在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
+251:                p :queue-standing-note scale=sm intent=muted
+
+=== C1/C2: queue-empty across .aup and dist/.aup ===
+grep_exit=1 (1 = no match)
+
+=== C2: factory.queue-empty / factory.queue-standing-note in locales ===
+.aup/locales/en.json:891:  "factory.queue-standing-note": "Every queued chain intent appears in the list above, oldest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet.",
+.aup/locales/zh.json:891:  "factory.queue-standing-note": "凡是入队的链上意图都会出现在上方列表里（最早在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。",
+
+=== C3: git diff new visible lines in factory.aup ===
+9:+                // paragraph unconditional — no `visible` condition is possible.
+added-visible-lines-exit=0
+
+=== dead locale keys (arc dsl lint --json) ===
+{
+  "issueCount": 45,
+  "codes": {
+    "unreferenced_explicit_id": 45
+  },
+  "deadLocaleKeys": []
+}

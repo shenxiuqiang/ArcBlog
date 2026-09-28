@@ -1,0 +1,98 @@
+=== fingerprint after (all probes) ===
+{
+  "label": "after-all",
+  "address": "z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a",
+  "balance": "16154907215234937951",
+  "nonce": "1790498079479",
+  "windowTotal": 188,
+  "methodsCalled": [
+    "getAccountTokens",
+    "getAccountState",
+    "listTransactions"
+  ],
+  "violations": [],
+  "adapter": "ocap",
+  "network": "beta",
+  "chainHost": "https://beta.abtnetwork.io/api/",
+  "settlementsOnDisk": 20
+}
+
+=== clean dry run ===
+{
+  "ok": true,
+  "instance": "default",
+  "confirm": false,
+  "found": 330,
+  "removed": 0,
+  "dirsScanned": 20,
+  "byDir": {
+    "economy/ledger": 36,
+    "economy/orders": 30,
+    "economy/settlements": 15,
+    "economy/products": 24,
+    "economy/access-grants": 12,
+    "economy/refunds": 3,
+    "config": 132,
+    "node": 29,
+    "hub/index": 4,
+    "drafts": 45
+  },
+  "byPrefix": {
+    "econ-test-": 105,
+    "ledger-order-": 12,
+    "ledger-product-": 3,
+    "chain-intents-worker-": 15,
+    "mock-worker-": 16,
+    "nft-factories-test-": 22,
+    "nft-factories-worker-": 16,
+    "node-nft-test-": 22,
+    "node-nft-worker-": 14,
+    "roles-test-": 13,
+    "roles-worker-": 14,
+    "factories-test-": 13,
+    "factories-worker-": 16,
+    "hub-idx-test-": 4,
+    "paid-test-": 1,
+    "sign-test-": 1,
+    "cat-test-": 16,
+    "sign-keys-": 27
+  },
+  "sample": [
+    "economy/ledger/econ-test-order-1790621421633:creator_share.json",
+    "economy/ledger/econ-test-order-1790621421633:protocol_fee.json",
+    "economy/ledger/econ-test-order-1790621968235:creator_share.json",
+    "economy/ledger/econ-test-order-1790621968235:protocol_fee.json",
+    "economy/ledger/econ-test-order-1790622714245:creator_share.json",
+    "economy/ledger/econ-test-order-1790622714245:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790621456673:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790621456673:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790621456673:refund:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790621456673:refund:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790622006111:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790622006111:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790622006111:refund:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790622006111:refund:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790622757396:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790622757396:protocol_fee.json",
+    "economy/ledger/econ-test-rf-order-1790622757396:refund:creator_share.json",
+    "economy/ledger/econ-test-rf-order-1790622757396:refund:protocol_fee.json",
+    "economy/ledger/econ-test-tip-1790621433662:creator_share.json",
+    "economy/ledger/econ-test-tip-1790621433662:protocol_fee.json",
+    "economy/ledger/econ-test-tip-1790621980160:creator_share.json",
+    "economy/ledger/econ-test-tip-1790621980160:protocol_fee.json",
+    "economy/ledger/econ-test-tip-1790622727063:creator_share.json",
+    "economy/ledger/econ-test-tip-1790622727063:protocol_fee.json",
+    "economy/ledger/econ-test-type-order-1790621501147:creator_share.json"
+  ],
+  "hint": "dry run — re-run with --confirm to delete"
+}
+
+=== instance dirs of interest ===
+/instance/app/arcblog/config                            [{"id":"chain-intents","path":"/instance/app/arcblog/config/chain-intents","createdAt":"2026-09-27T08:31:13.932Z","updatedAt":"2026-09-28T09:55:37.164Z","meta":{"childrenCount":6,"size":256,"kind":"fs:directory"}},{"id":"chain-intents-worker-1790498117031","pa
+/instance/app/arcblog/hub                               [{"id":"index","path":"/instance/app/arcblog/hub/index","createdAt":"2026-09-24T16:39:41.247Z","updatedAt":"2026-09-28T19:09:37.953Z","meta":{"childrenCount":5,"size":224,"kind":"fs:directory"}},{"id":"registrations","path":"/instance/app/arcblog/hub/registrat
+/instance/app/arcblog/hub/registrations                 [{"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T19:10:38.742Z","meta":{"size":669,"kind":"fs:file","mimeType":"application/json","cid":"bafkrei
+/instance/app/arcblog/hub/index                         [{"id":"hello-arcblog.json","path":"/instance/app/arcblog/hub/index/hello-arcblog.json","createdAt":"2026-09-28T18:58:00.205Z","updatedAt":"2026-09-28T18:58:00.205Z","meta":{"size":610,"kind":"fs:file","mimeType":"application/json","cid":"bafkreibfyhiuy74l5ue3
+/instance/app/arcblog/economy/orders                    [{"id":"econ-test-fc-order-1790621430746.json","path":"/instance/app/arcblog/economy/orders/econ-test-fc-order-1790621430746.json","createdAt":"2026-09-28T18:50:32.669Z","updatedAt":"2026-09-28T18:50:32.670Z","meta":{"size":449,"kind":"fs:file","mimeType":"app
+
+=== gate-lock ===
+ls: docs/team/.gate-lock: No such file or directory

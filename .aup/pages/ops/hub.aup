@@ -45,6 +45,42 @@ page hub {
     sync-hint { en "Sync view of this Studio as reported by the Hub (spec §112). — means the field has no value yet (never synced); nothing is invented in its place." zh "Hub 上报的对本 Studio 的同步视图（spec §112）。— 表示该字段尚无值（从未同步）；不会伪造数值。" }
     title { en "Hub console" zh "Hub 管理" }
     write-failed { en "Write failed — verify the record with hub show (a success toast is not proof)." zh "写入失败——请用 hub show 复核记录（成功 toast 不是证据）。" }
+    actions-desc { en "A Hub relation is keyed by SHA-256(Hub DID), which this page cannot compute, so each button queues ONE intent record and the node's worker derives the id and writes the relation." zh "Hub 收录记录的 id 由 SHA-256(Hub DID) 派生，本页算不出，因此每个按钮只入队一条意图记录，由本机 worker 派生 id 并写入收录关系。" }
+    adv-hide { en "Hide advanced" zh "收起高级" }
+    adv-show { en "Show advanced (CLI)" zh "展开高级（CLI）" }
+    cmd-apply { en "Execute the queued intents once" zh "执行一次队列中的意图" }
+    cmd-queue { en "Print the intent queue (read only)" zh "打印意图队列（只读）" }
+    cmd-watch { en "Keep executing queued intents" zh "常驻执行队列中的意图" }
+    confirm-add-msg { en "Queues ONE intent: the local worker indexes this Studio (relation indexed, direction hub). This page writes no relation itself." zh "入队一条意图：由本机 worker 主动收录该 Studio（relation indexed、direction hub）。本页自身不写收录关系。" }
+    confirm-add-title { en "Index this Studio?" zh "主动收录该 Studio？" }
+    confirm-rebuild-msg { en "Queues ONE intent. The local worker then runs the FULL index scan — expect tens of seconds, and it may upsert or tombstone entries." zh "入队一条意图。随后由本机 worker 执行全量索引扫描——可能需要数十秒，并会 upsert 或写入墓碑。" }
+    confirm-rebuild-title { en "Rebuild the content index?" zh "重建内容索引？" }
+    confirm-register-msg { en "Queues ONE intent: the local worker applies to this Hub (relation applied until the Hub approves). This page writes no relation itself." zh "入队一条意图：由本机 worker 向该 Hub 提交申请（通过前 relation 保持 applied）。本页自身不写收录关系。" }
+    confirm-register-title { en "Apply to this Hub?" zh "提交这条申请？" }
+    btn-add { en "Index a Studio" zh "主动收录" }
+    btn-index-rebuild { en "Rebuild index" zh "重建索引" }
+    btn-register { en "Apply" zh "提交申请" }
+    elapsed-label { en "elapsedMs" zh "实测耗时" }
+    elapsed-unit { en "ms, measured by the local worker" zh "毫秒（本机 worker 实测）" }
+    enqueue-failed { en "Could not queue the intent — read the queue below (a toast is not proof)." zh "无法入队——请核对下方队列（toast 不是证据）。" }
+    guard-note { en "The queue refuses a DID that is empty or not DID-shaped (did:<method>:<id> or the platform z… form), and refuses a duplicate unless you pick overwrite below. Both end as rejected with a reason and zero data change. This is a text-shape check only — nothing here resolves a DID against any chain." zh "队列会拒绝空 DID 或形态非法的 DID（did:<method>:<id> 或平台 z… 形态）；未选择下方「覆盖更新」时也会拒绝重复登记。两者都落 rejected + 原因 + 零数据改动。这只是文本形态检查——本页不针对任何链解析 DID。" }
+    hub-did-label { en "Hub DID" zh "Hub DID" }
+    hub-endpoint-label { en "Endpoint (optional)" zh "Endpoint（可选）" }
+    hub-update-label { en "If it is already registered" zh "若已登记" }
+    hub-update-no { en "Reject as duplicate" zh "按重复拒绝" }
+    hub-update-yes { en "Overwrite (update)" zh "覆盖更新（update）" }
+    index-cost { en "Rebuilding the content index is a FULL scan of every published post and every existing index entry, and it runs on the local worker — not in this page. Measured on this instance in Round 20: about 19 s with 3 published posts and 43 drafts. That is a magnitude, not a promise; the worker writes the real elapsedMs onto the terminal record below." zh "重建内容索引是对每一篇已发布文章与每一条现有索引记录的全量扫描，由本机 worker 执行——不在本页运行。本实例 Round 20 实测：3 篇已发布 + 43 条草稿约 19 秒。这是量级、不是承诺；worker 会把真实 elapsedMs 写回下方终态记录。" }
+    queue-clear { en "Clear" zh "清除" }
+    queue-clear-msg { en "Deletes this intent record only. It does not change the relation or the index." zh "只删除这条意图记录。不会改变收录关系或索引。" }
+    queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
+    queue-desc { en "One record per click; the worker writes its outcome back onto the same record." zh "每次点击一条记录；worker 把执行结果回写到同一条记录。" }
+    queue-legend { en "pending = queued · applied = the data changed · rejected = refused, nothing changed · noop = nothing to do" zh "pending = 已入队 · applied = 数据已改变 · rejected = 已拒绝，零改动 · noop = 无需执行" }
+    queue-standing-note { en "Every queued intent appears in the list above, oldest first — a row is written the moment a button is clicked, so an empty list only means nothing has been queued on this node yet." zh "凡是入队的意图都会出现在上方列表里（最早在前）——点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
+    queue-title { en "Intent queue" zh "意图队列" }
+    queued { en "Queued — the local worker executes it." zh "已入队——由本机 worker 执行。" }
+    status-intent { en "Status" zh "状态" }
+    worker-hint { en "Run the worker once / keep it running: node scripts/arcblog-network.mjs watch" zh "运行一次 worker / 常驻运行：node scripts/arcblog-network.mjs watch" }
+    worker-note { en "The buttons only queue — this page executes nothing. The record lands in config/hub-intents and a local worker performs it; a success toast is not proof, read the queue below." zh "按钮只入队——本页不执行任何动作。记录落在 config/hub-intents，由本机 worker 执行；成功 toast 不是证据，请看下方队列。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -194,17 +230,84 @@ page hub {
                 p :sync-hint scale=sm intent=muted
                 p :status-note scale=sm intent=muted
               }
+              // REQ-019 §12: the Register / index surface is BUTTON-FIRST. The
+              // platform cannot run server-side code from a click and this page
+              // cannot derive the hashed registration id, so a button only
+              // queues ONE intent record; the node's worker executes it
+              // (`node scripts/arcblog-network.mjs apply|watch`) and writes the
+              // outcome back onto that record. The page says so instead of
+              // pretending (L-R18-2 / §12 H2).
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :apply-title level=3 style={fontSize: "var(--type-body)"}
                 p :apply-desc intent=muted
-                key-value-list hub-apply-cmds dense=true fields=[{label: "$t(hub.cmd-register)", value: "node scripts/arcblog-network.mjs hub register --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-show)", value: "node scripts/arcblog-network.mjs hub show --hub-did <did>", monospace: true, copyable: true}]
+                p :actions-desc scale=sm intent=muted
+                p :worker-note scale=sm intent=muted
+                p :worker-hint scale=caption intent=muted
+                view gap=xs {
+                  input type=text name=hubDid label=:hub-did-label
+                  input type=text name=hubEndpoint label=:hub-endpoint-label
+                  input type=select name=hubUpdate label=:hub-update-label options=[{label: :hub-update-no, value: ""}, {label: :hub-update-yes, value: yes}]
+                }
+                row gap=sm {
+                  action variant=primary label=:btn-register confirm={title: :confirm-register-title, message: :confirm-register-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: register, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "${args.hubUpdate}", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                  action variant=secondary label=:btn-add confirm={title: :confirm-add-title, message: :confirm-add-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: add, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "${args.hubUpdate}", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                  action variant=secondary label=:btn-index-rebuild confirm={title: :confirm-rebuild-title, message: :confirm-rebuild-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: indexRebuild, hubDid: "", endpoint: "", update: "", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                }
+                p :index-cost scale=sm intent=muted
+                p :guard-note scale=sm intent=muted
                 p :did-shape scale=sm intent=muted
                 p :id-hash scale=sm intent=muted
               }
+              // The queue: one record per click, carrying the worker's outcome
+              // (status / message / the measured elapsedMs of a rebuild).
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+                p :queue-desc scale=sm intent=muted
+                p :queue-legend scale=caption intent=muted
+                afs-list hub-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/hub-intents" {
+                  row gap=sm cross=center role=item {
+                    view gap=xs style={flex: "1 1 0%"} {
+                      row gap=xs cross=center {
+                        p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                        p "${entry.content.action}" scale=sm
+                        p "${entry.content.hubDid}" scale=sm intent=muted style={fontFamily: monospace}
+                        p :status-intent scale=sm
+                        p "${entry.content.status}" scale=sm
+                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                          time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                        }
+                      }
+                      p "${entry.content.message}" scale=sm intent=muted
+                      row gap=xs cross=center visible="${entry.content.elapsedMs}" {
+                        p :elapsed-label scale=sm intent=muted
+                        p "${entry.content.elapsedMs}" scale=sm
+                        p :elapsed-unit scale=sm intent=muted
+                      }
+                    }
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                  }
+                }
+                p :queue-standing-note scale=caption intent=muted
+              }
+              // Advanced: the CLI is a folded ALTERNATIVE, never the only path
+              // (§12.2.6). The collapse is a `-> set hub-advanced state {open:
+              // "true"}` patch plus an expression `visible=$state.open`; the
+              // values are strings because boolean literals trip the DSL
+              // formatter's round-trip guard (ArcBlock/arc#2764) — same as
+              // factory.aup / media.aup. `hub sync` stays here on purpose (§12.3.2).
+              view hub-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :cli-title level=3 style={fontSize: "var(--type-body)"}
                 p :cli-desc intent=muted
-                key-value-list hub-inbound-cmds dense=true fields=[{label: "$t(hub.cmd-add)", value: "node scripts/arcblog-network.mjs hub add --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-index-rebuild)", value: "node scripts/arcblog-network.mjs hub index rebuild", monospace: true, copyable: true}, {label: "$t(hub.cmd-sync)", value: "node scripts/arcblog-network.mjs hub sync --hub-did <did> [--version <n>] [--hash <h>] [--status never|ok|stale|error] [--error <message>]", monospace: true, copyable: true}]
+                row cross=start {
+                  action -> set hub-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                }
+                view gap=sm visible=$state.open {
+                  key-value-list hub-apply-cmds dense=true fields=[{label: "$t(hub.cmd-register)", value: "node scripts/arcblog-network.mjs hub register --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-show)", value: "node scripts/arcblog-network.mjs hub show --hub-did <did>", monospace: true, copyable: true}]
+                  key-value-list hub-inbound-cmds dense=true fields=[{label: "$t(hub.cmd-add)", value: "node scripts/arcblog-network.mjs hub add --hub-did <did> [--endpoint <url>] [--update]", monospace: true, copyable: true}, {label: "$t(hub.cmd-index-rebuild)", value: "node scripts/arcblog-network.mjs hub index rebuild", monospace: true, copyable: true}, {label: "$t(hub.cmd-sync)", value: "node scripts/arcblog-network.mjs hub sync --hub-did <did> [--version <n>] [--hash <h>] [--status never|ok|stale|error] [--error <message>]", monospace: true, copyable: true}, {label: "$t(hub.cmd-queue)", value: "node scripts/arcblog-network.mjs queue", monospace: true, copyable: true}, {label: "$t(hub.cmd-apply)", value: "node scripts/arcblog-network.mjs apply", monospace: true, copyable: true}, {label: "$t(hub.cmd-watch)", value: "node scripts/arcblog-network.mjs watch", monospace: true, copyable: true}]
+                  row cross=start {
+                    action -> set hub-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :index-card level=3 style={fontSize: "var(--type-body)"}

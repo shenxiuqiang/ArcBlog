@@ -1,0 +1,9 @@
+REQ-021 stage-2 P1 — read-only chain reconciliation (zero chain writes, zero funds)
+adapter: ocap
+chainHost: https://beta.abtnetwork.io/api/  network: beta  queried: true
+totals: verified 1 · mismatch 0 · not-on-chain 0 · no-hash 0 · total 1 (counts consistent: true)
+note: bare --tx-hash: existence, info.hash and info.code are checked; no record was supplied, so amount/asset/receiver are not compared
+resources: orders: 33 record(s) under /instance/app/arcblog/economy/orders
+- tx ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D hash: ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D [verified] 链上一致（verified） — existence and every checked field agree
+read-only: methods=[getAccountTokens, getAccountState, getTx] violations=0 changedRecords=0 writePath=none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)
+fingerprint: account z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a tokens+nonce before/after identical: true (nonce 1790498079479)

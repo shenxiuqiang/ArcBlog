@@ -1,0 +1,5 @@
+getTx result: {"code":"OK","info":null}
+thrown: sendTx:READ_ONLY_GUARD | transfer:READ_ONLY_GUARD | sendTransferV3Tx:READ_ONLY_GUARD | getChainInfo:undefined
+violations: ["sendTx","transfer","sendTransferV3Tx"]
+calls (should be real:getTx only): ["getTx","real:getTx"]
+whitelist: ["getTx","getAccountTokens","getAccountState","listTransactions"] code: READ_ONLY_GUARD

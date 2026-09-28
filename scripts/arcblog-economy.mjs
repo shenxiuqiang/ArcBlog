@@ -16,6 +16,16 @@ import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJso
 import { INSTANCE_ROOT, list, nowIso, remove } from './lib/arc.mjs';
 import { findVerifiedAttribution } from './lib/attribution.mjs';
 import { scanPosts } from './lib/content-scan.mjs';
+import { resolveChainConfig, realChainHint } from './lib/chain.mjs';
+import {
+  categoryLabel,
+  classifyTx,
+  createReadOnlyGuard,
+  fetchTxInfo,
+  formatReport,
+  normalizeHash,
+  summarize,
+} from './lib/chain-orders.mjs';
 import {
   buildAccessGrant,
   buildOrder,
@@ -523,6 +533,302 @@ function commandLedgerList(opts, instance) {
   );
 }
 
+// --- read-only chain reconciliation (REQ-021 §14, stage-two P1) --------------
+//
+// Everything below is READ ONLY: no `order pay` / `refund` semantics change, no
+// record is written, no transaction is sent. It answers "is this record's hash
+// really on chain, and do the numbers agree?" with one of four classifications
+// (`verified` / `mismatch` / `not-on-chain` / `no-hash`) and refuses to call
+// anything else "verified". The script-level guard lives in
+// `scripts/lib/chain-orders.mjs` (R1): a `send*` call throws READ_ONLY_GUARD.
+
+/**
+ * Open the READ-ONLY chain client.
+ *
+ * Deliberately NOT `openChain`: that adapter loads the wallet because it is
+ * built for signing (`CHAIN_UNAVAILABLE` without a mnemonic). Reconciliation
+ * needs neither a key nor a wallet — only the endpoint — so it builds the
+ * GraphQL client directly and wraps it in the whitelist guard. Under
+ * `mock` / `manual` / `none` nothing is queried at all and every result is
+ * reported as "未上链 / 待验证" (V2): a simulation is never chain truth.
+ */
+async function openReadOnlyChain(opts, instance) {
+  const config = resolveChainConfig(opts, instance);
+  const adapter = String(config.adapter || 'mock').trim();
+  if (adapter !== 'ocap') {
+    return {
+      adapter,
+      config,
+      client: null,
+      calls: [],
+      violations: [],
+      simulated: true,
+      skippedReason:
+        `--adapter ${adapter}: this adapter carries simulated / operator-declared facts, not a chain — ` +
+        'the chain is not queried and nothing can be reported as verified',
+    };
+  }
+  let clientModule = null;
+  try {
+    clientModule = await import('@ocap/client');
+  } catch {
+    clientModule = null;
+  }
+  if (!clientModule || !String(config.chainHost ?? '').trim()) {
+    fail(
+      'CHAIN_UNAVAILABLE',
+      'read-only reconciliation needs the @ocap/client package and a chain host: ' +
+        `${clientModule ? '' : 'missing @ocap/client; '}${config.chainHost ? '' : 'missing ARCBLOG_CHAIN_HOST (or --chain-host); '}` +
+        realChainHint(config),
+    );
+  }
+  const GraphQLClient = clientModule.default ?? clientModule.GraphQLClient;
+  const guard = createReadOnlyGuard(new GraphQLClient(config.chainHost));
+  return {
+    adapter,
+    config,
+    client: guard.client,
+    calls: guard.calls,
+    violations: guard.violations,
+    simulated: false,
+    skippedReason: '',
+  };
+}
+
+/**
+ * The address used for the before/after chain fingerprint (V3②).
+ *
+ * There may be none: this command needs no wallet, so it reads the recorded
+ * owner from the public projection instead. When that is empty the fingerprint
+ * says "不适用 + 原因" rather than pretending to have checked something.
+ */
+function fingerprintAddress(instance) {
+  const summary = readJson(`${INSTANCE_ROOT}/node/factories.json`, instance)?.value ?? null;
+  const candidates = [
+    summary?.nodes?.studio?.owner,
+    summary?.nodes?.hub?.owner,
+    summary?.factories?.studio?.issuer,
+    summary?.factories?.hub?.issuer,
+  ];
+  return String(candidates.find((value) => String(value ?? '').trim()) ?? '').trim();
+}
+
+/** Balance (via getAccountTokens — `state.balance` is null, arc-contracts §32) + nonce. */
+async function chainFingerprint(chain, instance, { capture = false } = {}) {
+  const address = fingerprintAddress(instance);
+  if (!chain.client || !address) {
+    return {
+      address,
+      tokens: null,
+      nonce: '',
+      captured: false,
+      note:
+        '不适用 + 原因: ' +
+        (chain.client ? 'no recorded owner address in node/factories.json' : 'the chain was not queried (simulated adapter)') +
+        ' — no balance / nonce was read, and no write path exists',
+    };
+  }
+  if (!capture) return { address, tokens: null, nonce: '', captured: false, note: 'not captured' };
+  const tokens = await chain.client.getAccountTokens({ address });
+  const state = await chain.client.getAccountState({ address });
+  return {
+    address,
+    tokens: tokens?.state ?? tokens ?? null,
+    nonce: String(state?.state?.nonce ?? state?.nonce ?? ''),
+    captured: true,
+    note: 'captured',
+  };
+}
+
+/** Reconcile ONE record (or bare hash) without ever writing anything. */
+async function reconcileOne(chain, { kind, path = '', id = '', record = null, hash = '', expected = null, synthetic = false }) {
+  const txHash = normalizeHash(hash);
+  const recordedAdapter = String(record?.paymentAdapter ?? '').trim();
+  let result;
+  if (chain.simulated) {
+    result = classifyTx({ hash: txHash, queried: false, notQueriedReason: chain.skippedReason });
+  } else if (['mock', 'manual', 'none'].includes(recordedAdapter)) {
+    result = classifyTx({
+      hash: txHash,
+      queried: false,
+      notQueriedReason:
+        `the record itself declares paymentAdapter "${recordedAdapter}" (a simulation / operator declaration) — ` +
+        'simulated facts are never chain-verified',
+    });
+  } else {
+    const tx = await fetchTxInfo(chain.client, txHash);
+    result = classifyTx({ hash: txHash, info: tx.info, queried: tx.queried, expected, synthetic });
+  }
+  return { kind, path, id, hash: txHash, expected: expected ?? null, synthetic, ...result };
+}
+
+/** The expectation a settlement / order pair lets us check (amount, asset, receiver). */
+function expectationFor(settlement, order) {
+  if (!settlement && !order) return null;
+  const reversed = String(settlement?.status ?? '') === 'reversed';
+  return {
+    amount: String(settlement?.amount ?? order?.amount ?? ''),
+    asset: String(settlement?.asset ?? order?.asset ?? ''),
+    receiver: reversed
+      ? String(order?.buyerDid ?? '')
+      : String(settlement?.creatorDid ?? order?.creatorDid ?? ''),
+  };
+}
+
+/** Build the report object both output modes share (V4). */
+function buildReport(chain, rows, { instance, before, after, note = '', resources = null }) {
+  const totals = summarize(rows);
+  const methods = [...new Set(chain.calls)];
+  const equal = JSON.stringify(before?.tokens ?? null) === JSON.stringify(after?.tokens ?? null) && String(before?.nonce ?? '') === String(after?.nonce ?? '');
+  const fingerprintNote = !before?.captured
+    ? before?.note ?? 'no fingerprint'
+    : `account ${before.address} tokens+nonce before/after identical: ${equal} (nonce ${before.nonce || '(empty)'})`;
+  const ordersCount = resources?.orders?.count ?? null;
+  const settlementsCount = resources?.settlements?.count ?? null;
+  const emptyNote =
+    totals.total === 0 && !note
+      ? `no target record to reconcile (orders: ${ordersCount ?? '?'}, settlements: ${settlementsCount ?? '?'}) — an empty read and a not-yet-created directory are indistinguishable through the AFS list API, which maps NOT_FOUND to an empty list, so this is reported as 0 records rather than as an error`
+      : note;
+  return {
+    ok: true,
+    action: 'chain-reconcile',
+    generatedAt: nowIso(),
+    chain: {
+      adapter: chain.adapter,
+      chainHost: chain.config?.chainHost ?? '',
+      network: chain.config?.network ?? '',
+      simulated: chain.simulated,
+      queried: methods.length > 0,
+      skippedReason: chain.skippedReason,
+    },
+    resources: resources ?? undefined,
+    totals,
+    note: emptyNote,
+    rows,
+    // V3④: nothing was written — the command has no write path at all.
+    changedRecords: [],
+    readOnly: {
+      methods,
+      violations: chain.violations,
+      writePath: 'none (READ_ONLY_METHODS whitelist in scripts/lib/chain-orders.mjs)',
+    },
+    fingerprint: { ...before, before: before?.tokens ?? null, after: after?.tokens ?? null, equal, note: fingerprintNote },
+    // Exit-code semantics (V4, decided here and documented in --help):
+    //   0 = a report was produced (even with mismatch rows, or 0 records)
+    //   1 = the command could not run (validation / CHAIN_UNAVAILABLE / NOT_FOUND)
+    exitCode: 0,
+  };
+}
+
+async function commandOrderVerify(opts, instance) {
+  const id = optString(opts.id ?? opts.order).trim();
+  const hashFlag = normalizeHash(opts['tx-hash']);
+  ensure(id || hashFlag, 'order verify needs --id <orderId> or --tx-hash <hash>');
+  // An explicit expectation turns this into a labelled SYNTHETIC probe: the hash
+  // is a real chain fact (or a real record's hash) and only the expected value
+  // comes from the operator, so a deliberate `mismatch` can be demonstrated
+  // without forging a hash and without writing anything.
+  const expectAmount = optString(opts['expect-amount']);
+  const expectAsset = optString(opts['expect-asset']);
+  const expectReceiver = optString(opts['expect-receiver']);
+  const synthetic = Boolean(expectAmount || expectAsset || expectReceiver);
+  const syntheticExpected = synthetic ? { amount: expectAmount, asset: expectAsset, receiver: expectReceiver } : null;
+
+  const chain = await openReadOnlyChain(opts, instance);
+  const before = await chainFingerprint(chain, instance, { capture: true });
+  const rows = [];
+  let note = '';
+  if (id) {
+    const order = requireRecord(ORDERS_DIR, id, instance, 'order').value;
+    const settlementRecord = readJson(`${SETTLEMENTS_DIR}/${id}.json`, instance);
+    const settlement = settlementRecord?.value ?? null;
+    if (!settlement && !hashFlag) note = `no settlement record for order ${id} (${SETTLEMENTS_DIR}/${id}.json) — the order itself carries no hash field`;
+    rows.push(
+      await reconcileOne(chain, {
+        kind: 'order',
+        path: settlementRecord ? `${SETTLEMENTS_DIR}/${id}.json` : `${ORDERS_DIR}/${id}.json`,
+        id,
+        record: order,
+        hash: hashFlag || settlement?.transactionHash,
+        expected: syntheticExpected ?? expectationFor(settlement, order),
+        synthetic,
+      }),
+    );
+  } else {
+    note = synthetic
+      ? 'SYNTHETIC expectation supplied via --expect-*: the hash is real, only the expected value is a probe — nothing was written and no hash was forged'
+      : 'bare --tx-hash: existence, info.hash and info.code are checked; no record was supplied, so amount/asset/receiver are not compared';
+    rows.push(await reconcileOne(chain, { kind: 'tx', id: hashFlag, hash: hashFlag, expected: syntheticExpected, synthetic }));
+  }
+  const after = await chainFingerprint(chain, instance, { capture: true });
+  const report = buildReport(chain, rows, {
+    instance,
+    before,
+    after,
+    note,
+    resources: { orders: { path: ORDERS_DIR, count: recordsIn(ORDERS_DIR, instance).length } },
+  });
+  if (opts.json) console.log(JSON.stringify(report, null, 2));
+  else console.log(formatReport(report));
+  return report;
+}
+
+async function commandSettlementReconcile(opts, instance) {
+  const orderId = optString(opts.order).trim();
+  const all = opts.all === true || opts.all === 'true';
+  const limit = all ? 0 : Math.max(0, Number(opts.limit ?? 20) || 0);
+  ensure(!(orderId && opts.all), 'settlement reconcile: --order and --all are mutually exclusive');
+
+  const chain = await openReadOnlyChain(opts, instance);
+  const before = await chainFingerprint(chain, instance, { capture: true });
+
+  const allSettlements = recordsIn(SETTLEMENTS_DIR, instance);
+  let records = allSettlements.map((settlement) => ({
+    id: String(settlement.orderId ?? settlement.id ?? '').trim(),
+    settlement,
+  }));
+  let note = '';
+  if (orderId) {
+    records = records.filter((row) => row.id === orderId);
+    if (!records.length) note = `no settlement record for order ${orderId} (${SETTLEMENTS_DIR}/${orderId}.json)`;
+  } else {
+    records.sort((a, b) => a.id.localeCompare(b.id));
+    if (limit > 0 && records.length > limit) {
+      note = `showing the newest ${limit} of ${records.length} settlement record(s); use --limit <n> or --all`;
+      records = records.slice(-limit);
+    }
+  }
+
+  const rows = [];
+  for (const { id, settlement } of records) {
+    const order = id ? readJson(`${ORDERS_DIR}/${id}.json`, instance)?.value ?? null : null;
+    rows.push(
+      await reconcileOne(chain, {
+        kind: 'settlement',
+        path: `${SETTLEMENTS_DIR}/${id}.json`,
+        id,
+        record: settlement,
+        hash: settlement.transactionHash,
+        expected: expectationFor(settlement, order),
+      }),
+    );
+  }
+  const after = await chainFingerprint(chain, instance, { capture: true });
+  const report = buildReport(chain, rows, {
+    instance,
+    before,
+    after,
+    note,
+    resources: {
+      orders: { path: ORDERS_DIR, count: recordsIn(ORDERS_DIR, instance).length },
+      settlements: { path: SETTLEMENTS_DIR, count: allSettlements.length },
+    },
+  });
+  if (opts.json) console.log(JSON.stringify(report, null, 2));
+  else console.log(formatReport(report));
+  return report;
+}
+
 function help() {
   console.log(`ArcBlog economy (spec §25–§92) — Phase 8 / MVP-3
 
@@ -540,6 +846,10 @@ Usage:
   node scripts/arcblog-economy.mjs order show --id <id>
   node scripts/arcblog-economy.mjs order pay --id <id> [--adapter manual] [--payment-ref <ref>]
   node scripts/arcblog-economy.mjs order refund --id <id> [--reason <text>]
+  node scripts/arcblog-economy.mjs order verify [--id <orderId>|--order <orderId>] [--tx-hash <hash>] [--json]
+  node scripts/arcblog-economy.mjs order verify --tx-hash <hash> [--expect-amount <n>] [--expect-asset <asset>] \\
+                                              [--expect-receiver <addr>] [--json]   # SYNTHETIC mismatch probe
+  node scripts/arcblog-economy.mjs settlement reconcile [--order <orderId>] [--all] [--limit <n>] [--json]
   node scripts/arcblog-economy.mjs tip create --id <id> --creator-did <did> --amount <n> [--hub-did <did>]
   node scripts/arcblog-economy.mjs settle --order <id>
   node scripts/arcblog-economy.mjs ledger list [--order <id>] [--type <t>] [--limit <n>|--all]
@@ -552,10 +862,26 @@ Resources live under ${ECONOMY_DIR}. Payment and settlement are separate phases
 (spec §89); the ledger is append-only (spec §92) and the split always sums back
 to the order amount exactly. Paying a purchase of content also writes an Access
 Grant (spec §37/§88); a tip never does (spec §36).
+
+Read-only reconciliation (REQ-021 stage-2 P1, spec §44/§89–§92): \`order verify\`
+and \`settlement reconcile\` classify every target into exactly four states —
+verified | mismatch | not-on-chain | no-hash — from the record's
+transactionHash, using getTx alone and judging existence by \`info != null\`
+(an unknown hash answers code "OK" with info null). They NEVER write a record and
+NEVER send a transaction: the client is wrapped in the READ_ONLY_METHODS
+whitelist (scripts/lib/chain-orders.mjs) and a \`send*\` call is refused with
+READ_ONLY_GUARD. \`mismatch\` only marks the difference — it never rewrites the
+chain fact or the order amount. Under --adapter mock / manual (or a record that
+declares a simulated adapter) nothing is queried and every result reads
+"未上链 / 待验证" — a simulation is never reported as verified. Use
+\`--adapter ocap\` plus ARCBLOG_CHAIN_ENV=beta|main (or --chain-host) for real
+read-only queries; no mnemonic is needed or read. Exit codes: 0 = a report was
+produced (including 0 records or mismatch rows), 1 = the command could not run
+(VALIDATION / CHAIN_UNAVAILABLE / NOT_FOUND).
 `);
 }
 
-(function main() {
+(async function main() {
   const args = parseArgs(process.argv.slice(2));
   const [cmd, sub] = args._;
   const instance = resolveInstance(args);
@@ -579,7 +905,13 @@ Grant (spec §37/§88); a tip never does (spec §36).
       if (sub === 'show') return commandOrderShow(args, instance);
       if (sub === 'pay') return commandOrderPay(args, instance);
       if (sub === 'refund') return commandOrderRefund(args, instance);
-      fail('VALIDATION', `unknown order command: ${sub ?? '(none)'} (use create|list|show|pay|refund)`);
+      // REQ-021 §14 P1: read-only, zero chain writes.
+      if (sub === 'verify') return await commandOrderVerify(args, instance);
+      fail('VALIDATION', `unknown order command: ${sub ?? '(none)'} (use create|list|show|pay|refund|verify)`);
+    }
+    if (cmd === 'settlement') {
+      if (sub === 'reconcile') return await commandSettlementReconcile(args, instance);
+      fail('VALIDATION', `unknown settlement command: ${sub ?? '(none)'} (use reconcile)`);
     }
     if (cmd === 'settle') return commandSettle(args, instance);
     if (cmd === 'tip') {

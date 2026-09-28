@@ -1,0 +1,21 @@
+{
+ "matchingLines": [
+  "node scripts/arcblog-network.mjs hub show --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+  "node scripts/arcblog-network.mjs hub sync --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zExitTest1790483262699",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zExitTest1790483262699 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zNetHub1790267735950",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zNetHub1790267735950 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zExitTest1790434702401",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zExitTest1790434702401 --status error --error <message>",
+  "node scripts/arcblog-network.mjs hub show --hub-did did:key:zUiFresh1790348264",
+  "node scripts/arcblog-network.mjs hub sync --hub-did did:key:zUiFresh1790348264 --status error --error <message>",
+  "运行一次 worker / 常驻运行：node scripts/arcblog-network.mjs watch"
+ ],
+ "regexCount": 11,
+ "advancedButton": [
+  "展开高级（CLI）"
+ ],
+ "bodyHasSyncCard": false
+}
+left_open=[]
