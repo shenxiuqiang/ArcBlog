@@ -845,7 +845,7 @@ console-topbar width: 100vw + margin-left: calc(50% - 50vw)
 | 按钮默认圆角不统一 | 运行时 `variant=primary` 是 8px，而 `secondary`/`ghost` 是 **32px**（胶囊）→ 同一行里三种圆角。内联 `borderRadius: "var(--radius-md, 8px)"` 可统一（action 会转发 `borderRadius`） |
 | action 会被容器拉伸 | 卡片是 flex 列（`align-items: stretch`），放进卡片的 action 直接变成整卡宽（实测 1372px / 1402px）→ 包一层 `row cross=start` 后恢复内容宽（实测 63–102px） |
 | grid 列表行会拉伸行内按钮 | `afs-list layout=grid itemStyle=card` 的行内 action 被拉到卡片等高（实测 140px）→ 行上加 `cross=start`，实测回落到 31px |
-| 尺寸档实测 | 默认档 `padding: 8px 16px` / 高 39px / 字号 14.4px；`size=sm` 档 `padding: 5px 12px` / 高 31px / 字号 13.6px |
+| 尺寸档实测 | 默认档 `padding: 8px 16px` / 字号 14.4px；`size=sm` 档 `padding: 5px 12px` / 字号 13.6px。**高度随字体度量变化，不是固定值**：Round 11 实测 en 36px / zh（CJK）38px / `sm` 29px（此前本节记的 39/31px 是更早一次测量的快照，UI 标准 §4.3 已按实测改为不依赖固定像素——见 `docs/ArcBlog-admin-ui-design.md` V1.7） |
 | 审计口径 | 逐页量 `[data-mode="card"]` 的 padding/gap/radius/boxShadow 与 `console-pane` 内所有可见 `button` 的 radius/height/padding/width，取唯一值集合判断一致性 |
 
 ### 21.7 列表行与链接的细节（逐元素审计结论）
@@ -1179,7 +1179,7 @@ view {
 | `hero-carousel-frame` | 首页 hero 组件与验收测试按 id 寻址 | 组件挂不上、验收测试失败 |
 | `theme-bridge-frame`（wrapper 内） | 主题桥接 iframe 按 id/窗口寻址 | 主题桥接失效 |
 
-仓库里本来就有守卫 `scripts/arcblog-runtime-ids.test.mjs`（3 个用例），正是它把这次回归拦住了。**结论：不要无脑跑 `arc dsl lint --fix`**；若跑了，必须把这几个 id 加回来并重跑该守卫。现在仓库里保留 **24 条** `unreferenced_explicit_id` 警告，全部是这些运行时 id —— 这是有意为之，不是待办。
+仓库里本来就有守卫 `scripts/arcblog-runtime-ids.test.mjs`（3 个用例），正是它把这次回归拦住了。**结论：不要无脑跑 `arc dsl lint --fix`**；若跑了，必须把这几个 id 加回来并重跑该守卫。仓库里保留的 `unreferenced_explicit_id` 警告**全部是这些运行时 id —— 有意为之，不是待办**。计数**以 `arc dsl lint` 实测为准，不要写死**（曾记 24 条、后记 10 条，2026-09-28 实测 **16 条**：`factory.aup` 7 / `agents.aup` 6 / `wrapper.aup` 2 / `index.aup` 1）。
 
 （可安全清掉的是另一类：侧栏 15×15 行与分隔线的 id、`page-root`、各页 `console-nav*` —— 它们确实只被生成器用过，现在生成器已改为不输出 id。）
 
@@ -1508,3 +1508,25 @@ BUG-005 据此采用路径 B（本地化中性标签 + 原始值可见 + 色点 
 BUG-012 三个动作都弹了成功提示而实际写到了字面量路径。**验收写入类行为必须复核 AFS 记录本身**
 （`arc afs exec … read` / `list`），并扫描是否存在含 `$` 或 `{` 的记录 id——这条现在是
 `test-reports/round-9-reverify.md` 的固定检查项。
+
+### 29.5 `pattern=` 不能放在 `afs-list` 行模板的 `input` 上：服务端会拿**未替换的模板字面量**去校验（Round 11 实测）
+
+想让行级输入按记录自己的规则校验时，自然会写
+`input … pattern="${entry.content.pattern}" required=true` + 行内 Save。
+Round 11 实测：点击 Save 后服务端返回
+
+```text
+aup:exec:result → {"validationFailed":[{"id":"…-input-6","errors":[{"rule":"pattern","message":"validation.pattern"}]}]}
+```
+
+——**服务端校验的是模板串本身（`${entry.content.pattern}`），不是渲染后的值**，于是该列表里
+每一次 Save 都静默失败，而客户端仍弹出「Setting saved.」成功提示（又一条「toast ≠ 写入成功」的实例，见 §29.4）。
+改用**固定控件**（选项来自记录自己的允许值）后，同一操作返回真实结果且 AFS 值确实变化。
+
+**结论**：行级 `pattern` 校验在本平台不可用；行内输入的取值约束要么用受控选择（`input type=select`，
+选项是静态列表或记录自带列表），要么由**读取侧**容错（选项外值回退默认 + 留痕），不要依赖 `pattern`。
+
+**证据分级（如实）**：Dev 在 R11F 的探针里测得上述 `validationFailed` 原始输出（见
+`test-reports/round-11-reverify.md` 与 Dev 的 R11F 报告）；**QA 未独立复现**该条（复现需要在页面里放
+`pattern` 探针，属 QA 写范围外）。因此本节按「单次实测、证据原始输出齐全、未二次复现」收录，
+后续若有人复跑出不同结果，以新证据为准并回来修订。

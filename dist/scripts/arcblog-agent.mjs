@@ -35,6 +35,25 @@ import {
   toolPolicy,
 } from './lib/agents.mjs';
 import { REPO_ROOT } from './lib/manifest.mjs';
+import { readGeneralSettings } from './lib/general-settings.mjs';
+
+/**
+ * The Instance-level Agent Access master switch (spec §15.9, the settings page).
+ * Fail open to `true` when the record is unreadable, so an instance that never
+ * opened the settings page keeps exactly the policy it had before — and fail
+ * closed when an operator explicitly switched the surface off.
+ */
+function agentAccessEnabled(instance) {
+  try {
+    return readGeneralSettings(instance).agentAccess !== false;
+  } catch {
+    return true;
+  }
+}
+
+const AGENT_DISABLED =
+  'Agent Access is switched off for this instance (Settings → General, spec §15.9). ' +
+  'Turn it back on there, or run: node scripts/arcblog-settings.mjs general set --agent-access on';
 
 
 // --- read tools: real AFS reads ---------------------------------------------
@@ -180,6 +199,7 @@ const WRITE_RUNNERS = {
 // --- run (spec §130) --------------------------------------------------------
 
 function commandRun(opts, instance) {
+  if (!agentAccessEnabled(instance)) fail('AGENT_DISABLED', AGENT_DISABLED);
   const name = required(opts, 'tool');
   const tool = toolPolicy(name);
   if (!tool) fail('NOT_FOUND', `unknown tool: ${name} (see: node scripts/arcblog-agent.mjs tools)`);
@@ -261,14 +281,20 @@ function commandShow() {
   console.log(JSON.stringify({ ok: true, count: declared.length, agents: declared }, null, 2));
 }
 
-function commandCheck() {
-  const checks = checkDeclaredAgents();
+function commandCheck(instance) {
+  const enabled = agentAccessEnabled(instance);
+  const switchCheck = { id: 'agent-access-switch', ok: enabled, detail: enabled ? 'on' : AGENT_DISABLED };
+  const checks = [...checkDeclaredAgents(), switchCheck];
   const verdict = summarizeAgentChecks(checks);
   console.log(
     JSON.stringify(
       {
+        // `ok` / `failed` keep the shape the existing suite asserts
+        // (`failed` is the list of failing check ids, empty when healthy) —
+        // the Instance switch only adds a check plus the `agentAccess` field.
         ok: verdict.ok,
         failed: verdict.failed,
+        agentAccess: enabled ? 'on' : 'off',
         checks,
         policy: {
           readOnlyOps: READ_OPS,
@@ -344,7 +370,7 @@ ArcBlog does not implement its own protocol (spec §129).
   try {
     if (!cmd || args.help || cmd === 'help' || cmd === '-h') return help();
     if (cmd === 'show') return commandShow();
-    if (cmd === 'check') return commandCheck();
+    if (cmd === 'check') return commandCheck(resolveInstance(args));
     if (cmd === 'tools') return commandTools(args);
     if (cmd === 'run') return commandRun(args, resolveInstance(args));
     if (cmd === 'authorize') return commandAuthorize(args, resolveInstance(args));

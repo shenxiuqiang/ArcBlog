@@ -14,8 +14,10 @@ page access {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
-        p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Daccess&cancel_to=%2F%3Fpage%3Daccess" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Daccess&cancel_to=%2F%3Fpage%3Daccess" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
         view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
@@ -88,6 +90,11 @@ page access {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
             p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
             action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}

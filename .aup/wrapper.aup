@@ -25,6 +25,8 @@ page wrapper {
     nav-author { en "Author" zh "作者" }
     nav-write { en "Write" zh "写文章" }
     nav-appearance { en "Appearance" zh "外观设置" }
+    nav-group-settings { en "Settings" zh "设置" }
+    nav-settings { en "General" zh "通用" }
     theme-label { en "Toggle theme" zh "切换主题" }
     tagline { en "DID-native writing, Markdown-first publishing." zh "DID 原生写作，Markdown 优先发布。" }
     footer-brand { en "ArcBlog" zh "ArcBlog" }

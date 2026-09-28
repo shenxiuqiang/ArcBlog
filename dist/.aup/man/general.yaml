@@ -1,0 +1,16 @@
+# Renamed from the auto-scaffolded `settings.yaml` stub (2026-09-28, Round 11F).
+# `settings` is a reserved AUP keyword, so the page id is `general` (see
+# scripts/console-nav.mjs for the measured reason). This man page is still a
+# stub: fill in description/synopsis/examples/flows, then it becomes the
+# authoritative man page for "general".
+schemaVersion: 1
+page: general
+description: >-
+  TODO: describe what "general" (console → Settings → General) is for and when an
+  agent should use it (stub — fill in before relying on this man page). It holds
+  the site-level basics (site name, language, timezone) and the instance switches
+  (comments, RSS, Agent Access); the data lives in
+  /instance/app/arcblog/config/{general,switches}/<field>.json and is read by
+  scripts/arcblog-rss.mjs and scripts/arcblog-agent.mjs.
+refs:
+  actions: []

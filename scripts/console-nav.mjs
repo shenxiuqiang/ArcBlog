@@ -57,6 +57,24 @@ export const CONSOLE_MENU = [
       { label: 'nav-factory', page: 'factory' },
     ],
   },
+  // spec §15.10 lists 设置 as a top-level menu next to 内容 / 站点 / 经济, so it
+  // gets its own group rather than being appended to an unrelated one. The page
+  // is reached by the ordinary `?page=general` switch, like every other row.
+  //
+  // The page id is `general`, NOT `settings` and NOT `settings-general`.
+  // `settings` is a reserved AUP keyword: a page file named `settings.aup` is
+  // parsed as a `settings { … }` declaration and rejected by lint
+  // (`invalid_settings_dsl` / "Expected settings [id] {"); a page's name comes
+  // from its file stem, so `page settings {` in any other filename is "not found
+  // in available pages" (both measured 2026-09-28, R11). R11F then measured that
+  // `general` parses cleanly (`arc dsl validate` → issues []), so the R11
+  // workaround name `settings-general` was dropped in favour of the cleaner,
+  // non-reserved id. §15.10's other settings sub-pages can still share the
+  // `settings-*` prefix if one is ever needed.
+  {
+    group: 'nav-group-settings',
+    items: [{ label: 'nav-settings', page: 'general' }],
+  },
 ];
 
 /** Every console page name, in menu order. */

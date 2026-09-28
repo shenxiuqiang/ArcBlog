@@ -45,8 +45,10 @@ page agents {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
-        p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dagents&cancel_to=%2F%3Fpage%3Dagents" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dagents&cancel_to=%2F%3Fpage%3Dagents" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
         view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
@@ -119,6 +121,11 @@ page agents {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
             p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
             action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
@@ -134,7 +141,7 @@ page agents {
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :grants-title level=3
+                h3 :grants-title level=3 style={fontSize: "var(--type-body)"}
                 p :grants-desc intent=muted
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view visible=$session.authenticated {
@@ -154,13 +161,13 @@ page agents {
                 p :mutations scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :policy-title level=3
+                h3 :policy-title level=3 style={fontSize: "var(--type-body)"}
                 p :policy-desc intent=muted
                 key-value-list agent-policy dense=true fields=[{label: "$t(agents.policy-read)", value: "read, list, stat, search", monospace: true}, {label: "$t(agents.policy-blocked)", value: "write, delete, exec, mount, unmount, create, update", monospace: true}, {label: "$t(agents.policy-never)", value: "/instance/app/arcblog/drafts, /instance/app/arcblog/page-drafts, /instance/app/arcblog/paid, /instance/app/arcblog/economy/orders, /instance/app/arcblog/economy/settlements, /instance/app/arcblog/economy/ledger, /instance/app/arcblog/economy/attributions, /instance/app/arcblog/economy/access-grants, /instance/app/arcblog/economy/refunds, /instance/app/arcblog/config/trusted-hubs, /blocklets", monospace: true}, {label: "$t(agents.policy-default)", value: "settle_payment, change_wallet, change_role", monospace: true}]
                 key-value-list agent-declaration dense=true fields=[{label: "$t(agents.declared-agents)", value: "arcblog-agent — agents/arcblog-agent (type ai, model gpt-5.5, instructions system.md)"}, {label: "$t(agents.declared-scopes)", value: "/instance/app/arcblog/posts/** · categories/** · node/** · economy/policies/** · economy/products/** — ops read, list, stat; maxDepth 2", monospace: true}, {label: "$t(agents.declared-budget)", value: "maxRounds 6 · totalTokens 64000", monospace: true}, {label: "$t(agents.declared-checks)", value: "node scripts/arcblog-agent.mjs check — ok true, failed [], 8 checks", monospace: true}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :tools-title level=3
+                h3 :tools-title level=3 style={fontSize: "var(--type-body)"}
                 p :tools-desc intent=muted
                 h3 :tools-read level=3 style={fontSize: "var(--type-body)"}
                 key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: list_products, value: "$t(agents.status-available) · agent.read"}, {label: get_policy, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}, {label: get_studio, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}]
@@ -173,7 +180,7 @@ page agents {
                 p :tools-source scale=caption intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :grant-title level=3
+                h3 :grant-title level=3 style={fontSize: "var(--type-body)"}
                 p :grant-desc intent=muted
                 key-value-list agent-grant-cmds dense=true fields=[{label: "$t(agents.cmd-authorize)", value: "node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30", monospace: true, copyable: true}, {label: "$t(agents.cmd-revoke)", value: "node scripts/arcblog-agent.mjs revoke --agent <did>", monospace: true, copyable: true}]
                 p :grant-forbidden scale=sm intent=muted

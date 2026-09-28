@@ -29,8 +29,10 @@ page compose-edit {
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2
-        p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dadmin&cancel_to=%2F%3Fpage%3Dadmin" variant=primary label=:login
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose-edit&cancel_to=%2F%3Fpage%3Dcompose-edit" variant=primary label=:login
+        }
       }
       view gap=lg visible=$session.authenticated {
         view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} visible="!$state.post" {

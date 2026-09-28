@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
 
+import { readGeneralSettingsDetailed } from './lib/general-settings.mjs';
+
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
   return String(value);
@@ -37,6 +39,50 @@ function escapeXml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+/**
+ * RFC-822 date in the configured IANA timezone (the timezone General setting,
+ * spec §15.9). `Date#toUTCString` would satisfy the letter of RSS but makes the
+ * timezone setting a dead switch; this renders the same instant with the zone's
+ * numeric offset, e.g. `Sun, 28 Sep 2026 08:40:00 +0800`. An unknown zone falls
+ * back to UTC rather than failing the feed.
+ */
+function rfc822(date, timeZone) {
+  let parts;
+  try {
+    parts = Object.fromEntries(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timeZone || 'UTC',
+        hour12: false,
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+        .formatToParts(date)
+        .map((p) => [p.type, p.value]),
+    );
+  } catch {
+    return date.toUTCString();
+  }
+  const hour = parts.hour === '24' ? '00' : parts.hour;
+  const asUtc = Date.UTC(
+    Number(parts.year),
+    ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(parts.month),
+    Number(parts.day),
+    Number(hour),
+    Number(parts.minute),
+    Number(parts.second),
+  );
+  const offsetMinutes = Math.round((asUtc - date.getTime()) / 60000);
+  const sign = offsetMinutes < 0 ? '-' : '+';
+  const abs = Math.abs(offsetMinutes);
+  const offset = `${sign}${String(Math.floor(abs / 60)).padStart(2, '0')}${String(abs % 60).padStart(2, '0')}`;
+  return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year} ${hour}:${parts.minute}:${parts.second} ${offset}`;
 }
 
 function arcAfs(args, instance) {
@@ -112,23 +158,25 @@ function listPublishedPosts({ limit, instance }) {
     .slice(0, limit);
 }
 
-function buildRss({ feedTitle, feedLink, feedDescription, posts }) {
-  const items = posts
-    .map((post) => {
-      const link = `${feedLink.replace(/\/$/, '')}/app?page=reader&slug=${encodeURIComponent(post.slug || '')}`;
-      const title = escapeXml(post.seoTitle || post.title || post.slug || 'Untitled');
-      const description = escapeXml(post.seoDescription || post.summary || '');
-      const pubDate = post.publishedAt ? new Date(post.publishedAt).toUTCString() : new Date().toUTCString();
-      const guid = escapeXml(post.slug || link);
-      return `    <item>
+function buildRss({ feedTitle, feedLink, feedDescription, posts, language, timezone, enabled }) {
+  const items = enabled
+    ? posts
+        .map((post) => {
+          const link = `${feedLink.replace(/\/$/, '')}/app?page=reader&slug=${encodeURIComponent(post.slug || '')}`;
+          const title = escapeXml(post.seoTitle || post.title || post.slug || 'Untitled');
+          const description = escapeXml(post.seoDescription || post.summary || '');
+          const pubDate = rfc822(post.publishedAt ? new Date(post.publishedAt) : new Date(), timezone);
+          const guid = escapeXml(post.slug || link);
+          return `    <item>
       <title>${title}</title>
       <link>${escapeXml(link)}</link>
       <guid>${guid}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${description}</description>
     </item>`;
-    })
-    .join('\n');
+        })
+        .join('\n')
+    : '';
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -136,6 +184,7 @@ function buildRss({ feedTitle, feedLink, feedDescription, posts }) {
     <title>${escapeXml(feedTitle)}</title>
     <link>${escapeXml(feedLink)}</link>
     <description>${escapeXml(feedDescription)}</description>
+${language ? `    <language>${escapeXml(language)}</language>\n` : ''}    <lastBuildDate>${rfc822(new Date(), timezone)}</lastBuildDate>
 ${items}
   </channel>
 </rss>
@@ -146,13 +195,42 @@ function main() {
   const opts = parseArgs(process.argv.slice(2));
   const limit = Number(opts.limit || 20);
   const instance = optString(opts.instance);
-  const feedTitle = optString(opts['feed-title']) || 'ArcBlog';
+  // Instance-level General settings (spec §15.9). A missing record falls back to
+  // the historical CLI defaults, so an instance that never opened the settings
+  // page still generates exactly the feed it did before.
+  //
+  // BUG-023 (R11F): the reader is the second half of the option guard. A stored
+  // value outside the record's own `options` (an out-of-band AFS write, an older
+  // build, a page guard that was bypassed) is replaced by the documented default
+  // so it can never reach the public feed, and the substitution is reported on
+  // stderr — stdout is the feed itself and must stay pure XML.
+  let general = {};
+  try {
+    const detailed = readGeneralSettingsDetailed(instance);
+    general = detailed.values;
+    for (const issue of detailed.issues) {
+      console.error(
+        `arcblog-rss: WARN ${issue.path}: ${issue.reason} — using "${issue.effective}" instead of "${issue.stored}" (see: node scripts/arcblog-settings.mjs general show)`,
+      );
+    }
+  } catch {
+    // settings are best-effort for a CLI that must also work on a bare instance
+  }
+  const feedTitle = optString(opts['feed-title']) || general.siteName || 'ArcBlog';
   const feedLink = optString(opts['feed-link']) || 'http://localhost';
   const feedDescription = optString(opts['feed-description']) || 'DID-native Markdown publishing';
 
   try {
     const posts = listPublishedPosts({ limit, instance });
-    const rss = buildRss({ feedTitle, feedLink, feedDescription, posts });
+    const rss = buildRss({
+      feedTitle,
+      feedLink,
+      feedDescription,
+      posts,
+      language: general.language || '',
+      timezone: general.timezone || 'UTC',
+      enabled: general.rss !== false,
+    });
     process.stdout.write(rss);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, error: err.message }, null, 2));

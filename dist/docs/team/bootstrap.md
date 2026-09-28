@@ -129,6 +129,11 @@ docs/ArcBlog-feature-checklist.md、docs/team/bootstrap.md 的「高频踩坑」
 ```
 
 - 用 `list_pages` 拿当前 pageId（**每次会话都可能变，别硬编码**），再 `navigate_page` + `evaluate_script` 量几何/取文本。
+- **标签页纪律（必守）**：**整个 sweep 复用同一个标签页**（`Page.navigate` 换页），跑完关掉自己开的 target。
+  2026-09-28 实测事故：18 页 × 多脚本的探针把调试 Chrome 攒到 **53 个 page target**，Chrome 濒临崩溃，
+  人类看到的现象是「每点一个菜单就冒出一个新窗口」——**那不是链接问题**（控制台侧栏每一行都是
+  `action "$t(wrapper.nav-*)" -> page <page>` 的页内切换，全仓 `.aup/pages` 里 `target=_blank` 只出现在
+  侧栏页脚 RSS 与少数内容链接上），而是自动化脚本每页新开了 tab。收尾清理见「精简轮次」硬约束第 7 条。
 - 截图必须**内联**（`filePath` 会被拒）；要留下来时写到仓库外的临时目录。
 - 页面地址：`http://arcblog.localhost:4939/?page=<name>`（公共页：`/`、`/posts/<slug>`、`/store`）。
 - 判绿标准：`SESSION INIT FAILED` 不出现；要量的元素有非零几何；关键文案/链接在 DOM 里可断言。
@@ -155,6 +160,23 @@ docs/ArcBlog-feature-checklist.md、docs/team/bootstrap.md 的「高频踩坑」
 4. **浏览器断言只在验收标准真的需要 DOM 时做**；能用源码 + grep + 生成产物断言的，不启动浏览器。
 5. 相位之间**串行**：验证相位开始时，实现相位必须已全部结束（否则验证目标在 QA 脚下移动）。
 6. 收口 = Lead 跑一次快层 + `arc blocklet build`（改了 .aup）+ 只加本轮产物提交。**没有 13/21 分钟的收尾门。**
+7. **浏览器标签页纪律（2026-09-28 实测事故）**：多轮 workflow 的 CDP 探针会攒标签页，Chrome 会被拖到崩溃。
+   - **一次 sweep 复用同一个标签页**（用 `Page.navigate` 换页），**禁止每页新开一个 tab**；
+   - 探针跑完必须关闭自己开的 target（`Target.closeTarget`），或直接跑下面的清理命令；
+   - 每轮结束（以及 Lead 收口时）跑一次清理，只留 1 个页面：
+
+   ```bash
+   # 列出：page 数量应保持个位数
+   curl -s http://127.0.0.1:9333/json/list | python3 -c 'import json,sys;print(len([t for t in json.load(sys.stdin) if t.get("type")=="page"]))'
+   # 清理：只保留最近使用的 1 个 page，其余全部关闭
+   curl -s http://127.0.0.1:9333/json/list | python3 -c "
+   import json,sys,urllib.request
+   pages=[t for t in json.load(sys.stdin) if t.get('type')=='page']
+   for t in pages[1:]:
+       urllib.request.urlopen('http://127.0.0.1:9333/json/close/'+t['id']).read()
+   print('closed', len(pages)-1)
+   "
+   ```
 
 ## workflow 模式变体（把 4 个角色换成 workflow 子 agent）
 

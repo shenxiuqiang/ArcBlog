@@ -1,0 +1,243 @@
+page general {
+  i18n {
+    basics-desc { en "Site-level values. They live in this blocklet's own config collection and are read by the RSS generator." zh "站点级取值。它们存放在本 Blocklet 自己的 config 集合中，由 RSS 生成器读取。" }
+    basics-options { en "Allowed values" zh "允许值" }
+    basics-save { en "Save" zh "保存" }
+    basics-error { en "Not saved — the write was refused and nothing changed. Check that a value is chosen (or filled in) and that the runtime allows the write; the console shows the platform error." zh "未保存——写入被拒绝，没有任何改动。请确认已选择（或填写）取值，且运行期允许该写入；具体平台错误见浏览器控制台。" }
+    basics-guard { en "Each field offers only its own record’s allowed values, so this page cannot submit an out-of-options value, and a field must be chosen (or filled) explicitly before Save. The current values are shown under “Stored records” — that list is the source of truth. Two platform notes: on a brand-new tab the prefill can stay empty until the page is reloaded or reached by an in-page menu click (arc-contracts §21.11), and the readers fall back to the documented default if a record was written out-of-band — see `node scripts/arcblog-settings.mjs general show`." zh "每个字段只提供该记录自己的允许值，因此本页无法提交选项外的取值；保存前必须显式选择（或填写）该字段。当前取值见下方「已存记录」——那才是真相来源。两点平台说明：全新标签页首次加载时预填可能为空，需重载或用页内菜单再次进入（arc-contracts §21.11）；若记录被带外写入，读取方会回退到文档默认值——见 `node scripts/arcblog-settings.mjs general show`。" }
+    basics-saved { en "Setting saved." zh "设置已保存。" }
+    choose { en "Choose a value…" zh "请选择取值…" }
+    basics-title { en "Site basics" zh "基础信息" }
+    basics-value { en "Value" zh "取值" }
+    desc { en "Instance-level General settings: site name, language, timezone and the three Instance switches. One home for every \"where is that switch?\" question." zh "Instance 级通用设置：站点名称、语言、时区，以及三个 Instance 开关。「这个开关在哪」的答案只有一个地方。" }
+    gate-desc { en "Sign in with DID Wallet to manage this instance's General settings." zh "使用 DID Wallet 登录后管理本实例的通用设置。" }
+    gate-title { en "Settings" zh "设置" }
+    init-basics { en "Create basics" zh "创建基础记录" }
+    init-confirm-msg { en "Creates any missing record with its documented default. Existing records are left untouched (the platform refuses to overwrite an existing path in create mode)." zh "为缺失的记录按文档默认值创建；已存在的记录不会被改动（create 模式下平台会拒绝覆盖已存在路径）。" }
+    init-confirm-title { en "Create missing settings records?" zh "创建缺失的设置记录？" }
+    init-desc { en "Create only the records that are missing, with their documented default; an existing record is never overwritten (create mode refuses an existing path). These are ordinary records: the CLI and this page can both update them afterwards — arc-contracts §29.2 (corrected in Round 10) says a browser write to an existing record is not refused in general; it depends on the origin of the record, the write mode and the daemon process. If a Save ever fails, probe before deleting anything: delete + recreate loses createdAt." zh "只为缺失的记录按文档默认值创建；已存在的记录不会被覆盖（create 模式拒绝已存在路径）。这些就是普通记录：之后 CLI 与本页都能更新它们——arc-contracts §29.2（Round 10 已更正）说明浏览器写已存在记录并非一律被拒，而是与记录来源、写入模式和当时的 daemon 进程相关。若某次保存失败，先探针再决定：删除重建会丢掉 createdAt。" }
+    init-switches { en "Create switches" zh "创建开关记录" }
+    init-title { en "Initialize records" zh "初始化记录" }
+    login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    scope-desc { en "These are Instance-level values: they are stored at /instance/app/arcblog/config/{general,switches}/<field>.json and apply to the whole node. The impact of every switch is written next to it below." zh "这些是 Instance 级取值：存放在 /instance/app/arcblog/config/{general,switches}/<field>.json，对整个节点生效。每个开关的影响范围都在下方写明。" }
+    scope-title { en "What belongs here" zh "归属与范围" }
+    sw-agent-consumer { en "Consumed by scripts/arcblog-agent.mjs: when off, `run` refuses every tool and `check` reports the switch as disabled (fail closed). Takes effect on the next CLI run." zh "由 scripts/arcblog-agent.mjs 消费：关闭后 `run` 拒绝执行任何工具，`check` 报告开关已停用（fail closed）。下次 CLI 运行时生效。" }
+    sw-agent-impact { en "Impact: every Agent Access tool call on this node. It does not affect the read-only public web surface." zh "影响范围：本节点上所有 Agent Access 工具调用；不影响只读的公开站点面。" }
+    sw-agent-name { en "Agent Access (master switch)" zh "Agent Access（总开关）" }
+    sw-comments-consumer { en "No consumer yet — ArcBlog has no comment feature at all, so this switch is recorded only. It is not a fake control: the page says so, and the record is readable by the CLI." zh "目前没有消费方——ArcBlog 根本没有评论功能，因此该开关仅记录。它不是伪造的控件：页面如实标注，且记录可被 CLI 读取。" }
+    sw-comments-impact { en "Impact: none today. Planned to gate a comment surface if one is built (spec §15.9)." zh "影响范围：当前无。若未来实现评论面，将用于总开关（spec §15.9）。" }
+    sw-comments-name { en "Comments" zh "评论" }
+    sw-off { en "Off" zh "关闭" }
+    sw-on { en "On" zh "开启" }
+    sw-rss-consumer { en "Consumed by scripts/arcblog-rss.mjs: when off, the generated feed keeps its channel but carries no <item>. Takes effect on the next feed generation." zh "由 scripts/arcblog-rss.mjs 消费：关闭后生成的订阅仍保留 channel，但不含任何 <item>。下次生成订阅时生效。" }
+    sw-rss-impact { en "Impact: the public RSS feed (and therefore every subscriber). It does not remove published posts." zh "影响范围：公开 RSS 订阅（以及所有订阅者）；不会删除已发布文章。" }
+    sw-rss-name { en "RSS" zh "RSS" }
+    sw-saved { en "Switch updated." zh "开关已更新。" }
+    switches-desc { en "Instance-level master switches. Every switch states its impact and whether anything actually consumes it." zh "Instance 级总开关。每个开关都写明影响范围，以及是否真有消费方。" }
+    switches-title { en "Instance switches" zh "Instance 开关" }
+    stored { en "Stored value" zh "已存取值" }
+    language-hint { en "Value of the RSS <language> element of the generated feed." zh "生成的 RSS 订阅中 <language> 元素的取值。" }
+    language-label { en "Language" zh "语言" }
+    records-desc { en "What is actually stored under /instance/app/arcblog/config/general/. This list is the source of truth: if an edit above is refused, the value here does not change." zh "实际存放在 /instance/app/arcblog/config/general/ 的内容。此列表才是真相来源：上面的编辑若被拒绝，这里的取值不会变化。" }
+    records-title { en "Stored records" zh "已存记录" }
+    site-name-hint { en "Channel title of the generated RSS feed. It does not rename the blocklet or the console brand." zh "生成的 RSS 订阅的 channel 标题。不会重命名 Blocklet 或控制台品牌。" }
+    site-name-label { en "Site name" zh "站点名称" }
+    timezone-hint { en "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated feed." zh "生成的订阅中 <pubDate>/<lastBuildDate> UTC 偏移所用的 IANA 时区。" }
+    timezone-label { en "Timezone" zh "时区" }
+    title { en "General" zh "通用" }
+  }
+  view gap=lg style={height: "100vh", overflow: visible} {
+    view style={gap: "0"} {
+      view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
+        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dgeneral&cancel_to=%2F%3Fpage%3Dgeneral" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
+      }
+      row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
+        view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
+          p "$t(wrapper.nav-group-content)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-dashboard)" -> page dashboard style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-studio)" -> page posts style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-pages)" -> page pages style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-write)" -> page compose style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-site)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-heroes)" -> page heroes style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-categories)" -> page categories style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-tags)" -> page tags style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-appearance)" -> page appearance style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-ops)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-operations)" -> page operations style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
+            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
+            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
+            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          }
+        }
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
+          view gap=xs {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :scope-title level=3 style={fontSize: "var(--type-body)"}
+                p :scope-desc scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={siteName: "/instance/app/arcblog/config/general/site-name.json", language: "/instance/app/arcblog/config/general/language.json", timezone: "/instance/app/arcblog/config/general/timezone.json"} {
+                h3 :basics-title level=3 style={fontSize: "var(--type-body)"}
+                p :basics-desc scale=sm intent=muted
+                p :basics-guard scale=sm intent=muted
+                view gap=xs {
+                  h3 :site-name-label level=3 style={fontSize: "var(--type-body)"}
+                  p :site-name-hint scale=sm intent=muted
+                  row gap=xs {
+                    input type=text name=eValue label=:basics-value value="${state.siteName.value}" required=true maxLength=120
+                    action variant=secondary size=sm label=:basics-save onSuccessToast={intent: success, message: "$t(general.basics-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/site-name.json", mode: tree-merge, content: {value: $args.eValue}}}}
+                  }
+                }
+                view gap=xs {
+                  h3 :language-label level=3 style={fontSize: "var(--type-body)"}
+                  p :language-hint scale=sm intent=muted
+                  p "$t(general.basics-options): en, zh" scale=sm intent=muted
+                  row gap=xs {
+                    input type=select name=eValue label=:basics-value options=[{label: :choose, value: ""}, {label: en, value: en}, {label: zh, value: zh}] value="${state.language.value}" required=true
+                    action variant=secondary size=sm label=:basics-save onSuccessToast={intent: success, message: "$t(general.basics-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: tree-merge, content: {value: $args.eValue}}}}
+                  }
+                }
+                view gap=xs {
+                  h3 :timezone-label level=3 style={fontSize: "var(--type-body)"}
+                  p :timezone-hint scale=sm intent=muted
+                  p "$t(general.basics-options): UTC, Asia/Shanghai, Asia/Tokyo, Asia/Singapore, Europe/London, Europe/Berlin, America/New_York, America/Los_Angeles" scale=sm intent=muted
+                  row gap=xs {
+                    input type=select name=eValue label=:basics-value options=[{label: :choose, value: ""}, {label: UTC, value: UTC}, {label: "Asia/Shanghai", value: "Asia/Shanghai"}, {label: "Asia/Tokyo", value: "Asia/Tokyo"}, {label: "Asia/Singapore", value: "Asia/Singapore"}, {label: "Europe/London", value: "Europe/London"}, {label: "Europe/Berlin", value: "Europe/Berlin"}, {label: "America/New_York", value: "America/New_York"}, {label: "America/Los_Angeles", value: "America/Los_Angeles"}] value="${state.timezone.value}" required=true
+                    action variant=secondary size=sm label=:basics-save onSuccessToast={intent: success, message: "$t(general.basics-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/timezone.json", mode: tree-merge, content: {value: $args.eValue}}}}
+                  }
+                }
+                h3 :records-title level=3 style={fontSize: "var(--type-body)"}
+                p :records-desc scale=sm intent=muted
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/general" {
+                  view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    h3 "${entry.content.label}" style={fontSize: "var(--type-body)"}
+                    p "${entry.content.description}" scale=sm intent=muted
+                    p "$t(general.basics-options): ${entry.content.options}" scale=sm intent=muted
+                    row gap=xs {
+                      p :stored scale=sm intent=muted
+                      p "${entry.content.value}" scale=sm
+                    }
+                  }
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :switches-title level=3 style={fontSize: "var(--type-body)"}
+                p :switches-desc scale=sm intent=muted
+                view gap=xs {
+                  h3 :sw-comments-name level=3 style={fontSize: "var(--type-body)"}
+                  p :sw-comments-impact scale=sm
+                  p :sw-comments-consumer scale=sm intent=muted
+                }
+                view gap=xs {
+                  h3 :sw-rss-name level=3 style={fontSize: "var(--type-body)"}
+                  p :sw-rss-impact scale=sm
+                  p :sw-rss-consumer scale=sm intent=muted
+                }
+                view gap=xs {
+                  h3 :sw-agent-name level=3 style={fontSize: "var(--type-body)"}
+                  p :sw-agent-impact scale=sm
+                  p :sw-agent-consumer scale=sm intent=muted
+                }
+                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/switches" {
+                  view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    input type=hidden name=sPath value="${entry.path}"
+                    row cross=center gap=sm {
+                      h3 "${entry.content.label}" style={fontSize: "var(--type-body)"}
+                      p :stored scale=sm intent=muted
+                      p "${entry.content.value}" scale=sm intent=muted
+                    }
+                    row gap=xs {
+                      action variant=secondary size=sm label=:sw-on onSuccessToast={intent: success, message: "$t(general.sw-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.sPath}", mode: tree-merge, content: {value: true}}}}
+                      action size=sm label=:sw-off onSuccessToast={intent: success, message: "$t(general.sw-saved)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.sPath}", mode: tree-merge, content: {value: false}}}}
+                    }
+                  }
+                }
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :init-title level=3 style={fontSize: "var(--type-body)"}
+                p :init-desc scale=sm intent=muted
+                row gap=sm {
+                  action variant=secondary size=sm label=:init-basics confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/site-name.json", mode: create, content: {label: "Site name", description: "Channel title of the generated RSS feed. It does not rename the blocklet or the console brand.", scope: instance, type: text, maxLength: 120, value: ArcBlog}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: create, content: {label: Language, description: "Value of the RSS <language> element of the generated feed.", scope: instance, type: select, options: [en, zh], pattern: "en|zh", value: en}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/timezone.json", mode: create, content: {label: Timezone, description: "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated RSS feed.", scope: instance, type: select, options: [UTC, "Asia/Shanghai", "Asia/Tokyo", "Asia/Singapore", "Europe/London", "Europe/Berlin", "America/New_York", "America/Los_Angeles"], pattern: "UTC|Asia/Shanghai|Asia/Tokyo|Asia/Singapore|Europe/London|Europe/Berlin|America/New_York|America/Los_Angeles", value: UTC}}}]}}
+                  action variant=secondary size=sm label=:init-switches confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/comments.json", mode: create, content: {label: Comments, description: "No consumer yet: ArcBlog has no comment feature, so this switch is recorded only.", scope: instance, type: toggle, value: false}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/rss.json", mode: create, content: {label: RSS, description: "When off, the generated RSS feed carries a channel with no items.", scope: instance, type: toggle, value: true}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/agent-access.json", mode: create, content: {label: "Agent Access", description: "When off, the Agent Access CLI refuses to run tools (fail closed).", scope: instance, type: toggle, value: true}}}]}}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

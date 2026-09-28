@@ -30,8 +30,10 @@ page compose {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
-        p :gate-desc intent=info
-        action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose&cancel_to=%2F%3Fpage%3Dcompose" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        p :gate-desc intent=muted
+        row cross=start {
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dcompose&cancel_to=%2F%3Fpage%3Dcompose" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+        }
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
         view size={width: "clamp(200px, 15vw, 280px)", flexShrink: 0, height: "100%"} style={padding: "0", background: "var(--color-surface)", borderRight: "1px solid var(--color-border)", overflowY: auto, gap: "0", height: "100%"} visible=$session.authenticated {
@@ -104,6 +106,11 @@ page compose {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          p "$t(wrapper.nav-group-settings)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
+          action "$t(wrapper.nav-settings)" -> page general style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
             p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
             action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
@@ -114,13 +121,13 @@ page compose {
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           h2 :title level=2 style={fontSize: "var(--type-subheading)"}
           p :desc intent=muted
-          view gap=md size={flex: 1} style={overflowY: auto} {
+          view gap=sm size={flex: 1} style={overflowY: auto} {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :checks level=3
+              h3 :checks level=3 style={fontSize: "var(--type-body)"}
               p :checks-desc intent=muted
             }
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :meta level=3
+              h3 :meta level=3 style={fontSize: "var(--type-body)"}
               input type=text label=:f-title name=title required=true state={value: ""}
               input type=text label=:f-slug name=slug required=true state={value: ""}
               p :slug-hint intent=muted scale=caption
@@ -131,7 +138,7 @@ page compose {
               p :cover-hint intent=muted scale=caption
             }
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :seo level=3
+              h3 :seo level=3 style={fontSize: "var(--type-body)"}
               p :seo-desc intent=muted
               input type=text label="SEO Title" name=seoTitle state={value: ""}
               input type=text label="SEO Description" name=seoDescription state={value: ""}
@@ -143,11 +150,11 @@ page compose {
               input type=textarea label=:f-body name=body required=true state={value: ""}
             }
             row gap=sm style={flexShrink: 0} {
-              action variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: $session.did, authorName: $session.displayName, published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
-              action variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: $session.did, authorName: $session.displayName, published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+              action variant=secondary label=:save-draft style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose.draft-saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: $session.did, authorName: $session.displayName, published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+              action variant=primary label=:publish-now style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose.published-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: $session.did, authorName: $session.displayName, published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
             }
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :images level=3
+              h3 :images level=3 style={fontSize: "var(--type-body)"}
               p :images-desc intent=muted
             }
             view style={flexShrink: 0} {
