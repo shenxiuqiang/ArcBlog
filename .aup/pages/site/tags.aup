@@ -22,7 +22,7 @@ page tags {
     list-title { en "Tags in use" zh "使用中的标签" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     queue-desc { en "The console cannot rewrite posts itself, so the form only queues an intent. The worker applies it with the same code path as the CLI merge." zh "控制台本身不能改写文章，表单只负责入队。worker 会用与 CLI merge 完全相同的实现来执行。" }
-    queue-legend { en "queued = waiting for the worker · done = posts rewritten · noop = no article referenced the source tag, nothing written · failed = rejected, no post touched" zh "queued = 等待 worker · done = 已改写文章 · noop = 没有文章引用源标签，未写库 · failed = 被拒绝，未改动任何文章" }
+    queue-legend { en "pending = waiting for the worker · applied = posts rewritten · noop = no article referenced the source tag, nothing written · rejected = refused, no post touched" zh "pending = 等待 worker · applied = 已改写文章 · noop = 没有文章引用源标签，未写库 · rejected = 被拒绝，未改动任何文章" }
     queue-title { en "Intent queue" zh "意图队列" }
     queued { en "Intent queued — the local worker applies it." zh "意图已入队 —— 由本机 worker 执行。" }
     refs { en "references" zh "引用" }

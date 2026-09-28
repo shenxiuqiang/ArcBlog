@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
@@ -46,7 +46,7 @@ const {
 } = await import('./lib/nft-factory.mjs');
 // Chain-environment resolution (spec §9 / REQ-023): presets, priority, fail-closed.
 const chain = await import('./lib/chain.mjs');
-const { readJson } = await import('./lib/arc.mjs');
+const { readJson, writeJson, remove } = await import('./lib/arc.mjs');
 
 function run(script, args, extraEnv = {}) {
   return spawnSync(process.execPath, [script, ...args], {
@@ -58,6 +58,27 @@ function run(script, args, extraEnv = {}) {
 const json = (text) => JSON.parse(text);
 const cli = (args) => run(nftCli, args);
 const factory = (args) => run(factoryCli, args);
+
+// BUG-048 (second half): every run creates five isolated records per suite (and
+// one more from the refused-real-chain test). Remove exactly those, so a live run
+// no longer deposits ~30 `*-test-<stamp>.json` / `factories-test-*.json` files in
+// the shared dev instance.
+after(() => {
+  for (const path of [
+    statePath,
+    registryPath,
+    nftStatePath,
+    summaryPath,
+    rolesPath,
+    `/instance/app/arcblog/config/nft-factories-triple-${stamp}.json`,
+  ]) {
+    try {
+      remove(path);
+    } catch {
+      /* absent — nothing to clean */
+    }
+  }
+});
 
 // ---- chain environment harness (REQ-023) ----------------------------------
 // Guard every env mutation so a failing assertion cannot leak into the CLI runs
@@ -472,4 +493,187 @@ test('a private key is refused as --pk', () => {
   } finally {
     rmSync(keyPath, { force: true });
   }
+});
+
+
+// --- BUG-043: per-node adapter attribution in the public projection ----------
+//
+// One file-header `adapter` cannot describe a projection that holds facts from
+// different adapters (the hub's mock residue read as chain truth under an
+// `adapter: "ocap"` header). Each node now carries its own adapter, and a record
+// written before that existed stays unattributed — never chain truth.
+
+test('BUG-043 / D37b: nodeAdapterOf publishes a THREE-state attribution, never a false "not simulated"', () => {
+  assert.deepEqual(chain.NODE_ADAPTER_STATES, ['mock', 'ocap', 'unknown']);
+
+  const real = chain.nodeAdapterOf({ adapter: 'ocap' });
+  assert.deepEqual(
+    { adapter: real.adapter, chainVerified: real.chainVerified, simulated: real.simulated, simulationUnknown: real.simulationUnknown, source: real.adapterSource },
+    { adapter: 'ocap', chainVerified: true, simulated: false, simulationUnknown: false, source: 'record' },
+  );
+
+  const mock = chain.nodeAdapterOf({ adapter: 'mock' });
+  assert.deepEqual(
+    { adapter: mock.adapter, chainVerified: mock.chainVerified, simulated: mock.simulated, simulationUnknown: mock.simulationUnknown },
+    { adapter: 'mock', chainVerified: false, simulated: true, simulationUnknown: false },
+  );
+  assert.match(mock.attribution, /SIMULATION/);
+  assert.match(mock.simulatedLabel, /SIMULATED/);
+
+  // The BUG-046 case: an unattributed record used to be published with
+  // `simulated: false` — a positive claim that it is NOT a simulation.
+  const legacy = chain.nodeAdapterOf({});
+  assert.deepEqual(
+    { adapter: legacy.adapter, chainVerified: legacy.chainVerified, simulated: legacy.simulated, simulationUnknown: legacy.simulationUnknown, source: legacy.adapterSource },
+    { adapter: 'unknown', chainVerified: false, simulated: null, simulationUnknown: true, source: 'unrecorded' },
+  );
+  assert.notEqual(legacy.simulated, false, 'unknown must never claim "not simulated"');
+  assert.match(legacy.attribution, /not recorded/);
+  assert.equal(chain.nodeAdapterOf(undefined).chainVerified, false);
+  // A value the vocabulary cannot classify is `unknown`, not passed through.
+  assert.equal(chain.nodeAdapterOf({ adapter: 'weird' }).adapter, 'unknown');
+  assert.equal(chain.PROJECTION_ADAPTER_SCOPE, 'registry');
+});
+
+test('BUG-043: `factory project` attributes each node from its own record, not from the header', () => {
+  // A projection exactly like the live one: an `ocap` header, a real studio node
+  // and the hub mock residue (`0xhubowner` / a non-hex tx hash).
+  writeJson(summaryPath, {
+    adapter: 'ocap',
+    network: 'beta',
+    factories: { studio: { address: 'zStudioAddr' }, hub: { address: 'zHubAddr' } },
+    nodes: {
+      studio: { state: 'acquired', owner: 'z1StudioOwner', assetId: 'zAsset', acquireTx: 'ABDBD742C055', svg: 'data:image/svg+xml;base64,AAA' },
+      hub: { state: 'acquired', owner: '0xhubowner', assetId: '0xa5ed65ce', acquireTx: '0xte32482c' },
+    },
+    updatedAt: '2026-09-27T08:34:45.194Z',
+  }, '');
+  // the isolated node-NFT record says studio=mock (a later real-chain run must not
+  // relabel it) and says nothing about hub (the legacy residue)
+  writeJson(nftStatePath, {
+    adapter: 'ocap',
+    roles: { studio: { state: 'acquired', assetId: 'zAsset', adapter: 'mock' } },
+  }, '');
+  writeJson(registryPath, {
+    adapter: 'ocap',
+    network: 'beta',
+    factories: { studio: { address: 'zStudioAddr', adapter: 'mock' }, hub: { address: 'zHubAddr' } },
+  }, '');
+
+  const projected = factory(['project']);
+  assert.equal(projected.status, 0, projected.stderr);
+  const summary = readJson(summaryPath, '')?.value;
+  assert.equal(summary.adapter, 'ocap', 'the header stays as evidence of the registry');
+  assert.equal(summary.adapterScope, 'registry', 'the header must declare its scope');
+  assert.equal(summary.nodes.studio.adapter, 'mock', "the node's own adapter wins over the header");
+  assert.equal(summary.nodes.studio.simulated, true);
+  assert.equal(summary.nodes.studio.chainVerified, false);
+  assert.equal(summary.nodes.hub.adapter, 'unknown', 'a legacy node is published as explicitly unknown');
+  assert.equal(summary.nodes.hub.adapterSource, 'unrecorded');
+  assert.equal(summary.nodes.hub.simulated, null, 'D37b: unknown must not claim "not simulated"');
+  assert.equal(summary.nodes.hub.simulationUnknown, true);
+  assert.equal(summary.nodes.hub.chainVerified, false, 'the hub mock residue is not chain truth');
+  assert.equal(summary.nodes.hub.owner, '0xhubowner', 'evidence fields are preserved, never cleaned up');
+  assert.equal(summary.nodes.hub.acquireTx, '0xte32482c');
+  assert.equal(summary.nodes.studio.svg, 'data:image/svg+xml;base64,AAA', 'the worker-rendered svg survives a re-annotation');
+  assert.equal(summary.nodes.studio.acquireTx, 'ABDBD742C055', 'existing fields are not dropped');
+  assert.equal(typeof summary.nodes.studio.attribution, 'string');
+  assert.equal(summary.factories.studio.simulated, true, 'factories are attributed per entry too');
+});
+
+// --- D37: read-only attribution backfill for records that predate it ------------
+//
+// The two live node records were written before per-node attribution existed.
+// Re-running the chain flows is forbidden (it would sign transactions), so the
+// attribution is derived from the evidence the records already carry — which is
+// what REQ-021 verified with read-only getTx. The backfill must never guess and
+// never touch the chain.
+
+test('D37: backfillAttribution derives studio=ocap / hub=mock from recorded evidence, and never guesses', async () => {
+  const { backfillAttribution } = await import('./lib/node-attribution.mjs');
+  const realStudio = {
+    assetId: 'zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas',
+    owner: 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a',
+    acquireTx: 'ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D',
+    stakeTx: '0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46',
+    revokeTx: 'E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66',
+    claimTx: '631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0',
+  };
+  const mockHub = { owner: '0xhubowner', assetId: '0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4', acquireTx: '0xte32482c95fb67c26b0834619c44ac321b5428e' };
+
+  const result = backfillAttribution({ roles: { studio: realStudio, hub: mockHub } }, { now: '2026-09-28T00:00:00.000Z' });
+  assert.equal(result.chainQueries, 0, 'the backfill must never call a chain');
+  assert.deepEqual(result.changed.map((c) => [c.role, c.adapter]), [['studio', 'ocap'], ['hub', 'mock']]);
+  assert.equal(result.state.roles.studio.adapter, 'ocap');
+  assert.equal(result.state.roles.hub.adapter, 'mock');
+  assert.equal(result.state.roles.studio.attributionSource, 'backfill:req-021-gettx');
+  // evidence fields are not rewritten
+  assert.equal(result.state.roles.hub.owner, '0xhubowner');
+  // pure: the input state is untouched
+  assert.equal(realStudio.adapter, undefined);
+
+  // an already-attributed record is left alone (a real per-node record wins)
+  const attributed = backfillAttribution({ roles: { studio: { ...realStudio, adapter: 'mock' } } });
+  assert.deepEqual(attributed.changed, []);
+  assert.match(attributed.skipped[0].reason, /already attributed: mock/);
+
+  // evidence that matches no documented pattern stays unknown — never guessed
+  const unmatched = backfillAttribution({ roles: { studio: { acquireTx: 'nope' } } });
+  assert.deepEqual(unmatched.changed, []);
+  assert.match(unmatched.skipped[0].reason, /no documented pattern/);
+});
+
+test('D37: `node-nft backfill` writes the record without a chain call, and `factory project` publishes it per node', () => {
+  const realStudio = {
+    assetId: 'zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas',
+    acquireTx: 'ABDBD742C055E3574261DE8FD4C1EEDBEE7DC34CC4C77AF4B50279BFAC50B70D',
+    stakeTx: '0C2D04987CB365BF4C0E522CF74684E109AFC40EA567402558F47B5BE0D11F46',
+    revokeTx: 'E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66',
+    claimTx: '631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0',
+  };
+  const mockHub = { owner: '0xhubowner', assetId: '0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4', acquireTx: '0xte32482c95fb67c26b0834619c44ac321b5428e' };
+  writeJson(nftStatePath, { adapter: 'ocap', network: 'beta', roles: { studio: realStudio, hub: mockHub } }, '');
+
+  const dry = json(cli(['backfill', '--dry-run']).stdout);
+  assert.equal(dry.chainQueries, 0);
+  assert.equal(dry.written, false);
+  assert.equal(dry.changed.length, 2);
+  assert.equal(readJson(nftStatePath)?.value.roles.studio.adapter, undefined, 'a dry run must write nothing');
+
+  const ran = json(cli(['backfill']).stdout);
+  assert.equal(ran.written, true);
+  assert.equal(ran.chainQueries, 0);
+  assert.equal(ran.next, 'node scripts/arcblog-factory.mjs project');
+  const stored = readJson(nftStatePath)?.value;
+  assert.equal(stored.roles.studio.adapter, 'ocap');
+  assert.equal(stored.roles.hub.adapter, 'mock');
+  assert.equal(stored.roles.studio.attributionSource, 'backfill:req-021-gettx');
+
+  // the public projection keeps its worker-rendered fields and gains the facts
+  writeJson(summaryPath, {
+    adapter: 'ocap',
+    adapterScope: 'registry',
+    factories: { studio: { address: 'zStudioAddr' }, hub: { address: 'zHubAddr' } },
+    nodes: {
+      studio: { state: 'acquired', ...realStudio, svg: 'data:image/svg+xml;base64,AAA' },
+      hub: { state: 'acquired', ...mockHub },
+    },
+    updatedAt: '2026-09-27T08:34:45.194Z',
+  }, '');
+  const projected = factory(['project']);
+  assert.equal(projected.status, 0, projected.stderr);
+  const summary = readJson(summaryPath)?.value;
+  assert.equal(summary.nodes.studio.adapter, 'ocap');
+  assert.equal(summary.nodes.studio.chainVerified, true);
+  assert.equal(summary.nodes.studio.simulated, false);
+  assert.equal(summary.nodes.studio.simulationUnknown, false);
+  assert.equal(summary.nodes.studio.adapterSource, 'backfill:req-021-gettx');
+  assert.equal(summary.nodes.studio.svg, 'data:image/svg+xml;base64,AAA', 'the projection stays additive');
+  assert.equal(summary.nodes.hub.adapter, 'mock');
+  assert.equal(summary.nodes.hub.simulated, true);
+  assert.equal(summary.nodes.hub.simulationUnknown, false);
+  assert.match(summary.nodes.hub.attribution, /SIMULATION, not chain truth/);
+  assert.match(summary.nodes.hub.simulatedLabel, /SIMULATED/);
+  assert.equal(summary.nodes.hub.owner, '0xhubowner', 'evidence fields survive the re-annotation');
+  assert.equal(summary.nodes.hub.acquireTx, '0xte32482c95fb67c26b0834619c44ac321b5428e');
 });

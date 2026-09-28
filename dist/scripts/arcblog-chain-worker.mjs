@@ -21,16 +21,18 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { openChain, resolveChainOptions } from './lib/chain.mjs';
+import { NODE_NFT_STATE_PATH, nodeAdapterOf, openChain, resolveChainOptions } from './lib/chain.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, '..');
 // Overridable so tests (and a second worker) never touch the production queue.
 const INTENT_DIR = process.env.ARCBLOG_CHAIN_INTENTS_PATH || '/instance/app/arcblog/config/chain-intents';
-const SUMMARY_PATH = '/instance/app/arcblog/node/factories.json';
-const NODE_NFT_PATH = '/instance/app/arcblog/config/node-nft.json';
-const REGISTRY_PATH = '/instance/app/arcblog/config/nft-factories.json';
+// Same rule for the two records the SVG refresh reads/writes: a test that calls
+// `refreshSvg()` in-process must never rewrite the live public projection.
+const SUMMARY_PATH = process.env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH || '/instance/app/arcblog/node/factories.json';
+const NODE_NFT_PATH = NODE_NFT_STATE_PATH;
+const REGISTRY_PATH = process.env.ARCBLOG_FACTORY_REGISTRY_PATH || '/instance/app/arcblog/config/nft-factories.json';
 const ACTIONS = ['acquire', 'stake', 'revoke', 'claim'];
 const ROLES = ['studio', 'hub'];
 
@@ -48,15 +50,40 @@ function loadLocalEnv() {
   }
 }
 
+/**
+ * Read the intent queue, keeping the `<id>.json` convention explicit (D38).
+ *
+ * The queue root is an AFS directory: an entry without the `.json` extension can
+ * exist, and no worker will ever consume it. Instead of a silent skip it is
+ * reported as a diagnostic, which `run` prints and `watch` logs once.
+ */
+export function scanIntents(instance) {
+  const intents = [];
+  const ignored = [];
+  for (const entry of list(INTENT_DIR, instance)) {
+    const raw = typeof entry === 'string' ? entry : entry?.path ?? entry?.key ?? '';
+    const name = String(raw).split('/').pop();
+    if (!name) continue;
+    if (!name.endsWith('.json')) {
+      ignored.push({
+        path: `${INTENT_DIR}/${name}`,
+        reason: `queue entries must be named <id>.json — "${name}" has no .json extension, so no worker will ever consume it (D38)`,
+      });
+      continue;
+    }
+    const path = String(raw).startsWith('/') ? String(raw) : `${INTENT_DIR}/${name}`;
+    const stored = readJson(path, instance);
+    if (!stored) {
+      ignored.push({ path, reason: 'queue entry could not be read — no worker will consume it (D38)' });
+      continue;
+    }
+    intents.push(stored.value ?? null);
+  }
+  return { intents: intents.filter(Boolean), ignored };
+}
+
 function listIntents(instance) {
-  return list(INTENT_DIR, instance)
-    .map((entry) => {
-      const path = typeof entry === 'string' ? entry : entry?.path ?? entry?.key ?? '';
-      if (!path || !String(path).endsWith('.json')) return null;
-      const stored = readJson(String(path).startsWith('/') ? String(path) : `${INTENT_DIR}/${String(path).split('/').pop()}`, instance);
-      return stored?.value ?? null;
-    })
-    .filter(Boolean);
+  return scanIntents(instance).intents;
 }
 
 function updateIntent(intent, patch, instance) {
@@ -119,19 +146,52 @@ export function renderNodeSvg({ displayContent, data, nftId, address }) {
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 
-/** Merge the rendered SVGs into the guest-readable projection the console reads. */
-async function refreshSvg(instance) {
-  const chain = await openChain({}, instance);
-  if (!chain?.factoryState || !chain?.getAssetState) return { updated: 0 };
+/**
+ * Merge the rendered SVGs into the guest-readable projection the console reads.
+ *
+ * `chain` is injectable so a test can drive both guard branches without a real
+ * chain (the CLI never passes it).
+ */
+async function refreshSvg(instance, { chain: injectedChain = null, opts = {} } = {}) {
+  const chain = injectedChain ?? (await openChain(opts, instance));
+  if (!chain?.factoryState || !chain?.getAssetState) return { updated: 0, skipped: 0, adapter: chain?.adapter ?? '' };
   const registry = readJson(REGISTRY_PATH, instance)?.value ?? {};
   const nodeNft = readJson(NODE_NFT_PATH, instance)?.value ?? {};
   const stored = readJson(SUMMARY_PATH, instance);
   const summary = stored?.value ?? { factories: {}, nodes: {} };
   let updated = 0;
+  let skipped = 0;
   for (const role of ROLES) {
     const record = nodeNft.roles?.[role];
     const factory = registry.factories?.[role];
     if (!record?.assetId || !factory?.address) continue;
+    // D37c (BUG-047): decide PER NODE from the THREE-STATE attribution, never from
+    // the shared header, and never from "the record has a non-empty adapter".
+    //   ocap    → query the chain, so a real node's NFT card keeps refreshing;
+    //   mock    → never query: a simulated asset does not exist on a real chain,
+    //             and querying it is what produced the misleading `svgError`;
+    //   unknown → never query (fail closed): the record never recorded where its
+    //             facts came from, so "unverified" is the honest answer.
+    // A node whose facts came from a DIFFERENT adapter than this run's is skipped
+    // as well — pointing a mock run at real hashes (or the reverse) is the same
+    // class of mistake.
+    const attribution = nodeAdapterOf(record);
+    if (attribution.adapter !== 'ocap' || chain.adapter !== 'ocap') {
+      const reason =
+        attribution.adapter === 'mock'
+          ? `not queried: this node's facts are a "${attribution.adapter}" simulation; this worker runs "${chain.adapter}"`
+          : attribution.adapter === 'ocap'
+            ? `not queried: this node's facts come from the "ocap" chain, but this worker runs "${chain.adapter}"`
+            : `not queried: this node's adapter is unknown (${attribution.attribution})`;
+      summary.nodes = { ...(summary.nodes ?? {}) };
+      summary.nodes[role] = {
+        ...(summary.nodes[role] ?? {}),
+        ...attribution,
+        svgError: reason,
+      };
+      skipped += 1;
+      continue;
+    }
     try {
       const factoryState = await chain.factoryState(factory.address);
       const assetState = await chain.getAssetState(record.assetId);
@@ -153,21 +213,31 @@ async function refreshSvg(instance) {
         address: record.assetId,
       });
       summary.nodes = { ...(summary.nodes ?? {}) };
-      summary.nodes[role] = { ...(summary.nodes[role] ?? {}), moniker, svg };
+      // A node this run DID query carries fresh facts, so stamp its attribution
+      // too (and clear a diagnostic left by an earlier skipped run).
+      summary.nodes[role] = { ...(summary.nodes[role] ?? {}), ...attribution, moniker, svg, svgError: '' };
       updated += 1;
     } catch (err) {
       // A missing asset (revoked/claimed) must not break the projection.
       summary.nodes = { ...(summary.nodes ?? {}) };
-      summary.nodes[role] = { ...(summary.nodes[role] ?? {}), svg: '', svgError: String(err.message ?? err).slice(0, 200) };
+      summary.nodes[role] = {
+        ...(summary.nodes[role] ?? {}),
+        ...attribution,
+        svg: '',
+        svgError: String(err.message ?? err).slice(0, 200),
+      };
     }
   }
   summary.updatedAt = nowIso();
   writeJson(SUMMARY_PATH, summary, instance, stored?.ifMatch ?? undefined);
-  return { updated };
+  // `skipped` counts the nodes the D37c guard refused to query (mock/unknown, or
+  // an adapter that does not match this run) — a number QA can assert on.
+  return { updated, skipped, adapter: chain.adapter ?? '' };
 }
 
 function drainOnce(instance) {
-  const pending = listIntents(instance)
+  const { intents, ignored } = scanIntents(instance);
+  const pending = intents
     .filter((intent) => intent.status === 'pending' || intent.status === 'running')
     .sort((a, b) => String(a.requestedAt ?? '').localeCompare(String(b.requestedAt ?? '')));
   const results = [];
@@ -198,7 +268,9 @@ function drainOnce(instance) {
       ),
     );
   }
-  return results;
+  // D38: the non-`.json` entries this queue root refuses to consume, reported so
+  // a permanent `pending` row on the console is never a silent mystery.
+  return { results, ignored };
 }
 
 function newIntentId() {
@@ -232,26 +304,37 @@ async function main() {
   }
 
   if (command === 'refresh') {
-    const result = await refreshSvg(instance);
+    const result = await refreshSvg(instance, { opts });
     console.log(JSON.stringify({ ok: true, action: 'svg-refresh', ...result }, null, 2));
     return;
   }
 
   if (command === 'run' || command === 'watch') {
     const interval = Math.max(1, Number(optString(opts.interval).trim() || 3));
-    const once = () => {
-      const results = drainOnce(instance);
-      if (results.length) {
-        const { updated } = { updated: 0 };
-        void updated;
-        console.log(JSON.stringify({ ok: true, action: 'intent-run', processed: results.map((r) => ({ id: r.id, action: r.action, status: r.status, error: r.error || undefined })) }, null, 2));
+    const reported = new Set();
+    const reportIgnored = (ignored) => {
+      for (const entry of ignored) {
+        if (reported.has(entry.path)) continue;
+        reported.add(entry.path);
+        console.error(`[${nowIso()}] queue entry ignored — ${entry.path}: ${entry.reason}`);
       }
-      return results.length;
     };
-    const processed = once();
-    await refreshSvg(instance);
+    const once = () => {
+      const { results, ignored } = drainOnce(instance);
+      reportIgnored(ignored);
+      if (results.length) {
+        console.log(JSON.stringify({ ok: true, action: 'intent-run', processed: results.map((r) => ({ id: r.id, action: r.action, status: r.status, error: r.error || undefined })), queueEntryIgnored: ignored.length }, null, 2));
+      }
+      return { processed: results.length, ignored: ignored.length };
+    };
+    const first = once();
+    await refreshSvg(instance, { opts });
     if (command === 'run') {
-      if (!processed) console.log(JSON.stringify({ ok: true, action: 'intent-run', processed: [] }, null, 2));
+      if (!first.processed) {
+        console.log(
+          JSON.stringify({ ok: true, action: 'intent-run', processed: [], queueEntryIgnored: first.ignored }, null, 2),
+        );
+      }
       return;
     }
     // watch: keep draining; the console page shows the queue live.
@@ -259,7 +342,7 @@ async function main() {
     for (;;) {
       await new Promise((resolve) => setTimeout(resolve, interval * 1000));
       once();
-      await refreshSvg(instance);
+      await refreshSvg(instance, { opts });
     }
   }
 

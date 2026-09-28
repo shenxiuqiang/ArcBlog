@@ -1,0 +1,199 @@
+{
+  "cdp": "Chrome/153.0.8010.54",
+  "origin": "http://arcblog.localhost:4939",
+  "scenarios": [
+    {
+      "scenario": "QA-A bare / in a fresh context (baseline)",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?locale=zh",
+            "h2": "最新发布",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "QA-B REPRO: /?page=saved then /",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+            "h2": "阅读清单",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        },
+        {
+          "navigateTo": "http://arcblog.localhost:4939/",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?locale=zh&page=saved",
+            "h2": "阅读清单",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "QA-C CONTROL: /?page=saved then /?page=index then /",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+            "h2": "阅读清单",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        },
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=index",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?locale=zh",
+            "h2": "最新发布",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        },
+        {
+          "navigateTo": "http://arcblog.localhost:4939/",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?locale=zh",
+            "h2": "最新发布",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "QA-D CONTROL: /?page=saved then /?page= (empty value)",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=saved",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+            "h2": "阅读清单",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        },
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=saved&locale=zh",
+            "h2": "阅读清单",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "spot-check page=orders",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=orders",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=orders&locale=zh",
+            "h2": "经济",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "spot-check page=ledger",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=ledger",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=ledger&locale=zh",
+            "h2": "经济",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "spot-check page=factory",
+      "steps": [
+        {
+          "navigateTo": "http://arcblog.localhost:4939/?page=factory",
+          "after": {
+            "href": "http://arcblog.localhost:4939/?page=factory&locale=zh",
+            "h2": "节点 NFT",
+            "sessionFailed": false,
+            "activeRows": 0
+          }
+        }
+      ]
+    }
+  ],
+  "cleanup": [
+    {
+      "targetId": "1FF9085E28C892F35C005B00EB3603A6",
+      "closed": true
+    },
+    {
+      "targetId": "A00521AB62E52ADC109D6C12E0889EAF",
+      "closed": true
+    },
+    {
+      "targetId": "11EFA626113D0D6C792458967D580FD5",
+      "closed": true
+    },
+    {
+      "targetId": "641C56EF5A8D0B391E87F0676BB156E4",
+      "closed": true
+    },
+    {
+      "targetId": "B6CFCE81178AF19717866676DD2A579C",
+      "closed": true
+    },
+    {
+      "targetId": "FFF2890B09E5A6A1BB7667E383F6C98F",
+      "closed": true
+    },
+    {
+      "targetId": "AFD45ED07BA9C1784A5C8CDC03856722",
+      "closed": true
+    }
+  ],
+  "preexistingPageTargets": [
+    {
+      "targetId": "7655DC480646A86BE45582D84F3B6CDE",
+      "url": "http://arcblog.localhost:4939/"
+    },
+    {
+      "targetId": "43B6B3AC729A55298875D875E83AE761",
+      "url": "http://arcblog.localhost:4939/"
+    },
+    {
+      "targetId": "2BED559E64A286220E50943DDD1E7A4B",
+      "url": "http://arcblog.localhost:4939/?locale=zh"
+    },
+    {
+      "targetId": "FF7AF7DB9FC1DF77DFCC1BB1AD0CEAA3",
+      "url": "http://arcblog.localhost:4939/"
+    },
+    {
+      "targetId": "6E15930FA95520C88E490843EFD6CC5F",
+      "url": "http://arcblog.localhost:4939/?locale=zh"
+    }
+  ],
+  "remainingPageTargets": [
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/?locale=zh",
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/?locale=zh"
+  ]
+}

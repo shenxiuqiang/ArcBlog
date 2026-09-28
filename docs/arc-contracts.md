@@ -1661,11 +1661,18 @@ tokenId / tokenDecimals`。选择顺序（**实测**）：显式 `ARCBLOG_CHAIN_
   它是 **daemon 环境变量**，blocklet 既不能设置、也不应替 daemon 打开 `AFS_DID_SPACE_REQUIRE_DEID`
   → 登记为**生产前置条件**，不得写成「已修复明文目录」。
 
-**(4) 附带发现的 AUP 运行时事实（与 DID Space 无关但同轮踩到）**：**AUP 的服务端校验是「整页」的** ——
+**(4) 附带发现的 AUP 运行时事实（与 DID Space 无关但同轮踩到；⚠️ 2026-09-28 R18 部分否证，见紧随其后的更正）**：**AUP 的服务端校验是「整页」的** ——
 提交任意一个 `action` 时会校验本页**所有**输入，一个空的 `required` 字段会阻断本页**其它所有** action
 （原始证据：`POST /api/aup/event` 的 `validation_failed` 载荷 + daemon `[aup-validation] … blocked submit`）。
 所以「列表 + 行内删除」同页共存时，删除动作会被同页表单的空值卡死；ArcBlog 的处理是列表页只做列举/新增、
 删除交给 CLI（与 `?page=categories` 的既有诚实形态一致），而不是伪装成能点。
+
+> **更正（R18 实测）**：这条口径**过宽**。R18 的真实页面里，同页另一表单的 `required` 字段为空时，行内按钮
+> **点得通**并真的写入了记录（`?page=tags` 的 `tagFrom/tagTo` 为空仍可点 Refresh projection；`?page=categories`
+> 的行内按钮同理）。当前更可信的口径是「**校验作用于该 action 自己引用的 `args.*` 字段**」；精确边界仍待一次
+> 对照探针（同页两个 action：一个引用空的 `required` 字段、一个不引用）—— 见 R19 待办。
+> **实践建议**：不要依据本条把功能降级；按 action 自身字段设计，并用真机点击验证。
+
 
 ---
 
@@ -1714,3 +1721,99 @@ REQ-021 阶段一只读，**未调用任何 `send*` 方法**；真实发送路�
 （`owner: '0xhubowner'`、`assetId: '0xa5ed65ce…'`、`acquireTx: '0xte32482c…'` —— 该哈希在链上 `getTx` 返回
 `info: null`），而 `nodes.studio` 是真链哈希。**任何按文件头 `adapter` 决定是否查链的消费者，都会把模拟事实当链上事实**
 （今天没有页面渲染 hub，故未暴露；已在 BUG-043 立项）。
+
+## 33. provider 挂载 / 打包 / SQLite 供应（数据层设计取证，2026-09-28，只读实测）
+
+> 用途：spec §154（AFS 真源 + SQLite 派生）的**平台事实底座**。本节只登记事实与置信度，不做设计结论。
+> 全部为只读手段取得（`arc ... --help`、`--dry-run --json`、`ps eww`、读 `assets/**`、`grep`），**未写任何文件、未挂载任何 provider**。
+
+**(1) `mounts:` 声明形态（HIGH）**：`- target: ./providers/<name>` + `path:`，可选 `required` / `ops` / `shared` / `options`。
+官方 fixture 证据：`assets/blocklets/launch-kit/blocklet.yaml:65-66`（模块挂载）、`exec-auth-gate-fixture:20-26`（两个模块挂载）、
+`instances:42-45`（`required: true`）、`persona:62`（`shared: false` + `ops:[exec,read,list]`）、
+`sandbox-mount-fixture:36-45`（`ops:[read,list,write,exec]` + `options`，但那是 `sandbox://` **协议 URI** 挂载）。
+`arc blocklet build --dry-run --json` 在 4 个 fixture 上确认 **flat manifest 逐字保留 `mounts`**（且 `--dry-run` 不落盘）。
+
+**(2) `build` 是否复制 `providers/**` → `dist/`：未证明（MED）**。没有任何 fixture 带 `dist/`；本仓库 `providers/` 为空，
+而 `dist/.afs/manifest.json` 列 715 个文件（含 `.env.local`、`node.key`、`CLAUDE.md`、`docs/`、`scripts/`），
+说明是「整树复制 − 硬编码忽略」——属**推断**，必须以一次干净克隆的实跑定论（spec §155 T0-5）。
+
+**(3) provider JS 契约（HIGH）**：duck-typed 类 + `export default`，可选 `name`/`description`/`accessMode`/`uri`/`riskLevel`，
+`static async load()`，`onMount(root, mountPath)`，`read/list/stat/write/exec(path, args, options)`，
+`onMount` 内可 `root.registerCustomAction(id, entry, handler)`；返回 `{data}` 或 `{success,data}`，抛 `Error` 带 `.code`。
+`exec` 的 `options.context` 含 `caller.{did,displayName,role,roles}`、`callerOrigin`、`userId`、`sessionId`、`requestId`、
+`instanceDid`、`agentRunOrigin`、`blockletId`，以及 `context.afs`（AFS root）。
+证据：`exec-auth-gate-fixture/providers/{gate,external}/index.mjs`、`collections/providers/collections/index.mjs`、`launch-kit/providers/campaign/index.mjs`。
+
+**(4) import 阶段禁令是草稿（约束强度 MED，来源 HIGH）**：`arch-qa/docs/architecture/blocklet-package-and-instance.md:179-182`
+写「Provider bundle 必须是无副作用的 ESM，只在被 mount 时实例化」「Provider 不允许在 import 阶段发起网络、读文件、开端口」，
+但该节标注「**SPI 约束（待细化）**」，且 §9 通篇是未决问题 → **未强制**。设计含义：SQLite 句柄只在 `onMount` 打开。
+
+**(5) 无文档化的 per-provider 本地目录（HIGH）**：`blocklet-structure.md:192-221,429` 把 `/blocklets/<name>/instance/app/`
+写成 blocklet 内部状态「**唯一合法的写入位置**」（由实例 DID Space 支撑，`accessMode: readwrite`）；
+`/work` 是 host 可写根但**per-instance、非 per-blocklet**；DID Space 的物理路径属未文档化实现细节（`arc space path` 只打印 AFS 路径）。
+
+**(6) 发布路径（MED，"不存在"类结论）**：beta.50 **没有 `arc blocklet publish`**。可用：`arc deploy --publish`（本地 DID Space）、
+`arc deploy --server`（远端 DID Space）、`arc blocklet deploy`（CF Pages）、`arc blocklet instance deploy`（本地 Pages）、
+`arc provider publish-resources`。Marketplace = 普通 AFS Index（`afs-index.md:348-360`「不托管 blocklet 本身」）。
+`assets/**` 内**未发现**尺寸上限、依赖锁或「禁止 native 模块」规则。
+
+**(7) SQLite 供应（HIGH）**：`better-sqlite3@12.10.0` 是 **native addon**（darwin-arm64 预编译 `better_sqlite3.node`，经
+`require('bindings')` 加载，CJS）；`@libsql/darwin-arm64@0.5.22` 平台专用。daemon 环境含
+`NODE_PATH=/Users/<u>/.arc/versions/2.0.0-beta.50/node_modules:`（arc shim 注释「so native addons are found regardless of CWD」）。
+**实测：Node 24 下 `import('better-sqlite3')` → `ERR_MODULE_NOT_FOUND`，`require()` 可解析** → 依赖 Bun 行为。
+运行时二进制自带 `bun:sqlite` / `node:sqlite`（`grep -a -o` 命中；`Bun v` 标记）→ **优先 `bun:sqlite`**。
+
+**(8) provider 第三方依赖解析未文档化（HIGH）**：fixture provider 的 `ufo` / `js-yaml` / `@aigne/afs-trust` **不在 `NODE_PATH`**，
+只在 arc monorepo 内可解析 → 站外一键部署**必须零第三方依赖**。
+`mounts[].options` 只有 `sandbox://` fixture 用过，**模块挂载的 `options` 未验证**（MED）。
+
+**(9) 探针实测（2026-09-28，/tmp 隔离，未写仓库、未动共享实例）**
+
+- **T0-5：`arc blocklet build` 会打包 `providers/**`（已证，推翻此前的"未证明"）**。做法：`git archive HEAD | tar -x -C /tmp/arcblog-t05` →
+  加 `providers/probe/index.mjs` + `blocklet.yaml` 的 `mounts: [{target: ./providers/probe, path: /probe, required: true, ops: [read, list, exec]}]` →
+  `arc blocklet build .`。结果：`dist/providers/probe/index.mjs` 存在；`dist/.afs/manifest.json`（`type: readonly-tree`，**703** 文件）列出
+  `providers/probe/index.mjs`；`dist/blocklet.dist.json` 的 `mounts` 保留 `{target,path,required,ops}` 并与平台自带两条（`agents/arcblog-agent`、`pages`）并列。
+- **T0-2 前半：`bun:sqlite` 可用（已证）**。运行时是 **Bun 1.4.2**，可用 `BUN_BE_BUN=1 <arc 二进制> --version` 把内置 Bun 当 CLI 调起
+  （本机无独立 `bun`）。探针 `/tmp/probe-sqlite/probe.mjs` 实测：SQLite **3.51.0**、**FTS5**（`fts5` 表 + `MATCH rank` + `rebuild`）、
+  **文件库跨进程持久**（写库 → 关闭 → 新进程读回 3 行）、`GROUP BY` 聚合全部通过。
+- **native addon 的边界**：Bun 下 `import('better-sqlite3')` + `NODE_PATH=…/2.0.0-beta.50/node_modules` **可用**；但同一 runtime 里
+  `require('better-sqlite3')` 报 `MODULE_NOT_FOUND`，Node 24 下 ESM `import` 也失败 → **不把 native addon 作为设计依赖**。
+  `node:sqlite`（`DatabaseSync`/`StatementSync`/`backup`）在 Bun 下同样可用，作为 `bun:sqlite` 的备选。
+
+---
+
+## 33. 意图队列的**唯一状态词表**、`.json` 约定，与链适配器**三态归属**（Round 18 / R18F 实测）
+
+**(1) 状态词表只有一套（Lead 裁定 D36）**：`pending | running | applied | rejected | noop`。
+`running` 是允许的**在途**态（worker 已认领、尚未回写），`applied` / `rejected` / `noop` 是终态，
+且**终态必须带非空的 `message`/原因**。实现集中在 `scripts/lib/intents.mjs`（`INTENT_STATUS` /
+`isTerminalStatus` / `normalizeIntentRecord`），tags 与 category 两个 worker 都只引用它。
+历史词 `done` / `failed` **只在读取端兼容**（`LEGACY_STATUS_ALIASES`），读到时**原地修复**记录
+（写回 `normalizedFrom` / `normalizedAt` 并补原因），**绝不重放**已终态的记录。
+⚠️ 已知范围外残留：`config/chain-intents`（`?page=factory` 的链上队列）仍写 `pending|running|done|failed`——
+它多一个在途态、且**改名会触发真实链写**（live 队列里存有 pending 的 claim 意图），故未随之改名（BUG-051）。
+
+**(2) 队列条目必须是 `<id>.json`（D38）**：页面/写入端只写 `<id>.json`；**读取端遇到非 `.json` 条目
+必须显式落诊断**（`queueEntryIgnored` + `{path, reason}`），**不得静默忽略**——否则一条无扩展名的记录会
+永远停在 `pending` 而没人消费（BUG-049 的根因）。
+
+**(3) 链适配器归属是**逐节点**的，且必须三态（D37/D37b，BUG-043/046）**：
+`adapter = mock | ocap | unknown`、`simulated = true | false | null`（**unknown → null**）、
+外加 `simulationUnknown`。**禁止**把「未归属」写成 `simulated: false`（那是一条错误的正向断言——
+BUG-046 的原始形态）。消费者（`?page=factory`、投影、worker）一律**逐节点**判定，不看文件头的 `adapter`
+（`node/factories.json` 的历史形态是头 `ocap` + hub 分支 mock 残留，任何按头判定的消费者都会把模拟事实当链上事实）。
+历史记录的归属可用**记录自带证据**只读回填：`scripts/lib/node-attribution.mjs` +
+`node scripts/arcblog-node-nft.mjs backfill [--dry-run]`（实测 `chainQueries` 恒为 0、不写链、不伪造哈希）——
+studio 的四个 64 位 hex 哈希 → `ocap`；hub 的 `0xhubowner` / `0xte32482c…`（非 hex）→ `mock`。
+
+**(4) 链上查询的 fail-closed 守卫规则（D37c，BUG-047）**：`arcblog-chain-worker.mjs` 只在
+**节点归属与 worker 适配器都为 `ocap`** 时才发起链上查询；`mock` / `unknown` / 不匹配 → **跳过并写显式
+诊断**（`svgError` 记录「not queried: …」）。实测：live 只读 ocap refresh 得 `updated:1 / skipped:1`
+（studio 真链刷新仍工作、hub 的假哈希不再触发查询）；把 chain host 指向不可达地址可反证 studio 确实发了请求、
+hub 一次都没发。
+
+**(5) 页内无法用「节点级初始 state」压过会话保存的 page（BUG-039 实测否证，⛔ 平台边界）**：
+给 `.aup/wrapper.aup` 根节点加 `state={page:'index'}`（语言层**合法**并编译进 `wrapper.json` 根节点）后，
+实测「访问过 `?page=saved` 再打开裸 `/`」**仍然重放阅读清单**——**会话保存的 `page` 覆盖了节点级 state 默认值**。
+该实验已完整回滚（`git diff -- .aup/wrapper.aup` 与 `wrapper.json` 均无残留），结论：这是平台边界，
+保留既有绕过（全站入口带显式 `?page=`、品牌链接 `/?page=index`），不再重复实验。

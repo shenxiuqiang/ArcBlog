@@ -29,6 +29,8 @@ import {
   NODE_FACTORY_SUMMARY_PATH,
   NODE_NFT_STATE_PATH,
   openChain,
+  nodeAdapterOf,
+  PROJECTION_ADAPTER_SCOPE,
   realChainHint,
   resolveChainConfig,
   resolveClock,
@@ -36,6 +38,7 @@ import {
 } from './lib/chain.mjs';
 import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, buildMintInputs, capacityForStake } from './lib/nft-factory.mjs';
 import { getSigningKey } from './lib/content-sign.mjs';
+import { backfillAttribution } from './lib/node-attribution.mjs';
 import { CHAIN_ROLES, getRoleConfig, putRoleLifecycle, roleStatus } from './lib/roles.mjs';
 
 const NODE_PROFILE_PATH = '/instance/app/arcblog/node/profile.json';
@@ -51,6 +54,8 @@ function publishNodeSummary(state, instance) {
   const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? {};
   const summary = {
     adapter: registry.adapter ?? 'mock',
+    // BUG-043: the header describes the registry, NOT every node in this file.
+    adapterScope: PROJECTION_ADAPTER_SCOPE,
     network: registry.network ?? '',
     chainHost: registry.chainHost ?? '',
     tokenId: registry.tokenId ?? '',
@@ -66,6 +71,8 @@ function publishNodeSummary(state, instance) {
       stakeAmount: entry.stakeAmount ?? '',
       capacity: entry.capacity ?? '',
       createdAt: entry.createdAt ?? '',
+      // per-entry attribution: the adapter that created THIS factory record
+      ...nodeAdapterOf(entry),
     };
   }
   for (const [role, rec] of Object.entries(state?.roles ?? {})) {
@@ -87,6 +94,11 @@ function publishNodeSummary(state, instance) {
       revokedAt: rec.revokedAt ?? '',
       claimedAt: rec.claimedAt ?? '',
       claimableAt: rec.claimableAt ?? '',
+      // BUG-043 / D37b: the adapter THIS node's facts came from. A record that
+      // never recorded one is published as `unknown` with `simulationUnknown:
+      // true` and `simulated: null` — never as `simulated: false`, which would be
+      // a positive claim the record cannot support (D37b).
+      ...nodeAdapterOf(rec),
     };
   }
   writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
@@ -161,9 +173,20 @@ function syncLifecycle(role, patch, instance) {
   return status;
 }
 
-function recordRole(state, role, patch) {
+function recordRole(state, role, patch, adapter) {
   const previous = state.roles[role] ?? {};
-  state.roles[role] = { ...previous, ...patch, updatedAt: nowIso() };
+  // BUG-043 / D37: remember WHICH adapter produced this node's facts, so the
+  // public projection can attribute the node itself instead of trusting one file
+  // header. A first-hand chain step always resets the provenance marker, so a
+  // backfilled attribution (scripts/lib/node-attribution.mjs) cannot survive the
+  // step that actually rewrote these facts.
+  state.roles[role] = {
+    ...previous,
+    ...patch,
+    adapter: String(adapter ?? previous.adapter ?? ''),
+    attributionSource: 'record',
+    updatedAt: nowIso(),
+  };
   return state.roles[role];
 }
 
@@ -232,7 +255,7 @@ async function commandAcquire(opts, instance) {
         revokedAt: '',
         claimableAt: '',
         claimedAt: '',
-      }),
+      }, chain.adapter),
     },
   };
   const status = syncLifecycle(role, { state: 'acquired', assetId, stakeId: '' }, instance);
@@ -292,7 +315,7 @@ async function commandStake(opts, instance) {
         stakedAt: clock,
         stakeTx: staked.hash ?? '',
         revokeWaitingPeriod: waitingPeriod,
-      }),
+      }, chain.adapter),
     },
   };
   const status = syncLifecycle(role, { state: 'staked', assetId, stakeId: staked.stakeAddress }, instance);
@@ -328,7 +351,7 @@ async function commandRevoke(opts, instance) {
         revokedAt: clock,
         claimableAt,
         revokeTx: revoked.hash ?? '',
-      }),
+      }, chain.adapter),
     },
   };
   const status = syncLifecycle(role, { state: 'revoking', assetId, stakeId: stakeAddress, claimableAt }, instance);
@@ -367,7 +390,7 @@ async function commandClaim(opts, instance) {
         // keep stakeAddress on record so `status` can still show the closed stake
         revokedAt: '',
         claimableAt: '',
-      }),
+      }, chain.adapter),
     },
   };
   const status = syncLifecycle(role, { state: 'acquired', assetId, stakeId: '' }, instance);
@@ -438,6 +461,43 @@ async function commandStatus(opts, instance) {
   );
 }
 
+/**
+ * Backfill per-node attribution from the record's OWN evidence (D37 / BUG-046).
+ *
+ * Read-only with respect to the chain: no adapter is opened, nothing is signed
+ * and no hash is invented (`backfillAttribution` is pure and reports
+ * `chainQueries: 0`). It rewrites only `config/node-nft.json`; run
+ * `node scripts/arcblog-factory.mjs project` afterwards to re-annotate the
+ * public projection — that step is additive on purpose, because the projection
+ * also carries the chain worker's rendered SVG, which a rebuild would drop.
+ */
+function commandBackfill(opts, instance) {
+  const role = optString(opts.role).trim();
+  ensure(!role || CHAIN_ROLES.includes(role), `--role must be one of: ${CHAIN_ROLES.join(', ')}`);
+  const dryRun = Boolean(opts['dry-run']);
+  const stored = readNodeNft(instance);
+  const result = backfillAttribution(stored.state, { role });
+  const written = Boolean(result.changed.length) && !dryRun;
+  if (written) saveNodeNft(result.state, instance, stored.ifMatch);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        action: 'node-nft-attribution-backfill',
+        dryRun,
+        chainQueries: result.chainQueries,
+        path: NODE_NFT_STATE_PATH,
+        written,
+        changed: result.changed,
+        skipped: result.skipped,
+        ...(written ? { next: 'node scripts/arcblog-factory.mjs project' } : {}),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
 function help() {
   console.log(`ArcBlog node NFT lifecycle (spec §8.2–§8.4)
 
@@ -447,6 +507,10 @@ Usage:
   node scripts/arcblog-node-nft.mjs revoke  --role studio|hub [--now <iso>]
   node scripts/arcblog-node-nft.mjs claim   --role studio|hub [--now <iso>]
   node scripts/arcblog-node-nft.mjs status  [--role studio|hub]
+  node scripts/arcblog-node-nft.mjs backfill [--role studio|hub] [--dry-run]
+                          # D37: attribute records that predate per-node
+                          # attribution, from the record's own evidence. Read
+                          # only: no chain call, no signing, no invented hash.
 
 Flow (§8.2–§8.4): acquire the role NFT from the factory, stake it to gain the
 role, revoke to start the waiting period, claim after it to get the NFT back.
@@ -484,7 +548,8 @@ try {
   else if (command === 'revoke') await commandRevoke(opts, instance);
   else if (command === 'claim') await commandClaim(opts, instance);
   else if (command === 'status') await commandStatus(opts, instance);
-  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status)`);
+  else if (command === 'backfill') commandBackfill(opts, instance);
+  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status|backfill)`);
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
   process.exit(1);

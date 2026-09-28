@@ -62,6 +62,83 @@ export const DEFAULT_REVOKE_WAITING_PERIOD_DAYS = 30;
 export const MOCK_START_BALANCE = fromTokenToUnit('100', TOKEN_DECIMALS);
 export const CHAIN_ADAPTERS = ['mock', 'ocap'];
 
+/** The three states a node's provenance can be in (D37b). */
+export const NODE_ADAPTER_STATES = Object.freeze(['mock', 'ocap', 'unknown']);
+
+/**
+ * Per-node adapter attribution for the public projection (BUG-043, BUG-046/D37b).
+ *
+ * `node/factories.json` used to carry ONE header `adapter` for a file that can
+ * hold facts from different adapters: `nodes.studio` was written by a real
+ * `ocap` run while `nodes.hub` was stale `mock` residue, and every consumer that
+ * decided "is this chain truth?" from the header read the simulated values as
+ * on-chain facts (docs/arc-contracts.md §32(9)).
+ *
+ * So each node (and each factory) now carries the adapter that produced IT, in
+ * THREE states — `mock` | `ocap` | `unknown` — never an empty string that a
+ * reader has to interpret:
+ *
+ *   adapterState  meaning                                   simulated      simulationUnknown
+ *   mock          facts come from the local simulation       true           false
+ *   ocap          facts come from the real chain             false          false
+ *   unknown       the record never said (predates D37, or     null           true
+ *                 was not recognized) — never chain truth
+ *
+ * `simulated` is therefore three-valued: `true` (mock), `false` (real chain) and
+ * `null` for unknown. `null` is the point of D37b/BUG-046: an unattributed
+ * record must not carry `simulated: false`, which is a POSITIVE claim that it is
+ * NOT a simulation — exactly the wrong assertion when nothing is known. The
+ * machine-readable companion is `simulationUnknown`.
+ *
+ * The `adapter` header field of the projection is kept as evidence of what
+ * `config/nft-factories.json` currently says; `adapterScope` marks its scope, and
+ * it must never be used to decide a single node's provenance.
+ */
+export function nodeAdapterOf(record) {
+  const raw = String(record?.adapter ?? '').trim();
+  const adapter = raw === 'mock' || raw === 'ocap' ? raw : 'unknown';
+  const chainVerified = adapter === 'ocap';
+  const simulated = adapter === 'mock' ? true : adapter === 'ocap' ? false : null;
+  const simulationUnknown = adapter === 'unknown';
+  const attribution = chainVerified
+    ? 'adapter ocap — chain facts, each hash verifiable on chain'
+    : simulated
+      ? 'adapter mock — SIMULATION, not chain truth'
+      : 'adapter not recorded (unknown) — treat as unverified; verify each hash on chain individually (arc-contracts §32(9))';
+  const simulatedLabel = chainVerified
+    ? 'not simulated — real chain adapter'
+    : simulated
+      ? 'SIMULATED — mock adapter, never chain truth'
+      : 'unknown — the record never recorded an adapter';
+  // Provenance of the attribution itself: 'record' = this node's own record says
+  // which adapter produced the facts; 'unrecorded' = nothing was recorded (the
+  // fail-closed case); 'backfill:<source>' = derived read-only from the record's
+  // own evidence (scripts/lib/node-attribution.mjs, D37).
+  const source = String(record?.attributionSource ?? '').trim();
+  return {
+    adapter,
+    adapterSource: adapter === 'unknown' ? 'unrecorded' : source || 'record',
+    // Positive claim only: true when the adapter that produced the facts WAS the
+    // real chain. Never infer it from a file header.
+    chainVerified,
+    // Three-valued: true = simulation, false = real chain, null = unknown.
+    simulated,
+    // The explicit "we do not know" marker (BUG-046: this used to be silently
+    // reported as `simulated: false`).
+    simulationUnknown,
+    // One human-readable line for pages; the fields above are for machines.
+    // Locale-neutral on purpose: a record value cannot select a localized string
+    // on this platform (arc-contracts §28.8).
+    attribution,
+    // Same facts in the "what kind of fact is this" phrasing the console's
+    // per-node attribution card renders (locale-neutral for the same reason).
+    simulatedLabel,
+  };
+}
+
+/** Marks that the header `adapter` describes `config/nft-factories.json`, not every node. */
+export const PROJECTION_ADAPTER_SCOPE = 'registry';
+
 /**
  * Preset chain environments (Lead ruling **L-R15-2**). A preset only supplies
  * **defaults**: a CLI flag or an explicit `ARCBLOG_CHAIN_*` always wins, and

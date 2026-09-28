@@ -1,0 +1,21 @@
+{
+  "probe": "QA-R18F browser queue diagnostic check",
+  "at": "2026-09-28T15:05:11.932Z",
+  "categories": {
+    "queueSection": "意图队列\n控制台本身不能改写文章，按钮只负责入队。worker 会用与 CLI merge 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。\npending = 等待 worker · applied = 已改写文章并删除源记录 · noop = 无需执行（已经做过）· rejected = 被拒绝，未改动任何数据\n●\nmerge\nqa-r18f-a\n→\nqa-r18f-b\n状态\npending\njust now\n清除\n还没有入队的意图。下方列表里的按钮会写入第一条。\n状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/arc-contracts.md §28.8。\nWorker：node scripts/arcblog-category.mjs watch\n全部分类\n来自 /instance/app/arcblog/categories/ 的每条记录一行（实时订阅），显示记录里的 sort 值。本页刻意不显示引用计数：页面侧计数只能来自查询索引，而索引在编辑后会陈旧（arc-contracts §15），因此「高级」区给出 usage 命令——它直接扫描记录。\nDesign\ndesign\n排序: 20\n5 days ago\n目标分类（slug）\n合并到…\n删除并迁移到…\nLife\nlife\n排序: 30\n5 days ago\n目标分类（slug）\n合并到…\n删除并迁移到…\nTechnology\ntechnology\n排序: 10\n5 days ago\n目标分类（slug）\n合并到…\n删除并迁移到…\n列表为空说明还没有分类记录——发布校验器此时回退到内置的 technology / design / life。\n高级：命令行（可选）\n以下命令能做与上方按钮相同的事，外加本页不提供的能力（排序、seed、引用计数）。保留给习惯命令行的运维人员。\n展开高级（CLI）\n新增分类\n页面写入的记录 sort=0；之后请用下方「高级」里的 CLI",
+    "mentionsProbe": false,
+    "mentionsIgnoredWord": false
+  },
+  "tags": {
+    "queueSection": "意图队列\n控制台本身不能改写文章，表单只负责入队。worker 会用与 CLI merge 完全相同的实现来执行。\npending = 等待 worker · applied = 已改写文章 · noop = 没有文章引用源标签，未写库 · rejected = 被拒绝，未改动任何文章\n●\n状态\npending\njust now\n清除\n色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原始状态值原样显示——docs/arc-contracts.md §28.8。\nWorker：node scripts/arcblog-tags.mjs watch\n使用中的标签\nguide\n引用\n1\nhello-arcblog (posts)\nidentity\n引用\n1\nhello-arcblog (posts)\nmultislot_c_1790605802728\n引用\n1\ncat-test-tags-multi-1790605802728 (drafts)\nmultislot_d_1790605802728\n引用\n1\ncat-test-tags-multi-1790605802728 (drafts)\nother\n引用\n1\ncat-test-tag-1790605733599 (drafts)\nproduct\n引用\n1\nhello-arcblog (posts)\ntag_001_good_1790606038057\n引用\n1\ncat-test-tags-normalize-1790606038057 (drafts)\ntagproj_1790605872095\n引用\n1\ncat-test-tags-proj-1790605872095 (drafts)\ntagproj_keep\n引用\n1\ncat-test-tags-proj-1790605872095 (drafts)\ntagqueue_keep_1790605921064\n引用\n1\ncat-test-tags-queue-1790605921064 (drafts)\ntagqu",
+    "mentionsProbe": false,
+    "mentionsIgnoredWord": false
+  },
+  "remainingPageTargets": [
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/?locale=zh",
+    "http://arcblog.localhost:4939/",
+    "http://arcblog.localhost:4939/?locale=zh"
+  ]
+}

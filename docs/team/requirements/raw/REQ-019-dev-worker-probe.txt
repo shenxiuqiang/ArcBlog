@@ -1,0 +1,289 @@
+
+### seed probe categories
+{
+  "ok": true,
+  "action": "category-add",
+  "path": "/instance/app/arcblog/categories/r18-probe-src.json",
+  "category": {
+    "slug": "r18-probe-src",
+    "name": "Probe source",
+    "description": "",
+    "sort": 901,
+    "createdAt": "2026-09-28T13:01:18.865Z",
+    "updatedAt": "2026-09-28T13:01:18.865Z"
+  }
+}
+{
+  "ok": true,
+  "action": "category-add",
+  "path": "/instance/app/arcblog/categories/r18-probe-dst.json",
+  "category": {
+    "slug": "r18-probe-dst",
+    "name": "Probe target",
+    "description": "",
+    "sort": 902,
+    "createdAt": "2026-09-28T13:01:19.846Z",
+    "updatedAt": "2026-09-28T13:01:19.846Z"
+  }
+}
+
+### A3 BEFORE — probe post category + version
+r18-probe-post-a: category=r18-probe-src version=1
+r18-probe-post-b: category=r18-probe-src version=1
+
+### A2 request → pending intent (real queue path)
+{
+  "ok": true,
+  "action": "category-request",
+  "path": "/instance/app/arcblog/config/category-intents/intent-mul9apj78dp4.json",
+  "intent": {
+    "id": "intent-mul9apj78dp4",
+    "action": "merge",
+    "from": "r18-probe-src",
+    "to": "r18-probe-dst",
+    "rawFrom": "r18-probe-src",
+    "rawTo": "r18-probe-dst",
+    "summary": "r18-probe-src → r18-probe-dst",
+    "status": "pending",
+    "message": "",
+    "migrated": 0,
+    "changed": [],
+    "requestedVia": "cli",
+    "requestedBy": "did:key:zR18Operator",
+    "requestedAt": "2026-09-28T13:01:26.083Z",
+    "updatedAt": "2026-09-28T13:01:26.084Z"
+  }
+}
+
+### A3 PRE-CONDITION — posts untouched while the intent is only queued
+identical= true
+
+### queue
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/config/category-intents",
+  "count": 1,
+  "intents": [
+    {
+      "id": "intent-mul9apj78dp4",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "pending",
+      "migrated": 0,
+      "changed": [],
+      "message": ""
+    }
+  ]
+}
+
+### A3/A4 apply
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "intent-mul9apj78dp4",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "applied",
+      "migrated": 2,
+      "changed": [
+        {
+          "slug": "r18-probe-post-a",
+          "dir": "drafts",
+          "version": 2
+        },
+        {
+          "slug": "r18-probe-post-b",
+          "dir": "drafts",
+          "version": 2
+        }
+      ],
+      "appliedAt": "2026-09-28T13:01:53.148Z",
+      "message": "merge: rewrote 2 post(s) r18-probe-src → r18-probe-dst; source category record removed (r18-probe-src)"
+    }
+  ]
+}
+
+### A3 AFTER — probe post category + version
+r18-probe-post-a: category=r18-probe-dst version=2
+r18-probe-post-b: category=r18-probe-dst version=2
+
+### A3 source category record after apply
+getCategory(r18-probe-src) exists= false
+
+### A7 apply again (repeat of the same action = second intent)
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "r18-probe-repeat",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "noop",
+      "migrated": 0,
+      "changed": [],
+      "message": "nothing to do: category \"r18-probe-src\" does not exist and no post references it"
+    }
+  ]
+}
+
+### A7 post version after the second apply (must NOT advance again)
+r18-probe-post-a: category=r18-probe-dst version=2
+r18-probe-post-b: category=r18-probe-dst version=2
+
+### A6-neg1 apply (target does not exist)
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "r18-probe-neg1",
+      "action": "merge",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-nope",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "target category does not exist: r18-probe-nope — no data changed"
+    }
+  ]
+}
+
+### A6-neg1 data unchanged (byte compare)
+r18-probe-post-a: identical= true
+r18-probe-post-b: identical= true
+
+### A6-neg2 apply (self migration)
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "r18-probe-neg2",
+      "action": "remove",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-dst",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "remove: source and target must differ (r18-probe-dst) — no data changed"
+    }
+  ]
+}
+
+### A6-neg2 data unchanged + target record intact
+r18-probe-post-a: identical= true
+r18-probe-post-b: identical= true
+target record exists= true
+
+### A6-neg3 apply (unknown action)
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "r18-probe-neg3",
+      "action": "nuke",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-src",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "unknown intent action: nuke — no data changed"
+    }
+  ]
+}
+
+### A6-neg3 data unchanged
+r18-probe-post-a: identical= true
+r18-probe-post-b: identical= true
+
+### final queue (statuses + reasons)
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/config/category-intents",
+  "count": 5,
+  "intents": [
+    {
+      "id": "intent-mul9apj78dp4",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "applied",
+      "migrated": 2,
+      "changed": [
+        {
+          "slug": "r18-probe-post-a",
+          "dir": "drafts",
+          "version": 2
+        },
+        {
+          "slug": "r18-probe-post-b",
+          "dir": "drafts",
+          "version": 2
+        }
+      ],
+      "appliedAt": "2026-09-28T13:01:53.148Z",
+      "message": "merge: rewrote 2 post(s) r18-probe-src → r18-probe-dst; source category record removed (r18-probe-src)"
+    },
+    {
+      "id": "r18-probe-repeat",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "noop",
+      "migrated": 0,
+      "changed": [],
+      "message": "nothing to do: category \"r18-probe-src\" does not exist and no post references it"
+    },
+    {
+      "id": "r18-probe-neg1",
+      "action": "merge",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-nope",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "target category does not exist: r18-probe-nope — no data changed"
+    },
+    {
+      "id": "r18-probe-neg2",
+      "action": "remove",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-dst",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "remove: source and target must differ (r18-probe-dst) — no data changed"
+    },
+    {
+      "id": "r18-probe-neg3",
+      "action": "nuke",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-src",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "unknown intent action: nuke — no data changed"
+    }
+  ]
+}
+
+### cleanup — probe intents / categories / drafts removed
+{"intents":[],"srcExists":false,"dstExists":false}

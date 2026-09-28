@@ -132,3 +132,32 @@
 4. **C-04 / C-07 / C-12 / C-13 随对应轮次批**（RSS/SEO/菜单/诊断页），不阻塞。
 5. **C-06 / C-09 / C-10 为文字级**（可一次性批量批）。
 6. **§3 的 4 项不急**，但 **C-11c（§29.2）建议在本轮就改**——它是 BUG-022 的判据来源，页面文案已在等它定稿。
+
+---
+
+## 5. C-15（已授权并落笔）：数据层设计入 spec（2026-09-28）
+
+**授权来源（人类所有者，本会话原文）**：「最终程序是发布到应用商店，用户一键部署，目标服务器应该是单实例；目前 ArcBlock 公司正在改造迁移 store 应用基于 arc；应用采用SQLite 后，有很多数据是不是都可以考虑存在数据库？**将最终研究设计方案写入产品技术文档，拆分任务列表到文档。**」
+
+- **性质**：属本文件 §3 所说的「授权 Lead 代改并留 diff」路径（不占用 C-01…C-14 的逐条勾选）。
+- **落笔内容**：
+  - `docs/ArcBlog-product-technical-spec.md` 新增 **§154**（数据层最终方案：部署前提 / 平台事实 F1–F10 / 三层数据模型 / 数据分类表「哪些数据可以进 DB」/ 七条不变式 I1–I7 / 正文是否拆分 / Hub 形态 / 运维契约 / 待实测 P0–P2）与 **§155**（阶段 0–5 任务拆分 T0-1…T5-5 + 依赖图与任务板映射）。
+  - 同文件 **§6** 与 **§98** 各加一条指向 §154/§155 的引用；**未删除、未重写任何既有条款语义**。
+  - 镜像：`docs/ArcBlog-feature-checklist.md` 新增 **I 组 6 行 ⬜** + 维护记录一行 → **✅82 / 🟡7 / ⬜19 / ⚪2 = 110**。
+- **复核命令**：`git diff --stat docs/ArcBlog-product-technical-spec.md docs/ArcBlog-feature-checklist.md`；`grep -n '^# 154\.\|^# 155\.' docs/ArcBlog-product-technical-spec.md`。
+- **后续追认项**：§154.7 保留的「正文拆成独立 `.md`」若触发（产品需要可移植 `.md` / AFS 侧也需 `where` 查询），应按正常流程另立 **C-16** 并重新评估签名、付费门禁与媒体引用三处改动。
+- **补丁 1（同日，阶段 0 只读调研回收，2026-09-28）**：spec §154.3 追加事实 **F11–F18**（provider 契约 / import 阶段禁令 / **无文档化 per-provider 本地目录** / `build` 是否复制 `providers/**` **未证明** / beta.50 **无 `arc blocklet publish`** / SQLite 由 native addon 供应且 ESM 解析依赖 Bun / provider 第三方依赖解析未文档化）；§154.2 增加「依赖面必须最小」约束；§154.9 增加「**DB 落点与持久性**」行（持久化不是正确性前提 → 首选每实例可重建的 SQLite）；§154.10 探针表扩为 P0-1…P0-7、P1-1…P1-3、P2-1；§155 的 T0-2 重写并新增 **T0-5 / T0-6**，T1-1 增加「零依赖 + 句柄只在 `onMount`」。平台事实同步沉淀到 `docs/arc-contracts.md` **§33**；checklist I 组首行备注已同步。
+- **补丁 2（同日，阶段 0 两项探针实跑回收，2026-09-28）**：**T0-5 通过** —— `arc blocklet build` 确实把 `providers/**` 打包进 `dist/` 与 `.afs/manifest.json`，并把 `mounts` 展平进 `dist/blocklet.dist.json`（spec F15 由"未证明"改为已证）；**T0-2 前半通过** —— 运行时为 Bun 1.4.2，`bun:sqlite`（SQLite 3.51.0 / FTS5 / 文件库持久 / 聚合）全部可用，`node:sqlite` 备选，native addon 不作依赖（spec F17 更新、P0-2 与 P0-4 标 ✅、§155 的 T0-2/T0-5 标已完成）。平台实测沉淀 `docs/arc-contracts.md` §33(9)。**仍待**：T0-1（挂载在部署形态是否真的加载，需在共享 daemon 注册一个探针 blocklet）、T0-3（`sqlite://` 挂载，需批准写 `.afs-config`）、T0-4、T0-6。探针均在 `/tmp`，**未写仓库、未动共享实例**。
+
+---
+
+## 6. C-16（已授权并落笔）：管理后台菜单 IA 修订（2026-09-28）
+
+**授权来源（人类所有者，本会话原文）**：「对管理后台菜单重新进行规划，根据功能类型、使用习惯重新命名、归类、排序，你有什么好的建议」→ Lead 呈报提案后，人类回复「**授权、直接执行 task-12**」（授权 = 按 §3 的既定流程代改 spec 并留 diff）。
+
+- **性质**：先由 Lead 出提案 [`docs/team/design/UI-017`](../design/UI-017-console-menu-information-architecture.md)（含逐项 before/after、验收标准、风险与顺序约束），人类授权后落笔 spec。**未实施**代码改动（实施 = 任务板 `task-18`，插入 `task-12 → task-18 → task-13` 链路）。
+- **落笔内容**：`docs/ArcBlog-product-technical-spec.md` **§15.2 菜单结构总览整节重写** —— 由旧的 6 组形态（含 `商品`/`账户 Wallets`/`角色与能力`/`节点身份`/`审计日志`/「分类与标签」合并项等**从未实现**的行）改为「**已实现 + 已批准目标**」的 5 组 21 行；补「六类运营心智 → 5 组」映射、四条规则（一行一用途 / 组名不得与行名同词 / 低频只读面折叠且能力不删 / 节数不写死）。
+- **明确登记**：**`?page=` 名、组 key、行 key 全部不变**；只改显示文案、归组与顺序。旧 §15.2 与实现的差异是**文档自身的历史漂移**（实现一直是 5 组 21 行），本次一并纠正。
+- **镜像**：`docs/ArcBlog-feature-checklist.md`「菜单结构与能力驱动（§15.1/§15.2/§15.10）」行的备注补记本次目标 IA 与实施任务（状态列**不变** —— 能力驱动菜单仍未实现）。
+- **复核命令**：`grep -n '^## 15.2' docs/ArcBlog-product-technical-spec.md`；`node -e "import('./scripts/console-nav.mjs').then(m=>console.log(m.CONSOLE_SECTIONS.length))"`（=21）；`git diff docs/ArcBlog-product-technical-spec.md`。
+- **后续追认项**：UI-017 **提案 B**（行数 21→17 的合并）未授权、未实施；实施前需另立条目。

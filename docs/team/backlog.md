@@ -17,6 +17,10 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
+> ✅ **Round 18 已收官（PM `task-76` 裁决写回，2026-09-28）—— 不放行（QA-014 [round-18.md](test-reports/round-18.md) 末行 `VERDICT=fail, BLOCKING=1`；阻断 **1** = BUG-045 P1）**：**主项 [REQ-019](requirements/REQ-019-button-first-console.md) 控制台按钮化第一批 = PM 判「功能达标（有条件）」** —— 按按钮化判据 **B1–B6 逐条判定**：**B1/B3/B4/B5/B6 全过 + B2 功能主体全过**（真实浏览器点击 → `arc afs` 意图记录 → worker `apply`/`watch` → **目标数据真的改变**：`r18qa-bq-src → r18qa-bq-dst`、`version 1→2`、源记录消失；**入队未 apply 时逐字节不变**；三条负例 `rejected` + `VALIDATION` + 零改动；幂等第二次 `noop`；队列落 `config/category-intents` 对 guest **403**、零 `blocklet.yaml` 改动、permissions 6/6；CLI 折叠为「高级」，`copyableBeforeExpand=0` / 展开后 6），**唯一未达成 = B2 口径点「同一控制台只能有一套终态词」→ [BUG-045](bugs/BUG-045-two-status-vocabularies-coexist.md)（P1）**（根因 = Lead L-R18-2 字面 `applied`/`rejected` 与既有 tags `done`/`failed` 冲突；REQ §3.2 已把该口径留给 Lead 一句裁定，**Dev 无裁量权且已如实上报**）→ **条件 = R19-1 统一词表**；**来源字段口径**按 REQ §3.2 的 PM 建议收敛并经 QA 复现（`requestedVia:"console"` + `requestedAt`、`$session.` 计数 0）→ **PM 判定为既定口径**（若 Lead 另有指示以 Lead 为准）。**同轮 [BUG-039](bugs/BUG-039-bare-root-replays-last-page.md) = 终态「平台边界 + 实测否证 + 回滚干净」→ 裁「不修」**（`state={page:'index'}` 语言层合法但**运行时被会话 `page` 覆盖**，裸 `/` 仍重放 `saved`；`git diff -- .aup/wrapper.aup .aup/wrapper.json` 无输出、`grep -c '"state"'` = **0/0** —— **PM 独立复核**；保留既有绕过；**不再重复实验**；交 Lead 落 `arc-contracts.md` 候选 #12/#13 升级为「**实测否证：节点级 `state` 默认 ≤ 会话 `page`**」）。**同轮 [BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md) = 部分修复、L-R18-4 验收「未达成」→ R19-2**（机制 / 消费者卡 / **证据字段零删除**（`REMOVED:(none)`）成立；live 投影两节点仍 `adapter:""` 且**无显式 mock 标记** → [BUG-046](bugs/BUG-046-factories-unattributed-node-simulated-false.md)（P2）；`scripts/arcblog-chain-worker.mjs:139` 守卫对未归属记录失效 → [BUG-047](bugs/BUG-047-chain-worker-guard-skips-unattributed.md)（P2）；**历史归属补法需 Lead/用户立项**）。**新增 6 条 BUG**：[BUG-045](bugs/BUG-045-two-status-vocabularies-coexist.md)（**P1**）→ **R19-1**；[BUG-046](bugs/BUG-046-factories-unattributed-node-simulated-false.md) / [BUG-047](bugs/BUG-047-chain-worker-guard-skips-unattributed.md)（P2）→ **R19-2**；[BUG-048](bugs/BUG-048-cleaner-misses-live-test-residue.md) / [BUG-049](bugs/BUG-049-queue-entry-without-json-extension-never-consumed.md)（P3）→ **R19-8**；[BUG-050](bugs/BUG-050-req019-b1-evidence-drift.md)（P3，REQ §9.3 自证措辞漂移）→ **本轮修（PM 内联勘误，docs-only）已闭环**；**P0 = 0 / P1 = 1**；**无悬挂未裁决 BUG**。**门全绿**（PM 轮末**只读**复核：validate `"issues": []`、`npm test` **28/28**（`duration_ms 1410.1125`）、`queue` `count:0`；QA 自跑另有 `generate --check` 0 漂移、`build` **幂等**（dist 全量 sha `331991bd86eb00bfe52e1351c3ab64f45a1cbb87`）、`console-nav --check` pages **21**、`.aup`/`.web` 双 diff 空、定向 category **15/15** / node-nft **17/17** / chain-worker **4/4**、permissions **6/6**）。**checklist 建议（Lead 落笔）**：**状态列零变化**；第 **104** 行（§15.4，实测行号；历史口径 103）备注更新 + 维护记录一行；**⚠️ 计数基线勘误（PM 实测）= `✅82 / 🟡7 / ⬜19 / ⚪2 = 110`**（Lead 已代改新增 **I 组 6 行 ⬜**；沿用的「104」为 R17 期基线、**已过时**）→ R19 轮初统一。**R19 路线**：**R19-1** 词表收口 → **R19-2** BUG-046/047 + BUG-043 → **R19-3** REQ-019 第二批（建议 media 清理领跑）→ **R19-4** REQ-021 阶段二 P1 只读对账 CLI（→ P2-a 真链小额 = 唯一花钱批准点）→ **R19-5** REQ-022 双节点台 → **R19-6** §83 四棵树 → **R19-7** 旧队列六项 → **R19-8** BUG-048/049 + 试点回归 + UI-012 订正 → **R19-9** BUG-039 留档（不修）→ **R19-10** 交 Lead 落笔。详见下方「**本轮：Round 18**」+「**Round 18 结论**」+「**缺陷（🐞）— Round 18**」+ [journal/round-18.md](journal/round-18.md)。
+>
+> 🗂️ **R18 规划横幅（`task-73` 轮初原文，2026-09-28；终态以轮末 ✅ 条为准）—— 自动续轮 13/14**：本轮主项 = **[REQ-019](requirements/REQ-019-button-first-console.md) 控制台按钮化第一批**（用户原话：「arcblog 是给普通用户使用，没有技术基础，不应该有粘贴命令执行任务；应该通过按钮调用执行」）——**L-R18-1：第一批落在 `?page=categories` 的「合并到 / 删除并迁移」，照抄仓库既有 tags intents 范式（`tags/intents` + `arcblog-tags.mjs apply|watch`）**。**同轮两项 Lead 已授权**：**BUG-039 一次性实验**（1 处可回滚改动 `.aup/wrapper.aup` 根 `state={page:'index'}`；**运行时优先级不成立即立即回滚**并写「平台边界 + 实测否证」——**L-R18-3**）/**BUG-043**（逐节点标注真实 adapter（studio=真链 ocap / hub=mock 残留）+ 消费者逐节点判定 + 显式 mock 标记；**禁止为好看清掉证据性字段**——**L-R18-4**）。**验收口径（L-R18-2）= 以 AFS 为准，不以 toast 为准**（`arc-contracts.md` **§29.4**）：点按钮 → 意图记录出现 → worker 执行 → **目标数据真的改变**（`arc afs` 前后对比）+ 意图终态 + 原因；平台做不到的面**如实标注 + 显示「已排队，由节点执行」**，**不许放假按钮**。**L-R18-5：CLI 保留为折叠的「高级」备选**，不得作为唯一路径。**任务板（Lead 维护）**：**`task-73`（PM 规划）/ `task-74`（Dev = REQ-019 第一批 + BUG-039 实验 + BUG-043）/ `task-75`（QA，`blocked_by task-74`）/ `task-76`（PM 裁决）**；**PM 不调用 `team_task_*`**。**L-R18-6 本轮不做**：REQ-022 双节点台 / REQ-021 阶段二 / §83 其余四棵树 / BUG-032·033·034·036·037·038 → **R19+**。**门**：`arc dsl validate --json`（issues=[]）+ `npm test`（**28/28**，**基线不得降**）+ `arc dsl generate --check` + `arc blocklet build`（**本轮改了 `.aup` → 必跑**）+ `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `diff -r .aup dist/.aup`（改 `.web` 再加 `diff -r .web dist/.web`）；**禁止跑全量 `npm run test:live`**；**改 `scripts/**` / `.aup/**` / `world/**` 前先在 `docs/team/.gate-lock` 写一行（`owner + 开始时间`）、定向单跑受影响文件、跑完删锁**。**浏览器单 tab 纪律**：复用同一标签页（`Page.navigate` 换页）；**每身份 / 每语言用新 context**；结束关闭自己开的 target。详见下方「**本轮：Round 18**」+ [REQ-019](requirements/REQ-019-button-first-console.md) + [journal/round-18.md](journal/round-18.md)。
+>
 > ✅ **Round 17 已收官（PM `task-72` 裁决写回，2026-09-28）—— 放行（QA-013 [round-17.md](test-reports/round-17.md) 末行 `VERDICT=pass, BLOCKING=0`；阻断 **0**，无未裁决 P0/P1）**：**主项 [REQ-021](requirements/REQ-021-chain-backed-orders.md) 阶段一交付并放行 = PM 判「达标（合格）」**（按 [REQ-021 §6](requirements/REQ-021-chain-backed-orders.md) 五要件逐条判定，见 [journal/round-17.md](journal/round-17.md) §3）——**五要件齐备**：① 现状盘点每条带 `文件:行号`（QA 逐条核对，整体真实）；② **只读真机探针**（4 个真实 beta 哈希 `getTx` 全部 `info != null`、未知哈希返回 `{code:"OK", info:null}`；余额 `16154907215234937951` TBA/decimal 18 走 `getAccountTokens`（`state.balance` 为 `null`）；`getFactoryState(studio).owner` = 节点钱包 = 记录 issuer，自洽；fail-closed 三条独立复现）；③ 设计六件（A6–A11）；④ 阶段二清单（前置 + 分阶段 + **用户逐次批准**，另加 PM **§13.1 立项建议**）；⑤ **零真实链交易**（QA 四路独立确认：链上 09-28 窗口 **0 笔**、对照 09-27/09-01 为 17/17/188、余额逐位不变、7 条 ifMatch 三方一致、探针无广播调用点）。**同轮第二项 [BUG-039](bugs/BUG-039-bare-root-replays-last-page.md) 判定 = 「机制已证实 + 语言层候选可表达 + 运行时优先级受限未验证」→ 不是「已修」**：机制=**AUP 会话重放 `page`**（平台行为，页面内**无原始 URL 上下文**、空 `?page=` 视为缺省）已在 QA 独立复现；候选修法（wrapper 根 `state={page:"index"}` 合法并编译进根节点）在 `/tmp` 副本语言层复现成立；**但「节点级 state 默认能否压过会话 page」需改页面 + build 才能测 → L-R17-5 禁止 → 维持 P2、转平台边界口径（交 Lead 落 `arc-contracts.md`）+ 保留现有绕过（全站入口显式 `?page=`、品牌链接 `/?page=index`）+ 登记 1 条「需 Lead 批准 1 次可回滚页面实验」（R18-1）**；**本轮零页面改动**。**新增 4 条 BUG（无 P0/P1）**：**[BUG-041](bugs/BUG-041-send-tx-methods-count-wrong.md)（P3）+ [BUG-042](bugs/BUG-042-memo-readback-claimed-measured.md)（P2）+ [BUG-044](bugs/BUG-044-req021-line-citation-nits.md)（P3）→ 全部「本轮修（PM 内联勘误，docs-only）→ 已在 REQ-021 **§0 勘误块**落地」**（26→**38**、`sendTransferV3Tx :325→:326`、`TOKEN_DECIMALS :23→:24`、`AMOUNT_SCALE :17`；「memo 回找 = 实测可行」→ **降级 U6**）；**[BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)（P2，范围外/既有）→ 下一轮修（R18）**。**门全绿**（PM 轮末只读复核：validate `"issues": []`、`npm test` **28/28**（`duration_ms 1179.680334`）、`generate --check` 0 漂移、`console-nav --check` **pages 21**、`.gate-lock` 不存在）；**本轮零源码 / 零 `.aup` / 零 `.web` 改动 → `arc blocklet build` 不跑**（由 Lead 在所有人最后一次写盘后统一 build，`dist/docs/**` 会滞后，**勿 `git add -A`**）。**checklist 建议（Lead 落笔）：状态列零变化** —— 第 **135** 行（§44 Payment Adapter）**保持 🟡**（真链支付 = 阶段二 P3）、第 **113/114** 行与第 **132/133/134/136/137/141** 行（§41/§42/§89/§43/§29/§90）**保持 ✅**，计数 **✅82 / 🟡7 / ⬜13 / ⚪2 = 104**；仅建议加 3 条备注 + 1 行维护记录（文案见下方「Round 17 交付结果」§6）。**R18 路线见下方同节 §7**（REQ-021 阶段二 P1/P2-a 领跑，BUG-043 + 旧队列六项 + REQ-019/022 + §83 四棵树）。详见下方「**本轮：Round 17**」+ [REQ-021](requirements/REQ-021-chain-backed-orders.md) + [journal/round-17.md](journal/round-17.md)。
 >
 > 🗂️ **R17 规划横幅（`task-69` 轮初原文，2026-09-28；终态以轮末 ✅ 条为准）—— 自动续轮 12/14**：本轮主项 = **[REQ-021](requirements/REQ-021-chain-backed-orders.md) 阶段一**（订单/退款的链上能力 **调研 + 设计 + 只读真机探针**；用户原话「order 相关操作是不是应该查询链上交易，退款也是发起链上转账。调研并实现」）——**L-R17-1：阶段一只读，阶段二（实现）另立轮次**。**同轮第二项 = [BUG-039](bugs/BUG-039-bare-root-replays-last-page.md) 最小平台实验**（P2 裸根 `/` 重放本会话最后一次 `?page=`；**不可表达即转平台边界**，机制未证实前不得改页面，保留既有绕过；**L-R17-5**）。**任务板（Lead 维护）**：**`task-69`（PM 规划）/ `task-70`（Dev = REQ-021 阶段一 + BUG-039 探针）/ `task-71`（QA，`blocked_by task-70`）/ `task-72`（PM 裁决）**；**PM 不调用 `team_task_*`**。**硬红线（L-R17-2）= 零真实链交易**：只允许 GraphQL/HTTP **只读**查询；**禁止**广播交易、禁止 `sendTransfer`/mint/stake/claim/revoke 真跑、**禁止动资金**；私钥/Mnemonic **不得打印、不得落盘仓库**；**违反即判 fail 并升级用户**。**L-R17-3 先探针后落笔**：REQ-021 的结论与 BUG-039 的判定都必须有**真机原始输出**；`@ocap/client` 的 API **先读 `node_modules/@ocap/client` 的类型/README 再写代码**（PM 轮初已核到权威清单 `@ocap/client@1.30.24`：读侧 `getTx` `node.d.ts:459` / `listTransactions` `:473` / `getAccountState` `:451` / `getAccountTokens` `:476` / `getTokenState` `:455` / `getAssetState` `:452` / `listFactories` `:475`；写侧 `transfer` `:108` / `sendTransferV3Tx` `:325`）——**不得臆造 ARC API（spec §150）**。**L-R17-4 fail-closed 口径**：mock/manual 适配器**绝不可**声称「链上已验证」；缺哈希必须显示「**未上链/待验证**」；**绝不伪造哈希**（`arc-contracts.md` **§29.4** `:1522`「toast 不是证据」）；幂等键必须与既有确定性 ledger id 相容 —— ⚠️ **PM 实测勘误**：仓库实际是**两键** `scripts/lib/economy.mjs:258` 正向 `<orderId>:<type>` ＋ `:376` 退款反做 `<orderId>:refund:<type>`（`:381` `reverses` 指向正向键），设计必须与**两者**相容。**L-R17-6 本轮不做**：REQ-019 按钮化 / REQ-022 双节点台 / §83 其余四棵树 / BUG-032 / BUG-033 / BUG-034 / BUG-036 / BUG-037 / BUG-038 → **R18+**。**门**：`arc dsl validate --json`（issues=[]）+ `npm test`（**28/28**）+ `arc dsl generate --check` + `arc blocklet build`（改 `.aup` 时）+ `node scripts/arcblog-console-nav.mjs --check` + `diff -r .aup dist/.aup`（改 `.web` 再加 `.web`）；**禁止跑全量 `npm run test:live`**；触及 CLI / 链脚本 / AFS 记录 → **先在 `docs/team/.gate-lock` 写一行 + 定向单跑**（⚠️ **`scripts/arcblog-factory.test.mjs` 不存在**（`ls` 实测 `No such file or directory`）—— 正确文件是 `scripts/arcblog-node-nft.test.mjs` / `scripts/arcblog-economy.test.mjs`；R16 已发生过同一笔误，见 journal R-4）→ **跑完删锁**。**浏览器单 tab 纪律**：复用同一标签页（`Page.navigate` 换页），**每身份 / 每语言用新 context**，结束**关闭自己开的 target**。详见下方「**本轮：Round 17**」+ [REQ-021](requirements/REQ-021-chain-backed-orders.md) + [journal/round-17.md](journal/round-17.md)。
@@ -1310,6 +1314,250 @@ $ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","
 
 ---
 
+## 本轮：Round 18 ｜ **精简轮** — REQ-019 控制台按钮化第一批（`?page=categories` 的「合并到 / 删除并迁移」）+ BUG-039 一次性实验 + BUG-043
+
+> **轮次性质**：**精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 13/14**（`max_goal_rounds=14`；**Lead 口径**——PM 未独立复核 goal 计数器）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）；本小节即 **`task-73`** 的产物，轮末裁决由 PM 执行（`task-76`）。
+> **任务板（Lead）**：**`task-73`（PM 规划）** ／ **`task-74`（Dev：REQ-019 第一批 + BUG-039 实验 + BUG-043）** ／ **`task-75`（QA，`blocked_by task-74`）** ／ **`task-76`（PM 裁决）**。**REQ ↔ task 逐条对应以 Lead 任务书为准**；PM 按 Lead 口径登记：**REQ-019 第一批 → `task-74`（Dev）· `task-75`（QA）· `task-76`（PM 裁决）**；**BUG-039 实验与 BUG-043 同轮、同 `task-74`**（L-R18-3 / L-R18-4 已授权）。
+> **门规（照此执行）**：门 = `arc dsl validate --json`（**issues=[]**）+ `npm test`（**28/28，基线不得降**）+ **`arc dsl generate --check`**（无漂移）+ **`arc blocklet build`**（**本轮改了 `.aup` → 必跑**）+ `node scripts/arcblog-console-nav.mjs --check`（**pages 21**，本批不新增页）+ `diff -r .aup dist/.aup`（改了 `.web` 再加 **`diff -r .web dist/.web`**）。**禁止跑全量 `npm run test:live`**；**不新增测试文件**（新文件默认 live，会破坏快层 28/28 基线）；**不动 `FAST_TESTS`**。**改 `scripts/**` / `.aup/**` / `world/**` 前先写 `docs/team/.gate-lock`**（一行 `owner + 开始时间`）+ **定向单跑**受影响文件、**跑完删锁**。**浏览器单 tab 纪律**：复用同一标签页（`Page.navigate` 换页）；**每身份 / 每语言用新 context**；结束关闭自己开的 target。
+
+**目标（可验收）**：
+
+1. **主项 —— [REQ-019](requirements/REQ-019-button-first-console.md) 控制台按钮化第一批（`task-74`）**：**`?page=categories` 的「合并到…」与「删除并迁移…」两个动作按钮化**（L-R18-1），**照抄仓库既有 tags intents 范式**；验收按本文「**按钮化判据（B1–B6）**」逐条判定，**以 AFS 为准、不以 toast 为准**（L-R18-2，`arc-contracts.md` §29.4）。
+2. **同轮 Lead 授权项 —— BUG-039 一次性实验（L-R18-3）**：**1 处可回滚改动**（`.aup/wrapper.aup` 根 `state={page:'index'}`）→ `arc dsl generate --write` → `arc blocklet build` → 复跑 BUG-039 场景 B/C/D → **运行时优先级成立 = 保留 + 回归证据；不成立 = 立即回滚**（回滚后必须再 `generate` + `build` + 复跑门）**并写「平台边界 + 实测否证」**。
+3. **同轮 Lead 授权项 —— [BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)（L-R18-4）**：`node/factories.json` **逐节点标注真实 adapter**（`nodes.studio` = 真链 ocap 事实 / `nodes.hub` = **mock 残留**）+ **消费者逐节点判定**（不按文件头 `adapter` 决定是否查链）+ **显式 mock 标记**；**禁止为了好看清掉证据性字段**（`0xhubowner` / `0xte32…` 等是**唯一证据**，必须保留）。
+4. **QA（`task-75`，`blocked_by task-74`）**：独立重跑门 + **自己复现按钮/队列/负例/幂等**（不采信 Dev 自述）+ **AFS 前后对比**（不是 toast）+ 三类证据分开标注 + 报告落 `docs/team/test-reports/round-18.md`（末行机读 `VERDICT=…`）。
+
+**入选理由**：R17 已收官（QA-013 `VERDICT=pass, BLOCKING=0`、阻断 0；checklist **✅82 / 🟡7 / ⬜13 / ⚪2 = 104**）→ 仓库**无未裁决 P0/P1**；**用户直接点名**「不应有粘贴命令执行任务，应通过按钮调用执行」；Lead **L-R18-1** 定第一批 = `?page=categories` 的合并/删除迁移（**仓库已有可照抄的完整范式**，见下方 G2/G3），并**一次授权** BUG-039 实验（L-R18-3）与 BUG-043（L-R18-4）→ 三项同轮、**唯一写者 Dev**（`task-74`），PM/QA 写范围与之不重叠。**来源可定位**：用户需求（[journal/round-14.md](journal/round-14.md) 登记）；checklist 第 **103** 行备注原文「**无排序 / 合并 / 删除迁移——迁移只在 CLI `arcblog-category.mjs remove --migrate-to` / `merge`**」；[BUG-039](bugs/BUG-039-bare-root-replays-last-page.md)；[BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)。
+
+| ID | 需求 | 规格 | 角色 | 状态 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| **REQ-019（第一批）** | **控制台按钮化：`?page=categories` 的「合并到…」/「删除并迁移…」** —— 主路径按钮、CLI 折叠为高级备选；意图记录（`status`/来源/原因）→ worker 执行 → **目标数据真的改变**；队列可见且与 AFS 一致；负例 fail-closed；幂等；**禁止假按钮** | **§15.4**（分类治理）/ **§12**（分类法）/ **§1**（面向普通用户）；checklist 第 **104** 行（历史口径写 103，实测行号随插入漂移，以 `grep -n` 为准）；`arc-contracts.md` **§29.4**（toast 不是证据）；BUG-002 / BUG-003 先例 | **Dev** | ✅ **本轮交付 → PM 判「功能达标（有条件）」**（QA-014 判 fail/`BLOCKING=1`，唯一阻断 = BUG-045 词表口径点；见本文「Round 18 结论」§1） | REQ：[requirements/REQ-019-button-first-console.md](requirements/REQ-019-button-first-console.md)（§1 背景含 tags 范式逐行引用 / §2 范围与明确不做 / **§3 A1–A10 + B1–B6** / §4 依赖 / §5 写范围 / **§6 本轮口径** / §7 预留结果）。**写范围**：`.aup/pages/site/categories.aup`（+ 生成 `.aup/locales/**`、`.aup/app.json`/`wrapper.json`）、`scripts/arcblog-category.mjs`（+ `scripts/lib/categories.mjs` 如需）、既有 `scripts/*.test.mjs`（**仅追加用例**）、`dist/**`（build）、`docs/team/.gate-lock`（临时）。**硬约束**：**不新增测试文件**；**不改 tags 范式**（除词表口径裁定）；**队列不得落在 guest 可读前缀下**（§3.2 B5 选项 A/B，**C 禁止**）；触及 CLI/AFS → `.gate-lock` + **定向单跑 `scripts/arcblog-category.test.mjs`** + 跑完删锁；**待 Lead 一句裁定**：B2 来源字段口径 + §3.2 词表口径（`applied/rejected` vs 既有 `done/noop/failed`） |
+| **BUG-039（实验）** | **裸根 `/` 重放本会话最后一次 `?page=`**：**1 处可回滚改动**（`.aup/wrapper.aup` 根 `state={page:'index'}`）判「节点级默认能否压过会话 page」 | P2；既有平台行为；`arc-contracts.md` 候选 #12/#13；L-R17-5 / **L-R18-3** | **Dev** | ⛔ **终态：平台边界 + 实测否证 + 回滚干净 → PM 裁「不修」** | BUG：[bugs/BUG-039-bare-root-replays-last-page.md](bugs/BUG-039-bare-root-replays-last-page.md)。**R18 结果**：`/?page=saved` → 裸 `/` 仍落到 `/?locale=zh&page=saved`、标题「阅读清单」，与 baseline 逐字一致 = **不成立** → **已回滚**（PM 独立复核：`git diff -- .aup/wrapper.aup .aup/wrapper.json` 无输出；`grep -c '"state"' .aup/wrapper.json dist/.aup/wrapper.json` = 0/0）；QA 自造探针（`raw/BUG-039-qa-probe.mjs` → `raw/BUG-039-qa-round18.json`）独立复跑五场景与 round-16/17 baseline 逐字一致 → **Dev 处置正确**。**保留既有绕过**（全站入口显式 `?page=`、品牌链接 `/?page=index`）；**不再重复实验**；**留档交 Lead**（`arc-contracts.md` 候选 #12 由「语言层可表达 / 运行时优先级未验证」升级为「**实测否证：节点级 `state` 默认 ≤ 会话 `page`**」）。**写范围**：`.aup/wrapper.aup` + 生成物 + `dist/**` |
+| **[BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)** | **`node/factories.json` 头部 `adapter:"ocap"` 下混入 `nodes.hub` mock 事实**：**逐节点标注 adapter** + **消费者逐节点判定** + **显式 mock 标记** | P2（范围外 / 既有，非 R17 引入）；L-R17-4 / **L-R18-4**；`arc-contracts.md` 候选 #11 | **Dev** | 🟨 **部分修复 → L-R18-4 验收「未达成」，拆 BUG-046 / BUG-047 承接（R19-2）** | BUG：[bugs/BUG-043-factories-json-mock-under-ocap.md](bugs/BUG-043-factories-json-mock-under-ocap.md)（QA 原始输出 `docs/team/test-reports/raw/REQ-021-qa-afs-audit.json` / `raw/REQ-021-qa-gettx.json`）。**R18 结果（QA 独立核验）**：**成立** = 机制（`recordRole(…, adapter)` 4 调用点 / `nodeAdapterOf()` 产出 `adapter`+`adapterSource`+`chainVerified`+`simulated`+`attribution` / 头部保留 `adapter` + 新增 `adapterScope:"registry"`）、消费者（`?page=factory` 新增「是否真的在链上？（逐节点）」卡，warm 加载实测渲染）、**证据字段零删除**（与 round-17 审计逐字段比对 `REMOVED:(none)`；hub 的 `0xhubowner`/`0xa5ed65ce…`/`0xte32482c…`/`svg` 1842B 逐字节保留）、`blocklet.yaml` 零改动、permissions 6/6；**未达成** = live 投影 `nodes.studio` 与 `nodes.hub` 均 `adapter:""`/`adapterSource:"unrecorded"`/`chainVerified:false`，既无 studio 的真实 ocap 归属，也无 hub 的显式 mock 标记，且 `simulated:false` 对可证明的 mock 是**错误正向断言** → **BUG-046**；`arcblog-chain-worker.mjs:139` 守卫 `record.adapter && …` 对未归属记录为假 → 历史 mock 节点仍会被真链查询、误导性 `svgError` 依旧 → **BUG-047**。**处置认可**：历史记录早于逐节点归属（studio 真链哈希 REQ-021 已 `getTx` 命中），Dev 已如实上报为受限 —— **PM 判「不是假交付，是验收缺口」**；**补法两条**（① 重跑链写（动链，需授权/花钱）② 只读 `getTx` 逐条核验 + 人工标注（REQ-021 阶段二））→ **需 Lead/用户在 R19 决定立项**。**禁止**：清掉 `owner: "0xhubowner"` / `assetId: "0xa5ed…"` / `acquireTx: "0xte32…"` 等证据性字段；**不得**把 mock 写成链上已验证。**今天不影响任何渲染页面**（`grep -rn "nodes.hub" .aup/ .web/` 无命中） |
+| **QA-014** | **Round 18 独立验证**：REQ-019 A1–A10 + B1–B6 逐条；BUG-039 实验结果复现（**独立复跑 B/C/D**）；BUG-043 修法核验（**逐节点判定真的生效 + 证据字段未被清**） | REQ-019 §3 全文 + §6 口径；BUG-039「复现命令与最小步骤」；BUG-043 §实际 / §证据 | **QA** | ✅ **完成（`task-75`；`VERDICT=fail, BLOCKING=1`，唯一阻断 = BUG-045 P1；A1–A10 / B1–B6 主体独立通过）** | **任务**：`task-75`。**写范围**：`docs/team/test-reports/round-18.md`、`docs/team/test-reports/raw/REQ-019-*`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时）。**必须**：自跑门（不采信自述）；**以 AFS 为准**（意图记录 + 目标 post/category 记录**前后对比**）；**负例 3 条 + 幂等**独立复现；**假按钮检测**（每个 `action` 都有真实写入 + 真实 worker 路径）；**队列不落在 guest 可读面 / 公开分类列表不多行**（§3.2 B5）；BUG-039 **自造场景复跑**（单 tab + 每场景新 context，自开 target 全关）；BUG-043 **独立只读核验**（studio 命中 / hub `info:null`，且证据字段仍在）；三类证据分开标注；**不跑全量 live**；残留逐条清理或如实登记 |
+
+> **PM 侧配套任务（同一轮，不在上表内）**：**`task-73`** = 本轮规划（本小节 + **新建 [REQ-019](requirements/REQ-019-button-first-console.md)** + [journal/round-18.md](journal/round-18.md) 计划节）— ✅ **已完成**；**`task-76`** = 轮末裁决（QA 报告后逐条裁决新 BUG + 按钮化判据逐条判定 + checklist 建议 + 写回本文件 / journal / REQ §7）— ✅ **已完成（2026-09-28：QA 报告 + 6 条新 BUG 逐条裁决 + B1–B6 逐条判定 + BUG-039/043 终态 + checklist 建议，见下方「Round 18 结论」）**。**PM 本轮零实例写入、零 build、零 `team_task_*`**。
+
+### 本轮裁定（Lead 2026-09-28，Round 18 生效；**照此执行**）
+
+| # | 裁定 | 摘要 | 落点 |
+| - | ---- | ---- | ---- |
+| **L-R18-1** | **本轮主项 + 第一批范围** | **REQ-019 控制台按钮化第一批**（用户原话：「arcblog 是给普通用户使用，没有技术基础，不应该有粘贴命令执行任务；应该通过按钮调用执行」）；**第一批落在 `?page=categories` 的「合并到 / 删除并迁移」**，**照抄仓库既有 tags intents 范式**（`tags/intents` + `arcblog-tags.mjs apply\|watch`） | [REQ-019](requirements/REQ-019-button-first-console.md) §1/§2/§6；`task-74` |
+| **L-R18-2** | **验收以 AFS 为准，不以 toast 为准** | 点按钮 → **意图记录出现** → worker 执行 → **目标数据真的改变**（`arc afs` 前后对比）+ 意图终态（`applied`/`rejected`）+ 原因；平台做不到的面（需任意服务端代码 / provider 挂载）**必须如实标注**并显示「**已排队，由节点执行**」，**不许放假按钮**（`arc-contracts.md` **§29.4**） | REQ-019 §3 A2–A4 / §3.2 B2·B4·B5；本文「按钮化判据」 |
+| **L-R18-3** | **BUG-039 一次性实验：Lead 已授权** | **1 处可回滚改动**（`.aup/wrapper.aup` 根 `state={page:'index'}`）；**若运行时优先级不成立 → 立即回滚**并写「**平台边界 + 实测否证**」；**成立 → 保留 + 回归证据** | [BUG-039](bugs/BUG-039-bare-root-replays-last-page.md)；本表下方判据 |
+| **L-R18-4** | **BUG-043：Lead 已授权** | 改 `scripts/**` + 清理 `node/factories.json` 投影：**逐节点标注真实 adapter**（`studio` = 真链 ocap / `hub` = **mock 残留**）+ **消费者逐节点判定** + **显式 mock 标记**；**禁止为了好看清掉证据性字段** | [BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)；`task-74` |
+| **L-R18-5** | **CLI 保留为折叠的「高级」备选** | CLI **不得作为唯一路径**；页面主路径必须是按钮；CLI 命令卡收进**默认收起**的折叠区（沿用 `factory.aup:243-259` 的 `-> set … state {open}` 范式） | REQ-019 §2.1 ④ / §3.1 A1 / §3.2 B1 |
+| **L-R18-6** | **本轮不做** | **REQ-022 双节点台 / REQ-021 阶段二 / §83 其余四棵树 / 旧队列 BUG-032·033·034·036·037·038 → R19+** | REQ-019 §2.2 ⑩；下方「本轮明确不做」 |
+
+**BUG-039 实验判据（L-R18-3 展开；Dev 执行 + QA 复核共用）**
+
+| 情形 | 结论 | 应写什么 | 下一步 |
+| --- | --- | --- | --- |
+| **成立**：`/?page=saved` → 裸 `/` 落到**首页**（`最新发布` / `Latest published`），URL `/?locale=…`（无 `page=`） | **修法有效**（不是平台边界） | 改动行 + `validate`/`generate`/`build` 原始输出 + **21 页回归** + `sessionFailed=false` | **保留**；交 Lead 落 `arc-contracts.md`（候选 #12 由「语言层可表达」升为「**实测有效**」） |
+| **不成立**：裸 `/` 仍重放 `saved`/上一页 | **平台边界 + 实测否证** | 改动行 + **否证的原始输出** + 机制（会话 `page` 优先于节点级 `state` 默认） | **立即回滚该 1 行** → `generate --write` + `build` + 复跑门 → **交 Lead 落 `arc-contracts.md`**；保持既有绕过 |
+| **未能定论**（daemon 未供应新构建 / 平台行为不稳定） | **受限未验证** | 已尝试的命令与输出 + 缺口原因 | **回滚到基线**（不得留半成品）；不得凭猜测保留 |
+
+**按钮化判据（B1–B6，REQ-019 §3.2 的浓缩版；QA 逐条判，缺一条即不放行）**
+
+| # | 判据 | 可执行含义 |
+| - | ---- | ---------- |
+| **B1** | **① 主路径是按钮，CLI 只作折叠的高级备选** | 两个动作都能**只靠点击**完成；CLI 命令卡**默认收起**，且不是唯一路径 |
+| **B2** | **② 点按钮 → AFS 意图记录（含 `status`/来源/原因）→ worker 执行 → 目标数据真的改变** | `arc afs exec /blocklets/arcblog/.actions/read --path <queue>/<id>.json` 见记录（`action`/源/目标/`status: pending`/`requestedVia: console`/`requestedAt`）；worker 执行后**读目标 post 记录**确认 `content.category` 真的变了；**记录内 `grep '\$session\.'` = 0**（BUG-003）。⚠️ **来源字段口径待 Lead 一句裁定**（`requestedVia` vs 字面 `requestedBy`；`.aup/pages/ops/factory.aup:189-192` 是 `$session.did` 字面量的活样本）；⚠️ **词表口径待裁定**（L-R18-2 的 `applied/rejected` vs 既有 tags 的 `done/noop/failed`，`scripts/arcblog-tags.mjs:270-285`）—— **两套并存 = fail** |
+| **B3** | **③ 队列状态页面可见且与 AFS 一致** | 页面队列区逐行显示动作/目标/`status`；与 `arc afs` 读到的记录**抽 ≥3 条逐字一致** |
+| **B4** | **④ 负例 fail-closed：目标不存在 / 自迁移 / 非法记录 → `rejected`（或既有等价终态）+ 原因 + 不改数据** | 三条各自读回终态 + 原因非空，**且源分类与引用文章逐字节未变**（`commandRemove:128-134` 的 `CONFLICT`/`ensure` 是基准，worker 必须**捕获并落记录**，不得留 `pending`） |
+| **B5** | **⑤ 平台受限面如实标注、显示「已排队，由节点执行」，禁止假按钮** | 页面明写「按钮只入队，由本机 worker 执行」+ worker 命令；每个按钮都有真实写入 + 真实消费路径；**队列不得落在 guest 可读前缀下**（§3.2 B5 选项 A=`config/…` 同族 admin-only（推荐）/ B=新增独立 admin-only 集合（需 `blocklet.yaml` → 安全敏感）/ **C=`categories/intents/` 禁止**：`blocklet.yaml:190-194` 该前缀 `readRole: guest` 且页面 `:160` 直接列该目录） |
+| **B6** | **⑥ 幂等（重复点不重复执行）** | 连点 2 次（或同意图 `apply` 两次）→ 目标数据只改写一次；第二次终态 = 无需执行/no-op + 原因非空（同 id 同内容幂等 / 异内容 `CONFLICT` 口径参照 `scripts/arcblog-tags.mjs:225-235`，BUG-002 的修复） |
+
+**写范围冲突矩阵（R18 派活必须照此）**
+
+| 批次 | 成员 / 任务 | 本轮写范围 | 约束 |
+| --- | --- | --- | --- |
+| **A（唯一写者）** | Dev / `task-74`（REQ-019 第一批 + BUG-039 实验 + BUG-043） | `.aup/pages/site/categories.aup`、`.aup/wrapper.aup`（**仅 BUG-039 那 1 行**）、生成的 `.aup/locales/**` 与 `.aup/app.json`/`wrapper.json`、`scripts/arcblog-category.mjs`（± `scripts/lib/categories.mjs`）、`scripts/arcblog-factory.mjs` / `scripts/arcblog-node-nft.mjs`（BUG-043）、既有 `scripts/*.test.mjs`（**仅追加用例**）、`dist/**`（build）、`docs/team/.gate-lock`（临时） | **同 owner 内三件串行**：REQ-019 → BUG-039 实验 → BUG-043（后两件都可能改 `dist/**`，必须一次 build 收口）；**不新增测试文件**；**不改 tags 范式**；触及 CLI/AFS → `.gate-lock` + 定向单跑（`scripts/arcblog-category.test.mjs`；BUG-043 用 `scripts/arcblog-node-nft.test.mjs` / `scripts/arcblog-economy.test.mjs`）+ 跑完删锁；`blocklet.yaml` **仅**在 B5 选项 B 时例外（安全敏感 → 单列回报）；**越界即停并上报** |
+| **B（后）** | QA / `task-75`（QA-014） | `docs/team/test-reports/round-18.md`、`docs/team/test-reports/raw/REQ-019-*`、`docs/team/bugs/BUG-*.md`、`docs/team/.gate-lock`（临时） | **`blocked_by task-74`**（验证对象不得在脚下移动）；**自跑门、不采信自述**；**以 AFS 为准**；**负例 + 幂等独立复现**；**假按钮检测**；BUG-039 **自造场景复跑**；BUG-043 **独立只读核验**；**单 tab 纪律自证**；**不跑全量 live**；三类证据分开标注 |
+| **C** | PM / `task-73` + `task-76` | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | 规划（本小节 + 新建 REQ-019 + journal）+ 轮末逐条裁决 + 按钮化判据逐条判定 + checklist 建议；**不调用 `team_task_*`**；不写源码 / `blocklet.yaml` / 构建产物 / checklist 状态列 |
+
+**本轮明确不做（防蔓延）**
+
+1. **不做全站按钮化**（L-R18-1）：只 `?page=categories` 的 **merge / remove-migrate 两个动作**；`?page=pages` / `?page=media` / `?page=hub` / `?page=orders` 等一律不动。
+2. **不做分类排序按钮化**：页面既有口径「排序仅 CLI 可改」保持不变（QA 不得据此判 B1 失败）。
+3. **不做分类「直删」按钮**（spec §15.4 禁止悬空分类）。
+4. **不做 REQ-022 双节点台 / REQ-021 阶段二 / §83 其余四棵树**（L-R18-6）。
+5. **不做旧队列** BUG-032 / BUG-033 / BUG-034 / BUG-036 / BUG-037 / BUG-038（L-R18-6 → R19+）。
+6. **不新增测试文件、不动 `FAST_TESTS`、不跑全量 `npm run test:live`**。
+7. **不改 spec / checklist 状态列 / `arc-contracts.md`**（Lead 落笔）；**不改** `docs/ArcBlog-admin-ui-design.md`。
+8. **不改 tags 范式**（`scripts/arcblog-tags.mjs` / `.aup/pages/site/tags.aup`），除 Lead 就词表口径统一另行裁定。
+9. **不清掉 BUG-043 的证据性字段**（`0xhubowner` / `0xte32…` / `0xa5ed…`）——**证据 > 好看**（L-R18-4）。
+10. **BUG-039 实验失败时不留半成品**：必须回滚到基线（`.aup` 干净 + `generate`/`build` 复跑 + 门全绿）。
+11. **不碰链**：零真实链交易、零资金、私钥/Mnemonic 不打印不落盘；**不删** `node.key` / `.env.local`。
+12. **不 `git commit` / `git push` / `git reset --hard` / `git add -A`**；**不把** `docs/dsh-workflow-and-ralph.md` 与其 `dist` 镜像当本轮产物。
+
+**PM 现状盘点（R18 轮初只读实测；Dev/QA 可直接复核）**
+
+| # | 事实 | 证据（命令 + 输出摘要） | 等级 |
+| - | ---- | ----------------------- | ---- |
+| **G1** | `?page=categories` 今天**主路径就是复制 CLI**，页面唯一写按钮是「新增分类」 | `.aup/pages/site/categories.aup:150`（治理命令卡 `key-value-list`，5 条命令）、`:169`（每行 4 条 `node scripts/arcblog-category.mjs …`）、`:182`（唯一 `events={click: …}` = 新增） | ✅ PM 已复核 |
+| **G2** | **tags 范式完整存在**（本批要照抄）：队列根 `${TAGS_ROOT}/intents` + 页面按钮写意图 + `afs-list` 显示队列 + CLI `apply`/`watch` | `scripts/arcblog-tags.mjs:37`（`INTENTS_DIR`）/`:201 enqueueIntent`/`:260 applyIntent`/`:293 runPending`/`:456 watch`；`.aup/pages/site/tags.aup:154`/`:224`（写意图）、`:173`（列队列）、`:177-179`（显示 `status`）；`blocklet.yaml:200-204`（独立 admin-only `tags` 集合） | ✅ PM 已复核 |
+| **G3** | **第二条先例**：链上按钮 `config/chain-intents` + `arcblog-chain-worker.mjs`（admin-only 整树） | `scripts/arcblog-chain-worker.mjs:30`（`INTENT_DIR`）/`:225-227`（CLI 侧 `requestedBy: 'cli'`）；`.aup/pages/ops/factory.aup:189-192`（写）/`:209`（列）；`.aup/pages/admin/diagnostics.aup:259`（同队列订阅）；`blocklet.yaml`（`config` 整树 admin-only，注释明写「never nest a public child under a private parent」） | ✅ PM 已复核 |
+| **G4** | **category CLI 目前没有 `apply` / `watch`**（本批需新增） | `node scripts/arcblog-category.mjs --help` 实测子命令 = `seed` / `list` / `add` / `show` / `usage` / `merge` / `remove [--migrate-to]`（**无 apply/watch**） | ✅ PM 已复核 |
+| **G5** | **业务 fail-closed 已存在**（worker 不需重造规则） | `scripts/arcblog-category.mjs:110 commandMerge` / `:121 commandRemove`；`:128-129` 有引用且无 `--migrate-to` → `fail('CONFLICT', …)`；`:133` `migrateTo !== slug`；`:134` 目标分类必须存在 | ✅ PM 已复核 |
+| **G6** | **队列落点的平台风险（本批最关键的设计约束）** | `blocklet.yaml:190-194` `categories` = `readRole: guest`；`.aup/pages/site/categories.aup:160` **直接列该目录** → 把 `intents/` 挂在 `categories/` 下会落在**公开前缀**并可能作为行渲染（**未实测**）；对照 tags = 独立 admin-only 树 + 页面只列 `items`/`intents` 子目录（不列根） | ✅ PM 已复核（**只读**，未写实例） |
+| **G7** | 权限矩阵已有「公开 / admin」二分 | `scripts/arcblog-permissions.test.mjs:28-36` `PUBLIC_PATHS`（含 `:32` `categories`）/ `:39-57` `ADMIN_PATHS`（含 `:56` `tags`）；**live 层**，改动须 `.gate-lock` + 定向单跑 | ✅ PM 已复核 |
+| **G8** | **「页面内 `$session.*` 不插值」的活样本**（新批次不得复制） | `.aup/pages/ops/factory.aup:189-192` 直接写 `requestedBy: $session.did`（BUG-003 / `arc-contracts` §28.7 实测为字面量）；当前 `config/chain-intents/pending.json` 读回 `requestedBy: "console"`（**来源未定论 → 不作为结论**） | ✅ PM 已复核（只读读记录） |
+| **G9** | BUG-039 **复现脚本已存在**，可直接复用 | `docs/team/test-reports/raw/REQ-028-qa-home-route.mjs`（A/B/C/D/G 五场景）、`raw/BUG-039-qa-probe.mjs`、`raw/BUG-039-qa-repro.json` | ✅ PM 已复核 |
+| **G10** | **定向单跑正确文件名** | `scripts/arcblog-category.test.mjs` **存在**（live 层，不在 `FAST_TESTS`）；BUG-043 相关 = `scripts/arcblog-node-nft.test.mjs` / `scripts/arcblog-economy.test.mjs`；⚠️ **`scripts/arcblog-factory.test.mjs` 不存在**（R16/R17 同一笔误） | ✅ PM 已复核 |
+
+**PM 轮初只读复核门（2026-09-28，R18；未写实例、未加锁、未跑任何 live 文件、未 `arc blocklet build`）— 真实输出**
+
+```text
+$ ls docs/team/.gate-lock      → No such file or directory                              [exit=1]（无人在写实例）
+$ git status --short           → ?? dist/docs/dsh-workflow-and-ralph.md
+                                 ?? docs/dsh-workflow-and-ralph.md
+                                 （**非本轮产物**，R12 起既有；Lead 不得 `git add -A` 卷入 —— backlog **F-6**）
+$ arc dsl validate --json      → "issues": []                                            [exit=0]
+$ npm test                     → tests 28 / suites 0 / pass 28 / fail 0 / duration_ms 1015.445333
+                                 → "fast tier passed — this is the gate."                 [exit=0]
+$ node scripts/arcblog-console-nav.mjs --check → {"ok":true,"action":"check","pages":21}  [exit=0]
+$ arc dsl generate --check     → Would generate 0 file(s) (dry-run) — nothing to change   [exit=0]
+$ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/categories/technology.json
+                               → {"id":"technology.json", … "content":"{\n  \"slug\": \"technology\", … \"sort\": 10, …}"}  [exit=0]
+$ node scripts/arcblog-category.mjs usage --slug technology
+                               → {"ok":true,"slug":"technology","count":30,"posts":[…]}
+$ node scripts/arcblog-category.mjs --help
+                               → seed / list / add / show / usage / merge / remove [--migrate-to]（**无 apply/watch**）
+```
+
+> **说明（诚实口径）**：上表 4 条门只证明 **R18 轮初仓库基线全绿**；`arc blocklet build` / `diff -r .aup dist/.aup` **PM 轮初未跑**，因为 PM **没有 `.aup` / `.web` 改动**。**本轮 Dev 会改 `.aup`（categories + wrapper）→ 必须自己跑 `generate --write` + `build` + `diff`**；**Lead 的最终 build 必须晚于所有人（含 PM）最后一次写盘**。
+
+**checklist 影响（本轮初判；最终以轮末为准）**
+
+- **预期状态列零变化**：第 **103** 行「分类与标签管理界面」（§15.4）**保持 ✅**（功能更完整不改变 ✅ 状态）；计数 **✅82 / 🟡7 / ⬜13 / ⚪2 = 104** 不变。
+- **建议备注更新（Lead 落笔）**：第 **103** 行备注里「**无排序 / 合并 / 删除迁移——迁移只在 CLI**」在本轮后**过时** → 补「**R18：合并到 / 删除并迁移 已按钮化（页面入队 + worker 执行），排序仍 CLI-only**」；维护记录追加一行。**PM 本轮零编辑 checklist。**
+
+**Round 18 风险（PM 登记；供 Dev / QA / Lead 使用）**
+
+| # | 风险 | 影响 | 应对 |
+| - | ---- | ---- | ---- |
+| **R-1** | **队列落点选错**（挂在 `categories/intents/` 下）→ 队列落在 `readRole: guest` 前缀（G6） | 意图记录可能对 guest 可读、公开分类列表多出条目（B5/A10 fail）；若改 `blocklet.yaml` 则是**安全敏感写入** | 选 **B5 选项 A**（复用 `config/…` 同族 admin-only，零 `blocklet.yaml` 改动）或 **B**（新集合 → `.gate-lock` + 同步 `arcblog-permissions.test.mjs` + build + restart）；**C 禁止**；**未实测前不得声称「guest 读不到」** |
+| **R-2** | **词表 / 来源字段口径冲突**：L-R18-2 说 `applied/rejected` + `requestedBy`，仓库既有范式是 `done/noop/failed` + `requestedVia`（G2/G8） | 同一控制台出现两套状态词；或把字面量 `$session.did` 当调用者写进记录 | **Dev 按 PM 建议实现**（沿用 tags 口径：`requestedVia`/`requestedAt`，`requestedBy` 只在 CLI 能拿到真实值时写）**并在回报写明取舍**；**口径裁决权在 Lead**（`task-76` 前给出即可）；QA 按同一口径判；**两套并存 = fail** |
+| **R-3** | **BUG-039 实验「假成立」**：只看页面标题或只看一次导航就判「修好了」 | 错误保留 1 行改动 → 裸 `/` 仍重放上一页（或反之误判平台边界） | 判据表三档；**必须**：`/?page=saved` → 裸 `/` 落到首页 **且** URL 无 `page=` **且** 21 页回归 + `sessionFailed=false`；**否证或未定论即回滚**（回滚后 `generate` + `build` + 复跑门） |
+| **R-4** | **BUG-043 修法变成「清证据」**：为了投影好看删掉 `hub` 的 mock 字段（或把 mock 值抹成空串） | 销毁唯一证据（QA 已用它证明 `getTx → info:null`），并违反 L-R18-4 | **只允许**加 `adapter` 逐节点标注 + 显式 mock 标记 + 消费者逐节点判定；**禁止**删除 `0xhubowner` / `0xte32…` / `0xa5ed…`；QA 独立 `grep` 核验证据字段仍在 |
+| **R-5** | **验收退化成 toast**：只截图「已排队」就放行，worker 从未真跑 | 假交付（`arc-contracts §29.4`「toast 不是证据」） | QA **必须**：`apply`/`watch` 真跑 → 读**目标 post 记录**前后对比（A3/A6/A7）；**每个按钮**都要有真实写入 + 真实消费路径（A8）；**报告写明 worker 命令与 exec 通道退出码** |
+
+---
+
+### Round 18 结论（PM `task-76` 裁决写回，2026-09-28）—— **不放行（QA-014 `VERDICT=fail, BLOCKING=1`）**；REQ-019 第一批判「**功能达标（有条件）**」；BUG-039 终态 = **平台边界 + 实测否证（不修）**；BUG-043 = **部分修复、L-R18-4 验收未达成**
+
+**0. 门（PM 轮末**只读**独立复核；PM 零写实例、零 build、零 live 文件、零源码）**
+
+```text
+$ arc dsl validate --json   → "issues": []                                     [exit=0]
+$ npm test                  → tests 28 / pass 28 / fail 0 / duration_ms 1410.1125
+                              "fast tier passed — this is the gate."            [exit=0]
+$ git diff -- .aup/wrapper.aup .aup/wrapper.json   → 无输出（BUG-039 回滚干净）
+$ grep -c '"state"' .aup/wrapper.json dist/.aup/wrapper.json → 0 / 0
+$ node scripts/arcblog-category.mjs queue  → {"ok":true,"path":"…/config/category-intents","count":0,"intents":[]}（队列零残留）
+$ git status --short        → 38 M + 29 ??（本轮产物 + 前几轮未提交增量；**非本轮产物**：`docs/dsh-workflow-and-ralph.md` 及其 `dist` 镜像 —— 见本文件 **F-6**，**Lead 勿 `git add -A`**）
+```
+
+> QA 自跑门另有：`arc dsl generate --check` 0 漂移、`arc blocklet build` 幂等（build 前后 dist 全量 sha 一致 `331991bd86eb00bfe52e1351c3ab64f45a1cbb87`）、`console-nav --check` `pages:21`、`diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` 均无输出、定向单跑 category **15/15** / node-nft **17/17** / chain-worker **4/4**、permissions **6/6**（[round-18.md](test-reports/round-18.md) §3.1/§3.9）。**PM 未重复跑 build**（PM 无 `.aup` 写权限，且 build 会动 `dist/**` → 由 Lead 在所有人最后一次写盘后收口）。
+
+**1. REQ-019 第一批达标判定（按钮化判据 B1–B6 逐条；**验收以 AFS 为准，不以 toast 为准**，L-R18-2）**
+
+| # | 判据 | QA 结论 | **PM 判定** | 依据（QA 独立复跑，原始输出见 [round-18.md](test-reports/round-18.md) §3.2–§3.5） |
+| - | ---- | ------- | ----------- | ----------------------------------------------------------------------------------- |
+| **B1** | 主路径是按钮、CLI 只作折叠的「高级」备选 | 通过（产品面） | ✅ **通过**（自证措辞漂移 = BUG-050 → 已内联勘误） | 7 行分类每行 `targetInputs:1` + `["合并到…","删除并迁移到…"]`；`copyableBeforeExpand=0` / 展开后 **6**；「收起高级」可用（PM 独立复读 `raw/REQ-019-qa-e2e.json` → `fold` 一致） |
+| **B2** | 点按钮 → AFS 意图记录 → worker 执行 → **目标数据真的改变** | 主体通过；**口径点（词表）不通过** | ⚠️ **主体通过 / 口径点未达成 → BUG-045** | 记录字段齐备（`action`/`from`/`to`/`status:"pending"`/`requestedVia:"console"`/`requestedAt`；`grep '\$session\.'` = **0**）；`apply` 后 `r18qa-bq-src → r18qa-bq-dst`、`version 1→2`、源记录消失；applied/noop/rejected 三档 + `message` 非空；再跑 `applied:0`；**入队未 apply 时文章/源/目标记录逐字节不变** |
+| **B3** | 队列状态页面可见且与 AFS 一致 | 通过 | ✅ **通过** | 页面队列 6 行逐行与 `arc afs` 记录一致 |
+| **B4** | 负例 fail-closed（目标不存在 / 自迁移 / 非法记录） | 通过 | ✅ **通过** | 三条 `rejected` + `VALIDATION` + `… — no data changed`；源记录与文章**逐字节不变**（`src2ByteIdentical:true` / `post3ByteIdentical:true`）；worker **捕获并落记录**，无残留 `pending` |
+| **B5** | 平台受限面如实标注、禁止假按钮、落点约束 | 通过 | ✅ **通过** | 落点 **A** = `config/category-intents`（**零 `blocklet.yaml` 改动**）；guest `403 role 'guest' is below readRole 'admin'`；permissions 6/6；页面常驻「已排队，由本机 worker 执行」+ worker 命令；**无假按钮** |
+| **B6** | 幂等（重复点不重复执行） | 通过 | ✅ **通过** | 第二次点击 → `noop` + 原因非空；`version` 只前进一次；同 `--id` 同内容幂等（exit 0）/ 异内容 `CONFLICT`（exit 1，**不覆盖 pending**） |
+
+**判定**：
+
+- **功能与链路 = 达标**：A1–A10 与 B1/B3/B4/B5/B6 全过，B2 的功能主体全过；证据形态是 **AFS 前后对比**（非 toast）。
+- **口径 = 1 条未达成**：B2 的「同一控制台只能有一套终态词」（REQ §3.2 原文明写「**两套并存 = fail**」）→ **BUG-045（P1）**。
+- **综合判定：第一批「达标（有条件）」**，条件 = **R19-1 统一词表**。**不判「fail / 退回重做」**：数据真实改变、负例 fail-closed、幂等、权限不退化、零假按钮均为实测事实。未达成的是一条**产品用词**判据，其根因是 **Lead 字面用词（`applied`/`rejected`）与仓库既有 tags 范式（`done|noop|failed`）冲突**，而 REQ 原文（§3.2 口径点 / §9.2）**已把该口径留给 Lead 一句裁定**、Dev 无裁量权且已如实上报 → **不是 Dev 违规**。
+- **QA 的 `VERDICT=fail, BLOCKING=1` 成立**（按 REQ 原文口径）；PM 认可其阻断，但阻断性质 =「**口径待 Lead 一句裁定**」+「**BUG-043 验收缺口**」，**不是功能失效**；本轮**不重开修复窗口**（无 Dev 写者窗口 + 需 Lead 先裁定）→ 转 **R19-1 / R19-2**。
+- **来源字段口径已收敛**：页面侧写 `requestedVia:"console"` + `requestedAt`、**不写** `requestedBy`；CLI `request --by <did>` 才写真实调用者；`$session.` 字面量 = 0 —— **与 REQ §3.2 的 PM 建议完全一致且 QA 已独立复现** → **PM 判定该口径自本裁决起为本项目既定口径**（R19 起沿用；若 Lead 另有指示以 Lead 为准）。
+- **附带口径（未决，交 Lead）**：REQ-019 §8.3 的整页 `required` 实测（`?page=tags`/`?page=categories` 的空 required 字段未阻断按钮）与 `arc-contracts.md` §31(4) 不完全一致 → **R19 用「同页两个 action，一个引用空 required 字段、一个不引用」的对照探针复测后由 Lead 落笔**；**本轮两个按钮不依赖 `required`**（行走行内非 required 文本输入 + worker fail-closed），不影响 B1–B6。
+
+**2. BUG-039 终态（R16 遗留 P2；L-R18-3 一次性实验**已执行**）**
+
+| 项 | 终态 | 落点 |
+| -- | ---- | ---- |
+| **判定** | **平台边界 + 实测否证 + 回滚干净 → PM 裁「不修」**（不是「已修」，也不是「受限未验证」） | 本表 + [journal/round-18.md](journal/round-18.md) §3 + `arc-contracts.md`（Lead） |
+| **机制** | AUP **会话**保存 `page`，裸 `/` 重放该值；节点级 `state={page:'index'}` **语言层合法**（`wrapper.json` 顶层出现 `"state"`）但**运行时被会话 `page` 覆盖** → 页面内无原始 URL 上下文，语言层无法覆盖 | [BUG-039](bugs/BUG-039-bare-root-replays-last-page.md) |
+| **证据（Dev）** | 实验组与 baseline **逐字一致**：`/?page=saved` 后裸 `/` → `/?locale=zh&page=saved`、标题「阅读清单」（REQ-019 §9.4） | `docs/team/requirements/REQ-019-button-first-console.md` §9.4 |
+| **证据（QA 独立复跑）** | 自造探针 A/B/C/D + spot-check：`B` 仍复现、`C` 显式 `?page=index` 可回首页、`D` 空 `?page=` 重放 saved；与 round-16/17 baseline **逐字一致**；21 页 sweep 全 `activeRows:1`、`sessionFailed:false` | [`raw/BUG-039-qa-probe.mjs`](test-reports/raw/BUG-039-qa-probe.mjs) → [`raw/BUG-039-qa-round18.json`](test-reports/raw/BUG-039-qa-round18.json) |
+| **回滚核对** | `git diff -- .aup/wrapper.aup .aup/wrapper.json` **无输出**；`grep -c '"state"' .aup/wrapper.json dist/.aup/wrapper.json` = **0 / 0**（**PM 已独立复核**）；`diff -r .aup dist/.aup` 无输出（QA） | — |
+| **应对** | **保留既有绕过**（全站入口显式 `?page=`、品牌链接 `/?page=index`）；**不再重复实验**；**不占 R19 排期**（只在 arc-contracts 留档） | 交 Lead：`arc-contracts.md` 候选 **#12/#13** 由「语言层可表达 / 运行时优先级未验证」升级为「**实测否证：节点级 `state` 默认 ≤ 会话 `page`**」 |
+
+**理由与 spec 章节**：页面内不可表达（无请求级钩子 / 无原始 URL），属**平台边界**而非 ArcBlog 缺陷（spec §1「面向无技术基础用户」的入口绕过已存在；spec §150「不臆造平台能力」禁止硬造覆盖机制）。**Dev 的一次性实验与回滚处置 PM 判「正确」**，R-3 风险（假成立）未发生。
+
+**3. BUG-043 终态（R17 遗留 P2；L-R18-4 修法**部分成立**）**
+
+- **成立（3 项）**：① **机制** —— `recordRole(…, adapter)` 4 个调用点、`nodeAdapterOf()` 统一产出 `adapter`/`adapterSource`(`record|unrecorded`)/`chainVerified`/`simulated`/`attribution`、头部保留 `adapter` 并新增 `adapterScope:"registry"`；② **消费者** —— `?page=factory` 新增「是否真的在链上？（逐节点）」卡，warm 加载实测渲染出 attribution；③ **证据保全** —— 与 round-17 审计**逐字段**比对 `REMOVED:(none)`，hub 的 `0xhubowner`/`0xa5ed65ce…`/`0xte32482c…`/`svg`(1842B) **逐字节保留**；`blocklet.yaml` 零改动、permissions 6/6。
+- **未达成（2 项）**：live 投影 `nodes.studio` / `nodes.hub` 均 `adapter:""` / `adapterSource:"unrecorded"` / `chainVerified:false` —— ① 既没有 studio 的真实 ocap 归属，也没有 hub 的**显式 mock 标记**，且 `simulated:false` 对可证明的 mock 是**错误正向断言**（与 `scripts/arcblog-node-nft.mjs:96` 注释自相矛盾，`scripts/lib/chain.mjs:85 const simulated = adapter === 'mock'`）→ **BUG-046（P2）**；② `scripts/arcblog-chain-worker.mjs:139` 守卫 `record.adapter && record.adapter !== chain.adapter` 对未归属记录为假 → 历史 mock 节点仍会被真链查询、BUG-043 声称消除的误导性 `svgError` 对今天 live 两个节点都仍会发生 → **BUG-047（P2）**。
+- **裁决**：**BUG-043 → 下一轮修（R19-2）**，由 **BUG-046 + BUG-047** 承接收口；历史节点归属**不判 Dev 违规**（记录早于逐节点归属；Dev 如实上报为受限，PM 认可该处置）→ **需 Lead/用户在 R19 决定补法**：① 重跑对应节点的写操作（**动链，需授权/花钱**）② 只读 `getTx` 逐条核验 + 人工标注（= REQ-021 阶段二，L-R18-6 本轮不做）。**R-4 风险（清证据）未发生。**今天不影响任何渲染页面（`grep -rn "nodes.hub" .aup/ .web/` 无命中）。
+
+**4. 新增 BUG 6 条逐条裁决**（详表见下方「**缺陷（🐞）— Round 18 QA 新增**」）
+
+| BUG | 级别 | 裁决 |
+| --- | ---- | ---- |
+| [BUG-045](bugs/BUG-045-two-status-vocabularies-coexist.md) | **P1** | **下一轮修（R19-1，首项）** + **需 Lead 一句裁定方向**（PM 建议：认 L-R18-2 的 `applied/rejected` 字面 → R19 把 tags 的 `done` / `failed` 改名并同步页面图例 / `arcblog-tags.test.mjs` 断言；并把 tags 图例的 `queued` 改回 `pending`）。**不判「不修」**：词表不一致会被第二批复制成第三套 |
+| [BUG-046](bugs/BUG-046-factories-unattributed-node-simulated-false.md) | P2 | **下一轮修（R19-2，BUG-043 验收缺口）** |
+| [BUG-047](bugs/BUG-047-chain-worker-guard-skips-unattributed.md) | P2 | **下一轮修（R19-2，与 BUG-046 同批；顺序耦合历史归属决策）** |
+| [BUG-048](bugs/BUG-048-cleaner-misses-live-test-residue.md) | P3 | **下一轮修（R19-8，可与任何触及 doctor/clean 的批次并轨）** |
+| [BUG-049](bugs/BUG-049-queue-entry-without-json-extension-never-consumed.md) | P3 | **下一轮修（R19-8）**；须在 **R19-3（第二批）之前**定成**队列约定** |
+| [BUG-050](bugs/BUG-050-req019-b1-evidence-drift.md) | P3 | **本轮修（PM 内联勘误，docs-only）→ 已闭环**（REQ-019 §9.3 措辞已修订，先例 BUG-040） |
+
+**P0 = 0 / P1 = 1（BUG-045）**；**唯一「不修」= BUG-039（平台边界 + 实测否证，见 §2）**；**无悬挂未裁决 BUG**。
+
+**5. Round 18 checklist 建议（**只建议，Lead 落笔**；PM 本轮零编辑 checklist）**
+
+1. **状态列零变化**：第 **104** 行「分类与标签管理界面（§15.4）」**保持 ✅** —— 按钮化让功能更完整，不改变 ✅；BUG-045 是**口径不一致**、不是功能缺失。
+2. **⚠️ 计数基线勘误（PM 实测）**：checklist 现状**不是 104 行** —— 总览（第 **42** 行）+ 逐行实测 = **✅ 82 ｜ 🟡 7 ｜ ⬜ 19 ｜ ⚪ 2 = 110**（维护记录末行已记：2026-09-28「数据层设计入 spec」时 Lead 代改新增 **I 组「数据层与部署（§154/§155）」6 行 ⬜**）。backlog / journal 沿用的「**✅82 / 🟡7 / ⬜13 / ⚪2 = 104**」是 R17 期基线、**已过时** → 建议 Lead 在 **R19 轮初**统一更新（本文件顶部横幅 + `journal/round-19.md` 头部）。
+3. **建议备注更新（第 104 行）**：把「**无排序 / 合并 / 删除迁移**——迁移只在 CLI」改为「**R18：合并到… / 删除并迁移… 已按钮化**（页面写 `config/category-intents` 意图 → 本机 worker `arcblog-category.mjs apply|watch` 执行；负例 fail-closed、幂等、队列对 guest 403；CLI 折叠为「高级」）；**排序仍 CLI-only**；**状态词表待 R19 统一（BUG-045）**」。
+4. **维护记录追加一行（文案建议，Lead 可改）**：
+   `| 2026-09 | 精简轮次 18（自动续轮 13/14）：REQ-019 控制台按钮化第一批 —— ?page=categories 的「合并到…/删除并迁移…」按钮化（页面写入队 → worker apply/watch 执行；以 AFS 前后对比为证据；负例 fail-closed；幂等；队列落 config/category-intents 对 guest 403；CLI 折叠为「高级」）；BUG-039 一次性实验被实测否证（节点级 state 默认 ≤ 会话 page）→ 回滚干净、转平台边界留档；BUG-043 部分修复（逐节点 adapter 机制 + 消费者卡 + 证据字段零删除）但 live 投影未归属 → BUG-046/047 承接；QA-014 VERDICT=fail / BLOCKING=1（唯一阻断 = BUG-045 词表口径点），PM 判第一批「功能达标（有条件）」；状态列零变化 ✅82 / 🟡7 / ⬜19 / ⚪2 = 110 |`
+5. **D 组小计不变**（20✅ / 4🟡 / 3⬜ = 27）；**本轮唯一受影响的分类治理 / 管理后台行 = 第 104 行**；`?page=tags` 与 `?page=factory`（BUG-043 消费者卡）无清单行状态变化。
+6. 另建议（**只建议**）：把「**行号引用一律带实测命令**」写进后续引用口径 —— 本轮实测两处历史行号已漂移：第 104 行（历史口径 103，§15.4 分类与标签管理界面）与第 **136** 行（历史口径 135，§44 Payment Adapter）；`arc dsl lint` 计数同理「以实测为准、不写死」。
+
+**6. R19 路线** → 见下方「排队（🟨）」新增的「**R18 轮末重排（PM `task-76`，2026-09-28）**」：**R19-1** BUG-045 词表收口（首项，需 Lead 一句裁定）｜**R19-2** BUG-046/047 + BUG-043 收口（含历史归属决策）｜**R19-3** REQ-019 第二批（建议 media 清理领跑；前置 = R19-1 + BUG-049 队列约定）｜**R19-4** REQ-021 阶段二 P1 只读对账 CLI（→ P2-a 真链小额 = **唯一必须真花钱的批准点**）｜**R19-5** REQ-022 双节点台｜**R19-6** §83 其余四棵树｜**R19-7** 旧队列六项（BUG-033/036/034/037/038/032）｜**R19-8** BUG-048/049 + 试点回归 + UI-012 订正｜**R19-9** BUG-039 留档（不修）｜**R19-10** 交 Lead 落笔（`arc-contracts.md` 候选 + checklist 重基线 104→110 核对）。
+
+**REQ-019 第二批建议（按「用户价值 × 平台可行性」排序；详细论证见 [REQ-019 §10](requirements/REQ-019-button-first-console.md)）**：**B2-1 media 清理**（`refs` 只读直渲 + `remove --id` / `orphans` 走队列；落 `config/media-intents`）→ **B2-2 hub 注册与索引重建**（`register`/`add` + `index rebuild` 队列；补全 `?page=hub` 的 A/B 面）→ **B2-3 posts 草稿发布/跨目录移动**（写作主流程，队列形态）→ **B2-4 policy 商品/策略**（纯单记录写 = 最低成本热身）→ **B2-5 agents 授权/撤销**（先解决 AUP 无哈希原语的寻址受限面，如实标注「已排队，由节点执行」）→ **B2-6 orders 退款/创建**（**不建议独立批次**，与 REQ-021 阶段二编排；在此之前退款按钮最多「队列 + 人工确认」且必须显示本批零链调用）→ **B2-7 diagnostics `arc space *`**（**不做按钮**：AUP 无法调用 daemon 命令 → 保持只读 + 复制命令的诚实形态）。
+
+---
+
+## 缺陷（🐞）— Round 18 QA 新增，PM 已逐条裁决（2026-09-28）
+
+> **大前提**：QA-014 判 **不放行**（[round-18.md](test-reports/round-18.md) 末行 **`VERDICT=fail, BLOCKING=1`**，阻断 **1** = BUG-045 P1）；**功能面 REQ-019 A1–A10 + B1–B6 的主体逐条独立通过**（真实浏览器点击 → `arc afs` 记录 → worker → 目标数据真的改变），门全绿（validate `issues: []` / `npm test` **28/28** / `generate --check` 0 漂移 / `build` 幂等 / `console-nav --check` pages 21 / `.aup`+`.web` 双 diff 空 / permissions 6/6），BUG-039 一次性实验处置正确。**本轮无源码修复窗口**（Lead 任务板只有 `task-73`…`task-76`；PM 不调用 `team_task_*`）→ 需改源码或 `.aup` 的一律「**下一轮修（R19-n）**」；PM 写范围内（`requirements/**`）的 docs-only 勘误 = **本轮修（内联，先例 R10 REQ-009 §3.1 / R16 BUG-040 / R17 BUG-041·042·044）**。
+
+| BUG | 级别 | QA 事实（证据） | 裁决 | 理由 + spec / 落点 |
+| --- | ---- | --------------- | ---- | ------------------ |
+| **[BUG-045](bugs/BUG-045-two-status-vocabularies-coexist.md)** | **P1** | 同一控制台两套（实为**三套叫法**）意图终态词：categories `pending/applied/rejected/noop`（`scripts/arcblog-category.mjs:255,322,339,355,362`）vs tags `pending/done/noop/failed`（`scripts/arcblog-tags.mjs:214,276,282`），tags 页面图例还把 `pending` 写成 `queued`（`.aup/pages/site/tags.aup:25`） | 🟨 **下一轮修（R19-1，首项）** + **需 Lead 一句裁定方向** | **REQ-019 §3.2 口径点明写「两套并存 = fail」** → 属**产品口径**、不是渲染细节；**根因是 Lead 字面用词（L-R18-2 的 `applied`/`rejected`）与仓库既有 tags 范式冲突**，而 REQ 原文（§3.2 口径点 / §9.2）**已把该口径留给 Lead 一句裁定**，**Dev 无裁量权且已如实上报 → PM 判不是 Dev 违规**；**P1 但不阻断数据正确性**（功能可用、数据正确、负例 fail-closed、幂等均实测成立），阻断的是 REQ 自设口径；**不判「不修」**：词表不一致会被 R19-3（第二批）复制成第三套。**PM 建议方向**：认 L-R18-2 字面 → R19 把 tags 的 `done`/`failed` 改名 `applied`/`rejected`、页面图例 `queued`→`pending`，并同步 `scripts/arcblog-tags.test.mjs` 断言。**落点**：`scripts/arcblog-tags.mjs`、`.aup/pages/site/tags.aup`（+ 生成 locales）、`scripts/arcblog-tags.test.mjs`；触及 tags CLI → `.gate-lock` + 定向单跑 `scripts/arcblog-tags.test.mjs` + 跑完删锁。**不动 categories 侧已交付词表**（除 Lead 反向裁定） |
+| **[BUG-046](bugs/BUG-046-factories-unattributed-node-simulated-false.md)** | P2 | live 投影 `nodes.studio`/`nodes.hub` 均 `adapter:""`/`adapterSource:"unrecorded"`/`chainVerified:false`/**`simulated:false`**；hub 是**可证明的 mock**（`owner:"0xhubowner"`/`assetId:"0xa5ed65ce…"`/`acquireTx:"0xte32482c…"`）→ 无任何显式 mock 标记，且 `simulated:false` 是一条**错误的正向断言**；实现与 `scripts/arcblog-node-nft.mjs:96` 注释自相矛盾（`scripts/lib/chain.mjs:85` `const simulated = adapter === 'mock'`，未归属 → `false`）——**PM 独立复核两处原文** | 🟨 **下一轮修（R19-2，BUG-043 验收缺口）** | 违反 **L-R18-4「显式 mock 标记」** + `arc-contracts §32(9)` 精神（mock 不得长得像链上事实）；`node/factories.json` 是 **guest 可读公开投影**。**PM 建议修法**：未归属输出**三态** `mock` / `ocap` / `unknown`（或按注释把未归属的 `simulated` 置 `true`）+ 新增 `simulationUnknown: true`；**证据字段（`0xhubowner`/`0xa5ed…`/`0xte32…`）一个都不许删**（L-R18-4：证据 > 好看）。**落点**：`scripts/lib/chain.mjs` + `scripts/arcblog-node-nft.mjs` + `scripts/arcblog-factory.mjs`；`.gate-lock` + 定向单跑 `scripts/arcblog-node-nft.test.mjs`（基线 17/17） |
+| **[BUG-047](bugs/BUG-047-chain-worker-guard-skips-unattributed.md)** | P2 | `scripts/arcblog-chain-worker.mjs:139` 守卫写作 `if (record.adapter && record.adapter !== chain.adapter)` —— `record.adapter` 为空（live 两个节点都是 `""`）→ 守卫为假 → 仍走 `chain.factoryState(...)` / `chain.getAssetState(record.assetId)`；hub 的 `0xa5ed65ce…` 链上不存在（REQ-021 已 `getTx` → `info:null`）→ **BUG-043 声称消除的误导性 `svgError` 对今天 live 两个节点都仍会发生** | 🟨 **下一轮修（R19-2，与 BUG-046 同批）** | 「消费者逐节点判定」（L-R18-4）+ `arc-contracts §32(9)` 的 fail-closed 方向：**未归属 = 不查链**（沿用 `nodeAdapterOf` 的 treat-as-unverified 口径）并记 `svgError`，而不是拿本次运行的 adapter 去查一个 mock 资产。⚠️ **顺序耦合（PM 明确）**：硬化守卫会让 **studio**（真链 ocap 事实）的 SVG 刷新也一起停下 → **必须与「历史节点归属补法」同一批决策**（BUG-043 §未决：① 重跑链写（动链，需授权/花钱）② 只读 `getTx` 逐条核验 + 人工标注 = REQ-021 阶段二），**别各修一半**。**落点**：`scripts/arcblog-chain-worker.mjs`；**未跑链写**（QA 受限未验证，PM 认可：真跑会写公开投影，需 Lead 授权 + `.gate-lock`） |
+| **[BUG-048](bugs/BUG-048-cleaner-misses-live-test-residue.md)** | P3 | 定向 live 实际留下 **9 条**残留，`arcblog-clean.mjs` 只报 **found:1**；`scripts/lib/doctor.mjs` 的 `TEST_RECORD_PREFIXES`（`:113` 起）缺 `nft-factories-test-`/`node-nft-test-`/`roles-test-`/`*-worker-`/`factories-*`；`scripts/arcblog-clean.mjs` 的 `CLEAN_DIRS`（`:34` 起）**不含 `node/`**；`scripts/arcblog-chain-worker.test.mjs` 无清理钩子 —— **PM 独立复核两处前缀/目录清单** | 🟨 **下一轮修（R19-8，低优先，可与任何触及 doctor/clean 的批次并轨）** | 后果 = 「跑完删锁 + cleaner `found=0`」**不能作为清理自证**（`docs/team/README.md` §6.1 的定向 live 约定被削弱）；历史 ~188 条残留还持续放大 worker 的 `scanPosts` 耗时（QA 实测单 tick ≈30s）。**不判「不修」**：它让每一轮都要手工重做清理。**落点**：`scripts/lib/doctor.mjs`（补前缀）+ `scripts/arcblog-clean.mjs`（`node/` 入 `CLEAN_DIRS`）+ 相关 live 测试文件补 `after()`；触及 CLI → `.gate-lock` + 定向单跑 |
+| **[BUG-049](bugs/BUG-049-queue-entry-without-json-extension-never-consumed.md)** | P3 | 队列根里**非 `.json`** 的意图记录：页面 `afs-list`（`.aup/pages/site/categories.aup:187`）**看得见**（显示 `pending`），worker `dirFiles` 只收 `.json`（`scripts/arcblog-category.mjs:207`）→ **永不消费、永久 pending**（只有人工点「清除」才能删） | 🟨 **下一轮修（R19-8）**；**须在 R19-3（第二批）之前定成「队列约定」** | 违反 REQ-019 §2.1.2「一条意图一个记录」+ §3.1 A5（页面所见须与执行路径一致）+ **L-R18-2「不许假按钮」的精神**（看得见跑不到）。**修法二选一**：worker 侧解析目录全部条目，**或**页面侧过滤 `.json`（PM 倾向：页面侧过滤 + worker 侧对非 `.json` 落一条诊断，避免「静默忽略」）；**同时检查 `scripts/arcblog-tags.mjs` 同族实现**，同族缺陷一并收口。**落点**：`scripts/arcblog-category.mjs`（± `.aup/pages/site/categories.aup`）+ 定向单跑 `scripts/arcblog-category.test.mjs`（基线 15/15） |
+| **[BUG-050](bugs/BUG-050-req019-b1-evidence-drift.md)** | P3 | REQ-019 §9.3 自证行写「折叠时页面上**无任何** `arcblog-category.mjs` 字样」，实测折叠态有 **2 处**（`worker-note` / `worker-hint` —— 正是 REQ §2.1.6 **要求**常驻的披露）；折叠本身有效（`copyableBeforeExpand=0` / 展开后 6） | ✅ **本轮修（PM 内联勘误，docs-only）→ 已闭环** | **产品行为正确，错的是自证措辞**（先例 [BUG-040](bugs/BUG-040-req028-dev-report-evidence-drift.md)）；`arc-contracts §29.4` 精神 = 证据必须与实测逐字一致。**已在 [REQ-019 §9.3](requirements/REQ-019-button-first-console.md) 就地修订为**「折叠时页面上**没有可复制的 CLI 命令条目**（`copyableBeforeExpand = 0`），仅保留 REQ §2.1.6 要求的 worker 披露 2 处」；**不动 `.aup`**（页面侧无缺陷） |
+
+### (2) BUG-039 终态（Round 16 遗留 P2）
+
+| 项 | 终态（PM 裁决，详见本文上方「Round 18 结论」§2） | 落点 |
+| -- | ------------------------------------------------ | ---- |
+| **[BUG-039](bugs/BUG-039-bare-root-replays-last-page.md)**（P2） | **平台边界 + 实测否证 + 回滚干净 → 裁「不修」**：节点级 `state={page:'index'}` 语言层合法，但**运行时被会话 `page` 覆盖**（裸 `/` 仍重放到 `/?locale=zh&page=saved`）→ **页面内不可表达**。**不是「已修」**，**也不是「受限未验证」**（L-R18-3 授权的一次性实验已给出**否定结论**）。**保留既有绕过**（全站入口显式 `?page=`、品牌链接 `/?page=index`）；**不再重复实验**；**不占 R19 排期** | **交 Lead 落 `arc-contracts.md` 候选 #12/#13**（由「语言层可表达 / 运行时优先级未验证」升级为「**实测否证：节点级 `state` 默认 ≤ 会话 `page`**」）；回滚核对原始输出见 [round-18.md](test-reports/round-18.md) §3.8（**PM 独立复核** `git diff` 无输出 + `grep -c '"state"'` 0/0） |
+
+### (3) BUG-043 终态（Round 17 遗留 P2）
+
+| 项 | 终态（PM 裁决，详见本文上方「Round 18 结论」§3） | 落点 |
+| -- | ------------------------------------------------ | ---- |
+| **[BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)**（P2，范围外/既有） | **部分修复 → L-R18-4 验收「未达成」 → 裁「下一轮修（R19-2）」**：**成立** = 机制（逐节点 `recordRole(…, adapter)` 4 调用点 + `nodeAdapterOf()` 统一映射）+ 消费者（`?page=factory` 逐节点归属卡，warm 加载实测渲染）+ **证据字段零删除**（逐字段 `REMOVED:(none)`）+ `blocklet.yaml` 零改动 + permissions 6/6；**未达成** = live 投影两个节点仍 `adapter:""`/`chainVerified:false`、**无显式 mock 标记**（→ **BUG-046**）、`refreshSvg` 守卫对未归属记录失效（→ **BUG-047**）。历史 studio 归属（真链 ocap 事实）**不判 Dev 违规**（记录早于逐节点归属，Dev 已如实上报为受限，PM 认可该处置；R-4「清证据」风险未发生） | **R19-2** 由 BUG-046 + BUG-047 承接收口；**历史归属补法需 Lead/用户决定立项**（① 重跑链写 = 动链/花钱 ② 只读 `getTx` 逐条核验 + 人工标注 = REQ-021 阶段二）；`arc-contracts.md` 候选 **#11**（逐条核验口径）由 Lead 落笔 |
+
+**结论**：Round 18 新缺陷 **6 条** → **1 条本轮闭环（BUG-050，PM 内联 docs-only）**、**5 条下一轮修**（BUG-045 → **R19-1**；BUG-046·047 → **R19-2**；BUG-048·049 → **R19-8**）；**P0 = 0 / P1 = 1（BUG-045）**；**唯一「不修」= BUG-039（平台边界 + 实测否证）**；**无悬挂未裁决 BUG**。
+
+---
+
 ## 缺陷（🐞）— Round 17 QA 新增，PM 已逐条裁决（2026-09-28）
 
 > **大前提**：QA-013 判 **放行**（[round-17.md](test-reports/round-17.md) 末行 **`VERDICT=pass, BLOCKING=0`**，**阻断 0**；无未裁决 P0/P1）。门全绿（QA 自跑 G1–G6 + PM 轮末只读复核，见上方「Round 17 交付结果」§2）；**零真实链交易独立确认**。
@@ -2258,6 +2506,10 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 
 > **R17 轮末重排（PM `task-72`，2026-09-28）**：① **REQ-021 阶段一已交付并放行**（PM 判「达标（合格）」）→ **原 R17-8 消项**，**改立项「REQ-021 阶段二」**（P1 只读对账 CLI → **P2-a 真链小额演练第一笔** → P2-b 链上退款转账 → P3 链上支付 → P4 按钮化/对账 UI，**每步独立用户批准**；立项建议见 [REQ-021 §13.1](requirements/REQ-021-chain-backed-orders.md)）→ **R18-2 / R18-3（领跑）**。② **BUG-039（原 R17-1）本轮已做最小平台实验**：机制**已证实**（会话重放 `page`）、语言层候选**可表达**、**运行时优先级受限未验证** → **不判「已修」**；裁「**平台边界（部分）+ 保留绕过 + 登记 1 条需 Lead 批准的可回滚实验**」→ **R18-1**（编号沿用，**不新开排队号**）。③ **新增 BUG-041/042/044 已由 PM 内联勘误闭环**（**消项**）；**新增 BUG-043（P2，范围外/既有）→ R18-4**（编号沿用 R18-4，**不新开排队号**）。④ **R16 轮末 R17-1…R17-14 映射中未开工的 10 项统一顺延 R18+**（**不新开排队号**，同 R11/R13/R14/R15/R16 做法）：**R17-2** BUG-033 / **R17-3** BUG-036 / **R17-4** BUG-034 / **R17-5** BUG-037 / **R17-6** BUG-038 / **R17-7** BUG-032 → **R18-8**；**R17-9** REQ-019 → **R18-5**；**R17-10** REQ-022 → **R18-6**；**R17-11** 试点自动化回归（**28→29 需 Lead 同意**）+ **R17-12** UI-012 订正 → **R18-9**；**R17-13** 承继候选 / **R17-14** §83 其余四棵树 → **R18-7**。⑤ **checklist 影响**：**状态列零变化**（第 135 行 §44 保持 🟡；第 113/114 + 132/133/134/136/137/141 行保持 ✅）→ **✅82 / 🟡7 / ⬜13 / ⚪2 = 104**；仅建议 3 条备注 + 1 行维护记录（见「Round 17 交付结果」§5）。⑥ **交 Lead 落笔**：`arc-contracts.md` 候选 13 条（**#2 计数→38**、**#7 删「memo 回找」**、**#11 逐条核验**、**#12/#13 = BUG-039**）→ **R18-10**。⑦ **#16（REQ-011 媒体上传可观测性）**、**#5/#6/#7/#8/#9/#10/#12** 状态无变化。⑧ **PM 本轮零编辑 checklist / 零源码 / 零 `.aup` / 零实例写入 / 零 build**（REQ-021 §0 勘误为 docs-only）。**R18 完整路线见上方「Round 17 交付结果」§6。**
 
+> **R18 轮初重排（PM `task-73`，2026-09-28）**：① **本轮开工 3 项、同一写者（Lead `task-74`，L-R18-1/3/4）**：**[REQ-019](requirements/REQ-019-button-first-console.md) 控制台按钮化第一批**（`?page=categories` 的「合并到 / 删除并迁移」；**本轮新建 REQ**——此前**不存在**）+ **BUG-039 一次性实验**（1 处可回滚改动；**否证即回滚**）+ **[BUG-043](bugs/BUG-043-factories-json-mock-under-ocap.md)**（逐节点 adapter + 消费者逐节点判定 + 显式 mock 标记；**禁止清证据**）；QA = `task-75`（`blocked_by task-74`）；PM = `task-73`（规划）/ `task-76`（裁决）。② **R17 轮末 R18-1…R18-10 映射中本轮未开工的 7 项顺延 R19+**（**不新开排队号**，同 R11–R17 做法）：**R18-1** BUG-039 → **本轮已开工（实验）**；**R18-4** BUG-043 → **本轮已开工**；**R18-5** REQ-019 → **本轮已开工（第一批）**；**R18-2** REQ-021 阶段二 P1 只读对账 CLI / **R18-3** P2-a 真链小额演练（**唯一必须真花钱的批准点**）→ **R19+（需用户批准）**；**R18-6** REQ-022 / **R18-7** §83 其余四棵树 / **R18-8** 旧队列（BUG-032·033·034·036·037·038）/ **R18-9** 试点自动化回归（**28→29 需 Lead 同意**）+ UI-012 订正 / **R18-10** `arc-contracts.md` 候选 13 条（Lead 落笔）→ **R19+**（**L-R18-6**）。③ **checklist 影响**：**状态列零变化** → **✅82 / 🟡7 / ⬜13 / ⚪2 = 104**；仅建议第 **103** 行备注更新（「无排序 / 合并 / 删除迁移——迁移只在 CLI」本轮后过时）+ 维护记录一行（见上方「本轮：Round 18」末节）。④ **#16（REQ-011 媒体上传可观测性）**、**#5/#6/#7/#8/#9/#10/#12** 状态无变化。⑤ **PM 本轮零源码 / 零 `.aup` / 零实例写入 / 零 build**（只写 `docs/team/backlog.md` / `requirements/**` / `journal/**`）。
+
+> **R18 轮末重排（PM `task-76`，2026-09-28）**：① **REQ-019 第一批已交付**，PM 判「**功能达标（有条件）**」（B1–B6 中 5 条全过 + B2 功能主体过；唯一条件 = 词表统一）→ **原 R18-5 消项，改立「REQ-019 第二批」= R19-3**。② **BUG-039 一次性实验已执行并被实测否证** → **终态「平台边界 + 不修」**，**不占 R19 排期**（只交 Lead 落 `arc-contracts.md` 候选 #12/#13）。③ **BUG-043 部分修复、验收未达成** → **R19-2**（由 **BUG-046 + BUG-047** 承接收口；历史归属补法需 Lead/用户立项）。④ **新增 6 条 BUG 的 R19 编号**（**不新开排队号**，同 R11–R17 做法）：**BUG-045（P1）→ R19-1（首项，需 Lead 一句裁定）**｜**BUG-046 + BUG-047（P2）→ R19-2**｜**BUG-048 + BUG-049（P3）→ R19-8**｜**BUG-050（P3）→ 本轮内联闭环（消项）**。⑤ **R18 轮初映射中本轮未开工的 6 项顺延 R19+**：**R18-2** REQ-021 阶段二 P1 → **R19-4**；**R18-3** P2-a 真链小额演练（**唯一必须真花钱的批准点**）→ **R19-4 后半（需用户逐笔批准）**；**R18-6** REQ-022 → **R19-5**；**R18-7** §83 其余四棵树 → **R19-6**；**R18-8** 旧队列（BUG-032·033·034·036·037·038）→ **R19-7**；**R18-9** 试点自动化回归（**28→29 需 Lead 同意**）+ UI-012 订正 → **R19-8**；**R18-10** `arc-contracts.md` 候选 → **R19-10**（Lead）。⑥ **R19 完整路线（PM 建议，Lead 定稿）**：**R19-1** BUG-045 词表收口（**首项**；Lead 先给一句方向 → tags `done`/`failed` 改名 `applied`/`rejected` + 页面图例 `queued`→`pending` + `scripts/arcblog-tags.test.mjs` 断言同步；`.gate-lock` + 定向单跑）｜**R19-2** BUG-046 / BUG-047 + **BUG-043 收口**（含「历史节点归属」决策：① 重跑链写（动链 / 花钱）② 只读 `getTx` 逐条核验 + 人工标注；**顺序耦合 —— 别先硬化守卫再决定归属**）｜**R19-3** **REQ-019 第二批**（建议 **media 清理领跑**；前置 = R19-1 + BUG-049 的队列约定；排序与理由见 [REQ-019 §10](requirements/REQ-019-button-first-console.md)）｜**R19-4** **REQ-021 阶段二 P1 只读对账 CLI** → **P2-a 真链小额演练**（**唯一必须真花钱的批准点，金额 / 收款人 / 上限 / 回滚口径逐笔书面确认**）｜**R19-5** **REQ-022 双节点 Studio/Hub 测试台**（口径待 Lead 书面确认；真跑需第二台 daemon）｜**R19-6** **§83 其余四棵树**（`drafts`/`private`/`preferences`/`agent`/`payment`，一次一棵、不打包；**主动范围裁剪，非平台不支持**）｜**R19-7** **旧队列六项**（[BUG-033](bugs/BUG-033-pages-view-link-collapses-to-zero-width.md)（P2，建议优先）/ [BUG-036](bugs/BUG-036-cold-load-projection-values-empty.md)（P2，**先最小平台实验**）/ [BUG-034](bugs/BUG-034-hub-relations-overflow-1512.md)（P2）/ [BUG-037](bugs/BUG-037-factory-nft-svg-placeholder.md)（P3）/ [BUG-038](bugs/BUG-038-nft-factory-doc-chain-env-drift.md)（P3）/ [BUG-032](bugs/BUG-032-ledger-type-equals-form-silently-ignored.md)（P3，口径 **D32**））｜**R19-8** **BUG-048 + BUG-049**（清理自证 + 队列约定；可与其它批次并轨）+ 试点自动化回归（**28→29 需 Lead 同意**）+ UI-012 判据/计数订正（docs-only）｜**R19-9** **BUG-039 留档（不修）**——只在 `arc-contracts.md` 落笔 + 保留既有绕过｜**R19-10** **交 Lead 落笔**：`arc-contracts.md` 候选（含 BUG-039 实测否证 / BUG-045 词表 / BUG-046·047 fail-closed 口径 / BUG-049 队列约定 / REQ-019 §8.3 `required` 复测后修订）+ **checklist 重基线核对（backlog 沿用 104 → PM 实测 110）**。⑦ **⚠️ 计数基线勘误（PM 实测）**：checklist 现状 = **✅82 / 🟡7 / ⬜19 / ⚪2 = 110**（**I 组「数据层与部署（§154/§155）」6 行 ⬜** 由 Lead 代改新增），backlog / journal 沿用的「104」为 **R17 期基线、已过时** → R19 轮初统一更新。⑧ **#16（REQ-011 媒体上传可观测性）**、**#5/#6/#7/#8/#9/#10/#12** 状态无变化。⑨ 本轮**未开工任何 🟥 项**（R18 任务板由 Lead 派发，PM 不调用 `team_task_*`）；**PM 本轮零编辑 checklist / 零源码 / 零 `.aup` / 零实例写入 / 零 build**。
+
 **写范围冲突矩阵（R10 派活必须照此）**
 
 | 批次 | 成员 | 写范围 | 约束 |
@@ -2298,6 +2550,9 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 
 | 议题 | 冲突点 | 需要的决策 |
 | --- | --- | --- |
+| **【R18】BUG-045 意图终态词表方向**（L-R18-2 字面 `applied`/`rejected` vs 既有 tags `done`/`failed`） | REQ-019 §3.2 明写「**两套并存 = fail**」，而 Lead L-R18-2 的字面用词与仓库既有 tags 范式冲突；**Dev 无裁量权**（已按最近一次最具体的 Lead 指令实现并如实上报） | **需 Lead 一句裁定**：① 认 L-R18-2 字面 → R19 把 tags 的 `done`/`failed` 改名 `applied`/`rejected`（**PM 建议**，与第二批口径一致、只改一处）② 认既有 tags 词表 → categories 改回 `done`/`failed`（与 L-R18-2 字面冲突，需 Lead 改口）。**任一侧落定即解锁 R19-1** |
+| **【R18】BUG-043 历史节点 adapter 归属补法**（studio = 真链 ocap 事实但记录 `unrecorded`；hub = mock 残留） | 补归属只有两条路：① 重跑对应节点的写操作（**动链**，需资金 / 授权）② 只读 `getTx` 逐条核验 + 人工标注（REQ-021 阶段二）。**与 BUG-047 顺序耦合**：先硬化 `refreshSvg` 守卫会让 **studio** 的 SVG 刷新一起停下 | **需 Lead / 用户决定**：是否立项（① 只在用户批准小额演练之后；② 可与 **R19-4** 的只读对账 CLI 并轨）；并明确「**硬化守卫 vs 保留 studio 刷新**」的取舍顺序（PM 建议：**先定归属再硬化**，避免半修） |
+| **【R18】checklist 计数基线勘误 104 → 110** | 维护记录末行 + 总览（第 **42** 行）实测 = **✅82 / 🟡7 / ⬜19 / ⚪2 = 110**（I 组「数据层与部署（§154/§155）」6 行 ⬜ 由 Lead 代改新增），而 backlog / journal 沿用 **104** | **Lead 落笔**：R19 轮初统一更新 checklist 总览 + 本文件顶部横幅 + `journal/round-19.md` 头部（**PM 只建议，不改 checklist**） |
 | 内容可见性五档 unlisted / members（§21） | feed 基于目录边界，**无法诚实过滤**；诚实实现需要先决定存储模型 | 改存储模型，还是明确记为平台限制并降级 |
 | Payment Adapter 真实链上支付通道（§44） | 需要真实资金钱包 + ARC 依赖环境 | 何时做、在哪做 |
 | 真实链 `--adapter ocap` 端到端演练（§8.1） | 同上 | 同上 |
@@ -2373,6 +2628,7 @@ $ ls docs/team/.gate-lock → No such file or directory（锁已由 QA 删除）
 
 | 需求 | 理由 | spec |
 | --- | --- | --- |
+| **【R18 不修】BUG-039 裸根 `/` 重放本会话最后一次 `?page=`** | **平台边界 + 实测否证**：L-R18-3 授权的 1 处可回滚实验（`.aup/wrapper.aup` 根 `state={page:'index'}`）证明**节点级 `state` 默认被会话 `page` 覆盖**（裸 `/` 仍重放到 `/?locale=zh&page=saved`）→ 页面内**不可表达**（无请求级钩子、无原始 URL 上下文）；**不改页面**，保留既有绕过（全站入口显式 `?page=`、品牌链接 `/?page=index`）；回滚干净（**PM 独立复核** `git diff -- .aup/wrapper.aup .aup/wrapper.json` 无输出 + `grep -c '"state"'` = 0/0）；**不再重复实验** | spec **§1**（面向无技术基础用户；入口绕过已存在）+ **§150**（不臆造平台能力）；机制与原始输出见 [round-18.md](test-reports/round-18.md) §3.8；Lead 落 `arc-contracts.md` 候选 #12/#13 |
 | 链上购买 / 质押 / 取回的 SDK 直连 | 保持 operator-declared，避免密钥与资金风险 | §8.5 |
 | 公开面 = Web Device 逐条静态 SEO | 平台无 AFS 通道（S1/S2/S3 实测） | §127 / §128 → POST-MVP |
 | 标签的「单条删除（从所有文章移除）」独立动作 | 标签是自由词、无注册表，零引用标签按构造不存在（`scripts/arcblog-tags.mjs:10`），故 spec 要求的「清理零引用标签」是空集；收敛由「合并/重命名」覆盖，逐篇移除走 `?page=compose-edit` | §15.4 |

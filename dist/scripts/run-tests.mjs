@@ -58,6 +58,7 @@ const FAST_TESTS = new Set([
   'arcblog-permissions',
   'arcblog-runtime-ids',
   'arcblog-theme',
+  'arcblog-ui-budget',
 ]);
 
 const TIERS = ['fast', 'live', 'all'];

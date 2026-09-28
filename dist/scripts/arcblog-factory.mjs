@@ -15,7 +15,17 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { FACTORY_REGISTRY_PATH, NODE_FACTORY_SUMMARY_PATH, openChain, realChainHint, resolveChainConfig, validateRealChainConfig } from './lib/chain.mjs';
+import {
+  FACTORY_REGISTRY_PATH,
+  NODE_FACTORY_SUMMARY_PATH,
+  NODE_NFT_STATE_PATH,
+  nodeAdapterOf,
+  openChain,
+  PROJECTION_ADAPTER_SCOPE,
+  realChainHint,
+  resolveChainConfig,
+  validateRealChainConfig,
+} from './lib/chain.mjs';
 import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, renderTemplate, validateNodeFactory } from './lib/nft-factory.mjs';
 
 function readRegistry(instance) {
@@ -29,9 +39,11 @@ function readRegistry(instance) {
  * admin-only. Addresses and lifecycle only — never key material.
  */
 function publishFactorySummary(registry, instance) {
-  const nodeNft = readJson('/instance/app/arcblog/config/node-nft.json', instance)?.value ?? {};
+  const nodeNft = readJson(NODE_NFT_STATE_PATH, instance)?.value ?? {};
   const summary = {
     adapter: registry.adapter ?? 'mock',
+    // BUG-043: the header describes the registry, NOT every node in this file.
+    adapterScope: PROJECTION_ADAPTER_SCOPE,
     network: registry.network ?? '',
     chainHost: registry.chainHost ?? '',
     tokenId: registry.tokenId ?? '',
@@ -47,6 +59,7 @@ function publishFactorySummary(registry, instance) {
       stakeAmount: entry.stakeAmount ?? '',
       capacity: entry.capacity ?? '',
       createdAt: entry.createdAt ?? '',
+      ...nodeAdapterOf(entry),
     };
   }
   for (const [role, rec] of Object.entries(nodeNft.roles ?? {})) {
@@ -64,9 +77,50 @@ function publishFactorySummary(registry, instance) {
       stakeAmount: rec.stakeAmount ?? '',
       endpoint: rec.endpoint ?? '',
       region: rec.region ?? '',
+      ...nodeAdapterOf(rec),
     };
   }
   writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
+}
+
+/**
+ * Re-annotate the EXISTING public projection in place (BUG-043).
+ *
+ * The projection is derived data, but it is also evidence: this rebuild is
+ * strictly ADDITIVE (per-node `adapter` / `simulated`, per-factory
+ * `adapter` / `simulated`, header `adapterScope`) and never drops a field the
+ * chain worker merged in (the rendered NFT `svg` / `moniker` live only here).
+ * No chain call, no signature, no key material — it reads `config/` and rewrites
+ * the projection.
+ */
+function annotateProjection(instance) {
+  const stored = readJson(NODE_FACTORY_SUMMARY_PATH, instance);
+  const summary = stored?.value ? { ...stored.value } : null;
+  if (!summary) fail('NOT_FOUND', `no projection at ${NODE_FACTORY_SUMMARY_PATH} — run \`create\`/acquire first`);
+  const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? {};
+  const nodeNft = readJson(NODE_NFT_STATE_PATH, instance)?.value ?? {};
+  const annotated = [];
+  summary.adapterScope = PROJECTION_ADAPTER_SCOPE;
+  summary.factories = { ...(summary.factories ?? {}) };
+  summary.nodes = { ...(summary.nodes ?? {}) };
+  for (const [role, entry] of Object.entries(summary.factories)) {
+    Object.assign(entry, nodeAdapterOf(registry.factories?.[role]));
+    annotated.push(`factory:${role}=${entry.adapter || 'unattributed'} simulated=${entry.simulated}`);
+  }
+  for (const [role, rec] of Object.entries(summary.nodes)) {
+    Object.assign(rec, nodeAdapterOf(nodeNft.roles?.[role]));
+    annotated.push(`node:${role}=${rec.adapter || 'unattributed'} simulated=${rec.simulated}`);
+  }
+  summary.updatedAt = new Date().toISOString();
+  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance, stored?.ifMatch ?? undefined);
+  return { annotated, adapterScope: summary.adapterScope };
+}
+
+function commandProject(opts, instance) {
+  const result = annotateProjection(instance);
+  console.log(
+    JSON.stringify({ ok: true, action: 'factory-project', path: NODE_FACTORY_SUMMARY_PATH, ...result }, null, 2),
+  );
 }
 
 function saveRegistry(registry, instance, ifMatch) {
@@ -223,6 +277,9 @@ async function commandCreate(opts, instance) {
         capacity: factory.arcblog.capacity ?? null,
         pricing: factory.arcblog.pricing ?? null,
         role,
+        // BUG-043: per-factory attribution — a later run under another adapter
+        // must not relabel a factory another adapter created.
+        adapter: chain.adapter,
         createdAt: existing?.createdAt ?? new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -287,6 +344,7 @@ Usage:
   node scripts/arcblog-factory.mjs svg  --role studio|hub [--out node.svg] [--name ...]
   node scripts/arcblog-factory.mjs create --role studio|hub [--adapter mock|ocap] [options]
   node scripts/arcblog-factory.mjs show
+  node scripts/arcblog-factory.mjs project          # re-annotate the public projection (no chain call)
   node scripts/arcblog-factory.mjs reset            # mock only: start the simulation over
 
 The factory is the on-chain definition of a node identity (GLofter parity):
@@ -324,8 +382,9 @@ try {
   else if (command === 'svg') commandSvg(opts);
   else if (command === 'create') await commandCreate(opts, instance);
   else if (command === 'show') commandShow(opts, instance);
+  else if (command === 'project') commandProject(opts, instance);
   else if (command === 'reset') await commandReset(opts, instance);
-  else fail('VALIDATION', `unknown command: ${command} (use spec|svg|create|show|reset)`);
+  else fail('VALIDATION', `unknown command: ${command} (use spec|svg|create|show|project|reset)`);
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
   process.exit(1);

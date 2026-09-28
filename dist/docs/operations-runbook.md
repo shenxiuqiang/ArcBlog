@@ -74,6 +74,44 @@ node scripts/arcblog-category.mjs remove --slug review
 `arcblog-lifecycle.mjs` validates `--category` against this resource (it falls back
 to the built-in `technology|design|life` while the resource is empty).
 
+#### Governance from the console (button-first, REQ-019)
+
+`?page=categories` is the **primary** path: every category row carries a target
+field plus **Merge into…** and **Delete and migrate to…**. A button does not
+rewrite anything itself — it writes ONE intent record, and this node's worker
+executes it with the same code path as the CLI:
+
+```bash
+node scripts/arcblog-category.mjs watch                # the worker (long-running); `apply` drains once
+node scripts/arcblog-category.mjs queue                # what is queued, with each record's terminal status
+```
+
+| Piece | Where |
+| --- | --- |
+| The queue (admin-only, one record per click) | `/instance/app/arcblog/config/category-intents/<timeiso>.json` |
+| Intent shape | `{id, action: merge\|remove, from, to, rawFrom, rawTo, status: pending, message, migrated, changed, requestedVia, requestedAt}` |
+| Terminal status written back by the worker | `applied` (posts rewritten + source record removed) · `rejected` (+ `code` and a reason, **zero data change**) · `noop` (nothing to do — already done) |
+| The rewrite itself | `scripts/arcblog-category.mjs` — the SAME `merge` / `remove --migrate-to` implementation |
+
+The queue lives under the admin-only `config/` tree (like `config/chain-intents`),
+never under `categories/` — a guest grant on a parent prefix exposes the whole
+subtree (`blocklet.yaml`, "Network-read allowance"). No permission change is
+needed for it, so it needs no `arc blocklet build` / `arc service restart`.
+
+Validation is **fail-closed and runs before the first write**: an unknown action,
+an empty source or target, a self-migration (`from == to`) and a target that is
+not an existing category are all recorded as `rejected` with a reason, and every
+post and category record stays byte-identical. A repeated action is a `noop`, not
+a second rewrite. The CLI stays available as the folded **Advanced** section
+(sort, `seed`, `usage`, a bare `remove` with no migration) — it is an
+alternative, never the only path.
+
+The page writes `requestedVia: "console"` + `requestedAt` and deliberately does
+**not** write `requestedBy`: `$session.*` is not interpolated inside an exec
+`content` on this platform and would land as a literal string
+(`arc-contracts.md` §28.7). `requestedBy` is only written when a real caller is
+known: `arcblog-category.mjs request --by <did>`.
+
 ### Node profile
 ```bash
 node scripts/arcblog-node.mjs init        # derive from blocklet.yaml (roles: basic)
@@ -179,6 +217,48 @@ ArcBlock token reference
 (<https://www.arcblock.io/en/docs/blockchain/understanding-tokens/> — native
 token ABT on main, TBA on beta). See `CLAUDE.md` → "Chain environment" for the
 one-paragraph version.
+
+### The public projection `node/factories.json` — one adapter PER NODE (BUG-043)
+
+The console reads this guest-readable projection, and it can hold facts produced
+by **different** adapters: a node acquired against the real chain
+(`--adapter ocap`) and another left over from a `--adapter mock` run. A single
+file-header `adapter` therefore must never be used to decide whether a node is
+chain truth — doing that presents simulated values as on-chain facts
+(`arc-contracts.md` §32(9), BUG-043).
+
+Each node (and each factory entry) now carries its own attribution, produced by
+`nodeAdapterOf()` in `scripts/lib/chain.mjs`:
+
+| Field | Meaning |
+| --- | --- |
+| `adapter` | the adapter that produced THIS entry (`ocap` / `mock` / `""`) |
+| `adapterSource` | `record` when the entry's own record says it; `unrecorded` for a record written before per-node attribution existed |
+| `chainVerified` | `true` **only** when `adapter === "ocap"` — the positive claim; an unattributed record is `false` |
+| `simulated` | `true` only when `adapter === "mock"` (the explicit mock marker) |
+| `attribution` | one human-readable line for pages (locale-neutral, `arc-contracts.md` §28.8) |
+| header `adapter` + `adapterScope: "registry"` | the header is kept as evidence, and `adapterScope` marks that it describes `config/nft-factories.json` only |
+
+`create` / acquire / stake / revoke / claim record the adapter on the node's own
+record, so every future step is attributed automatically. To re-annotate an
+existing projection **without any chain call** (it is derived data; the rebuild is
+strictly additive and never drops a field, e.g. the worker-rendered `svg`):
+
+```bash
+node scripts/arcblog-factory.mjs project
+```
+
+A record with `adapterSource: "unrecorded"` (the hub mock residue is the known
+case) is deliberately NOT labelled `mock`: the source cannot prove which adapter
+wrote it, so it stays unattributed with `chainVerified: false` and the reader must
+verify each hash on chain individually. The evidence fields
+(`owner: "0xhubowner"`, `assetId`, `acquireTx`) are preserved on purpose — never
+clean up evidence to make a projection look consistent.
+
+The chain worker's SVG refresh is per-node too: a node whose own record says it
+came from another adapter is **not** queried through this run's adapter; it gets
+`svgError: "not queried: this node's facts come from the \"mock\" adapter; this
+worker runs \"ocap\""` instead of a misleading lookup failure.
 
 ## Economy (Phase 8 / MVP-3)
 

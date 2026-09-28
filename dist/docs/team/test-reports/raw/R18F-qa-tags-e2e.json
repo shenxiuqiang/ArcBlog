@@ -1,0 +1,57 @@
+{
+  "at": "2026-09-28T15:05:58.623Z",
+  "steps": {
+    "A_request": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-request\",\n  \"intent\": {\n    \"id\": \"r18f-qa-merge\",\n    \"action\": \"merge\",\n    \"from\": \"qa_r18f_oldtag\",\n    \"to\": \"qa_r18f_newtag\",\n    \"rawFrom\": \"qa-r18f-oldtag\",\n    \"rawTo\": \"qa-r18f-newtag\",\n    \"summary\": \"qa-r18f-oldtag → qa-r18f-newtag\",\n    \"status\": \"pending\",\n    \"message\": \"\",\n    \"migrated\": 0,\n    \"posts\": [],\n    \"requestedVia\": \"cli\",\n    \"requestedBy\": \"\",\n    \"requestedAt\": \"2026-09-28T15:06:01.422Z\",\n    \"updatedAt\": \"2026-09-28T15:06:01.422Z\"\n  }\n}",
+      "stderr": ""
+    },
+    "A_record_pending": "{\n  \"id\": \"r18f-qa-merge\",\n  \"action\": \"merge\",\n  \"from\": \"qa_r18f_oldtag\",\n  \"to\": \"qa_r18f_newtag\",\n  \"rawFrom\": \"qa-r18f-oldtag\",\n  \"rawTo\": \"qa-r18f-newtag\",\n  \"summary\": \"qa-r18f-oldtag → qa-r18f-newtag\",\n  \"status\": \"pending\",\n  \"message\": \"\",\n  \"migrated\": 0,\n  \"posts\": [],\n  \"requestedVia\": \"cli\",\n  \"requestedBy\": \"\",\n  \"requestedAt\": \"2026-09-28T15:06:01.422Z\",\n  \"updatedAt\": \"2026-09-28T15:06:01.422Z\"\n}\n",
+    "A_apply": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"r18f-qa-merge\",\n      \"action\": \"merge\",\n      \"status\": \"applied\",\n      \"migrated\": 1,\n      \"message\": \"rewrote 1 post(s): qa_r18f_oldtag → qa_r18f_newtag\"\n    }\n  ],\n  \"queueEntryIgnored\": 0,\n  \"projection\": {\n    \"generatedAt\": \"2026-09-28T15:06:28.512Z\",\n    \"count\": 15\n  }\n}",
+      "stderr": ""
+    },
+    "A_record_after": "{\n  \"id\": \"r18f-qa-merge\",\n  \"action\": \"merge\",\n  \"from\": \"qa_r18f_oldtag\",\n  \"to\": \"qa_r18f_newtag\",\n  \"rawFrom\": \"qa-r18f-oldtag\",\n  \"rawTo\": \"qa-r18f-newtag\",\n  \"summary\": \"qa-r18f-oldtag → qa-r18f-newtag\",\n  \"status\": \"applied\",\n  \"message\": \"rewrote 1 post(s): qa_r18f_oldtag → qa_r18f_newtag\",\n  \"migrated\": 1,\n  \"posts\": [\n    {\n      \"slug\": \"r18f-qa-tagpost\",\n      \"dir\": \"drafts\",\n      \"version\": 2\n    }\n  ],\n  \"requestedVia\": \"cli\",\n  \"requestedBy\": \"\",\n  \"requestedAt\": \"2026-09-28T15:06:01.422Z\",\n  \"updatedAt\": \"2026-09-28T15:06:15.709Z\"\n}\n",
+    "A_post_after": "{\n  \"title\": \"QA R18F tags\",\n  \"slug\": \"r18f-qa-tagpost\",\n  \"summary\": \"\",\n  \"body\": \"qa\",\n  \"coverImage\": \"\",\n  \"images\": [],\n  \"tags\": [\n    \"qa_r18f_newtag\"\n  ],\n  \"category\": \"technology\",\n  \"seoTitle\": \"\",\n  \"seoDescription\": \"\",\n  \"ogTitle\": \"\",\n  \"ogDescription\": \"\",\n  \"ogImage\": \"\",\n  \"status\": \"draft\",\n  \"authorDid\": \"did:key:zR18FQA\",\n  \"authorName\": \"\",\n  \"published\": false,\n  \"publishedAt\": \"\",\n  \"archivedAt\": \"\",\n  \"deletedAt\": \"\",\n  \"createdAt\": \"2026-09-28T15:06:01.078Z\",\n  \"updatedAt\": \"2026-09-28T15:06:15.403Z\",\n  \"version\": 2,\n  \"visibility\": \"public\",\n  \"productId\": \"\",\n  \"previewOnly\": false,\n  \"contentHash\": \"sha256:73c4bb808433382ea0574c333d2278b8a330d09a0cf29812398cd93",
+    "B_request": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-request\",\n  \"intent\": {\n    \"id\": \"r18f-qa-reject\",\n    \"action\": \"merge\",\n    \"from\": \"qa_r18f_same\",\n    \"to\": \"qa_r18f_same\",\n    \"rawFrom\": \"qa-r18f-same\",\n    \"rawTo\": \"qa-r18f-same\",\n    \"summary\": \"qa-r18f-same → qa-r18f-same\",\n    \"status\": \"pending\",\n    \"message\": \"\",\n    \"migrated\": 0,\n    \"posts\": [],\n    \"requestedVia\": \"cli\",\n    \"requestedBy\": \"\",\n    \"requestedAt\": \"2026-09-28T15:06:30.405Z\",\n    \"updatedAt\": \"2026-09-28T15:06:30.405Z\"\n  }\n}",
+      "stderr": ""
+    },
+    "B_record_pending": "{\n  \"id\": \"r18f-qa-reject\",\n  \"action\": \"merge\",\n  \"from\": \"qa_r18f_same\",\n  \"to\": \"qa_r18f_same\",\n  \"rawFrom\": \"qa-r18f-same\",\n  \"rawTo\": \"qa-r18f-same\",\n  \"summary\": \"qa-r18f-same → qa-r18f-same\",\n  \"status\": \"pending\",\n  \"message\": \"\",\n  \"migrated\": 0,\n  \"posts\": [],\n  \"requestedVia\": \"cli\",\n  \"requestedBy\": \"\",\n  \"requestedAt\": \"2026-09-28T15:06:30.405Z\",\n  \"updatedAt\": \"2026-09-28T15:06:30.405Z\"\n}\n",
+    "B_apply": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"r18f-qa-reject\",\n      \"action\": \"merge\",\n      \"status\": \"rejected\",\n      \"code\": \"VALIDATION\",\n      \"migrated\": 0,\n      \"message\": \"--from and --to must differ\"\n    }\n  ],\n  \"queueEntryIgnored\": 0,\n  \"projection\": {\n    \"generatedAt\": \"2026-09-28T15:06:28.512Z\",\n    \"count\": 15\n  }\n}",
+      "stderr": ""
+    },
+    "B_record_after": "{\n  \"id\": \"r18f-qa-reject\",\n  \"action\": \"merge\",\n  \"from\": \"qa_r18f_same\",\n  \"to\": \"qa_r18f_same\",\n  \"rawFrom\": \"qa-r18f-same\",\n  \"rawTo\": \"qa-r18f-same\",\n  \"summary\": \"qa-r18f-same → qa-r18f-same\",\n  \"status\": \"rejected\",\n  \"message\": \"--from and --to must differ\",\n  \"migrated\": 0,\n  \"posts\": [],\n  \"requestedVia\": \"cli\",\n  \"requestedBy\": \"\",\n  \"requestedAt\": \"2026-09-28T15:06:30.405Z\",\n  \"updatedAt\": \"2026-09-28T15:06:32.289Z\",\n  \"code\": \"VALIDATION\"\n}\n",
+    "C_raw_before": {
+      "done": "{\n  \"id\": \"r18f-qa-legacy-done\",\n  \"action\": \"merge\",\n  \"from\": \"qa-r18f-x\",\n  \"to\": \"qa-r18f-y\",\n  \"rawFrom\": \"qa-r18f-x\",\n  \"rawTo\": \"qa-r18f-y\",\n  \"status\": \"done\",\n  \"message\": \"\",\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-27T00:00:00.000Z\"\n}\n",
+      "failed": "{\n  \"id\": \"r18f-qa-legacy-failed\",\n  \"action\": \"merge\",\n  \"from\": \"qa-r18f-x\",\n  \"to\": \"qa-r18f-y\",\n  \"rawFrom\": \"qa-r18f-x\",\n  \"rawTo\": \"qa-r18f-y\",\n  \"status\": \"failed\",\n  \"message\": \"\",\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-27T00:00:01.000Z\"\n}\n"
+    },
+    "C_apply": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-apply\",\n  \"applied\": 0,\n  \"intents\": [],\n  \"queueEntryIgnored\": 0,\n  \"projection\": {\n    \"generatedAt\": \"2026-09-28T15:06:28.512Z\",\n    \"count\": 15\n  }\n}",
+      "stderr": ""
+    },
+    "C_raw_after": {
+      "done": "{\n  \"id\": \"r18f-qa-legacy-done\",\n  \"action\": \"merge\",\n  \"from\": \"qa-r18f-x\",\n  \"to\": \"qa-r18f-y\",\n  \"rawFrom\": \"qa-r18f-x\",\n  \"rawTo\": \"qa-r18f-y\",\n  \"status\": \"applied\",\n  \"message\": \"recorded as \\\"done\\\" before the vocabulary was unified (D36) — normalized to \\\"applied\\\"\",\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-27T00:00:00.000Z\",\n  \"normalizedFrom\": \"done\",\n  \"normalizedAt\": \"2026-09-28T15:06:47.878Z\"\n}\n",
+      "failed": "{\n  \"id\": \"r18f-qa-legacy-failed\",\n  \"action\": \"merge\",\n  \"from\": \"qa-r18f-x\",\n  \"to\": \"qa-r18f-y\",\n  \"rawFrom\": \"qa-r18f-x\",\n  \"rawTo\": \"qa-r18f-y\",\n  \"status\": \"rejected\",\n  \"message\": \"recorded as \\\"failed\\\" before the vocabulary was unified (D36) — normalized to \\\"rejected\\\"\",\n  \"requestedVia\": \"qa-probe\",\n  \"requestedAt\": \"2026-09-27T00:00:01.000Z\",\n  \"normalizedFrom\": \"failed\",\n  \"normalizedAt\": \"2026-09-28T15:06:48.496Z\"\n}\n"
+    },
+    "C_apply_again": {
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"action\": \"tags-apply\",\n  \"applied\": 0,\n  \"intents\": [],\n  \"queueEntryIgnored\": 0,\n  \"projection\": {\n    \"generatedAt\": \"2026-09-28T15:06:28.512Z\",\n    \"count\": 15\n  }\n}",
+      "stderr": ""
+    }
+  },
+  "fixtureDraft": {
+    "status": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"action\": \"draft\",\n  \"path\": \"/instance/app/arcblog/drafts/r18f-qa-tagpost.json\",\n  \"slug\": \"r18f-qa-tagpost\",\n  \"status\": \"draft\"\n}",
+    "stderr": ""
+  },
+  "cleanup": {
+    "intentsLeft": [],
+    "postLeft": false
+  }
+}

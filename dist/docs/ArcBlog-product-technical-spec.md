@@ -260,6 +260,8 @@ SQLite 可以用于：
 
 但不应该成为 ARC 架构的唯一数据合同。
 
+> 本条在「单实例自建 ARC 服务器 + 应用商店一键部署」下的**可落地形态（provider 挂载 / AFS 真源 / SQLite 派生读模型）、数据分类与七条不变式**见 §154；任务拆分见 §155。
+
 物理存储属于实现细节。
 
 AFS Path 才是应用层应该依赖的资源边界。
@@ -875,61 +877,59 @@ AUP 用于表达：
 
 ## 15.2 菜单结构总览
 
-```text
-ArcBlog Admin
-│
-│   （一个菜单项只承载一件事；不出现"与 / &"并列菜单——UI 标准 §2.3）
-│
-├── 概览  Dashboard
-│
-├── 内容  Content
-│   ├── 文章        Posts
-│   ├── 页面        Pages
-│   ├── 媒体        Media
-│   └── 分类与标签  Taxonomy
-│
-├── 站点  Site
-│   ├── 外观        Appearance
-│   ├── 首页与推荐位 Home
-│   ├── 推荐位      Heroes
-│   ├── SEO         SEO
-│   └── 分发        Feeds
-│
-├── 网络  Network                    (studio.* / hub.* capability)
-│   ├── 节点身份    Node Identity
-│   ├── Hub 注册    Registrations     (Studio)
-│   └── Hub 管理    Hub Console       (Hub)
-│
-├── 经济  Economy                    (economy.manage capability)
-│   ├── 商品        Products
-│   ├── 订单        Orders
-│   ├── 结算        Settlement
-│   ├── 账本        Ledger
-│   ├── 策略        Policy
-│   └── 账户        Wallets
-│
-├── Agent                            (agent.* capability)
-│   ├── 能力与工具  Capabilities & Tools
-│   ├── 授权        Grants
-│   └── 审计        Audit Log
-│
-└── 设置  Settings
-    ├── 通用        General
-    ├── 角色与能力  Roles & Capabilities
-    └── 诊断与维护  Diagnostics
-```
+> **修订来源与授权**：人类所有者 2026-09-28 在本会话明确指示「对管理后台菜单重新进行规划，根据功能类型、使用习惯重新命名、归类、排序」，并授权按既定流程落笔（记录见 [`docs/team/requirements/SPEC-APPROVAL-001`](team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md) **C-16**）。完整提案、逐项 before/after 与验收标准见 [`docs/team/design/UI-017`](team/design/UI-017-console-menu-information-architecture.md)。
+> **实施状态**：目标 IA 由 **`task-18`** 实施（改 `scripts/console-nav.mjs` 数据 + locale 文案 + 重放生成块，**`?page=` 名零改动**）。实施完成前，运行期仍是旧显示名（内容 / 站点 / 运营 / 经济 / 设置）。
 
-六个一级菜单 + 概览，对应六类运营心智：
+**组织原则**：先按「干什么」分组，再按「多久用一次」排序（日常 → 每周 → 偶尔 → 极少）；**名词做容器，动词只留一个**（「写文章」）；**运维与日常物理分离**（链 / 网络 / 诊断 / Agent / 角色铸造不出现在前两屏）；**一行 = 一页 = 一用途**。
 
 ```text
-我现在的状态 → 概览
-我写什么     → 内容
-我的站什么样 → 站点
-我连接谁     → 网络
-我赚了多少   → 经济
-AI 能做什么  → Agent
-底层怎么配   → 设置
+ArcBlog Admin（5 组 / 21 行；每行 = 一个 `?page=<name>` 深链）
+A 写作  Writing                    ← 每天
+  概览 Overview              ?page=dashboard
+  写文章 Write               ?page=compose     （全菜单唯一的动词行）
+  文章 Posts                 ?page=posts
+  媒体库 Media library       ?page=media
+B 站点  Site                       ← 每周
+  页面 Pages                 ?page=pages
+  首页轮播 Home carousel     ?page=heroes
+  分类 Categories            ?page=categories
+  标签 Tags                  ?page=tags
+  外观 Appearance            ?page=appearance
+  SEO 与分享 SEO & sharing    ?page=seo
+  订阅与索引 Feeds & index    ?page=feeds
+C 收入  Revenue                    ← 偶尔
+  订单 Orders                ?page=orders
+  付费阅读 Paid access       ?page=access
+  分成策略 Split policy      ?page=policy
+  账本与结算 Ledger & settlements  ?page=ledger
+D 节点与网络  Node & network        ← 偶尔
+  节点状态 Node status       ?page=operations
+  Hub 与索引 Hubs & index     ?page=hub
+  角色与铸造 Roles & minting  ?page=factory
+  Agent 与授权 Agents & grants ?page=agents
+E 高级  Advanced                   ← 极少
+  实例设置 Instance settings  ?page=general
+  诊断与维护 Diagnostics     ?page=diagnostics
 ```
+
+**六类运营心智（映射到上面 5 组）**：
+
+```text
+我现在的状态 → A 写作 · 概览
+我写什么     → A 写作 · 写文章 / 文章 / 媒体库
+我的站什么样 → B 站点
+我赚了多少   → C 收入
+我连接谁 / AI 能做什么 → D 节点与网络（Hub 与索引 / Agent 与授权）
+底层怎么配   → E 高级（实例设置 / 诊断与维护）
+```
+
+规则（与 UI 标准 §2.3/§2.7 配套）：
+
+* 侧栏由 `scripts/console-nav.mjs` **单一真源**生成并投影进每个控制台页；`node scripts/arcblog-console-nav.mjs --check` 是漂移门（进 `npm test`）。**组 key、行 key（`wrapper.nav-*`）与 `?page=` 名都不随显示名变化** —— 本次修订只改**显示文案、归组与顺序**。
+* **一行一用途**：行名必须能回答「在这里干什么」（UI 标准 §2.7.4）；答不出的页先拆分或降级，不进行。
+* **组名不得与任何行名同词**（旧结构的 `Operations/运营` 与行 `operations/运维` 撞词 —— 已由本次修订消除）。
+* 极低频 / 只读面（`agents`、`factory` 的链与授权细节，`diagnostics` 的命令面）默认折叠在页内「高级」区，**能力不删**（UI 标准 §2.7.3/§2.7.4；平台不支持按角色隐行，见 §15.10）。
+* 资源白名单与页数不写死：节数以 `node -e "import('./scripts/console-nav.mjs').then(m=>console.log(m.CONSOLE_SECTIONS.length))"` 为准。
 
 ---
 
@@ -3626,6 +3626,8 @@ Economic Read Model
 
 不要把 SQLite 当成 ARC 的全部数据合同。
 
+> 本节的可落地形态（**provider 挂载承载 SQLite + AFS 为真源 + 派生读模型**）、哪些数据可以进 DB 的逐项分类（§154.5）、七条不变式与运维契约见 **§154**；实施任务拆分见 **§155**。
+
 ---
 
 # 99. 项目结构
@@ -5312,3 +5314,258 @@ Decentralized
 ```
 
 **ArcBlog 的最终目标不是建立一个新的中心化博客平台，而是建立一种新的内容网络运行方式：任何人都可以运行自己的 Studio，任何人都可以运行自己的 Hub，创作者拥有自己的身份和内容，Hub 通过发现和分发获得网络收益，读者直接与创作者发生经济关系，而 ARC 提供这一切运行所需要的身份、数据、资源、UI、应用和 Agent 基础设施。**
+
+---
+
+# 154. 数据层最终方案：AFS 真源 + SQLite 派生（单实例 · 应用商店一键部署）
+
+> **修订来源与授权**：人类所有者 2026-09-28 在本会话明确指示「将最终研究设计方案写入产品技术文档，拆分任务列表到文档」。按团队既定规则（spec 只有人类可改，或授权 Lead 代改并留 diff，见 [`docs/team/requirements/SPEC-APPROVAL-001`](team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md)），本节由 Lead 代改落笔并保留 diff。
+> **与既有条款的关系**：§6（SQLite 不得成为产品数据抽象）、§73（Hub 派生索引）、§97/§98（数据模型与推荐数据库）、§101（AFS Resource，而非 API ↓ SQLite）**原则不变**；本节给出这些原则在「单实例自建 ARC 服务器 + 应用商店一键部署」下的**可落地形态**。冲突时以本节为准。
+
+## 154.1 结论摘要
+
+1. **部署形态**：产品发布到应用商店，用户**一键部署**到**单实例**自建 ARC 服务器（有 `arc` 环境与 daemon），**不是 Cloudflare Pages**。
+2. **SQLite 因此可行**，但只能以 **provider 挂载（`blocklet.yaml` 的 `mounts:`）的内部实现**出现：**AFS Path 仍是应用的唯一资源契约**（§6/§101 不变）。
+3. 数据分三层：**L0 AFS 真源**（不可替代）/ **L1 SQLite 派生读模型**（可全量重建）/ **L2 进程内缓存**（可丢弃）。
+4. 「很多数据是不是都可以进数据库」的答案是 **可以进「派生类」，不能进「真源类」**。一句话判据：**能被 AFS 单命令全量重建 → 可以进 DB；不能被重建 → 必须留在 AFS，DB 最多做镜像/读模型**。逐项分类见 §154.5。
+5. **正文（Markdown）与元数据是否拆分，与 DB 决策正交**：正文永远在 AFS；DB 只索引元数据。拆分正文**暂不做**（§154.7），因为 DB 已解决「可查询」，而拆分会额外牵动签名/付费门禁/媒体引用。
+
+## 154.2 部署前提与不可协商的约束
+
+| 前提 | 直接后果 |
+| --- | --- |
+| 应用商店发布 + 用户**一键部署** | 不能要求运营者手工执行 `arc afs mount add`（它写 cwd 的 `.afs-config/config.toml`，且 **not instance-scoped**）→ provider 必须由包内 `blocklet.yaml` 的 `mounts:` **声明式**提供，随 `dist/` 分发 |
+| **单实例** | 一实例一份 DB 文件，不需要多租户分片；但**用户私域数据仍留在 DID Space `/user`**（按调用者隔离），**不得**复制进节点级 DB |
+| 自建 ARC 服务器（非 CF） | 运行时是 daemon（Bun 单二进制），无 CF Worker 的静态/只读限制；`runtime.tier`（`edge|persistent|heavy|sovereign`）中本产品属非 edge |
+| 商店包要能跨平台安装 | 不得依赖「安装后按平台编译 native 模块」；SQLite 必须用运行时**自带**能力（见 F1、F16） |
+| 商店包依赖面必须最小 | provider 的**第三方依赖解析机制未文档化、未证明**（F17）→ provider 必须**零第三方依赖**（只用运行时内建 `bun:*` / `node:*`），否则干净机器上会 `ERR_MODULE_NOT_FOUND` |
+
+## 154.3 平台事实（2026-09-28 实测 / 查证，arc 2.0.0-beta.50 c711b9aa）
+
+| # | 事实 | 证据 |
+| --- | --- | --- |
+| **F1** | 运行时是 **Bun 编译的单二进制**，自带 `bun:sqlite` / `better-sqlite3` / `node:sqlite` 能力 → provider 可用**零 native 依赖**的 SQLite | `ps`：`~/.arc/versions/2.0.0-beta.50/arc-darwin-arm64 service _run --instance default --port 4939 …`；对该二进制 `grep -a -o -F` 命中 `Bun v`、`bun:sqlite`、`better-sqlite3`、`node:sqlite` |
+| **F2** | `mounts:` 是**一等能力**，两种形态都在官方 fixture 中使用：**模块挂载** `{target: ./providers/<name>, path: /<name>}` 与**协议 URI 挂载** `{target: "ash://…", path: "/ash", ops:[exec]}` | `assets/blocklets/{launch-kit,collections,instances,exec-auth-gate-fixture,persona,telegram-assistant,sandbox-mount-fixture}/blocklet.yaml`（位于 `~/.arc/versions/2.0.0-beta.50/`） |
+| **F3** | provider 契约：`onMount(root, mountPath)` 注入 AFS root；实现 `read/list/write/exec`；**`exec` 收到 runtime 校验过的调用者** `options.context.caller`（自定义 action 处理器只拿到 `args`）；provider 可有自己的 `package.json` 与第三方依赖；既有范式是 **AFS-only I/O** | `assets/blocklets/exec-auth-gate-fixture/providers/gate/index.mjs`（`onMount(root, mountPath)`、`async read/list/write/exec(path,args,options)`、`context.caller.did/roles`）；`launch-kit/providers/campaign/{index.mjs,package.json}`（依赖 `ufo`/`js-yaml`/`@aigne/afs-trust`） |
+| **F4** | `sqlite://` 被官方文档列为 backend URI 示例；`arc afs mount add <path> <uri>` 存在（例 `fs://./src`），另有 `kv://{namespace}/…` | `assets/skills-booklets/afs.md:95-101`（"uri: backend address, e.g. `fs://`, `sqlite://`"）；`arc afs mount add --help`。**是否已实现未验证**（P0-3） |
+| **F5** | AFS 底层本身就是 SQLite（平台私有）→ 平台已提供持久化；自建 DB 的增量价值在**关系模型 / FTS5 / 读模型**，不是「有个库」 | `~/.afs/spaces/<scope>/.did-space/space.db`(+`-wal`/`-shm`)、`_resolve.db`、`_presence.db`、`versioned-content/space.db`、`agent-index/blocklet-index.db` |
+| **F6** | 平台查询层已覆盖大部分「要 DB」的诉求：`/.actions/query`（typed `where`/`orderBy`/`select`/`cursor`）与 `/.actions/aggregate`（多组 `groupBy`、`sum|avg|max|min|count`、`timeGranularity`、`annotate.memberOf` 连接）+ `/modules/index`（FTS/anchor/vector） | `arc afs explain /blocklets/arcblog/.actions/{query,aggregate}`；`/modules/index/.actions/{index,query,reindex,…}`；实测 `stats/total-entries = 1256`、`stale-entries = 0`，FTS 返回 AFS 路径 |
+| **F7** | **三个实测坑**（任何「用 AFS 当 DB」的设计都必须绕开）：① 大记录不进 `where`（`where status=published` 漏掉 4883 B 的 `hello-arcblog.json`，与 [arc-contracts §15.1](arc-contracts.md) 受控实验一致：2.5 KB/4.9 KB ❌）；② `select:["title"]` 返回 `content: {}`；③ `aggregate groupBy:"content.category"` 返回分组键 `null` 而 `n=3`（`query count` 同为 3） | 本轮 live 复跑（命令与输出见团队证据文件） |
+| **F8** | 历史坑：**dev 形态（`.route` 从源码服务）下模块挂载未被加载**（`No module found for path: /chain/.actions/ping`） | [arc-contracts §26.1/§26.2](arc-contracts.md)。本设计因此在 **P0-1 强制要求在目标部署形态（publish + instance deploy / 服务器）复测**后再进入实现 |
+| **F9** | 平台已有 Hub 派生索引的记录形态（**仅元数据、永不含正文**），字段齐备 | `world/content-index.yaml`（postId/studioDid/title/excerpt/cover/url/tags/publishedAt/contentHash/version/status/indexedAt/deletedAt/updatedAt）+ `scripts/lib/network.mjs` 的 `hub/index/`、tombstone、`indexEntryCurrent`（version+contentHash） |
+| **F10** | 平台对「派生 vs 真源」的现行判例：`arc dsl generate` **不再产出** `.aup/pages/*.json`，7 个历史物化副本属死产物（本轮调研结论） | `arc dsl generate --json` 的 `files` 只有 7 个非 page 产物；`arc dsl validate --json` 50 文件不含它们 |
+
+> **F11–F18（2026-09-28 只读调研补充；其中 F14/F15/F17 是"未证明/未文档化"，按事实登记，不得当成已支持）**
+
+| # | 事实 | 证据 / 置信度 |
+| --- | --- | --- |
+| **F11** | provider 是 **duck-typed 类 + `export default`**：可选 `name`/`description`/`accessMode`/`uri`/`riskLevel`，`static async load()`，`onMount(root, mountPath)`，`read/list/stat/write/exec(path, args, options)`；`onMount` 内可 `root.registerCustomAction(id, entry, handler)`；无 `onUnmount`/`delete` 范例。返回 `{data}` 或 `{success,data}`，抛 `Error` 带 `.code` | `assets/blocklets/exec-auth-gate-fixture/providers/{gate,external}/index.mjs`、`collections/providers/collections/index.mjs`、`launch-kit/providers/campaign/index.mjs`（HIGH） |
+| **F12** | `exec` 的 `options.context` 提供：`caller.{did,displayName,role,roles}`、`callerOrigin`、`userId`、`sessionId`、`requestId`、`instanceDid`、`agentRunOrigin`、`blockletId`，以及 `context.afs`（AFS root）与 `context.instanceDid` | `campaign/index.mjs`、`gate/index.mjs:92-100`、`collections/index.mjs:266/669`（HIGH） |
+| **F13** | **import 阶段禁令**（草稿约束）："Provider 不允许在 import 阶段发起网络、读文件、开端口"，"Provider bundle 必须是无副作用的 ESM，只在被 mount 时实例化" | `arch-qa/docs/architecture/blocklet-package-and-instance.md:179-182`；**该节标注「SPI 约束（待细化）」，§9 全是未决问题 → 属草稿、未强制**。设计含义：**SQLite 句柄只允许在 `onMount` 打开**，不得在 import 期建库（HIGH，来源明确；约束强度 MED） |
+| **F14** | **没有任何文档化的 per-provider 本地文件目录**。`/blocklets/<name>/instance/app/` 被文档写成 blocklet 内部状态"**唯一合法的写入位置**"（由实例 DID Space 支撑，`accessMode: readwrite`）；`/work` 是 host 可写根，但**per-instance、非 per-blocklet**；DID Space 的物理路径属未文档化实现细节（`arc space path` 只打印 AFS 路径） | `blocklet-structure.md:192-221,429`；`.agents/skills/site/SKILL.md`；`docs/persistence.md`（HIGH，"无此目录"是 HIGH 置信度的事实） |
+| **F15** | **`arc blocklet build` 会复制 `providers/**` 进 `dist/`（✅ 2026-09-28 实测，T0-5 通过）**：干净副本（`git archive HEAD`）里加 `providers/probe/index.mjs` + `mounts:` 后 build → `dist/providers/probe/index.mjs` 存在、`dist/.afs/manifest.json`（`readonly-tree`，703 文件）列出该路径、`dist/blocklet.dist.json` 的 `mounts` 完整保留 `{target, path, required, ops}` 并与平台自带两条挂载并列 | 探针目录 `/tmp/arcblog-t05`；命令 `git archive HEAD \| tar -x -C /tmp/arcblog-t05` → `arc blocklet build .`（HIGH，已证） |
+| **F16** | beta.50 **没有 `arc blocklet publish`**。可用发布路径：`arc deploy --publish`（本地 DID Space，零网络）、`arc deploy --server`（远端 DID Space）、`arc blocklet deploy`（CF Pages）、`arc blocklet instance deploy`（本地 Pages）、`arc provider publish-resources <pkg>`。Marketplace = **普通 AFS Index**（"不托管 blocklet 本身"）。未发现任何尺寸上限、依赖锁或"禁止 native 模块"规则 | `arc blocklet --help` 子命令表；`arch-qa/docs/architecture/{afs-index.md:348-360,arc-ultimate-product.md:363-370,blocklet-spec.md:845-856}`（MED：**"不存在"类结论**） |
+| **F17** | SQLite 供应（✅ 2026-09-28 实测，T0-2 前半通过）：运行时是 **Bun 1.4.2**（`BUN_BE_BUN=1 <arc 二进制> --version` 可把内置 Bun 当 CLI 用）；**`bun:sqlite` 可用 —— SQLite 3.51.0，FTS5（MATCH/rank/rebuild）、文件库跨进程持久、`GROUP BY` 聚合全部实测通过**；`node:sqlite`（`DatabaseSync` 等）在 Bun 下也可用。`better-sqlite3@12.10.0` 是 native addon（darwin-arm64 预编译），**Bun 下 ESM `import('better-sqlite3')` + `NODE_PATH` 可用，但 `require()` 报 `MODULE_NOT_FOUND`**（Node 24 下 ESM 亦失败）→ 依赖 addon 的跨平台风险仍在 | 探针脚本 `/tmp/probe-sqlite/probe.mjs`；`arc-darwin-arm64` + `BUN_BE_BUN=1`；`node_modules/{better-sqlite3,@libsql/darwin-arm64}/package.json`（HIGH）。**结论：优先 `bun:sqlite`；`node:sqlite` 备选；不依赖 native addon** |
+| **F18** | provider 的**第三方依赖解析未文档化**：fixture 的 `ufo`/`js-yaml`/`@aigne/afs-trust` **不在 `NODE_PATH` 中**，只在 arc monorepo 内可解析；`mounts[].options` 只有 `sandbox://` fixture 用过，**模块挂载的 `options` 未验证** | fixture provider `package.json` + `NODE_PATH` 实测；`sandbox-mount-fixture/blocklet.yaml:36-45`（HIGH / MED） |
+
+## 154.4 三层数据模型
+
+```text
+        AUP 页面 / CLI / MCP / Agent        ← 只认 AFS Path 与 action（应用契约）
+                     │
+                     ▼
+        ┌────────────────────────────┐
+        │ L0  AFS 真源（不可替代）    │  /instance/app/arcblog/**、/blocklets/arcblog/**、/user/**
+        │     记录 + 正文 + 审计      │  CID 内容寻址 · ifMatch 并发 · 权限表 · 签名/内容哈希
+        └────────────┬───────────────┘
+                     │ 单向投影（只允许 AFS → DB）
+                     ▼
+        ┌────────────────────────────┐
+        │ L1  SQLite 派生读模型       │  provider 挂载（mounts:）· 可全量重建 · 不参与授权
+        │     索引 / FTS5 / 聚合      │  query 加速 · 经济读模型 · Hub 索引
+        └────────────┬───────────────┘
+                     │ 可丢弃
+                     ▼
+        ┌────────────────────────────┐
+        │ L2  进程内缓存（可选）      │  短 TTL · 重启即失 · 不承担正确性
+        └────────────────────────────┘
+```
+
+**层规则**：L0 是唯一真源；L1 只能由 L0 重建，且**授权、身份、签名校验、账本权威永不读 L1**；L2 不允许被任何验收标准依赖。
+
+## 154.5 数据分类：哪些数据可以进数据库
+
+**判据（按顺序判定）**：
+
+1. 是否必须被**其它节点/实例/Agent 通过 AFS 路径**读到（Hub 同步、MCP、AFS RPC）？→ **留在 AFS**。
+2. 是否**参与授权、身份、签名校验或不可否认记账**（access grant、agent grant、role config、trusted hub、ledger、attribution、audit）？→ **AFS 为唯一真源，DB 只做读模型**。
+3. 是否属于**用户私域**（`/user` DID Space，按调用者隔离）？→ **不得复制进节点级 DB**。
+4. 是否能由 AFS **单命令全量重建**？→ 满足则**适合进 DB**（L1）。
+5. 以上都不满足 → 不允许「只存在 DB」。
+
+| 数据 | 现位置 | 性质 | 可否进 DB | DB 中的形态 / 重建来源 |
+| --- | --- | --- | --- | --- |
+| Post 元数据（title/slug/summary/tags/category/status/timestamps/version/contentHash） | `posts/`、`drafts/` 记录 | 真源 | ✅ 可派生 | 索引表 + FTS；来源 = 两条目录扫描 |
+| Post 正文（`body` 字段 / Markdown） | 同上（内联） | 真源 | ⚠️ 本节点可选 FTS，**跨节点禁止** | 若做：仅本节点全文检索；不得进入 Hub DB（§72/§73/§76） |
+| Page / page-drafts | `pages/`、`page-drafts/` | 真源 | ✅ 可派生 | 索引表 |
+| Category | `categories/` | 真源 | ✅ 可派生投影 | 投影表（含引用计数） |
+| Tag 投影（snapshot/items/intents） | `tags/` | **已是派生** | ✅ 最适合 | 表 + FTS5（今天靠 `arcblog-tags.mjs` 现算） |
+| Media 索引 | `media/`（admin-only） | 真源（索引） | ✅ 适合 | 表；但删除/孤儿清理命令必须保持 AFS 侧对偶语义 |
+| Heroes | `heroes/` | 真源（公开读） | △ 收益低 | 记录本就少；不做 |
+| Node profile / identity / health / discovery | `node/` | 真源 + **跨节点读取** | ❌ | — |
+| RoleConfig / TrustedHub / AgentGrant | `config/`（admin-only） | 真源 + **授权输入** | ❌（可做只读投影，但不得参与判定） | — |
+| HubRegistration | `hub/registrations/` | 真源（跨节点） | ✅ 可派生投影 | 投影表（保持 AFS 为主） |
+| ContentIndexEntry（Hub 派生索引，§73） | `hub/index/` | **派生** | ✅ 最适合 | SQLite + FTS5（§73 点名）；tombstone/version+contentHash 语义沿用 |
+| Product / SettlementPolicy | `economy/{products,policies}/` | 真源（公开透明） | △ 可缓存 | 缓存表（失效即弃） |
+| Order / Settlement / LedgerEntry / Refund / Attribution | `economy/**` | **真源（账本 append-only）** | ✅ 只做读模型/聚合 | 物化视图（链上=资金权威、AFS=意图权威；冲突只标记不改写） |
+| AccessGrant | `economy/access-grants/` | 真源 + **授权输入** | ❌（读模型可，判定不可） | — |
+| Bookmark | `/user/arcblog/bookmarks/` | **用户私域** | ❌ | — |
+| Diagnostics 自检结果 | `config/diagnostics/` | 派生 | ✅ 适合 | 表（历史趋势 / 最新快照） |
+| Audit jsonl | `/blocklets/arcblog/instance/audits/` | 真源（审计） | ❌ | — |
+| 页面运行期状态（`$state` / 会话） | 浏览器 | 易失 | ❌ | 不落库 |
+
+**计数（本表口径）**：✅ 可派生进 DB **9 类**（Post 元数据、Page、Category、Tag 投影、Media 索引、HubRegistration、Hub Index、经济读模型、Diagnostics）；❌ 必须留 AFS **6 类**（正文跨节点、`node/*`、`config/*` 安全面、AccessGrant 判定、用户私域、Audit）；△ 谨慎 / 暂不做 **3 类**（Heroes、Product/Policy 缓存、本节点正文 FTS）。
+
+> 结论：**「很多数据可以进 DB」是对的 —— 但只限「派生 / 读模型」这一类；真源类一条都不能只存在 DB。**
+
+## 154.6 七条不变式（不可协商）
+
+| # | 不变式 | 违反后果 |
+| --- | --- | --- |
+| **I1** | AFS 是唯一真源；DB 是派生 | 出现第二真源，§6/§101 失守，节点迁移即数据分叉 |
+| **I2** | DB 必须能由 AFS **单命令全量重建**（`arcblog-db rebuild`），且重建结果可校验 | DB 变成不可恢复的孤本 |
+| **I3** | **授权、身份、签名、账本判定永不读 DB** | 越权 / 伪造风险；审计链断裂 |
+| **I4** | 投影**单向**：先写 AFS，再更新 DB；**禁止 DB → AFS 覆盖** | 丢签名、绕权限、覆盖内容 |
+| **I5** | 用户私域（`/user`）不进节点级 DB | 跨用户数据泄漏、破坏按调用者隔离 |
+| **I6** | 首启与升级**幂等**；schema 迁移 forward-only，失败 **fail-closed**（不半迁移） | 一键部署出现「装完就坏」的不可诊断状态 |
+| **I7** | DB 不可用时**降级**为今日的 AFS 直读（功能变慢 / 部分列表降级，不报错、不写坏数据） | 单点故障放大为产品不可用 |
+
+## 154.7 正文与元数据：是否拆成独立 Markdown 文档
+
+**结论：本阶段不拆。** 保留 `body` 内联在 AFS 记录里，原因：
+
+1. 拆分的原始动机是「记录太大 → `where` 查不到」（F7 ①），而 **L1 DB 已经解决可查询性**，不需要再动数据形态。
+2. 拆分要同时改四处，任何一处漏改都会静默失效：**内容哈希/签名覆盖范围**（`scripts/lib/content-hash.mjs` 含 `body`；`scripts/lib/content-sign.mjs` 签 `contentHash`）、**付费正文门禁**（`posts/*` 是 guest 可读的 glob，独立 `.md` 会继承读权限 → 泄漏全文；必须放 admin-only 并走 Access Grant，§86）、**媒体引用扫描**（`scripts/lib/media.mjs` 靠 `JSON.stringify(record)` 找引用，正文移出后会把在用图片误判为孤儿）、**AUP 读取/回写能力未验证**（`propBind` 绑 `.md`、textarea 回写、`ifMatch`）。
+3. §19/§20 的「内容对象」方向**不撤销**：列为 V2.1 候选，触发条件 = 产品需要「文章即可移植的 `.md` 文件 / 对外导出」，或在 AFS 侧也必须支持 `where` 查询时。
+
+## 154.8 Hub 形态（与 §72/§73/§74/§76 对齐）
+
+- **Studio = 源，Hub = 索引**：Hub 只持元数据（`world/content-index.yaml` 字段），**永不持有正文**（§72/§76）。
+- **Hub 的派生索引用 SQLite + FTS5**（§73 点名）：作为 Hub 节点自己的 provider 挂载实现；`status: deleted` 即 Tombstone（§119）；更新判定用 `version` + `contentHash`（§120）；`fresh/stale/never/offline` 语义沿用现有实现。
+- **跨节点摄入走 AFS，不新增 HTTP**：对端 `node/discovery.json` 公布 `afs.posts` 等路径，Hub 按路径读对端 **guest 可读**的记录；平台 root 路由被 AUP 吞掉，自定义 HTTP 端点不可行（§7/§46/§101 平台约束）。
+- **同步触发**：用 ARC 声明式 cron / daemon `/scheduler`，**不用 `setInterval`**（§111）。blocklet manifest 声明自己的 cron 仍属**未验证**（SPEC-APPROVAL-001 C-14）。
+- **缓存正文**只在 §77 第二阶段允许，且必须带 `source` / `contentHash` / `cachedAt`，不得冒充原创。
+
+## 154.9 运维契约
+
+| 主题 | 契约 |
+| --- | --- |
+| 首启 bootstrap | **在 `onMount` 中**（不得在 import 期，F13）幂等执行：建库 → 建 `schema_version` 表 → 从 AFS 全量 backfill → 记录 `last_indexed_at`；失败**不阻断页面**（回落 I7） |
+| **DB 落点与持久性** | **持久化不是正确性前提**（I2）：平台**没有文档化的 per-provider 本地目录**（F14），因此首选「**每实例可重建的 SQLite**」——能拿到合法持久目录就用（须经 T0-2 实测），拿不到就用**内存库 / 实例私有临时路径**并在每次 `onMount` 从 AFS 回填。否决任何"DB 里只有一份、丢了就没了"的形态 |
+| 升级 | forward-only 迁移；迁移前自动 `VACUUM INTO` 备份；迁移失败保留旧库并 fail-closed |
+| 备份 | **AFS 是真源 → 备份 AFS 即完整备份**；DB 文件属于节点本地状态，可重建（I2） |
+| 可观测 | `?page=diagnostics` 增「数据层」卡：DB 路径 / 大小 / 各表行数 / `last_indexed_at` / 最近一次 rebuild 结果；**页面只做可视化 + 命令复制**（不臆造页内执行，见 arc-contracts §26） |
+| 安全 | DB 文件 `0600`；**不存私钥/助记词/用户私域**；provider `exec` 一律以 runtime 校验的 `options.context.caller` 判定；`mounts.ops` 最小化（默认 `[read, list, exec]`，需要迁移时才临时开放写） |
+| 降级 | 挂载失败 / DB 损坏 / 版本不兼容 → 所有页面回落 AFS 直读，诊断页显式标注「派生索引不可用」（**不得**静默假装正常） |
+
+## 154.10 待实测清单（进入实现前的硬前置）
+
+| 级别 | 待测（对应 §155 任务） | 通过判据 |
+| --- | --- | --- |
+| **P0-1** | 模块挂载在**目标部署形态**（publish + instance deploy / 服务器）是否加载（T0-1；F8 的 dev 形态失败不具代表性） | `/probe/.actions/ping` 可执行且返回 `caller.did` |
+| **P0-2** | ✅ **已通过（2026-09-28）**：`bun:sqlite` 可用 —— SQLite 3.51.0、FTS5、文件库跨进程持久、聚合；`node:sqlite` 备选；native addon 不作依赖（F17） | 探针 `/tmp/probe-sqlite/probe.mjs` + `BUN_BE_BUN=1 <arc 二进制> run` |
+| **P0-3** | 是否存在**合法、持久、per-blocklet** 的本地落点；重启 daemon / `arc upgrade` / 重新部署后是否保留（T0-2；F14） | 明确结论：可用目录 → 用文件库；不可用 → 采用「内存/临时库 + 每次 `onMount` 从 AFS 回填」（§154.9） |
+| **P0-4** | ✅ **已通过（2026-09-28，T0-5）**：`arc blocklet build` 会复制 `providers/**` 进 `dist/` 与 `dist/.afs/manifest.json`，并把 `mounts` 展平进 `dist/blocklet.dist.json`（F15） | 推翻了原先"未证明"的登记 |
+| **P0-5** | 应用商店发布取件路径（T0-6；F16：beta.50 无 `arc blocklet publish`） | 明确"商店/索引读取什么产物、放哪"，并写出可复跑步骤 |
+| **P0-6** | provider **零依赖**是否成立（T1-1；F18：第三方依赖解析未文档化） | provider 仅用 `bun:*` / `node:*` 即可跑通；若必须依赖，先证明解析机制 |
+| **P0-7** | 匿名 / 自托管单实例下的 `options.context.caller` 形状（T1-1；F12 只证明 DID-Connect 会话调用者） | 给出匿名与已登录两种 caller 的实测样例；授权判定不得假设 `caller.did` 必然存在 |
+| **P1-1** | AFS `query`/`aggregate` 的字段路径与一致性校准（T0-4、F7 ③） | 能给出可用子集与已知坑清单 |
+| **P1-2** | 同步 I/O 对 daemon 的影响（大查询不阻塞事件循环） | 压测期间 daemon 仍响应 |
+| **P1-3** | 模块挂载的 `mounts[].options` 是否被采纳（F18 只在 `sandbox://` 有例） | 自定义 option 在 provider 内可读到，或明确不支持 |
+| **P2-1** | AUP 侧 `.md` 读/写能力（仅当 §154.7 触发条件成立时才做） | `propBind` 读文本 + textarea 回写 + `ifMatch` 可复现 |
+
+---
+
+# 155. 实施任务拆分（Task Breakdown）
+
+> 本章是 §154 的**可执行拆解**；共享任务板（`team_task_*`）与本表一一对应，`写范围` 为任务板上 `write_scopes` 的依据。**阶段 0 未通过前不得进入阶段 1 及以后**。
+
+## 155.1 组织方式与门禁
+
+- **阶段**：0 探针 → 1 provider 骨架 → 2 元数据派生索引 → 3 经济读模型 → 4 Hub 派生索引 → 5 商店一键部署硬化。
+- **每任务 DoD**：`arc dsl validate --json` issues `[]` + `npm test` 全绿 + 改了 `.aup` / 包内容时 `arc blocklet build` 同步 `dist/` + 定向 live 单跑（涉及 CLI / AFS / 链适配器时，先取 `docs/team/.gate-lock`）+ 回报（产物路径 + 验证命令 + 实际结果）。
+- **禁止**：跑全量 `npm run test:live`；`git commit` / `push` / `reset --hard`；未获人类授权改本 spec；把 L1 数据当权威。
+- **写范围约定**：探针与 provider → `providers/**`、`blocklet.yaml`、`scripts/**`、`dist/**`（仅 build）；页面 → `.aup/pages/**`（按角色卡）；文档 → `docs/**`（Lead/PM/QA 按角色卡）。
+
+## 155.2 阶段 0：探针（全部为后续任务的 `blocked_by`）
+
+| ID | 任务 | 写范围 | 验收标准 | 依赖 |
+| --- | --- | --- | --- | --- |
+| **T0-1** | 模块挂载在目标部署形态生效（最小 blocklet 或本仓库影子挂载） | `providers/probe/**`、`blocklet.yaml`（临时，验证后回滚） | `/probe/.actions/ping` 返回 `{ok:true, caller.did}`；记录 publish / instance deploy 的完整命令与输出 | — |
+| **T0-2** | ✅ **已完成（2026-09-28）**：`bun:sqlite` 可用性 + 本地落点结论（F14/F17） | 探针目录 | 结果：**Bun 1.4.2 + `bun:sqlite`（SQLite 3.51.0，FTS5 可用）通过**；**持久 per-blocklet 目录仍无文档化落点**（F14）→ 采用「内存/临时库 + `onMount` 从 AFS 回填」，持久目录作为可选优化 | T0-1 |
+| **T0-3** | `sqlite://` scheme 是否实现（**需用户批准写 `.afs-config`**） | `.afs-config/config.toml`（cwd 本地，需批准） | `arc afs mount validate` 通过 + read/write 探针可见 | — |
+| **T0-4** | `query` / `aggregate` 字段路径与一致性校准 | 只读；结论写 `docs/arc-contracts.md` | 给出「可用子集 + 已知坑」清单（至少覆盖 F7 三条） | — |
+| **T0-5** | ✅ **已完成（2026-09-28）**：包完整性 —— `providers/**` 是否进 `dist/` | 干净副本 build | 结果：**会复制**（`dist/providers/probe/index.mjs`；manifest 703 文件；`blocklet.dist.json` 的 `mounts` 保留 `{target,path,required,ops}`） | — |
+| **T0-6** | 商店取件路径（F16：beta.50 **无 `arc blocklet publish`**） | 只读调研 + 文档 | 写明「商店 / 索引读取什么产物、如何产出」，步骤可复跑 | — |
+| **T0-6** | 商店取件路径（F16：beta.50 **无 `arc blocklet publish`**） | 只读调研 + 文档 | 写明「商店 / 索引读取什么产物、如何产出」，步骤可复跑 | — |
+
+## 155.3 阶段 1：provider 骨架（`providers/arcblog-index/`）
+
+| ID | 任务 | 验收标准 | 依赖 |
+| --- | --- | --- | --- |
+| **T1-1** | provider 模块骨架（**零第三方依赖**，SQLite 句柄只在 `onMount` 打开）+ `blocklet.yaml mounts:` 正式声明（`ops: [read, list, exec]`，`required: true`） | 挂载可用；`exec` 返回 runtime 校验的 `caller`（含匿名样例，见 §154.10 **P0-7**）；`read/list` 可列 DB 中的表结构；provider 只 import `bun:*` / `node:*` | T0-1、T0-2、T0-6 |
+| **T1-2** | 幂等 bootstrap + `schema_version` 迁移框架（I6） | 空库首启自动建表；重复启动不重复迁移；迁移失败 fail-closed 且不影响页面（I7） | T1-1、T0-2 |
+| **T1-3** | `arcblog-index.mjs` CLI：`rebuild` / `verify` / `stats`（I2 的可执行形式） | `rebuild` 后 `verify` 报告 0 差异；`stats` 输出表行数与 `last_indexed_at` | T1-2 |
+| **T1-4** | 降级路径接线（DB 不可用 → 页面回落 AFS 直读）+ 诊断页数据层卡 | 关掉挂载后页面仍可用且诊断页显式标注降级 | T1-2 |
+
+## 155.4 阶段 2：元数据派生索引（覆盖率最高的收益项）
+
+| ID | 任务 | 验收标准 | 依赖 |
+| --- | --- | --- | --- |
+| **T2-1** | Post / Page 元数据索引 + FTS5 + backfill | `rebuild` 后条目数 = AFS 记录数；搜索命中与 `title/summary/tags` 一致 | T1-3 |
+| **T2-2** | Tag 投影与引用计数（替代现算） | 与 `arcblog-tags.mjs list` 输出逐条一致（对照测试） | T2-1 |
+| **T2-3** | Category 投影 + 引用计数 | 与 `arcblog-category.mjs usage` 一致 | T2-1 |
+| **T2-4** | Media 索引读模型（只读） | 与 `arcblog-media.mjs list` 一致；**孤儿清理仍走 CLI**（不得由 DB 判定删除） | T2-1 |
+| **T2-5** | 增量同步（AFS 变更 → 投影）+ `last_indexed_at` 可观测 | 新增/编辑/删除记录后 DB 与 AFS 一致；无变更时同步为 no-op | T2-1 |
+
+## 155.5 阶段 3：经济读模型（只读，权威仍在 AFS）
+
+| ID | 任务 | 验收标准 | 依赖 |
+| --- | --- | --- | --- |
+| **T3-1** | Order / Settlement / Ledger / Refund 聚合视图 | 与 CLI 逐笔对账一致；账本仍 append-only 于 AFS | T2-5 |
+| **T3-2** | 对账口径落地（链上=资金权威、AFS=意图权威；冲突只标记） | 冲突用例产生标记而非改写；与 REQ-021 设计的 fail-closed 一致 | T3-1 |
+| **T3-3** | Dashboard / ledger / orders 页切换为读模型（带 AFS 回落） | 页面数字与 CLI 一致；DB 关闭后回落不报错 | T3-1、T1-4 |
+
+## 155.6 阶段 4：Hub 派生索引 + 跨节点摄入
+
+| ID | 任务 | 验收标准 | 依赖 |
+| --- | --- | --- | --- |
+| **T4-1** | Hub 索引 DB 化（字段 = `world/content-index.yaml`） | 与现 AFS 版 `hub index rebuild/list/search` 行为等价（对照测试） | T1-3 |
+| **T4-2** | Tombstone / `version`+`contentHash` / freshness 语义迁移 | §119/§120/§75-§76 的既有对照测试全绿 | T4-1 |
+| **T4-3** | 跨节点摄入（读对端 `discovery.afs` 公布的 guest 可读路径） | 双节点本地演练：Hub 索引到 Studio 的公开文章元数据；**正文不复制** | T4-1 |
+| **T4-4** | 定时同步（daemon `/scheduler`，禁 `setInterval`） | 到点自动同步；失败标记 offline 不中断 | T4-3 |
+
+## 155.7 阶段 5：商店一键部署硬化
+
+| ID | 任务 | 验收标准 | 依赖 |
+| --- | --- | --- | --- |
+| **T5-1** | 包完整性（**零依赖** provider 随 `dist/` 分发，跨平台不编译 native；发布取件路径按 T0-6 结论） | 干净机器安装后挂载自动生效 | 全部 |
+| **T5-2** | 升级 / 迁移演练（旧库 → 新 schema；失败回滚） | 演练记录 + fail-closed 证据 | T5-1 |
+| **T5-3** | 降级与灾备演练（删库重建、挂载失败、DB 损坏） | 三种场景页面均可用且诊断页标注准确 | T5-1 |
+| **T5-4** | 运营手册（`docs/operations-runbook.md` 增「数据层」章）与诊断页文案 | 命令逐字可复跑；不出现「页内一键执行」式臆造 | T5-3 |
+| **T5-5** | CI / 门禁与 QA 负例（DB 与 AFS 不一致、越权读 DB、DB 参与判定被拒） | 负例全部 fail-closed | T5-4 |
+
+## 155.8 依赖图与任务板映射
+
+```text
+T0-1 ─┬─ T0-2 ─┬─ T1-1 ─ T1-2 ─┬─ T1-3 ─┬─ T2-1 ─┬─ T2-2 / T2-3 / T2-4
+      │        │               │        │        └─ T2-5 ─ T3-1 ─ T3-2 ─ T3-3（并依赖 T1-4）
+      │        │               │        └─ T4-1 ─ T4-2 ─ T4-3 ─ T4-4
+      │        │               └─ T1-4 ─┘
+      └─ T0-5 ───────────────────────────────────────────── T5-1 ─┬─ T5-2
+T0-3（独立，需批准）                                                  ├─ T5-3
+T0-4（独立，只读）                                                    └─ T5-4 ─ T5-5
+```
+
+- **任务板同步（2026-09-28 已建）**：阶段 0 已落到共享任务板 —— **T0-1 = `task-6`（ready，决定成败）**、**T0-2 = `task-7`（✅ 已完成）**、**T0-3 = `task-8`（ready，需批准）**、**T0-4 = `task-9`（ready，只读）**、**T0-5 = `task-10`（✅ 已完成）**、**T0-6 = `task-11`（ready）**。阶段 1–5（T1-1…T5-5）在 **T0-1 通过后**再建，并以 T0-1 为 `blocked_by`。**同一时刻每个角色 ≤1 个 `in_progress`**，写范围重叠者串行。
+- **验收独立性**：每个阶段的 QA 任务 `blocked_by` 对应实现任务；QA 不采信自述，必须自己重跑门并按本表的验收标准逐条给结论。

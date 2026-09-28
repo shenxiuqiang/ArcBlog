@@ -1,0 +1,131 @@
+
+### A3 BEFORE
+r18-probe-post-a: category=r18-probe-src version=1
+r18-probe-post-b: category=r18-probe-src version=1
+
+### A1 page structure
+{"url":"http://arcblog.localhost:4939/?page=categories","authed":true,"mergeBtns":5,"removeBtns":5,"targetInputs":5,"hiddenFrom":5,"cliVisibleBeforeExpand":false,"queueCard":true,"advanced":true,"workerNote":true}
+
+### advanced fold — expand
+clicked
+
+### advanced fold — CLI visible after expand
+{"cliVisible":true,"hideBtn":true}
+
+### type target into the probe-src ROW field
+value=r18-probe-dst
+
+### row wrapper ids + cFrom values
+{"rows":["design.json","life.json","r18-probe-dst.json","r18-probe-src.json","technology.json"],"cFrom":["design","life","r18-probe-dst","r18-probe-src","technology"]}
+
+### click "Merge into…" on the probe-src row
+clicked:Merge into…
+
+### confirm dialog
+confirmed: Queue thi  merge?
+Every po t or draft referencing thi  category i  rewritten to the target
+
+### A2 intent records in AFS after the click
+["2026-09-28T13:08:53.868Z.json","2026-09-28T13:09:36.979Z.json","2026-09-28T13:10:07.678Z.json"]
+
+### A2 record 2026-09-28T13:08:53.868Z.json
+{"id":"2026-09-28T13:08:53.868Z","action":"merge","from":"r18-probe-src","to":"r18-probe-dst","rawFrom":"r18-probe-src","rawTo":"r18-probe-dst","summary":"r18-probe-src → r18-probe-dst","status":"applied","message":"merge: rewrote 2 post(s) r18-probe-src → r18-probe-dst; source category record removed (r18-probe-src)","migrated":2,"changed":[{"slug":"r18-probe-post-a","dir":"drafts","version":2},{"slug":"r18-probe-post-b","dir":"drafts","version":2}],"requestedVia":"console","requestedAt":"2026-09-28T13:08:53.868Z","removed":"r18-probe-src","appliedAt":"2026-09-28T13:09:27.357Z","updatedAt":"2026-09-28T13:09:27.357Z"}
+
+### A2 BUG-003 check (2026-09-28T13:08:53.868Z.json)
+literal "$session." count = 0
+
+### A2 record 2026-09-28T13:09:36.979Z.json
+{"id":"2026-09-28T13:09:36.979Z","action":"remove","from":"r18-probe-dst","to":"r18-probe-nope","rawFrom":"r18-probe-dst","rawTo":"r18-probe-nope","summary":"r18-probe-dst → r18-probe-nope","status":"rejected","message":"target category does not exist: r18-probe-nope — no data changed","migrated":0,"changed":[],"requestedVia":"console","requestedAt":"2026-09-28T13:09:36.979Z","code":"VALIDATION","rejectedAt":"2026-09-28T13:09:40.670Z","updatedAt":"2026-09-28T13:09:40.671Z"}
+
+### A2 BUG-003 check (2026-09-28T13:09:36.979Z.json)
+literal "$session." count = 0
+
+### A2 record 2026-09-28T13:10:07.678Z.json
+{"id":"2026-09-28T13:10:07.678Z","action":"merge","from":"r18-probe-src","to":"r18-probe-dst","rawFrom":"r18-probe-src","rawTo":"r18-probe-dst","summary":"r18-probe-src → r18-probe-dst","status":"pending","message":"","migrated":0,"changed":[],"requestedVia":"console","requestedAt":"2026-09-28T13:10:07.678Z"}
+
+### A2 BUG-003 check (2026-09-28T13:10:07.678Z.json)
+literal "$session." count = 0
+
+### A3 posts UNCHANGED while only queued
+r18-probe-post-a: identical= true
+r18-probe-post-b: identical= true
+
+### queue card text after the click
+Intent queue The console cannot rewrite posts itself, so a button only queues an intent. The worker applies it with the same code path as the CLI merge — and writes the outcome (applied / rejected / noop + reason) back onto this record. pending = waiting for the worker · applied = posts rewritten, source record removed
+
+### A3/A4 worker apply
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T13:10:07.678Z",
+      "action": "merge",
+      "from": "r18-probe-src",
+      "to": "r18-probe-dst",
+      "status": "applied",
+      "migrated": 2,
+      "changed": [
+        {
+          "slug": "r18-probe-post-a",
+          "dir": "drafts",
+          "version": 2
+        },
+        {
+          "slug": "r18-probe-post-b",
+          "dir": "drafts",
+          "version": 2
+        }
+      ],
+      "appliedAt": "2026-09-28T13:10:43.109Z",
+      "message": "merge: rewrote 2 post(s) r18-probe-src → r18-probe-dst; source category record removed (r18-probe-src)"
+    }
+  ]
+}
+
+### A3 posts AFTER apply
+r18-probe-post-a: category=r18-probe-dst version=2
+r18-probe-post-b: category=r18-probe-dst version=2
+
+### A3 source category record exists
+false
+
+### A5 queue card after apply (page vs AFS)
+Intent queue The console cannot rewrite posts itself, so a button only queues an intent. The worker applies it with the same code path as the CLI merge — and writes the outcome (applied / rejected / noop + reason) back onto this record. pending = waiting for the worker · applied = posts rewritten, source record removed · noop = nothing to do (already done) · rejected = refused, no data changed ● merge r18-probe-src →
+
+### A6 type a NON-EXISTENT target into the probe-dst row field
+value=r18-probe-nope
+
+### A6 negative click (target does not exist)
+clicked:Delete and migrate to…
+
+### A6 negative worker apply
+{
+  "ok": true,
+  "action": "category-apply",
+  "applied": 1,
+  "intents": [
+    {
+      "id": "2026-09-28T13:10:52.761Z",
+      "action": "remove",
+      "from": "r18-probe-dst",
+      "to": "r18-probe-nope",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "migrated": 0,
+      "changed": [],
+      "message": "target category does not exist: r18-probe-nope — no data changed"
+    }
+  ]
+}
+
+### A6 no data changed (byte compare)
+r18-probe-post-a: identical= true
+r18-probe-post-b: identical= true
+
+### A10 guest view of the queue path (no cookie, isolated context)
+{"loginCard":true,"sidebar":false,"leaksQueue":false,"leaksProbe":false}
+
+### cleanup
+{"intents":4,"src":false,"dst":false,"drafts":0}

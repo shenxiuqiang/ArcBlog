@@ -37,7 +37,16 @@ page factory {
     advanced { en "Advanced / technical details" zh "高级 / 技术详情" }
     advanced-show { en "Show advanced details" zh "展开高级详情" }
     advanced-hide { en "Hide advanced details" zh "收起高级详情" }
-    advanced-note { en "Public on-chain values (addresses and transaction hashes) read from node/factories.json; the public key is bound into the on-chain NFT template, and no key material is mirrored here." zh "链上公开值（地址与交易哈希），读自 node/factories.json；公钥绑定在链上 NFT 模板内，本投影不含任何密钥材料。" }
+    advanced-note { en "Addresses and transaction hashes read from node/factories.json; the public key is bound into the on-chain NFT template, and no key material is mirrored here. Whether a value is chain truth is decided PER NODE, never from the file header — see the attribution card." zh "地址与交易哈希读自 node/factories.json；公钥绑定在链上 NFT 模板内，本投影不含任何密钥材料。某个值是否为链上事实按**逐节点**判定，绝不按文件头 —— 见归属卡片。" }
+    truth-title { en "Is it really on chain? (per node)" zh "是否真的在链上？（逐节点）" }
+    truth-studio { en "Node studio" zh "节点 studio" }
+    truth-hub { en "Node hub" zh "节点 hub" }
+    truth-studio-adapter { en "Node studio · adapter" zh "节点 studio · 适配器" }
+    truth-hub-adapter { en "Node hub · adapter" zh "节点 hub · 适配器" }
+    truth-studio-sim { en "Node studio · fact kind" zh "节点 studio · 事实类型" }
+    truth-hub-sim { en "Node hub · fact kind" zh "节点 hub · 事实类型" }
+    truth-factories { en "Factories" zh "工厂" }
+    truth-note { en "Each node records the adapter that produced its facts, in THREE states — mock (simulation, never chain truth) · ocap (real chain, verifiable) · unknown (nothing was ever recorded; then `simulated` is null and `simulationUnknown` is true, i.e. no false 'not simulated' claim — D37b). The header adapter describes config/nft-factories.json only (adapterScope), so it must never be used to decide whether a node is chain truth (BUG-043/046 · arc-contracts §32(9))." zh "每个节点各自记录产出其事实的 adapter，共三态 —— mock（模拟，绝非链上事实）· ocap（真链，可核验）· unknown（从未记录；此时 `simulated` 为 null、`simulationUnknown` 为 true，不再给出「不是模拟」的错误正向断言 —— D37b）。文件头的 adapter 只描述 config/nft-factories.json（adapterScope），因此绝不能用它判定某个节点是否为链上事实（BUG-043/046 · arc-contracts §32(9)）。" }
     actions { en "Actions" zh "操作" }
     actions-desc { en "One click queues the intent; the node's chain worker signs it (the key never reaches the browser) and the queue below updates live." zh "点击即入队；由节点上的链 worker 签名执行（私钥永不下发浏览器），下方队列实时更新。" }
     act-acquire { en "Buy / mint" zh "购买 / 铸造" }
@@ -202,6 +211,13 @@ page factory {
                 key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
                 p :factory-hub scale=sm intent=muted
                 key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.summary.factories.hub.capacity}"}]
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
+                h3 :truth-title level=3 style={fontSize: "var(--type-body)"}
+                p :truth-note scale=sm intent=muted
+                key-value-list factory-truth-nodes dense=true fields=[{label: "$t(factory.truth-studio)", value: "${state.summary.nodes.studio.attribution}"}, {label: "$t(factory.truth-hub)", value: "${state.summary.nodes.hub.attribution}"}, {label: "$t(factory.truth-studio-adapter)", value: "${state.summary.nodes.studio.adapter}"}, {label: "$t(factory.truth-hub-adapter)", value: "${state.summary.nodes.hub.adapter}"}, {label: "$t(factory.truth-studio-sim)", value: "${state.summary.nodes.studio.simulatedLabel}"}, {label: "$t(factory.truth-hub-sim)", value: "${state.summary.nodes.hub.simulatedLabel}"}]
+                p :truth-factories scale=sm intent=muted
+                key-value-list factory-truth-factories dense=true fields=[{label: "$t(factory.factory-studio)", value: "${state.summary.factories.studio.attribution}"}, {label: "$t(factory.factory-hub)", value: "${state.summary.factories.hub.attribution}"}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :queue level=3 style={fontSize: "var(--type-body)"}

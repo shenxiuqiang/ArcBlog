@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { readFileSync } from 'node:fs';
 
-import { list, readJson, remove } from './lib/arc.mjs';
+import { list, readJson, remove, writeJson } from './lib/arc.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,7 +29,7 @@ const INDEX_PATH = `${TAGS_ROOT}/snapshot/current.json`;
 // Set before the CLI module is imported (it reads the root at import time) and
 // before any CLI is spawned, so this file never writes the live projection.
 process.env.ARCBLOG_TAGS_PATH = TAGS_ROOT;
-const { applyIntent, normalizeTag } = await import('./arcblog-tags.mjs');
+const { applyIntent, normalizeTag, scanQueue } = await import('./arcblog-tags.mjs');
 
 function run(script, args) {
   return spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: repoRoot, env: { ...process.env } });
@@ -126,7 +126,7 @@ test('every queued intent keeps its own record and apply executes all of them', 
 
     const applied = apply();
     assert.equal(applied.applied, 2, 'both pending intents must be executed');
-    assert.deepEqual(applied.intents.map((intent) => intent.status).sort(), ['done', 'done']);
+    assert.deepEqual(applied.intents.map((intent) => intent.status).sort(), ['applied', 'applied']);
 
     const after = readPost(slug);
     assert.deepEqual(after.tags, [`multislot_c_${stamp}`, `multislot_d_${stamp}`]);
@@ -164,9 +164,9 @@ test('applyIntent writes back to the record it read, not to the id', () => {
   try {
     // An unknown action keeps this a pure unit test (no post scan).
     const applied = applyIntent('', { id, path: recordPath, action: 'nope', rawFrom: 'a', rawTo: 'b' });
-    assert.equal(applied.status, 'failed');
+    assert.equal(applied.status, 'rejected');
     assert.equal(readJson(`${INTENTS_DIR}/${id}.json`), null, 'must not write under the bare id');
-    assert.equal(readJson(recordPath)?.value.status, 'failed', 'must write back to its own path');
+    assert.equal(readJson(recordPath)?.value.status, 'rejected', 'must write back to its own path');
   } finally {
     dropProjection();
   }
@@ -251,7 +251,7 @@ test('a queued merge applies through the same rewrite as the CLI and retires the
 
     const applied = apply();
     assert.equal(applied.applied, 1);
-    assert.equal(applied.intents[0].status, 'done');
+    assert.equal(applied.intents[0].status, 'applied');
     assert.equal(applied.intents[0].migrated, 1);
 
     // Same outcome as `merge`: tags renamed, version +1, content hash recomputed.
@@ -260,7 +260,7 @@ test('a queued merge applies through the same rewrite as the CLI and retires the
     assert.equal(after.version, before.version + 1);
     assert.notEqual(after.contentHash, before.contentHash);
 
-    assert.equal(readJson(`${INTENTS_DIR}/unit-rename.json`)?.value.status, 'done');
+    assert.equal(readJson(`${INTENTS_DIR}/unit-rename.json`)?.value.status, 'applied');
     // The source tag's row is retired, the target row carries the reference.
     assert.equal(readJson(`${ITEMS_DIR}/tagqueue_old_${stamp}.json`), null);
     assert.deepEqual(readJson(`${ITEMS_DIR}/tagqueue_new_${stamp}.json`)?.value.posts, [slug]);
@@ -315,9 +315,9 @@ test('a self-merge or an empty pair is rejected without touching any post', () =
     for (const id of ['unit-same', 'unit-empty']) {
       const stored = readJson(`${INTENTS_DIR}/${id}.json`)?.value;
       const rejected = applyIntent('', stored);
-      assert.equal(rejected.status, 'failed', `${id} must fail`);
+      assert.equal(rejected.status, 'rejected', `${id} must fail`);
       assert.equal(rejected.code, 'VALIDATION', `${id} must report VALIDATION`);
-      assert.equal(readJson(`${INTENTS_DIR}/${id}.json`)?.value.status, 'failed');
+      assert.equal(readJson(`${INTENTS_DIR}/${id}.json`)?.value.status, 'rejected');
     }
 
     const after = readPost(slug);
@@ -350,7 +350,7 @@ test('raw form input is normalized when the worker executes it (REQ-001 A7)', ()
     assert.equal(requested.intent.from, bad);
 
     const applied = apply();
-    assert.equal(applied.intents[0].status, 'done');
+    assert.equal(applied.intents[0].status, 'applied');
     assert.deepEqual(readPost(slug).tags, [good]);
     // The raw spelling never reaches the data: the source tag was matched (the
     // rewrite only happens when the normalized name matches a stored tag).
@@ -395,5 +395,75 @@ test('category remove refuses while referenced; merge migrates then removes', ()
   } finally {
     run(lifecycle, ['delete', '--slug', slug]);
     run(category, ['remove', '--slug', cat, '--migrate-to', 'technology']);
+  }
+});
+
+// --- D36: the canonical status vocabulary, with read-side legacy compatibility --
+//
+// The tags worker used to write `done`/`failed` while the categories worker (added
+// in round 18) wrote `applied`/`rejected`: one console, two word sets (BUG-045).
+// The vocabulary now lives in scripts/lib/intents.mjs; the write side only emits
+// the canonical words, and the read side canonicalizes + repairs old records so an
+// operator never sees a word the page legend does not define.
+
+test('D36: a pre-D36 done/failed record reads as its canonical terminal status and is repaired in place', () => {
+  const stamp = Date.now();
+  const doneId = `legacy-done-${stamp}`;
+  const failedId = `legacy-failed-${stamp}`;
+  const requestedAt = new Date().toISOString();
+  try {
+    // Exactly what the pre-D36 worker wrote (including an empty message).
+    writeJson(
+      `${INTENTS_DIR}/${doneId}.json`,
+      { id: doneId, action: 'merge', from: 'legacy_a', to: 'legacy_b', rawFrom: 'legacy_a', rawTo: 'legacy_b', status: 'done', message: '', migrated: 1, requestedAt },
+      '',
+    );
+    writeJson(
+      `${INTENTS_DIR}/${failedId}.json`,
+      { id: failedId, action: 'merge', rawFrom: 'legacy_a', rawTo: 'legacy_b', status: 'failed', message: 'boom', requestedAt },
+      '',
+    );
+
+    const scanned = scanQueue('');
+    const byId = new Map(scanned.intents.map((intent) => [intent.id, intent]));
+    assert.equal(byId.get(doneId).status, 'applied', 'done means "the work ran" -> applied');
+    assert.equal(byId.get(failedId).status, 'rejected', 'failed means "refused" -> rejected');
+
+    // The repair is written back, because the console page renders the RAW record
+    // (a dynamic $t() key cannot remap it: arc-contracts §28.8).
+    const repaired = readJson(`${INTENTS_DIR}/${doneId}.json`)?.value;
+    assert.equal(repaired.status, 'applied');
+    assert.equal(repaired.normalizedFrom, 'done', 'the migration must stay auditable');
+    assert.ok(repaired.message, 'a terminal record must carry a non-empty message (D36)');
+
+    // ...and a terminal legacy record is never replayed.
+    const applied = apply();
+    assert.equal(applied.applied, 0, 'a done/failed record must never be executed again');
+  } finally {
+    dropProjection();
+  }
+});
+
+test('D38: a queue entry without the .json extension is diagnosed, never silently ignored', () => {
+  const stamp = Date.now();
+  const id = `unit-noext-${stamp}`;
+  const badPath = `${INTENTS_DIR}/${id}`; // deliberately no .json
+  try {
+    writeJson(badPath, { id, action: 'merge', from: 'a', to: 'b', rawFrom: 'a', rawTo: 'b', status: 'pending', message: '', requestedAt: new Date().toISOString() }, '');
+
+    const scanned = scanQueue('');
+    const hit = scanned.ignored.find((entry) => entry.path === badPath);
+    assert.ok(hit, 'the non-.json entry must be reported, not dropped');
+    assert.match(hit.reason, /<id>\.json/);
+    assert.equal(scanned.intents.some((intent) => intent.id === id), false, 'the queue root only accepts <id>.json');
+    assert.equal(scanned.intents.length, 0);
+
+    const applied = apply();
+    assert.equal(applied.applied, 0, 'a non-.json entry is never executed (BUG-049)');
+    assert.ok(applied.queueEntryIgnored >= 1, 'apply must report the ignored entry');
+    assert.ok(applied.ignored.some((entry) => entry.path === badPath));
+  } finally {
+    remove(badPath);
+    dropProjection();
   }
 });

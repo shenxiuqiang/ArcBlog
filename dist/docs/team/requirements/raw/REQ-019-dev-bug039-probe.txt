@@ -1,0 +1,27 @@
+=== BUG-039 probe [baseline-and-rolled-back] ===
+
+== A fresh tab: direct /
+  /  ->  {"href":"http://arcblog.localhost:4939/?locale=zh","heading":"最新发布"}
+
+== B / then ?page=saved then /
+  /  ->  {"href":"http://arcblog.localhost:4939/?locale=zh","heading":"最新发布"}
+  /?page=saved  ->  {"href":"http://arcblog.localhost:4939/?page=saved&locale=zh","heading":"阅读清单"}
+  /  ->  {"href":"http://arcblog.localhost:4939/?locale=zh&page=saved","heading":"阅读清单"}
+
+== C ?page=index then /
+  /?page=index  ->  {"href":"http://arcblog.localhost:4939/?locale=zh","heading":"最新发布"}
+  /  ->  {"href":"http://arcblog.localhost:4939/?locale=zh","heading":"最新发布"}
+
+== D ?page= (empty) then /
+  /?page=  ->  {"href":"http://arcblog.localhost:4939/?page=&locale=zh","heading":"最新发布"}
+  /  ->  {"href":"http://arcblog.localhost:4939/?locale=zh","heading":"最新发布"}
+
+== E explicit ?page=saved in a fresh session
+  /?page=saved  ->  {"href":"http://arcblog.localhost:4939/?page=saved&locale=zh","heading":"阅读清单"}
+
+== F explicit ?page=categories (console) in a fresh session
+  /?page=categories  ->  {"href":"http://arcblog.localhost:4939/?page=categories&locale=zh","heading":"分类"}
+
+== G in-site nav click: dashboard -> Categories
+  /?page=dashboard  ->  {"href":"http://arcblog.localhost:4939/?page=dashboard&locale=zh","heading":"仪表盘"}
+  click ^(Categories|分类)$  ->  clicked:分类 | {"href":"http://arcblog.localhost:4939/?page=categories&locale=zh","heading":"分类"}

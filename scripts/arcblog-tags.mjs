@@ -28,6 +28,7 @@
 
 import { ensure, fail, list, nowIso, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { rewritePost, scanPosts, writePost } from './lib/content-scan.mjs';
+import { INTENT_STATUS, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 
 /** Root of the console's tag surface: derived projection + operator intent queue. */
 const TAGS_ROOT = String(process.env.ARCBLOG_TAGS_PATH || '/instance/app/arcblog/tags').replace(/\/+$/, '');
@@ -112,15 +113,33 @@ export function mergeTag(instance, fromValue, toValue) {
   return { from, to, migrated, posts: migrated };
 }
 
-/** Files directly under `dir` (basename only), tolerating a missing directory. */
-function dirFiles(dir, instance) {
-  const names = [];
+/**
+ * Read one directory, keeping the `<id>.json` convention explicit (D38/BUG-049).
+ *
+ * The AFS directory is just a key space: anyone (an operator, an agent, a future
+ * page) can drop `<name>` without the `.json` extension. Both workers only ever
+ * consume `<id>.json`, so such an entry would sit there forever — visible on the
+ * console page, never executed. Instead of ignoring it silently, every read
+ * reports it as a diagnostic (`{ path, reason }`) that the CLI prints and the
+ * watch loop logs.
+ */
+function readDir(dir, instance) {
+  const files = [];
+  const ignored = [];
   for (const entry of list(dir, instance)) {
     const raw = typeof entry === 'string' ? entry : entry?.path ?? entry?.id ?? entry?.key ?? '';
     const name = String(raw).split('/').pop();
-    if (name && name.endsWith('.json')) names.push(name);
+    if (!name) continue;
+    if (!name.endsWith('.json')) {
+      ignored.push({
+        path: `${dir}/${name}`,
+        reason: `queue entries must be named <id>.json — "${name}" has no .json extension, so no worker will ever consume it (D38)`,
+      });
+      continue;
+    }
+    files.push(name);
   }
-  return names;
+  return { files, ignored };
 }
 
 /**
@@ -166,7 +185,8 @@ export function syncProjection(instance, { tags = collectTags(instance), now = n
 
   const alive = new Set(items.map((item) => `${item.tag}.json`));
   const removed = [];
-  for (const name of dirFiles(ITEMS_DIR, instance)) {
+  const itemsDir = readDir(ITEMS_DIR, instance);
+  for (const name of itemsDir.files) {
     if (alive.has(name)) continue;
     remove(`${ITEMS_DIR}/${name}`, instance);
     removed.push(name.replace(/\.json$/, ''));
@@ -186,7 +206,7 @@ export function syncProjection(instance, { tags = collectTags(instance), now = n
   const stamp = alwaysStamp || changed || !previous;
   if (stamp) writeJson(INDEX_PATH, index, instance);
   else index.generatedAt = previous.generatedAt;
-  return { ...index, written, removed, changed: stamp };
+  return { ...index, written, removed, changed: stamp, ignored: itemsDir.ignored };
 }
 
 /**
@@ -211,7 +231,7 @@ export function enqueueIntent(instance, { action, from = '', to = '', by = '', i
     rawFrom,
     rawTo,
     summary: action === 'refresh' ? '--' : `${rawFrom} → ${rawTo}`,
-    status: 'pending',
+    status: INTENT_STATUS.pending,
     message: '',
     migrated: 0,
     posts: [],
@@ -238,14 +258,30 @@ export function enqueueIntent(instance, { action, from = '', to = '', by = '', i
 }
 
 /** Every queued intent in queue order (oldest first), each with its record path. */
+export function scanQueue(instance) {
+  const dir = readDir(INTENTS_DIR, instance);
+  const intents = [];
+  for (const name of dir.files) {
+    const path = `${INTENTS_DIR}/${name}`;
+    const stored = readJson(path, instance);
+    if (!stored) {
+      dir.ignored.push({ path, reason: 'queue entry could not be read — no worker will consume it (D38)' });
+      continue;
+    }
+    // D36 read-side compatibility: a record written by the pre-D36 worker says
+    // `done`/`failed`. Canonicalize it, and repair the record so the console page
+    // (which renders the raw record) shows a word the legend actually defines.
+    const { record, changed, from } = normalizeIntentRecord(stored.value);
+    if (changed) writeJson(path, record, instance, stored.ifMatch);
+    intents.push({ path, ...record, ...(changed ? { normalizedFrom: from } : {}) });
+  }
+  intents.sort((a, b) => String(a.requestedAt ?? '').localeCompare(String(b.requestedAt ?? '')));
+  return { intents, ignored: dir.ignored };
+}
+
+/** The queue without diagnostics — the shape every existing caller expects. */
 export function listIntents(instance) {
-  return dirFiles(INTENTS_DIR, instance)
-    .map((name) => {
-      const stored = readJson(`${INTENTS_DIR}/${name}`, instance);
-      return stored ? { path: `${INTENTS_DIR}/${name}`, ...stored.value } : null;
-    })
-    .filter(Boolean)
-    .sort((a, b) => String(a.requestedAt ?? '').localeCompare(String(b.requestedAt ?? '')));
+  return scanQueue(instance).intents;
 }
 
 /**
@@ -260,6 +296,17 @@ export function listIntents(instance) {
 export function applyIntent(instance, intent) {
   const recordPath = typeof intent.path === 'string' && intent.path ? intent.path : `${INTENTS_DIR}/${intent.id}.json`;
   const next = { ...intent };
+  delete next.path;
+  const previous = String(intent.status ?? '').trim();
+  // D36: terminal records (including the legacy `done`/`failed` words) are never
+  // re-executed — a repeated click must not rewrite the same posts twice.
+  if (isTerminalStatus(previous)) {
+    next.status = INTENT_STATUS.noop;
+    next.message = `already ${previous}${intent.updatedAt ? ` at ${intent.updatedAt}` : ''} — not executed again`;
+    next.updatedAt = nowIso();
+    writeJson(recordPath, next, instance);
+    return next;
+  }
   try {
     if (intent.action === 'merge') {
       const result = mergeTag(instance, intent.rawFrom ?? intent.from, intent.rawTo ?? intent.to);
@@ -267,19 +314,19 @@ export function applyIntent(instance, intent) {
       next.to = result.to;
       next.migrated = result.migrated.length;
       next.posts = result.posts;
-      next.status = result.migrated.length ? 'done' : 'noop';
+      next.status = result.migrated.length ? INTENT_STATUS.applied : INTENT_STATUS.noop;
       next.message = result.migrated.length
         ? `rewrote ${result.migrated.length} post(s): ${result.from} → ${result.to}`
         : `no article references "${result.from}" — nothing to rewrite`;
     } else if (intent.action === 'refresh') {
       // refresh: the projection rebuild below is the work.
-      next.status = 'done';
+      next.status = INTENT_STATUS.applied;
       next.message = 'projection rebuilt';
     } else {
       fail('VALIDATION', `unknown intent action: ${intent.action}`);
     }
   } catch (err) {
-    next.status = 'failed';
+    next.status = INTENT_STATUS.rejected;
     next.code = err.code || 'RUNTIME_ERROR';
     next.message = err.message;
   }
@@ -291,14 +338,22 @@ export function applyIntent(instance, intent) {
 
 /** Drain every pending intent, then refresh the projection once. */
 export function runPending(instance) {
-  const pending = listIntents(instance).filter((intent) => intent.status === 'pending');
+  const { intents, ignored } = scanQueue(instance);
+  const pending = intents.filter((intent) => intent.status === INTENT_STATUS.pending);
   const applied = pending.map((intent) => applyIntent(instance, intent));
   // An explicit Refresh must move the snapshot timestamp even when nothing
   // changed — otherwise the operator cannot tell the queue ran at all.
   const projection = syncProjection(instance, {
     alwaysStamp: pending.some((intent) => intent.action === 'refresh'),
   });
-  return { applied: applied.length, intents: applied, projection };
+  // D38: non-`.json` entries are never consumed — say so, loudly.
+  return {
+    applied: applied.length,
+    intents: applied,
+    projection,
+    queueEntryIgnored: ignored.length,
+    ignored: [...ignored, ...(projection.ignored ?? [])],
+  };
 }
 
 function commandList(opts, instance) {
@@ -350,6 +405,8 @@ function commandProject(opts, instance) {
         totalReferences: projection.totalReferences,
         written: projection.written,
         removed: projection.removed,
+        queueEntryIgnored: (projection.ignored ?? []).length,
+        ...((projection.ignored ?? []).length ? { ignored: projection.ignored } : {}),
         generatedAt: projection.generatedAt,
       },
       null,
@@ -388,6 +445,10 @@ function commandApply(opts, instance) {
           migrated,
           message,
         })),
+        // D38/BUG-049: entries the worker refuses to consume are reported, never
+        // silently skipped (a non-`.json` name is a permanent `pending` on the page).
+        queueEntryIgnored: result.queueEntryIgnored,
+        ...(result.queueEntryIgnored ? { ignored: result.ignored } : {}),
         projection: { generatedAt: result.projection.generatedAt, count: result.projection.count },
       },
       null,
@@ -396,11 +457,26 @@ function commandApply(opts, instance) {
   );
 }
 
+/**
+ * Paths already reported by the watch loop — a diagnostic is worth repeating
+ * once per process, not once per 3-second tick.
+ */
+const reportedQueueDiagnostics = new Set();
+
+function reportQueueDiagnostics(ignored, sink) {
+  for (const entry of ignored ?? []) {
+    if (reportedQueueDiagnostics.has(entry.path)) continue;
+    reportedQueueDiagnostics.add(entry.path);
+    sink(`[${nowIso()}] queue entry ignored — ${entry.path}: ${entry.reason}`);
+  }
+}
+
 function commandWatch(opts, instance) {
   const seconds = Math.max(1, Number(optString(opts.interval) || '3') || 3);
   const tick = () => {
     try {
       const result = runPending(instance);
+      reportQueueDiagnostics(result.ignored, (line) => console.error(line));
       if (result.applied) {
         const summary = result.intents.map((intent) => `${intent.id}:${intent.status}`).join(', ');
         console.log(`[${nowIso()}] applied ${result.applied} intent(s) — ${summary}`);
@@ -431,6 +507,13 @@ Usage:
 Tags are free-form and live on posts; there is no registry to clean — list
 shows usage counts, merge converges spelling variants. Every rewrite bumps the
 post version and recomputes its content hash.
+
+Queue statuses (D36: ONE vocabulary for the whole console):
+  pending | applied | rejected | noop
+Records written before D36 say done/failed; the read side canonicalizes them to
+applied/rejected and repairs the record in place, so an old record is never
+shown or treated as an unknown state. Queue entries must be named <id>.json —
+anything else is reported as a diagnostic and never consumed (D38).
 
 The console page (?page=tags) reads a DERIVED projection and writes intents it
 cannot execute itself: \`list\` / \`project\` refresh the projection (only when it

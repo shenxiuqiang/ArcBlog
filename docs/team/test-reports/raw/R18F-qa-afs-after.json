@@ -1,0 +1,64 @@
+{
+  "probe": "QA-R18F AFS snapshot",
+  "label": "after",
+  "at": "2026-09-28T14:53:28.569Z",
+  "records": {
+    "/instance/app/arcblog/node/factories.json": {
+      "ifMatch": "1790607192582.7646-156755200-7721",
+      "updatedAt": "2026-09-28T14:53:12.236Z",
+      "present": true
+    },
+    "/instance/app/arcblog/config/node-nft.json": {
+      "ifMatch": "1790606580619.4473-156369411-2376",
+      "updatedAt": "2026-09-28T14:43:00.193Z",
+      "present": true
+    },
+    "/instance/app/arcblog/config/nft-factories.json": {
+      "ifMatch": "1790494140818.4985-156369366-1037",
+      "updatedAt": "2026-09-27T07:29:00.429Z",
+      "present": true
+    }
+  },
+  "queues": {
+    "/instance/app/arcblog/config/chain-intents": [
+      {
+        "name": "intent-mujk7d7z-2hv8.json",
+        "ifMatch": "1790497877508.9182-156775643-445",
+        "status": "failed",
+        "id": "intent-mujk7d7z-2hv8"
+      },
+      {
+        "name": "intent-mujk7tb0-asgd.json",
+        "ifMatch": "1790497899538.7874-156775719-518",
+        "status": "failed",
+        "id": "intent-mujk7tb0-asgd"
+      },
+      {
+        "name": "intent-mujk8d8h-3lis.json",
+        "ifMatch": "1790497928088.2402-156775919-543",
+        "status": "done",
+        "id": "intent-mujk8d8h-3lis"
+      },
+      {
+        "name": "intent-mujkc8nv-7e3r.json",
+        "ifMatch": "1790498105838.158-156778415-418",
+        "status": "failed",
+        "id": "intent-mujkc8nv-7e3r"
+      },
+      {
+        "name": "intent-mujkccy6-r1nd.json",
+        "ifMatch": "1790498106826.4126-156778441-195",
+        "status": "pending",
+        "id": "intent-mujkccy6-r1nd"
+      },
+      {
+        "name": "pending.json",
+        "ifMatch": "1790498082297.1587-156778143-550",
+        "status": "done",
+        "id": "pending"
+      }
+    ],
+    "/instance/app/arcblog/config/category-intents": [],
+    "/instance/app/arcblog/tags/intents": []
+  }
+}

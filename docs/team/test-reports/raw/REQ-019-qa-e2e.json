@@ -1,0 +1,233 @@
+{
+ "queueUnchangedBeforeConfirm": true,
+ "a2Raw": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"2026-09-28T13:42:25.710Z.json\",\n    \"path\": \"/instance/app/arcblog/config/category-intents/2026-09-28T13:42:25.710Z.json\",\n    \"createdAt\": \"2026-09-28T13:42:25.716Z\",\n    \"updatedAt\": \"2026-09-28T13:42:25.716Z\",\n    \"content\": \"{\\n  \\\"id\\\": \\\"2026-09-28T13:42:25.710Z\\\",\\n  \\\"action\\\": \\\"merge\\\",\\n  \\\"from\\\": \\\"r18qa-src\\\",\\n  \\\"to\\\": \\\"r18qa-dst\\\",\\n  \\\"rawFrom\\\": \\\"r18qa-src\\\",\\n  \\\"rawTo\\\": \\\"r18qa-dst\\\",\\n  \\\"summary\\\": \\\"r18qa-src → r18qa-dst\\\",\\n  \\\"status\\\": \\\"pending\\\",\\n  \\\"message\\\": \\\"\\\",\\n  \\\"migrated\\\": 0,\\n  \\\"changed\\\": [],\\n  \\\"requestedVia\\\": \\\"console\\\",\\n  \\\"requestedAt\\\": \\\"2026-09-28T13:42:25.710Z\\\"\\n}\",\n    \"meta\": {\n      \"size\": 341,\n      \"version\": \"1790602945716.2214-157282430-341\",\n      \"mimeType\": \"application/json\"\n    },\n    \"actions\": []\n  }\n}",
+ "a2Shape": {
+  "id": "2026-09-28T13:42:25.710Z",
+  "fileNameStem": "2026-09-28T13:42:25.710Z",
+  "action": "merge",
+  "from": "r18qa-src",
+  "to": "r18qa-dst",
+  "rawFrom": "r18qa-src",
+  "rawTo": "r18qa-dst",
+  "status": "pending",
+  "requestedVia": "console",
+  "requestedAt": "2026-09-28T13:42:25.710Z",
+  "sessionLiteralCount": 0,
+  "hasRequestedBy": false
+ },
+ "a3": {
+  "postCategory": "r18qa-src -> r18qa-dst",
+  "postVersion": "1 -> 2",
+  "sourceRecordStillExists": false,
+  "intentStatus": "applied",
+  "intentMessage": "merge: rewrote 1 post(s) r18qa-src → r18qa-dst; source category record removed (r18qa-src)",
+  "intentAppliedAt": "2026-09-28T13:43:05.667Z",
+  "intentChanged": [
+   {
+    "slug": "r18qa-post",
+    "dir": "drafts",
+    "version": 2
+   }
+  ],
+  "workerReportedStatuses": [
+   "2026-09-28T13:42:25.710Z:applied"
+  ]
+ },
+ "delAfter": {
+  "statuses": [
+   "2026-09-28T13:43:11.560Z:applied (remove: rewrote 1 post(s) r18qa-del → r18qa-dst; source category record removed (r18qa-del))",
+   "2026-09-28T13:43:16.724Z:noop (nothing to do: category \"r18qa-del\" does not exist and no post references it)"
+  ],
+  "post2Category": "r18qa-del -> r18qa-dst",
+  "post2Version": "1 -> 2",
+  "delRecordStillExists": false
+ },
+ "negatives": {
+  "queued": {
+   "missing": [
+    "2026-09-28T13:44:15.956Z.json"
+   ],
+   "self": [
+    "2026-09-28T13:44:21.091Z.json"
+   ]
+  },
+  "results": [
+   {
+    "id": "2026-09-28T13:44:15.956Z",
+    "status": "rejected",
+    "code": "VALIDATION",
+    "message": "target category does not exist: r18qa-nope — no data changed",
+    "changed": [],
+    "migrated": 0
+   },
+   {
+    "id": "2026-09-28T13:44:21.091Z",
+    "status": "rejected",
+    "code": "VALIDATION",
+    "message": "merge: source and target must differ (r18qa-src2) — no data changed",
+    "changed": [],
+    "migrated": 0
+   }
+  ],
+  "src2ByteIdentical": true,
+  "post3ByteIdentical": true
+ },
+ "a5": "{\"queueText\":\"意图队列\\n控制台本身不能改写文章，按钮只负责入队。worker 会用与 CLI merge 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。\\npending = 等待 worker · applied = 已改写文章并删除源记录 · noop = 无需执行（已经做过）· rejected = 被拒绝，未改动任何数据\\n●\\nmerge\\nr18qa-src\\n→\\nr18qa-dst\\n状态\\napplied\\n2 minutes ago\\nmerge: rewrote 1 post(s) r18qa-src → r18qa-dst; source category record removed (r18qa-src)\\n清除\\n●\\nremove\\nr18qa-del\\n→\\nr18qa-dst\\n状态\\napplied\\n1 minute ago\\nremove: rewrote 1 post(s) r18qa-del → r18qa-dst; source category record removed (r18qa-del)\\n清除\\n●\\nremove\\nr18qa-del\\n→\\nr18qa-dst\\n状态\\nnoop\\n1 minute ago\\nnothing to do: category \\\"r18qa-del\\\" does not exist and no post references it\\n清除\\n●\\nmerge\\nr18qa-src2\\n→\\nr18qa-nope\\n状态\\nrejected\\njust now\\ntarget category does not exist: r18qa-nope — no data changed\\n清除\\n●\\nmerge\\nr18qa-src2\\n→\\nr18qa-src2\\n状态\\nrejected\\njust now\\nmerge: source and target must differ (r18qa-src2) — no data changed\\n清除\\n●\\nnuke\\nr18qa-src2\\n→\\nr18qa-dst\\n状态\\npending\\njust now\\n清除\\n还没有入队的意图。下方列表里的按钮会写入第一条。\\n状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/arc-contracts.md §28.8。\\nWorker：node scripts/arcblog-category.mjs watch\\n\",\"foldedCliCopyable\":0}",
+ "fold": "{\"copyableBeforeExpand\":0,\"copyableAfterExpand\":6,\"hideButton\":\"收起高级\"}",
+ "visibleMentions": "{\"mentions\":8,\"lines\":[\"按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-category.mjs watch）——浏览器不会改写文章。本平台的按钮点击无法直接执行服务端代码。\",\"Worker：node scripts/arcblog-category.mjs watch\",\"node scripts/arcblog-category.mjs list\",\"node scripts/arcblog-category.mjs usage --slug <slug>\",\"node scripts/arcblog-category.mjs merge --from <from> --to <to>\",\"node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to>\",\"node scripts/arcblog-category.mjs remove --slug <slug>\",\"node scripts/arcblog-category.mjs add --slug <slug> --update --sort <n>\"]}",
+ "guestView": "{\"href\":\"http://arcblog.localhost:4939/?page=categories&locale=zh\",\"hasLoginGate\":true,\"sidebarRows\":0,\"leaksProbe\":false,\"leaksIntent\":false}",
+ "guestRpc": {
+  "config": {
+   "status": 403,
+   "error": "Forbidden at /instance/app/arcblog/config: role 'guest' is below readRole 'admin'"
+  },
+  "configCategoryIntents": {
+   "status": 403,
+   "error": "Forbidden at /instance/app/arcblog/config/category-intents: role 'guest' is below readRole 'admin'"
+  },
+  "categories": {
+   "status": 200
+  },
+  "categoriesSrc2": {
+   "status": 200
+  }
+ },
+ "sweep": [
+  {
+   "page": "dashboard",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "仪表盘|最近发布|经济|Agent 授权|快捷操作"
+  },
+  {
+   "page": "posts",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "你的工作室|你的内容"
+  },
+  {
+   "page": "pages",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "页面"
+  },
+  {
+   "page": "compose",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "写文章"
+  },
+  {
+   "page": "heroes",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "Hero 管理"
+  },
+  {
+   "page": "categories",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "分类"
+  },
+  {
+   "page": "tags",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "标签"
+  },
+  {
+   "page": "seo",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "SEO"
+  },
+  {
+   "page": "feeds",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "分发"
+  },
+  {
+   "page": "appearance",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "外观"
+  },
+  {
+   "page": "operations",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "运维|节点健康|发现文档|已注册 Hub"
+  },
+  {
+   "page": "hub",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "Hub 管理"
+  },
+  {
+   "page": "media",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "媒体"
+  },
+  {
+   "page": "agents",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "Agent 能力与工具"
+  },
+  {
+   "page": "orders",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "订单"
+  },
+  {
+   "page": "policy",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "分成策略|结算策略|商品"
+  },
+  {
+   "page": "access",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "访问授权"
+  },
+  {
+   "page": "ledger",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "结算与账本"
+  },
+  {
+   "page": "factory",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "节点 NFT"
+  },
+  {
+   "page": "general",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "通用"
+  },
+  {
+   "page": "diagnostics",
+   "sessionFailed": false,
+   "activeRows": 1,
+   "h2": "诊断与维护"
+  }
+ ],
+ "cleanup": {
+  "kept": false,
+  "queueLeft": [],
+  "categoriesAfter": [
+   "design.json",
+   "life.json",
+   "technology.json"
+  ],
+  "draftsProbeLeft": []
+ }
+}
