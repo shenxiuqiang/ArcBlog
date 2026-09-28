@@ -129,7 +129,7 @@
   "factory.chain-empty": "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap",
   "factory.chain-host": "Chain host",
   "factory.chain-network": "Network",
-  "factory.chain-token": "Mint token (ABT)",
+  "factory.chain-token": "Mint token",
   "factory.confirm-acquire-msg": "The factory mints one Studio node NFT to this node's owner wallet, on chain, immediately.",
   "factory.confirm-acquire-title": "Buy a node NFT?",
   "factory.confirm-claim-msg": "The NFT returns to the owner wallet and the stake closes.",
@@ -146,7 +146,7 @@
   "factory.factory-hub": "Hub node factory",
   "factory.factory-issuer": "Issuer wallet",
   "factory.factory-moniker": "Moniker",
-  "factory.factory-stake": "Stake per node (ABT)",
+  "factory.factory-stake": "Stake per node",
   "factory.factory-studio": "Studio node factory",
   "factory.gate-desc": "Sign in with DID Wallet to view the node NFT and operate it.",
   "factory.gate-title": "Node NFT",
@@ -789,5 +789,9 @@
   "orders.readonly-title": "Read-only, operator-declared",
   "orders.readonly-desc": "The page only reads AFS records. It never claims that a payment, a refund, a settlement or an on-chain action happened: those are operator steps and the records are the only evidence (spec §89, L-R14-2).",
   "orders.status-note": "status is the record's raw value: pending | paid | failed | refunded (spec §42). The label beside it is neutral on purpose — this platform cannot switch copy by record value (arc-contracts §28.8), so the raw value is the truth and the definition is written here once.",
-  "orders.title": "Orders"
+  "orders.title": "Orders",
+  "factory.advanced": "Advanced / technical details",
+  "factory.advanced-show": "Show advanced details",
+  "factory.advanced-hide": "Hide advanced details",
+  "factory.advanced-note": "Public on-chain values (addresses and transaction hashes) read from node/factories.json; the public key is bound into the on-chain NFT template, and no key material is mirrored here."
 }

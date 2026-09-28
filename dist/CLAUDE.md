@@ -85,6 +85,17 @@ node --test scripts/arcblog-permissions.test.mjs   # guest permission matrix (no
 # add `--instance <name>` to target a named Arc instance
 ```
 
+**Chain environment** (spec §8.1–§8.4 / §9): the node-NFT chain is selected by **environment, never by
+code**. `ARCBLOG_CHAIN_ENV=beta|main` fills defaults only (GraphQL host, network, chain id, mint token,
+decimals — `CHAIN_PRESETS` in `scripts/lib/chain.mjs`); an explicit `ARCBLOG_CHAIN_HOST|NETWORK|CHAIN_ID|
+TOKEN_ID|TOKEN_DECIMALS|MNEMONIC` always wins, and `config/roles.json` is the only record-level fallback
+(a `network` that disagrees with the selected preset fails closed rather than mixing environments).
+`--adapter ocap` requires the triple **network + chainHost + tokenId** *before* any chain write, then still
+needs the wallet mnemonic (env / `.env.local`, gitignored) or it answers `CHAIN_UNAVAILABLE`. No page or DSL
+file may carry a chain address or a token symbol — the console reads the public projection
+`node/factories.json`. Operator examples for both environments: `docs/operations-runbook.md` →
+"Chain environment".
+
 ## Quality gates
 
 **The gate is the fast tier.** Before every commit:

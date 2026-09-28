@@ -87,6 +87,27 @@
     // /about, /posts/<slug>). 4px of vertical padding lifts the hit box to 28.8px and
     // leaves the footer's own height at 139.14px (UI-012 §5).
     '.aup-footer-link{display:inline-block;padding:4px 0}',
+    // REQ-020 / REQ-020a (task-54 + task-56, Lead L-R15-1): the platform header is a fixed
+    // 48px shell and `.aup/wrapper.aup` flows the page content straight under it, so every
+    // page measured headerBottom=48 / firstPaintTop=48 => gap 0 (before-values in
+    // docs/team/design/raw/REQ-020-before-*.json). The gap CANNOT be fixed in the wrapper:
+    // the wrapper is shared, and a global top padding pushes the console shell (page root
+    // `height: calc(100vh - 48px)` + row `marginBottom: -52px`) 20px down — dry-run measured
+    // 1803x908: the runtime scroller went 908/908 (locked) -> 928/908 (+20 full-page
+    // scrollbar) and the shell/sidebar bottom moved 908 -> 928, i.e. past the viewport.
+    // So the spacing is applied per page type, PUBLIC side only: console pages render no
+    // `app-footer` (arc-contracts §21.2) and admin-ui-design §2.1 pins the sidebar to the
+    // topbar and viewport bottom with zero gap ("与顶栏/视口底部零间距") — they keep gap 0.
+    // `:has()` is a pure-CSS page-type test with a safe fallback (unsupported => today's
+    // layout). Layout height is kept EXACTLY as before by cancelling the same amount with a
+    // negative bottom margin: measured dry-run, the runtime scroller's scrollHeight/overflow
+    // is byte-identical to the before-value on every public page x viewport x locale
+    // (e.g. home 1427/908/519, /store@1512x765 765/765/0) and the footer stays fully
+    // reachable at max scroll, while the first content element moves to firstPaintTop=68.
+    // Without the cancel, /store@1512x765/en gained a new 8px page scroll (0 -> 8).
+    // 20px is the §3.3 `block` step / the runtime's default `view` gap (also used by
+    // index.aup as `var(--space-block, 20px)`), not a new number. Revert = delete this line.
+    '#aup-display:has(.aup-app-footer:not(.aup-build-info-footer)) .aup-view > [data-mode="shell"]+*{padding-top:var(--space-block,20px);margin-bottom:calc(-1*var(--space-block,20px))}',
   ].join('');
 
   function injectChromeStyles(p) {

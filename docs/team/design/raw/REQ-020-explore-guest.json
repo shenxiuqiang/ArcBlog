@@ -1,0 +1,1494 @@
+{
+  "meta": {
+    "req": "REQ-020/020a",
+    "origin": "http://arcblog.localhost:4939",
+    "auth": false,
+    "locales": [
+      "en"
+    ],
+    "viewports": [
+      "1803x908"
+    ],
+    "pages": [
+      {
+        "label": "home",
+        "path": "/"
+      },
+      {
+        "label": "store",
+        "path": "/store"
+      },
+      {
+        "label": "dash",
+        "path": "/?page=dashboard"
+      },
+      {
+        "label": "ledger",
+        "path": "/?page=ledger"
+      }
+    ],
+    "waitMs": 2600,
+    "injectedCss": null,
+    "targetId": "DA51B62E1780E600578053D3643CBEB0",
+    "pagesBefore": 2,
+    "pagesAfter": 3,
+    "startedAt": "2026-09-28T08:43:35.995Z",
+    "chrome": "Chrome/153.0.8010.54",
+    "tree": true,
+    "pagesDuringMax": 3,
+    "finishedAt": "2026-09-28T08:43:46.579Z",
+    "firstTree": {
+      "sel": "div.aup-view#wrapper-view-1",
+      "mode": null,
+      "layout": null,
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": "0px",
+      "padding": "0px 0px 32px",
+      "margin": "0px",
+      "height": "908px",
+      "minHeight": "auto",
+      "width": "1803px",
+      "maxWidth": "none",
+      "overflowY": "auto",
+      "overflowX": "hidden",
+      "position": "static",
+      "flex": "1 1 0%",
+      "inlineStyle": "gap: 0px;",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "w": 1803,
+        "h": 908,
+        "bottom": 908,
+        "right": 1803
+      },
+      "text": "ArcBlog Latest published Hello ArcBlog T",
+      "children": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "display": "grid",
+          "flexDirection": "column",
+          "gap": "0px",
+          "padding": "0px",
+          "margin": "0px",
+          "height": "48px",
+          "minHeight": "48px",
+          "width": "1803px",
+          "maxWidth": "none",
+          "overflowY": "hidden",
+          "overflowX": "hidden",
+          "position": "static",
+          "flex": "0 1 auto",
+          "inlineStyle": "width: 100vw; margin-left: calc(50% - 50vw); height: 48px; min-height: 48px; max-height: 48px; padding: 0px;",
+          "box": {
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "bottom": 48,
+            "right": 1803
+          },
+          "text": "ArcBlog",
+          "children": [
+            {
+              "sel": "header.aup-app-header#site-header",
+              "mode": null,
+              "layout": null,
+              "display": "flex",
+              "flexDirection": "column",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px",
+              "height": "48px",
+              "minHeight": "auto",
+              "width": "1803px",
+              "maxWidth": "none",
+              "overflowY": "visible",
+              "overflowX": "visible",
+              "position": "static",
+              "flex": "0 1 auto",
+              "inlineStyle": null,
+              "box": {
+                "top": 0,
+                "left": 0,
+                "w": 1803,
+                "h": 48,
+                "bottom": 48,
+                "right": 1803
+              },
+              "text": "ArcBlog",
+              "children": [
+                {
+                  "sel": "div.aup-app-header-bar",
+                  "mode": null,
+                  "layout": null,
+                  "display": "flex",
+                  "flexDirection": "row",
+                  "gap": "20px",
+                  "padding": "0px 32px",
+                  "margin": "0px",
+                  "height": "48px",
+                  "minHeight": "auto",
+                  "width": "1803px",
+                  "maxWidth": "none",
+                  "overflowY": "visible",
+                  "overflowX": "visible",
+                  "position": "static",
+                  "flex": "0 1 auto",
+                  "inlineStyle": null,
+                  "box": {
+                    "top": 0,
+                    "left": 0,
+                    "w": 1803,
+                    "h": 48,
+                    "bottom": 48,
+                    "right": 1803
+                  },
+                  "text": "ArcBlog",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "sel": "div.aup-view#index-view-1",
+          "mode": null,
+          "layout": null,
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "30px",
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "height": "1346.52px",
+          "minHeight": "auto",
+          "width": "1200px",
+          "maxWidth": "1200px",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "position": "static",
+          "flex": "0 1 auto",
+          "inlineStyle": null,
+          "box": {
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 1346.52,
+            "bottom": 1394.52,
+            "right": 1501.5
+          },
+          "text": "Latest published Hello ArcBlog Technolog",
+          "children": [
+            {
+              "sel": "div.aup-view#index-view-1-view-1",
+              "mode": null,
+              "layout": null,
+              "display": "flex",
+              "flexDirection": "column",
+              "gap": "30px",
+              "padding": "0px",
+              "margin": "0px",
+              "height": "1197.38px",
+              "minHeight": "auto",
+              "width": "1136px",
+              "maxWidth": "none",
+              "overflowY": "visible",
+              "overflowX": "visible",
+              "position": "static",
+              "flex": "0 1 auto",
+              "inlineStyle": null,
+              "box": {
+                "top": 48,
+                "left": 333.5,
+                "w": 1136,
+                "h": 1197.38,
+                "bottom": 1245.38,
+                "right": 1469.5
+              },
+              "text": "Latest published Hello ArcBlog Technolog",
+              "children": [
+                {
+                  "sel": "div.aup-frame#hero-carousel-frame",
+                  "mode": null,
+                  "layout": null,
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "gap": "normal",
+                  "padding": "0px",
+                  "margin": "0px",
+                  "height": "497px",
+                  "minHeight": "0px",
+                  "width": "1136px",
+                  "maxWidth": "none",
+                  "overflowY": "hidden",
+                  "overflowX": "hidden",
+                  "position": "relative",
+                  "flex": "0 0 auto",
+                  "inlineStyle": "aspect-ratio: 16 / 7; min-height: 0px; flex: 0 0 auto;",
+                  "box": {
+                    "top": 48,
+                    "left": 333.5,
+                    "w": 1136,
+                    "h": 497,
+                    "bottom": 545,
+                    "right": 1469.5
+                  },
+                  "text": "",
+                  "children": []
+                },
+                {
+                  "sel": "h2.aup-text#index-view-1-view-1-h2-2",
+                  "mode": null,
+                  "layout": null,
+                  "display": "flex",
+                  "flexDirection": "row",
+                  "gap": "10px",
+                  "padding": "0px",
+                  "margin": "0px 0px 5.4px",
+                  "height": "26.9844px",
+                  "minHeight": "auto",
+                  "width": "1136px",
+                  "maxWidth": "none",
+                  "overflowY": "visible",
+                  "overflowX": "visible",
+                  "position": "static",
+                  "flex": "0 1 auto",
+                  "inlineStyle": null,
+                  "box": {
+                    "top": 575,
+                    "left": 333.5,
+                    "w": 1136,
+                    "h": 26.98,
+                    "bottom": 601.98,
+                    "right": 1469.5
+                  },
+                  "text": "Latest published",
+                  "children": []
+                },
+                {
+                  "sel": "div.aup-list#index-view-1-view-1-afs-list-3[layout=list]",
+                  "mode": null,
+                  "layout": "list",
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "gap": "normal",
+                  "padding": "0px",
+                  "margin": "0px",
+                  "height": "608px",
+                  "minHeight": "auto",
+                  "width": "1136px",
+                  "maxWidth": "none",
+                  "overflowY": "visible",
+                  "overflowX": "visible",
+                  "position": "static",
+                  "flex": "0 1 auto",
+                  "inlineStyle": null,
+                  "box": {
+                    "top": 637.38,
+                    "left": 333.5,
+                    "w": 1136,
+                    "h": 608,
+                    "bottom": 1245.38,
+                    "right": 1469.5
+                  },
+                  "text": "Hello ArcBlog Technology · 10 days ago A",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "sel": "footer.aup-app-footer#index-view-1-app-footer-2",
+              "mode": null,
+              "layout": null,
+              "display": "grid",
+              "flexDirection": "column",
+              "gap": "4px 24px",
+              "padding": "20px 24px",
+              "margin": "0px",
+              "height": "119.141px",
+              "minHeight": "auto",
+              "width": "1136px",
+              "maxWidth": "none",
+              "overflowY": "visible",
+              "overflowX": "visible",
+              "position": "static",
+              "flex": "0 1 auto",
+              "inlineStyle": null,
+              "box": {
+                "top": 1275.38,
+                "left": 333.5,
+                "w": 1136,
+                "h": 119.14,
+                "bottom": 1394.52,
+                "right": 1469.5
+              },
+              "text": "ArcBlog DID-native writing, Markdown-fir",
+              "children": [
+                {
+                  "sel": "div.aup-footer-top",
+                  "mode": null,
+                  "layout": null,
+                  "display": "contents",
+                  "flexDirection": "row",
+                  "gap": "48px",
+                  "padding": "0px",
+                  "margin": "0px",
+                  "height": "auto",
+                  "minHeight": "0px",
+                  "width": "auto",
+                  "maxWidth": "none",
+                  "overflowY": "visible",
+                  "overflowX": "visible",
+                  "position": "static",
+                  "flex": "0 1 auto",
+                  "inlineStyle": null,
+                  "box": {
+                    "top": 0,
+                    "left": 0,
+                    "w": 0,
+                    "h": 0,
+                    "bottom": 0,
+                    "right": 0
+                  },
+                  "text": "ArcBlog DID-native writing, Markdown-fir",
+                  "children": []
+                },
+                {
+                  "sel": "div.aup-footer-bottom-bar",
+                  "mode": null,
+                  "layout": null,
+                  "display": "flex",
+                  "flexDirection": "row",
+                  "gap": "16px",
+                  "padding": "0px",
+                  "margin": "0px",
+                  "height": "18px",
+                  "minHeight": "auto",
+                  "width": "94.9844px",
+                  "maxWidth": "none",
+                  "overflowY": "visible",
+                  "overflowX": "visible",
+                  "position": "static",
+                  "flex": "0 1 auto",
+                  "inlineStyle": null,
+                  "box": {
+                    "top": 1356.52,
+                    "left": 1350.52,
+                    "w": 94.98,
+                    "h": 18,
+                    "bottom": 1374.52,
+                    "right": 1445.5
+                  },
+                  "text": "© 2026 ArcBlog",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "display": "block",
+          "flexDirection": "row",
+          "gap": "normal",
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "height": "0px",
+          "minHeight": "auto",
+          "width": "1200px",
+          "maxWidth": "1200px",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "position": "static",
+          "flex": "0 1 auto",
+          "inlineStyle": null,
+          "box": {
+            "top": 1394.52,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "bottom": 1394.52,
+            "right": 1501.5
+          },
+          "text": "",
+          "children": []
+        }
+      ]
+    }
+  },
+  "runs": {
+    "1803x908|en|home": {
+      "requestedUrl": "http://arcblog.localhost:4939/?locale=en",
+      "tookMs": 2645,
+      "injected": false,
+      "url": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#index-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 1346.52,
+            "right": 1501.5,
+            "bottom": 1394.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 1394.52,
+            "top": 1394.52,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 1394.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 1427,
+        "over": 519
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#index-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1501.5,
+          "bottom": 1394.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "1346.52px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#index-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1501.5,
+          "bottom": 1394.52
+        },
+        "text": "Latest published Hello ArcBlog Technology · 10 days ago A to"
+      },
+      "gap": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 1427,
+        "ch": 908,
+        "over": 519,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 1427,
+          "ch": 908,
+          "over": 519,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerPresent": true,
+      "pageRootId": "index-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Latest published Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifecycle, th",
+      "sessionFail": false
+    },
+    "1803x908|en|store": {
+      "requestedUrl": "http://arcblog.localhost:4939/store?locale=en",
+      "tookMs": 2629,
+      "injected": false,
+      "url": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#store-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 673.3,
+            "right": 1501.5,
+            "bottom": 721.3
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 721.3,
+            "top": 721.3,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 721.3
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1501.5,
+          "bottom": 721.3
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "673.297px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1501.5,
+          "bottom": 721.3
+        },
+        "text": "Creator store Digital goods published by this node. The crea"
+      },
+      "gap": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerPresent": true,
+      "pageRootId": "store-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Creator store Digital goods published by this node. The creator sets the price; buying happens with a DID wallet. Products No public",
+      "sessionFail": false
+    },
+    "1803x908|en|dash": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=dashboard&locale=en",
+      "tookMs": 2634,
+      "injected": false,
+      "url": "http://arcblog.localhost:4939/?page=dashboard",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#dashboard-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 828,
+            "right": 1501.5,
+            "bottom": 876
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 876,
+            "top": 876,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 876
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#dashboard-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 828,
+          "right": 1501.5,
+          "bottom": 876
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "828px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 1,
+        "inlineStyle": "height: calc(-48px + 100vh); overflow: visible;"
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#dashboard-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 828,
+          "right": 1501.5,
+          "bottom": 876
+        },
+        "text": "Dashboard Sign in with DID Wallet to view node identity, rol"
+      },
+      "gap": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerPresent": false,
+      "pageRootId": "dashboard-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Dashboard Sign in with DID Wallet to view node identity, roles, taxonomy and operations data. Sign in with DID Wallet",
+      "sessionFail": false
+    },
+    "1803x908|en|ledger": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=ledger&locale=en",
+      "tookMs": 2637,
+      "injected": false,
+      "url": "http://arcblog.localhost:4939/?page=ledger",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#ledger-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 828,
+            "right": 1501.5,
+            "bottom": 876
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 876,
+            "top": 876,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 876
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#ledger-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 828,
+          "right": 1501.5,
+          "bottom": 876
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "828px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 1,
+        "inlineStyle": "height: calc(-48px + 100vh); overflow: visible;"
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#ledger-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 828,
+          "right": 1501.5,
+          "bottom": 876
+        },
+        "text": "Economy Sign in with DID Wallet to view settlements and the "
+      },
+      "gap": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerPresent": false,
+      "pageRootId": "ledger-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Economy Sign in with DID Wallet to view settlements and the ledger. Sign in with DID Wallet",
+      "sessionFail": false
+    }
+  }
+}

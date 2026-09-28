@@ -9,7 +9,7 @@ page factory {
     chain-adapter { en "Adapter" zh "适配器" }
     chain-network { en "Network" zh "网络" }
     chain-host { en "Chain host" zh "链地址" }
-    chain-token { en "Mint token (ABT)" zh "铸造代币（ABT）" }
+    chain-token { en "Mint token" zh "铸造代币" }
     chain-empty { en "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap" zh "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap" }
     factories { en "Factories" zh "工厂" }
     factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
@@ -17,7 +17,7 @@ page factory {
     factory-address { en "Factory address" zh "工厂地址" }
     factory-moniker { en "Moniker" zh "标识" }
     factory-issuer { en "Issuer wallet" zh "发行钱包" }
-    factory-stake { en "Stake per node (ABT)" zh "每个节点质押（ABT）" }
+    factory-stake { en "Stake per node" zh "每个节点质押" }
     factory-capacity { en "Capacity (studios)" zh "容量（Studio 数）" }
     node-empty { en "No node NFT yet — press Buy / mint below." zh "还没有节点 NFT —— 点下面的「购买 / 铸造」。" }
     node-moniker { en "NFT" zh "NFT" }
@@ -34,6 +34,10 @@ page factory {
     tx-stake { en "Stake" zh "质押" }
     tx-revoke { en "Revoke" zh "撤回" }
     tx-claim { en "Claim" zh "取回" }
+    advanced { en "Advanced / technical details" zh "高级 / 技术详情" }
+    advanced-show { en "Show advanced details" zh "展开高级详情" }
+    advanced-hide { en "Hide advanced details" zh "收起高级详情" }
+    advanced-note { en "Public on-chain values (addresses and transaction hashes) read from node/factories.json; the public key is bound into the on-chain NFT template, and no key material is mirrored here." zh "链上公开值（地址与交易哈希），读自 node/factories.json；公钥绑定在链上 NFT 模板内，本投影不含任何密钥材料。" }
     actions { en "Actions" zh "操作" }
     actions-desc { en "One click queues the intent; the node's chain worker signs it (the key never reaches the browser) and the queue below updates live." zh "点击即入队；由节点上的链 worker 签名执行（私钥永不下发浏览器），下方队列实时更新。" }
     act-acquire { en "Buy / mint" zh "购买 / 铸造" }
@@ -170,14 +174,12 @@ page factory {
             p :desc intent=muted
             p :projection intent=muted scale=sm
           }
-          grid gap=md style={gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", alignItems: start} {
+          grid gap=md style={gridTemplateColumns: "minmax(0, 1fr)", alignItems: start} {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :node-svg level=3 style={fontSize: "var(--type-body)"}
               media factory-nft-svg src="${state.summary.nodes.studio.svg}" alt="$t(factory.node-svg)" style={borderRadius: "var(--radius-md, 8px)", width: "100%", maxWidth: "480px"} visible="${state.summary.nodes.studio.svg}"
               p :node-empty intent=info scale=sm visible="!${state.summary.nodes.studio.svg}"
-              key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
-              h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
-              key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
+              key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
             }
             view gap=sm {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
@@ -195,11 +197,11 @@ page factory {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
                 h3 :factories level=3 style={fontSize: "var(--type-body)"}
                 p :chain-empty intent=info scale=sm visible="!${state.summary.adapter}"
-                key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}, {label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true}]
+                key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}]
                 p :factory-studio scale=sm intent=muted
-                key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
+                key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
                 p :factory-hub scale=sm intent=muted
-                key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.hub.address}", monospace: true, copyable: true}, {label: "$t(factory.factory-moniker)", value: "${state.summary.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.summary.factories.hub.capacity}"}]
+                key-value-list factory-hub-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.hub.moniker}"}, {label: "$t(factory.factory-capacity)", value: "${state.summary.factories.hub.capacity}"}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :queue level=3 style={fontSize: "var(--type-body)"}
@@ -225,6 +227,34 @@ page factory {
                   }
                 }
                 p :status-note scale=sm intent=muted
+              }
+            }
+          }
+          // Advanced / technical details. Addresses and transaction hashes are
+          // public on chain but not part of the default view (D34): they are
+          // folded into one collapsed section, still monospace and copyable.
+          // The collapse is a `-> set … state {open: …}` patch on the card and
+          // an expression `visible=$state.open`. String values are deliberate:
+          // boolean literals in that object trip the DSL formatter's round-trip
+          // guard (`content_dropped`, ArcBlock/arc#2764) — measured this round.
+          // Single column is the structural fix for the 1512px overflow
+          // (docs/arc-contracts.md §29.8: the style allowlist has no wrapping
+          // keys, so the width — not CSS — is what has to change).
+          view factory-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            h3 :advanced level=3 style={fontSize: "var(--type-body)"}
+            p :advanced-note intent=muted scale=sm
+            row cross=start {
+              action -> set factory-advanced state {open: "true"} variant=secondary size=sm label=:advanced-show style={borderRadius: "var(--radius-md, 8px)"}
+            }
+            view gap=sm visible=$state.open {
+              key-value-list factory-node-adv dense=true fields=[{label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
+              h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
+              key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
+              key-value-list factory-chain-adv dense=true fields=[{label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true, hideWhenEmpty: true}]
+              key-value-list factory-studio-adv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true, hideWhenEmpty: true}]
+              key-value-list factory-hub-adv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.hub.address}", monospace: true, copyable: true, hideWhenEmpty: true}]
+              row cross=start {
+                action -> set factory-advanced state {open: ""} variant=secondary size=sm label=:advanced-hide style={borderRadius: "var(--radius-md, 8px)"}
               }
             }
           }

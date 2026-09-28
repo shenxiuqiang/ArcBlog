@@ -114,6 +114,61 @@ is false, `studio.*` and `hub.*` never appear in the effective set, even if the
 node profile declares those roles. Config comes from flags or
 `ARCBLOG_STUDIO_COLLECTION` / `ARCBLOG_HUB_COLLECTION` / `ARCBLOG_NETWORK`.
 
+## Chain environment (spec §8.1–§8.4, §9) — switch chains by env, never by code
+
+The node-NFT chain settings (`network` / `chainHost` / `tokenId`) come from
+**two kinds of source only**: the environment (CLI flags, explicit
+`ARCBLOG_CHAIN_*`, or the optional `ARCBLOG_CHAIN_ENV=beta|main` preset) and the
+`config/roles.json` record. Nothing is hard-coded in a page or a DSL file — the
+console reads the public projection `node/factories.json`, which the CLIs write.
+
+```bash
+# beta (ABT Network beta: node symbol TBA) — one env variable fills every default
+export ARCBLOG_CHAIN_ENV=beta
+export ARCBLOG_CHAIN_MNEMONIC='factory owner mnemonic'      # env only, never a record
+node scripts/arcblog-factory.mjs create --role studio --adapter ocap
+
+# main (ABT Network mainnet)
+export ARCBLOG_CHAIN_ENV=main
+export ARCBLOG_CHAIN_MNEMONIC='factory owner mnemonic'
+node scripts/arcblog-factory.mjs create --role studio --adapter ocap
+
+# any other chain: skip the preset and pass the triple explicitly
+export ARCBLOG_CHAIN_NETWORK=my-net ARCBLOG_CHAIN_HOST=https://chain.example.com/api/ \
+       ARCBLOG_CHAIN_TOKEN_ID=z... ARCBLOG_CHAIN_MNEMONIC='...'
+node scripts/arcblog-node-nft.mjs acquire --role studio --adapter ocap
+```
+
+**Switching chains = changing env, not code.** Resolution order (highest first):
+
+1. CLI flag (`--chain-host` / `--network` / `--token-id` …) and explicit
+   `ARCBLOG_CHAIN_*` (`HOST` / `NETWORK` / `CHAIN_ID` / `TOKEN_ID` /
+   `TOKEN_DECIMALS` / `MNEMONIC` / `FACTORY_OWNER`) — always win;
+2. `config/roles.json` (`network` only; read-only fallback, spec §9) — an
+   operator record that **disagrees** with the selected `ARCBLOG_CHAIN_ENV`
+   fails closed instead of mixing two environments;
+3. the `ARCBLOG_CHAIN_ENV=beta|main` preset (host / network / chain id / mint
+   token / decimals) — **defaults only**;
+4. `mock` (adapter default) when nothing is set.
+
+`ARCBLOG_CHAIN_ENV` accepts only `beta` or `main`; anything else exits non-zero
+with `VALIDATION`. `--adapter mock` never touches the chain and keeps its
+per-instance behaviour unchanged.
+
+**Fail closed (spec §114/§115).** Before any real-chain action the CLI requires
+the triple `network` + `chainHost` + `tokenId`; a missing piece prints the
+resolution hint and exits non-zero **without writing anything**. The wallet
+mnemonic is still required by the adapter itself (`CHAIN_UNAVAILABLE`), and it
+must come from the environment (`.env.local`, gitignored) — never from a record,
+page or log.
+
+The preset's values are documented in `scripts/lib/chain.mjs`
+(`CHAIN_PRESETS`): `@ocap/client`'s documented GraphQL endpoint and the official
+ArcBlock token reference
+(<https://www.arcblock.io/en/docs/blockchain/understanding-tokens/> — native
+token ABT on main, TBA on beta). See `CLAUDE.md` → "Chain environment" for the
+one-paragraph version.
+
 ## Economy (Phase 8 / MVP-3)
 
 ```bash

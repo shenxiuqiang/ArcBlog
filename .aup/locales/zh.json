@@ -129,7 +129,7 @@
   "factory.chain-empty": "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap",
   "factory.chain-host": "链地址",
   "factory.chain-network": "网络",
-  "factory.chain-token": "铸造代币（ABT）",
+  "factory.chain-token": "铸造代币",
   "factory.confirm-acquire-msg": "工厂会立即在链上铸造一枚 Studio 节点 NFT 给本节点属主钱包。",
   "factory.confirm-acquire-title": "购买节点 NFT？",
   "factory.confirm-claim-msg": "NFT 回到属主钱包，质押关闭。",
@@ -146,7 +146,7 @@
   "factory.factory-hub": "Hub 节点工厂",
   "factory.factory-issuer": "发行钱包",
   "factory.factory-moniker": "标识",
-  "factory.factory-stake": "每个节点质押（ABT）",
+  "factory.factory-stake": "每个节点质押",
   "factory.factory-studio": "Studio 节点工厂",
   "factory.gate-desc": "使用 DID Wallet 登录后查看并操作节点 NFT。",
   "factory.gate-title": "节点 NFT",
@@ -789,5 +789,9 @@
   "orders.readonly-title": "只读，链上/支付由 operator 声明",
   "orders.readonly-desc": "本页只读 AFS 记录。它不声称任何支付、退款、结算或链上动作已经发生：那些是 operator 步骤，记录是唯一证据（spec §89，L-R14-2）。",
   "orders.status-note": "status 显示记录原始值：pending | paid | failed | refunded（spec §42）。旁边的标签刻意中性——本平台无法按记录值切换文案（arc-contracts §28.8），因此原始值即事实，定义在此集中写明。",
-  "orders.title": "订单"
+  "orders.title": "订单",
+  "factory.advanced": "高级 / 技术详情",
+  "factory.advanced-show": "展开高级详情",
+  "factory.advanced-hide": "收起高级详情",
+  "factory.advanced-note": "链上公开值（地址与交易哈希），读自 node/factories.json；公钥绑定在链上 NFT 模板内，本投影不含任何密钥材料。"
 }

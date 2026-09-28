@@ -1,0 +1,7566 @@
+{
+  "meta": {
+    "req": "REQ-020/020a",
+    "origin": "http://arcblog.localhost:4939",
+    "auth": false,
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "viewports": [
+      "1803x908",
+      "1512x765"
+    ],
+    "pages": [
+      {
+        "label": "home",
+        "path": "/"
+      },
+      {
+        "label": "store",
+        "path": "/store"
+      },
+      {
+        "label": "about",
+        "path": "/?page=about"
+      },
+      {
+        "label": "preview",
+        "path": "/preview/hello-arcblog"
+      },
+      {
+        "label": "author",
+        "path": "/?page=author"
+      },
+      {
+        "label": "pageview",
+        "path": "/pages/page-test-1790504571866"
+      }
+    ],
+    "waitMs": 2600,
+    "injectedCss": "#aup-display:has(.aup-app-footer:not(.aup-build-info-footer)) .aup-view > [data-mode=\"shell\"]+*{padding-top:0}",
+    "targetId": "47A3EFDA66203073230331FCBF88550B",
+    "pagesBefore": 3,
+    "pagesAfter": 4,
+    "startedAt": "2026-09-28T09:07:43.096Z",
+    "chrome": "Chrome/153.0.8010.54",
+    "tree": false,
+    "pagesDuringMax": 4,
+    "finishedAt": "2026-09-28T09:09:07.013Z",
+    "firstTree": null
+  },
+  "runs": {
+    "1803x908|en|home": {
+      "requestedUrl": "http://arcblog.localhost:4939/?locale=en",
+      "tookMs": 3340,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#index-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 1346.52,
+            "right": 1501.5,
+            "bottom": 1394.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 1394.52,
+            "top": 1394.52,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 1394.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 1427,
+        "over": 519
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#index-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1501.5,
+          "bottom": 1394.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "1346.52px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#index-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1501.5,
+          "bottom": 1394.52
+        },
+        "text": "Latest published Hello ArcBlog Technology · 10 days ago A to"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#index-view-1 > div.aup-view#index-view-1-view-1 > div.aup-frame#hero-carousel-frame",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 497,
+          "right": 1469.5,
+          "bottom": 545
+        },
+        "text": "",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 1427,
+        "ch": 908,
+        "over": 519,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 1427,
+          "ch": 908,
+          "over": 519,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 756.38,
+          "top": 756.38,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 875.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -32.48,
+        "scrollTopAtMax": 519,
+        "scrollMax": 519
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "index-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Latest published Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifecycle, th",
+      "sessionFail": false
+    },
+    "1803x908|en|store": {
+      "requestedUrl": "http://arcblog.localhost:4939/store?locale=en",
+      "tookMs": 3327,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#store-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 673.3,
+            "right": 1501.5,
+            "bottom": 721.3
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 721.3,
+            "top": 721.3,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 721.3
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1501.5,
+          "bottom": 721.3
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "673.297px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1501.5,
+          "bottom": 721.3
+        },
+        "text": "Creator store Digital goods published by this node. The crea"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1 > div.aup-view#store-view-1-view-1 > div.aup-view#store-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1469.5,
+          "bottom": 164.88
+        },
+        "text": "Creator store Digital goods published by",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 602.16,
+          "top": 602.16,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 721.3
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -186.7,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "store-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Creator store Digital goods published by this node. The creator sets the price; buying happens with a DID wallet. Products No public",
+      "sessionFail": false
+    },
+    "1803x908|en|about": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=about&locale=en",
+      "tookMs": 3333,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=about",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#about-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 475.41,
+            "right": 1501.5,
+            "bottom": 523.41
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 523.41,
+            "top": 523.41,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 523.41
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#about-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 475.41,
+          "right": 1501.5,
+          "bottom": 523.41
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "475.406px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 475.41,
+          "right": 1501.5,
+          "bottom": 523.41
+        },
+        "text": "About ArcBlog ArcBlog is a Blocklet blog: DID Wallet identit"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1 > div.aup-view#about-view-1-view-1 > div.aup-view#about-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1469.5,
+          "bottom": 164.88
+        },
+        "text": "About ArcBlog ArcBlog is a Blocklet blog",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 404.27,
+          "top": 404.27,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 523.41
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -384.59,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "about-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog About ArcBlog ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in",
+      "sessionFail": false
+    },
+    "1803x908|en|preview": {
+      "requestedUrl": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=en",
+      "tookMs": 3334,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/preview/hello-arcblog",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#preview-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 315.52,
+            "right": 1501.5,
+            "bottom": 363.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 363.52,
+            "top": 363.52,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 363.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#preview-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1501.5,
+          "bottom": 363.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "315.516px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#preview-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1501.5,
+          "bottom": 363.52
+        },
+        "text": "Back to latest stories Preview Preview not found. ArcBlog DI"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#preview-view-1 > div.aup-view#preview-view-1-view-1 > div.aup-view#preview-view-1-view-1-row-1 > a.aup-view.aup-view-link#preview-view-1-view-1-row-1-view-2 > div.aup-text#preview-view-1-view-1-row-1-view-2-p-1",
+        "box": {
+          "x": 351.2,
+          "y": 48,
+          "top": 48,
+          "left": 351.2,
+          "w": 138.58,
+          "h": 19.5,
+          "right": 489.78,
+          "bottom": 67.5
+        },
+        "text": "Back to latest stories",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 244.38,
+          "top": 244.38,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 363.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -544.48,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "preview-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Back to latest stories Preview Preview not found. ArcBlog DID-native writing, Markdown-first publishing. About Store Author RSS © 20",
+      "sessionFail": false
+    },
+    "1803x908|en|author": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=author&locale=en",
+      "tookMs": 3349,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=author",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#author-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 790.23,
+            "right": 1501.5,
+            "bottom": 838.23
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 838.23,
+            "top": 838.23,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 838.23
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#author-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1501.5,
+          "bottom": 838.23
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "790.234px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1501.5,
+          "bottom": 838.23
+        },
+        "text": "ArcBlog A DID-native publishing space for readable Markdown "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1 > div.aup-view#author-view-1-view-1 > div.aup-view#author-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 369.22,
+          "right": 1469.5,
+          "bottom": 417.22
+        },
+        "text": "ArcBlog A DID-native publishing space fo",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 719.09,
+          "top": 719.09,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 838.23
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -69.77,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "author-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog ArcBlog A DID-native publishing space for readable Markdown posts and images. DID did:blocklet:arcblog Auth method blocklet Roles ba",
+      "sessionFail": false
+    },
+    "1803x908|en|pageview": {
+      "requestedUrl": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=en",
+      "tookMs": 3338,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/pages/page-test-1790504571866",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "text": "Back to latest stories Test Page hello page ArcBlog DID-nati"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 351.2,
+          "y": 51,
+          "top": 51,
+          "left": 351.2,
+          "w": 138.58,
+          "h": 19.5,
+          "right": 489.78,
+          "bottom": 70.5
+        },
+        "text": "Back to latest stories",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -536.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Back to latest stories Test Page hello page ArcBlog DID-native writing, Markdown-first publishing. About Store Author RSS © 2026 Arc",
+      "sessionFail": false
+    },
+    "1803x908|zh|home": {
+      "requestedUrl": "http://arcblog.localhost:4939/?locale=zh",
+      "tookMs": 3334,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "text": "返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 351.2,
+          "y": 51,
+          "top": 51,
+          "left": 351.2,
+          "w": 78,
+          "h": 19.5,
+          "right": 429.2,
+          "bottom": 70.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -536.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    },
+    "1803x908|zh|store": {
+      "requestedUrl": "http://arcblog.localhost:4939/store?locale=zh",
+      "tookMs": 3338,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/store?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#store-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 650.8,
+            "right": 1501.5,
+            "bottom": 698.8
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 698.8,
+            "top": 698.8,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 698.8
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 650.8,
+          "right": 1501.5,
+          "bottom": 698.8
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "650.797px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 650.8,
+          "right": 1501.5,
+          "bottom": 698.8
+        },
+        "text": "创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。 商品 还没有公开商品。添加：node "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1 > div.aup-view#store-view-1-view-1 > div.aup-view#store-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1469.5,
+          "bottom": 164.88
+        },
+        "text": "创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 579.66,
+          "top": 579.66,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 698.8
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -209.2,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "store-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。 商品 还没有公开商品。添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --",
+      "sessionFail": false
+    },
+    "1803x908|zh|about": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=about&locale=zh",
+      "tookMs": 3341,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=about&locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#about-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 477.41,
+            "right": 1501.5,
+            "bottom": 525.41
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 525.41,
+            "top": 525.41,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 525.41
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#about-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 477.41,
+          "right": 1501.5,
+          "bottom": 525.41
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "477.406px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 477.41,
+          "right": 1501.5,
+          "bottom": 525.41
+        },
+        "text": "关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Ma"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1 > div.aup-view#about-view-1-view-1 > div.aup-view#about-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1469.5,
+          "bottom": 164.88
+        },
+        "text": "关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID W",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 406.27,
+          "top": 406.27,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 525.41
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -382.59,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "about-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生命周期，带乐观并发控制和完整审计日志。软",
+      "sessionFail": false
+    },
+    "1803x908|zh|preview": {
+      "requestedUrl": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=zh",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#preview-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 315.52,
+            "right": 1501.5,
+            "bottom": 363.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 363.52,
+            "top": 363.52,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 363.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#preview-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1501.5,
+          "bottom": 363.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "315.516px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#preview-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1501.5,
+          "bottom": 363.52
+        },
+        "text": "返回最新文章 预览 预览不存在。 ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RS"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#preview-view-1 > div.aup-view#preview-view-1-view-1 > div.aup-view#preview-view-1-view-1-row-1 > a.aup-view.aup-view-link#preview-view-1-view-1-row-1-view-2 > div.aup-text#preview-view-1-view-1-row-1-view-2-p-1",
+        "box": {
+          "x": 351.2,
+          "y": 48,
+          "top": 48,
+          "left": 351.2,
+          "w": 78,
+          "h": 19.5,
+          "right": 429.2,
+          "bottom": 67.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 244.38,
+          "top": 244.38,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 363.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -544.48,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "preview-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 预览 预览不存在。 ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    },
+    "1803x908|zh|author": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=author&locale=zh",
+      "tookMs": 3340,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=author&locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#author-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 790.23,
+            "right": 1501.5,
+            "bottom": 838.23
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 838.23,
+            "top": 838.23,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 838.23
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#author-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1501.5,
+          "bottom": 838.23
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "790.234px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1501.5,
+          "bottom": 838.23
+        },
+        "text": "ArcBlog A DID-native publishing space for readable Markdown "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1 > div.aup-view#author-view-1-view-1 > div.aup-view#author-view-1-view-1-view-1",
+        "box": {
+          "x": 333.5,
+          "y": 48,
+          "top": 48,
+          "left": 333.5,
+          "w": 1136,
+          "h": 369.22,
+          "right": 1469.5,
+          "bottom": 417.22
+        },
+        "text": "ArcBlog A DID-native publishing space fo",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 719.09,
+          "top": 719.09,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 838.23
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -69.77,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "author-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog ArcBlog A DID-native publishing space for readable Markdown posts and images. DID did:blocklet:arcblog 认证方式 blocklet 角色 basic 文章 Hel",
+      "sessionFail": false
+    },
+    "1803x908|zh|pageview": {
+      "requestedUrl": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=zh",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1803x908",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 48,
+            "right": 1803,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 301.5,
+            "y": 48,
+            "top": 48,
+            "left": 301.5,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 301.5,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 301.5,
+            "w": 1200,
+            "h": 0,
+            "right": 1501.5,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 301.5px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 48,
+          "right": 1803,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 908,
+        "scrollH": 908,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 301.5px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 301.5,
+          "y": 48,
+          "top": 48,
+          "left": 301.5,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1501.5,
+          "bottom": 371.28
+        },
+        "text": "返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 351.2,
+          "y": 51,
+          "top": 51,
+          "left": 351.2,
+          "w": 78,
+          "h": 19.5,
+          "right": 429.2,
+          "bottom": 70.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1803,
+        "de_cw": 1803,
+        "de_sh": 908,
+        "de_ch": 908,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1803,
+        "body_cw": 1803,
+        "body_sh": 908,
+        "innerH": 908,
+        "innerW": 1803,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 908,
+        "ch": 908,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 908,
+          "ch": 908,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "height": "908px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1803px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 333.5,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 333.5,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1469.5,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1803,
+          "h": 908,
+          "right": 1803,
+          "bottom": 908
+        },
+        "fullyVisible": true,
+        "clippedBottom": -536.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1803,
+            "h": 908,
+            "right": 1803,
+            "bottom": 908
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "908px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    },
+    "1512x765|en|home": {
+      "requestedUrl": "http://arcblog.localhost:4939/?locale=en",
+      "tookMs": 7090,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#index-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 1346.52,
+            "right": 1356,
+            "bottom": 1394.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 1394.52,
+            "top": 1394.52,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 1394.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 1427,
+        "over": 662
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#index-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1356,
+          "bottom": 1394.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "1346.52px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#index-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 1346.52,
+          "right": 1356,
+          "bottom": 1394.52
+        },
+        "text": "Latest published Hello ArcBlog Technology · 10 days ago A to"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#index-view-1 > div.aup-view#index-view-1-view-1 > div.aup-frame#hero-carousel-frame",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 497,
+          "right": 1324,
+          "bottom": 545
+        },
+        "text": "",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 1427,
+        "ch": 765,
+        "over": 662,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 1427,
+          "ch": 765,
+          "over": 662,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 613.38,
+          "top": 613.38,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 732.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -32.48,
+        "scrollTopAtMax": 662,
+        "scrollMax": 662
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "index-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Latest published Hello ArcBlog Technology · 10 days ago A tour of the node: DID-native authorship, the draft→published lifecycle, th",
+      "sessionFail": false
+    },
+    "1512x765|en|store": {
+      "requestedUrl": "http://arcblog.localhost:4939/store?locale=en",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/store",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#store-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 673.3,
+            "right": 1356,
+            "bottom": 721.3
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 721.3,
+            "top": 721.3,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 721.3
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#store-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1356,
+          "bottom": 721.3
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "673.297px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 673.3,
+          "right": 1356,
+          "bottom": 721.3
+        },
+        "text": "Creator store Digital goods published by this node. The crea"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1 > div.aup-view#store-view-1-view-1 > div.aup-view#store-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1324,
+          "bottom": 164.88
+        },
+        "text": "Creator store Digital goods published by",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 602.16,
+          "top": 602.16,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 721.3
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -43.7,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "store-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Creator store Digital goods published by this node. The creator sets the price; buying happens with a DID wallet. Products No public",
+      "sessionFail": false
+    },
+    "1512x765|en|about": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=about&locale=en",
+      "tookMs": 3350,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=about",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#about-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 475.41,
+            "right": 1356,
+            "bottom": 523.41
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 523.41,
+            "top": 523.41,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 523.41
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#about-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 475.41,
+          "right": 1356,
+          "bottom": 523.41
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "475.406px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 475.41,
+          "right": 1356,
+          "bottom": 523.41
+        },
+        "text": "About ArcBlog ArcBlog is a Blocklet blog: DID Wallet identit"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1 > div.aup-view#about-view-1-view-1 > div.aup-view#about-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1324,
+          "bottom": 164.88
+        },
+        "text": "About ArcBlog ArcBlog is a Blocklet blog",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 404.27,
+          "top": 404.27,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 523.41
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -241.59,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "about-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog About ArcBlog ArcBlog is a Blocklet blog: DID Wallet identity is the author credential, posts are Markdown-first, and images live in",
+      "sessionFail": false
+    },
+    "1512x765|en|preview": {
+      "requestedUrl": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=en",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/preview/hello-arcblog",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#preview-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 315.52,
+            "right": 1356,
+            "bottom": 363.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 363.52,
+            "top": 363.52,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 363.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#preview-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1356,
+          "bottom": 363.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "315.516px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#preview-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1356,
+          "bottom": 363.52
+        },
+        "text": "Back to latest stories Preview Preview not found. ArcBlog DI"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#preview-view-1 > div.aup-view#preview-view-1-view-1 > div.aup-view#preview-view-1-view-1-row-1 > a.aup-view.aup-view-link#preview-view-1-view-1-row-1-view-2 > div.aup-text#preview-view-1-view-1-row-1-view-2-p-1",
+        "box": {
+          "x": 205.7,
+          "y": 48,
+          "top": 48,
+          "left": 205.7,
+          "w": 138.58,
+          "h": 19.5,
+          "right": 344.28,
+          "bottom": 67.5
+        },
+        "text": "Back to latest stories",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 244.38,
+          "top": 244.38,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 363.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -401.48,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "preview-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Back to latest stories Preview Preview not found. ArcBlog DID-native writing, Markdown-first publishing. About Store Author RSS © 20",
+      "sessionFail": false
+    },
+    "1512x765|en|author": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=author&locale=en",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=author",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#author-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 790.23,
+            "right": 1356,
+            "bottom": 838.23
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 838.23,
+            "top": 838.23,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 838.23
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 870,
+        "over": 105
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#author-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1356,
+          "bottom": 838.23
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "790.234px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1356,
+          "bottom": 838.23
+        },
+        "text": "ArcBlog A DID-native publishing space for readable Markdown "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1 > div.aup-view#author-view-1-view-1 > div.aup-view#author-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 369.22,
+          "right": 1324,
+          "bottom": 417.22
+        },
+        "text": "ArcBlog A DID-native publishing space fo",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 870,
+        "ch": 765,
+        "over": 105,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 870,
+          "ch": 765,
+          "over": 105,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 614.09,
+          "top": 614.09,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 733.23
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -31.77,
+        "scrollTopAtMax": 105,
+        "scrollMax": 105
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "author-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog ArcBlog A DID-native publishing space for readable Markdown posts and images. DID did:blocklet:arcblog Auth method blocklet Roles ba",
+      "sessionFail": false
+    },
+    "1512x765|en|pageview": {
+      "requestedUrl": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=en",
+      "tookMs": 3334,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/pages/page-test-1790504571866",
+      "lang": "en",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "text": "Back to latest stories Test Page hello page ArcBlog DID-nati"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 205.7,
+          "y": 51,
+          "top": 51,
+          "left": 205.7,
+          "w": 138.58,
+          "h": 19.5,
+          "right": 344.28,
+          "bottom": 70.5
+        },
+        "text": "Back to latest stories",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -393.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog Back to latest stories Test Page hello page ArcBlog DID-native writing, Markdown-first publishing. About Store Author RSS © 2026 Arc",
+      "sessionFail": false
+    },
+    "1512x765|zh|home": {
+      "requestedUrl": "http://arcblog.localhost:4939/?locale=zh",
+      "tookMs": 3338,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "text": "返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 205.7,
+          "y": 51,
+          "top": 51,
+          "left": 205.7,
+          "w": 78,
+          "h": 19.5,
+          "right": 283.7,
+          "bottom": 70.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -393.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    },
+    "1512x765|zh|store": {
+      "requestedUrl": "http://arcblog.localhost:4939/store?locale=zh",
+      "tookMs": 3335,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/store?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#store-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 650.8,
+            "right": 1356,
+            "bottom": 698.8
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 698.8,
+            "top": 698.8,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 698.8
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#store-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 650.8,
+          "right": 1356,
+          "bottom": 698.8
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "650.797px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 650.8,
+          "right": 1356,
+          "bottom": 698.8
+        },
+        "text": "创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。 商品 还没有公开商品。添加：node "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#store-view-1 > div.aup-view#store-view-1-view-1 > div.aup-view#store-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1324,
+          "bottom": 164.88
+        },
+        "text": "创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 579.66,
+          "top": 579.66,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 698.8
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -66.2,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "store-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 创作者商店 本节点发布的数字商品。价格由创作者定价；购买通过 DID 钱包完成。 商品 还没有公开商品。添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --",
+      "sessionFail": false
+    },
+    "1512x765|zh|about": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=about&locale=zh",
+      "tookMs": 3337,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=about&locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#about-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 477.41,
+            "right": 1356,
+            "bottom": 525.41
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 525.41,
+            "top": 525.41,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 525.41
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#about-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 477.41,
+          "right": 1356,
+          "bottom": 525.41
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "477.406px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 477.41,
+          "right": 1356,
+          "bottom": 525.41
+        },
+        "text": "关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Ma"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#about-view-1 > div.aup-view#about-view-1-view-1 > div.aup-view#about-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 116.88,
+          "right": 1324,
+          "bottom": 164.88
+        },
+        "text": "关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID W",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 406.27,
+          "top": 406.27,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 525.41
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -239.59,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "about-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 关于 ArcBlog ArcBlog 是一个 Blocklet 博客：DID Wallet 身份即作者凭证，文章以 Markdown 优先，图片存放在 Arc 文件空间中。 生命周期 文章遵循 草稿 → 发布 → 归档 的生命周期，带乐观并发控制和完整审计日志。软",
+      "sessionFail": false
+    },
+    "1512x765|zh|preview": {
+      "requestedUrl": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=zh",
+      "tookMs": 3332,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/preview/hello-arcblog?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#preview-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 315.52,
+            "right": 1356,
+            "bottom": 363.52
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 363.52,
+            "top": 363.52,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 363.52
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#preview-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1356,
+          "bottom": 363.52
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "315.516px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#preview-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 315.52,
+          "right": 1356,
+          "bottom": 363.52
+        },
+        "text": "返回最新文章 预览 预览不存在。 ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RS"
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#preview-view-1 > div.aup-view#preview-view-1-view-1 > div.aup-view#preview-view-1-view-1-row-1 > a.aup-view.aup-view-link#preview-view-1-view-1-row-1-view-2 > div.aup-text#preview-view-1-view-1-row-1-view-2-p-1",
+        "box": {
+          "x": 205.7,
+          "y": 48,
+          "top": 48,
+          "left": 205.7,
+          "w": 78,
+          "h": 19.5,
+          "right": 283.7,
+          "bottom": 67.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 244.38,
+          "top": 244.38,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 363.52
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -401.48,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "preview-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 预览 预览不存在。 ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    },
+    "1512x765|zh|author": {
+      "requestedUrl": "http://arcblog.localhost:4939/?page=author&locale=zh",
+      "tookMs": 3342,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/?page=author&locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#author-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 790.23,
+            "right": 1356,
+            "bottom": 838.23
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 838.23,
+            "top": 838.23,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 838.23
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 870,
+        "over": 105
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#author-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1356,
+          "bottom": 838.23
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "790.234px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 790.23,
+          "right": 1356,
+          "bottom": 838.23
+        },
+        "text": "ArcBlog A DID-native publishing space for readable Markdown "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div > div.aup-view#wrapper-view-1 > div.aup-view#author-view-1 > div.aup-view#author-view-1-view-1 > div.aup-view#author-view-1-view-1-view-1",
+        "box": {
+          "x": 188,
+          "y": 48,
+          "top": 48,
+          "left": 188,
+          "w": 1136,
+          "h": 369.22,
+          "right": 1324,
+          "bottom": 417.22
+        },
+        "text": "ArcBlog A DID-native publishing space fo",
+        "background": "rgb(240, 239, 236)"
+      },
+      "gapPaint": 0,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 870,
+        "ch": 765,
+        "over": 105,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 870,
+          "ch": 765,
+          "over": 105,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 614.09,
+          "top": 614.09,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 733.23
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -31.77,
+        "scrollTopAtMax": 105,
+        "scrollMax": 105
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "author-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog ArcBlog A DID-native publishing space for readable Markdown posts and images. DID did:blocklet:arcblog 认证方式 blocklet 角色 basic 文章 Hel",
+      "sessionFail": false
+    },
+    "1512x765|zh|pageview": {
+      "requestedUrl": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=zh",
+      "tookMs": 3336,
+      "injected": true,
+      "url": "http://arcblog.localhost:4939/pages/page-test-1790504571866?locale=zh",
+      "lang": "zh",
+      "title": "ArcBlog",
+      "vp": "1512x765",
+      "tone": "editorial",
+      "mode": "light",
+      "header": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "clippedBy": [],
+        "position": "static",
+        "children": 1
+      },
+      "rootKids": [
+        {
+          "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+          "mode": "shell",
+          "layout": null,
+          "pos": "static",
+          "display": "grid",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 48,
+            "right": 1512,
+            "bottom": 48
+          },
+          "visible": true,
+          "padding": "0px",
+          "margin": "0px",
+          "gap": "0px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div.aup-view#page-view-view-1",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "flex",
+          "box": {
+            "x": 156,
+            "y": 48,
+            "top": 48,
+            "left": 156,
+            "w": 1200,
+            "h": 323.28,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": true,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "30px",
+          "flex": "0 1 auto"
+        },
+        {
+          "sel": "div#theme-bridge-frame",
+          "mode": null,
+          "layout": null,
+          "pos": "static",
+          "display": "block",
+          "box": {
+            "x": 156,
+            "y": 371.28,
+            "top": 371.28,
+            "left": 156,
+            "w": 1200,
+            "h": 0,
+            "right": 1356,
+            "bottom": 371.28
+          },
+          "visible": false,
+          "padding": "0px 32px",
+          "margin": "0px 156px",
+          "gap": "normal",
+          "flex": "0 1 auto"
+        }
+      ],
+      "shellView": {
+        "sel": "div.aup-view#wrapper-view-1-view-1[mode=shell]",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 48,
+          "right": 1512,
+          "bottom": 48
+        },
+        "display": "grid",
+        "overflow": "hidden"
+      },
+      "scroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "padding": "0px 0px 32px",
+        "gap": "0px",
+        "flexDirection": "column",
+        "overflowY": "auto",
+        "clientH": 765,
+        "scrollH": 765,
+        "over": 0
+      },
+      "contentRoot": {
+        "sel": "div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "display": "flex",
+        "gap": "30px",
+        "padding": "0px 32px",
+        "margin": "0px 156px",
+        "height": "323.281px",
+        "maxWidth": "1200px",
+        "overflow": "visible",
+        "overflowY": "visible",
+        "childCount": 2,
+        "inlineStyle": null
+      },
+      "firstContent": {
+        "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1 > div.aup-view#page-view-view-1",
+        "box": {
+          "x": 156,
+          "y": 48,
+          "top": 48,
+          "left": 156,
+          "w": 1200,
+          "h": 323.28,
+          "right": 1356,
+          "bottom": 371.28
+        },
+        "text": "返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 "
+      },
+      "gap": 0,
+      "firstPaint": {
+        "sel": "div.aup-view#page-view-view-1 > div.aup-view#page-view-view-1-view-1 > div.aup-view#page-view-view-1-view-1-row-1 > a.aup-view.aup-view-link#page-view-view-1-view-1-row-1-view-1 > div.aup-text#page-view-view-1-view-1-row-1-view-1-p-1",
+        "box": {
+          "x": 205.7,
+          "y": 51,
+          "top": 51,
+          "left": 205.7,
+          "w": 78,
+          "h": 19.5,
+          "right": 283.7,
+          "bottom": 70.5
+        },
+        "text": "返回最新文章",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "gapPaint": 3,
+      "contentGap": 0,
+      "doc": {
+        "de_sw": 1512,
+        "de_cw": 1512,
+        "de_sh": 765,
+        "de_ch": 765,
+        "de_overX": 0,
+        "de_overY": 0,
+        "body_sw": 1512,
+        "body_cw": 1512,
+        "body_sh": 765,
+        "innerH": 765,
+        "innerW": 1512,
+        "scrollY": 0,
+        "bodyOverflow": "visible",
+        "htmlOverflow": "visible"
+      },
+      "runtimeScroller": {
+        "sel": "div.aup-view#wrapper-view-1",
+        "sh": 765,
+        "ch": 765,
+        "over": 0,
+        "overflowY": "auto",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        }
+      },
+      "scrollContainers": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "sh": 765,
+          "ch": 765,
+          "over": 0,
+          "overflowY": "auto",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "flex": "1 1 0%"
+        }
+      ],
+      "consoleShell": [
+        {
+          "sel": "div.active.full-page > div > div.aup-view#wrapper-view-1",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "height": "765px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "width": "1512px",
+          "flexDirection": "column",
+          "childCount": 3
+        }
+      ],
+      "nav": null,
+      "sidebarPresent": false,
+      "activeCount": 0,
+      "footerReach": {
+        "box": {
+          "x": 188,
+          "y": 252.14,
+          "top": 252.14,
+          "left": 188,
+          "w": 1136,
+          "h": 119.14,
+          "right": 1324,
+          "bottom": 371.28
+        },
+        "scrollerBox": {
+          "x": 0,
+          "y": 0,
+          "top": 0,
+          "left": 0,
+          "w": 1512,
+          "h": 765,
+          "right": 1512,
+          "bottom": 765
+        },
+        "fullyVisible": true,
+        "clippedBottom": -393.72,
+        "scrollTopAtMax": 0,
+        "scrollMax": 0
+      },
+      "footerPresent": true,
+      "footerAll": 1,
+      "buildInfoFooter": false,
+      "shellCount": 1,
+      "pageRootId": "page-view-view-1",
+      "displayKids": [
+        {
+          "sel": "div",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "top": 0,
+            "left": 0,
+            "w": 1512,
+            "h": 765,
+            "right": 1512,
+            "bottom": 765
+          },
+          "display": "flex",
+          "flexDirection": "column",
+          "height": "765px",
+          "overflowY": "hidden"
+        }
+      ],
+      "bodyText": "ArcBlog 返回最新文章 Test Page hello page ArcBlog DID 原生写作，Markdown 优先发布。 关于 商店 作者 RSS © 2026 ArcBlog",
+      "sessionFail": false
+    }
+  }
+}

@@ -26,7 +26,7 @@
 
 import { createHash } from 'node:crypto';
 
-import { ensure, fail, nowIso, readJson, writeJson } from './arc.mjs';
+import { ensure, fail, nowIso, optString, readJson, writeJson } from './arc.mjs';
 import {
   DEFAULT_STAKE_AMOUNT,
   TOKEN_DECIMALS,
@@ -36,6 +36,7 @@ import {
   validateMintInputs,
   validateNodeFactory,
 } from './nft-factory.mjs';
+import { getRoleConfig } from './roles.mjs';
 
 // Tests (and parallel dev work) can point the simulation at another record:
 //   ARCBLOG_MOCK_STATE_PATH=/instance/app/arcblog/config/mock-chain-test-<ts>.json
@@ -61,20 +62,184 @@ export const DEFAULT_REVOKE_WAITING_PERIOD_DAYS = 30;
 export const MOCK_START_BALANCE = fromTokenToUnit('100', TOKEN_DECIMALS);
 export const CHAIN_ADAPTERS = ['mock', 'ocap'];
 
-/** Chain settings from flags + env. Kept in one place so both CLIs agree. */
-export function resolveChainOptions(opts = {}) {
+/**
+ * Preset chain environments (Lead ruling **L-R15-2**). A preset only supplies
+ * **defaults**: a CLI flag or an explicit `ARCBLOG_CHAIN_*` always wins, and
+ * `config/roles.json` wins over the preset but **fails closed** when it
+ * disagrees with the selected preset (no silent cross-environment mixes).
+ *
+ * Sources (verified 2026-09-28):
+ *  - host — `@ocap/client` documents the GraphQL endpoint as
+ *    `https://beta.abtnetwork.io/api` (`node_modules/@ocap/client/lib/client.js:21`),
+ *    and the 2026-09-27 real-chain run used `https://beta.abtnetwork.io/api/`
+ *    (`docs/ArcBlog-nft-factory.md:112`, §7).
+ *  - token — <https://www.arcblock.io/en/docs/blockchain/understanding-tokens/>:
+ *    "The native token on main chain is ABT (`…/tokens/z35nNRvYxBoHitx9yZ5ATS88psfShzPPBLxYD/txs`)";
+ *    "The native token on beta chain is TBA (`…/tokens/z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG/txs`)".
+ *  - decimals — 18 (`scripts/lib/nft-factory.mjs:23` `TOKEN_DECIMALS`; the beta
+ *    mint/stake ran with 18 minimal units per token).
+ *
+ * Nothing here is visible in `.aup/**`: the page reads the record
+ * (`node/factories.json`), never these constants (L-R15-2 item 4).
+ */
+export const CHAIN_PRESETS = Object.freeze({
+  beta: Object.freeze({
+    chainHost: 'https://beta.abtnetwork.io/api/',
+    network: 'beta',
+    chainId: 'beta',
+    tokenId: 'z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG',
+    tokenDecimals: 18,
+  }),
+  main: Object.freeze({
+    chainHost: 'https://main.abtnetwork.io/api/',
+    network: 'main',
+    chainId: 'main',
+    tokenId: 'z35nNRvYxBoHitx9yZ5ATS88psfShzPPBLxYD',
+    tokenDecimals: 18,
+  }),
+});
+/** The accepted `ARCBLOG_CHAIN_ENV` values. */
+export const CHAIN_ENVS = Object.keys(CHAIN_PRESETS);
+/**
+ * The real-chain "triple" (L-R15-2 item 3): all three must resolve before any
+ * real-chain action, otherwise the CLI fails closed and writes nothing.
+ * `mnemonic` is the wallet, not part of the triple — the adapter still refuses
+ * to sign without it (`CHAIN_UNAVAILABLE`).
+ */
+export const REAL_CHAIN_REQUIRED = ['network', 'chainHost', 'tokenId'];
+
+/** First non-empty value in priority order, remembering where it came from. */
+function firstSet(candidates) {
+  for (const [source, raw] of candidates) {
+    if (raw === undefined || raw === null) continue;
+    const value = String(raw).trim();
+    if (value) return { value, source };
+  }
+  return { value: '', source: 'default' };
+}
+
+/** The selected `ARCBLOG_CHAIN_ENV` preset; an unknown value fails closed. */
+export function chainPreset(env = process.env.ARCBLOG_CHAIN_ENV) {
+  const requested = String(env ?? '').trim();
+  if (!requested) return { env: '', preset: null };
+  ensure(
+    CHAIN_ENVS.includes(requested),
+    `ARCBLOG_CHAIN_ENV must be one of: ${CHAIN_ENVS.join(', ')} (got "${requested}")`,
+  );
+  return { env: requested, preset: CHAIN_PRESETS[requested] };
+}
+
+/**
+ * Chain settings from flags + env. Kept in one place so both CLIs agree.
+ *
+ * Priority (L-R15-2 item 2): CLI flag ＞ explicit `ARCBLOG_CHAIN_*` ＞
+ * `config/roles.json` (read-only, passed in as `roleConfig`) ＞
+ * `ARCBLOG_CHAIN_ENV` preset ＞ mock default. The returned key set is
+ * deliberately unchanged (the mock path stays byte-identical when no
+ * `ARCBLOG_CHAIN_*` is set).
+ */
+export function resolveChainOptions(opts = {}, { roleConfig = null, role = '' } = {}) {
   const adapter = String(opts.adapter ?? process.env.ARCBLOG_CHAIN_ADAPTER ?? 'mock').trim();
   ensure(CHAIN_ADAPTERS.includes(adapter), `--adapter must be one of: ${CHAIN_ADAPTERS.join(', ')}`);
+  const { env, preset } = chainPreset();
+
+  const chainHost = firstSet([
+    ['flag', optString(opts['chain-host'])],
+    ['env', process.env.ARCBLOG_CHAIN_HOST],
+    ['preset', preset?.chainHost],
+  ]);
+  const chainId = firstSet([
+    ['flag', optString(opts['chain-id'])],
+    ['env', process.env.ARCBLOG_CHAIN_ID],
+    ['preset', preset?.chainId],
+  ]);
+  const network = firstSet([
+    ['flag', optString(opts.network)],
+    ['env', process.env.ARCBLOG_CHAIN_NETWORK],
+    ['roles', roleConfig?.[role]?.network],
+    ['preset', preset?.network],
+  ]);
+  const tokenId = firstSet([
+    ['flag', optString(opts['token-id'])],
+    ['env', process.env.ARCBLOG_CHAIN_TOKEN_ID],
+    ['preset', preset?.tokenId],
+  ]);
+  const decimals = firstSet([
+    ['flag', optString(opts['token-decimals'])],
+    ['env', process.env.ARCBLOG_CHAIN_TOKEN_DECIMALS],
+    ['preset', preset?.tokenDecimals],
+  ]);
+
+  // A record-sourced value must agree with the selected preset: mixing
+  // config/roles.json with another environment is exactly the silent
+  // mis-target L-R15-2 forbids. Explicit flags/env stay authoritative and are
+  // never "corrected".
+  if (preset) {
+    const conflicting = [
+      ['network', network],
+      ['chainHost', chainHost],
+      ['tokenId', tokenId],
+    ].filter(([key, picked]) => picked.source === 'roles' && String(picked.value) !== String(preset[key]));
+    ensure(
+      conflicting.length === 0,
+      `ARCBLOG_CHAIN_ENV=${env} conflicts with config/roles.json (${conflicting
+        .map(([key, picked]) => `${key}=${picked.value}`)
+        .join(', ')}): pass the value explicitly (--network / ARCBLOG_CHAIN_NETWORK) or re-run ` +
+        `node scripts/arcblog-roles.mjs init --network ${env}`,
+    );
+  }
+
   return {
     adapter,
-    chainHost: String(opts['chain-host'] ?? process.env.ARCBLOG_CHAIN_HOST ?? '').trim(),
-    chainId: String(opts['chain-id'] ?? process.env.ARCBLOG_CHAIN_ID ?? '').trim(),
-    network: String(opts.network ?? process.env.ARCBLOG_CHAIN_NETWORK ?? '').trim() || (adapter === 'mock' ? 'mock' : ''),
-    tokenId: String(opts['token-id'] ?? process.env.ARCBLOG_CHAIN_TOKEN_ID ?? '').trim(),
-    tokenDecimals: Number(opts['token-decimals'] ?? process.env.ARCBLOG_CHAIN_TOKEN_DECIMALS ?? 18),
+    chainHost: chainHost.value,
+    chainId: chainId.value,
+    network: network.value || (adapter === 'mock' ? 'mock' : ''),
+    tokenId: tokenId.value,
+    tokenDecimals: Number(decimals.value || TOKEN_DECIMALS),
     mnemonic: String(process.env.ARCBLOG_CHAIN_MNEMONIC ?? '').trim(),
     factoryOwner: String(opts['factory-owner'] ?? process.env.ARCBLOG_CHAIN_FACTORY_OWNER ?? '').trim(),
   };
+}
+
+/**
+ * Resolve the chain settings for a CLI call, adding the read-only
+ * `config/roles.json` fallback (spec §9) for the real chain only — the mock
+ * adapter never reads AFS here, so an offline checkout keeps working.
+ */
+export function resolveChainConfig(opts = {}, instance, { role = '' } = {}) {
+  const initial = resolveChainOptions(opts);
+  if (initial.adapter === 'mock') return initial;
+  let roleConfig = null;
+  try {
+    roleConfig = getRoleConfig(instance)?.value ?? null;
+  } catch {
+    roleConfig = null; // an unreadable record simply means "no fallback"
+  }
+  return resolveChainOptions(opts, { roleConfig, role });
+}
+
+/**
+ * Issues that must block a real-chain action **before anything is written**
+ * (fail closed, spec §114/§115). Returns `[]` when the triple is complete.
+ */
+export function validateRealChainConfig(config) {
+  const issues = [];
+  for (const key of REAL_CHAIN_REQUIRED) {
+    if (!String(config?.[key] ?? '').trim()) issues.push(`${key} is missing`);
+  }
+  return issues;
+}
+
+/** The one message every real-chain CLI uses when the triple is incomplete. */
+export function realChainHint(config) {
+  const issues = validateRealChainConfig(config);
+  if (!issues.length) return '';
+  return (
+    `--adapter ocap needs the chain triple (${REAL_CHAIN_REQUIRED.join('/')}): ${issues.join('; ')}. ` +
+    'Set ARCBLOG_CHAIN_ENV=beta|main to fill the defaults, or pass --network / --chain-host / ' +
+    '--token-id (or the matching ARCBLOG_CHAIN_* env) explicitly — ' +
+    'see docs/operations-runbook.md "Chain environment".'
+  );
 }
 
 /** `--now <iso>` moves the mock clock (waiting-period tests). Ignored by ocap. */
@@ -615,9 +780,15 @@ export async function createOcapChain(config, instance) {
   };
 }
 
-/** Open the configured adapter. */
-export async function openChain(opts = {}, instance, { now } = {}) {
-  const config = resolveChainOptions(opts);
-  if (config.adapter === 'mock') return createMockChain({ instance, now });
-  return createOcapChain(config, instance);
+/**
+ * Open the configured adapter.
+ *
+ * `config` is optional: the CLIs resolve it once (through `resolveChainConfig`,
+ * which also enforces the real-chain triple) and pass it in so `config/roles.json`
+ * is read at most once per invocation.
+ */
+export async function openChain(opts = {}, instance, { now, role = '', config } = {}) {
+  const resolved = config ?? resolveChainConfig(opts, instance, { role });
+  if (resolved.adapter === 'mock') return createMockChain({ instance, now });
+  return createOcapChain(resolved, instance);
 }

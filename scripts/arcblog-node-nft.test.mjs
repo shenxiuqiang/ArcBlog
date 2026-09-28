@@ -44,17 +44,45 @@ const {
   validateMintInputs,
   validateNodeFactory,
 } = await import('./lib/nft-factory.mjs');
+// Chain-environment resolution (spec §9 / REQ-023): presets, priority, fail-closed.
+const chain = await import('./lib/chain.mjs');
+const { readJson } = await import('./lib/arc.mjs');
 
-function run(script, args) {
+function run(script, args, extraEnv = {}) {
   return spawnSync(process.execPath, [script, ...args], {
     encoding: 'utf8',
     cwd: repoRoot,
-    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath, ARCBLOG_NODE_FACTORY_SUMMARY_PATH: summaryPath, ARCBLOG_ROLES_PATH: rolesPath },
+    env: { ...process.env, ARCBLOG_MOCK_STATE_PATH: statePath, ARCBLOG_FACTORY_REGISTRY_PATH: registryPath, ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath, ARCBLOG_NODE_FACTORY_SUMMARY_PATH: summaryPath, ARCBLOG_ROLES_PATH: rolesPath, ...extraEnv },
   });
 }
 const json = (text) => JSON.parse(text);
 const cli = (args) => run(nftCli, args);
 const factory = (args) => run(factoryCli, args);
+
+// ---- chain environment harness (REQ-023) ----------------------------------
+// Guard every env mutation so a failing assertion cannot leak into the CLI runs
+// below (the `run()` helper copies process.env into every child process).
+const CHAIN_ENV_KEYS = [
+  'ARCBLOG_CHAIN_ENV',
+  'ARCBLOG_CHAIN_HOST',
+  'ARCBLOG_CHAIN_NETWORK',
+  'ARCBLOG_CHAIN_ID',
+  'ARCBLOG_CHAIN_TOKEN_ID',
+  'ARCBLOG_CHAIN_TOKEN_DECIMALS',
+];
+function withChainEnv(values, fn) {
+  const saved = CHAIN_ENV_KEYS.map((key) => [key, process.env[key]]);
+  for (const key of CHAIN_ENV_KEYS) delete process.env[key];
+  for (const [key, value] of Object.entries(values)) process.env[key] = value;
+  try {
+    return fn();
+  } finally {
+    for (const [key, value] of saved) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+}
 
 test('the studio factory carries the GLofter-compatible on-chain shape (spec §8.1)', () => {
   const spec = buildNodeFactory({ role: 'studio', tokenAddress: '0xABT', issuerAddress: '0xISSUER' });
@@ -117,6 +145,113 @@ test('factory validation fails closed on a broken spec', () => {
 
   const transferable = { ...base, output: { ...base.output, transferrable: false } };
   assert.match(validateNodeFactory(transferable).join('; '), /transferrable/);
+});
+
+// ---- REQ-023: the chain environment is external (spec §9, Lead L-R15-2) ----
+// Resolution: CLI flag ＞ explicit ARCBLOG_CHAIN_* ＞ config/roles.json ＞
+// ARCBLOG_CHAIN_ENV=beta|main preset. A preset only fills defaults, an unknown
+// value and a record that disagrees with the selected preset both fail closed.
+test('chain environment: the preset only fills defaults and explicit values win (REQ-023)', () => {
+  // no ARCBLOG_CHAIN_* at all -> mock defaults, byte-identical to before the change
+  withChainEnv({}, () => {
+    assert.deepEqual(chain.resolveChainOptions(), {
+      adapter: 'mock',
+      chainHost: '',
+      chainId: '',
+      network: 'mock',
+      tokenId: '',
+      tokenDecimals: 18,
+      mnemonic: '',
+      factoryOwner: '',
+    });
+  });
+
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'beta' }, () => {
+    const beta = chain.resolveChainOptions();
+    assert.equal(beta.chainHost, chain.CHAIN_PRESETS.beta.chainHost);
+    assert.equal(beta.network, 'beta');
+    assert.equal(beta.chainId, 'beta');
+    assert.equal(beta.tokenId, chain.CHAIN_PRESETS.beta.tokenId);
+    assert.equal(beta.tokenDecimals, 18);
+  });
+
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'main' }, () => {
+    const main = chain.resolveChainOptions();
+    assert.equal(main.chainHost, chain.CHAIN_PRESETS.main.chainHost);
+    assert.equal(main.tokenId, chain.CHAIN_PRESETS.main.tokenId);
+  });
+
+  // an explicit ARCBLOG_CHAIN_* overrides one key; the rest still comes from the preset
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'beta', ARCBLOG_CHAIN_HOST: 'https://probe.example/api/' }, () => {
+    const mixed = chain.resolveChainOptions();
+    assert.equal(mixed.chainHost, 'https://probe.example/api/');
+    assert.equal(mixed.network, 'beta');
+    assert.equal(mixed.tokenId, chain.CHAIN_PRESETS.beta.tokenId);
+  });
+
+  // ...and a CLI flag outranks both
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'beta', ARCBLOG_CHAIN_HOST: 'https://probe.example/api/' }, () => {
+    const flagged = chain.resolveChainOptions({ 'chain-host': 'https://flag.example/api/' });
+    assert.equal(flagged.chainHost, 'https://flag.example/api/');
+    assert.equal(flagged.network, 'beta');
+  });
+});
+
+test('chain environment: an unknown preset and an incomplete real-chain triple fail closed (REQ-023)', () => {
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'bogus' }, () => {
+    assert.throws(
+      () => chain.resolveChainOptions(),
+      (err) => err.code === 'VALIDATION' && /must be one of: beta, main/.test(err.message),
+    );
+  });
+
+  withChainEnv({}, () => {
+    const config = chain.resolveChainOptions({ adapter: 'ocap' });
+    assert.deepEqual(chain.validateRealChainConfig(config), [
+      'network is missing',
+      'chainHost is missing',
+      'tokenId is missing',
+    ]);
+    assert.match(chain.realChainHint(config), /chain triple \(network\/chainHost\/tokenId\)/);
+  });
+});
+
+test('chain environment: config/roles.json is the only record fallback and must agree with the preset (REQ-023)', () => {
+  const roleConfig = { studio: { network: 'main', collectionAddress: 'zCollection' }, hub: { network: 'main' } };
+
+  withChainEnv({}, () => {
+    const fallback = chain.resolveChainOptions({ adapter: 'ocap' }, { roleConfig, role: 'studio' });
+    assert.equal(fallback.network, 'main', 'the record supplies the network when nothing else does');
+    // a collection address is a factory/collection, never the mint token
+    assert.equal(fallback.tokenId, '');
+  });
+
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'main' }, () => {
+    assert.equal(chain.resolveChainOptions({ adapter: 'ocap' }, { roleConfig, role: 'studio' }).network, 'main');
+  });
+
+  withChainEnv({ ARCBLOG_CHAIN_ENV: 'beta' }, () => {
+    assert.throws(
+      () => chain.resolveChainOptions({ adapter: 'ocap' }, { roleConfig, role: 'studio' }),
+      (err) => err.code === 'VALIDATION' && /conflicts with config\/roles\.json/.test(err.message),
+    );
+  });
+});
+
+test('live: a real-chain action without the chain triple exits non-zero and writes nothing (REQ-023)', () => {
+  const tripleRegistry = `/instance/app/arcblog/config/nft-factories-triple-${stamp}.json`;
+  const res = run(factoryCli, ['create', '--role', 'studio', '--adapter', 'ocap'], {
+    ARCBLOG_FACTORY_REGISTRY_PATH: tripleRegistry,
+    ARCBLOG_CHAIN_ENV: '',
+    ARCBLOG_CHAIN_HOST: '',
+    ARCBLOG_CHAIN_NETWORK: '',
+    ARCBLOG_CHAIN_TOKEN_ID: '',
+  });
+  assert.equal(res.status, 1, res.stdout);
+  const out = json(res.stderr);
+  assert.equal(out.code, 'VALIDATION');
+  assert.match(out.error, /network is missing; chainHost is missing; tokenId is missing/);
+  assert.equal(readJson(tripleRegistry), null, 'a refused real-chain action must not create a registry');
 });
 
 test('capacity follows the shared formula, capped at 10000 studios', () => {
@@ -200,8 +335,8 @@ test('live: factory creation is recorded and duplicates are refused (mock chain)
   assert.equal(shown.factories.hub.moniker, 'ArcBlogHubNode');
   assert.equal(shown.factories.hub.capacity, capacityForStake(4));
 
-  // the real chain needs its libraries: never a silent success
-  const ocap = factory(['create', '--role', 'studio', '--adapter', 'ocap', '--token-id', '0xABT', '--chain-host', 'http://localhost:9999']);
+  // the real chain needs its libraries AND the chain triple: never a silent success
+  const ocap = factory(['create', '--role', 'studio', '--adapter', 'ocap', '--network', 'beta', '--token-id', '0xABT', '--chain-host', 'http://localhost:9999']);
   assert.equal(ocap.status, 1);
   assert.equal(json(ocap.stderr).code, 'CHAIN_UNAVAILABLE');
   assert.match(json(ocap.stderr).error, /@ocap\/client/);

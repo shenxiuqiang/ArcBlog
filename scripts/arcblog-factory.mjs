@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { FACTORY_REGISTRY_PATH, NODE_FACTORY_SUMMARY_PATH, openChain, resolveChainOptions } from './lib/chain.mjs';
+import { FACTORY_REGISTRY_PATH, NODE_FACTORY_SUMMARY_PATH, openChain, realChainHint, resolveChainConfig, validateRealChainConfig } from './lib/chain.mjs';
 import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, renderTemplate, validateNodeFactory } from './lib/nft-factory.mjs';
 
 function readRegistry(instance) {
@@ -159,14 +159,13 @@ function commandSvg(opts) {
 async function commandCreate(opts, instance) {
   const role = optString(opts.role).trim();
   ensure(ROLE_FACTORIES[role], '--role is required (studio|hub)');
-  const config = resolveChainOptions(opts);
-  if (config.adapter === 'ocap') {
-    ensure(config.tokenId, '--token-id (or ARCBLOG_CHAIN_TOKEN_ID) is required for the real chain');
-    ensure(config.chainHost, '--chain-host (or ARCBLOG_CHAIN_HOST) is required for the real chain');
-  }
+  const config = resolveChainConfig(opts, instance, { role });
+  // Fail closed BEFORE anything is read/written for the chain (L-R15-2 item 3):
+  // a real-chain action without the triple (network/chainHost/tokenId) never runs.
+  if (config.adapter === 'ocap') ensure(validateRealChainConfig(config).length === 0, realChainHint(config));
 
   const current = readRegistry(instance);
-  const chain = await openChain(opts, instance);
+  const chain = await openChain(opts, instance, { role, config });
   const tokenId = config.tokenId || current.registry.tokenId || `mock-token-${role}`;
   if (typeof chain.ensureToken === 'function') chain.ensureToken(tokenId, config.tokenDecimals);
 
@@ -241,9 +240,9 @@ async function commandCreate(opts, instance) {
 
 /** mock only: wipe the simulated ledger (factories, mints, stakes, balances). */
 async function commandReset(opts, instance) {
-  const config = resolveChainOptions(opts);
+  const config = resolveChainConfig(opts, instance);
   if (config.adapter !== 'mock') fail('VALIDATION', 'reset is only available with --adapter mock');
-  const chain = await openChain(opts, instance);
+  const chain = await openChain(opts, instance, { config });
   const result = chain.reset();
   // The registry points at factory addresses that only exist on the simulated
   // chain, so a reset that kept them would leave `create` refusing to re-create
@@ -298,12 +297,19 @@ ${FACTORY_REGISTRY_PATH}.
 Options:
   --instance <name>          Arc instance (optional)
   --adapter mock|ocap        mock = local simulation (default), ocap = real chain
-  --token-id <address>       ABT token used to mint (real chain: required)
+  --token-id <address>       mint token (real chain: required; see "Chain environment")
   --chain-host <url>         GraphQL endpoint (real chain: required)
-  --stake <amount>           ABT staked per node (default 1; drives hub capacity)
-  --pricing-basic|pro|premium|enterprise <abt-per-day>   hub tiers
+  --stake <amount>           token staked per node (default 1; drives hub capacity)
+  --pricing-basic|pro|premium|enterprise <per-day>        hub tiers
   --rules <text>             hub rules recorded in the NFT
   --update                   Replace an existing local factory record
+
+Chain environment (switching chains = changing env, never code):
+  ARCBLOG_CHAIN_ENV=beta|main   fills the defaults (host / network / token id)
+  ARCBLOG_CHAIN_HOST|NETWORK|CHAIN_ID|TOKEN_ID|TOKEN_DECIMALS|MNEMONIC
+                                explicit values always win over the preset
+  --adapter ocap fails closed unless network + chain-host + token-id resolve.
+  See docs/operations-runbook.md "Chain environment".
 `);
 }
 

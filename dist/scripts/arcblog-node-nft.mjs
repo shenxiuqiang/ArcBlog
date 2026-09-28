@@ -29,8 +29,10 @@ import {
   NODE_FACTORY_SUMMARY_PATH,
   NODE_NFT_STATE_PATH,
   openChain,
-  resolveChainOptions,
+  realChainHint,
+  resolveChainConfig,
   resolveClock,
+  validateRealChainConfig,
 } from './lib/chain.mjs';
 import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, buildMintInputs, capacityForStake } from './lib/nft-factory.mjs';
 import { getSigningKey } from './lib/content-sign.mjs';
@@ -168,9 +170,12 @@ function recordRole(state, role, patch) {
 async function roleContext(opts, instance) {
   const role = optString(opts.role).trim();
   ensure(CHAIN_ROLES.includes(role), `--role must be one of: ${CHAIN_ROLES.join(', ')}`);
-  const config = resolveChainOptions(opts);
+  const config = resolveChainConfig(opts, instance, { role });
+  // Fail closed BEFORE any chain write (L-R15-2 item 3): the real chain needs
+  // network + chainHost + tokenId to resolve.
+  if (config.adapter === 'ocap') ensure(validateRealChainConfig(config).length === 0, realChainHint(config));
   const clock = resolveClock(config.adapter, opts);
-  const chain = await openChain(opts, instance, { now: clock });
+  const chain = await openChain(opts, instance, { now: clock, role, config });
   return { role, chain, config, clock };
 }
 
@@ -451,13 +456,19 @@ Options:
   --instance <name>            Arc instance (optional)
   --adapter mock|ocap          mock = local simulation (default), ocap = real chain
   --role studio|hub            which node identity
-  --stake <amount>             ABT staked (default 1)
+  --stake <amount>             token staked (default 1)
   --asset <address>            NFT asset address (defaults to the recorded one)
   --owner <address>            wallet that owns the NFT (mock default: mock-owner)
   --pk <pem|file>              public key bound into the NFT (default: §67 signing key)
   --waiting-period <days>      revoke waiting period (default 30)
   --now <iso>                  mock only: move the clock to test the waiting period
-  --pricing-basic|pro|premium|enterprise <abt/day>   hub tiers stored in the NFT
+  --pricing-basic|pro|premium|enterprise <per-day>   hub tiers stored in the NFT
+
+Chain environment (switching chains = changing env, never code):
+  ARCBLOG_CHAIN_ENV=beta|main  fills the defaults (host / network / token id);
+  explicit ARCBLOG_CHAIN_* / flags always win; --adapter ocap fails closed
+  unless network + chain-host + token-id resolve. See docs/operations-runbook.md
+  "Chain environment".
 `);
 }
 

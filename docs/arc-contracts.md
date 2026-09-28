@@ -1579,3 +1579,26 @@ admin / 1803×908）：
    解法是**用布局包一层**（`row cross=start`）而不是给 action 写 `alignSelf`。这是 §29.6（`minHeight` 被丢）的同一家族。
 3. **`afs-list itemStyle=row` 给每个行子元素 `flex: 1 1 0%`**：页内再写 `flexGrow: 0` 只把 grow 归零，**basis 仍是 0%** → 元素宽度塌成 0、文字外溢压住旁边的按钮（BUG-033：`?page=pages` 的 `View` 链接 cw=0 / sw=31，实测压住 Take offline 按钮 20.92×16px）。
    正确写法是 **`flexBasis: "auto"`**（hub 内容索引行用此法把 0px 的 `.aup-time` 恢复到 64.38px，溢出 28→0）。
+
+---
+
+## 30. 链环境与「顶栏间距」两条实施约束（Round 15 实测）
+
+### 30.1 链选择必须由**环境**决定，代码里只能有「预设」不能有默认路径
+
+`scripts/lib/chain.mjs` 导出 `CHAIN_PRESETS`：`beta`（`https://beta.abtnetwork.io/api/`，测试链代币 TBA 型）
+与 `main`（`https://main.abtnetwork.io/api/`，正式链代币 ABT 型），各含 `chainHost / network / chainId /
+tokenId / tokenDecimals`。选择顺序（**实测**）：显式 `ARCBLOG_CHAIN_*` > `ARCBLOG_CHAIN_ENV` 预设 >
+`config/roles.json`；三件套（`network` + `chainHost` + `tokenId`）任一缺失、或 `config` 里的 `network`
+与所选预设冲突 → **真链动作 fail-closed 且不写任何东西**（mock 适配器不受影响）。
+**页面与 DSL 永远不得出现链地址或代币符号** —— 控制台只读公开投影 `node/factories.json`。
+（`CLAUDE.md` 的「Chain environment」段与 `docs/operations-runbook.md` 的两套示例是操作入口。）
+
+### 30.2 给顶栏下沿加间距只能「高度中性」，否则会毁掉控制台的单滚动容器
+
+平台顶栏固定 48px，wrapper 的 `view style={gap:"0"}` 让内容紧接着它，实测 `headerBottom = firstTop = 48`
+（公共页与控制台页 `gap = 0`）。**干跑证伪**：给「顶栏之后的第一个子项」统一加 `padding-top: 20px`，
+控制台的运行时滚动容器会从 `908/908`（锁定无滚动）变成 `928/908` → 整页出现纵向滚动条，侧栏底边被推到视口外。
+**可用写法**：只在公共页生效（bridge CSS 用 `#aup-display:has(.aup-app-footer…)` 限定）并做成
+**高度中性** —— `padding-top: 20px` 配 `margin-bottom: -20px`，改前后 `documentElement` 的
+`scrollWidth/scrollHeight` 逐值不变；控制台页一行都不受影响。
