@@ -3,7 +3,7 @@
 | 字段 | 值 |
 | ---- | -- |
 | 日期 | **2026-09-28**（Round 20 计划节由 PM `task-83` 于轮初写） |
-| Lead 提交 | ⬜ **待 Lead 轮末填写** |
+| Lead 提交 | `af28293` — *test(network): two-node Studio/Hub testbed proves there is no cross-node sync yet*（137 个非 dist 产物路径 + dist 镜像）。**Lead 收口门**：`arc dsl validate --json` issues=[]、`npm test` **35/35**、`console-nav --check` pages 21、`generate --check` 无漂移、build 后 `.aup`/`.web` 对 dist 双向一致、`blocklet.yaml` 未改、**`arc service list` 只剩 default（4941 无监听、`~/.afs-hub` 已消失）**。**Lead 落笔**：`arc-contracts.md` **§35**（命名实例=真实隔离单元 + 独立 DID；`--blocklet` 不等于已挂载要 `arc blocklet run`；`hub sync` 是声明值（Hub 侧 AFS 逐字节不变、无传输层）；`arc space sync` 远程端点受限未验证（证书/授权超时）；**`.aup` 改动对运行中 daemon 不生效 → 必须重启**；两台 daemon 419MB/349MB）+ checklist 维护记录一行（计数零变化 ✅82 / 🟡7 / ⬜19 / ⚪2 = 110）。**新立项未派发**：REQ-022b 节点间 AFS 客户端 |
 | 清单变化 | **PM 本轮零编辑 checklist**。**基线口径**：checklist 现状 = **✅ 82 ｜ 🟡 7 ｜ ⬜ 19 ｜ ⚪ 2 = 110**（R18 轮末已勘误；沿用的「104」为 R17 期基线、已过时）。**本轮预期状态列零变化**：REQ-022 是**探针 / 取证轮**（`F 组「网络与发现」`的行**不因本轮升级**——跨节点真同步仍未实现）、BUG-052 / BUG-053 是**缺陷修复**（不改变所在行 ✅ 判定）；建议（Lead 落笔）**只更新第 103 行备注 + 维护记录一行**（文案见 [backlog](../backlog.md)「本轮：Round 20」末节） |
 | 结论 | ✅ **已回填（轮末，PM `task-86`，2026-09-28T18:26Z 前后）—— 放行（QA-016 `VERDICT=pass, BLOCKING=0`，阻断 0）**：主项 **REQ-022 = PM 判「达标（放行）」**（A1–A3/A5/A6/A8/A9/A10 通过、A4 在最小集内通过；**E-1/E-2 实证、E-3 受限未验证**；结论三选一 = **① 平台支持 + 我们未实现**）；**BUG-052 ✅ 关闭**、**BUG-053 ✅ 关闭**（→ **BUG-048 C1–C6 全过 = ✅ 关闭**）；新增 **2 条 P3**（BUG-055 内联闭环 / BUG-056 → R21）；**P0=0 / P1=0**；**回滚干净**（只剩 `default`、4941 无监听、`~/.afs-hub` 已删）；**新立项 [REQ-022b](../requirements/REQ-022b-inter-node-afs-client.md)（🟨 排队）** |
 | 性质 | **精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 16/14**（`max_goal_rounds=14`）：**轮次上限已达，按用户指令继续**（**Lead 口径**——PM 未独立复核 goal 计数器）；**PM 不调用 `team_task_*`**（任务板由 Lead 维护） |
