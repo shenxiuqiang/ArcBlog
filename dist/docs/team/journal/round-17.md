@@ -3,7 +3,7 @@
 | 字段 | 值 |
 | ---- | -- |
 | 日期 | **2026-09-28**（Round 17 计划节由 PM `task-69` 于轮初写） |
-| **Lead 提交** | **（留空，由 Lead 轮末填）** |
+| **Lead 提交** | `ffdb8e9` — *docs(chain): REQ-021 stage 1 — what the chain can and cannot do for orders and refunds*（75 个非 dist 产物路径 + dist 镜像）。**收口门**（无 live 层）：validate issues=[]、`npm test` 28/28、`console-nav --check` pages 21、`generate --check` 无漂移、build 后 `.aup` 与 `.web` 对 dist 双向一致、`.gate-lock` 未入库。**Lead 追加落笔**：`arc-contracts.md` §32 + checklist 三行备注 + 维护记录（状态列零变化 ✅82/🟡7/⬜13/⚪2）。**待决策**：R18-1（BUG-039 一次性可回滚页面实验）、REQ-021 阶段二 P2-a（唯一必须真花钱的批准点）、BUG-043 写范围授权。**sha 记录提交**：`aeb0a42` |
 | 清单变化 | **PM 本轮零编辑 checklist**。基线（R16 建议落笔后）= **✅ 82 ｜ 🟡 7 ｜ ⬜ 13 ｜ ⚪ 2 = 104**。**本轮状态列零变化（已确认）**：REQ-021 阶段一 = 调研 / 设计 / 只读探针 → 第 **135** 行「Payment Adapter（§44）」**保持 🟡**（真链支付 = 阶段二 P3）；第 **113/114** 行（§15.7 订单 / 账本）**保持 ✅**；第 **132/133/134/136/137/141** 行（§41/§42/§89/§43/§29/§90）**一并保持 ✅**（本轮零实现、零降级）。**建议（Lead 落笔）**：第 135 行 + 第 141 行 + 第 133 行各补一句备注 + **维护记录一行**（文案见 [backlog](../backlog.md)「Round 17 交付结果」§5） |
 | 结论 | ✅ **放行（QA-013 [round-17.md](../test-reports/round-17.md) 末行 `VERDICT=pass, BLOCKING=0`；阻断 0，无未裁决 P0/P1）**；**主项 REQ-021 阶段一 = PM 判「达标（合格）」**（[REQ-021 §6](../requirements/REQ-021-chain-backed-orders.md) 五要件逐条通过，见下方 §3）；**同轮 BUG-039 = 机制已证实 / 语言层可表达 / 运行时优先级受限未验证 → 维持 P2、转平台边界口径、保留绕过、零页面改动**；**新增 4 条 BUG** → 041/042/044 **本轮修（PM 内联勘误 → REQ-021 §0）**、043 **下一轮修（R18-4）** |
 | 性质 | **精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 12/14**（`max_goal_rounds=14`；**Lead 口径**——PM 未独立复核 goal 计数器）；**PM 不调用 `team_task_*`**（任务板由 Lead 维护） |
