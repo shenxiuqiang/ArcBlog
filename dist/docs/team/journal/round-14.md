@@ -1,7 +1,7 @@
 # Round 14 — 精简轮：订单 / 账本界面 §15.7（+ CLI `ledger list --type` + BUG-029）+ 已稳定页像素走查补充与新页骨架建议
 
 - **日期**：2026-09-28（**计划节 + 结果节均已写**；结果节由 PM `task-48` 在 QA-009 报告就绪后写回）
-- **Lead 提交**：（**留空，由 Lead 在轮末填**）
+- **Lead 提交**：`843b3d3` — *feat(console): orders + ledger surfaces, UI-wide audit and fixes (R14 + R14F)*（79 个非 dist 产物路径 + dist 镜像；`docs/dsh-workflow-and-ralph.md` 与其 dist 镜像**未纳入**）。**Lead 收口门**（无 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`node scripts/arcblog-console-nav.mjs --check` pages **21**、`arc blocklet build` 后 `diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` 一致（build 晚于所有人写盘）、`.gate-lock` 未入库。**Lead 追加落笔**：checklist 第 113/114 行 🟡→✅（+降级登记）→ **✅81 / 🟡8 / ⬜13 / ⚪2 = 104**（D 组 20/4）+ 维护记录一行；`docs/arc-contracts.md` **§29.8**（style 转发白名单 67 键 / action 路径丢 `alignSelf` / `itemStyle=row` 的 `flex:1 1 0%` 与页内 `flexGrow:0` 冲突 → 用 `flexBasis:auto`）。**新增用户需求已落板待开工**：REQ-019（控制台按钮化，去「复制命令」主路径）、REQ-020（顶栏与内容间距）、REQ-021（订单链上查询 + 退款链上转账，先调研）
 - **清单变化**（**PM 建议，checklist 由 Lead 落笔**）：**终态建议（R14 + R14F 合并）＝ 第 113 行「订单管理（含六问追溯）」🟡→✅（R14F 前置已解除）+ 第 114 行「结算与账本（append-only）」🟡→✅** ⇒ **✅ 79→81 ｜ 🟡 10→8 ｜ ⬜ 13 ｜ ⚪ 2 = 104**（D 组 18→20 ✅ / 6→4 🟡）。**R14 阶段建议（中间态，保留备查）**：第 114 行 🟡→✅ + 第 113 行**暂不落 ✅**（阻断 = BUG-030 P1「相对时间」）⇒ **✅80 / 🟡9**。**REQ-018 / UI-012 属质量 / 设计层 → 不新增、不改变任何清单行**。**PM 独立复算（真实输出见「PM 轮末只读复核门」节 + R14F 节）**：R14 开工基线 **✅79 / 🟡10 / ⬜13 / ⚪2 = 104**，与 `docs/ArcBlog-feature-checklist.md:29-41` 总览表**逐项相等（差异 0）**；第 113/114 行**均仍 🟡**（Lead 尚未落笔）。
 - **轮次性质**：**精简轮**（用户 2026-09-27 裁定，持续有效）；**自动续轮 7/8**（R13 收口后由 Lead 重新武装长时目标并建 R14 任务板 `task-44`…`task-48`，下发 **L-R14-1…L-R14-4**）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）。
 

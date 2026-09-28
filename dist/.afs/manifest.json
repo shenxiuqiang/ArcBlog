@@ -1990,9 +1990,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 24557,
+      "size": 24548,
       "contentType": "text/markdown",
-      "sha256": "93d638e0c8cbd322c624c7a35d2063ac9c997f979454ffe712f5799fd489c1c4"
+      "sha256": "ca480fad37ae1709e79b2bc5c81a7db7045c932dd79b895df50562421a01fa37"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2020,9 +2020,9 @@
     },
     {
       "path": "docs/team/journal/round-14.md",
-      "size": 45981,
+      "size": 47019,
       "contentType": "text/markdown",
-      "sha256": "825c3fa0c6547485782b1a7e784fb32d1f49f510d44e407aba2ffe0253243b6f"
+      "sha256": "cb4a377dc6f54a5ea1d6768a83b6de4f11aaf6434a873023ff7fc50c3f35190d"
     },
     {
       "path": "docs/team/journal/round-6.md",
