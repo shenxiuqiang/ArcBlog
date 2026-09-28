@@ -1,7 +1,7 @@
 # Round 11 — spec 可行性与可运营性重审 + checklist 重基线 + §15.9「通用 General」设置页 + 控制台像素级走查
 
 - **日期**：2026-09-28
-- **Lead 提交**：<未提交，由 Lead 填写>
+- **Lead 提交**：`a193a49` — *feat(product): PM spec review + checklist rebaseline + §15.9 settings page; close the R11 defect set*（115 个路径）。收口门见 journal/README 的同一节；**BUG-027 由 Lead 的 `arc blocklet build` 关闭**（R11F 复验的唯一阻断），此后 R11F 记为「功能面 5/5 + V 批 7/7 复验通过、构建一致性由 Lead 修复」
 - **清单变化**：✅ 80→75 ｜ 🟡 9→14 ｜ ⬜ 9→13 ｜ ⚪ 2（总行数 100→104）
   - ⚠️ **本轮清单变化全部来自「重基线」（口径诚实化 + 补 4 个此前无行的 spec 承诺），不是实现回退**——本轮唯一实现新增是 §15.9 通用设置页（第 119 行仍 🟡，见下；**R11F/D21① 页 id 已由 `settings-general` 改为 `general`**）。
   - ⚠️ **R11F（修复窗口）后 Round 11 仍未放行**：功能面全闭环，**唯一阻断 = BUG-027（构建产物漂移，一条命令可修）**；详见文末「R11F 修复窗口」节。**checklist 第 119 行是否落 ✅ 见 `backlog.md`「Round 11 checklist 最终建议」**（PM 建议落，但时点在 BUG-027 修复之后）。
