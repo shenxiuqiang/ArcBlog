@@ -1,7 +1,7 @@
 # Round 12 — 可运营性轮（精简轮）：§15.9 诊断与维护页 + §15.4 分类治理界面 + V3 令牌级方案
 
 - **日期**：2026-09-28（计划节 + **结果节均已写回**；本文件代表 Round 12 已由 PM `task-38` 收口，**待 Lead 落笔 checklist + 轮末 `arc blocklet build` + 分拣提交**）
-- **Lead 提交**：*待填（轮末由 Lead 填 commit sha；注意 `dist/docs/**` 必须 build 于 PM/QA/UI 最后一次写盘之后）*
+- **Lead 提交**：`39acf30` — *feat(ops): diagnostics page + category governance; V3 contrast proposal*（87 个产物路径；未跟踪的 `docs/dsh-workflow-and-ralph.md` 与 dist 镜像未纳入）。**Lead 收口门**（无 live 层）：validate issues=[]、npm test 28/28、console-nav --check pages 19、`arc blocklet build` 后 `diff -r .aup dist/.aup` 无输出、`.gate-lock` 未入库。**Lead 追加落笔**：checklist 第 121/103 行 🟡→✅（→ ✅78/🟡11/⬜13/⚪2，D 组 17/7）+ 维护记录；arc-contracts §25.4 / CLAUDE.md 的 lint 计数与节数改为「不写死」；**批准 UI-009 的 V3 路径 A-ii 在 R13 实施**
 - **清单变化（建议，Lead 落笔）**：第 **121** 行「设置 - 诊断与维护」🟡→✅ + 第 **103** 行「分类与标签管理界面」🟡→✅（分类侧收口）→ **✅ 76→78 ｜ 🟡 13→11 ｜ ⬜ 13 ｜ ⚪ 2 = 104 行**（D 组 15→17 ✅ / 9→7 🟡）。**checklist 由 Lead 落笔**，本文件只给建议（含降级/缺口登记，见 `backlog.md`「Round 12 checklist 建议」）。
 - **轮次性质**：**由人类恢复的轮次**（R10 曾声明自动续轮停止；2026-09-28 人类恢复 → Lead 重新武装长时目标 → **当前 5/8**），Lead 已建任务板 `task-34`…`task-38` 并下发 **L-R12-1…L-R12-5**（见 `backlog.md`「本轮：Round 12」）。本轮为**精简轮**（用户 2026-09-27 裁定，持续有效）。
 
