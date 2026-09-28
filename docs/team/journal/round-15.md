@@ -3,7 +3,7 @@
 | 字段 | 值 |
 | ---- | -- |
 | 日期 | **2026-09-28**（Round 15 计划节由 PM `task-62` 于轮初写） |
-| Lead 提交 | **（留空，由 Lead 在轮末填）** |
+| Lead 提交 | `3fdd136` — *feat(chain,ui): env-driven chain selection, factory template cleanup, header spacing*（91 个非 dist 产物路径 + dist 镜像；`docs/dsh-workflow-and-ralph.md` 与其镜像**未纳入**）。**Lead 收口门**（无 live 层）：`arc dsl validate --json` issues=[]、`npm test` 28/28、`node scripts/arcblog-console-nav.mjs --check` pages **21**、`arc dsl generate --check` 无漂移、`arc blocklet build` 后 `diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` 一致、`.gate-lock` 未入库。**Lead 追加落笔**：`docs/arc-contracts.md` **§30**（① 链选择必须由环境决定、代码只放预设、三件套缺失 fail-closed、页面/DSL 不得出现链地址与代币符号；② 顶栏间距只能「高度中性」——全局 `padding-top` 会把控制台运行时滚动容器从 908/908 变成 928/908 并冒出整页滚动条）；`docs/ArcBlog-feature-checklist.md` 第 64 行备注 + 维护记录（计数不变 ✅81/🟡8/⬜13/⚪2） |
 | 清单变化 | **无状态变更（PM 本轮零编辑 checklist）**：基线（R14F 落笔后）= **✅ 81 ｜ 🟡 8 ｜ ⬜ 13 ｜ ⚪ 2 = 104**；**建议 Lead 落笔项 = 仅第 64 行备注补语义分离（hooks ✅ 单收款人全额入厂 / 链上分账 ⬜ 未实现）+ 维护记录一行**，状态列与计数不变（见 §3 与 [backlog](../backlog.md)「Round 15 checklist 建议」） |
 | 结论 | **放行（Pass）**——QA-011 `VERDICT=pass, BLOCKING=0`，`P0=0 / P1=0`；四项全部交付；BUG-035 闭环；新增 3 条 BUG 均裁「下一轮修」 |
 | 性质 | **精简轮**；**自动续轮 9/14**（`max_goal_rounds` 已扩到 14）；**PM 不调用 `team_task_*`**（任务板由 Lead 维护） |
