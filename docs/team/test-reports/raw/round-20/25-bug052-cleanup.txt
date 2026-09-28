@@ -1,0 +1,10 @@
+### ④ state B cleanup: delete the QA-created probe intent — 2026-09-28T18:21:00Z
+$ arc afs exec /blocklets/arcblog/.actions/delete --args {'path':'/instance/app/arcblog/config/media-intents/qa-r20-bug052-probe.json'}
+{"path":"/instance/app/arcblog/config/media-intents/qa-r20-bug052-probe.json"}
+delete_exit=0
+
+$ node scripts/arcblog-media.mjs queue (back to 0)
+count = 0
+
+$ node scripts/arcblog-clean.mjs | found (must stay 206)
+found = 206 removed = 0 byDir = {'config': 132, 'node': 29, 'hub/index': 2, 'drafts': 43}

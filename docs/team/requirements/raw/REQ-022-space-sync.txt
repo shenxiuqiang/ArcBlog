@@ -1,0 +1,91 @@
+### REQ-022 space-sync probe (E-3) — 2026-09-28T17:33:02Z
+$ arc space list -i arcblog-hub
+{"ts":"2026-09-28T17:33:02.470Z","level":"warn","service":"arc-node","ns":"node:boot","message":"[afs-loader] AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories). Set the secret to enable; set AFS_DID_SPACE_REQUIRE_DEID=true to enforce."}
+{"ts":"2026-09-28T17:33:02.470Z","level":"warn","service":"arc-node","ns":"node:boot","message":"[afs-loader] AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories). Set the secret to enable; set AFS_DID_SPACE_REQUIRE_DEID=true to enforce."}
+Instance DID Space  z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg
+  Root: /Users/shenxiuqiang/.afs-hub/.afs/spaces
+  DID                  Files  Last Modified
+  ───                  ─────  ─────────────
+  arcblog                  3  —
+
+User DID Space  z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg
+  Root: /Users/shenxiuqiang/.afs-hub/.afs/spaces
+  DID                  Files  Last Modified
+  ───                  ─────  ─────────────
+  arcblog                  0  —
+exit=0
+
+$ arc space list
+{"ts":"2026-09-28T17:33:02.780Z","level":"warn","service":"arc-node","ns":"node:boot","message":"[afs-loader] AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories). Set the secret to enable; set AFS_DID_SPACE_REQUIRE_DEID=true to enforce."}
+{"ts":"2026-09-28T17:33:02.781Z","level":"warn","service":"arc-node","ns":"node:boot","message":"[afs-loader] AFS_DID_SPACE_SCOPE_SECRET unset — DID Space scope de-identification is OFF (plaintext directories). Set the secret to enable; set AFS_DID_SPACE_REQUIRE_DEID=true to enforce."}
+Instance DID Space  z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ
+  Root: /Users/shenxiuqiang/.afs/spaces
+  DID                  Files  Last Modified
+  ───                  ─────  ─────────────
+  ArcBlog                995  —
+  blocklet-manager         0  —
+  minimal-app              6  —
+  my-app                   6  —
+  showcase-dsl           262  —
+
+User DID Space  z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ
+  Root: /Users/shenxiuqiang/.afs/spaces
+  DID                  Files  Last Modified
+  ───                  ─────  ─────────────
+  ArcBlog                  0  —
+  blocklet-manager         0  —
+  minimal-app              0  —
+  my-app                   0  —
+  showcase-dsl             0  —
+exit=0
+
+--- E-3: the only real mover is arc space sync (probe = --dry-run only; L-R20-2 forbids --mirror / rm)
+HUBSPACE=/Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog
+ls: /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog: No such file or directory
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog --to https://127.0.0.1:4941 --dry-run
+ERROR: arc space sync: both ends are anchored (a remote, or a directory inside a claimed DID Space) at different sub-paths ('/arcblog' and '/'). Neither can be re-rooted, so there is no shared path to diff over. Address the SAME sub-path on both ends — e.g. point the claimed side at <space-root>/arcblog — or use a plain (unclaimed) folder for one end, which has no anchor at all.
+exit=5
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog --to http://127.0.0.1:4941 --dry-run
+ERROR: arc space sync: both ends are anchored (a remote, or a directory inside a claimed DID Space) at different sub-paths ('/arcblog' and '/'). Neither can be re-rooted, so there is no shared path to diff over. Address the SAME sub-path on both ends — e.g. point the claimed side at <space-root>/arcblog — or use a plain (unclaimed) folder for one end, which has no anchor at all.
+exit=5
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog --to https://127.0.0.1:4941/afs --dry-run
+ERROR: arc space sync: both ends are anchored (a remote, or a directory inside a claimed DID Space) at different sub-paths ('/arcblog' and '/afs'). Neither can be re-rooted, so there is no shared path to diff over. Address the SAME sub-path on both ends — e.g. point the claimed side at <space-root>/arcblog — or use a plain (unclaimed) folder for one end, which has no anchor at all.
+exit=5
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/arcblog --to http://arcblog.localhost:4941 --dry-run
+ERROR: arc space sync: both ends are anchored (a remote, or a directory inside a claimed DID Space) at different sub-paths ('/arcblog' and '/'). Neither can be re-rooted, so there is no shared path to diff over. Address the SAME sub-path on both ends — e.g. point the claimed side at <space-root>/arcblog — or use a plain (unclaimed) folder for one end, which has no anchor at all.
+exit=5
+
+--- E-3 control: local folder -> local folder dry-run still works (proves the command itself is fine)
+$ arc space sync --from /Users/shenxiuqiang/.afs/spaces/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/ArcBlog --to /tmp/req022-dst --dry-run
+ERROR: arc space sync: source directory not found: /Users/shenxiuqiang/.afs/spaces/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ/ArcBlog
+exit=0
+
+### corrected anchors: source sub-path /blocklets/arcblog
+$ ls -la /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/blocklets/arcblog
+total 0
+drwxr-xr-x@ 5 shenxiang  staff  160  9月 29 01:33 .
+drwxr-xr-x@ 3 shenxiang  staff   96  9月 29 01:31 ..
+drwxr-xr-x@ 2 shenxiang  staff   64  9月 29 01:31 config
+drwxr-xr-x@ 3 shenxiang  staff   96  9月 29 01:31 system
+drwxr-xr-x@ 2 shenxiang  staff   64  9月 29 01:33 user
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/blocklets/arcblog --to https://127.0.0.1:4941/blocklets/arcblog --dry-run
+ERROR: unknown certificate verification error
+exit=5
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/blocklets/arcblog --to http://127.0.0.1:4941/blocklets/arcblog --dry-run
+Opening browser for authorization...
+http://127.0.0.1:4941/.well-known/service/gen-access-key?__token__=e98b8bc7-1c18-4945-86a2-83495234676f&source=afs+cli
+ERROR: Authorization timed out (5 minutes). Try again or use --token.
+exit=5
+
+$ arc space sync --from /Users/shenxiuqiang/.afs-hub/.afs/spaces/z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg/blocklets/arcblog --to http://arcblog.localhost:4941/blocklets/arcblog --dry-run
+Opening browser for authorization...
+http://arcblog.localhost:4941/.well-known/service/gen-access-key?__token__=ed09dc86-1af8-4fdb-a331-7be6509db1c8&source=afs+cli
+
+--- operator note: the third probe ( 'http://arcblog.localhost:4941/...') was KILLED by the operator mid-authorization (the CLI blocks on 'Opening browser for authorization…' for 5 minutes). No sync ran: every probe carried --dry-run.
+E-3 RESULT: REMOTE ENDPOINT = 受限未验证 (https: cert verification error; http: needs an interactive browser access-key grant, timed out 5 min). Local additivity of arc space sync is already measured in REQ-028 C; --mirror / rm were NOT run (L-R20-2).

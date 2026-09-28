@@ -1,0 +1,40 @@
+### REQ-022 rollback plan (NOT executed yet — QA task-85 still needs the Hub alive) — 2026-09-28T17:38:51Z
+
+Order is mandatory (L-R20-1): stop (reversible) -> QA evidence -> delete (IRREVERSIBLE).
+The Lead executes stop/delete by default (REQ-022 §8.5); Dev keeps the instance alive until QA finishes.
+
+# 1) R1 stop — reversible, record + data kept
+$ arc service stop -i arcblog-hub
+EXPECT: 'Stopped arcblog-hub' / exit 0
+$ arc service status -i arcblog-hub
+EXPECT: no longer 'up' (stopped / not running), exit 0
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN
+EXPECT: EMPTY output, exit 1
+
+# 2) R2 delete — IRREVERSIBLE (record + data)
+$ arc service delete -i arcblog-hub
+EXPECT: exit 0; add --force only if the process is still running ('Stop a running instance before deleting it')
+
+# 3) R3 back to the A1 baseline: only 'default' remains, and its id/port/home/pid semantics are unchanged
+$ arc service list --json
+EXPECT: instances == [ default ] with id 37a8eec1ce19687d, port 4939, home /Users/shenxiuqiang, spaceRoot /Users/shenxiuqiang/.afs/spaces
+        (pid 46916 was the Round-20 baseline; a live pid may differ only if the operator restarted it — we did NOT)
+
+# 4) R4 4941 has no listener
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN
+EXPECT: EMPTY output, exit 1 (same as the Round-20 baseline)
+$ arc service url -i arcblog-hub
+EXPECT: non-zero exit / unknown instance
+
+# 5) R5 ~/.afs-hub disposition
+$ ls -la /Users/shenxiuqiang/.afs-hub
+EXPECT: either 'No such file or directory' (deleted with the instance) or a residual listing to be logged row by row
+        (Round-20 baseline: the directory did NOT exist; created by 'arc service start' at 17:30:54 UTC)
+
+# 6) R6 'arc service gc' is NOT a rollback tool (it only drops registry records whose process is gone)
+# 7) R7 default (4939) was never stopped / restarted / deleted in this round.
+
+--- ROUND-20 BASELINE (for the before/after comparison above) ---
+instance    name         id                port  home                   spaceRoot                       pid    advertise
+Studio      default      37a8eec1ce19687d  4939  /Users/shenxiuqiang    /Users/shenxiuqiang/.afs/spaces  46916  true
+Hub         arcblog-hub  fce3c9fe7b130f16  4941  /Users/shenxiuqiang/.afs-hub  /Users/shenxiuqiang/.afs-hub/.afs/spaces  21809  false

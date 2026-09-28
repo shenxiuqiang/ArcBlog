@@ -1,0 +1,18 @@
+### ⑥ BUG-055 supplementary: does document.querySelectorAll('p').length discriminate queue state? — 2026-09-28T18:23:16Z
+$ node scripts/arcblog-media.mjs queue   (state A: empty)
+count = 0
+ "globalRoleItems": 0,
+ "pTagCount": 0,
+ "probeRowPresent": false
+
+$ node scripts/arcblog-media.mjs request --action remove --id qa-r20-bug052-probe2 --intent-id qa-r20-bug052-probe2   (state B: 1 record)
+request_exit=0
+count = 1
+ "globalRoleItems": 0,
+ "pTagCount": 0,
+ "probeRowPresent": true
+
+$ cleanup: arc afs exec .actions/delete the probe2 record
+{"path":"/instance/app/arcblog/config/media-intents/qa-r20-bug052-probe2.json"}
+delete_exit=0
+queue count back to 0

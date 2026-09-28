@@ -1,0 +1,69 @@
+### ⑥ rollback self-proof — 2026-09-28T18:19:30Z
+$ du -sh /Users/shenxiuqiang/.afs-hub ; ls /Users/shenxiuqiang/.afs-hub
+6.2M	/Users/shenxiuqiang/.afs-hub
+total 0
+drwxr-xr-x@   5 shenxiang  staff   160  9月 29 01:30 .
+drwxr-x---+ 157 shenxiang  staff  5024  9月 29 01:30 ..
+drwxr-xr-x@  15 shenxiang  staff   480  9月 29 02:09 .afs
+drwxr-xr-x@   6 shenxiang  staff   192  9月 29 01:30 .afs-config
+drwxr-xr-x@   4 shenxiang  staff   128  9月 29 01:38 .afs-data
+
+$ arc service list --json | python3 (names/ports before stop)
+[('arcblog-hub', 4941, 21809, 'up'), ('default', 4939, 46916, 'up')]
+
+$ arc service stop -i arcblog-hub
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+Service stopped: arcblog-hub
+stop_exit=0
+$ arc service status -i arcblog-hub
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+  Log:  /Users/shenxiuqiang/.afs-hub/.afs/daemon.log
+  Instance: arcblog-hub
+  ID:       fce3c9fe7b130f16
+  Status:   stopped
+  PID:      21809
+  Port:     4941
+  URL:      http://127.0.0.1:4941
+  Home:     /Users/shenxiuqiang/.afs-hub
+  Space:    /Users/shenxiuqiang/.afs-hub/.afs/spaces
+  Sources:  /Users/shenxiuqiang/workspace/ArcBlog
+  Version:  2.0.0-beta.50
+  Commit:   c711b9aa (main)
+  Checkout: /Users/shenxiuqiang/workspace/ArcBlog
+  Host:     localhost
+  Started:  2026-09-28T17:30:54.199Z
+  Note:     PID / Port / URL above are the LAST KNOWN values from this instance's previous run, not a live process.
+status_exit=3
+
+$ arc service list --json (after stop)
+[('arcblog-hub', 4941, 21809, 'stopped'), ('default', 4939, 46916, 'up')]
+
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN (after stop, before delete)
+lsof_4941_after_stop_exit=1
+
+$ arc service delete -i arcblog-hub
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+OK arcblog-hub
+delete_exit=0
+
+$ arc service list --json (after delete)
+[('default', '37a8eec1ce19687d', 4939, 46916, 'up', '/Users/shenxiuqiang')]
+
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN (after delete)
+lsof_4941_after_delete_exit=1
+
+$ ls -la /Users/shenxiuqiang/.afs-hub ; du -sh /Users/shenxiuqiang/.afs-hub
+ls: /Users/shenxiuqiang/.afs-hub: No such file or directory
+ls_exit=1
+du: /Users/shenxiuqiang/.afs-hub: No such file or directory
+du_exit=1
+
+$ ps -p 21809
+  PID TTY           TIME CMD
+ps_exit=1

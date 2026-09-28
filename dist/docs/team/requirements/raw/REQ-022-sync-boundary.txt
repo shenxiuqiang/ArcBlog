@@ -1,0 +1,127 @@
+### REQ-022 sync boundary (E-1 / E-2) — 2026-09-28T17:38:35Z
+
+== E-1: hub sync is a declaration — the only writer is the local registration record ==
+$ sed -n '392,411p' scripts/lib/network.mjs   [applySyncReport — pure record update]
+   392	/**
+   393	 * Apply a sync report to a registration (spec §112). The pull itself happens on
+   394	 * the Hub side; the Studio records the outcome so the relationship is auditable.
+   395	 */
+   396	export function applySyncReport(record, { status, version, hash, error, now = nowIso() } = {}) {
+   397	  const syncStatus = str(status) || (str(error) ? 'error' : 'ok');
+   398	  ensure(SYNC_STATUSES.includes(syncStatus), `unknown sync status: ${syncStatus}`);
+   399	  return {
+   400	    ...record,
+   401	    status: syncStatus === 'error' ? 'error' : 'active',
+   402	    updatedAt: now,
+   403	    sync: {
+   404	      status: syncStatus,
+   405	      lastSync: now,
+   406	      lastVersion: version === undefined ? record.sync?.lastVersion ?? null : Number(version),
+   407	      lastHash: str(hash) || record.sync?.lastHash || '',
+   408	      lastError: str(error),
+   409	    },
+   410	  };
+   411	}
+
+$ sed -n '185,198p' scripts/arcblog-network.mjs   [commandHubSync — only writeJson to the local record]
+   185	function commandHubSync(opts, instance) {
+   186	  const hubDid = optString(opts['hub-did']).trim();
+   187	  if (!hubDid) fail('VALIDATION', 'hub did is required (--hub-did)');
+   188	  const existing = getHubRegistration(hubDid, instance);
+   189	  if (!existing) fail('NOT_FOUND', `hub not registered: ${hubDid}`);
+   190	  const updated = applySyncReport(existing.value, {
+   191	    status: optString(opts.status),
+   192	    version: opts.version,
+   193	    hash: optString(opts.hash),
+   194	    error: optString(opts.error),
+   195	  });
+   196	  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+   197	  console.log(JSON.stringify({ ok: true, action: 'hub-sync', registration: updated }, null, 2));
+   198	}
+
+== E-2: there is no transport layer ==
+
+[E-2.1] HTTP/TCP clients in scripts/ (a Studio->Hub push would need one)
+$ grep -rnE "\bfetch\(|require\(['\"](http|https)['\"]\)|from ['\"]node:(http|https|net)['\"]|axios|undici" scripts/
+scripts/arcblog-settings.test.mjs:36:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+scripts/arcblog-permissions.test.mjs:62:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+grep_exit=0
+
+[E-2.2] every read/write of the registration directory (all go through the LOCAL adapter)
+$ grep -rn "HUB_REGISTRATIONS_DIR" scripts/
+scripts/lib/network.mjs:31:export const HUB_REGISTRATIONS_DIR = `${INSTANCE_ROOT}/hub/registrations`;
+scripts/lib/network.mjs:92:      hubRegistrations: HUB_REGISTRATIONS_DIR,
+scripts/lib/network.mjs:141:  return `${HUB_REGISTRATIONS_DIR}/${hubRegistrationId(hubDid)}.json`;
+scripts/lib/network.mjs:273:  for (const entry of list(HUB_REGISTRATIONS_DIR, instance)) {
+scripts/lib/network.mjs:276:    const record = readJson(`${HUB_REGISTRATIONS_DIR}/${id}.json`, instance);
+scripts/arcblog-network.mjs:20:  HUB_REGISTRATIONS_DIR,
+scripts/arcblog-network.mjs:102:  console.log(JSON.stringify({ ok: true, action: existing ? 'hub-update' : 'hub-apply', path: HUB_REGISTRATIONS_DIR, registration: record }, null, 2));
+scripts/arcblog-network.mjs:112:  console.log(JSON.stringify({ ok: true, action: existing ? 'hub-update' : 'hub-add', path: HUB_REGISTRATIONS_DIR, registration: record }, null, 2));
+scripts/arcblog-network.mjs:123:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:135:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:149:      { ok: true, path: HUB_REGISTRATIONS_DIR, count: registrations.length, staleAfterHours, summary, registrations },
+scripts/arcblog-network.mjs:173:    JSON.stringify({ ok: true, action: 'hub-refresh', path: HUB_REGISTRATIONS_DIR, staleAfterHours, count: updated.length, summary, registrations: updated }, null, 2),
+scripts/arcblog-network.mjs:196:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:208:    remove(`${HUB_REGISTRATIONS_DIR}/${existing.value.id}.json`, instance);
+scripts/arcblog-network.mjs:209:    console.log(JSON.stringify({ ok: true, action: 'hub-purge', hubDid, path: `${HUB_REGISTRATIONS_DIR}/${existing.value.id}.json` }, null, 2));
+scripts/arcblog-network.mjs:213:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:293:hub registrations under ${HUB_REGISTRATIONS_DIR}. They are published as AFS
+grep_exit=0
+
+[E-2.3] the stored hub endpoint is never dialed
+$ grep -rnE "\.endpoint|endpoint\)" scripts/arcblog-network.mjs scripts/lib/network.mjs
+scripts/arcblog-network.mjs:101:  const record = putHubRegistration({ hubDid, endpoint: optString(opts.endpoint), relation: 'applied', direction: 'studio' }, instance);
+scripts/arcblog-network.mjs:111:  const record = putHubRegistration({ hubDid, endpoint: optString(opts.endpoint), relation: 'indexed', direction: 'hub' }, instance);
+scripts/arcblog-network.mjs:276:  node scripts/arcblog-network.mjs hub register --hub-did <did> [--endpoint <url>] [--update]   # §70.1 Studio 申请 → applied
+scripts/arcblog-network.mjs:277:  node scripts/arcblog-network.mjs hub add --hub-did <did> [--endpoint <url>] [--update]         # §70.2 Hub 主动收录 → indexed
+scripts/lib/network.mjs:11:// (`/mcp`, AFS RPC, llms.txt) already exposes. `endpoints` stays in the discovery
+scripts/lib/network.mjs:65: * `endpoints` stays empty when no HTTP host fronts the node; `afs` always names
+scripts/lib/network.mjs:69:  const endpoint = str(baseUrl);
+scripts/lib/network.mjs:76:      endpoint,
+scripts/lib/network.mjs:81:    endpoints: { profile: '', posts: '', health: '' },
+scripts/lib/network.mjs:109:  if (!doc.endpoints || typeof doc.endpoints !== 'object') issues.push('endpoints must be an object');
+scripts/lib/network.mjs:153:    endpoint: str(input.endpoint ?? existing?.endpoint),
+scripts/lib/network.mjs:165:    // (endpoint change, sync report) does not silently erase it.
+grep_exit=0
+
+[E-2.4] no cross-instance invocation (the adapter passes -i at most once, and only from the local argv)
+$ grep -rn "'-i'\|\"-i\"\|args.instance\|opts.instance" scripts/lib/arc.mjs scripts/arcblog-network.mjs
+scripts/lib/arc.mjs:75:  return optString(opts?.instance).trim();
+scripts/lib/arc.mjs:85:  if (instance) full.push('-i', instance);
+scripts/lib/arc.mjs:167:  if (instance) full.push('-i', instance);
+grep_exit=0
+
+[E-2.5] is the Hub endpoint ever consumed by a network call? (search the whole repo, not just scripts/)
+$ grep -rn -- "--to\b" scripts/ | head
+scripts/arcblog-category.mjs:12://   request --action merge|remove --from <slug> --to <slug>   queue the same intent
+scripts/arcblog-category.mjs:161:  ensure(from && to, 'merge requires --from and --to');
+scripts/arcblog-category.mjs:162:  ensure(from !== to, '--from and --to must differ');
+scripts/arcblog-category.mjs:523:  node scripts/arcblog-category.mjs merge --from <slug> --to <slug>
+scripts/arcblog-category.mjs:525:  node scripts/arcblog-category.mjs request --action merge|remove --from <slug> --to <slug> [--by <did>] [--id <id>]
+scripts/arcblog-category.test.mjs:180:  const unknown = run(['request', '--action', 'explode', '--from', SRC, '--to', DST, '--id', 'r19-unknown']);
+scripts/arcblog-category.test.mjs:184:  assert.equal(run(['request', '--action', 'merge', '--from', SRC, '--to', SRC, '--id', 'r19-self']).status, 0);
+scripts/arcblog-category.test.mjs:185:  assert.equal(run(['request', '--action', 'remove', '--from', SRC, '--to', 'r19-not-a-category', '--id', 'r19-missing-target']).status, 0);
+scripts/arcblog-category.test.mjs:203:  const queued = run(['request', '--action', 'merge', '--from', SRC, '--to', DST, '--id', 'r19-ok']);
+scripts/arcblog-category.test.mjs:228:  const queued = run(['request', '--action', 'merge', '--from', SRC, '--to', DST, '--id', 'r19-ok-2']);
+grep_exit=0
+
+[E-2.1b] same search restricted to the runtime scripts (tests excluded) — a Studio->Hub push would live here
+$ grep -rnE "\bfetch\(|require\(['\"](http|https)['\"]\)|from ['\"]node:(http|https|net)['\"]|axios|undici|XMLHttpRequest" scripts/*.mjs scripts/lib/*.mjs | grep -v '\.test\.mjs$'
+scripts/arcblog-permissions.test.mjs:62:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+scripts/arcblog-settings.test.mjs:36:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+grep_exit=0  (1 = no match)
+
+[E-2.1c] the two hits from E-2.1 are test-only HTTP *reads* of the local permission matrix, not a transport:
+$ grep -rn "fetch(" scripts/arcblog-settings.test.mjs scripts/arcblog-permissions.test.mjs
+scripts/arcblog-settings.test.mjs:36:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+scripts/arcblog-permissions.test.mjs:62:  const res = await fetch(`${baseUrl}/api/afs/rpc`, {
+grep_exit=0
+
+[E-2.6] no per-instance fan-out: the network CLI touches exactly one instance per invocation
+$ grep -c "resolveInstance" scripts/arcblog-network.mjs
+2
+grep_exit=0
+
+[E-2.1b-FIX] runtime-only search (test files excluded by path prefix):
+$ grep -rnE "\bfetch\(|node:(http|https|net)|axios|undici|XMLHttpRequest" scripts/*.mjs scripts/lib/*.mjs | grep -v '\.test\.mjs:'
+grep_exit=1  (1 = no match)

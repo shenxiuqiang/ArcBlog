@@ -1,0 +1,187 @@
+### REQ-022 / BUG-052 runtime DOM probe (single tab, admin context) — 2026-09-28T17:53:14Z
+$ node /tmp/req022-media-dom.mjs
+CDP browser: Chrome/153.0.8010.54
+admin login_token cookie found: eyJhbGci…
+== ?page=media (admin DOM) ==
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [],
+ "oldEmptyStateLines": [
+  "还没有入队的意图。下方按钮会写入第一条。",
+  "如何添加：node scripts/arcblog-media.mjs add"
+ ],
+ "queueRows": 0
+}
+== page targets before ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+== page targets after close ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+tabs_opened_by_probe=1 tabs_left_open=[]
+
+### re-run after 'arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog' (re-mount to reload the compiled pages) — 2026-09-28T17:58:23Z
+$ node /tmp/req022-media-dom.mjs
+bash: line 4: timeout: command not found
+exit=127
+$ node /tmp/req022-media-dom.mjs   (timeout unavailable on macOS; the probe closes its own target)
+CDP browser: Chrome/153.0.8010.54
+admin login_token cookie found: eyJhbGci…
+== ?page=media (admin DOM) ==
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [],
+ "oldEmptyStateLines": [
+  "还没有入队的意图。下方按钮会写入第一条。",
+  "如何添加：node scripts/arcblog-media.mjs add"
+ ],
+ "queueRows": 0
+}
+== page targets before ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+== page targets after close ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+tabs_opened_by_probe=1 tabs_left_open=[]
+probe_finished
+
+### re-run after 'arc blocklet build' + 'arc blocklet run' (dist rebuilt, dist/.aup == .aup) — 2026-09-28T18:00:04Z
+CDP browser: Chrome/153.0.8010.54
+admin login_token cookie found: eyJhbGci…
+== ?page=media (admin DOM) ==
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [],
+ "oldEmptyStateLines": [
+  "还没有入队的意图。下方按钮会写入第一条。",
+  "如何添加：node scripts/arcblog-media.mjs add"
+ ],
+ "queueRows": 0
+}
+== page targets before ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+== page targets after close ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+tabs_opened_by_probe=1 tabs_left_open=[]
+probe_finished
+
+### final re-probe after the post-build re-mount (arc blocklet run @18:02) — 2026-09-28T18:02:21Z
+CDP browser: Chrome/153.0.8010.54
+admin login_token cookie found: eyJhbGci…
+== ?page=media (admin DOM) ==
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [],
+ "oldEmptyStateLines": [
+  "还没有入队的意图。下方按钮会写入第一条。",
+  "如何添加：node scripts/arcblog-media.mjs add"
+ ],
+ "queueRows": 0
+}
+== page targets before ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+== page targets after close ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+tabs_opened_by_probe=1 tabs_left_open=[]
+probe_finished
+
+=== CONCLUSION (BUG-052 runtime DOM) — 受限未验证, with the cause ===
+The running default daemon (pid 46916) resolved and cached the AUP app at boot:
+$ grep -n 'Resolved AUP app blocklet' /Users/shenxiuqiang/.afs/daemon.log | tail -1
+3093:{"ts":"2026-09-28T16:18:44.574Z","level":"info","service":"arc-node","ns":"node:boot","message":"Resolved AUP app blocklet \"arcblog\" via AFS at /registry/blocklets/arcblog"}
+$ grep -n 'dev watch' /Users/shenxiuqiang/.afs/daemon.log | tail -1
+27:{"ts":"2026-09-28T16:15:42.013Z","level":"info","service":"arc-node","ns":"node:server","message":"dev watch (3): /Users/shenxiuqiang/.arc/versions/2.0.0-beta.50/assets/blocklets, /Users/shenxiuqiang/workspace/my-app, /Users/shenxiuqiang/workspace/ArcBlog"}
+So after the .aup edit the still-running page keeps the OLD strings; measured:
+  - arc dsl generate --write  -> locale JSON regenerated (new keys present)
+  - arc blocklet build        -> dist rebuilt; diff -r .aup dist/.aup = EMPTY (exit 0)
+  - arc blocklet run <repo>   -> remounted (3 attempts: 17:56, 18:02 + after the build)
+  - touch .aup/pages/ops/media.aup -> no dev-watch event in daemon.log
+  - CDP ?page=media (admin, fresh browser context) -> STILL the old strings (3/3 runs)
+
+Making the change live requires restarting the default instance (4939), which L-R20-1 forbids.
+REPRO (run after the round's legitimate restart, or on any freshly started instance):
+  node /tmp/req022-media-dom.mjs    # one admin tab, Page.navigate, closes its own target
+EXPECT: standingNoteLines = 2 entries (media.queue-standing-note + media.media-standing-note) and
+        oldEmptyStateLines = [] .
+
+STATIC evidence that the source/artifacts agree (independent of the daemon cache):
+$ grep -n 'standing-note' .aup/pages/ops/media.aup .aup/locales/en.json .aup/locales/zh.json dist/.aup/pages/ops/media.aup
+.aup/pages/ops/media.aup:29:    media-standing-note { en "The list above renders every record of this upload index. The index is CLI-maintained — add one with: node scripts/arcblog-media.mjs add --path <afs-path> --id <id>. An empty list only means no asset has been indexed on this node yet." zh "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。" }
+.aup/pages/ops/media.aup:45:    queue-standing-note { en "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
+.aup/pages/ops/media.aup:214:                p :queue-standing-note scale=caption intent=muted
+.aup/pages/ops/media.aup:222:                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-standing-note from "/instance/app/arcblog/media" {
+.aup/pages/ops/media.aup:248:                  p :media-standing-note scale=sm intent=muted
+.aup/locales/en.json:889:  "media.media-standing-note": "The list above renders every record of this upload index. The index is CLI-maintained — add one with: node scripts/arcblog-media.mjs add --path <afs-path> --id <id>. An empty list only means no asset has been indexed on this node yet.",
+.aup/locales/en.json:890:  "media.queue-standing-note": "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet.",
+.aup/locales/en.json:891:  "categories.queue-standing-note": "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet."
+.aup/locales/zh.json:889:  "media.media-standing-note": "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。",
+.aup/locales/zh.json:890:  "media.queue-standing-note": "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。",
+.aup/locales/zh.json:891:  "categories.queue-standing-note": "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。"
+dist/.aup/pages/ops/media.aup:29:    media-standing-note { en "The list above renders every record of this upload index. The index is CLI-maintained — add one with: node scripts/arcblog-media.mjs add --path <afs-path> --id <id>. An empty list only means no asset has been indexed on this node yet." zh "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。" }
+dist/.aup/pages/ops/media.aup:45:    queue-standing-note { en "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
+dist/.aup/pages/ops/media.aup:214:                p :queue-standing-note scale=caption intent=muted
+dist/.aup/pages/ops/media.aup:222:                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-standing-note from "/instance/app/arcblog/media" {
+dist/.aup/pages/ops/media.aup:248:                  p :media-standing-note scale=sm intent=muted
+$ grep -rn 'queue-empty\|media-empty' .aup/pages .aup/locales dist/.aup/pages dist/.aup/locales   (expect: no output, exit 1)
+.aup/pages/ops/factory.aup:66:    queue-empty { en "No intent yet. Press an action above." zh "还没有意图。点上面的操作按钮。" }
+.aup/pages/ops/factory.aup:225:                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:queue-empty autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+.aup/locales/zh.json:170:  "factory.queue-empty": "还没有意图。点上面的操作按钮。",
+.aup/locales/en.json:170:  "factory.queue-empty": "No intent yet. Press an action above.",
+dist/.aup/pages/ops/factory.aup:66:    queue-empty { en "No intent yet. Press an action above." zh "还没有意图。点上面的操作按钮。" }
+dist/.aup/pages/ops/factory.aup:225:                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:queue-empty autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+dist/.aup/locales/zh.json:170:  "factory.queue-empty": "还没有意图。点上面的操作按钮。",
+dist/.aup/locales/en.json:170:  "factory.queue-empty": "No intent yet. Press an action above.",
+grep_exit=0

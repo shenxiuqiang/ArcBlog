@@ -249,7 +249,6 @@
   "media.gate-desc": "使用 DID Wallet 登录后查看媒体索引。",
   "media.gate-title": "运维",
   "media.login": "使用 DID Wallet 登录",
-  "media.media-empty": "如何添加：node scripts/arcblog-media.mjs add",
   "media.title": "媒体",
   "operations.desc": "本节点实时状态：健康、发现、Hub、经济、媒体与 Agent 授权。",
   "operations.discovery": "发现文档",
@@ -834,7 +833,6 @@
   "categories.queue-clear-msg": "从队列移除该记录。已被它改写的文章不受影响。",
   "categories.queue-clear-title": "清除这条意图？",
   "categories.queue-desc": "控制台本身不能改写文章，按钮只负责入队。worker 会用与 CLI merge 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。",
-  "categories.queue-empty": "还没有入队的意图。下方列表里的按钮会写入第一条。",
   "categories.queue-legend": "pending = 等待 worker · applied = 已改写文章并删除源记录 · noop = 无需执行（已经做过）· rejected = 被拒绝，未改动任何数据",
   "categories.queue-title": "意图队列",
   "categories.remove-btn": "删除并迁移到…",
@@ -878,7 +876,6 @@
   "media.queue-clear-msg": "从队列移除该记录。已被它删除的记录保持删除状态。",
   "media.queue-clear-title": "清除这条意图？",
   "media.queue-desc": "控制台本身不能删除记录，按钮只负责入队。worker 会用与 CLI remove 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。",
-  "media.queue-empty": "还没有入队的意图。下方按钮会写入第一条。",
   "media.queue-legend": "pending = 等待 worker · applied = 记录确实被删除 · noop = 无需执行（已经做过，或没有匹配项）· rejected = 被拒绝并给出原因，未改动任何数据",
   "media.queue-title": "意图队列",
   "media.queued": "意图已入队 —— 由本机 worker 执行。",
@@ -888,5 +885,8 @@
   "media.status-intent": "状态",
   "media.status-note": "状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/arc-contracts.md §28.8。",
   "media.worker-hint": "Worker：node scripts/arcblog-media.mjs watch",
-  "media.worker-note": "按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-media.mjs watch）——浏览器不会删除记录。本平台的按钮点击无法直接执行服务端代码（docs/arc-contracts.md §26）。"
+  "media.worker-note": "按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-media.mjs watch）——浏览器不会删除记录。本平台的按钮点击无法直接执行服务端代码（docs/arc-contracts.md §26）。",
+  "media.media-standing-note": "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。",
+  "media.queue-standing-note": "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。",
+  "categories.queue-standing-note": "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。"
 }

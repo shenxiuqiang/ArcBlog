@@ -6,7 +6,7 @@
 | 严重级 | **P3**（工具/清理面：不影响功能，但让「跑完全量 live 后实例干净」无法自证；本轮开锁跑定向测试即踩到） |
 | 发现轮次 | round-18（QA `task-75` 独立验证） |
 | 关联 REQ | 无（范围外；`docs/team/README.md §6.1` 的 `.gate-lock` + 定向 live 门约定） |
-| 状态 | **QA 复验（round-19，`task-81`）：C1–C5 全过；C6 受限（见文末「复验记录」+ [BUG-053](BUG-053-clean-test-really-deletes-instance-residue.md)）→ 建议条件式关闭** |
+| 状态 | **QA 复验（round-19，`task-81`）：C1–C5 全过；round-20（`task-85`，BUG-053 修复后）C6 转「通过」→ C1–C6 全过，建议关闭**（见文末「复验记录」+ [BUG-053](BUG-053-clean-test-really-deletes-instance-residue.md)） |
 
 ## 复现命令与最小步骤
 
@@ -101,7 +101,7 @@ drafts: 27 条，全部为 sign-keys-* 等历史残留（非内容草稿）
 | **C3** | `CLEAN_DIRS` 含 `node` | **通过** | `CLEAN_DIRS.includes('node') === true`；另含 `config/category-intents` / `config/media-intents`，`dirsScanned: 20` |
 | **C4** | dry run 覆盖 3 目录 + 残留目录不静默跳过 | **通过** | `node scripts/arcblog-clean.mjs` → `found:204, removed:0, confirm:false, byDir{config:132,node:29,drafts:43}`，`byPrefix` 含 `chain-intents-worker-:15`，`sample` 25 条含 `config/chain-intents-worker-1790498117031`。**口径**：PM 的 188 = 132+29+27(sign-keys)；今天 drafts 43 多出的 16 条 `cat-test-*` 是**轮初就已可见**的（PM found=16 即它们）→ 16+188=204 自洽 |
 | **C5** | 不误伤真记录、不真删 | **通过** | 15 个真记录 `isTestRecordId` **全 false**（`factories.json`/`identity.json`/`profile.json`/`health.json`/`discovery.json`/`post-detail.json`/`diagnostics`/`general`/`mock-chain.json`/**`chain-intents`（目录）**/`nft-factories.json`/`roles.json`/`trusted-hubs`/`switches`/`media-orphan-candidates.json`）；live drafts 43 全是测试家族（无真实草稿）；三次 dry run 均 `confirm:false, removed:0` |
-| **C6** | 门 + 单测同步（定向单跑全绿） | **部分通过 / 受限未验证** | `arcblog-doctor.test.mjs` **13/13**；`arcblog-clean.test.mjs` 跑 **6/6** + **跳过最后 1 条**（`--test-skip-pattern`）。被跳过那条会真跑 gate 清理 → 删本机 **204** 条残留（含 188 条非本轮）→ 违反 L-R19-5 → **未跑**（**[BUG-053](BUG-053-clean-test-really-deletes-instance-residue.md)**） |
+| **C6** | 门 + 单测同步（定向单跑全绿） | **通过（round-20 解除）** | round-19：**受限**（最后 1 条会真删 204 条 → `--test-skip-pattern` 跳过）。round-20（BUG-053 修复后）：`scripts/arcblog-clean.test.mjs` **7/7 全绿**（含最后一条，517.6s）且残留 `206→206` 未下降 → 见文末「C6 解除」 |
 
 **数字前后对比**
 
@@ -111,5 +111,20 @@ drafts: 27 条，全部为 sign-keys-* 等历史残留（非内容草稿）
 QA 自清探针后复跑：found 仍 204（removed:0）→ 未真删任何非本人残留
 ```
 
-**QA 判定：C1–C5 全过、C6 因测试自身的破坏性设计不可达 → 建议条件式关闭**（识别表本身无缺陷；条件 = BUG-053 被裁决）。
+**QA 判定（round-19）：C1–C5 全过、C6 因测试自身的破坏性设计不可达 → 建议条件式关闭**（识别表本身无缺陷；条件 = BUG-053 被裁决）。
+**QA 判定（round-20 更新）：BUG-053 修复后 C6 转通过 → C1–C6 全过，建议关闭。**
 
+
+## C6 解除（round-20，QA `task-85`）
+
+前置：**BUG-053 已修复**（默认执行路径不再真删实例残留，真删退到 `ARCBLOG_CLEAN_TEST_REALLY_DELETE=1` opt-in）。解除条件 = 该文件在 `.gate-lock` 下**定向单跑全绿**且**残留数未下降**：
+
+```text
+$ npm run test:file -- scripts/arcblog-clean.test.mjs      # 517.6s
+ℹ tests 7   ℹ pass 7   ℹ fail 0                            # ← 含最后一条（不再跳过）
+
+$ node scripts/arcblog-clean.mjs     # 跑前 / 跑后
+found 206 / removed 0  →  found 206 / removed 0            # byDir config132 node29 hub/index2 drafts43，逐项相同
+```
+
+**C6 = 通过**（round-19 的 `--test-skip-pattern` 绕过不再需要；原始输出：`docs/team/test-reports/raw/round-20/10-clean-found-before.json`、`11-bug053-targeted.txt`）。**C1–C6 全部达成 → QA 建议关闭本 BUG**；未竟事项仅剩「历史残留 206 条要不要清」的运维决定（不属本 BUG）。

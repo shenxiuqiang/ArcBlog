@@ -1,0 +1,51 @@
+### ②/E-2 no transport layer — independent greps — 2026-09-28T18:07:12Z
+$ grep -rnE "\bfetch\(|node:(http|https|net)|axios|undici|XMLHttpRequest" scripts/*.mjs scripts/lib/*.mjs | grep -v '\.test\.mjs:'
+grep_exit=1
+
+$ grep -rn "HUB_REGISTRATIONS_DIR" scripts/
+scripts/lib/network.mjs:31:export const HUB_REGISTRATIONS_DIR = `${INSTANCE_ROOT}/hub/registrations`;
+scripts/lib/network.mjs:92:      hubRegistrations: HUB_REGISTRATIONS_DIR,
+scripts/lib/network.mjs:141:  return `${HUB_REGISTRATIONS_DIR}/${hubRegistrationId(hubDid)}.json`;
+scripts/lib/network.mjs:273:  for (const entry of list(HUB_REGISTRATIONS_DIR, instance)) {
+scripts/lib/network.mjs:276:    const record = readJson(`${HUB_REGISTRATIONS_DIR}/${id}.json`, instance);
+scripts/arcblog-network.mjs:20:  HUB_REGISTRATIONS_DIR,
+scripts/arcblog-network.mjs:102:  console.log(JSON.stringify({ ok: true, action: existing ? 'hub-update' : 'hub-apply', path: HUB_REGISTRATIONS_DIR, registration: record }, null, 2));
+scripts/arcblog-network.mjs:112:  console.log(JSON.stringify({ ok: true, action: existing ? 'hub-update' : 'hub-add', path: HUB_REGISTRATIONS_DIR, registration: record }, null, 2));
+scripts/arcblog-network.mjs:123:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:135:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:149:      { ok: true, path: HUB_REGISTRATIONS_DIR, count: registrations.length, staleAfterHours, summary, registrations },
+scripts/arcblog-network.mjs:173:    JSON.stringify({ ok: true, action: 'hub-refresh', path: HUB_REGISTRATIONS_DIR, staleAfterHours, count: updated.length, summary, registrations: updated }, null, 2),
+scripts/arcblog-network.mjs:196:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:208:    remove(`${HUB_REGISTRATIONS_DIR}/${existing.value.id}.json`, instance);
+scripts/arcblog-network.mjs:209:    console.log(JSON.stringify({ ok: true, action: 'hub-purge', hubDid, path: `${HUB_REGISTRATIONS_DIR}/${existing.value.id}.json` }, null, 2));
+scripts/arcblog-network.mjs:213:  writeJson(`${HUB_REGISTRATIONS_DIR}/${updated.id}.json`, updated, instance, existing.ifMatch ?? undefined);
+scripts/arcblog-network.mjs:293:hub registrations under ${HUB_REGISTRATIONS_DIR}. They are published as AFS
+grep_exit=0
+
+$ grep -rnE "hourglass|arcblog-hub|4941" scripts/ (any hard-coded second-instance/endpoint consumption)
+grep_exit=1
+
+$ grep -rnE "\.endpoint" scripts/arcblog-network.mjs scripts/lib/network.mjs
+scripts/arcblog-network.mjs:101:  const record = putHubRegistration({ hubDid, endpoint: optString(opts.endpoint), relation: 'applied', direction: 'studio' }, instance);
+scripts/arcblog-network.mjs:111:  const record = putHubRegistration({ hubDid, endpoint: optString(opts.endpoint), relation: 'indexed', direction: 'hub' }, instance);
+scripts/lib/network.mjs:109:  if (!doc.endpoints || typeof doc.endpoints !== 'object') issues.push('endpoints must be an object');
+scripts/lib/network.mjs:153:    endpoint: str(input.endpoint ?? existing?.endpoint),
+grep_exit=0
+
+$ grep -rn -- "'-i'|\"-i\"" scripts/lib/arc.mjs
+scripts/lib/arc.mjs:85:  if (instance) full.push('-i', instance);
+scripts/lib/arc.mjs:167:  if (instance) full.push('-i', instance);
+grep_exit=0
+
+$ grep -rn "applySyncReport\|commandHubSync" scripts/
+scripts/arcblog-network.test.mjs:11:  applySyncReport,
+scripts/arcblog-network.test.mjs:112:test('applySyncReport records the outcome and keeps history on failure', () => {
+scripts/arcblog-network.test.mjs:114:  const ok = applySyncReport(record, { version: 3, hash: 'abc', now: 't1' });
+scripts/arcblog-network.test.mjs:120:  const failed = applySyncReport(ok, { status: 'error', error: 'timeout', now: 't2' });
+scripts/arcblog-network.test.mjs:127:  assert.throws(() => applySyncReport(record, { status: 'nope' }), /unknown sync status/);
+scripts/lib/network.mjs:396:export function applySyncReport(record, { status, version, hash, error, now = nowIso() } = {}) {
+scripts/arcblog-network.mjs:26:  applySyncReport,
+scripts/arcblog-network.mjs:185:function commandHubSync(opts, instance) {
+scripts/arcblog-network.mjs:190:  const updated = applySyncReport(existing.value, {
+scripts/arcblog-network.mjs:319:      if (sub === 'sync') return commandHubSync(args, instance);
+grep_exit=0

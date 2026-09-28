@@ -1,0 +1,47 @@
+### ④/BUG-052 — sanctioned default restart (Lead option ①) + remount — 2026-09-28T18:19:52Z
+$ arc service restart
+  Exec:  /$bunfs/root/arc-darwin-arm64
+
+  Endpoints:
+    http://127.0.0.1:4939/            AUP Web Client
+    http://127.0.0.1:4939/explorer    Explorer UI
+    http://127.0.0.1:4939/ws          WebSocket (Explorer)
+    http://127.0.0.1:4939/afs/*       REST API
+    http://127.0.0.1:4939/mcp         MCP Streamable HTTP
+
+  Blocklet: my-app
+    http://my-app.localhost:4939/
+    http://localhost:4939/?blocklet=my-app    (Safari / universal)
+
+  Blocklet: arcblog
+    http://arcblog.localhost:4939/
+    http://localhost:4939/?blocklet=arcblog    (Safari / universal)
+  Instance: default
+  ID:       37a8eec1ce19687d
+  Status:   up
+  PID:      85410
+  Port:     4939
+  URL:      http://127.0.0.1:4939
+  Home:     /Users/shenxiuqiang
+  Space:    /Users/shenxiuqiang/.afs/spaces
+  Sources:  /Users/shenxiuqiang/workspace/my-app, /Users/shenxiuqiang/workspace/ArcBlog
+  Version:  2.0.0-beta.50
+  Commit:   c711b9aa (main)
+  Checkout: /Users/shenxiuqiang/workspace/ArcBlog
+  Host:     localhost
+  Started:  2026-09-28T18:19:52.927Z (up 1s)
+restart_exit=0
+
+$ arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog   (REMARK: restart drops the /blocklets/<app> mount; Status: up is not proof)
+Serving blocklet "arcblog" on port 4939
+  http://arcblog.localhost:4939/
+  http://localhost:4939/?blocklet=arcblog  (Safari / universal)
+blocklet_run_exit=0
+
+$ arc afs exec /blocklets/arcblog/.actions/list --args {'path':'/instance/app/arcblog'}   (post-restart proof of restoration)
+[{"id":".provenance","path":"/instance/app/arcblog/.provenance","createdAt":"2026-09-20T07:20:37.907Z","updatedAt":"2026-09-28T02:59:11.189Z","meta":{"childrenCount":10,"size":384,"kind":"fs:directory"}},{"id":"categories","path":"/instance/app/arcblog/categor
+read_exit=0
+
+$ arc service list --json | default field digest (post-restart)
+instances= ['default']
+{'name': 'default', 'id': '37a8eec1ce19687d', 'port': 4939, 'home': '/Users/shenxiuqiang', 'spaceRoot': '/Users/shenxiuqiang/.afs/spaces', 'pid': 85410, 'status': 'up', 'advertise': True, 'host': 'localhost'}

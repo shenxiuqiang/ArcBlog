@@ -445,12 +445,26 @@ accumulated. The table and the directory list now cover those families and
 token (`factories-test-`, never a bare `factories-`), so `node/factories.json`,
 `config/mock-chain.json`, the live queues and real drafts stay unmatched.
 
-> ⚠️ **`scripts/arcblog-clean.test.mjs` really deletes.** Its last clause runs the gate
-> with a stubbed "passing live run" and asserts that the gate's cleanup removed the
-> probe — which means the gate's *real* `findTestRecords()` sweep runs. Before BUG-048
-> that was ~16 records; now it is every recognised residue family (~200 on this dev
-> machine). Capture the `arcblog-clean.mjs` dry-run evidence (and QA's `found ≈ 188`
-> check) **before** running that file, or run it last.
+> ✅ **BUG-053 fixed (Round 20): running `scripts/arcblog-clean.test.mjs` no longer
+> deletes the instance's residue.** Its third clause used to run the gate for real,
+> so a single-file run (`npm run test:file -- scripts/arcblog-clean.test.mjs`) swept
+> every recognised residue family (~204 records in Round 19, most of them left by
+> nobody in the current round). The clause now drives the gate's report-only mode
+> (`ARCBLOG_CLEAN_DRY_RUN=1`): `scripts/run-tests.mjs` prints
+> `would clean <n> test record(s) … (dry run — nothing removed)` plus every path it
+> would delete, and removes nothing. The test asserts the probe it created is in that
+> list, that the probe still exists, and that the instance's residue count did not
+> drop. The real delete path stays available behind an explicit opt-in:
+>
+> ```bash
+> ARCBLOG_CLEAN_TEST_REALLY_DELETE=1 npm run test:file -- scripts/arcblog-clean.test.mjs
+> ```
+>
+> Measured in Round 20: `node scripts/arcblog-clean.mjs` reports `found: 206` before
+> and `found: 206` after the default run of that file (7/7 pass); the dry-run report
+> of a passing gate lists the same 206 records. The gate itself (`npm test`, and a
+> deliberate `npm run test:live`) still cleans for real after a passing run — that
+> behaviour is unchanged; `ARCBLOG_CLEAN_DRY_RUN=1` is the only report-only switch.
 
 `scripts/arcblog-clean.test.mjs` pins the prefixes the suite actually produces
 (`lifecycle-test-`, `audit-test-`, `query-fixture`, …), so a gap fails a test instead of
@@ -688,6 +702,17 @@ RSS feed) do *not* need a restart; the compiled AUP bundle does.
 >
 > So the restart gate is `arc service restart` **followed by** `arc blocklet run .`
 > whenever the next step talks to `/instance/**` (targeted live suites do).
+>
+> ⚠️ **Measured 2026-09-28 (R20): `arc blocklet run <repo>` alone does NOT reload the
+> cached AUP bundle.** Editing `.aup/**` + `arc dsl generate --write` +
+> `arc blocklet build` + three `arc blocklet run` calls (before and after the build)
+> left a running page on the old strings; `touch .aup/pages/ops/media.aup` produced no
+> `dev watch` event in `daemon.log` either. The daemon resolved the app once
+> (`Resolved AUP app blocklet "arcblog" via AFS at /registry/blocklets/arcblog`,
+> 16:18:44) and kept it. Consequently a **browser/DOM check of a DSL change needs a
+> daemon restart** — do not conclude "the page is unchanged" from a live request on a
+> daemon that predates the edit. (R20 could not restart the `default` instance:
+> L-R20-1 forbids it, so BUG-052's runtime DOM check is recorded as 受限未验证.)
 
 ## Development instance hygiene
 

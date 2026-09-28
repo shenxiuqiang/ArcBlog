@@ -1,0 +1,728 @@
+### REQ-022 matrix — 2026-09-28T17:31:37Z
+HUB_DID=z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg  (arc did list -i arcblog-hub --json)
+
+--- M1 BEFORE: Studio (default) hub list
+$ node scripts/arcblog-network.mjs hub list
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/hub/registrations",
+  "count": 4,
+  "staleAfterHours": 24,
+  "summary": {
+    "offline": 4
+  },
+  "registrations": [
+    {
+      "id": "e8f453792619a8f9",
+      "hubDid": "did:key:zUiFresh1790348264",
+      "endpoint": "https://hub.example.com",
+      "status": "active",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-25T15:08:20.548Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-25T14:57:45.100Z",
+      "updatedAt": "2026-09-28T04:48:37.602Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-25T15:08:20.548Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:38.914Z"
+      },
+      "sync": {
+        "status": "ok",
+        "lastSync": "2026-09-25T14:57:46.110Z",
+        "lastVersion": 1,
+        "lastHash": "sha256:abc",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "6d86a84e377ad736",
+      "hubDid": "did:key:zNetHub1790267735950",
+      "endpoint": "https://hub.test",
+      "status": "active",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-24T16:35:41.380Z",
+      "removedReason": "",
+      "registeredAt": "2026-09-24T16:35:38.660Z",
+      "updatedAt": "2026-09-28T04:48:36.987Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-24T16:35:41.380Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:38.915Z"
+      },
+      "sync": {
+        "status": "ok",
+        "lastSync": "2026-09-24T16:35:40.022Z",
+        "lastVersion": 7,
+        "lastHash": "deadbeef",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "8133a1ea682714e5",
+      "hubDid": "did:key:zExitTest1790434702401",
+      "endpoint": "https://hub.example.com",
+      "status": "registered",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-26T14:58:30.543Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-26T14:58:22.902Z",
+      "updatedAt": "2026-09-28T04:48:36.371Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-26T14:58:30.543Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:38.915Z"
+      },
+      "sync": {
+        "status": "never",
+        "lastSync": "",
+        "lastVersion": null,
+        "lastHash": "",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "42b02720d0b6bb68",
+      "hubDid": "did:key:zExitTest1790483262699",
+      "endpoint": "https://hub.example.com",
+      "status": "registered",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-27T04:27:48.135Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-27T04:27:43.051Z",
+      "updatedAt": "2026-09-28T04:48:35.755Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-27T04:27:48.135Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:38.915Z"
+      },
+      "sync": {
+        "status": "never",
+        "lastSync": "",
+        "lastVersion": null,
+        "lastHash": "",
+        "lastError": ""
+      }
+    }
+  ]
+}
+exit=0
+
+--- M1: Studio hub register --hub-did <Hub DID> --endpoint http://arcblog.localhost:4941
+$ node scripts/arcblog-network.mjs hub register --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --endpoint http://arcblog.localhost:4941
+{
+  "ok": true,
+  "action": "hub-apply",
+  "path": "/instance/app/arcblog/hub/registrations",
+  "registration": {
+    "id": "31caa15539047182",
+    "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+    "endpoint": "http://arcblog.localhost:4941",
+    "status": "registered",
+    "relation": "applied",
+    "direction": "studio",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T17:31:39.245Z",
+    "updatedAt": "2026-09-28T17:31:39.245Z",
+    "freshness": null,
+    "sync": {
+      "status": "never",
+      "lastSync": "",
+      "lastVersion": null,
+      "lastHash": "",
+      "lastError": ""
+    }
+  }
+}
+exit=0
+
+--- M1 AFTER: Studio hub list
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/hub/registrations",
+  "count": 5,
+  "staleAfterHours": 24,
+  "summary": {
+    "never": 1,
+    "offline": 4
+  },
+  "registrations": [
+    {
+      "id": "31caa15539047182",
+      "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+      "endpoint": "http://arcblog.localhost:4941",
+      "status": "registered",
+      "relation": "applied",
+      "direction": "studio",
+      "removedAt": "",
+      "removedReason": "",
+      "registeredAt": "2026-09-28T17:31:39.245Z",
+      "updatedAt": "2026-09-28T17:31:39.245Z",
+      "freshness": {
+        "state": "never",
+        "reason": "never synced",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:41.675Z"
+      },
+      "sync": {
+        "status": "never",
+        "lastSync": "",
+        "lastVersion": null,
+        "lastHash": "",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "e8f453792619a8f9",
+      "hubDid": "did:key:zUiFresh1790348264",
+      "endpoint": "https://hub.example.com",
+      "status": "active",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-25T15:08:20.548Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-25T14:57:45.100Z",
+      "updatedAt": "2026-09-28T04:48:37.602Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-25T15:08:20.548Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:41.676Z"
+      },
+      "sync": {
+        "status": "ok",
+        "lastSync": "2026-09-25T14:57:46.110Z",
+        "lastVersion": 1,
+        "lastHash": "sha256:abc",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "6d86a84e377ad736",
+      "hubDid": "did:key:zNetHub1790267735950",
+      "endpoint": "https://hub.test",
+      "status": "active",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-24T16:35:41.380Z",
+      "removedReason": "",
+      "registeredAt": "2026-09-24T16:35:38.660Z",
+      "updatedAt": "2026-09-28T04:48:36.987Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-24T16:35:41.380Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:41.676Z"
+      },
+      "sync": {
+        "status": "ok",
+        "lastSync": "2026-09-24T16:35:40.022Z",
+        "lastVersion": 7,
+        "lastHash": "deadbeef",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "8133a1ea682714e5",
+      "hubDid": "did:key:zExitTest1790434702401",
+      "endpoint": "https://hub.example.com",
+      "status": "registered",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-26T14:58:30.543Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-26T14:58:22.902Z",
+      "updatedAt": "2026-09-28T04:48:36.371Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-26T14:58:30.543Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:41.676Z"
+      },
+      "sync": {
+        "status": "never",
+        "lastSync": "",
+        "lastVersion": null,
+        "lastHash": "",
+        "lastError": ""
+      }
+    },
+    {
+      "id": "42b02720d0b6bb68",
+      "hubDid": "did:key:zExitTest1790483262699",
+      "endpoint": "https://hub.example.com",
+      "status": "registered",
+      "relation": "removed",
+      "direction": "studio",
+      "removedAt": "2026-09-27T04:27:48.135Z",
+      "removedReason": "studio exit test",
+      "registeredAt": "2026-09-27T04:27:43.051Z",
+      "updatedAt": "2026-09-28T04:48:35.755Z",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-27T04:27:48.135Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:31:41.676Z"
+      },
+      "sync": {
+        "status": "never",
+        "lastSync": "",
+        "lastVersion": null,
+        "lastHash": "",
+        "lastError": ""
+      }
+    }
+  ]
+}
+exit=0
+
+--- M3: Hub side (arcblog-hub) view of /instance/app/arcblog/hub/registrations
+$ arc afs exec /blocklets/arcblog/.actions/list --args '{"path":"/instance/app/arcblog/hub/registrations"}' -i arcblog-hub
+LIST_ERROR exec Path not found: /app/arcblog/hub/registrations
+exit=0
+
+$ node scripts/arcblog-network.mjs hub list --instance arcblog-hub
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/hub/registrations",
+  "count": 0,
+  "staleAfterHours": 24,
+  "summary": {},
+  "registrations": []
+}
+exit=0
+
+$ node scripts/arcblog-network.mjs hub approve --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --instance arcblog-hub
+{
+  "ok": false,
+  "code": "NOT_FOUND",
+  "error": "hub not registered: z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg"
+}
+exit=1
+
+--- M5 evidence (1): Studio registration record BEFORE sync
+$ arc afs exec /blocklets/arcblog/.actions/read --args '{"path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json"}'
+{"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T17:31:39.842Z","content":"{\n  \"id\": \"31caa15539047182\",\n  \"hubDid\": \"z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg\",\n  \"endpoint\": \"http://arcblog.localhost:4941\",\n  \"status\": \"registered\",\n  \"relation\": \"applied\",\n  \"direction\": \"studio\",\n  \"removedAt\": \"\",\n  \"removedReason\": \"\",\n  \"registeredAt\": \"2026-09-28T17:31:39.245Z\",\n  \"updatedAt\": \"2026-09-28T17:31:39.245Z\",\n  \"freshness\": null,\n  \"sync\": {\n    \"status\": \"never\",\n    \"lastSync\": \"\",\n    \"lastVersion\": null,\n    \"lastHash\": \"\",\n    \"lastError\": \"\"\n  }\n}\n","meta":{"size":482,"version":"1790616699842.7788-157360071-482","mimeType":"application/json"},"actions":[]}
+exit=0
+
+--- M5 evidence (2): Hub AFS BEFORE sync
+$ arc afs exec .../.actions/list --path /instance/app/arcblog/hub/registrations -i arcblog-hub   [hub-before-list]
+LIST_ERROR exec Path not found: /app/arcblog/hub/registrations
+exit=0
+$ arc afs exec .../.actions/read --path /instance/app/arcblog/hub/registrations/31caa15539047182.json -i arcblog-hub   [hub-before-read]
+NOT_FOUND exec Path not found: /app/arcblog/hub/registrations/31caa15539047182.json
+exit=0
+
+--- M5: Studio hub sync --hub-did <Hub DID> --version 1 --hash req022hash1 --status ok
+$ node scripts/arcblog-network.mjs hub sync --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --version 1 --hash req022hash1 --status ok
+{
+  "ok": true,
+  "action": "hub-sync",
+  "registration": {
+    "id": "31caa15539047182",
+    "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+    "endpoint": "http://arcblog.localhost:4941",
+    "status": "active",
+    "relation": "applied",
+    "direction": "studio",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T17:31:39.245Z",
+    "updatedAt": "2026-09-28T17:31:56.572Z",
+    "freshness": null,
+    "sync": {
+      "status": "ok",
+      "lastSync": "2026-09-28T17:31:56.572Z",
+      "lastVersion": 1,
+      "lastHash": "req022hash1",
+      "lastError": ""
+    }
+  }
+}
+exit=0
+
+--- M5 evidence (1) AFTER: Studio registration record
+{"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T17:31:56.911Z","content":"{\n  \"id\": \"31caa15539047182\",\n  \"hubDid\": \"z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg\",\n  \"endpoint\": \"http://arcblog.localhost:4941\",\n  \"status\": \"active\",\n  \"relation\": \"applied\",\n  \"direction\": \"studio\",\n  \"removedAt\": \"\",\n  \"removedReason\": \"\",\n  \"registeredAt\": \"2026-09-28T17:31:39.245Z\",\n  \"updatedAt\": \"2026-09-28T17:31:56.572Z\",\n  \"freshness\": null,\n  \"sync\": {\n    \"status\": \"ok\",\n    \"lastSync\": \"2026-09-28T17:31:56.572Z\",\n    \"lastVersion\": 1,\n    \"lastHash\": \"req022hash1\",\n    \"lastError\": \"\"\n  }\n}\n","meta":{"size":507,"version":"1790616716911.3884-157360071-507","mimeType":"application/json"},"actions":[]}
+exit=0
+
+--- M5 evidence (2) AFTER: Hub AFS
+[hub-after-list]
+LIST_ERROR exec Path not found: /app/arcblog/hub/registrations
+exit=0
+[hub-after-read]
+NOT_FOUND exec Path not found: /app/arcblog/hub/registrations/31caa15539047182.json
+exit=0
+
+--- M5 diffs (computed)
+$ diff <(hub list before) <(hub list after) ; echo exit=$?
+exit=0
+$ diff <(hub read before) <(hub read after) ; echo exit=$?
+exit=0
+$ diff <(studio record before) <(studio record after)   # expect only sync.* + updatedAt + meta.version
+1c1
+< {"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T17:31:39.842Z","content":"{\n  \"id\": \"31caa15539047182\",\n  \"hubDid\": \"z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg\",\n  \"endpoint\": \"http://arcblog.localhost:4941\",\n  \"status\": \"registered\",\n  \"relation\": \"applied\",\n  \"direction\": \"studio\",\n  \"removedAt\": \"\",\n  \"removedReason\": \"\",\n  \"registeredAt\": \"2026-09-28T17:31:39.245Z\",\n  \"updatedAt\": \"2026-09-28T17:31:39.245Z\",\n  \"freshness\": null,\n  \"sync\": {\n    \"status\": \"never\",\n    \"lastSync\": \"\",\n    \"lastVersion\": null,\n    \"lastHash\": \"\",\n    \"lastError\": \"\"\n  }\n}\n","meta":{"size":482,"version":"1790616699842.7788-157360071-482","mimeType":"application/json"},"actions":[]}
+---
+> {"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T17:31:56.911Z","content":"{\n  \"id\": \"31caa15539047182\",\n  \"hubDid\": \"z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg\",\n  \"endpoint\": \"http://arcblog.localhost:4941\",\n  \"status\": \"active\",\n  \"relation\": \"applied\",\n  \"direction\": \"studio\",\n  \"removedAt\": \"\",\n  \"removedReason\": \"\",\n  \"registeredAt\": \"2026-09-28T17:31:39.245Z\",\n  \"updatedAt\": \"2026-09-28T17:31:56.572Z\",\n  \"freshness\": null,\n  \"sync\": {\n    \"status\": \"ok\",\n    \"lastSync\": \"2026-09-28T17:31:56.572Z\",\n    \"lastVersion\": 1,\n    \"lastHash\": \"req022hash1\",\n    \"lastError\": \"\"\n  }\n}\n","meta":{"size":507,"version":"1790616716911.3884-157360071-507","mimeType":"application/json"},"actions":[]}
+exit=1
+
+--- M6: hub refresh (default stale-after = 24h)
+$ node scripts/arcblog-network.mjs hub refresh
+{
+  "ok": true,
+  "action": "hub-refresh",
+  "path": "/instance/app/arcblog/hub/registrations",
+  "staleAfterHours": 24,
+  "count": 5,
+  "summary": {
+    "fresh": 1,
+    "offline": 4
+  },
+  "registrations": [
+    {
+      "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+      "relation": "applied",
+      "freshness": {
+        "state": "fresh",
+        "reason": "last sync 0.0h ago",
+        "ageHours": 0.0021380555555555554,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:04.269Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zUiFresh1790348264",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-25T15:08:20.548Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:04.928Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zNetHub1790267735950",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-24T16:35:41.380Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:05.589Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zExitTest1790434702401",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-26T14:58:30.543Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:06.232Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zExitTest1790483262699",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-27T04:27:48.135Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:06.899Z"
+      }
+    }
+  ]
+}
+exit=0
+
+--- M6: hub refresh --stale-after 0.0001 (boundary: everything older than ~0.36s -> stale)
+$ node scripts/arcblog-network.mjs hub refresh --stale-after 0.0001
+{
+  "ok": true,
+  "action": "hub-refresh",
+  "path": "/instance/app/arcblog/hub/registrations",
+  "staleAfterHours": 0.0001,
+  "count": 5,
+  "summary": {
+    "offline": 4,
+    "stale": 1
+  },
+  "registrations": [
+    {
+      "hubDid": "did:key:zExitTest1790483262699",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-27T04:27:48.135Z",
+        "ageHours": null,
+        "staleAfterHours": 0.0001,
+        "checkedAt": "2026-09-28T17:32:09.406Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zExitTest1790434702401",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-26T14:58:30.543Z",
+        "ageHours": null,
+        "staleAfterHours": 0.0001,
+        "checkedAt": "2026-09-28T17:32:10.089Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zNetHub1790267735950",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-24T16:35:41.380Z",
+        "ageHours": null,
+        "staleAfterHours": 0.0001,
+        "checkedAt": "2026-09-28T17:32:10.747Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zUiFresh1790348264",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-25T15:08:20.548Z",
+        "ageHours": null,
+        "staleAfterHours": 0.0001,
+        "checkedAt": "2026-09-28T17:32:11.410Z"
+      }
+    },
+    {
+      "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+      "relation": "applied",
+      "freshness": {
+        "state": "stale",
+        "reason": "last sync 0.0h ago",
+        "ageHours": 0.004309166666666667,
+        "staleAfterHours": 0.0001,
+        "checkedAt": "2026-09-28T17:32:12.085Z"
+      }
+    }
+  ]
+}
+exit=0
+
+--- M6: hub list --stale-after 0.0001 (read-back)
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/hub/registrations",
+  "count": 5,
+  "staleAfterHours": 0.0001,
+  "summary": {
+    "stale": 1,
+    "offline": 4
+  },
+  "registrations": [
+    {
+      "id": "31caa15539047182",
+      "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+      "endpoint": "http://arcblog.localhost:4941",
+      "status": "active",
+      "relation": "applied",
+      "direction": "studio",
+      "removedAt": "",
+      "removedReason": "",
+      "registeredAt": "2026-09-28T17:31:39.245Z",
+exit=0
+
+--- M6: restore freshness at the default threshold
+        "state": "offline",
+        "reason": "relation removed at 2026-09-26T14:58:30.543Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:18.749Z"
+      }
+    },
+    {
+      "hubDid": "did:key:zExitTest1790483262699",
+      "relation": "removed",
+      "freshness": {
+        "state": "offline",
+        "reason": "relation removed at 2026-09-27T04:27:48.135Z",
+        "ageHours": null,
+        "staleAfterHours": 24,
+        "checkedAt": "2026-09-28T17:32:19.392Z"
+      }
+    }
+  ]
+}
+
+--- M7: hub index rebuild (timed) — Studio
+$ time node scripts/arcblog-network.mjs hub index rebuild
+{
+  "ok": true,
+  "action": "hub-index-rebuild",
+  "path": "/instance/app/arcblog/hub/index",
+  "published": 3,
+  "upserted": 2,
+  "skipped": 1,
+  "tombstoned": 0
+}
+exit=0
+elapsed_seconds=19   (wall clock, date +%s resolution 1s)
+
+$ arc afs exec .../.actions/list --path /instance/app/arcblog/hub/index   (Studio read-back)
+[{"id":"hello-arcblog.json","path":"/instance/app/arcblog/hub/index/hello-arcblog.json","createdAt":"2026-09-24T16:39:41.247Z","updatedAt":"2026-09-24T16:39:41.247Z","meta":{"size":610,"kind":"fs:file","mimeType":"application/json","cid":"bafkreiergd4nobitr4bu6nsqeunnokytxn5lwnbfj2lpsv5urlmwklgo7i"}},{"id":"paid-test-1790472790603.json","path":"/instance/app/arcblog/hub/index/paid-test-1790472790603.json","createdAt":"2026-09-28T17:32:41.571Z","updatedAt":"2026-09-28T17:32:41.571Z","meta":{"size":489,"kind":"fs:file","mimeType":"application/json","cid":"bafkreigabsypb2prl3n7ya5px3vov2sydiw3ri6mloubitcaz6ockyrcya"}},{"id":"sign-test-1790502598928.json","path":"/instance/app/arcblog/hub/index/sign-test-1790502598928.json","createdAt":"2026-09-28T17:32:42.185Z","updatedAt":"2026-09-28T17:32:42.185Z","meta":{"size":489,"kind":"fs:file","mimeType":"application/json","cid":"bafkreifbfgkx7jruk7
+exit=0
+
+--- M7 Hub side: same path on arcblog-hub (expect absent / unchanged)
+LIST_ERROR exec Path not found: /app/arcblog/hub/index
+exit=0
+
+--- M8: roles status on both instances (no chain writes)
+$ node scripts/arcblog-roles.mjs status   (Studio/default)
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/config/roles.json",
+  "configured": true,
+  "chainVerification": false,
+  "declaredRoles": [
+    "basic"
+  ],
+  "statuses": [
+    {
+      "role": "basic",
+      "assetOwned": false,
+      "stakeActive": false,
+      "stakeState": "none",
+      "active": true,
+      "assetId": "",
+      "stakeId": "",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.316Z",
+      "configured": false,
+      "reason": "basic capability is implicit for every instance"
+    },
+    {
+      "role": "studio",
+      "assetOwned": false,
+      "stakeActive": false,
+      "stakeState": "none",
+      "active": false,
+      "assetId": "asset-test-1",
+      "stakeId": "stake-test-1",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.316Z",
+      "configured": true,
+      "reason": "stake state is \"none\"; chain verification is not wired yet (fail closed, spec §115)"
+    },
+    {
+      "role": "hub",
+      "assetOwned": true,
+      "stakeActive": false,
+      "stakeState": "acquired",
+      "active": false,
+      "assetId": "0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4",
+      "stakeId": "",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.316Z",
+      "configured": true,
+      "reason": "stake state is \"acquired\"; chain verification is not wired yet (fail closed, spec §115)"
+    }
+  ],
+  "effectiveCapabilities": [
+    "blog.read",
+    "blog.write",
+    "blog.publish"
+  ],
+  "withheldCapabilities": []
+}
+exit=0
+
+$ node scripts/arcblog-roles.mjs status --instance arcblog-hub   (Hub)
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/config/roles.json",
+  "configured": false,
+  "chainVerification": false,
+  "declaredRoles": [
+    "basic"
+  ],
+  "statuses": [
+    {
+      "role": "basic",
+      "assetOwned": false,
+      "stakeActive": false,
+      "stakeState": "none",
+      "active": true,
+      "assetId": "",
+      "stakeId": "",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.963Z",
+      "configured": false,
+      "reason": "basic capability is implicit for every instance"
+    },
+    {
+      "role": "studio",
+      "assetOwned": false,
+      "stakeActive": false,
+      "stakeState": "none",
+      "active": false,
+      "assetId": "",
+      "stakeId": "",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.963Z",
+      "configured": false,
+      "reason": "role asset is not configured (spec §9)"
+    },
+    {
+      "role": "hub",
+      "assetOwned": false,
+      "stakeActive": false,
+      "stakeState": "none",
+      "active": false,
+      "assetId": "",
+      "stakeId": "",
+      "revokedAt": "",
+      "claimableAt": "",
+      "checkedAt": "2026-09-28T17:32:50.963Z",
+      "configured": false,
+      "reason": "role asset is not configured (spec §9)"
+    }
+  ],
+  "effectiveCapabilities": [
+    "blog.read",
+    "blog.write",
+    "blog.publish"
+  ],
+  "withheldCapabilities": []
+}
+exit=0
+
+$ arc afs exec .../.actions/read --path /instance/app/arcblog/node/profile.json   (Studio roles field)
+{"id":"profile.json","path":"/instance/app/arcblog/node/profile.json","createdAt":"2026-09-23T10:22:55.740Z","updatedAt":"2026-09-27T15:26:35.374Z","content":"{\n  \"name\": \"ArcBlog\",\n  \"description\": \"A DID-native publishing space for readable Markdown posts and images.\",\n  \"avatar\": \"\",\n  \"ogImage\": \"\",\n  \"did\": \"did:blocklet:arcblog\",\n  \"endpoint\": \"\",\n  \"roles\": [\n    \"basic\"\n  ],\n  \"capabilities\": [\n    \"blog.read\",\n    \"blog.write\",\n    \"blog.publish\"\n  ],\n  \"version\": \"0.3.7\",\n  \"protocolVersion\": \"1\",\n  \"createdAt\": \"2026-09-23T10:22:55.386Z\",\n  \"updatedAt\": \"2026-09-27T15:26:35.057Z\"\n}\n","meta":{"size":441,"versio
+exit=0
+
+$ arc afs exec .../.actions/read --path /instance/app/arcblog/node/profile.json -i arcblog-hub
+NOT_FOUND exec Path not found: /app/arcblog/node/profile.json
+exit=0

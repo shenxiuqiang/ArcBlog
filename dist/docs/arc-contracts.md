@@ -1849,3 +1849,46 @@ exec 里写 `content: { mediaId: "${args.mId}" }`（categories / media 两个队
 **媒体特有的一条域规则**：`remove` 必须在 **worker 侧重新校验 refs**（页面显示"0 引用"到执行之间可能新增引用）
 → 仍被引用则 `rejected/CONFLICT` + 原因含引用方 + **记录与引用方都不动**；`orphans` 只删**显式确认过的 id**
 （`changed` = 确认清单 ∩ 仍为孤儿者），`changed: []` → `noop`，永不 `--force`、永不连锁删除。
+
+---
+
+## 35. 多实例、跨实例语义，与 `.aup` 热更新边界（Round 20 双节点实测）
+
+用一个真实第二实例（`arcblog-hub`：port 4941、`--home ~/.afs-hub`、自己的 DID）验证了「Studio ↔ Hub」的业务关联，
+结论对任何多实例部署都适用。**全部只读/--dry-run，零链写、零资金**；测完已 `stop → delete` 回滚干净。
+
+**(1) 命名实例是真实的隔离单元，不是"同一台换个端口"。**
+`arc service start -i <name> --port <n> --home <dir> --host localhost --no-advertise --blocklet <repo>` 创建后：
+`arc service list --json` 并列两台（各自 id/port/home/pid/advertise）；`arc did list -i <name>` 给出**另一个 DID**
+（实测 Hub `z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg` vs Studio `z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ`）；
+Hub 侧有独立的 `/instance` 空间（实测为空，`Path not found: /app/arcblog`）。
+⚠️ **`arc did info` 不返回 DID**（只答 `entityType: blocklet`）—— 取 DID 要用 `arc did list`。
+
+**(2) 启动时 `--blocklet <dir>` 不等于"已挂载"。** 建实例后直接 `arc afs exec /blocklets/<app>/.actions/list -i <name>`
+报 `No module found for path …`；补一条 `arc blocklet run <repo> -i <name>`（→ `Serving blocklet "<app>" on port <n>`）才可用。
+（与 §34(1) 是同一现象的另一面：挂载是**运行期动作**，不是实例配置。）
+
+**(3) `hub sync` 是声明值 —— 没有任何跨节点数据搬运。** 实测（Studio 侧执行）：
+Studio 的 registration 记录**只有 `sync.*` 与 `updatedAt` 变化**（其余字段逐字不变），**Hub 侧 AFS 前后 diff 为空**；
+`grep` 运行时 HTTP 客户端在 `scripts/lib/network.mjs` / `arcblog-network.mjs` 里**命中 0**（`grep_exit=1`），
+`HUB_REGISTRATIONS_DIR` 的 15 处引用**全部走本机适配器**，`endpoint` 字段**只存不 dial**。
+代码依据：`scripts/lib/network.mjs:396 applySyncReport`（纯记录更新，注释原文
+*The pull itself happens on the Hub side*）+ `arcblog-network.mjs:186-198 commandHubSync`（唯一写动作 = 写本机 registration）。
+⇒ 结论只能写成「**平台有通用搬运原语（`arc space sync`），我们尚未实现跨节点同步**」；
+**绝不能把"登记成功"写成"已同步"**。
+
+**(4) 唯一真搬运原语 `arc space sync` 的远程端点形态：受限未验证。**
+`arc space sync --from <本地 space> --to https://127.0.0.1:4941/… --dry-run` → `unknown certificate verification error`（exit 5）；
+改 `http://` → 弹出 `/.well-known/service/gen-access-key?__token__=…` 授权流程后 **5 分钟超时**（exit 5）；
+两端锚点不同则先报 `both ends are anchored … at different sub-paths`。
+**既不能说"平台不支持"，也不能说"已跑通"** —— 要跑通需要 `--token` 形态或受信证书，且 `--mirror`/`rm` 一律不跑。
+
+**(5) `.aup` 改动对"运行中的 daemon"不生效 —— `arc blocklet run` 不是 reload 路径。**
+实测：改 `.aup` → `arc dsl generate --write` → `arc blocklet build` → `arc blocklet run`（甚至 3 次）→ `touch` 源文件，
+运行中的 daemon 仍渲染**旧**页面（`?page=media` 的文案复验因此失败）；**重启实例**（`arc service restart` + `arc blocklet run` 复挂）
+后新文案立即生效。⇒ 页面/文案类改动的验收，**必须包含一次重启**，否则"已修好"无法在运行期证明；
+且按 §34(1)，重启后要跟一条 `arc blocklet run <repo>` 与一次 `/instance` 读（或站点 200）才算恢复。
+
+**(6) 一台机器上跑两台 daemon 的成本（实测）**：Studio RSS ≈ **419 MB**、Hub ≈ **349 MB**，
+`~/.afs-hub` 3.4 MB（初始）；端口默认 4939/4941 互不冲突。回滚 = `arc service stop -i <name>`（可逆）→
+`arc service delete -i <name>`（删除记录与数据，不可逆；实测 `~/.afs-hub` 一并消失）。`arc service gc` **不是**回滚手段。

@@ -28,7 +28,10 @@
  * Live tier only: the residue cleanup. The live suites are not hermetic and the
  * economy ledger is append-only, so without it a dev machine gains hundreds of
  * records per run. Cleanup happens only after a *passing* live run, so a failure
- * keeps its evidence; `ARCBLOG_NO_CLEAN=1` keeps it too.
+ * keeps its evidence; `ARCBLOG_NO_CLEAN=1` keeps it too, and
+ * `ARCBLOG_CLEAN_DRY_RUN=1` runs the phase in report-only mode (BUG-053: this is
+ * what the clean test drives, so running that one file can no longer delete the
+ * developer's historical residue).
  *
  * Files run SERIALLY (live tier): they share one live instance and the doctor's
  * live checks read it — with the default parallel file execution the doctor
@@ -111,11 +114,26 @@ if (process.env.ARCBLOG_NO_CLEAN) {
   process.exit(0);
 }
 
+// BUG-053: this is the ONLY branch of the gate that deletes anything, and a
+// single-file run of `scripts/arcblog-clean.test.mjs` used to reach it for real —
+// silently wiping every historical residue record on the developer's instance
+// (204 records measured in Round 19). `ARCBLOG_CLEAN_DRY_RUN=1` reports the exact
+// set the gate would delete (paths included) and removes nothing, so the test can
+// name the probe it expects to go without touching anyone's data. The real delete
+// path stays available for an explicit opt-in run.
 try {
   const instance = resolveInstance({});
   const residue = findTestRecords(instance);
-  for (const record of residue) remove(record.path, instance);
-  console.log(`\ncleaned ${residue.length} test record(s) from the ${instance || 'default'} instance`);
+  const dryRun = process.env.ARCBLOG_CLEAN_DRY_RUN === '1';
+  if (dryRun) {
+    console.log(
+      `\nwould clean ${residue.length} test record(s) from the ${instance || 'default'} instance (dry run — nothing removed)`,
+    );
+    for (const record of residue) console.log(`  ${record.path}`);
+  } else {
+    for (const record of residue) remove(record.path, instance);
+    console.log(`\ncleaned ${residue.length} test record(s) from the ${instance || 'default'} instance`);
+  }
 } catch (err) {
   // A cleanup problem must not turn a green test run red; report and move on.
   console.log(`\ntest residue cleanup skipped: ${err.message}`);

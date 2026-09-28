@@ -249,7 +249,6 @@
   "media.gate-desc": "Sign in with DID Wallet to view the media index.",
   "media.gate-title": "Operations",
   "media.login": "Sign in with DID Wallet",
-  "media.media-empty": "How to add one: node scripts/arcblog-media.mjs add",
   "media.title": "Media",
   "operations.desc": "Live state of this node: health, discovery, Hubs, economy, media and agent grants.",
   "operations.discovery": "Discovery document",
@@ -834,7 +833,6 @@
   "categories.queue-clear-msg": "Removes the record from the queue. Posts it already rewrote are unaffected.",
   "categories.queue-clear-title": "Clear this intent?",
   "categories.queue-desc": "The console cannot rewrite posts itself, so a button only queues an intent. The worker applies it with the same code path as the CLI merge — and writes the outcome (applied / rejected / noop + reason) back onto this record.",
-  "categories.queue-empty": "No intent queued yet. The buttons in the list below write the first one.",
   "categories.queue-legend": "pending = waiting for the worker · applied = posts rewritten, source record removed · noop = nothing to do (already done) · rejected = refused, no data changed",
   "categories.queue-title": "Intent queue",
   "categories.remove-btn": "Delete and migrate to…",
@@ -878,7 +876,6 @@
   "media.queue-clear-msg": "Removes the record from the queue. Records it already deleted stay deleted.",
   "media.queue-clear-title": "Clear this intent?",
   "media.queue-desc": "The console cannot delete records itself, so a button only queues an intent. The worker applies it with the same code path as the CLI remove, and writes the outcome (applied / rejected / noop + reason) back onto this record.",
-  "media.queue-empty": "No intent queued yet. The buttons below write the first one.",
   "media.queue-legend": "pending = waiting for the worker · applied = the engine really deleted the record(s) · noop = nothing to do (already done, or nothing matched) · rejected = refused with a reason, no data changed",
   "media.queue-title": "Intent queue",
   "media.queued": "Intent queued — the local worker applies it.",
@@ -888,5 +885,8 @@
   "media.status-intent": "Status",
   "media.status-note": "The status text is read verbatim from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown — docs/arc-contracts.md §28.8.",
   "media.worker-hint": "Worker: node scripts/arcblog-media.mjs watch",
-  "media.worker-note": "Buttons only queue the action. The node's worker (node scripts/arcblog-media.mjs watch) performs it — the browser never deletes a record. This platform cannot run server-side code from a button click (docs/arc-contracts.md §26)."
+  "media.worker-note": "Buttons only queue the action. The node's worker (node scripts/arcblog-media.mjs watch) performs it — the browser never deletes a record. This platform cannot run server-side code from a button click (docs/arc-contracts.md §26).",
+  "media.media-standing-note": "The list above renders every record of this upload index. The index is CLI-maintained — add one with: node scripts/arcblog-media.mjs add --path <afs-path> --id <id>. An empty list only means no asset has been indexed on this node yet.",
+  "media.queue-standing-note": "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet.",
+  "categories.queue-standing-note": "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet."
 }

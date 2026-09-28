@@ -111,14 +111,25 @@ test('the quality gate cleans residue only after a passing run', () => {
   // gate instead of reading its prose:
   //
   //   * a FAILING live run must keep residue (guards "cleanup on failure")
-  //   * a PASSING live run must delete residue (guards "never cleans again")
+  //   * a PASSING live run must reach the cleanup decision and name the residue it
+  //     would delete (guards "never cleans again")
   //   * the FAST tier must never touch the instance (guards "cleans in the fast tier")
+  //
+  // BUG-053: the third case used to run the gate's REAL cleanup, so a single-file
+  // run of this test (`npm run test:file -- scripts/arcblog-clean.test.mjs`) wiped
+  // every historical residue record on the developer's instance — 204 records in
+  // Round 19, 188 of them left by nobody in the current round, and it made
+  // BUG-048's C6 ("this file is green") mutually exclusive with L-R19-5 ("do not
+  // delete other people's residue"). The default path now drives the gate's
+  // report-only mode (`ARCBLOG_CLEAN_DRY_RUN=1`), which lists the exact records
+  // the real run would delete. The real delete stays covered behind an explicit
+  // opt-in: `ARCBLOG_CLEAN_TEST_REALLY_DELETE=1 npm run test:file -- scripts/arcblog-clean.test.mjs`.
   //
   // The gate spawns `node --test <files>`; that child is short-circuited through a
   // NODE_OPTIONS preload, so every exit path is exercised without running the real
   // (10+ min) live suites — each call is ~1s, except the passing one, which also runs
-  // the gate's real (instance-scanning) cleanup. The preload is a no-op inside the
-  // gate itself (argv[1] is run-tests.mjs there), so the cleanup branch still runs.
+  // the gate's real (instance-scanning) cleanup phase. The preload is a no-op inside
+  // the gate itself (argv[1] is run-tests.mjs there), so the cleanup branch still runs.
   //
   // `NODE_TEST_*` must be stripped from the spawned environment: this test itself
   // runs inside `node --test`, which exports `NODE_TEST_CONTEXT=child-v8`; the gate
@@ -141,11 +152,11 @@ test('the quality gate cleans residue only after a passing run', () => {
   // calls finish in ~1s. The budgets are roomy because a *regressed* gate (one that
   // cleans when it must not) spends the extra time in `findTestRecords`/`remove`,
   // and this test should report that as "residue was deleted", not as a timeout.
-  const gate = (tier, exitCode, timeoutMs = 60_000) => {
+  const gate = (tier, exitCode, timeoutMs = 60_000, extraEnv = {}) => {
     const result = spawnSync(process.execPath, [join(repoRoot, 'scripts', 'run-tests.mjs'), tier], {
       encoding: 'utf8',
       cwd: repoRoot,
-      env: { ...gateEnv, ARCBLOG_GATE_STUB_EXIT: String(exitCode) },
+      env: { ...gateEnv, ARCBLOG_GATE_STUB_EXIT: String(exitCode), ...extraEnv },
       timeout: timeoutMs,
       killSignal: 'SIGKILL',
     });
@@ -165,6 +176,9 @@ test('the quality gate cleans residue only after a passing run', () => {
 
   const failProbe = probe('fail');
   const fastProbe = probe('fast');
+  // BUG-053 guard: whatever this test does, the instance's residue count must not
+  // drop. Other writers can only add, so `>=` is the honest comparison.
+  const residueBefore = findTestRecords().length;
   try {
     // 1) failure keeps the evidence: the gate must exit non-zero and delete nothing.
     writeProbe(failProbe);
@@ -188,23 +202,46 @@ test('the quality gate cleans residue only after a passing run', () => {
       `the fast tier must not clean instance residue:\n${fast.stdout}${fast.stderr}`,
     );
 
-    // 3) success cleans: the failing run's probe must be gone afterwards. (This call
-    // performs the gate's real cleanup, i.e. it deletes the instance's test residue —
-    // exactly what a passing `npm run test:live` does at its end; it runs last on
-    // purpose so the two assertions above still describe an uncleaned instance.)
-    const passing = gate('live', 0, 300_000);
+    // 3) success reaches the cleanup decision: a passing gate must decide to remove
+    // residue (guards "never cleans again"). BUG-053: the default path does that in
+    // the gate's report-only mode, which names the exact records the real run would
+    // delete — so the assertion is about the decision, not about actually deleting
+    // the operator's data. The real delete path is opt-in.
+    const reallyDelete = process.env.ARCBLOG_CLEAN_TEST_REALLY_DELETE === '1';
+    const passing = gate('live', 0, 300_000, reallyDelete ? {} : { ARCBLOG_CLEAN_DRY_RUN: '1' });
     assert.equal(passing.status, 0, `a passing live run must exit zero:\n${passing.stdout}${passing.stderr}`);
-    assert.equal(
-      probeExists(failProbe),
-      false,
-      `a passing live run must clean test residue:\n${passing.stdout}${passing.stderr}`,
-    );
+    if (reallyDelete) {
+      assert.equal(
+        probeExists(failProbe),
+        false,
+        `ARCBLOG_CLEAN_TEST_REALLY_DELETE=1: a passing live run must clean test residue:\n${passing.stdout}${passing.stderr}`,
+      );
+    } else {
+      assert.match(
+        passing.stdout,
+        /would clean \d+ test record\(s\)/,
+        `a passing live run must reach the cleanup phase:\n${passing.stdout}${passing.stderr}`,
+      );
+      assert.ok(
+        passing.stdout.includes(failProbe),
+        `the gate's cleanup decision must name the probe it would delete (BUG-053 dry run):\n${passing.stdout}${passing.stderr}`,
+      );
+      assert.equal(
+        probeExists(failProbe),
+        true,
+        `BUG-053: the default path must NOT delete instance residue (set ARCBLOG_CLEAN_TEST_REALLY_DELETE=1 to exercise the real delete):\n${passing.stdout}${passing.stderr}`,
+      );
+      assert.ok(
+        findTestRecords().length >= residueBefore,
+        `BUG-053: the residue count dropped (${findTestRecords().length} < ${residueBefore}) — this test deleted instance records`,
+      );
+    }
   } finally {
     for (const path of [failProbe, fastProbe]) {
       try {
         remove(path);
       } catch {
-        /* already cleaned by the gate (that is what assertion 3 checks) */
+        /* already cleaned by the gate when ARCBLOG_CLEAN_TEST_REALLY_DELETE=1 */
       }
     }
     rmSync(stub, { force: true });

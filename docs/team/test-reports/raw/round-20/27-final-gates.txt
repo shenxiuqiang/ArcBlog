@@ -1,0 +1,42 @@
+### ⑦ FINAL gates (post-restart, post-rollback) — 2026-09-28T18:22:49Z
+$ cat docs/team/.gate-lock
+QA (task-85) — FINAL gate after restart: npm test — started 2026-09-28T18:22:49Z
+$ npm test
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1035.316875
+
+fast tier passed — this is the gate. For a change to a CLI / AFS record / chain adapter,
+run just the affected file: `npm run test:file -- scripts/<file>.test.mjs` (serial, writes
+the dev instance — take docs/team/.gate-lock first). The full `npm run test:live` is no
+longer a routine gate (user ruling 2026-09-27).
+npm_test_exit=0
+
+$ arc dsl validate --json | issues
+ok= True issues= []
+
+$ arc dsl generate --check
+Would generate 0 file(s) (dry-run) — nothing to change
+  path: /Users/shenxiuqiang/workspace/ArcBlog
+exit=0
+$ node scripts/arcblog-console-nav.mjs --check
+{
+  "ok": true,
+  "action": "check",
+$ diff -r .aup dist/.aup ; diff -r .web dist/.web
+aup_exit=0
+web_exit=0
+
+$ arc service list --json | digest (final)
+[('default', '37a8eec1ce19687d', 4939, 85410, 'up', '/Users/shenxiuqiang', True)]
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN (final)
+exit=1
+$ ls /Users/shenxiuqiang/.afs-hub (final)
+ls: /Users/shenxiuqiang/.afs-hub: No such file or directory
+exit=1
+$ arc afs exec .../.actions/list --args {'path':'/instance/app/arcblog/hub/registrations'} (default final)
+[{"id":"31caa15539047182.json","path":"/instance/app/arcblog/hub/registrations/31caa15539047182.json","createdAt":"2026-09-28T17:31:39.842Z","updatedAt":"2026-09-28T18:06:56.951Z","meta":{"size":682,"

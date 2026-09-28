@@ -1,0 +1,20 @@
+### ① A2/A3 independent — 2026-09-28T18:15:11Z
+$ arc service url -i arcblog-hub
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+
+  Blocklet: arcblog
+    http://arcblog.localhost:4941/
+    http://localhost:4941/?blocklet=arcblog    (Safari / universal)
+http://127.0.0.1:4941
+exit=0
+
+$ git status --porcelain | grep -iE 'key|secret|env' ; echo grep_exit=$?
+grep_exit=1
+
+$ git status --porcelain --untracked-files=all | wc -l ; any *.key outside repo? ls -la /Users/shenxiuqiang/.afs-hub/.afs/keys
+total 8
+drwx------@  3 shenxiang  staff   96  9月 29 01:30 .
+drwxr-xr-x@ 15 shenxiang  staff  480  9月 29 02:09 ..
+-rw-------@  1 shenxiang  staff  409  9月 29 01:30 developer.json

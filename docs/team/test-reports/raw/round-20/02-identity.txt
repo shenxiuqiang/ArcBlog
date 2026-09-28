@@ -1,0 +1,36 @@
+### ① two-node reality: DIDs — 2026-09-28T18:06:37Z
+$ arc did list --json -i arcblog-hub
+{
+  "identities": [
+    {
+      "name": "developer",
+      "did": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+      "entityType": "developer"
+    }
+  ],
+  "total": 1,
+  "hintSelector": "-i arcblog-hub"
+}
+exit=0
+
+$ arc did list --json
+{
+  "identities": [
+    {
+      "name": "developer",
+      "did": "z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ",
+      "entityType": "developer"
+    }
+  ],
+  "total": 1,
+  "hintSelector": "-i default"
+}
+exit=0
+
+$ arc did info -i arcblog-hub
+ArcBlog DID=none CREDENTIAL=false
+exit=0
+
+$ arc did info
+ArcBlog DID=none CREDENTIAL=false
+exit=0

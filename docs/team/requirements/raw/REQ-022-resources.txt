@@ -1,0 +1,93 @@
+
+### REQ-022 resources (Q1–Q5) — 2026-09-28T17:38:45Z
+$ ps -o pid=,rss=,comm= -p 46916   (Q1 Studio/default)
+46916 429184 /Users/shenxiuqiang/.arc/versions/2.0.0-beta.50/arc-darwin-arm64
+$ ps -o pid=,rss=,comm= -p 21809   (Q2 Hub/arcblog-hub)
+21809 357680 /Users/shenxiuqiang/.arc/versions/2.0.0-beta.50/arc-darwin-arm64
+rss_KB / 1024 = MB: studio=419 MB ; hub=349 MB
+
+$ du -sh /Users/shenxiuqiang/.afs-hub /Users/shenxiuqiang/.afs /Users/shenxiuqiang/.afs/spaces   (Q3)
+3.4M	/Users/shenxiuqiang/.afs-hub
+102M	/Users/shenxiuqiang/.afs
+ 67M	/Users/shenxiuqiang/.afs/spaces
+
+$ lsof -nP -iTCP:4941 -sTCP:LISTEN   (Q4: listening after creation)
+COMMAND     PID      USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+arc-darwi 21809 shenxiang   26u  IPv4 0x384a476111ac0949      0t0  TCP 127.0.0.1:4941 (LISTEN)
+exit=0
+$ lsof -nP -iTCP:4939 -sTCP:LISTEN   (Studio still listening)
+COMMAND     PID      USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+arc-darwi 46916 shenxiang   30u  IPv4 0xc7a3fa1bb2b405eb      0t0  TCP 127.0.0.1:4939 (LISTEN)
+exit=0
+
+$ df -h / ; sysctl -n hw.memsize   (Q5)
+Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1   926Gi    12Gi   208Gi     6%    459k  2.2G    0%   /
+38654705664
+
+$ arc service list --json   (two instances side by side)
+  ▄▀█ █▀█ █▀▀  Agentic Realm Computer
+  █▀█ █▀▄ █▄▄  v2.0.0-beta.50 (c711b9aa) · 2026-09-10
+  Copyright (c) 2026 ArcBlock Inc. All rights reserved.
+{
+  "instances": [
+    {
+      "name": "arcblog-hub",
+      "id": "fce3c9fe7b130f16",
+      "status": "up",
+      "port": 4941,
+      "url": "http://127.0.0.1:4941",
+      "home": "/Users/shenxiuqiang/.afs-hub",
+      "spaceRoot": "/Users/shenxiuqiang/.afs-hub/.afs/spaces",
+      "blocklets": [
+        "/Users/shenxiuqiang/workspace/ArcBlog"
+      ],
+      "pid": 21809,
+      "version": "2.0.0-beta.50",
+      "commit": "c711b9aa",
+      "branch": "main",
+      "sha": "e92544d0db873ee1a9b9fa74a67af9f0bd9c83fc",
+      "checkout": "/Users/shenxiuqiang/workspace/ArcBlog",
+      "startedAt": "2026-09-28T17:30:54.199Z",
+      "urls": {
+        "ui": "http://127.0.0.1:4941/",
+        "blocklets": {
+          "arcblog": "http://127.0.0.1:4941/?blocklet=arcblog"
+        }
+      },
+      "host": "localhost",
+      "advertise": false,
+      "uptime": "8m"
+    },
+    {
+      "name": "default",
+      "id": "37a8eec1ce19687d",
+      "status": "up",
+      "port": 4939,
+      "url": "http://127.0.0.1:4939",
+      "home": "/Users/shenxiuqiang",
+      "spaceRoot": "/Users/shenxiuqiang/.afs/spaces",
+      "blocklets": [
+        "/Users/shenxiuqiang/workspace/my-app",
+        "/Users/shenxiuqiang/workspace/ArcBlog"
+      ],
+      "pid": 46916,
+      "version": "2.0.0-beta.50",
+      "commit": "c711b9aa",
+      "branch": "main",
+      "sha": "3b8583859f753b62de868f02b60c285bf782d729",
+      "checkout": "/Users/shenxiuqiang/workspace/ArcBlog",
+      "startedAt": "2026-09-28T16:15:41.528Z",
+      "urls": {
+        "ui": "http://127.0.0.1:4939/",
+        "blocklets": {
+          "arcblog": "http://127.0.0.1:4939/?blocklet=arcblog",
+          "my-app": "http://127.0.0.1:4939/?blocklet=my-app"
+        }
+      },
+      "host": "localhost",
+      "advertise": true,
+      "uptime": "1h"
+    }
+  ]
+}

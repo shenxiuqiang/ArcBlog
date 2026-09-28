@@ -6,7 +6,7 @@
 | 严重级 | **P3**（工具/测试安全：删的只是「测试指纹」记录，绝不会碰真实内容；但它让 L-R19-5 与 BUG-048 的 C6 判据互斥） |
 | 发现轮次 | round-19（QA `task-81` 判 BUG-048 C6 时发现；Dev 已在 runbook 主动告警） |
 | 关联 REQ | 无（范围外；关联 [BUG-048](BUG-048-cleaner-misses-live-test-residue.md) 关闭判据 **C6** 与 Lead **L-R19-5**） |
-| 状态 | 待裁决（PM `task-82`） |
+| 状态 | **QA 复验（round-20，`task-85`）：已修复 —— 默认路径不再真删、定向单跑 7/7 全绿、残留数未下降（见文末「复验记录」）→ 建议 PM 关闭** |
 
 ## 复现命令与最小步骤
 
@@ -67,3 +67,33 @@ const passing = gate('live', 0, 300_000);
 - `docs/operations-runbook.md`（Dev 本轮已加告警，但告警不改变默认行为）
 
 > QA 不修改上述文件。建议修法（仅建议）：把该用例改为「可注入清理目录 / 隔离实例」，或把「通过后清理」的验证改成对 `run-tests.mjs` 清理分支的单元级注入（不起真实 gate），或将该用例移到显式 opt-in 的门后。
+
+## 复验记录（round-20，QA `task-85`；**独立重跑**）
+
+> 原始输出：`docs/team/test-reports/raw/round-20/10-clean-found-before.json`、`11-bug053-targeted.txt`、`25-bug052-cleanup.txt`。
+
+**修法独立复核（静态，`git diff`）**：
+- `scripts/arcblog-clean.test.mjs`：第 3 条用例默认走 `ARCBLOG_CLEAN_DRY_RUN=1`（断言变成「gate 必须到达清理决策并点名它会删的 probe」），真删路径退到**显式 opt-in** `ARCBLOG_CLEAN_TEST_REALLY_DELETE=1`；并新增 `findTestRecords().length >= residueBefore` 的自证断言（残留数下降即失败）。
+- `scripts/run-tests.mjs`：清理分支拆成 report-only（打印 `would clean N test record(s)` + 逐条 path，一行不删）与真删两支，仅由 `ARCBLOG_CLEAN_DRY_RUN=1` 区分；**没有**改变 `npm run test:live` 通过后清理的既定语义。
+
+**独立实证**（`.gate-lock` 下串行；跑完已删锁）：
+
+```text
+$ node scripts/arcblog-clean.mjs            # BEFORE
+{"found":206,"removed":0,"byDir":{"config":132,"node":29,"hub/index":2,"drafts":43}}
+
+$ npm run test:file -- scripts/arcblog-clean.test.mjs     # 517.6s, exit 0
+✔ isTestRecordId recognises residue and leaves real content alone
+✔ the cleanup never touches published content directories
+✔ BUG-048: the cleaner scans node/ and both console intent queues
+✔ clean help exits 0 and cleanup rejects an unknown directory
+✔ live: the dry run reports residue and deletes nothing
+✔ the residue matcher cannot swallow plausible production ids
+✔ the quality gate cleans residue only after a passing run
+ℹ tests 7   ℹ pass 7   ℹ fail 0
+
+$ node scripts/arcblog-clean.mjs            # AFTER
+{"found":206,"removed":0,"byDir":{"config":132,"node":29,"hub/index":2,"drafts":43}}   # 逐项与 BEFORE 相同
+```
+
+**判定：通过（已修复）**。`found 206 → 206`、`removed 0`、`byDir` 逐项不变 → 默认执行路径**不再删除**实例上任何历史残留；同时该文件 **7/7 全绿**（BUG-048 **C6** 解除条件达成）。真删路径未跑（`ARCBLOG_CLEAN_TEST_REALLY_DELETE=1` 会删本机 206 条、含非本轮残留 → 按 L-R20 口径不跑，如实登记）。

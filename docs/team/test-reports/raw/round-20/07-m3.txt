@@ -1,0 +1,46 @@
+### ③ M3 honesty: Hub instance cannot see Studio's registration — 2026-09-28T18:07:08Z
+$ [Hub] node scripts/arcblog-network.mjs hub list --instance arcblog-hub
+{
+  "ok": true,
+  "path": "/instance/app/arcblog/hub/registrations",
+  "count": 0,
+  "staleAfterHours": 24,
+  "summary": {},
+  "registrations": []
+}
+exit=0
+
+$ [Hub] node scripts/arcblog-network.mjs hub approve --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg --instance arcblog-hub
+{
+  "ok": false,
+  "code": "NOT_FOUND",
+  "error": "hub not registered: z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg"
+}
+exit=1
+
+$ [Studio] node scripts/arcblog-network.mjs hub show --hub-did z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg
+{
+  "ok": true,
+  "registration": {
+    "id": "31caa15539047182",
+    "hubDid": "z1dRyCdLm133GupUoFRnVcRFgAgWDccvsCg",
+    "endpoint": "http://arcblog.localhost:4941",
+    "status": "active",
+    "relation": "applied",
+    "direction": "studio",
+    "removedAt": "",
+    "removedReason": "",
+    "registeredAt": "2026-09-28T17:31:39.245Z",
+    "updatedAt": "2026-09-28T18:06:56.661Z",
+    "freshness": {
+      "state": "fresh",
+      "reason": "last sync 0.0h ago",
+      "ageHours": 0.005610555555555555,
+      "staleAfterHours": 24,
+      "checkedAt": "2026-09-28T17:32:16.770Z"
+    },
+exit=0
+
+$ [Hub] arc afs exec .../.actions/list --args {'path':'/instance/settings'} -i arcblog-hub   # hub is genuinely serving (not dead)
+[{"id":"arcblog","path":"/instance/settings/arcblog","createdAt":"2026-09-28T17:31:20.109Z","updatedAt":"2026-09-28T17:31:20.109Z","meta":{"childrenCount":3,"size":160,"kind":"fs:directory"}}]
+exit=0

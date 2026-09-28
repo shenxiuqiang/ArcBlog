@@ -40,7 +40,7 @@ page categories {
     queue-clear-msg { en "Removes the record from the queue. Posts it already rewrote are unaffected." zh "从队列移除该记录。已被它改写的文章不受影响。" }
     queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
     queue-desc { en "The console cannot rewrite posts itself, so a button only queues an intent. The worker applies it with the same code path as the CLI merge — and writes the outcome (applied / rejected / noop + reason) back onto this record." zh "控制台本身不能改写文章，按钮只负责入队。worker 会用与 CLI merge 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。" }
-    queue-empty { en "No intent queued yet. The buttons in the list below write the first one." zh "还没有入队的意图。下方列表里的按钮会写入第一条。" }
+    queue-standing-note { en "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
     queue-legend { en "pending = waiting for the worker · applied = posts rewritten, source record removed · noop = nothing to do (already done) · rejected = refused, no data changed" zh "pending = 等待 worker · applied = 已改写文章并删除源记录 · noop = 无需执行（已经做过）· rejected = 被拒绝，未改动任何数据" }
     queue-title { en "Intent queue" zh "意图队列" }
     remove-btn { en "Delete and migrate to…" zh "删除并迁移到…" }
@@ -204,7 +204,10 @@ page categories {
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
                   }
                 }
-                p :queue-empty scale=caption intent=muted
+                // BUG-052 (same shape, evaluated in R20): standing note, not an
+                // empty-state claim — the platform cannot probe a list's length
+                // (arc-contracts §21). Do not turn this back into an empty state.
+                p :queue-standing-note scale=caption intent=muted
                 p :status-note intent=muted scale=sm
                 p :worker-hint intent=muted scale=sm
               }

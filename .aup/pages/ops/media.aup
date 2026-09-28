@@ -26,7 +26,7 @@ page media {
     limits-title { en "Platform limits (honest degradation)" zh "平台限制（如实降级）" }
     limits-url { en "Spec §15.4 also lists \"copy the address (AFS path and public URL)\"; only the AFS path exists in the record, so only it is rendered." zh "规范 §15.4 还要求「复制地址（AFS 路径与公开 URL）」；记录里只有 AFS 路径，因此只呈现路径。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    media-empty { en "How to add one: node scripts/arcblog-media.mjs add" zh "如何添加：node scripts/arcblog-media.mjs add" }
+    media-standing-note { en "The list above renders every record of this upload index. The index is CLI-maintained — add one with: node scripts/arcblog-media.mjs add --path <afs-path> --id <id>. An empty list only means no asset has been indexed on this node yet." zh "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。" }
     orphans-intro { en "Every index record whose AFS path is referenced nowhere (the CLI's own unreferenced list):" zh "列出路径未被任何记录引用的索引记录（即 CLI 的孤儿清单）：" }
     orphans-order { en "Always run refs --id <id> first: it shows where the asset is used before you clean anything up." zh "清理前请先跑 refs --id <id>，看清资产被谁引用。" }
     orphans-record-only { en "remove deletes the index record only — it never deletes the binary file." zh "remove 只删除索引记录——绝不会删除二进制文件。" }
@@ -42,7 +42,7 @@ page media {
     queue-clear-msg { en "Removes the record from the queue. Records it already deleted stay deleted." zh "从队列移除该记录。已被它删除的记录保持删除状态。" }
     queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
     queue-desc { en "The console cannot delete records itself, so a button only queues an intent. The worker applies it with the same code path as the CLI remove, and writes the outcome (applied / rejected / noop + reason) back onto this record." zh "控制台本身不能删除记录，按钮只负责入队。worker 会用与 CLI remove 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。" }
-    queue-empty { en "No intent queued yet. The buttons below write the first one." zh "还没有入队的意图。下方按钮会写入第一条。" }
+    queue-standing-note { en "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
     queue-legend { en "pending = waiting for the worker · applied = the engine really deleted the record(s) · noop = nothing to do (already done, or nothing matched) · rejected = refused with a reason, no data changed" zh "pending = 等待 worker · applied = 记录确实被删除 · noop = 无需执行（已经做过，或没有匹配项）· rejected = 被拒绝并给出原因，未改动任何数据" }
     queue-title { en "Intent queue" zh "意图队列" }
     queued { en "Intent queued — the local worker applies it." zh "意图已入队 —— 由本机 worker 执行。" }
@@ -207,7 +207,11 @@ page media {
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
                   }
                 }
-                p :queue-empty scale=caption intent=muted
+                // BUG-052 / L-R20-4: a STANDING note, not an empty-state claim.
+                // The platform cannot probe a list's length (arc-contracts §21),
+                // so an unconditional "nothing queued yet" rendered even with 12
+                // records in the queue. Do not turn this back into an empty state.
+                p :queue-standing-note scale=caption intent=muted
                 p :status-note scale=sm intent=muted
               }
               // 3) The upload index itself: every row carries its own button.
@@ -215,7 +219,7 @@ page media {
                 h3 :index-title level=3 style={fontSize: "var(--type-body)"}
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view gap=sm visible=$session.authenticated {
-                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-empty from "/instance/app/arcblog/media" {
+                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-standing-note from "/instance/app/arcblog/media" {
                     row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       view gap=xs style={flex: "1 1 0%", minWidth: 0} {
                         h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
@@ -239,7 +243,9 @@ page media {
                       action variant=destructive size=sm icon=trash label=:remove-btn confirm={title: :remove-confirm-title, message: :remove-confirm-msg} onSuccessToast={intent: success, message: "$t(media.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(media.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/media-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: remove, mediaId: "${args.mId}", ids: [], idsCsv: "", status: pending, message: "", changed: [], skipped: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
                     }
                   }
-                  p :media-empty scale=sm intent=muted
+                  // BUG-052: the CLI hint is a permanent description of a
+                  // CLI-maintained index, never a claim that the list is empty.
+                  p :media-standing-note scale=sm intent=muted
                 }
                 p :index-note scale=sm intent=muted
               }

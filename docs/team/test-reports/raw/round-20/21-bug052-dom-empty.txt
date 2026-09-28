@@ -1,0 +1,75 @@
+### ④ BUG-052 runtime DOM — state A: EMPTY queue (0) + EMPTY index (0) — 2026-09-28T18:20:07Z
+$ node scripts/arcblog-media.mjs queue | jq (state at probe time)
+queue count = 0
+media index count = 0
+
+$ node docs/team/test-reports/raw/round-20/qa-media-dom.mjs 'http://arcblog.localhost:4939/?page=media&locale=zh' 'http://arcblog.localhost:4939/?page=media&locale=en'
+CDP browser: Chrome/153.0.8010.54
+admin login_token cookie found: eyJhbGci…
+
+== navigate == http://arcblog.localhost:4939/?page=media&locale=zh
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "lang": "zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [
+  "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。",
+  "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。"
+ ],
+ "oldEmptyStateLines": [],
+ "h3Titles": [
+  "清理动作（按钮）",
+  "意图队列",
+  "上传索引",
+  "未引用媒体与清理",
+  "上传",
+  "引用视图（CLI）",
+  "高级：命令行（可选）",
+  "平台限制（如实降级）"
+ ],
+ "cards": []
+}
+
+== navigate == http://arcblog.localhost:4939/?page=media&locale=en
+{
+ "url": "http://arcblog.localhost:4939/?page=media&locale=zh",
+ "lang": "zh",
+ "sessionFailed": false,
+ "authenticated": true,
+ "standingNoteLines": [
+  "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。",
+  "上方列表渲染本上传索引的每一条记录。索引由 CLI 维护——登记方式：node scripts/arcblog-media.mjs add --path <afs-path> --id <id>。列表为空只表示本机还没有登记任何资产。"
+ ],
+ "oldEmptyStateLines": [],
+ "h3Titles": [
+  "清理动作（按钮）",
+  "意图队列",
+  "上传索引",
+  "未引用媒体与清理",
+  "上传",
+  "引用视图（CLI）",
+  "高级：命令行（可选）",
+  "平台限制（如实降级）"
+ ],
+ "cards": []
+}
+
+== page targets before ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+== page targets after close ==
+[
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh",
+ "http://arcblog.localhost:4939/",
+ "http://arcblog.localhost:4939/?locale=zh"
+]
+tabs_opened_by_probe=1 tabs_left_open=[]
+probe_finished

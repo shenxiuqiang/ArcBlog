@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 76590,
+      "size": 77044,
       "contentType": "application/json",
-      "sha256": "5b8ee94d249881eff1b138b9f65871e3f5c50b12b76ad779033cf26cf2a064d0"
+      "sha256": "3535a7a709ac795d855a7b86f78e41887024b9da8492347e78eeab66c3c3807a"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 74049,
+      "size": 74475,
       "contentType": "application/json",
-      "sha256": "6a7384279e26f0cf7d8e280087b0763fdd46c673755bb62c1453f3ca2b802364"
+      "sha256": "e84c0242d6c6ee1ff57bf4d797fd81e6c91d1e33f5fed99d2babcea681cf2390"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -316,9 +316,9 @@
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 34606,
+      "size": 35737,
       "contentType": "application/octet-stream",
-      "sha256": "6cf61f27b19685388aabbda71b50b4559c1dd1a327a7bca3f719a0f958d30585"
+      "sha256": "c881cb8466f4a7983f77966e27be61a1a50e96a28aa1ce45bd5937f3ad591251"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
@@ -370,9 +370,9 @@
     },
     {
       "path": ".aup/pages/site/categories.aup",
-      "size": 28640,
+      "size": 29131,
       "contentType": "application/octet-stream",
-      "sha256": "f33ce196c2d9aeb0f9f460442a0df32871d01740a4cf05ec2d3eb73d88ecdc41"
+      "sha256": "c3a9b8d3c7e7edafe0756ac7a8e2e31e1d248f96e744e9ff92b81e3c8c61f1b0"
     },
     {
       "path": ".aup/pages/site/feeds.aup",
@@ -1342,9 +1342,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 158899,
+      "size": 162857,
       "contentType": "text/markdown",
-      "sha256": "a864dfc169a7678b3eea5e2a3e6a5711dc3c4d4e8ba4b670b8bd4e034afd3a4d"
+      "sha256": "649407a795079cb1df2990859f1062ca23fd49be3574e39caf67688f2ec5fc39"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1354,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 73725,
+      "size": 75408,
       "contentType": "text/markdown",
-      "sha256": "d86a5f737236a8164016601efd7472e559ca394ef9e7754d19b929a23c9ac7ea"
+      "sha256": "e4c34e1ba778501f3ed21d53cecad7e53108020c495c791c57717f38b7b6a46a"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1426,9 +1426,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 39895,
+      "size": 41576,
       "contentType": "text/markdown",
-      "sha256": "6939176938a69097e6672599c215c3842056c526a97f4f0060c0c1dde072e2f5"
+      "sha256": "37cd81dada9e03fb78e4b4bdfdeafe47a8932b98089a02a47c4c6b6d59dc494d"
     },
     {
       "path": "docs/persistence.md",
@@ -1468,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 791777,
+      "size": 864098,
       "contentType": "text/markdown",
-      "sha256": "9114e24294688253010ae57cfac97f7c71b752b5e123e1b402ee93ae74a4c0b1"
+      "sha256": "45d390a7820f404b0261be9628f1e9f63f8724507709e7966bdf92d096674c9d"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1762,9 +1762,9 @@
     },
     {
       "path": "docs/team/bugs/BUG-048-cleaner-misses-live-test-residue.md",
-      "size": 8064,
+      "size": 9150,
       "contentType": "text/markdown",
-      "sha256": "7bd209df8696e588825c3007d98e5d2e7bbb31d5d5300d80e322f2bd2c581246"
+      "sha256": "820451c79437ea3e9ef6a4ccf97c7c9cb1dc04b5e9110a6b5ccbd593423e2884"
     },
     {
       "path": "docs/team/bugs/BUG-049-queue-entry-without-json-extension-never-consumed.md",
@@ -1786,21 +1786,33 @@
     },
     {
       "path": "docs/team/bugs/BUG-052-media-empty-hints-always-rendered.md",
-      "size": 3067,
+      "size": 5610,
       "contentType": "text/markdown",
-      "sha256": "1b34b0d0ae8fe76054df5d8b5d6089b025fb11c3fe769a94adb2f3ea3b39355e"
+      "sha256": "8efa36805c13dbf8c9fbeac57415f8c8b795a3bf9e2dba915186f0f9af8d6f29"
     },
     {
       "path": "docs/team/bugs/BUG-053-clean-test-really-deletes-instance-residue.md",
-      "size": 4316,
+      "size": 6661,
       "contentType": "text/markdown",
-      "sha256": "7baae3d11ae0de8deb7b1505ac13810d39e94544c79aac21d305b902a219e6a3"
+      "sha256": "51edb3e640608067395c343ce8a7538936d8c53b381060c3d6f59bfa286d667d"
     },
     {
       "path": "docs/team/bugs/BUG-054-media-intent-ids-not-normalized-in-record.md",
       "size": 3448,
       "contentType": "text/markdown",
       "sha256": "d4b03b2034d2b449622721f76ad9dcdd63ecfb2df75731b4ed45fd325cb2a165"
+    },
+    {
+      "path": "docs/team/bugs/BUG-055-probe-queuerows-metric-never-discriminates.md",
+      "size": 4698,
+      "contentType": "text/markdown",
+      "sha256": "5a9ddbb84ad3867cbc7a5d9996aea59799ec4963479e4d775d2bbcc206988819"
+    },
+    {
+      "path": "docs/team/bugs/BUG-056-factory-queue-empty-same-shape-as-052.md",
+      "size": 4277,
+      "contentType": "text/markdown",
+      "sha256": "c149c6556987565616faab938e0c837ed5fabe9d15ffc23dff640fa031372de4"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2512,9 +2524,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 48852,
+      "size": 55382,
       "contentType": "text/markdown",
-      "sha256": "d304ce223cdd2da52e8cf1e854774b27e63f289fb1b0c463098d6e995deebaf4"
+      "sha256": "aded7a6f54e98364c208cd31fcb3655ae6714f8efa9f5234db5c7903fe72ad77"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2577,6 +2589,12 @@
       "sha256": "5194e0418ca5a0397aab77cef01345805cdbda4125bfbc9488bca176730394b2"
     },
     {
+      "path": "docs/team/journal/round-20.md",
+      "size": 34271,
+      "contentType": "text/markdown",
+      "sha256": "fa39c9e55be76ca4f6d9ebba3d5484b26cd73b8a6d868b0d9bb5330205e6b830"
+    },
+    {
       "path": "docs/team/journal/round-6.md",
       "size": 25171,
       "contentType": "text/markdown",
@@ -2629,6 +2647,72 @@
       "size": 7179,
       "contentType": "text/plain",
       "sha256": "7b45cf51da1c69b1b650f165bb3f2103b7ac42350038a69386ede7197be1bcbe"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-blocklet.txt",
+      "size": 3723,
+      "contentType": "text/plain",
+      "sha256": "b271275d68e6908171d53e2b95fca95336412a34d58b2628a4e683a52da980c8"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-bug052-dom.txt",
+      "size": 11894,
+      "contentType": "text/plain",
+      "sha256": "0a298732b86367e990bc58f2b72cf49d231614d08ae3ffb7df9e533bd5fc9c08"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-clean-found.txt",
+      "size": 2756,
+      "contentType": "text/plain",
+      "sha256": "b82ee75b0487ed2ff7e30089ccffe8bfa9666de8a863092d25d236bed693626d"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-gates.txt",
+      "size": 3009,
+      "contentType": "text/plain",
+      "sha256": "2ef65ea20177bc2a5d2688784e56b36d71f0fbcf6c13d9dfa1503f1c87154f75"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-identity.txt",
+      "size": 1464,
+      "contentType": "text/plain",
+      "sha256": "c19601b0d8401837490edc8edd793554a838ea24102fac331883e4f54fd3a4fc"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-instances.txt",
+      "size": 7768,
+      "contentType": "text/plain",
+      "sha256": "481e409d1347b93a2d0a6faf60f2b92feefbafe388dc3cccb6f5460dfde51964"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-matrix.txt",
+      "size": 25583,
+      "contentType": "text/plain",
+      "sha256": "df0280fee338755ef520234a51bc19022286ebe52dd2869531f83418ea5ec30b"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-resources.txt",
+      "size": 3309,
+      "contentType": "text/plain",
+      "sha256": "ed3de0ca658f136498a881b2bd118dc5ef37e18785f10074830f7272ca169805"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-rollback.txt",
+      "size": 2283,
+      "contentType": "text/plain",
+      "sha256": "72c2f8a6ce3fcafad617c617982097dd55a3f8f90188644e253d6c1fb01f6a56"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-space-sync.txt",
+      "size": 7392,
+      "contentType": "text/plain",
+      "sha256": "f26c776556781b862ec56a608a87a9a4cbfe1f91c7705d53634bbe7873ec6f17"
+    },
+    {
+      "path": "docs/team/requirements/raw/REQ-022-sync-boundary.txt",
+      "size": 9536,
+      "contentType": "text/plain",
+      "sha256": "8b1c44fbaab23eb638add0c5004ad52fd86ed0777b70fc380eac9715ce73397a"
     },
     {
       "path": "docs/team/requirements/REQ-001-tags-admin-ui.md",
@@ -2764,9 +2848,15 @@
     },
     {
       "path": "docs/team/requirements/REQ-022-two-node-studio-hub-testbed.md",
-      "size": 29143,
+      "size": 77883,
       "contentType": "text/markdown",
-      "sha256": "4637fb59c6dedbe32aa536b076252133a21e3961bfe049f6e9d92c940b9a7b65"
+      "sha256": "35a88843c845555e1a9d78458759a62aa5b54bf4a08061a724b612d7cc6b85bc"
+    },
+    {
+      "path": "docs/team/requirements/REQ-022b-inter-node-afs-client.md",
+      "size": 15085,
+      "contentType": "text/markdown",
+      "sha256": "2f78bf7bec8bedb2e5c514ccf94ba8f9bbe3d37196a2dcc23c98ddf204ed81f5"
     },
     {
       "path": "docs/team/requirements/REQ-023-chain-environment-externalization.md",
@@ -4053,6 +4143,228 @@
       "sha256": "e525146855d6f5222e0ae04166c49de0936d7e7292ff3dac5607c07c219a320f"
     },
     {
+      "path": "docs/team/test-reports/raw/round-20/01-instances.txt",
+      "size": 2553,
+      "contentType": "text/plain",
+      "sha256": "826394ee38b9afa66d50fae812f7a59833aa6f9a542adf78f09fadb375aff044"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/02-identity.txt",
+      "size": 653,
+      "contentType": "text/plain",
+      "sha256": "bd9e9843e10d66f65f21b56baed437924a0902a2d86e69e06c11c718d5e3abbf"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/03-registrations-baseline.txt",
+      "size": 5985,
+      "contentType": "text/plain",
+      "sha256": "855122c7ab6567ea2c97c15efafafb0830292afa1fc883f423df92d07f6ecd32"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/04-m5-before.txt",
+      "size": 1878,
+      "contentType": "text/plain",
+      "sha256": "067ab2b8c34df96a34332ad967b835ee3504c272c87ca8e6627bb4231fa7a8a0"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/05-m5-after.txt",
+      "size": 5531,
+      "contentType": "text/plain",
+      "sha256": "f056c5d9b855a4c9253988e81e0cb7fde344ced7941749a239fbf8cad2d03649"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/06-m5-diff.txt",
+      "size": 2256,
+      "contentType": "text/plain",
+      "sha256": "6199836c4808b2a621ecfc89a36c1704423aafb0feae872bb1d3d2757ef6780e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/07-m3.txt",
+      "size": 1588,
+      "contentType": "text/plain",
+      "sha256": "758acabadc54a7d60cc5c718c77aabef21a16f290ffd0f69ada44f10be14b1f5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/08-e2-transport-greps.txt",
+      "size": 4474,
+      "contentType": "text/plain",
+      "sha256": "c64db0f7b8e16fc6612fbf38a2e69d4ae14a37b5b5eea7a41d1529d5c8b38994"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/09-space-sync-help.txt",
+      "size": 8442,
+      "contentType": "text/plain",
+      "sha256": "7527e3b916412abfb71ecc7dd278d559f355b8c379c6f38b7acf6fff1109b035"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/10-clean-found-before.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/10-clean-found-before.json",
+      "size": 1849,
+      "contentType": "application/json",
+      "sha256": "6d73c6da26ded75d899546c667046df20ff4cdba1bcca0ff0003e9d6f3cae0ce"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/11-bug053-targeted.txt",
+      "size": 2961,
+      "contentType": "text/plain",
+      "sha256": "b07686d0d93a965bab5d9cd15148cd18b042f88079187d66bbebbb9344f5441d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/12-gates-static.txt",
+      "size": 2004,
+      "contentType": "text/plain",
+      "sha256": "b63669f961d5d65321fc2edb54c13566267b0988fb7ba9362e750aa6efcb7c24"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/13-nav-lint.txt",
+      "size": 247,
+      "contentType": "text/plain",
+      "sha256": "99e733fec27e59581303807a51d18d026296b664e048a57f8f58e7fbd21a2a20"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/14-a2-a3.txt",
+      "size": 820,
+      "contentType": "text/plain",
+      "sha256": "269bc77278c407ce2644ab7fb77652333d3ccfbffc8d5e3fec9d46a9fc673d1b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/15-npm-test.txt",
+      "size": 3181,
+      "contentType": "text/plain",
+      "sha256": "7d55e9b225812e60a37d44be15a3c73e7e8ab0af10dd12b414d2c28c300f773b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/16-build-diff.txt",
+      "size": 1372,
+      "contentType": "text/plain",
+      "sha256": "cc475c477335cac7c2046278cc0e63e008ef9ccbb1f0a49f2a799f4704a01d5a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/17-rollback.txt",
+      "size": 2642,
+      "contentType": "text/plain",
+      "sha256": "029bbbdcfb4f81dfe586e128fd0c02be014f9d6744a8f8830c711db89a07f34f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/18-instances-after-delete.json",
+      "size": 956,
+      "contentType": "application/json",
+      "sha256": "e3b3c506df411620a0dd0f98c93921ba2fc759cfca45cd004873944fefa675e1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/19-pre-restart.txt",
+      "size": 1495,
+      "contentType": "text/plain",
+      "sha256": "a10a24ca9aad67481f5e099dddc03a3bec3e19cdf9c2a29614820ca12bd2e880"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/20-restart-remount.txt",
+      "size": 2160,
+      "contentType": "text/plain",
+      "sha256": "12417033d35e4b08b0d0697bf37175bcc1271e730b9a7265aebd12ecfb2d576d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/21-bug052-dom-empty.txt",
+      "size": 2767,
+      "contentType": "text/plain",
+      "sha256": "4d1151ca9f55a371f278ccb9522330893c28e550d5fc68d999f215b3f146f054"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/22-bug052-dom-empty-en.txt",
+      "size": 1663,
+      "contentType": "text/plain",
+      "sha256": "12e70329ada61ccb26b89abf6c527531deab4bd482e3dae31865caed5b60f715"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/23-bug052-stateB-setup.txt",
+      "size": 820,
+      "contentType": "text/plain",
+      "sha256": "4617c2d4a8ffccca98c12dae1dd7c1d99871859a7c5f45030e303e4e964f157b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/24-bug052-dom-nonempty.txt",
+      "size": 2374,
+      "contentType": "text/plain",
+      "sha256": "f00c573c5c4b2975e56cee6b15a195c86b2727325702ca688b0f8ddf0cd84765"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/25-bug052-cleanup.txt",
+      "size": 524,
+      "contentType": "text/plain",
+      "sha256": "b76a15dead1486c8ce2ad70cc59cf40706a93c66aee01f00d97607b76394c819"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/26-bug052-categories-dom.txt",
+      "size": 1794,
+      "contentType": "text/plain",
+      "sha256": "c48213bdffe6dafc0f397b77854e8f3ec99e159ffb8a7eccbf484da255c7143a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/27-final-gates.txt",
+      "size": 1583,
+      "contentType": "text/plain",
+      "sha256": "3480526398e6c64f1c46056d988ee437150b1da6c825271acb4405e29bf08212"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/28-bug055-metric.txt",
+      "size": 663,
+      "contentType": "text/plain",
+      "sha256": "b082201d2f57132d2ffcd3b494dca823f5c789ef0f9baf2a7bdf3035d4f6ca77"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/hub-after-list.txt",
+      "size": 63,
+      "contentType": "text/plain",
+      "sha256": "2b705914f071108774a7caf74478deab426a6b36d0a684debb8c9cb5e8c5218e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/hub-after-read.txt",
+      "size": 84,
+      "contentType": "text/plain",
+      "sha256": "d015d77b1256289fb813f7e0ef4f59b57fd90f3c431972100a067ec6c75bc71b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/hub-before-list.txt",
+      "size": 63,
+      "contentType": "text/plain",
+      "sha256": "2b705914f071108774a7caf74478deab426a6b36d0a684debb8c9cb5e8c5218e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/hub-before-read.txt",
+      "size": 84,
+      "contentType": "text/plain",
+      "sha256": "d015d77b1256289fb813f7e0ef4f59b57fd90f3c431972100a067ec6c75bc71b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/qa-media-dom.mjs",
+      "size": 6159,
+      "contentType": "text/javascript",
+      "sha256": "b8ce963bd7a60bece5a04d23ebd81af96cc4af887789f5b5e5273e800b0d07bc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/studio-after.json",
+      "size": 1086,
+      "contentType": "application/json",
+      "sha256": "5562996baa8a4fa32afa6f2f12fdf12442e5646800f215e9184eacb9d7473978"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/studio-before.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-20/studio-before.json",
+      "size": 1080,
+      "contentType": "application/json",
+      "sha256": "48d54fdb96d65daf7768942d43a3dcac0831213164119475ebf110d9b963609a"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -4141,6 +4453,12 @@
       "size": 29200,
       "contentType": "text/markdown",
       "sha256": "df40bc2b22f1da2fc9788e8b39c1d8e9647ee9ec477789410fb30ad6156a17cd"
+    },
+    {
+      "path": "docs/team/test-reports/round-20.md",
+      "size": 26187,
+      "contentType": "text/markdown",
+      "sha256": "668d4ba5c55ec1a09e31e2f1b13e0d5151424e5f7ff4ae9613395939c7b1eaa9"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -4318,9 +4636,9 @@
     },
     {
       "path": "scripts/arcblog-clean.test.mjs",
-      "size": 10249,
+      "size": 12445,
       "contentType": "text/javascript",
-      "sha256": "97c0f01eb1ff3d2a90e38209646d57c58a45ebe862660de446f84b37ba909607"
+      "sha256": "3f816f494d9b096c45ae6a486f2e24941be2b36e71fd17c76690d49676847f34"
     },
     {
       "path": "scripts/arcblog-console-nav.mjs",
@@ -4708,9 +5026,9 @@
     },
     {
       "path": "scripts/run-tests.mjs",
-      "size": 5088,
+      "size": 6148,
       "contentType": "text/javascript",
-      "sha256": "d14f570840c22d8bfe8d1c75784d312d7392df98e29060faa97626fc9f64f01f"
+      "sha256": "302ade8ab36f4b66250d0f0b4fb35f3399400cd7968392adfbeb3c4cf76ad301"
     },
     {
       "path": "scripts/ui-budget-baseline.json",
