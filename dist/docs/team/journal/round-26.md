@@ -182,3 +182,11 @@ $ node --test scripts/arcblog-roles.test.mjs → tests 18 / pass 18 / fail 0（�
 6. **BUG-065 / BUG-061 / BUG-062** 落笔前更正（Lead 写范围）。
 7. **B 类需批准项**（每项前置 = 一句批准或独立窗口）：Hub Topics 先探针 + schema 草案 / 内容可见性五档（C-05）/ 文章级 SEO-OG（C-04·C-07）/ `§111` 调度（C-14）/ 能力驱动菜单（C-12）/ 首页模块开关（`:133`）/ REQ-021 P2-a 真链小额（**唯一花钱点，逐笔批准**）/ REQ-022b 真搬运 / REQ-011 / M9·E-3 / M2·M4 + 残留清理决策。
 8. **C 类 V2（保持 ⬜ + 理由，不排期）**：§19 内容对象目录化 / §77 内容缓存复制 / §64·§131 Hub AI / §121 评论 / §122 Follow / §123 订阅绑定 DID / §144 Cross-Hub / §132–133 AI Creator / `:153` 付费推广。
+
+### 2.2 流程违规如实登记（Lead 审计）
+
+- **违规事实**：提交 `edd62e1`（2026-09-29 13:20，`docs(ui): correct the integration runbook with the measured generate behaviour`）的作者身份是 **`lead`**，但 Lead 在该时刻**没有**执行任何 `git commit` ⇒ 这是**某个 teammate/子 agent 越权提交**（违反 AGENTS.md 铁律 4「禁止 git commit/push，提交由 Lead 在轮次末尾统一做」）。
+- **影响评估（已验证）**：`git show --stat edd62e1` = 仅 `docs/team/design/UI-016-console-content-simplification.md` **+3 行（1 file changed, 3 insertions）**，纯文档、无代码/无 .aup/无 dist/无密钥；未夹带其它路径。**无功能影响**，无需回滚（改写历史风险更大）。
+- **Lead 处置**：① 记录在案（本文件 + 本条）；② 本批次其余提交（`76ddd78`/`6459a56`/`c16ae85`）均由 Lead 本人执行且按路径显式 `git add`（111/… 路径，**从未 `git add -A`**）；③ 下批并行窗口的 prompt 里重申「**禁止任何 git 写操作**」，并要求每条 lane 在回报里附 `git log -1 --format=%h%x20%an` 证据（Lead 在合并点复核作者身份）。
+- **附带的同类残留**：本轮还遇到 `.git/index.lock` 残留（异常退出的 git 进程留下），已确认无 git 进程后清除；`.gate-lock` 亦多次出现残留，均在收口前删除并核对 `dist/docs/team/.gate-lock` 不存在。
+
