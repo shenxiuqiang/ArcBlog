@@ -1,48 +1,18 @@
 page dashboard {
   i18n {
-    agents { en "Agent grants" zh "Agent 授权" }
-    agents-empty { en "No agent grants. Read-only tools are available by default; write tools need a grant." zh "还没有 Agent 授权。读工具默认可用；写工具需要授权。" }
-    agents-guide { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "授权方式：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
-    alert-agents { en "Agent grants" zh "Agent 授权" }
-    alert-hub { en "Hub sync" zh "Hub 同步" }
-    alert-ledger { en "Settlement / ledger" zh "结算 / 账本" }
-    alerts { en "Anomaly alerts" zh "异常提醒" }
-    alerts-desc { en "One click to the page that owns the anomaly. This bar counts nothing: the platform's expression language has no length or comparison primitive (docs/arc-contracts.md §21), so a number here would have to be invented." zh "一次点击直达负责该异常的页面。本提醒条不做任何计数：本平台表达式语言没有 length 或比较原语（docs/arc-contracts.md §21），这里的数字只能是编造的。" }
-    alerts-honest { en "The only pre-computed aggregate this instance publishes is node/health.json.hubs (total / fresh / offline) — it is shown verbatim in the network card above. Per-source failure counts are not derivable on this page." zh "本实例唯一预先算好的聚合值是 node/health.json.hubs（total / fresh / offline）——已在上方网络卡原样展示。按来源的失败计数无法在本页推导。" }
-    capabilities-label { en "Capabilities" zh "能力" }
     content { en "Recent published" zh "最近发布" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
     content-guide { en "Write and publish from Write; the newest five stories appear here." zh "在「写文章」页撰写并发布；最新五篇会显示在这里。" }
-    desc { en "Node identity, roles, taxonomy and recent activity for this ArcBlog instance." zh "本 ArcBlog 实例的节点身份、角色、分类与近期动态。" }
-    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
-    economy { en "Economy" zh "经济" }
-    economy-empty { en "No orders yet. Products and tips appear here once readers pay." zh "还没有订单。读者付费后订单会出现在这里。" }
-    economy-guide { en "Products and tips appear here once a reader pays." zh "读者付费后，订单会出现在这里。" }
-    gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
+    drafts { en "Drafts to finish" zh "待处理草稿" }
+    drafts-all { en "All drafts & published" zh "全部草稿与已发布" }
+    drafts-desc { en "The three most recently updated records in the private drafts area." zh "私有草稿区中最近更新的 3 条记录。" }
+    drafts-empty { en "No drafts waiting. Use “Write a post” above to start one." zh "没有待处理的草稿。用上方的「写文章」开始一篇。" }
+    gate-desc { en "Sign in with DID Wallet to see the drafts waiting for you and what is already live." zh "使用 DID Wallet 登录后查看待处理的草稿与已发布内容。" }
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    net-empty-note { en "A dash (—) means the record does not carry the value, the record was never published, or this binding has not resolved yet — a cold first load does not resolve propBind (BUG-036/062, docs/arc-contracts.md §28.1); switching pages or reloading fills the values in. Nothing is rendered as 0 and no green light is invented." zh "破折号（—）表示记录没有该取值、记录从未发布，或该绑定尚未解析——冷启动首屏不会解析 propBind（BUG-036/062，docs/arc-contracts.md §28.1）；切页或刷新后取值即出现。绝不渲染为 0，也不伪造绿灯。" }
-    net-endpoint { en "Endpoint" zh "端点" }
-    net-fresh { en "Hubs fresh" zh "新鲜 Hub" }
-    net-node { en "Node DID" zh "节点 DID" }
-    net-offline { en "Hubs offline" zh "离线 Hub" }
-    net-roles { en "Roles" zh "角色" }
-    net-source { en "Source: node/health.json (hubs aggregate) + node/discovery.json (DID / endpoint / transport), both guest-readable and read verbatim." zh "取值来源：node/health.json（hubs 聚合）+ node/discovery.json（DID / 端点 / transport），二者均为游客可读，且原样展示。" }
-    net-total { en "Hubs registered" zh "已登记 Hub" }
-    net-transport { en "Transport" zh "传输" }
-    network { en "Network overview" zh "网络概览" }
-    network-desc { en "Studio side: how many Hubs this node has registered and how fresh they are. The per-Hub rows (sync state, freshness, last error) live on Hub, one click away." zh "Studio 视角：本节点已登记的 Hub 数量与新鲜度。逐个 Hub 的行（同步状态、新鲜度、最近错误）在「Hub」页，一次点击直达。" }
-    node { en "Node" zh "节点" }
-    node-empty { en "If a value above is empty, run: node scripts/arcblog-node.mjs init" zh "若上方取值为空，请运行：node scripts/arcblog-node.mjs init" }
-    node-hint { en "Values come from node/profile.json and node/health.json." zh "取值来自 node/profile.json 与 node/health.json。" }
-    q-ops { en "Operations" zh "运维" }
-    q-settings { en "Appearance" zh "外观" }
-    q-studio { en "Creator Studio" zh "创作者工作室" }
+    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
+    purpose { en "What needs you now: the drafts still to finish, and what is already live." zh "现在要你处理的：还没写完的草稿，以及已经发布的内容。" }
     q-write { en "Write a post" zh "写文章" }
-    quick { en "Quick actions" zh "快捷操作" }
-    roles-label { en "Roles" zh "角色" }
-    status-note { en "The dot and the status text are read from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown verbatim — docs/arc-contracts.md §28.8." zh "色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原始状态值原样显示——docs/arc-contracts.md §28.8。" }
-    status-order { en "Status" zh "状态" }
     title { en "Dashboard" zh "仪表盘" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -149,115 +119,70 @@ page dashboard {
             p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
           }
         }
+        // ---- 页头（standard §2.4）：标题 + 一句话用途 + 唯一主操作 --------------
+        // 原型 = P2 概览（standard §2.7.1），声明在 .aup/man/dashboard.yaml 的 synopsis 里。
+        // 「写文章」是本页唯一的 variant=primary；未登录态的门禁卡里那个登录按钮
+        // 是另一态的唯一主操作（两态互斥，standard §4.3「每屏一个 primary」）。
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
-          }
-          view gap=sm size={flex: 1} style={overflowY: auto} {
-            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={nodeProfile: "/instance/app/arcblog/node/profile.json", nodeHealth: "/instance/app/arcblog/node/health.json"} visible="${state.nodeProfile}" {
-                row gap=sm cross=center {
-                  h3 "${state.nodeProfile.name}" style={fontSize: "var(--type-body)"}
-                  p "${state.nodeProfile.did}" scale=sm intent=muted style={fontFamily: monospace} format=did title="${state.nodeProfile.did}"
-                  p "v${state.nodeProfile.version}" scale=sm intent=muted
-                  row gap=xs cross=center visible="${state.nodeHealth}" {
-                    p "●" intent=success scale=sm
-                    p "${state.nodeHealth.status}" scale=sm
-                  }
-                }
-                row gap=sm cross=center {
-                  p :roles-label scale=sm intent=muted
-                  p "${state.nodeProfile.roles}" scale=sm
-                  p :capabilities-label scale=sm intent=muted
-                  p "${state.nodeProfile.capabilities}" scale=sm
-                }
-                p :node-hint scale=sm intent=muted
-                p :node-empty scale=sm intent=muted
-              }
-              // Network overview (spec §15.3, REQ-031 ③) — READ ONLY, and
-              // deliberately without any `visible=` condition: the dashboard
-              // must not carry a fabricated predicate, and an empty value is
-              // rendered as the platform's own "—" by key-value-list, never as
-              // 0 and never as a green light. `hubs` is the instance's only
-              // PRE-COMPUTED aggregate (the page cannot count: the expression
-              // language has no length/comparison primitive, arc-contracts §21).
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={netHealth: "/instance/app/arcblog/node/health.json", netDiscovery: "/instance/app/arcblog/node/discovery.json"} {
-                h2 :network level=2 style={fontSize: "var(--type-body)"}
-                p :network-desc scale=sm intent=muted
-                key-value-list dense=true fields=[{label: "$t(dashboard.net-total)", value: "${state.netHealth.hubs.total}"}, {label: "$t(dashboard.net-fresh)", value: "${state.netHealth.hubs.fresh}"}, {label: "$t(dashboard.net-offline)", value: "${state.netHealth.hubs.offline}"}]
-                key-value-list dense=true fields=[{label: "$t(dashboard.net-node)", value: "${state.netDiscovery.node.did}", monospace: true, copyable: true}, {label: "$t(dashboard.net-endpoint)", value: "${state.netDiscovery.node.endpoint}"}, {label: "$t(dashboard.net-roles)", value: "${state.netDiscovery.roles}"}, {label: "$t(dashboard.net-transport)", value: "${state.netDiscovery.transport}"}]
-                p :net-empty-note scale=sm intent=muted
-                p :net-source scale=caption intent=muted
-              }
-              // Anomaly alert bar (spec §15.3) — one click to the page that owns
-              // the anomaly, no counts, no popup, no write path.
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h2 :alerts level=2 style={fontSize: "var(--type-body)"}
-                p :alerts-desc scale=sm intent=muted
-                row gap=sm {
-                  action -> page hub variant=secondary label=:alert-hub style={borderRadius: "var(--radius-md, 8px)"}
-                  action -> page ledger variant=secondary label=:alert-ledger style={borderRadius: "var(--radius-md, 8px)"}
-                  action -> page agents variant=secondary label=:alert-agents style={borderRadius: "var(--radius-md, 8px)"}
-                }
-                p :alerts-honest scale=sm intent=muted
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h2 :content level=2 style={fontSize: "var(--type-body)"}
-                afs-list dashboard-content-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:content-empty pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
-                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                    view layout=inline href="/posts/${entry.content.slug}" target=_blank style={display: block, textDecoration: none, color: inherit} {
-                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
-                    }
-                    row gap=xs cross=center {
-                      p "${entry.content.category}" scale=sm intent=muted
-                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                        time mode=display value="${entry.content.publishedAt}" timeMode=relative
-                      }
-                    }
-                  }
-                }
-                p :content-guide intent=muted scale=sm
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h2 :economy level=2 style={fontSize: "var(--type-body)"}
-                p :pagesize-note scale=caption intent=muted
-                afs-list dashboard-orders-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:economy-empty pagination=manual pageSize=10 from "/instance/app/arcblog/economy/orders" {
-                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                    h3 "${entry.content.id}"
-                    p "${entry.content.amount} ${entry.content.asset}" scale=sm
-                    p "●" scale=sm intent=muted title="${entry.content.status}"
-                    p :status-order scale=sm intent=muted
-                    p "${entry.content.status}" scale=sm
-                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                      time mode=display value="${entry.content.createdAt}" timeMode=relative
-                    }
-                  }
-                }
-                p :status-note scale=sm intent=muted
-                p :economy-guide intent=muted scale=sm
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h2 :agents level=2 style={fontSize: "var(--type-body)"}
-                afs-list dashboard-agents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agents-empty pagination=manual pageSize=10 from "/instance/app/arcblog/config/agent-grants" {
-                  row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                    p "${entry.content.agentDid}" scale=sm style={fontFamily: monospace}
-                    p "${entry.content.capabilities}" scale=sm intent=muted
-                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                      time mode=display value="${entry.content.grantedAt}" timeMode=relative
-                    }
-                  }
-                }
-                p :agents-guide intent=muted scale=sm
-              }
+          row gap=md cross=center {
+            view gap=xs size={flex: 1} {
+              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+              p :purpose intent=muted
             }
+            // §4.3：平台在 tone=editorial 下把所有 action 抹成 2rem 药丸，
+            // 圆角必须内联覆盖回 var(--radius-md, 8px)。
+            row cross=start {
+              action -> page compose variant=primary label=:q-write style={borderRadius: "var(--radius-md, 8px)"}
+            }
+          }
+          // ---- 内容区：唯一滚动容器（standard §2.5 单一滚动归属）----------------
+          view gap=sm size={flex: 1} style={overflowY: auto} {
+            // 一张卡、两个区块。P2 允许 ≤2 张卡，但「2 张卡 + 2 个区块标题 + 2 个按钮」
+            // 要占 9 处内联 style，越过 §2.7.2 的硬上限 8；A.4 的口径是「多出来的
+            // 卡片合并成区块，不要并排堆」，因此待处理草稿与最近已发布同卡分区。
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h2 :quick level=2 style={fontSize: "var(--type-body)"}
-              row gap=sm {
-                action -> page compose variant=primary label=:q-write style={borderRadius: "var(--radius-md, 8px)"}
-                action -> page posts variant=secondary label=:q-studio style={borderRadius: "var(--radius-md, 8px)"}
-                action -> page operations variant=secondary label=:q-ops style={borderRadius: "var(--radius-md, 8px)"}
-                action -> page appearance variant=ghost label=:q-settings style={borderRadius: "var(--radius-md, 8px)"}
+              h3 :drafts level=3 style={fontSize: "var(--type-body)"}
+              p :drafts-desc scale=sm intent=muted
+              // 最新 3 条。sort 走平台自己的 `/.actions/query`：实测 2026-09-29
+              // `orderBy [["mtime","desc"]]` 返回 drafts total=46（与目录一致）且按
+              // updatedAt 倒序；`mtime` 是运行期 `Le` 白名单里的 entry column，
+              // content.* 字段不在其中（读 arc 2.0.0-beta.50 的 aup.* bundle 得到）。
+              // 计数由平台分页器给出（pagerStyle=compact → "N total"）：本平台没有
+              // length / 比较原语，页面侧数不出来（docs/arc-contracts.md §21），
+              // 因此不放任何页面自算的数字。
+              // pageSizeOptions=[3] 把「Show」固定成唯一取值：BUG-063 的 localStorage
+              // 记忆一旦选到 ≥ 总数就会摘掉整个分页器，这里从结构上消除该路径。
+              afs-list dashboard-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:drafts-empty pagination=manual pageSize=3 pageSizeOptions=[3] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/drafts" {
+                row gap=xs cross=center role=item {
+                  // 记录绑定页 /edit/<slug>：standard §2.6 → 新标签页，不替换控制台。
+                  view layout=inline href="/edit/${entry.content.slug}" target=_blank size={flex: 1} {
+                    p "${entry.content.title}"
+                    row gap=xs cross=center intent=muted {
+                      p "${entry.content.status}"
+                      time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                    }
+                  }
+                }
+              }
+              // 待处理草稿的去向：工作室（?page=posts）里才有发布 / 软删 / 行内编辑。
+              // 空态时它也是引导动作。
+              row cross=start {
+                action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-md, 8px)"}
+              }
+              p :pagesize-note scale=caption intent=muted
+              h3 :content level=3 style={fontSize: "var(--type-body)"}
+              p :content-guide scale=sm intent=muted
+              // 最近已发布 5 条，同一套 mtime desc 排序。
+              afs-list dashboard-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:content-empty pagination=manual pageSize=5 pageSizeOptions=[5] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/posts" {
+                row gap=xs cross=center role=item {
+                  view layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} {
+                    p "${entry.content.title}"
+                    row gap=xs cross=center intent=muted {
+                      p "${entry.content.category}"
+                      time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                    }
+                  }
+                }
               }
             }
           }
