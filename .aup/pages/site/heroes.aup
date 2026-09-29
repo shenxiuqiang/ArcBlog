@@ -3,7 +3,7 @@ page heroes {
     content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
     desc { en "Home carousel records: title, image URL, target link and sort order." zh "首页轮播记录：标题、图片 URL、跳转链接与排序。" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
-    gate-title { en "Site" zh "站点" }
+    gate-title { en "Hero management" zh "Hero 管理" }
     hero-add { en "Add hero" zh "添加 Hero" }
     hero-added { en "Hero added." zh "Hero 已添加。" }
     hero-admin-desc { en "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending." zh "Hero 显示为首页轮播。每条记录需要标题、图片 URL 和跳转链接；sort 按升序决定播放顺序。" }
