@@ -3,7 +3,7 @@
 | 字段 | 值 |
 | ---- | -- |
 | 日期 | **2026-09-29**（Round 23 计划节由 PM `task-95` 于轮初写） |
-| Lead 提交 | （待 Lead 填） |
+| Lead 提交 | `2dca703` — *feat(ui): paginate every list with the platform's native manual pager*（104 个非 dist 产物路径 + dist 镜像；无 gate-lock 入库）。**Lead 收口门**：`arc dsl validate --json` issues=[]、`npm test` **36/36**、`console-nav --check` pages 21、`generate --check` 无漂移、build 后 `.aup`/`.web` 对 dist 双向一致。**Lead 落笔**：`arc-contracts.md` **§38**（原生 `afs-list pagination=manual` 配方 + `<id>.page=` URL 契约 + `auto`=假分页的根因 + `pagination` 原语部分支持/本仓零使用 + `localStorage` pageSize 覆盖陷阱）；更正 `.agents/skills/aup-dsl/references/primitives.md`（BUG-065）；`CLAUDE.md` 去掉写死的快层测试数（35→36 的原因已记）；checklist 维护记录一行（**状态列与计数零变化 ✅82 / 🟡7 / ⬜19 / ⚪2 = 110**，快层基线 35→36）；并**清理了 BUG-064 的 7 个 `aup-list-pagesize` 残留键**（实测 removed:7 / left:0）。剩余：BUG-063（P2 页级说明）→ R24 |
 | 清单变化 | **PM 本轮零编辑 checklist**。**状态列零变化**（本轮改的是 21 个已 ✅ 页面的**呈现高度与可达性**，不新增功能承诺）→ **轮末 PM 只读复核实测** `docs/ArcBlog-feature-checklist.md:40` 总览 = **✅ 82 ｜ 🟡 7 ｜ ⬜ 19 ｜ ⚪ 2 = 110**，`:30-38` 分组小计逐行复算一致（建议见 §4）。⚠️ 该文件在本轮**轮初与轮末均处于 `M`（已修改未提交）**状态、**非 PM 所为**（PM 本轮零 checklist 编辑；见 §1.7 遗留 L-1 与 §2.4 终态） |
 | 结论 | ✅ **放行（pass）｜阻断 0** —— QA-019 [test-reports/round-23.md](../test-reports/round-23.md) 末行 **`VERDICT=pass, BLOCKING=0`**；新增 **P2×1 + P3×2，无未裁决 P0/P1**；**唯一 REQ-030 = PM 判「达标（放行）」**（真分页 = true / 诚实降级 = true / 高度受控 = true / 零回归 = true / 预算无静默抬升 = true） |
 | 性质 | **用户新指令轮**（用户原话：**「所有列表都要有翻页，避免页面被拉太长」**）——**唯一源码写者 = Dev（`task-96`）**；**PM 不调用 `team_task_*`**（任务板由 Lead 维护） |
