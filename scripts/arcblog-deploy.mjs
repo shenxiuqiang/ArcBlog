@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+/**
+ * Redeploy ArcBlog — the engine behind the `arcblog-deploy` skill ("重新部署").
+ *
+ *   node scripts/arcblog-deploy.mjs                 # 完整重新部署
+ *   node scripts/arcblog-deploy.mjs --dry-run       # 只打印将要执行的命令，不改任何东西
+ *   node scripts/arcblog-deploy.mjs --json          # 机器可读结果
+ *   node scripts/arcblog-deploy.mjs --domain blog.example.com --project arcblog
+ *
+ * WHY A SCRIPT: a redeploy has four steps that must not be reordered or skipped —
+ *   1. `npm run build`            (safe build; a BARE `arc blocklet build` copies
+ *      the repo-root `node.key` / `.env.local` into dist/ — BUG-067)
+ *   2. `npm run verify:artifacts` (secret gate over dist/ AND the Pages channel;
+ *      17 historical deployments were found carrying the real `node.key` — BUG-074)
+ *   3. `arc blocklet instance deploy . --domain <domain>`
+ *   4. post-verify: no secrets in the new deployment, HTTP 200, served pages
+ *      actually match the source we just built.
+ *
+ * WHAT IT NEVER DOES: touch the repository-root `node.key` / `.env.local`, write
+ * outside `dist/` and `~/.arc/pages`, restart the daemon, or run the live test tier.
+ *
+ * NOTE ON "I redeployed but the browser still shows the old page": the local Pages
+ * instance (this script) and the **mounted blocklet** on the daemon are two
+ * surfaces. Source edits are only visible on the mounted surface after
+ * `arc service restart` + `arc blocklet run . -i <instance>` (arc-contracts §35(5)).
+ */
+
+import { spawnSync } from 'node:child_process';
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { basename, dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const args = process.argv.slice(2);
+const flag = (name, fallback) => {
+  const i = args.indexOf(`--${name}`);
+  return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback;
+};
+const has = (name) => args.includes(`--${name}`);
+
+const DOMAIN = flag('domain', 'arcblog.localhost');
+const PROJECT = flag('project', process.env.ARCBLOG_PAGES_PROJECT ?? 'arcblog');
+const INSTANCE = flag('instance', 'default');
+const DRY = has('dry-run');
+const AS_JSON = has('json');
+const PAGES_ROOT = join(process.env.HOME ?? '/tmp', '.arc', 'pages', 'projects', PROJECT, 'deployments');
+const SECRET_BASENAMES = new Set(['node.key', '.env.local']);
+const steps = [];
+
+const say = (...a) => {
+  if (!AS_JSON) console.log(...a);
+};
+
+/** Run a command, echo it, and return {code, out}. */
+function run(cmd, cmdArgs, { allowFail = false } = {}) {
+  const label = [cmd, ...cmdArgs].join(' ');
+  say(`\n$ ${label}`);
+  if (DRY) {
+    steps.push({ label, code: 0, dryRun: true });
+    return { code: 0, out: '' };
+  }
+  const res = spawnSync(cmd, cmdArgs, { cwd: repoRoot, encoding: 'utf8' });
+  const out = `${res.stdout ?? ''}${res.stderr ?? ''}`;
+  if (out.trim()) say(out.trim().split('\n').slice(-6).join('\n'));
+  const code = res.status ?? 1;
+  steps.push({ label, code, dryRun: false });
+  if (code !== 0 && !allowFail) {
+    say(`\nABORT: \`${label}\` exited ${code}`);
+    finish(code);
+  }
+  return { code, out };
+}
+
+function finish(code, extra = {}) {
+  const result = {
+    ok: code === 0,
+    dryRun: DRY,
+    domain: DOMAIN,
+    project: PROJECT,
+    instance: INSTANCE,
+    steps,
+    ...extra,
+  };
+  if (AS_JSON) console.log(JSON.stringify(result, null, 2));
+  process.exit(code);
+}
+
+// ---------------------------------------------------------------- preflight --
+say(`ArcBlog redeploy${DRY ? ' (dry run)' : ''} — domain ${DOMAIN}, project ${PROJECT}, instance ${INSTANCE}`);
+const dirty = spawnSync('git', ['status', '--short'], { cwd: repoRoot, encoding: 'utf8' }).stdout
+  .split('\n')
+  .filter(Boolean);
+const head = spawnSync('git', ['log', '--oneline', '-1'], { cwd: repoRoot, encoding: 'utf8' }).stdout.trim();
+say(`\nHEAD: ${head}`);
+if (dirty.length) {
+  say(`⚠️  工作区有 ${dirty.length} 个未提交路径 —— 它们会被原样打进这次部署：`);
+  for (const line of dirty.slice(0, 10)) say(`     ${line}`);
+  if (dirty.length > 10) say(`     … 另有 ${dirty.length - 10} 个`);
+}
+if (existsSync(join(repoRoot, 'docs', 'team', '.gate-lock'))) {
+  say('⚠️  docs/team/.gate-lock 存在（有人在跑写实例的测试）—— 部署可能与对方互相干扰，建议先确认。');
+}
+
+// ------------------------------------------------------- 1. safe build ------
+run('npm', ['run', 'build']);
+
+// --------------------------------------------- 2. pre-deploy secret gate ----
+run('npm', ['run', 'verify:artifacts']);
+
+// ------------------------------------------------------- 3. deploy ----------
+run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);
+
+// --------------------------------------------------- 4. post-verify ---------
+if (DRY) {
+  say('\n(dry run) 未执行部署，跳过部署后校验。');
+  finish(0, { deployment: null });
+}
+
+const newest = readdirSync(PAGES_ROOT)
+  .map((name) => ({ name, mtime: statSync(join(PAGES_ROOT, name)).mtimeMs }))
+  .sort((a, b) => b.mtime - a.mtime)[0];
+const deploymentDir = newest ? join(PAGES_ROOT, newest.name, 'files') : null;
+const leaked = [];
+if (deploymentDir && existsSync(deploymentDir)) {
+  for (const entry of readdirSync(deploymentDir)) {
+    if (SECRET_BASENAMES.has(entry)) leaked.push(entry);
+  }
+}
+say(`\nnewest deployment: ${newest?.name ?? '(none)'} — secret basenames at top level: ${leaked.length ? leaked.join(', ') : 'none'}`);
+
+// the Pages channel as a whole must be clean (this is what BUG-074 was about)
+const gate = run('node', ['scripts/arcblog-dist-secrets.mjs', '--check', '--pages', '--project', PROJECT]);
+
+// HTTP liveness on the local daemon surface
+const urls = [`http://${DOMAIN}:4939/`, `http://${DOMAIN}:4939/?page=dashboard`];
+const http = [];
+for (const url of urls) {
+  try {
+    const res = await fetch(url, { redirect: 'manual' });
+    http.push({ url, status: res.status });
+  } catch (err) {
+    http.push({ url, status: 0, error: err.message });
+  }
+}
+for (const row of http) say(`  ${row.url} → ${row.status || `unreachable (${row.error})`}`);
+
+// served pages match the source we just built (structural proof)
+const samples = ['admin/dashboard', 'admin/posts', 'admin/diagnostics'];
+const parity = samples.map((rel) => {
+  const src = join(repoRoot, '.aup', 'pages', `${rel}.aup`);
+  const dep = deploymentDir ? join(deploymentDir, '.aup', 'pages', `${rel}.aup`) : '';
+  const lines = (p) => (p && existsSync(p) ? statSync(p).size : -1);
+  return { page: rel, sourceBytes: lines(src), deployedBytes: lines(dep), match: lines(src) === lines(dep) && lines(src) > 0 };
+});
+for (const row of parity) say(`  ${row.page}: source=${row.sourceBytes}B deployed=${row.deployedBytes}B ${row.match ? '✓' : '✗ MISMATCH'}`);
+
+const bad = leaked.length > 0 || gate.code !== 0 || http.some((r) => r.status !== 200) || parity.some((r) => !r.match);
+say(
+  bad
+    ? '\n❌ 部署后校验未通过 —— 见上面的失败项（密钥/HTTP/内容一致性）。'
+    : `\n✅ 部署完成：${newest?.name} → http://${DOMAIN}/（本地 Pages 服务）`,
+);
+if (!bad) {
+  say(
+    '提示：若浏览器看的是 daemon 上「挂载的源码树」（arc service url 显示 :4939），\n' +
+      '     源码改动仍需 `arc service restart -i ' +
+      INSTANCE +
+      '` + `arc blocklet run . -i ' +
+      INSTANCE +
+      '` 复挂才生效（arc-contracts §35(5)）。',
+  );
+}
+finish(bad ? 1 : 0, { deployment: newest?.name ?? null, http, parity, leaked });

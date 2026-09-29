@@ -36,6 +36,7 @@
 | 什么时候跑全量 `npm test`？ | **每波收口一次**（~1 s，10 文件，自带耗时表与超时终止）；见 §5 |
 | 全量 `npm run test:live`？ | **永不例行跑**（~21 min、写共享实例）；见 §5 |
 | 改了 `.aup` 谁 build？ | **Lead 收口时**跑 `npm run build`（= build + `scrub:dist-secrets`）；**永不裸 `arc blocklet build`**（BUG-067 泄漏密钥）；见 §6 |
+| **怎么重新部署 / 发布？** | 说「**重新部署**」即触发 skill **`arcblog-deploy`**，或直接 `node scripts/arcblog-deploy.mjs`（安全构建 → 密钥门 → 部署 → 部署后校验）；见 §6 |
 | 一个产物做完第一步做什么？ | `cp` 到 `/tmp` 副本 + 回报 sha256（未提交改动会被跨会话收口清掉，BUG-079）；见 §7 |
 | QA 什么时候来？ | **批次末一次**（用户裁定 2026-09-29）；见 §4 |
 | 并发超过 10 路 / 要动链和资金？ | 停下来问人类；见 §2 纪律 |
@@ -287,6 +288,13 @@ i18n 纪律：可以改本页 `i18n {}` 块，但**必须在回报里列全删�
 `content_dropped` **不算例外**——那是真实结构错误（arc-contracts §45），谁的文件谁修。
 
 > UI-016 §5.1 是同一份 runbook 的摘要视图；冲突时以本节为准。
+**对外可见的部署**（`npm run build` 之后）：`node scripts/arcblog-deploy.mjs` —— 见 skill
+[`arcblog-deploy`](../../.agents/skills/arcblog-deploy/SKILL.md)（人类说「重新部署」即触发）。
+它把"安全构建 → 部署前密钥门（dist **和** Pages 历史，BUG-074）→ `arc blocklet instance deploy` → 部署后校验
+（无密钥 / HTTP 200 / 部署页面与源码一致）"四步固定下来；**不要**用裸 `arc blocklet build`。
+注意两套"面"：Pages 实例（本命令）与 daemon 上**挂载的源码树**（`arc service url` 的 :4939）——
+后者要 `arc service restart -i default` + `arc blocklet run . -i default` 才更新（arc-contracts §35(5)）。
+
 
 ---
 
