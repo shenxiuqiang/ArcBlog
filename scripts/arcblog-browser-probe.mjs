@@ -14,6 +14,17 @@
  *   node scripts/arcblog-browser-probe.mjs <url> --screenshot /tmp/feeds.png
  *   node scripts/arcblog-browser-probe.mjs <url> --port 9334 --settle 1500 --timeout 20000
  *
+ * AUTHENTICATED PAGES (headless has no DID login). Copy the session cookie from the
+ * browser you are already signed in with (DevTools → Application → Cookies →
+ * http://arcblog.localhost:4939) and inject it — never paste it into a file that is
+ * committed, and never use a cookie you are not the owner of:
+ *
+ *   node scripts/arcblog-browser-probe.mjs 'http://arcblog.localhost:4939/?page=dashboard' \
+ *     --cookie 'NAME=VALUE' --screenshot /tmp/dashboard.png
+ *   node scripts/arcblog-browser-probe.mjs <url> --cookie-file /tmp/cookies.json   # [{name,value}]
+ *
+ * The verdict reports the injected cookie NAMES (never values) plus document.cookie names.
+ *
  * Behaviour:
  *   - if nothing is listening on the port it starts headless Chrome DETACHED and
  *     reuses it for later runs (never kills it, never opens a visible window);
@@ -27,7 +38,7 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -41,6 +52,22 @@ const has = (name) => args.includes(`--${name}`);
 const port = Number(flag('port', 9334));
 const settle = Number(flag('settle', 1500)); // let the AUP runtime mount after load
 const timeout = Number(flag('timeout', 20_000));
+
+// --cookie 'name=value'（可重复）或 --cookie-file <json: [{name,value}]>
+const cookieSpecs = [];
+for (let i = 0; i < args.length; i += 1) {
+  if (args[i] !== '--cookie') continue;
+  const raw = args[i + 1] ?? '';
+  const eq = raw.indexOf('=');
+  if (eq > 0) cookieSpecs.push({ name: raw.slice(0, eq).trim(), value: raw.slice(eq + 1) });
+}
+const cookieFile = flag('cookie-file', '');
+if (cookieFile && existsSync(cookieFile)) {
+  const parsed = JSON.parse(readFileSync(cookieFile, 'utf8'));
+  for (const c of Array.isArray(parsed) ? parsed : [parsed]) {
+    if (c?.name && typeof c.value === 'string') cookieSpecs.push({ name: c.name, value: c.value });
+  }
+}
 
 const base = `http://127.0.0.1:${port}`;
 const json = async (path, init) => {
@@ -113,6 +140,16 @@ async function probe(browserVersion) {
 
   await send('Page.enable');
   await send('Runtime.enable');
+
+  // Injected credentials (the only way to see `$session.authenticated` pages headlessly).
+  const injected = [];
+  if (cookieSpecs.length) {
+    await send('Network.enable');
+    for (const spec of cookieSpecs) {
+      const res = await send('Network.setCookie', { name: spec.name, value: spec.value, url });
+      if (res?.result?.success !== false) injected.push(spec.name);
+    }
+  }
   // Reusing a page target means a stale DOM is possible: `Page.loadEventFired` can
   // belong to the PREVIOUS navigation, and then the probe reads the old page
   // (measured 2026-09-29 by dev-media: ?page=feeds read the posts page). So wait
@@ -147,6 +184,7 @@ async function probe(browserVersion) {
       firstNode: first ? { id: first.getAttribute('data-aup-id'), w: Math.round(rect.width), h: Math.round(rect.height) } : null,
       gateText: (document.body.innerText.match(/Sign in with|登录|Login/i) || [])[0] ?? null,
       text: document.body.innerText.slice(0, 400),
+      documentCookies: document.cookie.split(';').map((c) => c.trim().split('=')[0]).filter(Boolean),
     });
   })()`;
   const evaluated = await send('Runtime.evaluate', { expression: probeJs, returnByValue: true });
@@ -160,7 +198,14 @@ async function probe(browserVersion) {
     screenshot = path;
   }
   ws.close();
-  return { browserVersion, loadFired: seen.includes('Page.loadEventFired'), reusedTarget: Boolean(targets.length), ...verdict, screenshot };
+  return {
+    browserVersion,
+    loadFired: seen.includes('Page.loadEventFired'),
+    reusedTarget: Boolean(targets.length),
+    injectedCookies: injected,
+    ...verdict,
+    screenshot,
+  };
 }
 
 const browserVersion = await ensureBrowser();
