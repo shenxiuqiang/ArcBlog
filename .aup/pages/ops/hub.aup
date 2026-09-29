@@ -9,7 +9,6 @@ page hub {
     desc { en "Studio ↔ Hub relations and the derived content index. Indexing is the Hub's sovereignty: metadata only, never the source body." zh "Studio ↔ Hub 收录关系与派生内容索引。索引是 Hub 的主权行为：只承载元数据，永不承载原文。" }
     enqueue-failed { en "Could not queue the intent — read the intent queue under Advanced (a toast is not proof)." zh "无法入队——请在「高级」下核对意图队列（toast 不是证据）。" }
     gate-desc { en "Sign in with DID Wallet to curate Studios and the content index." zh "使用 DID Wallet 登录后管理 Studio 收录与内容索引。" }
-    gate-title { en "Hub console" zh "Hub 管理" }
     hub-did-label { en "Hub DID" zh "Hub DID" }
     hub-endpoint-label { en "Endpoint (optional)" zh "Endpoint（可选）" }
     index-card { en "Content index (derived)" zh "内容索引（派生）" }
@@ -41,10 +40,10 @@ page hub {
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
-        h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
+        h2 :title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=muted
         row cross=start {
-          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dhub&cancel_to=%2F%3Fpage%3Dhub" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dhub&cancel_to=%2F%3Fpage%3Dhub" variant=primary label=:login
         }
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
@@ -156,7 +155,7 @@ page hub {
               row gap=sm cross=end {
                 input type=text name=hubDid label=:hub-did-label
                 input type=text name=hubEndpoint label=:hub-endpoint-label
-                action variant=primary label=:btn-register style={borderRadius: "var(--radius-md, 8px)"} confirm={title: :btn-register, message: :confirm-register-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: register, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                action variant=primary label=:btn-register confirm={title: :btn-register, message: :confirm-register-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: register, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
               }
               p :apply-desc scale=sm intent=muted
               afs-list hub-relations-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/hub/registrations" {
@@ -178,9 +177,9 @@ page hub {
                   // full remaining width — the BUG-034 overflow mechanism). Basis must
                   // be `auto`, not just `flexGrow: 0`, or the cluster collapses to 0.
                   row gap=sm cross=center style={flexGrow: 0, flexBasis: auto} {
-                    action variant=secondary size=sm label=:approve style={borderRadius: "var(--radius-md, 8px)"} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:reject style={borderRadius: "var(--radius-md, 8px)"} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge style={borderRadius: "var(--radius-md, 8px)"} path="${entry.path}" confirm={title: :purge, message: :purge-msg} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000}
+                    action variant=secondary size=sm label=:approve onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:reject onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge, message: :purge-msg} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000}
                   }
                   input type=hidden name=ePath value="${entry.path}"
                 }
@@ -204,7 +203,7 @@ page hub {
                 }
               }
               row cross=start {
-                action -> set hub-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                action -> set hub-advanced state {open: "true"} variant=secondary size=sm label=:adv-show
               }
               view gap=sm visible=$state.open {
                 key-value-list dense=true fields=[{label: hub, value: "node scripts/arcblog-network.mjs hub register|show|add|sync|index rebuild --hub-did <did> [--endpoint <url>] [--update] [--version <n>] [--status never|ok|stale|error] [--error <message>]", monospace: true, copyable: true}, {label: worker, value: "node scripts/arcblog-network.mjs queue|apply|watch", monospace: true, copyable: true}]
@@ -221,11 +220,11 @@ page hub {
                       }
                       p "${entry.content.message}" scale=sm intent=muted
                     }
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear style={borderRadius: "var(--radius-md, 8px)"} confirm={title: :queue-clear, message: :queue-clear-msg} path="${entry.path}"
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear, message: :queue-clear-msg} path="${entry.path}"
                   }
                 }
                 row cross=start {
-                  action -> set hub-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                  action -> set hub-advanced state {open: ""} variant=secondary size=sm label=:adv-hide
                 }
               }
             }
