@@ -113,16 +113,25 @@ async function probe(browserVersion) {
 
   await send('Page.enable');
   await send('Runtime.enable');
-  await Promise.race([
-    (async () => {
-      await send('Page.navigate', { url });
-      for (let i = 0; i < Math.ceil(timeout / 200); i += 1) {
-        await sleep(200);
-        if (seen.includes('Page.loadEventFired')) break;
-      }
-    })(),
-    sleep(timeout),
-  ]);
+  // Reusing a page target means a stale DOM is possible: `Page.loadEventFired` can
+  // belong to the PREVIOUS navigation, and then the probe reads the old page
+  // (measured 2026-09-29 by dev-media: ?page=feeds read the posts page). So wait
+  // until `location.href` actually matches the requested URL before evaluating.
+  const wanted = url.split('#')[0];
+  await send('Page.navigate', { url });
+  let committed = false;
+  for (let i = 0; i < Math.ceil(timeout / 200); i += 1) {
+    await sleep(200);
+    const current = await send('Runtime.evaluate', { expression: 'location.href', returnByValue: true });
+    const href = current?.result?.result?.value ?? '';
+    if (href.startsWith(wanted)) {
+      committed = true;
+      break;
+    }
+  }
+  if (!committed) {
+    throw new Error(`navigation did not commit to ${url} within ${timeout} ms (still on a previous page)`);
+  }
   await sleep(settle);
 
   const probeJs = `(() => {
