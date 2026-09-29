@@ -358,6 +358,8 @@ i18n 纪律：可以改本页 `i18n {}` 块，但**必须在回报里列全删�
     （侧栏就是先例）。别试图用 `component`/`use` 跨页复用外壳（arc-contracts §16/§22）。
 12. **大记录不进 `where`**：AFS 查询层只对 **≤ ~1.8 KB** 的内联记录可靠，超过就 `content IS NULL` ⇒
     `where` 静默漏、`select` 静默 `{}`、`aggregate.total` 是**组行数**（arc-contracts §44）。列表用目录边界或 `afs-list`。
+14. **`arc dsl lint --json` 的 payload 会撑爆管道**（实测 2026-09-29）：它已超过 64 KB（89 条 `unreferenced_explicit_id` + 其它），**用管道读会被截断成不完整 JSON**，于是你"看到"没有死键而 `npm test` 报死键。**必须重定向到文件再解析**（`arc dsl lint --json > /tmp/lint.json` 然后 `python3 -c "...raw[raw.index('{'):]"`）；`scripts/arcblog-i18n.test.mjs` 就是这么做的。同理：`arc dsl validate --json`。
+15. **`:4939` 服务的是 daemon 挂载的 AUP 树，不是 Pages 部署**（实测 2026-09-29）：`scripts/arcblog-deploy.mjs` 只更新 Pages 面；要看到页面改动必须 `arc service restart -i default` + `arc blocklet run . -i default` 复挂（`.web/**` 例外，它磁盘实时）。本实例还会**强制 zh**（`?locale=en` 被改写、`arc_lang=en` 无效）⇒ 英文文案只能静态核对。
 13. **headed 浏览器会抢人类焦点**（2026-09-29 人类反馈）：macOS 上新启动的浏览器 App 自动激活；
     旧配方在 9333 起 headed Chrome，人类在另一个浏览器打字时被夺走焦点。**一律用 headless**
     （`node scripts/arcblog-browser-probe.mjs`，无窗口、零依赖、自动复用 target）→ 详见 §9。
