@@ -60,7 +60,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CONSOLE_SECTIONS } from './console-nav.mjs';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASELINE_PATH = join(repoRoot, 'scripts', 'ui-budget-baseline.json');
@@ -428,8 +428,35 @@ function describeSnapshotChange(previous, report) {
   return lines.length ? lines : ['  (no metric changed)'];
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog console content-column budget (UI standard §2.7.2)
+
+Usage:
+  node scripts/arcblog-ui-budget.mjs                  # report + ratchet vs the baseline
+  node scripts/arcblog-ui-budget.mjs --json           # machine-readable report
+  node scripts/arcblog-ui-budget.mjs --strict         # enforce the §2.7.2 thresholds
+  node scripts/arcblog-ui-budget.mjs --write-baseline # record the current snapshot
+
+Measures the CONTENT column of every console page — the generated sidebar is brace-
+matched away — never whole-file numbers. The default (ratchet) mode fails only when a
+page got worse than scripts/ui-budget-baseline.json, or when an UNCHANGED page
+disagrees with the recorded snapshot (BUG-076); a page whose source changed since
+recording is reported stale and judged by the ratchet only. --strict additionally
+fails while any page is over budget. --write-baseline never fails on the numbers: it
+records the snapshot and prints the per-page diff it just applied.
+
+Exit codes: 0 = within budget / baseline written; 1 = ratchet regression, snapshot
+drift, or (with --strict) an over-budget page.
+`);
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  if (args.help || args._[0] === 'help' || args._[0] === '-h') {
+    help();
+    return 0;
+  }
   const json = Boolean(args.json);
   const strict = Boolean(args.strict);
   const writeBaseline = Boolean(args['write-baseline']);

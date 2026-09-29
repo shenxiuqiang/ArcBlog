@@ -23,7 +23,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { NODE_NFT_STATE_PATH, nodeAdapterOf, openChain, resolveChainOptions } from './lib/chain.mjs';
 import { INTENT_STATUS, isInFlightStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
@@ -294,10 +294,51 @@ function newIntentId() {
   return `intent-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog chain intent worker (spec §8.2–§8.4 / D36) — signs the console's node-NFT clicks
+
+Usage:
+  node scripts/arcblog-chain-worker.mjs run     [--instance <name>] [--adapter mock|ocap]
+                                                # drain pending intents once, then refresh the SVG
+  node scripts/arcblog-chain-worker.mjs watch   [--interval <seconds>] [--instance <name>]
+                                                # keep draining (Ctrl-C to stop)
+  node scripts/arcblog-chain-worker.mjs enqueue --action acquire|stake|revoke|claim \\
+                                                [--role studio|hub] [--by <did>] [--instance <name>]
+  node scripts/arcblog-chain-worker.mjs queue   [--instance <name>]   # queue view: never drains,
+                                                # repairs pre-D36 done/failed records in place
+  node scripts/arcblog-chain-worker.mjs refresh [--instance <name>]   # re-render the NFT SVG only
+
+The console cannot sign — the factory owner's key must never reach the browser — so a
+click writes an intent under ${INTENT_DIR} and this worker executes it on the chain.
+run|watch are the only commands that can sign; queue never drains. --adapter ocap needs
+the network + chain host + token id (ARCBLOG_CHAIN_ENV=beta|main fills the defaults) and
+a mnemonic from the environment / .env.local, otherwise the adapter answers
+CHAIN_UNAVAILABLE and the intent is rejected with that reason.
+
+Exit codes: 0 = the command ran (stdout is JSON) — including a run whose intents were
+rejected, since each outcome is reported per intent; 1 = the command could not run
+(VALIDATION / RUNTIME_ERROR / CHAIN_UNAVAILABLE). watch never exits on its own.
+`);
+}
+
 async function main() {
   const argv = process.argv.slice(2);
-  const command = argv[0] ?? 'run';
+  const command = argv[0];
+  // BUG-081 (P1, fail-open): a bare `node scripts/arcblog-chain-worker.mjs` used to default to
+  // `run`, so an argument-free invocation claimed a pending chain intent and rewrote it
+  // (observed: pending → rejected by the chain host, no tx and no funds). Chain work is never
+  // implicit: require the subcommand explicitly (docs/error-codes.md → VALIDATION).
+  if (!command) {
+    fail(
+      'VALIDATION',
+      'a command is required (run|watch|enqueue|queue|refresh): an argument-free invocation must not claim or rewrite chain intents. Run --help for usage.',
+    );
+  }
   const opts = parseCliArgs(argv.slice(1), import.meta.url);
+  // `--help` as the first token used to reach the unknown-command fail below and
+  // escape as a raw stack (BUG-060); `run --help` lands in opts.help instead.
+  if (command === '--help' || command === '-h' || command === 'help' || opts.help) return help();
   const instance = resolveInstance(opts);
   loadLocalEnv();
 
@@ -399,7 +440,15 @@ async function main() {
 
 const invokedDirectly = process.argv[1] && process.argv[1].endsWith('arcblog-chain-worker.mjs');
 if (invokedDirectly) {
-  main().catch((err) => fail('RUNTIME_ERROR', String(err?.stack ?? err)));
+  // BUG-082 (P2): `fail()` THROWS, so calling it inside this catch escaped as an unhandled
+  // rejection and printed a raw stack instead of the repo's structured error contract.
+  // Match every other CLI: emit the JSON error once and exit non-zero.
+  main().catch((err) => {
+    console.error(
+      JSON.stringify({ ok: false, code: err?.code || 'RUNTIME_ERROR', error: err?.message ?? String(err) }, null, 2),
+    );
+    process.exit(1);
+  });
 }
 
 export { drainOnce, listIntents, refreshSvg };

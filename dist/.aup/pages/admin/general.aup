@@ -56,7 +56,7 @@ page general {
     roles-cmd-check { en "Validate the record" zh "校验记录" }
     roles-status-title { en "Withheld capabilities & the raw reason" zh "被扣留的能力与原始原因" }
     roles-status-desc { en "Derived by the CLI (never typed here) from config/roles.json + node/factories.json + node/profile.json and landed under node/role-status/. The reason string is rendered verbatim in English: this console cannot translate a runtime value, and a paraphrase would hide the real cause." zh "由 CLI 从 config/roles.json + node/factories.json + node/profile.json 派生（绝不在此输入），落在 node/role-status/ 下。原因字符串按英文原文逐字展示：控制台无法翻译运行期取值，改写会掩盖真实原因。" }
-    roles-no-snapshot { en "No verification snapshot yet: node/role-verification.json does not exist, so the fields below read as unbound (that is not \"no roles\"). Queue a re-verification below and run the worker command." zh "尚无验证快照：node/role-verification.json 不存在，因此下方字段读作未绑定（这不是「没有角色」）。请在下方排队一次重新验证，再运行 worker 命令。" }
+    roles-two-stage-note { en "Reading the dashes: this platform renders an em dash when the bound record has no such value, or when the binding has not resolved yet — on a freshly opened tab the rows below can all read as dashes until a reload (or an in-page menu round-trip) resolves them, and the reload shows the real values. A dash never means \"no roles\". This note is unconditional: it does not claim that any record is missing. The authority is `node scripts/arcblog-roles.mjs status`." zh "如何读破折号：绑定记录没有该值时平台渲染破折号；全新标签页首次打开、绑定尚未解析时同样如此——此时下方各行可能全部显示破折号，重载（或用页内菜单往返一次）后即出现真值。破折号绝不代表「没有角色」。本说明是常驻的：它不断言任何记录缺失。权威入口是 `node scripts/arcblog-roles.mjs status`。" }
     roles-honesty { en "Honesty note: a leftover assetId in the record (for example a test value) does NOT mean an asset is owned — assetOwned is derived from the lifecycle state. And this re-derivation is NOT a chain verification: chainVerification stays false and no value on this card is chain truth (spec §114/§115)." zh "诚实说明：记录里残留的 assetId（例如测试残留）**不**代表拥有资产——assetOwned 由生命周期状态派生。并且这次重新派生**不是**链上验证：chainVerification 保持 false，本卡片上没有任何链上事实（spec §114/§115）。" }
     roles-verify-title { en "Re-verify — the real path (no fake button)" zh "重新验证——真实路径（无假按钮）" }
     roles-verify-desc { en "The button queues ONE intent record under config/role-verify-intents/<id>.json (admin-only, the same config collection as the policy queue — zero permission change). It runs nothing itself and never touches config/roles.json. The node's worker consumes it:" zh "按钮只入队**一条**意图记录到 config/role-verify-intents/<id>.json（仅管理员，与策略队列同属 config 集合——零权限改动）。它自身不执行任何动作，也绝不动 config/roles.json。由本机 worker 消费：" }
@@ -327,7 +327,13 @@ page general {
                 key-value-list roles-cmd-config dense=true fields=[{label: :roles-cmd-init, value: "node scripts/arcblog-roles.mjs init --update --studio-collection <addr> --hub-collection <addr> --network <net>", monospace: true, copyable: true}, {label: :roles-cmd-show, value: "node scripts/arcblog-roles.mjs show", monospace: true, copyable: true}, {label: :roles-cmd-check, value: "node scripts/arcblog-roles.mjs check", monospace: true, copyable: true}]
                 h3 :roles-status-title level=3 style={fontSize: "var(--type-body)"}
                 p :roles-status-desc scale=sm intent=muted
-                p :roles-no-snapshot scale=sm intent=info visible="!${state.verification.lastVerifiedAt}"
+                // UI-018 D2 (§7.2): the old `roles-no-snapshot` line was gated by
+                // `visible="!${state.verification.lastVerifiedAt}"` and rendered in
+                // NEITHER state (measured in both cold-load and after-reload), and its
+                // wording claimed node/role-verification.json does not exist — the record
+                // does exist. §4.8 / arc-contracts §21.11 require an UNCONDITIONAL
+                // two-stage note that never reads a first-paint blank as "no record".
+                p :roles-two-stage-note scale=sm intent=muted
                 key-value-list roles-scope-kv dense=true fields=[{label: :roles-k-checked, value: "${state.verification.lastVerifiedAt}", hideWhenEmpty: true}, {label: :roles-k-effective, value: "${state.verification.effectiveCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-withheld, value: "${state.verification.withheldCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-roles, value: "${state.verification.declaredRolesLabel}", hideWhenEmpty: true}]
                 key-value-list roles-basic-kv dense=true fields=[{label: :roles-k-basic-stake-state, value: "${state.basic.stakeState}"}, {label: :roles-k-basic-active, value: "${state.basic.activeLabel}"}, {label: :roles-k-basic-configured, value: "${state.basic.configuredLabel}"}, {label: :roles-k-basic-asset-owned, value: "${state.basic.assetOwnedLabel}"}, {label: :roles-k-basic-reason, value: "${state.basic.reason}"}]
                 key-value-list roles-studio-kv dense=true fields=[{label: :roles-k-studio-stake-state, value: "${state.studio.stakeState}"}, {label: :roles-k-studio-active, value: "${state.studio.activeLabel}"}, {label: :roles-k-studio-configured, value: "${state.studio.configuredLabel}"}, {label: :roles-k-studio-asset-owned, value: "${state.studio.assetOwnedLabel}"}, {label: :roles-k-studio-reason, value: "${state.studio.reason}"}, {label: :roles-k-studio-consistency, value: "${state.studio.consistencyReason}"}]
@@ -354,7 +360,16 @@ page general {
                 h3 :roles-factory-title level=3 style={fontSize: "var(--type-body)"}
                 p :roles-factory-desc scale=sm intent=muted
                 row gap=xs {
-                  action variant=primary size=sm label=:roles-factory-link href="/?page=factory" style={borderRadius: "var(--radius-md, 8px)"}
+                  // UI-018 D8 (§7.7, lane-O variant): the bare `href="/?page=factory"`
+                  // rendered `<a>` WITHOUT a target, so one click replaced the whole
+                  // console document (the §9 equivalent assertion counted total=1).
+                  // Lane O opens it in a NEW TAB instead (the in-repo pattern
+                  // `action href=… target=_blank`, arc-contracts §21.10, same as the
+                  // footer RSS link): no document navigation happens in this tab, so
+                  // the §9 assertion is total=0 again. If the standard's §2.6 table
+                  // (console sections switch in-frame via `-> page <name>`) is to be
+                  // followed literally, `-> page factory` also yields total=0 — Lead call.
+                  action variant=primary size=sm label=:roles-factory-link href="/?page=factory" target=_blank style={borderRadius: "var(--radius-md, 8px)"}
                 }
                 p :roles-source-note scale=caption intent=muted
               }

@@ -319,7 +319,6 @@
   "general.roles-k-roles": "声明角色",
   "general.roles-k-withheld": "被扣留的能力",
   "general.roles-no-input": "本页刻意**没有**地址与网络输入框——spec §1273 禁止在界面手填地址。显示为未绑定的取值读作「尚未绑定 / 暂不可用」，绝不是「记录为空」。",
-  "general.roles-no-snapshot": "尚无验证快照：node/role-verification.json 不存在，因此下方字段读作未绑定（这不是「没有角色」）。请在下方排队一次重新验证，再运行 worker 命令。",
   "general.roles-source-note": "每个取值的权威来源：node scripts/arcblog-roles.mjs status（RoleStatus）与 capabilities。本卡片渲染的是投影；两者不一致时以 CLI 为准。",
   "general.roles-states": "生命周期（来源：scripts/lib/roles.mjs 的 STAKE_STATES）：none → acquired → staked → revoking → claimable。本页逐字重复这五个词，漂移即可见；revoking 在 claimableAt 到期后于读取时派生为 claimable——记录本身不被改写。",
   "general.roles-states-note": "这些状态都是 operator 声明的：把状态设为 staked **不会**激活角色。在验证器接通前，每个链角色始终 active=false、能力始终 withheld（fail closed，spec §114/§115）。本卡片绝不断言某角色已激活。",
@@ -870,5 +869,12 @@
   "general.roles-k-hub-asset-owned": "Hub 角色·持有资产",
   "general.roles-k-hub-reason": "Hub 角色·扣留原因（逐字）",
   "general.roles-k-hub-consistency": "Hub 配置 ↔ 公开投影",
-  "general.roles-reason-note": "如何读这些行：标签是本控制台自己的字段名，取值是角色引擎自己的原文。为何逐字：`$t()` 的 key 必须是编译期常量（arc-contracts §28.8），`visible` 只支持同步的 `$session.*` 表达式（arc-contracts §28.1），因此本控制台没有「按运行期取值切换文案」的机制——引擎词表在此对照：`granted` = 能力已授予；`withheld` = 能力被扣留（fail closed）；`yes` / `no` = 引擎派生的布尔取值；`(none)` = 无 withheld（不是取值缺失）。能力已授予的角色没有被扣留的东西——`basic` 那行的 `reason` 说明的是「为什么它是隐式授予」，不是「为什么被扣留」；能力被扣留的角色在同一行给出扣留原因。"
+  "general.roles-reason-note": "如何读这些行：标签是本控制台自己的字段名，取值是角色引擎自己的原文。为何逐字：`$t()` 的 key 必须是编译期常量（arc-contracts §28.8），`visible` 只支持同步的 `$session.*` 表达式（arc-contracts §28.1），因此本控制台没有「按运行期取值切换文案」的机制——引擎词表在此对照：`granted` = 能力已授予；`withheld` = 能力被扣留（fail closed）；`yes` / `no` = 引擎派生的布尔取值；`(none)` = 无 withheld（不是取值缺失）。能力已授予的角色没有被扣留的东西——`basic` 那行的 `reason` 说明的是「为什么它是隐式授予」，不是「为什么被扣留」；能力被扣留的角色在同一行给出扣留原因。",
+  "general.roles-two-stage-note": "如何读破折号：绑定记录没有该值时平台渲染破折号；全新标签页首次打开、绑定尚未解析时同样如此——此时下方各行可能全部显示破折号，重载（或用页内菜单往返一次）后即出现真值。破折号绝不代表「没有角色」。本说明是常驻的：它不断言任何记录缺失。权威入口是 `node scripts/arcblog-roles.mjs status`。",
+  "pages.adv-hide": "收起高级（CLI）",
+  "pages.adv-show": "展开高级（CLI）",
+  "pages.queue-legend": "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态",
+  "pages.queue-empty-note": "空态说明：列表没有记录时，平台会打印它自带的英文空列表文案（arc-contracts §20 实测 `emptyText` 在运行期不求值），因此本页无法将其本地化。本说明常驻，不代表任何列表为空；队列的权威入口是 `node scripts/arcblog-pages.mjs queue`。",
+  "pages.queue-title": "意图队列",
+  "hub.queue-legend": "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态"
 }

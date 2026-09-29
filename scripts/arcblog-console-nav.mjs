@@ -19,7 +19,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CONSOLE_PAGES, ADAPTER_BLOCK_BEGIN, ADAPTER_BLOCK_END, adapterOptionLines, blockEnd, sidebarLines } from './console-nav.mjs';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pagesDir = join(repoRoot, '.aup', 'pages');
@@ -111,8 +111,29 @@ function syncAdapterBlock(lines, page, write) {
   return { page, changed };
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog console generator — projects the menu model into every console page
+
+Usage:
+  node scripts/arcblog-console-nav.mjs          # write the generated blocks
+  node scripts/arcblog-console-nav.mjs --check  # verify them (part of npm test)
+
+The menu lives once in scripts/console-nav.mjs; the DSL has no cross-file component
+mechanism, so both the sidebar and the economy payment-adapter option block are copied
+into every console page. Default mode rewrites only those generated regions (located
+by their markers, never by an id) and prints { ok, action: "write", pages, changed }.
+--check writes nothing and fails with { ok: false, error } when a page is out of sync
+(that payload also lists the drifted pages), or when a page listed in
+scripts/console-nav.mjs is missing under .aup/pages/.
+
+Exit codes: 0 = written, or in sync; 1 = drift / a missing console page.
+`);
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  if (args.help || args._[0] === 'help' || args._[0] === '-h') return help();
   const check = Boolean(args.check);
   const sources = pageSources();
   const results = [];

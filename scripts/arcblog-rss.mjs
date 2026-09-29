@@ -2,7 +2,7 @@
 import { execFileSync } from 'node:child_process';
 
 import { readGeneralSettingsDetailed } from './lib/general-settings.mjs';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
@@ -172,8 +172,30 @@ ${items}
 `;
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog RSS 2.0 feed (spec §15.9) — the generated feed, straight to stdout
+
+Usage:
+  node scripts/arcblog-rss.mjs [--feed-title <title>] [--feed-link <url>] \\
+                               [--feed-description <text>] [--limit <n>] [--instance <name>]
+
+stdout is the feed XML itself (no JSON envelope), so it can be piped or redirected
+as-is; warnings go to stderr. Only published records appear, newest first, capped by
+--limit (default 20). Defaults come from the instance General settings (siteName /
+language / timezone / the rss toggle) and fall back to the historical CLI defaults
+(title ArcBlog, link http://localhost, description "DID-native Markdown publishing")
+when no settings record exists. The rss toggle OFF prints a valid feed with zero
+items (exit 0) rather than failing.
+
+Exit codes: 0 = a feed was produced (including an empty one); 1 = the feed could not
+be produced — stderr then carries { ok: false, error }.
+`);
+}
+
 function main() {
   const opts = parseCliArgs(process.argv.slice(2), import.meta.url);
+  if (opts.help || opts._[0] === 'help' || opts._[0] === '-h') return help();
   const limit = Number(opts.limit || 20);
   const instance = optString(opts.instance);
   // Instance-level General settings (spec §15.9). A missing record falls back to

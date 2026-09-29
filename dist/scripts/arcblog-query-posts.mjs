@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
@@ -162,9 +162,33 @@ function dirsForStatus(status) {
   return [PUBLIC_DIR, PRIVATE_DIR];
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog post query (spec §15.4) — read-only listing over both storage halves
+
+Usage:
+  node scripts/arcblog-query-posts.mjs [published|draft|archived|deleted] \\
+                                       [--category <slug>] [--tag <tag>] [--limit <n>] [--instance <name>]
+
+The positional status picks the directory (the draft boundary IS the storage split):
+  published  → ${PUBLIC_DIR}   (guest-readable)
+  any other  → ${PRIVATE_DIR}  (admin-only)
+  omitted    → both, each record tagged with its origin dir (posts | drafts)
+--category matches the record's category, --tag matches one whole tag token, and
+--limit (default 20) caps the returned records. Filtering is server-side through the
+provider's query action when available; when it is not, the CLI falls back to
+list + read and says so in "mode" (query-action | ls-read-fallback).
+
+Exit codes: 0 = a report was produced (stdout is JSON: { ok, status, mode, result });
+1 = the query could not run (VALIDATION / RUNTIME_ERROR) — stderr carries
+{ ok: false, error }.
+`);
+}
+
 function main() {
   const opts = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [status] = opts._;
+  if (opts.help || status === 'help' || status === '-h') return help();
   const limit = Number(opts.limit || 20);
   const instance = optString(opts.instance);
   const category = optString(opts.category);

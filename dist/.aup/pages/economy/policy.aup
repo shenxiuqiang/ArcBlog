@@ -322,7 +322,13 @@ page policy {
                           }
                         }
                       }
-                      row gap=xs cross=center style={flexShrink: 0} {
+                      // UI-018 D1 (§7.1): `afs-list itemStyle=row` gives every row child
+                      // `flex: 1 1 0%` (arc-contracts §29.8(3)), so `flexShrink: 0` alone
+                      // left grow=1/basis=0% and split the row 50/50 — the content column
+                      // got 282.30px of a 308px need at 1512 and the relative-time box was
+                      // squeezed to 8.23px (3 wrapped lines). Basis must be `auto` or the
+                      // cluster collapses; this is the same fix as hub.aup:175 (BUG-034).
+                      row gap=xs cross=center style={flexGrow: 0, flexBasis: auto} {
                         action variant=secondary size=sm label=:product-up confirm={title: :up-confirm-title, message: :up-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {visibility: public, updatedAt: "${generate.timeiso}"}}}}
                         action variant=secondary size=sm label=:product-down confirm={title: :down-confirm-title, message: :down-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {visibility: private, updatedAt: "${generate.timeiso}"}}}}
                       }

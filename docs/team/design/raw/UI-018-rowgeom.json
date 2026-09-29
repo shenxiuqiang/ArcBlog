@@ -1,0 +1,2710 @@
+{
+ "1803x908|en": {
+  "url": "http://arcblog.localhost:4939/?page=policy",
+  "vp": "1803x908",
+  "card": {
+   "x": 1042.72,
+   "w": 728.28,
+   "right": 1771,
+   "sw": 726,
+   "cw": 726,
+   "over": 0
+  },
+  "listBox": {
+   "x": 1057.72,
+   "w": 698.28,
+   "right": 1756,
+   "sw": 698,
+   "cw": 698,
+   "over": 0
+  },
+  "listRows": 20,
+  "overRows": 0,
+  "timeEls": [
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1331.78,
+     "w": 70.08,
+     "right": 1401.86,
+     "sw": 70,
+     "cw": 70,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1331.78,
+     "w": 70.08,
+     "right": 1401.86,
+     "sw": 70,
+     "cw": 70,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1331.78,
+     "w": 70.08,
+     "right": 1401.86,
+     "sw": 70,
+     "cw": 70,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   }
+  ],
+  "buttonsCluster": {
+   "id": "policy-products-list-row-1-row-2",
+   "box": {
+    "x": 1411.86,
+    "w": 344.14,
+    "right": 1756,
+    "sw": 344,
+    "cw": 344,
+    "over": 0
+   },
+   "flex": "1 0 0%",
+   "flexBasis": "0%",
+   "styleAttr": "flex-shrink: 0;"
+  },
+  "rows": [
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621430746.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 32.61,
+       "right": 1090.33,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1095.33,
+       "w": 47.75,
+       "right": 1143.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1148.08,
+       "w": 28.78,
+       "right": 1176.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1181.86,
+       "w": 40.83,
+       "right": 1222.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1227.69,
+       "w": 53.58,
+       "right": 1281.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1286.27,
+       "w": 40.52,
+       "right": 1326.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1331.78,
+       "w": 70.08,
+       "right": 1401.86,
+       "sw": 70,
+       "cw": 70,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621977307.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 32.61,
+       "right": 1090.33,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1095.33,
+       "w": 47.75,
+       "right": 1143.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1148.08,
+       "w": 28.78,
+       "right": 1176.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1181.86,
+       "w": 40.83,
+       "right": 1222.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1227.69,
+       "w": 53.58,
+       "right": 1281.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1286.27,
+       "w": 40.52,
+       "right": 1326.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1331.78,
+       "w": 70.08,
+       "right": 1401.86,
+       "sw": 70,
+       "cw": 70,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790622723993.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 32.61,
+       "right": 1090.33,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1095.33,
+       "w": 47.75,
+       "right": 1143.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1148.08,
+       "w": 28.78,
+       "right": 1176.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1181.86,
+       "w": 40.83,
+       "right": 1222.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1227.69,
+       "w": 53.58,
+       "right": 1281.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1286.27,
+       "w": 40.52,
+       "right": 1326.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1331.78,
+       "w": 70.08,
+       "right": 1401.86,
+       "sw": 70,
+       "cw": 70,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790627726629.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 32.61,
+       "right": 1090.33,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1095.33,
+       "w": 47.75,
+       "right": 1143.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1148.08,
+       "w": 28.78,
+       "right": 1176.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1181.86,
+       "w": 40.83,
+       "right": 1222.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1227.69,
+       "w": 53.58,
+       "right": 1281.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1286.27,
+       "w": 40.52,
+       "right": 1326.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1331.78,
+       "w": 70.08,
+       "right": 1401.86,
+       "sw": 70,
+       "cw": 70,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "9 hours ago"
+     }
+    ],
+    "overlaps": []
+   }
+  ]
+ },
+ "1803x908|zh": {
+  "url": "http://arcblog.localhost:4939/?page=policy&locale=zh",
+  "vp": "1803x908",
+  "card": {
+   "x": 1042.72,
+   "w": 728.28,
+   "right": 1771,
+   "sw": 726,
+   "cw": 726,
+   "over": 0
+  },
+  "listBox": {
+   "x": 1057.72,
+   "w": 698.28,
+   "right": 1756,
+   "sw": 698,
+   "cw": 698,
+   "over": 0
+  },
+  "listRows": 20,
+  "overRows": 0,
+  "timeEls": [
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1324.78,
+     "w": 77.08,
+     "right": 1401.86,
+     "sw": 77,
+     "cw": 77,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1324.78,
+     "w": 77.08,
+     "right": 1401.86,
+     "sw": 77,
+     "cw": 77,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1324.78,
+     "w": 77.08,
+     "right": 1401.86,
+     "sw": 77,
+     "cw": 77,
+     "over": 0
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   }
+  ],
+  "buttonsCluster": {
+   "id": "policy-products-list-row-1-row-2",
+   "box": {
+    "x": 1411.86,
+    "w": 344.14,
+    "right": 1756,
+    "sw": 344,
+    "cw": 344,
+    "over": 0
+   },
+   "flex": "1 0 0%",
+   "flexBasis": "0%",
+   "styleAttr": "flex-shrink: 0;"
+  },
+  "rows": [
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621430746.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 25.61,
+       "right": 1083.33,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1088.33,
+       "w": 47.75,
+       "right": 1136.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1141.08,
+       "w": 28.78,
+       "right": 1169.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1174.86,
+       "w": 40.83,
+       "right": 1215.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1220.69,
+       "w": 53.58,
+       "right": 1274.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1279.27,
+       "w": 40.52,
+       "right": 1319.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1324.78,
+       "w": 77.08,
+       "right": 1401.86,
+       "sw": 77,
+       "cw": 77,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621977307.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 25.61,
+       "right": 1083.33,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1088.33,
+       "w": 47.75,
+       "right": 1136.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1141.08,
+       "w": 28.78,
+       "right": 1169.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1174.86,
+       "w": 40.83,
+       "right": 1215.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1220.69,
+       "w": 53.58,
+       "right": 1274.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1279.27,
+       "w": 40.52,
+       "right": 1319.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1324.78,
+       "w": 77.08,
+       "right": 1401.86,
+       "sw": 77,
+       "cw": 77,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790622723993.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 25.61,
+       "right": 1083.33,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1088.33,
+       "w": 47.75,
+       "right": 1136.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1141.08,
+       "w": 28.78,
+       "right": 1169.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1174.86,
+       "w": 40.83,
+       "right": 1215.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1220.69,
+       "w": 53.58,
+       "right": 1274.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1279.27,
+       "w": 40.52,
+       "right": 1319.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1324.78,
+       "w": 77.08,
+       "right": 1401.86,
+       "sw": 77,
+       "cw": 77,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790627726629.json",
+    "rowBox": {
+     "x": 1057.72,
+     "w": 698.28,
+     "right": 1756,
+     "sw": 698,
+     "cw": 698,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 1057.72,
+       "w": 344.14,
+       "right": 1401.86,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1411.86,
+       "w": 344.14,
+       "right": 1756,
+       "sw": 344,
+       "cw": 344,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 1057.72,
+     "w": 344.14,
+     "right": 1401.86,
+     "sw": 344,
+     "cw": 344,
+     "over": 0
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 1057.72,
+       "w": 25.61,
+       "right": 1083.33,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 1088.33,
+       "w": 47.75,
+       "right": 1136.08,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 1141.08,
+       "w": 28.78,
+       "right": 1169.86,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1174.86,
+       "w": 40.83,
+       "right": 1215.69,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1220.69,
+       "w": 53.58,
+       "right": 1274.27,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1279.27,
+       "w": 40.52,
+       "right": 1319.78,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1324.78,
+       "w": 77.08,
+       "right": 1401.86,
+       "sw": 77,
+       "cw": 77,
+       "over": 0
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "9 hours ago"
+     }
+    ],
+    "overlaps": []
+   }
+  ]
+ },
+ "1512x765|en": {
+  "url": "http://arcblog.localhost:4939/?page=policy",
+  "vp": "1512x765",
+  "card": {
+   "x": 875.39,
+   "w": 604.61,
+   "right": 1480,
+   "sw": 603,
+   "cw": 603,
+   "over": 0
+  },
+  "listBox": {
+   "x": 890.39,
+   "w": 574.61,
+   "right": 1465,
+   "sw": 575,
+   "cw": 575,
+   "over": 0
+  },
+  "listRows": 20,
+  "overRows": 0,
+  "timeEls": [
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1164.45,
+     "w": 8.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 8,
+     "over": 26
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1164.45,
+     "w": 8.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 8,
+     "over": 26
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1164.45,
+     "w": 8.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 8,
+     "over": 26
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   }
+  ],
+  "buttonsCluster": {
+   "id": "policy-products-list-row-1-row-2",
+   "box": {
+    "x": 1182.69,
+    "w": 282.31,
+    "right": 1465,
+    "sw": 282,
+    "cw": 282,
+    "over": 0
+   },
+   "flex": "1 0 0%",
+   "flexBasis": "0%",
+   "styleAttr": "flex-shrink: 0;"
+  },
+  "rows": [
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621430746.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 308,
+       "cw": 282,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 308,
+     "cw": 282,
+     "over": 26
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 32.61,
+       "right": 923,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 928,
+       "w": 47.75,
+       "right": 975.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 980.75,
+       "w": 28.78,
+       "right": 1009.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1014.53,
+       "w": 40.83,
+       "right": 1055.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1060.36,
+       "w": 53.58,
+       "right": 1113.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1118.94,
+       "w": 40.52,
+       "right": 1159.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1164.45,
+       "w": 8.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 8,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621977307.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 308,
+       "cw": 282,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 308,
+     "cw": 282,
+     "over": 26
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 32.61,
+       "right": 923,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 928,
+       "w": 47.75,
+       "right": 975.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 980.75,
+       "w": 28.78,
+       "right": 1009.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1014.53,
+       "w": 40.83,
+       "right": 1055.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1060.36,
+       "w": 53.58,
+       "right": 1113.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1118.94,
+       "w": 40.52,
+       "right": 1159.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1164.45,
+       "w": 8.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 8,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790622723993.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 308,
+       "cw": 282,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 308,
+     "cw": 282,
+     "over": 26
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 32.61,
+       "right": 923,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 928,
+       "w": 47.75,
+       "right": 975.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 980.75,
+       "w": 28.78,
+       "right": 1009.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1014.53,
+       "w": 40.83,
+       "right": 1055.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1060.36,
+       "w": 53.58,
+       "right": 1113.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1118.94,
+       "w": 40.52,
+       "right": 1159.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1164.45,
+       "w": 8.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 8,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790627726629.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 308,
+       "cw": 282,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 308,
+     "cw": 282,
+     "over": 26
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 32.61,
+       "right": 923,
+       "sw": 33,
+       "cw": 33,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "Price"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 928,
+       "w": 47.75,
+       "right": 975.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 980.75,
+       "w": 28.78,
+       "right": 1009.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1014.53,
+       "w": 40.83,
+       "right": 1055.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1060.36,
+       "w": 53.58,
+       "right": 1113.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1118.94,
+       "w": 40.52,
+       "right": 1159.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1164.45,
+       "w": 8.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 8,
+       "over": 26
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "9 hours ago"
+     }
+    ],
+    "overlaps": []
+   }
+  ]
+ },
+ "1512x765|zh": {
+  "url": "http://arcblog.localhost:4939/?page=policy&locale=zh",
+  "vp": "1512x765",
+  "card": {
+   "x": 875.39,
+   "w": 604.61,
+   "right": 1480,
+   "sw": 603,
+   "cw": 603,
+   "over": 0
+  },
+  "listBox": {
+   "x": 890.39,
+   "w": 574.61,
+   "right": 1465,
+   "sw": 575,
+   "cw": 575,
+   "over": 0
+  },
+  "listRows": 20,
+  "overRows": 0,
+  "timeEls": [
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1157.45,
+     "w": 15.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 15,
+     "over": 19
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1157.45,
+     "w": 15.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 15,
+     "over": 19
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   },
+   {
+    "id": "policy-products-list-row-1-view-1-row-2-view-7-time-1",
+    "box": {
+     "x": 1157.45,
+     "w": 15.23,
+     "right": 1172.69,
+     "sw": 34,
+     "cw": 15,
+     "over": 19
+    },
+    "text": "11 hours ago",
+    "parentFlex": "1 1 0%",
+    "parentBasis": "0%",
+    "parentMinW": "0px"
+   }
+  ],
+  "buttonsCluster": {
+   "id": "policy-products-list-row-1-row-2",
+   "box": {
+    "x": 1182.69,
+    "w": 282.31,
+    "right": 1465,
+    "sw": 282,
+    "cw": 282,
+    "over": 0
+   },
+   "flex": "1 0 0%",
+   "flexBasis": "0%",
+   "styleAttr": "flex-shrink: 0;"
+  },
+  "rows": [
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621430746.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 301,
+       "cw": 282,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 301,
+     "cw": 282,
+     "over": 19
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 25.61,
+       "right": 916,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 921,
+       "w": 47.75,
+       "right": 968.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 973.75,
+       "w": 28.78,
+       "right": 1002.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1007.53,
+       "w": 40.83,
+       "right": 1048.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1053.36,
+       "w": 53.58,
+       "right": 1106.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1111.94,
+       "w": 40.52,
+       "right": 1152.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1157.45,
+       "w": 15.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 15,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790621977307.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 301,
+       "cw": 282,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 301,
+     "cw": 282,
+     "over": 19
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 25.61,
+       "right": 916,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 921,
+       "w": 47.75,
+       "right": 968.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 973.75,
+       "w": 28.78,
+       "right": 1002.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1007.53,
+       "w": 40.83,
+       "right": 1048.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1053.36,
+       "w": 53.58,
+       "right": 1106.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1111.94,
+       "w": 40.52,
+       "right": 1152.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1157.45,
+       "w": 15.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 15,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790622723993.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 301,
+       "cw": 282,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 301,
+     "cw": 282,
+     "over": 19
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 25.61,
+       "right": 916,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 921,
+       "w": 47.75,
+       "right": 968.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 973.75,
+       "w": 28.78,
+       "right": 1002.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1007.53,
+       "w": 40.83,
+       "right": 1048.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1053.36,
+       "w": 53.58,
+       "right": 1106.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1111.94,
+       "w": 40.52,
+       "right": 1152.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1157.45,
+       "w": 15.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 15,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "11 hours ago"
+     }
+    ],
+    "overlaps": []
+   },
+   {
+    "row": "policy-products-list-row-1--econ-test-fc-product-1790627726629.json",
+    "rowBox": {
+     "x": 890.39,
+     "w": 574.61,
+     "right": 1465,
+     "sw": 575,
+     "cw": 575,
+     "over": 0
+    },
+    "kids": [
+     {
+      "id": "policy-products-list-row-1-view-1",
+      "box": {
+       "x": 890.39,
+       "w": 282.3,
+       "right": 1172.69,
+       "sw": 301,
+       "cw": 282,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "flexBasis": "0%"
+     },
+     {
+      "id": "policy-products-list-row-1-row-2",
+      "box": {
+       "x": 1182.69,
+       "w": 282.31,
+       "right": 1465,
+       "sw": 282,
+       "cw": 282,
+       "over": 0
+      },
+      "flex": "1 0 0%",
+      "flexBasis": "0%"
+     }
+    ],
+    "metaRow": {
+     "x": 890.39,
+     "w": 282.3,
+     "right": 1172.69,
+     "sw": 301,
+     "cw": 282,
+     "over": 19
+    },
+    "metaKids": [
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-1",
+      "box": {
+       "x": 890.39,
+       "w": 25.61,
+       "right": 916,
+       "sw": 26,
+       "cw": 26,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "价格"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-2",
+      "box": {
+       "x": 921,
+       "w": 47.75,
+       "right": 968.75,
+       "sw": 48,
+       "cw": 48,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "1 USDC"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-3",
+      "box": {
+       "x": 973.75,
+       "w": 28.78,
+       "right": 1002.53,
+       "sw": 29,
+       "cw": 29,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "type"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-4",
+      "box": {
+       "x": 1007.53,
+       "w": 40.83,
+       "right": 1048.36,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "article"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-5",
+      "box": {
+       "x": 1053.36,
+       "w": 53.58,
+       "right": 1106.94,
+       "sw": 54,
+       "cw": 54,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "visibility"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-p-6",
+      "box": {
+       "x": 1111.94,
+       "w": 40.52,
+       "right": 1152.45,
+       "sw": 41,
+       "cw": 41,
+       "over": 0
+      },
+      "flex": "0 1 auto",
+      "minW": "auto",
+      "text": "public"
+     },
+     {
+      "id": "policy-products-list-row-1-view-1-row-2-view-7",
+      "box": {
+       "x": 1157.45,
+       "w": 15.23,
+       "right": 1172.69,
+       "sw": 34,
+       "cw": 15,
+       "over": 19
+      },
+      "flex": "1 1 0%",
+      "minW": "0px",
+      "text": "9 hours ago"
+     }
+    ],
+    "overlaps": []
+   }
+  ]
+ }
+}

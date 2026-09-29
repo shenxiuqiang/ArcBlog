@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const componentDir = join(repoRoot, '.web', 'components', 'hero-carousel');
@@ -33,8 +33,27 @@ export function composeScript() {
   return `${HEADER}\n${vendor}\n\n${init}\n`;
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog hero-carousel generator — vendor/photo-story.js + init.js → script.js
+
+Usage:
+  node scripts/arcblog-hero-carousel.mjs          # (re)write the component script
+  node scripts/arcblog-hero-carousel.mjs --check  # verify it is in sync
+
+Component script.js is INLINED into the SSR page, so the vendored engine and our
+initialiser have to be concatenated into that one generated file (a root-relative
+script URL is swallowed by the AUP handler). Never edit
+.web/components/hero-carousel/script.js by hand.
+
+Exit codes: 0 = written, or in sync (stdout is JSON: { ok, action, bytes });
+1 = --check found drift or a missing script.js.
+`);
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
+  if (args.help || args._[0] === 'help' || args._[0] === '-h') return help();
   const check = Boolean(args.check);
   const expected = composeScript();
   if (check) {

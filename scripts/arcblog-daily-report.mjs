@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
-import { parseCliArgs } from './lib/cli-flags.mjs';
+import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
   if (value === undefined || value === null || value === true || value === false) return '';
@@ -93,8 +93,28 @@ function listPosts({ limit, instance }) {
   return posts;
 }
 
+function help() {
+  console.log(FLAG_SYNTAX_NOTE);
+  console.log(`ArcBlog daily report (spec §15) — a read-only summary of the post store
+
+Usage:
+  node scripts/arcblog-daily-report.mjs [--limit <n>] [--instance <name>]
+
+Reads at most <limit> records (default 100) from /instance/app/arcblog/posts through
+the blocklet's own read actions (no filters, no writes) and prints ONE JSON object on
+stdout:
+  { ok, generatedAt, total, byStatus, byCategory, byTag }
+A missing posts directory is an empty report, not an error. Nothing here reads the
+draft/archived side, and --limit counts files listed, not posts after filtering.
+
+Exit codes: 0 = a report was produced (including an empty one); 1 = the report could
+not be produced (unreadable store) — stderr then carries { ok: false, error }.
+`);
+}
+
 function main() {
   const opts = parseCliArgs(process.argv.slice(2), import.meta.url);
+  if (opts.help || opts._[0] === 'help' || opts._[0] === '-h') return help();
   const limit = Number(opts.limit || 100);
   const instance = optString(opts.instance);
 

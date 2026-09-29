@@ -19,6 +19,7 @@ page hub {
     queue-clear { en "Clear" zh "清除" }
     queue-clear-msg { en "Deletes this intent record only. It does not change the relation or the index." zh "只删除这条意图记录。不会改变收录关系或索引。" }
     queue-title { en "Intent queue" zh "意图队列" }
+    queue-legend { en "pending = queued, not run yet · applied = the worker ran it · rejected = refused, zero change · noop = already in that state" zh "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态" }
     queued { en "Queued — the local worker executes it." zh "已入队——由本机 worker 执行。" }
     reject { en "Terminate" zh "终止" }
     relations { en "Studio ↔ Hub relations" zh "Studio ↔ Hub 收录关系" }
@@ -26,6 +27,10 @@ page hub {
     title { en "Hub console" zh "Hub 管理" }
     write-failed { en "Write failed — verify the record (a success toast is not proof)." zh "写入失败——请复核记录（成功 toast 不是证据）。" }
   }
+  // UI-018 D4 (§7.4 / §4.10③): the queue card's status legend is byte-aligned with
+  // scripts/lib/intents.mjs and deliberately does NOT mention `running`:
+  // arcblog-network.mjs never writes that in-flight state (it goes
+  // pending → applied|rejected|noop), and no page may claim an unreachable state.
   // Prototype declaration (docs/ArcBlog-admin-ui-design.md §2.7.1): P1 + P5.
   // P1 — the page manages one record class (Studio ↔ Hub relations) with exactly
   // one list and one register row; P5 — the derived content index is the status
@@ -151,7 +156,7 @@ page hub {
               row gap=sm cross=end {
                 input type=text name=hubDid label=:hub-did-label
                 input type=text name=hubEndpoint label=:hub-endpoint-label
-                action variant=primary label=:btn-register confirm={title: :btn-register, message: :confirm-register-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: register, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                action variant=primary label=:btn-register style={borderRadius: "var(--radius-md, 8px)"} confirm={title: :btn-register, message: :confirm-register-msg} onSuccessToast={intent: success, message: "$t(hub.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(hub.enqueue-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/hub-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: register, hubDid: "${args.hubDid}", endpoint: "${args.hubEndpoint}", update: "", status: pending, message: "", changed: [], counts: null, elapsedMs: null, requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
               }
               p :apply-desc scale=sm intent=muted
               afs-list hub-relations-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/hub/registrations" {
@@ -173,9 +178,9 @@ page hub {
                   // full remaining width — the BUG-034 overflow mechanism). Basis must
                   // be `auto`, not just `flexGrow: 0`, or the cluster collapses to 0.
                   row gap=sm cross=center style={flexGrow: 0, flexBasis: auto} {
-                    action variant=secondary size=sm label=:approve onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:reject onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge, message: :purge-msg} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000}
+                    action variant=secondary size=sm label=:approve style={borderRadius: "var(--radius-md, 8px)"} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:reject style={borderRadius: "var(--radius-md, 8px)"} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge style={borderRadius: "var(--radius-md, 8px)"} path="${entry.path}" confirm={title: :purge, message: :purge-msg} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000}
                   }
                   input type=hidden name=ePath value="${entry.path}"
                 }
@@ -199,11 +204,12 @@ page hub {
                 }
               }
               row cross=start {
-                action -> set hub-advanced state {open: "true"} variant=secondary size=sm label=:adv-show
+                action -> set hub-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
               }
               view gap=sm visible=$state.open {
                 key-value-list dense=true fields=[{label: hub, value: "node scripts/arcblog-network.mjs hub register|show|add|sync|index rebuild --hub-did <did> [--endpoint <url>] [--update] [--version <n>] [--status never|ok|stale|error] [--error <message>]", monospace: true, copyable: true}, {label: worker, value: "node scripts/arcblog-network.mjs queue|apply|watch", monospace: true, copyable: true}]
                 p :queue-title scale=sm intent=muted
+                p :queue-legend scale=caption intent=muted
                 afs-list hub-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/hub-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs size={flex: 1} {
@@ -215,11 +221,11 @@ page hub {
                       }
                       p "${entry.content.message}" scale=sm intent=muted
                     }
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear, message: :queue-clear-msg} path="${entry.path}"
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear style={borderRadius: "var(--radius-md, 8px)"} confirm={title: :queue-clear, message: :queue-clear-msg} path="${entry.path}"
                   }
                 }
                 row cross=start {
-                  action -> set hub-advanced state {open: ""} variant=secondary size=sm label=:adv-hide
+                  action -> set hub-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
                 }
               }
             }

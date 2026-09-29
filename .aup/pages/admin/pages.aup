@@ -3,6 +3,8 @@ page pages {
     act-delete { en "Delete" zh "删除" }
     act-delete-msg { en "Pages have no soft delete — this removes the record." zh "页面没有软删除——这将直接移除记录。" }
     act-delete-title { en "Delete this page?" zh "删除这个页面？" }
+    adv-hide { en "Hide advanced (CLI)" zh "收起高级（CLI）" }
+    adv-show { en "Show advanced (CLI)" zh "展开高级（CLI）" }
     act-offline { en "Take offline" zh "下线" }
     act-offline-msg { en "Queues ONE \"Take offline\" intent under config/page-intents/ — this page writes nothing to your records. This node's worker performs the move (it reads the page, merges it into page-drafts/, then removes the public copy): `arcblog-pages.mjs apply` once, or `watch` to keep it running. Read the intent record back — a toast is not evidence." zh "只向 config/page-intents/ 入队一条「下线」意图——本页不改动任何记录。真正的迁移由本节点 worker 执行（读取页面→合并→写入 page-drafts/→移除公开副本）：`arcblog-pages.mjs apply` 跑一次，或用 `watch` 常驻。请读回意图记录——toast 不是证据。" }
     act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
@@ -27,6 +29,9 @@ page pages {
     offline-ok { en "Intent queued — read config/page-intents to confirm; the local worker takes the page offline." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行下线。" }
     online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index. 「Take offline」 only queues an intent under config/page-intents/ — the local worker completes the move. 「Remove public copy」 is a different, immediate action: it hard-deletes the public record (pages have no soft delete)." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。「下线」只向 config/page-intents/ 入队一条意图——真正的迁移由本机 worker 完成。「移除公开副本」是另一条立即生效的动作：硬删除公开记录（页面没有软删除）。" }
     online-list { en "Online" zh "已上线" }
+    queue-legend { en "pending = queued, not run yet · applied = the worker ran it · rejected = refused, zero change · noop = already in that state" zh "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态" }
+    queue-empty-note { en "Empty state: when a list has no records this platform prints its own hard-coded English empty-list text (arc-contracts §20 measures that `emptyText` is not evaluated at runtime), so this page cannot localize it. This note is standing and does not claim that any list is empty; the authority for the queue is `node scripts/arcblog-pages.mjs queue`." zh "空态说明：列表没有记录时，平台会打印它自带的英文空列表文案（arc-contracts §20 实测 `emptyText` 在运行期不求值），因此本页无法将其本地化。本说明常驻，不代表任何列表为空；队列的权威入口是 `node scripts/arcblog-pages.mjs queue`。" }
+    queue-title { en "Intent queue" zh "意图队列" }
     published-ok { en "Intent queued — read config/page-intents to confirm; the local worker brings the page online." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行上线。" }
     removed-ok { en "Removed." zh "已移除。" }
     status-offline { en "Offline" zh "已下线" }
@@ -34,6 +39,14 @@ page pages {
     title { en "Pages" zh "页面" }
     view-page { en "View" zh "查看" }
   }
+  // UI-018 D5 (§7.5 ①②): the intent-queue area gets a title and a status legend,
+  // and the three CLI rows move into the level-3 "advanced" collapse. The legend
+  // is byte-aligned with scripts/lib/intents.mjs and deliberately omits `running`:
+  // arcblog-pages.mjs never writes that in-flight state (pending → applied|rejected|
+  // noop), and §4.10③ forbids a page from claiming an unreachable state.
+  // §4.8 / §7.5⑤: `emptyText` is not evaluated at runtime (arc-contracts §20), so the
+  // platform prints its own English empty string. This standing note is status-neutral
+  // (it never claims the queue is empty) and points at the CLI authority.
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
@@ -206,7 +219,12 @@ page pages {
             // 待执行意图队列（REQ-019 第四批）：两个页面列表下方的这个列表就是本页按钮写入的队列，
             // 直接读 AFS（config/page-intents，admin-only），逐行显示 action · slug · status · message。
             // 稳定 id 是 URL 契约（`pages-intent-list.page=<n>`，arc-contracts §38）。
-            view gap=sm {
+            // UI-018 D5（§7.5 ①②④）：标题 + 状态图例（不含 `running`，见 i18n 注释），
+            // CLI 三行折进「高级」——折叠本身是页内 `-> set`，零 AFS 写入。
+            view pages-advanced gap=sm {
+              h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+              p :queue-legend scale=caption intent=muted
+              p :queue-empty-note scale=caption intent=muted
               afs-list pages-intent-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/page-intents" {
                 row gap=sm cross=start role=item {
                   view gap=xs {
@@ -215,7 +233,15 @@ page pages {
                   }
                 }
               }
-              key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
+              row cross=start {
+                action -> set pages-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+              }
+              view gap=sm visible=$state.open {
+                key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
+                row cross=start {
+                  action -> set pages-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                }
+              }
             }
           }
         }

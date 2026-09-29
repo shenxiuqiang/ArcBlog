@@ -6,7 +6,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { BASE_FLAGS } from './lib/arc.mjs';
-import { CHAIN_FLAGS, SCRIPT_FLAGS }
+import { CHAIN_FLAGS, FLAG_SYNTAX_NOTE, SCRIPT_FLAGS }
   from './lib/cli-flags.mjs';
 
 import {
@@ -894,6 +894,13 @@ test('every flag-parsing CLI fails closed on an unknown flag', () => {
     ['arcblog-node-nft.mjs', ['status', '--nope']],
     ['arcblog-settings.mjs', ['show', '--nope']],
     ['arcblog-verify.mjs', ['keys', '--nope']],
+    ['arcblog-chain-worker.mjs', ['run', '--nope']],
+    ['arcblog-daily-report.mjs', ['--nope']],
+    ['arcblog-query-posts.mjs', ['published', '--nope']],
+    ['arcblog-rss.mjs', ['--nope']],
+    ['arcblog-console-nav.mjs', ['--nope']],
+    ['arcblog-hero-carousel.mjs', ['--nope']],
+    ['arcblog-ui-budget.mjs', ['--nope']],
   ];
   for (const [name, args] of probes) {
     const res = spawnSync(process.execPath, [join(repoRoot, 'scripts', name), ...args], {
@@ -904,6 +911,35 @@ test('every flag-parsing CLI fails closed on an unknown flag', () => {
     assert.equal(res.status, 1, `${name} ${args.join(' ')} must fail closed`);
     assert.match(`${res.stdout}${res.stderr}`, /unknown flag: --nope/, `${name} must name the flag`);
     assert.match(`${res.stdout}${res.stderr}`, /VALIDATION/, `${name} must report VALIDATION`);
+  }
+});
+
+// BUG-060 / REQ-029 B32-4+B32-7: `--help` must be a REAL help surface for every CLI.
+// chain-worker used to answer `--help` with a raw stack (exit 1), and rss /
+// query-posts / daily-report silently ran their business command instead; the three
+// internal generators ignored it the same way. Each one must exit 0, open with the
+// shared FLAG_SYNTAX_NOTE (so the flag contract is visible from the CLI itself) and
+// print a usage body — and must do NO work for `--help`.
+test('every CLI answers --help with exit 0, the shared flag note and a usage body (BUG-060)', () => {
+  const probes = [
+    'arcblog-chain-worker.mjs',
+    'arcblog-daily-report.mjs',
+    'arcblog-query-posts.mjs',
+    'arcblog-rss.mjs',
+    'arcblog-console-nav.mjs',
+    'arcblog-hero-carousel.mjs',
+    'arcblog-ui-budget.mjs',
+  ];
+  for (const name of probes) {
+    const res = spawnSync(process.execPath, [join(repoRoot, 'scripts', name), '--help'], {
+      encoding: 'utf8',
+      cwd: repoRoot,
+      env: { ...process.env },
+    });
+    assert.equal(res.status, 0, `${name} --help must exit 0 (stderr: ${res.stderr})`);
+    const lines = String(res.stdout || '').split('\n');
+    assert.equal(lines[0], FLAG_SYNTAX_NOTE, `${name} --help must open with FLAG_SYNTAX_NOTE`);
+    assert.ok(lines.length > 3, `${name} --help must print a usage body`);
   }
 });
 
