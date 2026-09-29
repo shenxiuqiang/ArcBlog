@@ -2263,6 +2263,9 @@ arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"/instance/app/ar
 **踩坑记录**：W1 波次的 `posts` / `dashboard` / `compose` / `compose-edit` 四页都遇到（dev-compose 在 `compose-edit` 门禁卡上用 `p "$t(compose.gate-title)" level="2"` 绕过）。
 **判据**：`arc dsl lint --json` 里 `severity: error` + `code: content_dropped`（**不能**当作"预期的 locales 过期"忽略）。
 
+
+**同族缺陷（W1 补充，dev-media task-20 实测）**：`arc dsl format` 会把「**裸 `afs-dropzone` 行 + 紧随的兄弟节点**」合并成 `afs-dropzone p content=:upload-note …` —— **凭空造出一个 `content=` prop**，而且之后 `--check` **不再报错**（与上表 `content_dropped` 同属"格式化器改写结构"，只是一个报错、一个静默成功）。
+**规避**：把 `afs-dropzone` 放进它自己的 `view {}` 层并置于该层**末尾**（media / compose / compose-edit 三页都这么做）。
 ## 46. provider 骨架的**可复制范式**（T1-0 全链路实测：`required: false` + 根自定义动作 + `bun:sqlite` 内存库 + AFS 回填，2026-09-29）
 
 > **编号说明**：§45 已被 W1 的 `arc dsl format` 结论占用，本节顺延为 **§46**（落笔前已 `grep -n '^## ' docs/arc-contracts.md | tail -3` 复核）。
