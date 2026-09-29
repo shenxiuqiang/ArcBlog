@@ -13,7 +13,7 @@
     "cards": 2,
     "nested": 0,
     "ctrl": 7,
-    "styles": 6,
+    "styles": 13,
     "i18n": 21,
     "tech": 2
   },
@@ -199,7 +199,7 @@
   },
   "_sources": {
     "dashboard": "19bf8e2d7e46eb27",
-    "posts": "e978253376da0ac1",
+    "posts": "5bb70ce178f6efe2",
     "pages": "1c2c37709a26c856",
     "compose": "2393f5ffdb9d622e",
     "heroes": "3554d9551d1001b5",
@@ -217,7 +217,7 @@
     "access": "969c024b632bc350",
     "ledger": "9aa058329cd74d9c",
     "factory": "f337328336a0e092",
-    "general": "22bccba25e62aaa1",
+    "general": "52ecec7d2291aa0e",
     "diagnostics": "94e2a9e8ba275eaf",
     "compose-edit": "19b8e7bb73a9557f"
   }

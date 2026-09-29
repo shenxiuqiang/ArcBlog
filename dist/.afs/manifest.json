@@ -238,9 +238,9 @@
     },
     {
       "path": ".aup/pages/admin/general.aup",
-      "size": 50970,
+      "size": 52101,
       "contentType": "application/octet-stream",
-      "sha256": "22bccba25e62aaa1a6c25eaaf3ccf8270219ce5f756eb438e47fe4ec87ace0fd"
+      "sha256": "52ecec7d2291aa0e3d2f6fad0408d429851c78ea50e42d21814d602161f40b8a"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
@@ -250,9 +250,9 @@
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 25691,
+      "size": 26013,
       "contentType": "application/octet-stream",
-      "sha256": "e978253376da0ac137c0137879b47227452a22e8b777fc8075ce3288a2523d2b"
+      "sha256": "5bb70ce178f6efe2b3214a555528e8331d947e786a50311f815cad2883442ece"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -1354,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 101593,
+      "size": 102417,
       "contentType": "text/markdown",
-      "sha256": "7d32d06f74b2130965145922af3a84f6ebda7b277b9ee0fa533860967b2c5c1c"
+      "sha256": "8b734f5a97ed2a29b9f6a8f3eb3488f154fe5153107a46032721afc0236f1e78"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1972,9 +1972,9 @@
     },
     {
       "path": "docs/team/bugs/BUG-083-general-kv-label-overflow-claimableat.md",
-      "size": 4418,
+      "size": 13169,
       "contentType": "text/markdown",
-      "sha256": "bf5e2e9f29c0fe5dfc5aeecd4a0b6c4e738103d4c8d99c54713ec5d2ecc3738b"
+      "sha256": "25b11846cfd9c018e5cb15bbc17eeedff0c2de36bd4eb1f5e4ead7ba29e56c39"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2917,6 +2917,12 @@
       "size": 2623,
       "contentType": "text/markdown",
       "sha256": "a813be2a637c142e7420e8c0fefd65286755c3bf6cda5dd8b9ac99079229cfe5"
+    },
+    {
+      "path": "docs/team/journal/round-29.md",
+      "size": 6796,
+      "contentType": "text/markdown",
+      "sha256": "9b48eee85e2bf0e780f02089b38a17ae7456334c36c2b42bd128c13ab5b78160"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -6814,9 +6820,9 @@
     },
     {
       "path": "scripts/ui-budget-baseline.json",
-      "size": 3711,
+      "size": 3712,
       "contentType": "application/json",
-      "sha256": "ba07514133b665f7423042615ce2667d9e5e2ae3ae5a2cc8684ebef0b8acc566"
+      "sha256": "49ec1386e478fad98e2e808441ae62c3254024a65e363e2c108c71fa7151e3f1"
     },
     {
       "path": "seed/settings/arcblog/home.json",
