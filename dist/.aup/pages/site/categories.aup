@@ -25,7 +25,7 @@ page categories {
     desc { en "Taxonomy used by the publish validator and the public feed. Every governance action is a button: it queues an intent, and this node's worker does the rewrite. No terminal needed." zh "发布校验器与公开信息流使用的分类法。每个治理动作都是一个按钮：它把意图入队，由本机 worker 执行改写。无需终端。" }
     enqueue-failed { en "Could not queue the intent — nothing was written. Sign in as the blocklet owner and try again." zh "意图入队失败 —— 没有写入任何记录。请以 Blocklet 属主身份登录后重试。" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
-    gate-title { en "Site" zh "站点" }
+    gate-title { en "Categories" zh "分类" }
     gov-desc { en "Merge a category into another, or delete it while migrating its posts. In the row you want to change, type the target slug into that row's target field, then press its button: the button only queues the action — this node's worker performs the rewrite, so the browser never touches your posts." zh "把某个分类合并到另一个，或删除它并迁移其文章。在要改的那一行里填上目标 slug，再点该行的按钮：按钮只负责入队——真正的改写由本机 worker 执行，浏览器不会直接改你的文章。" }
     gov-title { en "Governance actions (buttons)" zh "治理动作（按钮）" }
     list-desc { en "One row per record under /instance/app/arcblog/categories/ (live-subscribed), showing the stored sort value. Reference counts are deliberately NOT displayed: a page-side count could only come from the query index, which goes stale after an edit (arc-contracts §15), so the advanced section gives you the usage command instead — it scans the records directly." zh "来自 /instance/app/arcblog/categories/ 的每条记录一行（实时订阅），显示记录里的 sort 值。本页刻意不显示引用计数：页面侧计数只能来自查询索引，而索引在编辑后会陈旧（arc-contracts §15），因此「高级」区给出 usage 命令——它直接扫描记录。" }

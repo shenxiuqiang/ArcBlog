@@ -14,8 +14,16 @@
 
 | 层 | 谁 | 干什么 |
 | --- | --- | --- |
-| 决策 / 守门 | **Lead**（会话主控，1 个） | 定轮次目标、在任务板上派活、跑质量门、`git commit`、对外汇报、决定加人还是停机 |
-| 员工 | **PM / Dev / QA / UI**（4 个持久 teammate） | 在自己写入范围内完成一轮的工作，把结论写成文件，并用一条消息回报 |
+| 决策 / 守门 | **Lead**（会话主控，1 个） | 接任务、派活、跑门、`git commit`、对外汇报；裁决审查意见或上报人类；决定加人还是停机 |
+| 产品演进 | **PM**（1 个） | **创造型**：走真实路径找机会、提**新需求**（假设+最小切片+指标）与机会清单；排期与需求生产；审查产品功能与内容质量作为底线（[`roles/pm.md`](roles/pm.md) §10 演进 / §8 审查） |
+| 设计演进 | **UI/UE 设计师**（1 个） | **创造型**：逐屏提改进方案与**标准增量**，把好结论写回 UI 标准；合规走查作为底线（[`roles/ui.md`](roles/ui.md) §10 演进 / §8 审查） |
+| 实现 | **Dev**（按任务，**≤10 并行**） | 在各自**不相交写范围**内实现并自测（[`roles/dev.md`](roles/dev.md)） |
+| 独立验证 | **QA**（1 个） | 批次末独立验证与缺陷分级（[`roles/qa.md`](roles/qa.md)） |
+
+**默认是演进、不是验收**：两者每波既出审查（底线）也出演进提案（§10）；标准与 backlog 由提案驱动更新（`bootstrap.md` §11.5）。
+> **人类可以单独点名任何一个人干活**（如「让设计师只看 dashboard」「让 PM 审查某页内容」）：
+> Lead 按 [`bootstrap.md`](bootstrap.md) §11.1 **单人模式**只建一条任务、只唤醒那一个人，不开波次、不占开发额度。
+> 审查意见由 **Lead 裁决**（转实现任务 / 改标准 / 留痕收纳）；改架构、改 spec、加人、动链或资金等必须**上报人类**（§11.2）。
 
 必须先理解的四个机制事实——它们直接决定了提示词怎么写、为什么需要 Lead 驱动：
 
@@ -103,7 +111,7 @@ QA 独立重跑质量门，**不看 Dev 的自述结论**，按 REQ 的验收标
 ```bash
 arc dsl validate --json      # issues 必须为空
 npm test                     # 快层全绿（含 arc dsl generate --check 漂移门）
-arc blocklet build           # 改了 .aup 才需要
+npm run build           # 改了 .aup 才需要
 git add <本轮产物路径>        # 只加本轮产物，绝不 git add -A
 git commit -m "<type>(<scope>): 本轮净结果"
 ```
@@ -158,7 +166,7 @@ arc dsl validate --json     # 主质量门：issues 为空（每步都跑）
 npm test                    # 快层：6 文件 / 28 测试 / ~1s，**不写实例**（每步都跑）
                             # 含：产物漂移门（arc dsl generate --check）+ 死 locale key 门
                             #     + 生成的侧栏 + 运行时寻址 id + 主题契约 + guest 权限矩阵
-arc blocklet build          # 仅当改了 .aup 源码（重新生成 dist/）
+npm run build          # 仅当改了 .aup 源码（重新生成 dist/）
 npm run test:file -- scripts/arcblog-tags.test.mjs   # 定向单文件（见下）
 ```
 

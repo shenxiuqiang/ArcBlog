@@ -59,3 +59,45 @@ test('a fresh process that only imports the module produces no test output and e
   assert.doesNotMatch(out, /# (pass|fail|tests) \d+/, `import must not run tests: ${out}`);
   assert.doesNotMatch(out, /fast tier passed|tests failed|cleaned \d+ test record/, `import must not finish a tier: ${out}`);
 });
+
+test('--changed selects only the suites whose guards match the diff', async () => {
+  const { selectChanged } = await import('./run-tests.mjs');
+  const entries = [
+    { name: 'arcblog-ui-budget', path: 'scripts/arcblog-ui-budget.test.mjs' },
+    { name: 'arcblog-theme', path: 'scripts/arcblog-theme.test.mjs' },
+    { name: 'unmapped-suite', path: 'scripts/unmapped-suite.test.mjs' },
+  ];
+  // A page edit must pull in the budget ratchet…
+  assert.deepEqual(selectChanged(entries, ['.aup/pages/admin/posts.aup']).map((e) => e.name), ['arcblog-ui-budget', 'unmapped-suite']);
+  // …a theme edit only the theme contract…
+  assert.deepEqual(selectChanged(entries, ['.aup/app.aup']).map((e) => e.name), ['arcblog-theme', 'unmapped-suite']);
+  // …an unrelated file selects nothing but the unmapped suite (silence must not fake coverage).
+  assert.deepEqual(selectChanged(entries, ['README.md']).map((e) => e.name), ['unmapped-suite']);
+  // No diff information at all (git unavailable) ⇒ run everything, never nothing.
+  assert.equal(selectChanged(entries, null).length, 3);
+});
+
+test('the timeout/budget defaults are the measured ones, and env overrides win', async () => {
+  const { budgetsFor } = await import('./run-tests.mjs');
+  const fast = budgetsFor('fast');
+  assert.equal(fast.concurrency, 4, 'fast tier pools at 4 (measured 1.9s serial -> 0.78s)');
+  assert.equal(fast.perFileMs, 25_000);
+  assert.equal(fast.totalMs, 30_000);
+  const live = budgetsFor('live');
+  assert.equal(live.concurrency, 1, 'the live tier shares one instance and stays serial');
+  assert.equal(live.totalMs, 0, 'no total budget for the live tier');
+  const saved = { ...process.env };
+  try {
+    process.env.ARCBLOG_TEST_TIMEOUT_MS = '1234';
+    process.env.ARCBLOG_TEST_BUDGET_MS = '5678';
+    process.env.ARCBLOG_TEST_CONCURRENCY = '2';
+    const custom = budgetsFor('fast');
+    assert.deepEqual({ perFileMs: custom.perFileMs, totalMs: custom.totalMs, concurrency: custom.concurrency }, { perFileMs: 1234, totalMs: 5678, concurrency: 2 });
+  } finally {
+    for (const key of ['ARCBLOG_TEST_TIMEOUT_MS', 'ARCBLOG_TEST_BUDGET_MS', 'ARCBLOG_TEST_CONCURRENCY']) {
+      if (saved[key] === undefined) delete process.env[key];
+      else process.env[key] = saved[key];
+    }
+  }
+});
+

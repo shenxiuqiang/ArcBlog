@@ -6,7 +6,7 @@ page seo {
     f-name { en "Site name" zh "站点名称" }
     f-og { en "Default OG image (https URL)" zh "默认 OG 图（https 地址）" }
     gate-desc { en "Sign in with DID Wallet to manage site-level SEO." zh "使用 DID Wallet 登录后管理站点级 SEO。" }
-    gate-title { en "Site" zh "站点" }
+    gate-title { en "SEO" zh "SEO" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     profile-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
     save { en "Save" zh "保存" }

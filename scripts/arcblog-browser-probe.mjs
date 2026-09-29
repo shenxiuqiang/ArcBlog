@@ -154,21 +154,42 @@ async function probe(browserVersion) {
   // belong to the PREVIOUS navigation, and then the probe reads the old page
   // (measured 2026-09-29 by dev-media: ?page=feeds read the posts page). So wait
   // until `location.href` actually matches the requested URL before evaluating.
-  const wanted = url.split('#')[0];
+  // Compare by origin + path + requested params, NOT by string prefix: the AUP runtime
+  // normalises/reorders the query string (e.g. appends or moves `locale`), so a
+  // startsWith check produced false negatives and made the probe exit silently.
+  const asParts = (raw) => {
+    try {
+      const u = new URL(raw);
+      return { origin: u.origin, path: u.pathname, params: Object.fromEntries(u.searchParams) };
+    } catch {
+      return null;
+    }
+  };
+  const wanted = asParts(url);
+  const matches = (href) => {
+    const got = asParts(href);
+    if (!wanted || !got) return false;
+    if (got.origin !== wanted.origin || got.path !== wanted.path) return false;
+    // Only `page` is required to match. The runtime normalises other params (it may
+    // rewrite `locale`, reorder, or append its own) — requiring all of them produced
+    // 20 s waits per probe and false negatives.
+    if (wanted.params.page && got.params.page !== wanted.params.page) return false;
+    return true;
+  };
   await send('Page.navigate', { url });
   let committed = false;
+  let seenHref = '';
   for (let i = 0; i < Math.ceil(timeout / 200); i += 1) {
     await sleep(200);
     const current = await send('Runtime.evaluate', { expression: 'location.href', returnByValue: true });
-    const href = current?.result?.result?.value ?? '';
-    if (href.startsWith(wanted)) {
+    seenHref = current?.result?.result?.value ?? '';
+    if (matches(seenHref)) {
       committed = true;
       break;
     }
   }
-  if (!committed) {
-    throw new Error(`navigation did not commit to ${url} within ${timeout} ms (still on a previous page)`);
-  }
+  // Never fail silently: report the mismatch in the verdict instead of printing nothing.
+  const navigationWarning = committed ? null : `wanted ${url}, page reported ${seenHref || '(unknown)'} after ${timeout} ms`;
   await sleep(settle);
 
   const probeJs = `(() => {
@@ -200,6 +221,7 @@ async function probe(browserVersion) {
   ws.close();
   return {
     browserVersion,
+    navigationWarning,
     loadFired: seen.includes('Page.loadEventFired'),
     reusedTarget: Boolean(targets.length),
     injectedCookies: injected,

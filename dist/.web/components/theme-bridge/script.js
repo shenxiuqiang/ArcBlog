@@ -78,6 +78,25 @@
     '.aup-action[data-variant="destructive"]{color:var(--color-text)}',
     '.aup-action[data-variant="destructive"]:not(:hover) .aup-icon-svg{color:var(--color-error)}',
     '.aup-action[data-variant="destructive"]:hover{color:var(--color-surface)}',
+    // Button radius is a THEME-LAYER concern (standard V1.10 §4.3; UI-019 candidate A,
+    // task-24). The `editorial` tone paints EVERY `.aup-action` with `border-radius:2rem`
+    // — `[data-tone=editorial] .aup-action` in the served aup-core.css — so all of
+    // primary / secondary / ghost / destructive / variant-less / size=sm compute 32px
+    // unless overridden (measured live 2026-09-29, ?page=posts, synthetic specimens).
+    // Every console page used to re-inline `var(--radius-md, 8px)` per action, which ate
+    // 7 of §2.7.2's 8 inline-style slots on ?page=posts and ?page=hub and pushed both
+    // pages over budget. This one rule replaces those 14+ inlines; `.aup` side adds no
+    // inline radius. Console-only scope: the console renders no `app-footer` while public
+    // pages do — measured 2026-09-29: ?page=posts has `.aup-app-footer` false with
+    // `#aup-display` present, ?page=about has it true — the same page-type test the
+    // REQ-020 rule below uses, so public buttons keep the editorial pill (measured
+    // /about 订阅RSS = 32px before and after). Exclusions keep the platform's own
+    // recipes: `data-kind=link` (0px plain page links — every sidebar row) and
+    // `data-kind=back` (the compose-edit back button) are not touched, and
+    // `data-icon-only=true` keeps its 28px round hit box. Sidebar rows additionally
+    // carry an inline `borderRadius: "0"`, which still wins over this rule.
+    // Revert = delete this one line.
+    '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) .aup-action:not([data-kind]):not([data-icon-only="true"]){border-radius:var(--radius-md,8px)}',
     // WCAG 2.5.8 / admin-ui-design §9 ("命中区 ≥24×24"), UI-012 P-01: the platform's
     // copy and QR buttons render at 18×18 (UI-007 §3.2, UI-011 P-04 measured 18×18 on
     // 8 console pages). Grow the hit box only — no colour, no font, no layout change;

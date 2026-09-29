@@ -5,7 +5,7 @@ page media {
     cmd-refs { en "Show where one asset is used (read-only information)" zh "查看某个资产被用在哪里（只读信息）" }
     desc { en "Upload an asset, read this node's upload index, and reach the CLI commands that compute references and clean up (Advanced tab)." zh "上传资产、查看本机的上传索引，并在「高级」页签取用计算引用与清理的 CLI 命令。" }
     gate-desc { en "Sign in with DID Wallet to view the media index." zh "使用 DID Wallet 登录后查看媒体索引。" }
-    gate-title { en "Operations" zh "运维" }
+    gate-title { en "Media" zh "媒体" }
     index-note { en "Each row is one record of this upload index: title, MIME type, byte size, indexed time, plus two copy buttons — the asset's AFS path and the refs command for that id. The record carries no public URL, so none is shown, and the index itself is maintained by the CLI, never by this page." zh "每行是本上传索引的一条记录：标题、MIME 类型、字节大小、索引时间，外加两个复制按钮——资产的 AFS 路径与该 id 的 refs 命令。记录里没有公开 URL 字段，因此不显示；索引由 CLI 维护，本页不写索引。" }
     index-path { en "AFS path" zh "AFS 路径" }
     index-title { en "Upload index" zh "上传索引" }

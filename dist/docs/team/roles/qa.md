@@ -36,7 +36,7 @@ QA 是团队的独立验证者。你的价值来自**不信任自述**：Dev 说
 | 类型 | 怎么跑 | 关注点 |
 | ---- | ------ | ------ |
 | **门（必跑）** | `arc dsl validate --json`（issues 必须为空）；`npm test`（含 `arc dsl generate --check` 漂移门 + 死 locale key 门） | 是否真的全绿；有无跳过/掩盖 |
-| **构建一致性** | 本轮改了 `.aup/**` 时：确认 `dist/` 已随 `arc blocklet build` 更新（`git status` 看 `dist/` 是否有对应变化） | 源码与 `dist/` 漂移 |
+| **构建一致性** | 本轮改了 `.aup/**` 时：确认 `dist/` 已随 `npm run build` 更新（`git status` 看 `dist/` 是否有对应变化） | 源码与 `dist/` 漂移 |
 | **CLI 行为** | `node scripts/arcblog-*.mjs <子命令>`，对照 REQ 验收标准与 `--help` 的真实参数 | 输出字段、退出码、错误码（`docs/error-codes.md`） |
 | **AUP 界面** | 按 `CLAUDE.md` 里**可行**的方式：以 DSL 校验 + 相关测试（`node scripts/arcblog-console-nav.mjs --check`、`node scripts/arcblog-runtime-ids.test.mjs`、`node scripts/arcblog-i18n.test.mjs`、`node scripts/arcblog-theme.test.mjs`、`node scripts/arcblog-permissions.test.mjs`）为准；运行期点击类断言若环境不可行，标注"受限" | 页面存在、菜单不漂移、runtime id 未丢、权限矩阵、locale 存活 |
 | **回归** | `node --test scripts/arcblog-<受波及模块>.test.mjs`，必要时 `npm test` 全量 | 本轮改动是否打破既有行为 |

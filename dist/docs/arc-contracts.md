@@ -1891,6 +1891,13 @@ Studio 的 registration 记录**只有 `sync.*` 与 `updatedAt` 变化**（其�
 后新文案立即生效。⇒ 页面/文案类改动的验收，**必须包含一次重启**，否则"已修好"无法在运行期证明；
 且按 §34(1)，重启后要跟一条 `arc blocklet run <repo>` 与一次 `/instance` 读（或站点 200）才算恢复。
 
+**补充（2026-09-29 部署/复挂实测，修正一个易错判断）**：`http://<blocklet>.localhost:4939` 服务的是 **daemon 挂载的那棵 AUP 树**，不是 Pages 部署副本：
+- `arc blocklet instance deploy . --domain <d>`（或 `scripts/arcblog-deploy.mjs`）更新的是 **Pages 面**（`~/.arc/pages/projects/<p>/deployments/*`），**不影响 :4939** —— 实测部署成功（新 `deploy-*`、密钥门通过、部署文件与源码字节一致）后，`:4939/?page=feeds` 仍渲染**旧**门禁标题。
+- 同一时刻 `.web/**`（Web Device 组件）是**磁盘实时**服务的：只改 `.web/components/theme-bridge/script.js` 里的 CSS，注入的 `#arcblog-chrome-style` **立刻**生效，无需重启 —— 由此可以区分"哪一半没生效"。
+- **让 :4939 生效的唯一路径 = `arc service restart -i <inst>` + `arc blocklet run . -i <inst>` 复挂**；实测复挂后新文案（`feeds→分发`、`compose→写文章`、`media→媒体`）立即出现。
+- 另：本实例的界面语言被强制为 **zh** —— 传 `?locale=en` 会被改写成 `locale=zh`，注入 `arc_lang=en` cookie 也不生效。**英文文案只能静态核对**（页面 `i18n {}` 块 / `.aup/locales/en.json`），不要声称"已用英文界面目视验证"。
+
+
 **(6) 一台机器上跑两台 daemon 的成本（实测）**：Studio RSS ≈ **419 MB**、Hub ≈ **349 MB**，
 `~/.afs-hub` 3.4 MB（初始）；端口默认 4939/4941 互不冲突。回滚 = `arc service stop -i <name>`（可逆）→
 `arc service delete -i <name>`（删除记录与数据，不可逆；实测 `~/.afs-hub` 一并消失）。`arc service gc` **不是**回滚手段。

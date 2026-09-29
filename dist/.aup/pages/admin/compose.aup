@@ -11,7 +11,7 @@ page compose {
     g-publish { en "Publish" zh "发布" }
     g-taxonomy { en "Category & tags" zh "分类与标签" }
     gate-desc { en "Sign in with DID Wallet to unlock the editor. Drafts stay in the private drafts directory until published." zh "使用 DID Wallet 登录以解锁编辑器。草稿保存在私有草稿目录中，直到发布。" }
-    gate-title { en "Publish with your wallet" zh "用钱包发布" }
+    gate-title { en "Write a post" zh "写文章" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     publish-now { en "Publish" zh "发布" }
     save-draft { en "Save draft" zh "存草稿" }

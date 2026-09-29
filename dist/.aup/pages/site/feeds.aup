@@ -6,7 +6,7 @@ page feeds {
     feeds-posts { en "Article index" zh "文章索引" }
     feeds-rss { en "RSS feed" zh "RSS 订阅" }
     gate-desc { en "Sign in with DID Wallet to view the distribution surfaces." zh "使用 DID Wallet 登录后查看分发面。" }
-    gate-title { en "Site" zh "站点" }
+    gate-title { en "Feeds" zh "分发" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     title { en "Feeds" zh "分发" }
   }

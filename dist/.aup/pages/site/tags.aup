@@ -19,7 +19,7 @@ page tags {
     form-desc { en "A target that does not exist yet renames the tag; an existing target merges into it. Either way every referencing post is rewritten." zh "目标名不存在＝重命名，已存在＝合并；两种情况都会改写所有引用它的文章。" }
     form-title { en "Rename or merge" zh "重命名 / 合并" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
-    gate-title { en "Site" zh "站点" }
+    gate-title { en "Tags" zh "标签" }
     list-title { en "Tags in use" zh "使用中的标签" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     queue-desc { en "The console cannot rewrite posts itself, so the form only queues an intent. The worker applies it with the same code path as the CLI merge." zh "控制台本身不能改写文章，表单只负责入队。worker 会用与 CLI merge 完全相同的实现来执行。" }
