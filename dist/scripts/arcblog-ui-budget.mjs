@@ -35,6 +35,8 @@
  *   styles  `style={…}` occurrences
  *   i18n    declared page keys (`<key> { en "…" }`), page-scoped outside the sidebar
  *   tech    same-screen technical identifiers (DIDs, hashes, AFS paths, versions, tx, CLI)
+ *           — RENDERED only: paths inside `from "…"` / `path="…"` / `propBind` / `exec`
+ *           are wiring, not screen content, and are excluded (see measure())
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, realpathSync } from 'node:fs';
@@ -160,6 +162,20 @@ export function pageFiles(root = repoRoot) {
   return wanted.map((page) => ({ page, file: found.get(page) }));
 }
 
+/** Page-level `component … { … }` block ranges plus the set of lines they cover. */
+function componentBlocks(lines) {
+  const ranges = [];
+  const covered = new Set();
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!/^\s*component\s+[\w-]+/.test(lines[i])) continue;
+    const end = blockEnd(lines, i);
+    ranges.push({ start: i, end });
+    for (let k = i; k <= end; k += 1) covered.add(k);
+    i = end;
+  }
+  return { ranges, covered };
+}
+
 /** All seven metrics for one page source. */
 export function measure(source, file, hasSidebar = true) {
   const lines = source.split('\n');
@@ -176,55 +192,87 @@ export function measure(source, file, hasSidebar = true) {
     colStart = shiftIndex(column.start, ranges);
     colEnd = shiftIndex(column.end, ranges);
   } else {
-    // A sidebar-less console sub-page: the whole file is the content area.
-    const root = lines.findIndex((line) => NODE_START.test(line));
+    // A sidebar-less console sub-page: the whole file is the content area — minus any
+    // page-level `component …` declaration, whose body also contains node-start lines
+    // (`input …`) that would otherwise be mistaken for the content root.
+    const { covered: skip } = componentBlocks(lines);
+    const root = lines.findIndex((line, i) => NODE_START.test(line) && !skip.has(i));
     if (root < 0) throw new Error(`${file}: no node found`);
     colStart = root;
     colEnd = blockEnd(lines, root);
   }
 
   const i18n = i18nRange(withoutSidebar);
+
+  // Page-level `component … { … }` declarations are CONTENT (they render), so they
+  // must be measured too — otherwise a page can hide complexity in a component and
+  // the content-column cut would never see it (dev-posts, task-15, raised it).
+  // Only VISIBLE controls count (`action` + `input` that is not `type=hidden`):
+  // the 18 `input type=hidden name=e*` write-plumbing fields exist to carry one
+  // record into `exec … /.actions/write`, exactly like the `path=` wiring that
+  // `tech` already excludes; inlining them per row would triple the file.
+  const { ranges: componentRanges } = componentBlocks(withoutSidebar);
+
   let blocks = 0;
   let nested = 0;
-  const openCards = [];
-  let depth = 0;
-  let rootChildDepth = null;
-  for (let i = colStart; i <= colEnd; i += 1) {
-    const line = withoutSidebar[i];
-    const opens = (line.match(/\{/g) || []).length;
-    const closes = (line.match(/\}/g) || []).length;
-    const insideI18n = i18n && i > i18n.start && i <= i18n.end;
-    if (i === colStart) {
-      rootChildDepth = depth + opens - closes; // the depth its direct children open at
-    } else if (!insideI18n && depth === rootChildDepth && NODE_START.test(line)) {
-      blocks += 1;
+  let cardsTotal = 0;
+  let stylesTotal = 0;
+  let ctrlTotal = 0;
+  let styles;
+  const cardRanges = [{ start: colStart, end: colEnd }, ...componentRanges];
+  for (const range of cardRanges) {
+    const openCards = [];
+    let depth = 0;
+    let rootChildDepth = null;
+    for (let i = range.start; i <= range.end; i += 1) {
+      const line = withoutSidebar[i];
+      const opens = (line.match(/\{/g) || []).length;
+      const closes = (line.match(/\}/g) || []).length;
+      const insideI18n = i18n && i > i18n.start && i <= i18n.end;
+      if (range.start === colStart) {
+        if (i === colStart) {
+          rootChildDepth = depth + opens - closes; // the depth its direct children open at
+        } else if (!insideI18n && depth === rootChildDepth && NODE_START.test(line)) {
+          blocks += 1;
+        }
+      }
+      const cards = (line.match(/var\(--card-bg\)/g) || []).length;
+      cardsTotal += cards;
+      stylesTotal += (line.match(/style=\{/g) || []).length;
+      if (CTRL_LINE.test(line) && !/^\s*input\s+type=hidden\b/.test(line)) ctrlTotal += 1;
+      for (let c = 0; c < cards; c += 1) {
+        if (openCards.length) nested += 1;
+        openCards.push(depth);
+      }
+      depth += opens - closes;
+      for (let k = openCards.length - 1; k >= 0; k -= 1) if (openCards[k] >= depth) openCards.splice(k, 1);
     }
-    let cursor = 0;
-    while ((cursor = line.indexOf('var(--card-bg)', cursor)) >= 0) {
-      if (openCards.length) nested += 1;
-      openCards.push(depth);
-      cursor += 'var(--card-bg)'.length;
-    }
-    depth += opens - closes;
-    for (let k = openCards.length - 1; k >= 0; k -= 1) if (openCards[k] >= depth) openCards.splice(k, 1);
   }
-
+  styles = stylesTotal;
   const column = withoutSidebar.slice(colStart, colEnd + 1);
   const text = column.join('\n');
   const whole = withoutSidebar.join('\n');
+  // `tech` counts what the operator can SEE, not the wiring. AFS paths and record
+  // ids also live inside prop values (`from "…"`, `path="…"`, `propBind={…}`,
+  // `exec "…"`), where they are structural and invisible; counting those punished
+  // every data page for having two lists (measured 2026-09-29: a P1 page needs
+  // ~4 of them before it renders anything — dev-posts, task-15). Wiring is
+  // stripped first; a rendered path/DID/hash still counts.
+  const WIRING = /(?:\bfrom\s+"[^"]*"|\bpath\s*=\s*"[^"]*"|\bpath\s*:\s*"[^"]*"|\bexec\s+"[^"]*"|propBind=\{[^}]*\})/g;
+  const rendered = whole.replace(WIRING, ' ');
   const tech =
-    (whole.match(/\bdid:(key|blocklet|abt):[A-Za-z0-9]+/g) || []).length +
-    (whole.match(/\bsha256:[0-9a-f]{6,}/gi) || []).length +
-    (whole.match(/\b0x[0-9a-f]{8,}/gi) || []).length +
-    (whole.match(/\/instance\/app\/arcblog/g) || []).length +
-    (whole.match(/node scripts\/arcblog-[a-z-]+\.mjs/g) || []).length;
+    (rendered.match(/\bdid:(key|blocklet|abt):[A-Za-z0-9]+/g) || []).length +
+    (rendered.match(/\bsha256:[0-9a-f]{6,}/gi) || []).length +
+    (rendered.match(/\b0x[0-9a-f]{8,}/gi) || []).length +
+    (rendered.match(/\/instance\/app\/arcblog/g) || []).length +
+    (rendered.match(/node scripts\/arcblog-[a-z-]+\.mjs/g) || []).length;
 
   return {
     blocks,
-    cards: (text.match(/var\(--card-bg\)/g) || []).length,
+    cards: cardsTotal,
     nested,
-    ctrl: column.filter((line) => CTRL_LINE.test(line)).length,
-    styles: (text.match(/style=\{/g) || []).length,
+    ctrl: ctrlTotal,
+    styles,
     i18n: withoutSidebar.filter((line) => I18N_LINE.test(line)).length,
     tech,
   };

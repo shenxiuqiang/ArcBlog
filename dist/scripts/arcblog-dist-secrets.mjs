@@ -144,23 +144,95 @@ export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
 const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (isMain) {
   const args = process.argv.slice(2);
-  if (args.includes('--help') || args.includes('-h')) {
-    console.log(`Usage: node scripts/arcblog-dist-secrets.mjs [--check] [--dist <dir>]
+  const has = (flag) => args.includes(flag);
+  const valueOf = (flag) => {
+    const i = args.indexOf(flag);
+    return i >= 0 ? args[i + 1] || '' : '';
+  };
+  if (has('--help') || has('-h')) {
+    console.log(`Usage: node scripts/arcblog-dist-secrets.mjs [--check] [--dist <dir> | --dir <dir> | --pages [--project <id>]]
 
   (no flag)  scrub dist/: delete node.key / .env.local copies and drop them from
              dist/.afs/manifest.json — the repository-root sources are never touched
-  --check    read-only: print the findings and exit 1 when dist/ carries secrets
-  --dist     dist directory to inspect (default: <repo>/dist)`);
+  --check    read-only: print the findings and exit 1 when the target carries secrets
+  --dist     dist directory to inspect (default: <repo>/dist); scrub-capable
+  --dir      ANY directory to inspect (BUG-074). READ-ONLY: --dir refuses to scrub,
+             and a directory that does not exist is an EXPLICIT skip (exit 0,
+             "skipped": true) rather than a silent ok or a failure
+  --pages    the ARC Pages deployment channel —
+             ~/.arc/pages/projects/<project>/deployments (project: --project, or
+             $ARCBLOG_PAGES_PROJECT, default "arcblog"). Same read-only + explicit
+             skip rules as --dir
+  --project  project id for --pages (default: arcblog)
+
+Exit codes: 0 = clean (or explicitly skipped), 1 = secret material found, 2 = the
+flag combination is refused (scrubbing anything that is not the repo's own dist/).
+This script never deletes, moves or rotates anything outside <repo>/dist/.`);
     process.exit(0);
   }
-  const di = args.indexOf('--dist');
-  const distDir = di >= 0 ? resolve(args[di + 1] || '') : DIST_DIR;
-  if (args.includes('--check')) {
-    const findings = findDistSecrets(distDir);
-    console.log(JSON.stringify({ action: 'check', distDir, ok: findings.distExists && findings.files.length === 0 && findings.privateKeyFiles.length === 0 && findings.manifestEntries.length === 0, ...findings }, null, 2));
-    process.exit(findings.distExists && findings.files.length === 0 && findings.privateKeyFiles.length === 0 && findings.manifestEntries.length === 0 ? 0 : 1);
+
+  const requestedDir = valueOf('--dir');
+  const requestedPages = has('--pages');
+  const distValue = valueOf('--dist');
+  const targetKind = requestedPages ? 'pages' : requestedDir ? 'dir' : 'dist';
+  const project = valueOf('--project') || String(process.env.ARCBLOG_PAGES_PROJECT || '').trim() || 'arcblog';
+  const pagesRoot = join(process.env.HOME || process.env.USERPROFILE || '', '.arc', 'pages', 'projects', project, 'deployments');
+  const target = requestedPages ? pagesRoot : requestedDir ? resolve(requestedDir) : distValue ? resolve(distValue) : DIST_DIR;
+
+  if (!has('--check')) {
+    // Scrub is limited to the repository's own build output on purpose (L-R26-4):
+    // the historical Pages deployments carry real leaked copies, but deleting
+    // user data needs human approval, so every other target is read-only.
+    if (targetKind !== 'dist') {
+      console.error(
+        JSON.stringify(
+          {
+            action: 'scrub',
+            ok: false,
+            refused: true,
+            target,
+            reason: `--dir / --pages are read-only probes (BUG-074): scrubbing is limited to <repo>/dist (got ${targetKind}). Re-run with --check.`,
+          },
+          null,
+          2,
+        ),
+      );
+      process.exit(2);
+    }
+    const report = scrubDist(target);
+    console.log(JSON.stringify({ action: 'scrub', ...report }, null, 2));
+    process.exit(0);
   }
-  const report = scrubDist(distDir);
-  console.log(JSON.stringify({ action: 'scrub', ...report }, null, 2));
-  process.exit(0);
+
+  const findings = findDistSecrets(target);
+  // `--dir` / `--pages` target a channel that may legitimately not exist yet, so
+  // a missing directory is an EXPLICIT skip (rc 0) — never a silent `ok: true`.
+  // The default dist/ is the build output you just produced, so its absence is
+  // still a failure (that is what BUG-067's gate needs).
+  const skipped = !findings.distExists && targetKind !== 'dist';
+  const ok = skipped
+    ? true
+    : findings.distExists && findings.files.length === 0 && findings.privateKeyFiles.length === 0 && findings.manifestEntries.length === 0;
+  console.log(
+    JSON.stringify(
+      {
+        action: 'check',
+        target,
+        // kept for the pre-BUG-074 contract: `--check` used to report `distDir`
+        distDir: target,
+        targetKind,
+        ...(requestedPages ? { project } : {}),
+        distExists: findings.distExists,
+        skipped,
+        ...(skipped ? { skippedReason: 'directory does not exist — nothing to scan (explicit skip, not a silent ok)' } : {}),
+        ok,
+        files: findings.files,
+        privateKeyFiles: findings.privateKeyFiles,
+        manifestEntries: findings.manifestEntries,
+      },
+      null,
+      2,
+    ),
+  );
+  process.exit(ok ? 0 : 1);
 }

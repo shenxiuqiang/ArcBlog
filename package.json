@@ -10,6 +10,7 @@
     "test:all": "node scripts/run-tests.mjs all",
     "test:file": "node --test --test-concurrency=1",
     "scrub:dist-secrets": "node scripts/arcblog-dist-secrets.mjs",
+    "verify:artifacts": "node scripts/arcblog-dist-secrets.mjs --check && node scripts/arcblog-dist-secrets.mjs --check --pages",
     "build": "arc blocklet build && npm run scrub:dist-secrets"
   },
   "dependencies": {

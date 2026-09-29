@@ -12,9 +12,11 @@
 //   noop      — nothing to do / already done           (terminal)
 //
 // `running` is an IN-FLIGHT state, not a terminal one (BUG-051 / L-R19-4): the
-// chain worker marks an intent `running` before it signs, and a dead worker must
-// leave it re-runnable, so `isTerminalStatus('running') === false` and the
-// in-flight set is `{pending, running}`.
+// chain worker marks an intent `running` before it signs, the policy worker
+// claims it the same way before it writes the policy (BUG-073), and the role
+// verification worker claims it before it re-derives the snapshot, so a dead
+// worker must leave it re-runnable: `isTerminalStatus('running') === false` and
+// the in-flight set is `{pending, running}`.
 //
 // Both `pending` and every terminal word must carry a non-empty `message`
 // (a terminal record without a reason is unreadable to the operator).

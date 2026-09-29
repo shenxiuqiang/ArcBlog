@@ -17,6 +17,8 @@
 
 **规则**：进入 🟥 的条目必须同时具备 ① `requirements/REQ-*.md` 文件 ② 共享任务板上的任务（带 `write_scopes` / `blocked_by`）。只有一条不算"派出去"。
 
+> 🗂️ **R26 规划横幅（PM `task-110` 轮初原文，2026-09-29；终态由轮末 PM `task-113` 裁决写回）—— 本轮 = 设置-角色与能力（关 checklist `:129` §15.9，A 类最后一行）+ 同轮三缺陷（[BUG-072](bugs/BUG-072-policy-queue-empty-state-always-rendered.md) / [BUG-073](bugs/BUG-073-policy-running-status-never-written.md) / [BUG-074](bugs/BUG-074-deployment-artifacts-carry-real-private-key.md)）**：**Lead 建任务板 `task-110`（PM 规划）/ `task-111`（Dev：主项 + 三缺陷）/ `task-112`（QA，`blocked_by task-111`）/ `task-113`（PM 裁决）**，**PM 不调用 `team_task_*`**。**主项 = L-R26-1（设置-角色与能力）**：**角色五态**（`none|acquired|staked|revoking|claimable`，`scripts/lib/roles.mjs:40`）+ **withheld 原因**（`roleStatus().reason` 6 分支，`:133-139`；原始值可见 = R8 路径 B）+ **「重新验证」真实路径**（**禁止假按钮**：页面写 `config/role-verify-intents/<id>.json` → worker 真实消费 → AFS 真的新增/更新 + `lastVerifiedAt`；**不得**把 `chainVerification` 翻成 true，**不得**声称「链上已验证」）+ **质押/购买指引**（指向 `?page=factory` 四动作，**已在 factory 则不重复**）；**落点优先 `?page=general`（页数保持 21，不新建第 22 页、不改侧栏）**。**L-R26-2 禁止假按钮**：任何按钮要么**真实消费**（意图队列 / CLI 路径），要么**如实标注「需 CLI/worker」+ 可复制命令**；`?page=factory` 既有购买/质押流程**零回归**。**L-R26-3 同轮两缺陷**：[BUG-072](bugs/BUG-072-policy-queue-empty-state-always-rendered.md)（P2，`?page=policy` 队列**非空**仍渲染「Nothing queued yet」，`policy.aup:282` 无条件 `p :queue-empty` = BUG-052/056 同形**第 4 处**）→ 空态改**常驻说明**；[BUG-073](bugs/BUG-073-policy-running-status-never-written.md)（P3，`running` 被页面图例与 REQ 宣传却**永不出现**）→ **二选一必须自洽并写理由**（(a) 实现 `pending→running→终态` 或 (b) 页面图例 + REQ-032 §2.1 + `scripts/lib/intents.mjs` **三处对齐**移除/改述）。**L-R26-4 [BUG-074](bugs/BUG-074-deployment-artifacts-carry-real-private-key.md)（P1 安全）只做扫描门禁**：`scripts/arcblog-dist-secrets.mjs --dir <path>`（既有 `--dist` 不回归）+ **Pages 通道断言**（`~/.arc/pages/projects/arcblog/deployments/**` **存在则扫 / 不存在显式 skip**）；**不删历史产物（155 个 deployment 目录）、不轮换 `node.key`**（需用户批准）。**L-R26-5 I 组 T1 本轮不启动**（`mounts:` + provider 依赖 §154/§155 的 spec 修订，等用户勾选 **SPEC-APPROVAL-001**）；**不改 `blocklet.yaml`**。**L-R26-6** 构建入口一律 **`npm run build`**；**零链写零资金**；`.aup` 运行期按 **`arc-contracts §35`**（restart + `arc blocklet run <repo>` 复挂 + 一条 `/instance` 读 + pid）。**唯一 REQ = [REQ-034](requirements/REQ-034-roles-capabilities-settings.md)**（**A1–A4 / B1–B4 / C1–C6 / D1–D2 / E1–E4 / F1–F3 / G1–G5 / H1–H10** 判据）。**门**：`arc dsl validate --json`（**issues=[]**）+ `npm test`（**≥40**，基线 40 不得降）+ `arc dsl generate --check` + **`npm run build`** + `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `diff -r .aup dist/.aup` + `node scripts/arcblog-dist-secrets.mjs --check`（**ok**）；**禁止全量 `npm run test:live`**；改 `scripts/**` / `.aup/**` 前先写 `docs/team/.gate-lock` + **定向单跑** + **跑完删锁 + 删 `dist/docs/team/.gate-lock` 镜像**（`§36(5)`）；**单 tab + 每身份/每语言新 context**；**严禁 `arc dsl lint --fix`**（`§25.4`）。**轮初只读复核门（真实输出）**：validate `issues=[]`；`npm test` **pass 40 / fail 0**（`duration_ms 1341.092666`）；`generate --check` `Would generate 0 file(s)`；`console-nav --check` `{"ok":true,"pages":21}`；`diff -r .aup dist/.aup` rc=0；`dist-secrets --check` `ok:true files:[] manifestEntries:[]`；`.gate-lock` 与 dist 镜像**均不存在**；`git status --short` 仅两个历史未跟踪文件（`?? docs/dsh-workflow-and-ralph.md` + `?? dist/docs/dsh-workflow-and-ralph.md`）；定向 live `scripts/arcblog-roles.test.mjs` **18/18**（持锁串行）。**⚠️ PM 流程偏差自曝**：轮初侦察**第一次**跑该 live 文件**未先持锁**（48s，未捕获 pass/fail）→ 补写锁重跑取证 → 删锁；副作用 = `config/roles.json` 被该测试 `finally` 复位式重写（`studio.lifecycle.assetId="asset-test-1"` / `stakeId="stake-test-1"`、`state:"none"`，`updatedAt` → `2026-09-29T04:08:40.202Z`，`createdAt` 未变），`hub/registrations` 仍 **5**（自清理生效）→ 登记为已知实例状态 + 流程风险 **R-9**（详见 [journal/round-26.md](journal/round-26.md) §1.5）。详见下方「**本轮：Round 26**」+ [REQ-034](requirements/REQ-034-roles-capabilities-settings.md) + [journal/round-26.md](journal/round-26.md)。
+>
 > 🗂️ **R25 规划横幅（PM `task-105` 轮初原文，2026-09-29；终态由轮末 PM `task-109` 裁决写回）—— 本轮 = 策略意图队列（关 checklist `:124` + 关 [BUG-068](bugs/BUG-068-policy-write-refused-on-cli-created-record.md) 这条 R24 唯一 P1 阻断）+ 同轮三项小缺陷 + I 组数据层阶段 0 只读探针**：**Lead 建任务板 `task-105`（PM 规划）/ `task-106`（Dev：策略队列 + 三小缺陷）/ `task-107`（研究：I 组只读探针）/ `task-108`（QA，`blocked_by task-106`）/ `task-109`（PM 裁决）**，**PM 不调用 `team_task_*`**。**主项 = L-R25-1（D-R24-3 采纳方案③ 策略意图队列）** —— 页面写 `config/policy-intents/<id>.json` → worker（`arcblog-economy.mjs policy queue|apply|watch`）用 **CLI** 落库 `economy/policies/active.json`；**复用既有范式**（`scripts/lib/intents.mjs` D36 词表 / `<id>.json` D38 / 非 `.json` 显式诊断 / 幂等 `noop` / fail-closed）。**L-R25-2 验收以 AFS 为准**（`arc-contracts §29.4`）：worker 前 `active.json` **逐字节不变** → worker 后对应字段**真变**且其它字段不变 + 意图 `applied`；**负例零改动**；**guest 403**；**CLI 折叠「高级」且不再是唯一路径**。**L-R25-3 同轮三小缺陷**：[BUG-070](bugs/BUG-070-console-product-perioddays-string-type.md)（P2：`periodDays` 字符串 vs `world/product.yaml:11` 的 `number`；**先探针平台能否落数字**，不可表达则登记边界 + 读侧归一化）/[BUG-063](bugs/BUG-063-pagesize-override-irreversible.md)（P2：pageSize 覆盖后分页器被移除、页内不可逆 → **页级常驻说明 + 恢复路径**）/**`scripts/run-tests.mjs` main 守卫**（import 不得跑 live）。**L-R25-4 I 组探针只读**（**T0-1** 部署形态挂载是否真加载 / **T0-6** 商店取件链路）：**docs-only、零实现**；**不得擅自改 `blocklet.yaml`**（若必须，先申请 Lead 授权）；**不得启动第二台 daemon**。**L-R25-5 构建入口一律 `npm run build`**（`arc blocklet build` + scrub）+ `node scripts/arcblog-dist-secrets.mjs --check` **ok**（`§39`）。**L-R25-6 本轮不做**：**设置-角色与能力（`:129` → R26）** / §83 四棵树 / REQ-019 第四批 / REQ-021 P2-a（花钱）/ 内容可见性五档（需决策）/ SEO-OG（需批准）。**唯一 REQ = [REQ-032](requirements/REQ-032-policy-intent-queue.md)**（主项 + 三小缺陷；**A1–A10 / B1–B3 / C1–C4 / D1–D3 / G1–G10 判据**）+ **[REQ-033]**（I 组阶段 0 探针，**由研究 agent 建、PM 只在 backlog 引用**）。**门**：`arc dsl validate --json`（**issues=[]**）+ `npm test`（**37/37**，基线不得降）+ `arc dsl generate --check` + `npm run build` + `node scripts/arcblog-console-nav.mjs --check`（**pages 21**）+ `diff -r .aup dist/.aup` + `node scripts/arcblog-dist-secrets.mjs --check`（**ok**）；**禁止全量 `npm run test:live`**；改 `scripts/**` / `.aup/**` 前先写 `docs/team/.gate-lock` + **定向单跑** + **跑完删锁 + 删 `dist/docs/team/.gate-lock` 镜像**（`§36(5)`）；**`§35`**：`.aup` 改动 → restart + `arc blocklet run <repo>` 复挂 + **一条 `/instance` 读证明恢复** + 记录 pid；**零链写零资金**（`config/chain-intents` 严禁 `run`/`watch`）；**单 tab + 每身份/每语言新 context**；**严禁 `arc dsl lint --fix`**（`§25.4`）。详见下方「**本轮：Round 25**」+ [REQ-032](requirements/REQ-032-policy-intent-queue.md) + [journal/round-25.md](journal/round-25.md)。
 >
 > ✅ **Round 25 已收官（PM `task-109` 裁决写回，2026-09-29）—— 放行（QA-021 [round-25.md](test-reports/round-25.md) 末行 `VERDICT=pass, BLOCKING=0`，阻断 **0**；新增 **P2×1（[BUG-072](bugs/BUG-072-policy-queue-empty-state-always-rendered.md)）+ P3×1（[BUG-073](bugs/BUG-073-policy-running-status-never-written.md)）**，**无未裁决 P0/P1**）**：**主项 [REQ-032](requirements/REQ-032-policy-intent-queue.md) A 组（策略意图队列）= PM 判「达标（放行）」** —— **A1–A10 全过**（页面按钮**只入队**：`active.json` sha256 `9e80c18c387dd9e62f02551e15740fdbf981b0d083502de54c7aea47613dee3e` 与 `meta.version` 点击前后**逐字节不变** → worker `policy apply` **真的落库**（`creator 0.8→0.95` / `hub 0.15→0.03` / `protocol 0.05→0.02` / `paymentAdapter none→manual`；`version`/`createdAt` **逐字不变**，仅 `updatedAt` 预期刷新）+ 意图 `applied`；幂等再跑 `applied:0` + **零字节**；重复预设第二条 `noop`；4 条非法意图（和≠1 / 负值 / 非有限 / 词表外 adapter）+ 未知 action 全部 `rejected`/`VALIDATION` + **零改动**；非 `.json` 条目显式 `queueEntryIgnored` 且不消费；guest 读队列 **403**；CLI **折叠「高级」且非唯一路径**）；**BUG-068（P1，R24 唯一阻断）= ✅ 关闭**（A1–A10 全过 + QA 独立复跑；「谁创建谁写」由 worker 承担，`git diff -- blocklet.yaml` 空、`world/` 零改动）；**BUG-070（P2）= ✅ 关闭**（走「平台**可表达**数字」分支：article `periodDays: 0` / subscription `7` 均 `typeof number`、`priceAmount` 保持 string（`world/product.yaml:7` 声明即 string）、两条 `validateProduct issues:[]`、探针商品已删 `products` 回 **54**）；**BUG-063（P2）= ✅ 关闭（诚实缓解 + 边界登记）** —— 8 个受影响列表 × en/zh 共 **16/16** 常驻说明、复现「分页器消失而说明仍在」、删键恢复；**⚠️ 平台限制未消除**（选择器仍随分页器消失）→ 已由 [`arc-contracts §38(5)`](../arc-contracts.md) 登记（**不是 ArcBlog 可修项**）；**`scripts/run-tests.mjs` main 守卫 = ✅ 通过**（import 零输出 / exit 0 / 零 `node --test` 进程；`npm test` **40/40** = 基线 37 + 3 新用例，**未降**）；**[BUG-071](bugs/BUG-071-dist-secret-guard-not-enforced-on-documented-build-paths.md)（P3）= ✅ 关闭**（Lead 已在 R24F 把 `AGENTS.md` 铁律 2 与 `CLAUDE.md`「Quality gates」的构建命令改指 `npm run build`；残余可选加固 `scrub --dist <dir>` 不强求）；**I 组阶段 0 只读探针 = ✅ 交付并采纳结论**（[REQ-033](requirements/REQ-033-datalayer-phase0-probes.md)：**T0-1 挂载真的被加载**（HIGH：`onMount` 被调用且 `mountPath === "/probe"`）**但声明挂载路径在 flat topology 不可寻址** ⇒ 唯一可达面 = 根 `/.actions/<id>`；**§155 T1-1 的 `required: true` 必须改 `false`**（否则一个 provider 加载失败 = **整包不激活**且 `arc blocklet run` 静默 exit 0）；**T0-6**：`beta.50` **没有 `arc blocklet publish`**，但 `arc deploy --publish`（本地 DID Space，零鉴权）可 pack ⇒ **部分能做，取件端需自建 index**；🔴 新发现 **Pages 部署产物含真实私钥**（`~/.arc/pages/projects/arcblog/deployments/<id>/files/node.key` = `-----BEGIN PRIVATE KEY-----`）= **BUG-067 的另一条未覆盖路径 → P1，交 Lead 立项**）；**门全绿（QA 自跑 + PM 轮末只读复核）**：validate `issues=[]`、`npm test` **40/40**、`generate --check` **0 文件**、`console-nav --check` **pages 21**、`npm run build` + scrub + `dist-secrets --check` **ok**、`diff -r .aup dist/.aup` 与 `diff -r .web dist/.web` **rc=0**、`.gate-lock` 与 `dist/docs/team/.gate-lock` **均不存在**、定向 live `scripts/arcblog-economy.test.mjs` **50/50**、21 页 × en/zh 零 `SESSION INIT FAILED`、**零链写零资金**、**未跑全量 live**；**探针残留已清**（`arc afs ls /blocklets` 只剩 `/blocklets/arcblog`；`/tmp/arcblog-t01*` 不存在）。**checklist 建议（PM 只建议、Lead 落笔）**：**:124 策略与账户 🟡→✅**（队列端到端通过；「收款账户」维持**只读 + CLI 指引**（**D-R24-1(b)**）→ 该降级一并登记）；**:121 商品管理 🟡→✅（条件已满足）**（R24 已交付创建 / 编辑 / 上下架 + BUG-066 关闭 + **BUG-070 终态已修**）；另 **⚠️ 发现 checklist 总览与正文不一致**（总览 `✅83/🟡7/⬜18/⚪2` vs 正文 `✅82/🟡7/⬜19/⚪2`，落点 = **D 组 `:132` Dashboard**：R24 的建议只计进了总览、正文状态格未翻）→ **D-R25-1 交 Lead**。**R26 路线见「R25 轮末重排」**（设置-角色与能力 `:129` 领跑 / I 组 T1 条件式 / §83 四棵树 / REQ-019 第四批 / B 类需批准项 / C 类 V2 声明）。
@@ -3034,6 +3036,116 @@ R21 已收官并放行（QA-017 `VERDICT=pass, BLOCKING=0`，阻断 0，无未�
 | **T5 商店一键部署硬化** | **需人类批准** | ① **Lead 批准真实跑一次 `arc blocklet deploy` / `instance deploy` 以复现私钥面**（写 Pages 存储）；② **任何对外发布（DID Space / CF / 自建 index）需人类所有者批准**；③ 产物级 `BEGIN PRIVATE KEY` 扫描门禁（覆盖 `dist/**` 与 `~/.arc/pages/**/files/**` 两通道） |
 
 **交 Lead 落笔（不属 PM 写范围；PM 只建议）**：① **`arc-contracts.md` 新增 §40–§43**（挂载加载/声明路径不可寻址、`required` 是整包生死开关 + CLI 不 fail-closed、§26.1/§26.2 F8 归因订正、发布取件命令面 + 部署产物含私钥），**并顺手修掉现有 `## 33.` 重号**（[REQ-033 §4](requirements/REQ-033-datalayer-phase0-probes.md) 已给编号与要点）；② **spec §154/§155 的建议修正**（T1-1 `required: true→false`、P0-1 判据改为根动作、F8 归因改写、T0-6 重复行删除）—— spec **只有人类可改** ⇒ 建议作为**新的 spec 修订候选（顺延 C-17）**随 [SPEC-APPROVAL-001](requirements/SPEC-APPROVAL-001-spec-revision-requests.md) 一并呈批；③ **重启清残留已由 QA 的 §35 restart 完成**（PM 只读复核：`arc afs ls /blocklets` 只剩 `/blocklets/arcblog`、`/tmp/arcblog-t01*` 不存在）⇒ REQ-033 §1.3 的残留项 **消项**。
+
+---
+
+## 本轮：Round 26 ｜ **设置-角色与能力**（关 checklist `:129` §15.9，**A 类最后一行**）+ 同轮三缺陷（[BUG-072](bugs/BUG-072-policy-queue-empty-state-always-rendered.md) / [BUG-073](bugs/BUG-073-policy-running-status-never-written.md) / [BUG-074](bugs/BUG-074-deployment-artifacts-carry-real-private-key.md)）
+
+> 🗂️ **计划节点（PM `task-110`，2026-09-29）** —— 唯一 REQ = **[REQ-034](requirements/REQ-034-roles-capabilities-settings.md)**（背景 / 范围含明确不做 / **A1–A4 · B1–B4 · C1–C6 · D1–D2 · E1–E4 · F1–F3 · G1–G5 · H1–H10 判据** / 依赖 / 写范围 / 结果预留）；轮次日志 = [journal/round-26.md](journal/round-26.md)（计划节 + 预留结果节）。**PM 不调用 `team_task_*`**（任务板由 Lead 维护）。
+
+**目标（可验收）**
+
+| # | 目标 | 可验收形态（一句话） | REQ |
+| - | ---- | -------------------- | --- |
+| 1 | **设置-角色与能力（主项）** | `?page=general` 出现「角色与能力」卡（页数仍 **21**）：外部化配置只读 + **角色五态** + **withheld 原因（原始值）** + **「重新验证」真实路径**（意图 → worker → AFS 真的变）+ **指引到 `?page=factory`**；**0 个地址输入**；`?page=factory` 零回归 | [REQ-034 §3.1–§3.4](requirements/REQ-034-roles-capabilities-settings.md) |
+| 2 | **BUG-072（P2）** | `?page=policy` 队列**非空**时不再渲染「Nothing queued yet」；改为**常驻说明**（BUG-052/056 同口径、**零假条件**）；两态 × en/zh 有原始 DOM 证据 | REQ-034 §3.5 |
+| 3 | **BUG-073（P3）** | `running` **二选一自洽**：实现写入 **或** 页面图例 + REQ-032 §2.1 + `intents.mjs` **三处对齐**；**写理由**；A 组零回归 | REQ-034 §3.6 |
+| 4 | **BUG-074（P1 安全，只做门禁）** | `arcblog-dist-secrets.mjs --dir <path>` + **Pages 通道断言（存在则扫 / 不存在显式 skip）**；fast tier 守卫用例（先证伪态变红）；**不删历史产物、不轮换密钥** | REQ-034 §3.7 |
+| 5 | **独立验证（QA）** | 自跑门 + A/B/C/D/E/F/G/H 逐条 + 21 页 × en/zh 零回归；末行机读 `VERDICT=…` | `test-reports/round-26.md` |
+
+**任务板（Lead 维护）**
+
+| 任务 | 角色 | 内容 | 写范围（提示性） | 依赖 |
+| ---- | ---- | ---- | ---------------- | ---- |
+| **`task-110`** | **PM** | 本轮规划：`backlog.md`「本轮：Round 26」+ [REQ-034](requirements/REQ-034-roles-capabilities-settings.md) + `journal/round-26.md`（计划节） | `docs/team/backlog.md`、`docs/team/requirements/**`、`docs/team/journal/**` | — |
+| **`task-111`** | **Dev** | **主项（设置-角色与能力）+ 同轮三缺陷**（BUG-072 / BUG-073 / BUG-074） | `.aup/pages/admin/general.aup`、`.aup/pages/economy/policy.aup`、`.aup/locales/**`（生成）、`.aup/pages/**/*.json`（生成）、`scripts/arcblog-roles.mjs`、`scripts/lib/roles.mjs`（仅在必要时）、`scripts/arcblog-economy.mjs`、`scripts/arcblog-dist-secrets.mjs` + `scripts/arcblog-dist-secrets.test.mjs` + 受影响 `.test.mjs`、`world/role-config.yaml`（仅 schema 需要时）、`scripts/ui-budget-baseline.json`（**显式**重录）、`package.json`（仅 `verify:artifacts` 类入口）、`dist/**`（经 `npm run build`）、`.gate-lock`（临时） | L-R26-1…4 / L-R26-6；REQ-034 §4 |
+| **`task-112`** | **QA** | 独立验证 REQ-034 的 A/B/C/D/E/F/G/H 判据 + 零回归；**自跑门、不采信自述** | `docs/team/test-reports/**`、`docs/team/bugs/**`、`.gate-lock`（临时） | **`blocked_by task-111`** |
+| **`task-113`** | **PM** | 轮末逐条裁决（主项四组 + BUG-072/073/074 三选一）+ 回填 REQ-034 §6 + 本文件「Round 26 结果」+ `journal/round-26.md` | 同 `task-110` | `task-111` + `task-112` |
+
+**Lead 裁定登记（L-R26-1…L-R26-6，照此执行）**
+
+| # | 裁定 | 落点 |
+| - | ---- | ---- |
+| **L-R26-1** | **主项 = 设置-角色与能力**（清单 `:129` §15.9）：**角色五态 + withheld 原因 + 「重新验证」真实路径（禁止假按钮）+ 质押/购买指引（已在 factory 则不重复）**；**落点优先 `?page=general`（页数保持 21）** | [REQ-034 §3.1–§3.4](requirements/REQ-034-roles-capabilities-settings.md)；`task-111` |
+| **L-R26-2** | **禁止假按钮**：任何按钮要么**真实消费**（意图队列 / CLI 路径），要么**如实标注「需 CLI/worker」+ 可复制命令**；`?page=factory` 既有购买/质押流程**零回归** | REQ-034 §3.3 C1/C5 + §3.4 D2 + §3.8 H5 |
+| **L-R26-3** | **BUG-072** 空态改**常驻说明**（同 BUG-052/056）；**BUG-073** `running` 态**二选一**（实现写入 或 从词表/文档移除），**必须自洽**并写理由 | REQ-034 §3.5 / §3.6 |
+| **L-R26-4** | **BUG-074 只做扫描门禁**：`arcblog-dist-secrets.mjs --dir <path>` + **Pages 通道断言**（存在则扫 / 不存在显式 skip）；**不删历史产物、不轮换密钥**（需用户批准） | REQ-034 §3.7；`task-111` |
+| **L-R26-5** | **I 组 T1 本轮不启动**（`mounts:` + provider 依赖 §154/§155 的 spec 修订，等用户勾选 **SPEC-APPROVAL-001**）；**不改 `blocklet.yaml`** | REQ-034 §2.2 N7 |
+| **L-R26-6** | 构建入口一律 **`npm run build`**；**零链写零资金**；`.aup` 运行期按 **`arc-contracts §35`** | REQ-034 §3.8 H3/H7/H8；门 |
+
+**来源可定位（每行都有出处）**
+
+| 条目 | 来源 |
+| ---- | ---- |
+| 设置-角色与能力 | checklist **`:129`**（🟡）+ spec **§15.9**（`ArcBlog-product-technical-spec.md:1268` / `:1273`）+ **L-R25-6 → R26**（[journal/round-25.md §5.2](journal/round-25.md)）+ [REQ-031 §6](requirements/REQ-031-round24-console-completion.md)（R24 未交付、落点改由 L-R26-1 定） |
+| BUG-072（P2） | [bugs/BUG-072](bugs/BUG-072-policy-queue-empty-state-always-rendered.md)（QA `task-108` 发现；R25 PM 裁「下一轮修 → R26-1 首项」） |
+| BUG-073（P3） | [bugs/BUG-073](bugs/BUG-073-policy-running-status-never-written.md)（QA `task-108` 发现；R25 PM 裁「下一轮修 → R26-1，采纳 (a) 实现 `running`，(b) 改口径为备选」） |
+| BUG-074（P1 安全） | [bugs/BUG-074](bugs/BUG-074-deployment-artifacts-carry-real-private-key.md)（R25 研究探针附带发现 + Lead 立项；`arc-contracts §43(3)`） |
+
+**现状盘点（PM 轮初只读实测，2026-09-29；完整表见 [REQ-034 §1.4](requirements/REQ-034-roles-capabilities-settings.md)）**
+
+- **G1** `console-nav --check` **pages 21**；`.aup/pages/admin/general.aup:1` `page general {`；侧栏 `scripts/console-nav.mjs:87`；`:141` 当前页 `active=true`
+- **G2** `general.aup` **255 行**：已有 3 卡 + 2 个 `afs-list`（R23 `pagination=manual pageSize=10`）
+- **G3/G4** 五态词表 = `scripts/lib/roles.mjs:40` `STAKE_STATES`；`revoking→claimable` 读时派生 `:110-117`
+- **G5/G6** withheld 原因 6 分支 `:133-139`；`RoleStatus` 字段 `:141-154`；`roleStatuses` `:158`；`effectiveCapabilities` `:166`
+- **G7** roles CLI **无 `verify` 子命令**；全仓 `role-verify-intents` / `lastVerifiedAt` **0 命中**（新增消费路径是主项的一部分）
+- **G8/G9** live `config/roles.json`：`chainVerification:false`；`studio` `{state:"none", assetId:"asset-test-1", stakeId:"stake-test-1"}`（**测试形残留**，`arcblog-roles.test.mjs` 的 `finally` 只复位 `state`，`lib/roles.mjs:224-225` 保留 assetId/stakeId）；`hub` `{state:"acquired", assetId:"0xa5ed65ce…"}`
+- **G11** `?page=factory` 四动作 = `.aup/pages/ops/factory.aup:200-203`（写 `config/chain-intents/pending.json`）
+- **G12** `config/policy-intents` **非空（`childrenCount=4`）** → BUG-072 复现前置天然成立
+- **G13** `arcblog-dist-secrets.mjs` 现有 `--check` / `--dist <dir>`；`package.json:12-13` `build` = `arc blocklet build && npm run scrub:dist-secrets`；**无 `--dir`**
+- **G14** BUG-074 产物：`~/.arc/pages/projects/arcblog/deployments/<id>/files/node.key`（真实私钥）+ staging `bundle.json` 全文内联；155 个历史 deployment 目录
+- **G15** UI 预算：`scripts/ui-budget-baseline.json:173`（`general`）/ `:164`（`factory`）→ 新增控件必须**显式**重录
+
+**明确不做（REQ-034 §2.2 N1–N12）**：不做链上真实验证 / 不把 `chainVerification` 改 `true` / 不做质押 data 表单链写 / 不做角色状态手工编辑 / 不重复实现购买·质押（只链接 `?page=factory`）/ 页面 0 个地址输入 / **不新建第 22 页、不改侧栏** / **I 组 T1 不启动、不改 `blocklet.yaml`**（L-R26-5）/ **不删历史 deployment 产物、不轮换密钥**（L-R26-4）/ 不跑全量 live、不跑 `arc space sync --mirror`·`rm`、不对 `config/chain-intents` 跑 `run`·`watch` / 不 `arc dsl lint --fix` / 不改 spec·`node.key`·`.env.local` / §83 四棵树·REQ-019 第四批·REQ-021 P2-a·可见性五档·SEO-OG 不在本轮。
+
+**门与纪律（本轮执行口径）**
+
+```text
+arc dsl validate --json                          # issues 必须 []
+npm test                                         # 快层；基线 40/40 不得降（新增用例则更高）
+arc dsl generate --check                         # 0 漂移
+npm run build                                    # 唯一安全构建入口（arc blocklet build + scrub）
+node scripts/arcblog-console-nav.mjs --check     # pages 21
+diff -r .aup dist/.aup                           # rc=0
+node scripts/arcblog-dist-secrets.mjs --check    # ok
+```
+
+- **禁止**全量 `npm run test:live`；定向 live 只跑受影响文件（`arcblog-roles.test.mjs` 基线 **18/18**、`arcblog-economy.test.mjs` 基线 **50/50**）。
+- 改 `scripts/**` / `.aup/**` 前**先写 `docs/team/.gate-lock`** → **定向单跑** → **跑完删锁 + 删 `dist/docs/team/.gate-lock` 镜像**（`§36(5)`）。
+- **`.aup` 运行期验收按 `§35`**：`arc service restart` + `arc blocklet run <repo>` 复挂 + **一条 `/instance` 读证明恢复** + 记录 pid（`Status: up` 不算恢复）。
+- **浏览器单 tab**（同一标签页 `Page.navigate`）；**每身份 / 每语言新 context**；结束关闭自己开的 target。
+- **零链写零资金**：`config/chain-intents` **严禁 `run` / `watch`**；**严禁 `arc dsl lint --fix`**（`§25.4`）。
+- **PM 本轮零源码 / 零 `.aup` / 零 `scripts` / 零 build / 零链写 / 零 checklist 编辑 / 零 `team_task_*`**（只写 `docs/team/backlog.md` / `requirements/**` / `journal/**`；唯一实例操作 = 只读复核 + 1 次持锁定向 live，见下）。
+
+**轮初只读复核门（PM `task-110`，2026-09-29；真实命令 + 真实输出）**
+
+```text
+$ arc dsl validate --json      → ok=True  issues=[]                                        rc=0
+$ npm test                     → pass 40 / fail 0  (duration_ms 1341.092666)               rc=0
+$ arc dsl generate --check     → Would generate 0 file(s) (dry-run) — nothing to change （files: 7）
+$ node scripts/arcblog-console-nav.mjs --check → {"ok": true, "action": "check", "pages": 21}
+$ diff -r .aup dist/.aup       → 无输出                                                     rc=0
+$ node scripts/arcblog-dist-secrets.mjs --check → ok:true files:[] privateKeyFiles:[] manifestEntries:[]
+$ ls docs/team/.gate-lock / dist/docs/team/.gate-lock → 均 No such file or directory
+$ git status --short           → 仅 ?? docs/dsh-workflow-and-ralph.md + ?? dist/docs/dsh-workflow-and-ralph.md
+$ node --test scripts/arcblog-roles.test.mjs → tests 18 / pass 18 / fail 0（持 .gate-lock 串行）
+```
+
+**⚠️ 已知实例状态 + 流程风险 R-9（PM 自曝）**：轮初侦察**第一次**跑 `node --test scripts/arcblog-roles.test.mjs` **未先写 `.gate-lock`**（48s，未捕获 pass/fail 行）→ PM 补写锁重跑取得 **18/18** → 删锁（`dist/docs/team/.gate-lock` 亦不存在）。副作用 = 该文件 `finally` 只复位 `state`，因此 `config/roles.json` 被重写：`studio.lifecycle.assetId="asset-test-1"` / `stakeId="stake-test-1"` / `state:"none"`，`updatedAt` → `2026-09-29T04:08:40.202Z`（`createdAt` 未变）；`hub/registrations` 计数 = **5**（与 R24/R23 基线一致，`--purge` 自清理生效）。**PM 无法回溯证明这两字段是否本次首次写入**（每次运行该测试都会留同形值）⇒ `task-111` / `task-112` 以此为本轮基线，并在 REQ-034 §3.2 B3 判据下验证「页面不把测试形残留呈现为链上事实」。**受限未验证**：`npm run build` 端到端 PM **未跑**（写 `dist/**`，属 Dev/QA/Lead 写范围）。
+
+**结果预留（`task-113` 回填）**
+
+| 判据组 | 结论 | 证据 |
+| ------ | ---- | ---- |
+| A 落点与结构（A1–A4） | ⬜ | |
+| B 五态 + 原因（B1–B4） | ⬜ | |
+| C 重新验证真实路径（C1–C6） | ⬜ | |
+| D 购买/质押指引（D1–D2） | ⬜ | |
+| E BUG-072（E1–E4） | ⬜ | |
+| F BUG-073（F1–F3；(a)/(b) 哪支） | ⬜ | |
+| G BUG-074（G1–G5） | ⬜ | |
+| H 零回归与门（H1–H10） | ⬜ | |
+| 提交 | ⬜ 待 Lead 填 | |
 
 ---
 

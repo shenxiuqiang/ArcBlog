@@ -2078,3 +2078,469 @@ scope 与安装方式两个怀疑方向也都被证伪（探针同样 `scope: ap
 这是 **BUG-067 未被覆盖的另一条通道**：`npm run build` 的 `scrub:dist-secrets` 只管 `dist/**`，
 **管不到 Pages 部署产物**；而 `bundle.json` 会把这些文件**全文内联**，下发即泄漏。
 ⇒ 发布前必须对**两条通道**都做产物级扫描（§155 T5-1/T5-5），并且**不得**把仓库根当发布根。
+
+## 44. 平台自带查询层的**可依赖子集**：`/.actions/query` · `/.actions/aggregate` · `/modules/index`（T0-4 只读校准，2026-09-29 快照）
+
+**样本**：instance `default`（arc `2.0.0-beta.50` c711b9aa，端口 4939，blocklet `arcblog`），
+`/instance/app/arcblog/{posts,drafts,categories,heroes,pages,node,config,economy/*,tags/*}` + `/instance/{audits,posts}`，
+另加 sqlite 侧只读取证（`~/.afs/spaces/<space>/.did-space/space.db`）。观测窗口 2026-09-29 12:52–13:03 CST。
+所有结论都可用下面给出的命令原样复跑；**校准期间零 AFS 写入**（唯一例外见 §44.3 最后一条）。
+
+**与既有小节的边界（不重复登记）**
+
+| 既有小节 | 已经确立的事实 | 本节新增的部分 |
+| --- | --- | --- |
+| §15.1（列表筛选下推） | `afs-list` 的 `filter`/`serverFilters` 会下推成 `/.actions/query`；**"索引只覆盖小记录"**的受控实验：~50 B ✅ / 789 B ✅ / 2.5 KB ❌ / 4.9 KB ❌；改写既有记录会让条目 stale | **根因**（`ds_entries.content IS NULL`，不再是"索引条目 stale"这一层描述）、**精确体积区间 (1883, 2376] B**、以及完整的 `where`/`select`/`orderBy`/分页/`aggregate` 契约面 |
+| §40（provider 挂载 / 打包 / SQLite 供应） | 数据层的平台事实底座（mounts、provider JS 契约、`bun:sqlite`/FTS5 可用性） | 平台**自带查询层**的能力边界——即 §40 里"要自建数据层"的理由之一 |
+| §38（`afs-list pagination=manual`） | 列表翻页的原生配方 | 本节只登记 **provider 层**的 `cursor`/`skipTotal`/`seekId`，不碰 `afs-list` |
+
+§15.1 的受控实验（789 B ✅ / 2.5 KB ❌）与本节的全库统计（内联上限 1883 B / NULL 下限 2376 B）**互相印证**，区间一致。
+
+### 44.1 可依赖子集表
+
+| 能力 | 状态 | 正确用法 | 坑 |
+| --- | --- | --- | --- |
+| 字段路径（`where`/`select`/`groupBy`/`aggregations[].field`） | ✅ 但**不写 `content.`** | 直接写记录 `content` JSON 的内容相对 dot-path：`{"where":{"status":"published"}}`、`{"field":"factories.studio.role","eq":"studio"}` | 写 `content.status` / `content.category` 一律 **0 命中**（静默，不报错）——文档里 "Fields are content dot-paths" 指的是**该 JSON 内部**的路径 |
+| `where` 扁平 map `{field: value}` | ✅ 仅 primitive | `{"status":"published"}`、`{"factories.studio.role":"studio"}` | 数组值报错 `flat shorthand values must be primitive` |
+| `where` typed leaf | ✅ | `{field, eq\|in\|notIn\|contains\|gte\|lte}`；`{"all":[leaf,leaf]}` = AND | 谓词名写错 / 只给 `field` → **静默 0 行**，无校验错 |
+| `eq` / `in` 字符串比较 | ✅ **大小写不敏感** | `category eq "TECHNOLOGY"` ≡ `"technology"`（32/32 命中） | 不能当作用户输入的精确匹配 |
+| `contains` | ⚠️ 只对**数组**且**元素精确相等** | `{"field":"tags","contains":"multislot_c_…"}` → 1 | **不是子串**：`title contains "paid"`→0、`tags contains "multi"`→0；标量字符串字段一律 0 |
+| `in` 对数组字段 | ❌ | 数组请用 `contains` | `{"field":"tags","in":["x"]}` → 0（静默） |
+| `gte` / `lte` | ✅ 字符串按字典序、数值按大小 | `title gte "cat-test-tags"` → 42 | 混类型比较未定义 |
+| 否定谓词（`notIn`） | ⚠️ **会带上未索引记录** | — | `{"field":"status","notIn":["published"]}` 在 posts 上只回**大记录** `hello-arcblog.json`（因为它的字段值"未知"）⇒ 不能当"精确排除" |
+| `where` 过滤 entry 列 | ❌ 静默 0 | 需要按 id 取名就用 `list`/`read` | `field:"id"`/`"name"`/`"path"` 全部 0 命中 |
+| `orderBy` | ⚠️ 仅 entry 列、**只 1 个键** | `[["mtime","desc"]]`、`[["name","asc"]]`、`[["size","desc"]]`、`[["ctime",…]]`、`[["mimeType",…]]` | ① 内容字段**不可排序**（`title` → 校验错）；② 文档说 1–3 元组，**本 provider 只支持 1 个排序键**（2 元组报 `this provider supports a single sort key`）；③ 方向必须小写 `asc\|desc`；④ `meta.size` 报 `missing from entry metadata on the queried doc row`；⑤ 没有 `id` 列，用 `name`/`path` |
+| `select` | ✅ 数组 of dot-path | `["factories.studio.moniker"]` → `{"factories":{"studio":{"moniker":…}}}` | 字段不存在 → **静默 `{}`**；空数组报错；见 §44.2 ② |
+| `select` 缺省时的 `content` | ⚠️ 是**原始 JSON 字符串** | 要对象就自己 `JSON.parse` | 无 `select` 时 `content` 是 string（小记录）或 `null`（大记录） |
+| `limit` / `offset` | ✅ | `limit` ≥ 0，`offset` 任意 | `limit:-1` 报校验错 |
+| `cursor` | ✅ keyset | 结果里取 `.cursor` 回传即可，**同一 `orderBy` 更稳** | 与 `offset` 互斥；**坏 cursor → `Internal server error`**（不是校验错误，别当"空页"处理） |
+| `skipTotal` | ✅ | `skipTotal:true` → `total:-1`，用 `.cursor` 判断"还有下一页" | 与 `count`/`aggregations` 互斥（明确报错） |
+| `seekId` | ✅ | 回 `seekOffset` | 与 `cursor`/`offset` 互斥 |
+| `count:true` | ✅ | `total` = **记录数**，`entries: []` | — |
+| `query` + `groupBy`（无 `aggregations`） | ✅ 另一种形态 | 回 `groups:[{value,count}]`，`total` = **记录数** | 与 aggregate 模式返回结构不同，别混用 |
+| `aggregations`（`query` 或 `aggregate`） | ✅ | `[{field,op,as}]`，`op ∈ sum\|avg\|max\|min\|count` | `total` = **组行数**不是记录数（§44.2 ③）；`aggregate` 缺 `aggregations` 直接报错 |
+| `groupBy` | ✅ 单值或数组（多维） | `groupBy:["category","status"]` → `key:{category,status}` | **同样不能带 `content.` 前缀**；未索引记录归入 `null` 组 |
+| `annotate.memberOf` | ❌ **无效** | 校验要求 `{memberOf:{doc,field,by,as}}`，`doc` 必须是不含 `..` 的相对路径 | 无论 `doc` 是否存在、是否同名，结果里**从不出现 `_derived`**（`grep -c _derived` = 0）⇒ 跨集合 join 不可依赖 |
+| `timeGranularity` / `timeBucketField` | ❌ **无效** | 枚举 `day\|week\|month\|year`，必须配合 `aggregations` | 需要 **unix-ms 数值**字段；ArcBlog 记录里时间全是 ISO 字符串 ⇒ bucket 恒为 `null`（默认 `meta.timestamp` 缺失）或把 ISO 串当年 0 而得到 `1970-01-01` |
+| `text`（AFS 全文） | ❌ | — | `text: not supported by this provider`；全文只能走 `/modules/index` |
+| 不存在的 path / 空集合 | ⚠️ 静默 | — | `query` 对不存在的集合回 `{"entries":[],"total":0}`，**没有 404** |
+| `/modules/index` `query` | ✅（仅 FTS 有效） | `exec /modules/index/.actions/query --args '{"mode":"fts","text":"…","opts":{"limit":10}}'` | 见 §44.1 末表 |
+| `/modules/index` `get` | ✅ | `--args '{"entryPath":"…"}'` 或 `{"entryPaths":[…]}'` → `{entry,summary}` | 未收录路径回 `entry:null`（静默） |
+| `/modules/index` `stats` / `config` | ✅（是**路径**不是 action） | `read /instance/index/stats/{total,active,stale}-entries`；`read /instance/index/config/{embedding-enabled,llm-provider,default-domain}` | — |
+| `/modules/index` `reindex` | ⚠️ **不是只读** | 只在明确要重建索引时调用 | `explain` 写 `SIDE EFFECTS - none`，但 `reindex {}` 返回 `{"staleCount":1748}`，之后 `get` 的 per-entry `state` 由 `active` 变 `stale`（而 `stats/stale-entries` 仍报 0）⇒ **校准/巡检里不要跑**（本次校准误跑过一次，见 §44.3 末条） |
+
+**`/modules/index` 实测值（同一快照）**
+
+| 项 | 值 |
+| --- | --- |
+| `.actions` 成员 | `index` `query` `get` `reindex` `cleanup` `verify` `register-domain` `discover` |
+| `query` 接受键 | `mode` `ftsMode` `anchors` `text` `embeddingText` `embedding` `rewriter` `opts` |
+| `mode` 枚举 | `anchor` \| `fts` \| `combined` \| `semantic`（写错报 `Invalid option`，并回显全部接受键） |
+| `mode` **实际生效值** | **`fts`**：`fts`/`combined`/`semantic`（以及省略 `mode`）对同一 `text` 返回**逐条相同**的结果，`matchType` 恒为 `"fts"`，从未出现向量命中；`text:"wallet"`（该词出现在正文里）在三种模式下**都是 0 条** |
+| `ftsMode` | `and` \| `or`，**默认 `and`**（`"arcblog publishing"`：默认 1 条、`or` 4 条） |
+| `anchors` | `[{type:string, values:string[]}]`；需先用 `index` 注册。被测条目 `anchorCount:0`，`mode:"anchor"` 回空 |
+| `opts` | `limit`/`offset`/`cursor` 有效（回 `meta.cursor`/`meta.hasMore`）；未知名静默忽略 |
+| `config` 生效值 | `embedding-enabled = true`、`llm-provider = /dev/ai/local/embedding/models/e5-small`、`default-domain = default` | 
+| `stats` 生效值 | `total-entries = 2093`、`active-entries = 2093`、`stale-entries = 0` |
+| 命中面 | 同一条记录会在多个前缀下重复出现（`/instance/…`、`/blocklets/arcblog/instance/…`、`…/users/<did>/arcblog/bookmarks/…`）⇒ 调用方需自己去重/限定前缀 |
+
+### 44.2 F7 三坑逐条定论
+
+#### ① 大记录不进 `where`（成立；根因：`content` 未内联进条目行）
+
+```bash
+arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"/instance/app/arcblog/posts","where":{"status":"published"}}' | jq -c '{total,ids:[.entries[]|{id,size:.meta.size}]}'
+# {"total":2,"ids":[{"id":"paid-test-1790472790603.json","size":758},{"id":"sign-test-1790502598928.json","size":982}]}
+
+arc afs exec /blocklets/arcblog/.actions/list --args '{"path":"/instance/app/arcblog/posts"}' | jq -c '[.[]|{id,size:.meta.size}]'
+# [{"id":"hello-arcblog.json","size":4883},{"id":"paid-test-1790472790603.json","size":758},{"id":"sign-test-1790502598928.json","size":982}]
+```
+`hello-arcblog.json` 的 `status` 实测就是 `"published"`（`read` 出来看到），但 `where` 命中不到；
+同一个 `where` 换成 `slug`/`title`/`category` 也一样漏；加 `select` 也一样漏（见 ②）。
+无 `where` 的全量 `query` **能**列出这条记录，但它的 `content` 是 `null`。
+
+**根因（sqlite 只读取证，`space.db` 即 AFS 条目表）**
+```bash
+sqlite3 "file:$HOME/.afs/spaces/<space>/.did-space/space.db?mode=ro" \
+  "select path,size,length(cast(content as blob)) from ds_entries where path like '%arcblog/posts/%';"
+# blocklets/arcblog/system/app/arcblog/posts/hello-arcblog.json            4883  NULL
+# blocklets/arcblog/system/app/arcblog/posts/paid-test-1790472790603.json  758   758
+# blocklets/arcblog/system/app/arcblog/posts/sign-test-1790502598928.json  982   982
+```
+⇒ 超过内联上限的记录**只留 CID，`ds_entries.content IS NULL`**，查询层拿不到内容自然过滤/投影不出来。
+`list`/`read`（走 CID）不受影响，所以**"列表里有、where 里没有"**是本坑的典型症状。
+
+**体积阈值区间（全库统计，非单点）**：该 space 内 2343 条内联 + 21 条 `content IS NULL`，
+**内联最大 1883 B / NULL 最小 2376 B** ⇒ 边界落在 **(1883, 2376] B**；
+6 个 space 的 `space.db` 在 (1883, 2376) 区间内**没有任何记录**，无法再收窄。
+数值与「2 KiB 内联上限」一致，但**没有拿到平台常量**（arc 二进制里的 JS 不可读）⇒ 数据层红线取 **≤ 1.8 KB**。
+
+**A5（能否绕过）**：本次全程只读，**没有**在写入侧找到规避方式。但有一条重要反向证据：
+大记录**并没从检索索引消失**——`/modules/index/.actions/get --args '{"entryPath":"/instance/app/arcblog/posts/hello-arcblog.json"}'`
+仍能查到 `{state, indexedAt:"2026-09-23T15:01:37Z", anchorCount:0, summary:"Hello ArcBlog — DID-native publishing"}`。
+⇒ 对 spec §154.7（正文是否拆分）：**若数据层依赖 AFS `where`/`select`，>1.8 KB 的记录必须拆正文或另存**；
+若只依赖 `/modules/index` 做召回 + 逐条 `read`，可以不拆，但放弃结构化过滤与精确计数。
+
+#### ② `select` 投影异常（成立；**两个独立成因**，都是静默 `{}`）
+
+```bash
+arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"/instance/app/arcblog/posts","select":["title"]}' | jq -c '{total,e:[.entries[]|{id,content}]}'
+# {"total":3,"e":[{"id":"hello-arcblog.json","content":{}},
+#                 {"id":"paid-test-1790472790603.json","content":{"title":"paid-test-1790472790603"}},
+#                 {"id":"sign-test-1790502598928.json","content":{"title":"sign-test-1790502598928"}}]}
+```
+- **成因 A（大记录）**：`hello-arcblog.json` 的 `content` 没内联 ⇒ 投影为 `{}`（与 ① 同根因）。
+- **成因 B（字段不存在）**：`title` 在 `node/role-verification.json` 里根本没有 ⇒ 即使该记录**已正确内联**，`select:["title"]` 仍回 `{}`：
+  ```bash
+  arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"/instance/app/arcblog/node","select":["title"],"where":{"field":"roleCount","gte":1}}'
+  # {"entries":[{"id":"role-verification.json", …,"content":{}}],"total":1}
+  ```
+- **能拿到字段的写法**：`select` 必须是**非空字符串数组**，元素用**内容相对 dot-path**：
+  `select:["roleCount","statuses"]` ✅（原样返回嵌套结构）、`select:["factories.studio.moniker"]` ✅、
+  `select:["adapter","tokenId"]` ✅。字符串传参报 `expected array, received string`。
+- **无 `select` 时** `content` 是**整条 JSON 字符串**（不是对象），要字段得自己 parse。
+
+#### ③ 计数不一致（成立；`aggregate` 的 `total` 是**组行数**，且组键路径同样不能带 `content.`）
+
+```bash
+arc afs exec /blocklets/arcblog/.actions/aggregate --args '{"path":"/instance/app/arcblog/posts","groupBy":"content.category","aggregations":[{"field":"x","op":"count","as":"n"}]}'
+# {"entries":[],"total":1,"aggregateGroups":[{"key":{"content.category":null},"n":3}]}
+
+arc afs exec /blocklets/arcblog/.actions/aggregate --args '{"path":"/instance/app/arcblog/posts","groupBy":"category","aggregations":[{"field":"x","op":"count","as":"n"}]}'
+# {"entries":[],"total":2,"aggregateGroups":[{"key":{"category":null},"n":1},{"key":{"category":"technology"},"n":2}]}
+
+arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"/instance/app/arcblog/posts","count":true}'
+# {"entries":[],"total":3}
+```
+三条结论：
+1. **`total` 语义不同**：`query{count:true}` / `query+groupBy`(无 aggregations) 的 `total` = **记录数**（3）；
+   `aggregations` 模式的 `total` = **组行数**（错路径时 1、正确路径时 2）。谁做统计谁必须区分。
+2. **`groupBy` 也不能带 `content.` 前缀**：带前缀时所有记录塌进一个 `null` 键，看起来"3 条 = 1 组"。
+3. **未索引的大记录会落进 `null` 组**（`{category:null} n:1`），**不会**被聚合静默丢弃——这点反而是可用的：
+   组键的 `null` 桶就是"内容不可见"的记录数。
+4. 附：`aggregate` 结果同时带 `entries: []`；`query` + `aggregations` 走同一实现（`aggregateGroups`），
+   而 `query` + `groupBy`（无 `aggregations`）走另一形态 `groups:[{value,count}]`。三者别混。
+
+### 44.3 不可依赖清单（谁做数据层就绕开这些）
+
+1. **内容字段的 `where` / `select` / `groupBy` / `aggregations.field`，对 > ~1.8 KB 的记录**：静默漏（`where`）或静默 `{}`（`select`），既不报错也不给标记。⇒ 精确筛选/投影**必须**另建索引。
+2. **`orderBy` 任何内容字段**；**多个排序键**（provider 只支持 1 个）；`meta.size`；`id` 列名。
+3. **`where` 过滤 entry 列**（`id`/`name`/`path`）——静默 0 行。
+4. **谓词/参数写错**（未知谓词名、只有 `field`、类型不符的 `opts` key）——多数**静默 0 行**，不报错。
+   ⇒ 数据层必须用"期望非空"的断言，不能靠"没报错就是支持"。
+5. **否定谓词**当"精确排除"——会带上所有内容不可见的记录。
+6. **`contains` 当子串搜索**——它只做数组元素精确相等。
+7. **`annotate.memberOf` 跨集合 join**——结果里从不产生 `_derived`。
+8. **`timeGranularity` / `timeBucketField`** 做时间分桶——ISO 字符串字段只会得到 `null` / `1970-01-01`。
+9. **AFS `text`** ——provider 明确不支持；全文用 `/modules/index`。
+10. **`/modules/index` 的 `semantic` / `combined`** 当语义召回——本实例三种非 anchor 模式与 `fts` 逐条相同，`embedding-enabled=true` 也没观察到向量命中。
+11. **不存在的 path / 空集合 / 坏 cursor 的错误处理**——前两者静默 `total:0`（无 404），后者直接 `Internal server error`。
+12. **`/modules/index/.actions/reindex` 当只读巡检**——`explain` 声称 `SIDE EFFECTS - none`，
+    实际 `reindex {}` 返回 `{"staleCount":1748}`，其后 `get` 的 per-entry `state` 由 `active` 变 `stale`
+    （`stats/stale-entries` 仍报 0）。**本次校准误调用过一次**（在探 action schema 时传入 `{}`），
+    未写任何 AFS 记录、`stats` 前后一致（2093/2093/0）、`query`/FTS 行为前后一致；
+    但派生索引的 per-entry 状态被改过，已在报告里向 Lead/QA 披露，建议下轮 `reindex` 时自然修复。
+
+### 44.4 与 spec §154 的接口
+
+- **§154.10 P1-1 一句话结论（供授权方回填）**：
+  > P1-1 ✅ 平台查询层只能依赖这个子集：**≤ ~1.8 KB 记录的内容相对 dot-path `where`/`select`/`groupBy` + entry 列单键 `orderBy` + `limit/offset/cursor`/`skipTotal`/`seekId` + `count`**；
+  > 超过该体积的记录 `ds_entries.content IS NULL`，`where`/`select` **静默**漏掉或返回 `{}`；
+  > `aggregate.total` 是**组行数**不是记录数；`annotate.memberOf`、`timeGranularity`、`semantic` 模式在本实例**实测无效**。
+  > ⇒ 数据层（L1 SQLite）必须**自带**内容索引与计数，平台查询层只能当**可能不完整**的加速缓存，且每次都要与 `list`/`read` 对账。
+- **§154.3 F7**：三个现象全部**确认存在**，且 ① 与 ②A 是**同一根因**（未内联），②B 是**独立**的"字段不存在即静默 `{}`"，③ 是**`total` 语义不同** + `groupBy` 路径前缀写错。
+- **§154.7（正文是否拆分）**：见 §44.2 ① 的 A5 —— 依赖 AFS `where` 就必须拆；只用检索索引召回 + 逐条 `read` 可不拆。
+
+---
+
+## 45. `arc dsl format` 会**丢弃/改写两种字面量元素**（arc#2764，2026-09-29 W1 实测）
+
+| 写法 | `arc dsl format` 行为 | 可用绕过 |
+| --- | --- | --- |
+| `h2 "文本" level=2`（字符串 + **无引号**数字 prop） | 报 **`content_dropped`**：「Formatting would drop N structural token(s); file left unchanged」⇒ 文件永远过不了格式门（`arc dsl lint --json` 的 error） | 写成 **`level="2"`**（带引号）：formatter 把 `h2 "文本" level="2"` 规范化成 `p "文本" level="2"`；运行期 bundle `U0` 取 `t.level` → `"h"+min(6,max(1,parseInt(r)))`，**仍渲染 `<h2>`** |
+| `action label="文本"` | 被丢弃/改写 | 用 `label=:$t(key)`，或把文本放到子节点 |
+
+**踩坑记录**：W1 波次的 `posts` / `dashboard` / `compose` / `compose-edit` 四页都遇到（dev-compose 在 `compose-edit` 门禁卡上用 `p "$t(compose.gate-title)" level="2"` 绕过）。
+**判据**：`arc dsl lint --json` 里 `severity: error` + `code: content_dropped`（**不能**当作"预期的 locales 过期"忽略）。
+
+
+**同族缺陷（W1 补充，dev-media task-20 实测）**：`arc dsl format` 会把「**裸 `afs-dropzone` 行 + 紧随的兄弟节点**」合并成 `afs-dropzone p content=:upload-note …` —— **凭空造出一个 `content=` prop**，而且之后 `--check` **不再报错**（与上表 `content_dropped` 同属"格式化器改写结构"，只是一个报错、一个静默成功）。
+**规避**：把 `afs-dropzone` 放进它自己的 `view {}` 层并置于该层**末尾**（media / compose / compose-edit 三页都这么做）。
+## 46. provider 骨架的**可复制范式**（T1-0 全链路实测：`required: false` + 根自定义动作 + `bun:sqlite` 内存库 + AFS 回填，2026-09-29）
+
+> **编号说明**：§45 已被 W1 的 `arc dsl format` 结论占用，本节顺延为 **§46**（落笔前已 `grep -n '^## ' docs/arc-contracts.md | tail -3` 复核）。
+> **样本**：`/tmp/provider-lab/`（最小 blocklet = `blocklet.yaml` + `providers/probe/{index.mjs,package.json}`，539 行 provider）+ 隔离实例 `probe`（端口 4942、home `~/.afs-probe`）。
+> **原始输出**：`/tmp/provider-lab-evidence/00…14-*.txt`（本文引用的每一段都可原样复跑）。
+> **与 §40–§42 的关系**：§41/§42 是阶段 0 的**存在性 / 生死**结论；本节把它们合成**可复制骨架 + 端到端判据**，并补 4 条阶段 0 没有的实测事实（§46.6）。
+
+### 46.1 骨架清单（照抄即可）
+
+```text
+<blocklet>/
+├─ blocklet.yaml
+└─ providers/<name>/
+   ├─ index.mjs        # export default class；零第三方 import
+   └─ package.json     # { "type": "module", "dependencies": {} }
+```
+
+`blocklet.yaml` 的骨架部分（sha256 `927e0cbd…172af`）：
+
+```yaml
+specVersion: 2
+id: provider-probe
+did: did:blocklet:provider-probe
+version: 0.0.1
+scope: app
+mounts:
+  - target: ./providers/probe
+    path: /probe
+    required: false          # ← 见 §42 / §46.4：true 是整包生死开关
+    ops: [read, list, exec]  # ← 最小面
+```
+
+`index.mjs` 的硬形态（sha256 `5e8d207a…05ef9`；`package.json` `d20ffba5…b52c`）：
+
+| 项 | 形态 | 为什么 |
+| --- | --- | --- |
+| import 面 | 只 `bun:*` / `node:*`；`await import("bun:sqlite")` 失败回落 `node:sqlite` | 第三方依赖解析未文档化（§40(8) F18）⇒ 站外一键部署必炸 |
+| 导出 | `export default class` + `static async load()` | 与官方 fixture 一致（§40(3)） |
+| SQLite 句柄 | **只在 `onMount` 开**（`new Database(":memory:")`）；import 期零副作用 | §40(4) F13 |
+| 表结构 | `schema_version` + `MIGRATIONS[]`（forward-only；每次迁移 `db.transaction(() => {up(); 记 schema_version})`，抛错即回滚） | I6 fail-closed |
+| FTS5 | `CREATE VIRTUAL TABLE … USING fts5` **单独 try/catch**，结果进 `stats`（实测 `true`） | 能力要**测**不要假设 |
+| AFS 回填 | `onMount` 末尾起一个 promise：`root.list(SOURCE_ROOT)` → 逐条 `root.read` → 事务内全量重建；**目录不存在 = 0 条，不是错误** | I2 / I7 |
+| 对外可达面 | 只在 `onMount` 里 `root.registerCustomAction(id, entry, handler)`（本骨架 `stats` / `rebuild` / `seed` / `echo`） | §41(3)：`mounts[].path` 不可寻址 |
+| handler 签名 | `(...received) => this.handle(name, received)`，`received[0]` 即 args；返回 `{success:true,data}` | 官方 fixture 一致；`received` 用来**实测**签名（§46.6 ②） |
+| entry 元数据 | `{id, path:'/.actions/<id>', summary, meta:{kind:'afs:executable', kinds:[…], name, description, effect}}` | `explain` 与授权面读它 |
+| 降级 | DB 开不起来也不抛：动作照常注册，`data.degraded===true` | I7 |
+
+### 46.2 三条命令序列（可复跑；全部实测）
+
+```bash
+# ① 构建（副本内）。注意：build **不校验** mount target（§42 ②）
+cd /tmp/provider-lab && arc blocklet build .
+# Published 5 file(s) → /private/tmp/provider-lab/dist
+# dist/blocklet.dist.json: "mounts":[{"target":"./providers/probe","path":"/probe","required":false,"ops":["read","list","exec"]}]
+
+# ② 隔离实例 + 挂载。⚠️ **首次创建命名实例必须给 --home**：
+#    只写 `arc service start -i probe` → `ERROR: no instance named "probe"` (rc=1)
+arc service start -i probe --port 4942 --home ~/.afs-probe --host localhost --no-advertise --blocklet /tmp/provider-lab
+arc blocklet run /tmp/provider-lab -i probe
+# Serving blocklet "provider-probe" on port 4942        (rc=0)
+
+# ③ 判据 = 先读 /blocklets/<id>（**不是**退出码），再 exec 根自定义动作
+arc afs ls /blocklets/provider-probe -i probe
+arc afs ls /blocklets/provider-probe/.actions -i probe
+arc afs exec /blocklets/provider-probe/.actions/stats --args '{}' -i probe
+```
+
+`ls /blocklets/provider-probe/.actions` 的原始输出＝**9 个平台标准动作 + 本骨架 4 个根自定义动作**（这就是"模块确实被加载"的动态证据）：
+
+```text
+/blocklets/provider-probe/.actions/mount
+/blocklets/provider-probe/.actions/unmount
+/blocklets/provider-probe/.actions/read
+/blocklets/provider-probe/.actions/list
+/blocklets/provider-probe/.actions/write
+/blocklets/provider-probe/.actions/query
+/blocklets/provider-probe/.actions/aggregate
+/blocklets/provider-probe/.actions/delete
+/blocklets/provider-probe/.actions/batchDelete
+/blocklets/provider-probe/.actions/stats      ← 自定义
+/blocklets/provider-probe/.actions/rebuild    ← 自定义
+/blocklets/provider-probe/.actions/seed       ← 自定义
+/blocklets/provider-probe/.actions/echo       ← 自定义
+```
+
+**T1-1 判据（`arc afs exec … /.actions/stats` 的原始输出，逐字）**：
+
+```json
+{"ok":true,"degraded":false,"provider":"provider-probe","mountedVia":"mounts: ./providers/probe -> /probe","reachableFace":"/.actions/stats (blocklet root custom action)","mountPath":"/probe","onMountCount":1,"mountedAt":"2026-09-29T05:14:53.935Z","onMount":{"called":true,"sqliteImpl":"bun:sqlite","sqliteVersion":"3.51.0","fts5":true,"migrations":{"from":0,"to":1,"applied":[1]},"schemaVersion":1,"targetSchemaVersion":1,"error":null},"db":{"records":0,"fts":0,"schemaVersions":1},"sourceRoot":"/instance/probe/sources","lastBackfill":{"ok":true,"degraded":false,"sourceRoot":"/instance/probe/sources","sources":0,"indexed":0,"skipped":0,"note":"list(/instance/probe/sources): Path not found: /probe/sources","fts5":true,"elapsedMs":12,"rebuiltAt":"2026-09-29T05:14:53.948Z"},"lastRebuildAt":"2026-09-29T05:14:53.948Z","runtime":{"bun":"1.4.2","node":"26.3.0"},"handlerArgs":{"count":1,"keys":[]},"caller":null}
+```
+
+**AFS 真源侧写入后重建（`rebuild` 原始输出）**：
+
+```json
+{"ok":true,"degraded":false,"sourceRoot":"/instance/probe/sources","sources":3,"indexed":3,"skipped":0,"note":null,"fts5":true,"elapsedMs":4,"rebuiltAt":"2026-09-29T05:15:12.189Z"}
+```
+```json
+# db 侧随后为 {"records":3,"fts":3}；AFS 侧可外部读到同一批记录：
+$ arc afs read /blocklets/provider-probe/instance/probe/sources/probe-1.json -i probe
+{"title":"Probe record 1","body":"Derived from AFS: record 1 of 3","createdAt":"2026-09-29T05:15:08.155Z"}
+```
+
+**声明路径仍不可寻址（§41(3) 在骨架上的再确认）**：
+
+```text
+$ arc afs ls /blocklets/provider-probe/probe -i probe
+ERROR: No data found for path: /blocklets/provider-probe/probe                      (rc=1)
+$ arc afs exec /blocklets/provider-probe/probe/.actions/stats --args '{}' -i probe
+ERROR: No module found for path: /blocklets/provider-probe/probe/.actions/stats in namespace 'default'   (rc=5)
+$ arc afs exec /probe/.actions/stats --args '{}' -i probe
+ERROR: No module found for path: /probe/.actions/stats in namespace 'default'        (rc=5)
+```
+
+### 46.3 负例 ①：不声明 `mounts:` ⇒ 没有挂载（§41(1) 复现，原始输出）
+
+副本 `provider-lab-neg1`：`providers/probe/**` 原样存在，只删掉 `mounts:` 块、id 改 `provider-probe-nomount`。
+
+```text
+$ grep -n '^mounts:' blocklet.yaml                     # rc=1，无此键
+$ arc blocklet build .                                 # rc=0
+$ jq '.mounts' dist/blocklet.dist.json
+[]                                                     ← 不声明就没有
+$ arc blocklet run /tmp/provider-lab-neg1 -i probe     # rc=0，Serving blocklet "provider-probe-nomount"
+$ arc afs ls /blocklets/provider-probe-nomount -i probe
+/blocklets/provider-probe-nomount/scheduler … /blocklets/provider-probe-nomount/dev   ← blocklet 本身照常激活
+$ arc afs ls /blocklets/provider-probe-nomount/.actions -i probe
+… mount/unmount/read/list/write/query/aggregate/delete/batchDelete   ← 只有平台标准动作，**没有 stats**
+$ arc afs exec /blocklets/provider-probe-nomount/.actions/stats --args '{}' -i probe
+ERROR: Root action not found: stats                    (rc=5)
+```
+
+⇒ 「把 provider 放进 `providers/` 就自动生效」**被再次证伪**（与 §41(1) 一致）。
+
+### 46.4 负例 ②：`required: true` + 坏 target ⇒ 整包不激活，且 `arc blocklet run` **静默 exit 0**（§42 复现）
+
+副本 `provider-lab-neg2`：`target: ./providers/does-not-exist`、`required: true`、id `provider-probe-badmount`。
+
+```text
+$ arc blocklet build .                                 # rc=0 —— 构建期不校验 target
+$ jq '.mounts' dist/blocklet.dist.json
+[{"target":"./providers/does-not-exist","path":"/probe","required":true,"ops":["read","list","exec"]}]
+$ arc blocklet run /tmp/provider-lab-neg2 -i probe
+Serving blocklet "provider-probe-badmount" on port 4942 …            rc=0   ← **静默 exit 0**
+$ arc afs ls /blocklets/provider-probe-badmount -i probe
+ERROR: No data found for path: /blocklets/provider-probe-badmount    (rc=1) ← **整包不存在**
+```
+
+daemon 日志（`~/.afs-probe/.afs/daemon.log`，两条 warn + 一条**误导性的 info**）：
+
+```json
+{"level":"warn","ns":"afs:core","message":"[createBlockletAFS] Module mount \"./providers/does-not-exist\" → \"/probe\" failed: Cannot find module '/tmp/provider-lab-neg2/providers/does-not-exist' imported from /$bunfs/root/arc-darwin-arm64"}
+{"level":"warn","ns":"node:server","message":"[mountAndActivateBlocklet] register \"/blocklets/provider-probe-badmount\" failed:","args":["ResolveMessage: Cannot find module …"]}
+{"level":"info","ns":"node:boot","message":"Domain route: lazy-mounted+activated \"provider-probe-badmount\" (manifest)"}   ← 说 activated，实际没有
+```
+
+**第三条对照（§42 的表新增一列，直接决定 T1-1 的 `required` 取值）**：同一个坏 target 只把 `required` 改成 `false`（`provider-lab-neg3`，id `provider-probe-degraded`）⇒
+
+```text
+$ arc blocklet run /tmp/provider-lab-neg3 -i probe      # rc=0
+$ arc afs ls /blocklets/provider-probe-degraded -i probe
+/blocklets/provider-probe-degraded/scheduler … /blocklets/provider-probe-degraded/dev   (rc=0) ← **照常激活**
+$ arc afs exec /blocklets/provider-probe-degraded/.actions/stats … 
+ERROR: Root action not found: stats                     (rc=5)  ← 只有这一个功能降级
+# daemon.log：只有 afs:core 一条 warn，**没有** node:server 的 register failed
+```
+
+⇒ `required: false` 正是 §154.6 I7 要的降级路径：**挂载写错 = 少一个功能，不是整站起不来**。
+
+### 46.5 重启后由 AFS 全量重建（I2 / I7 的端到端证据）
+
+内存库在 daemon 重启后消失；`onMount` 只是"再读一遍 AFS"。原始序列：
+
+```text
+$ arc service restart -i probe                          # PID 38048 → 39364
+$ arc afs ls /blocklets/provider-probe -i probe
+ERROR: No data found for path: /blocklets/provider-probe   (rc=1)   ← 重启丢挂载（§34(1) 复现）
+$ arc blocklet run /tmp/provider-lab -i probe            # 复挂
+$ arc afs exec /blocklets/provider-probe/.actions/stats --args '{}' -i probe
+{"onMountCount":1,"mountedAt":"2026-09-29T05:15:21.175Z","onMount":{…"migrations":{"from":0,"to":1,"applied":[1]}},
+ "db":{"records":3,"fts":3,"schemaVersions":1},
+ "lastBackfill":{"ok":true,"sources":3,"indexed":3,"skipped":0,"elapsedMs":30,"rebuiltAt":"2026-09-29T05:15:21.205Z"} …}
+$ arc afs read /blocklets/provider-probe/instance/probe/sources/probe-2.json -i probe
+{"title":"Probe record 2","body":"Derived from AFS: record 2 of 3",…}   ← 真源在 AFS，重启后一字不差
+```
+
+⇒ 新 `mountedAt` + `from:0, applied:[1]` + `lastBackfill.sources:3, indexed:3` = **DB 是新的、内容全部来自 AFS**；这条就是「显式迁移幂等」在**内存库**下的正确表述：同库句柄上 `runMigrations` 第二次 `{"from":1,"to":1,"applied":[]}`（离线复跑 `/tmp/provider-lab-tools/offline-migration-proof.mjs`），失败的迁移 `{"threw":true,"versionBefore":1,"versionAfter":1,"okTableRows":0}` —— **表与记账一起回滚**。
+
+### 46.6 阶段 0 没有的 4 条新实测事实
+
+| # | 事实 | 原始证据 |
+| --- | --- | --- |
+| **①** | **`bun:sqlite` 在 daemon 内挂载的 provider 里可用**（阶段 0 的 F17 是 CLI 级 `BUN_BE_BUN=1` 探针，这次是 provider 实例内）：`sqliteImpl:"bun:sqlite"`、`sqliteVersion:"3.51.0"`、`fts5:true`、`runtime.bun:"1.4.2"` | §46.2 的 `stats` 原始 JSON |
+| **②** | **根自定义动作的 handler 只拿到 `(args)`，拿不到 caller**：`{"handlerArgsCount":1,"handlerArgs":[{"a":1,"b":"two"}],"args":{"a":1,"b":"two"},"callerPresent":false}`，`stats` 里 `handlerArgs.count:1`、`caller:null`（**匿名** exec） | `13-explain-and-anon.txt`；官方 fixture 注释同结论（*custom-action handlers get `(args)` only, by design；只有 provider `exec` 收到 runtime 校验过的 caller*）。而 `exec` 面在 flat topology **不可寻址**（§46.2 末）⇒ **根自定义动作无法做 caller 级授权** |
+| **③** | **注入 `onMount` 的 AFS root 是 blocklet 根作用域**：provider 内 `root.write("/instance/probe/sources/x.json", {content})` 的落点 = 外部 `arc afs ls /blocklets/provider-probe/instance/probe/sources` 可见、`arc afs read` 可读（与 launch-kit 的 `/instance/campaigns/**`、`/packages/blocklet.yaml` 用法一致） | `05-seed.txt` / `06-rebuild.txt`。⚠️ **但目录不存在时** `root.list("/instance/probe/sources")` 的错误文案把路径显示成**模块挂载相对路径**（`Path not found: /probe/sources`）——那是**文案**不是寻址语义，不要把该串当基准反推根路径 |
+| **④** | `arc afs explain <根自定义动作>` 只回 `# <id>` + 一个 `exec('/.actions/<id>', {})` 示例（**不回** `meta.effect` 等），且匿名即可 exec（本骨架 entry 写了 `effect:"read"`） | `13-explain-and-anon.txt`。⇒ 授权/审计**不能**指望 `explain`；根面默认是**匿名可达**的公开面 |
+
+### 46.7 隔离自证（`default` 零改动）
+
+```text
+# 开工前 / 收尾后，`arc service list` 的 default 行逐字一致：
+default       37a8eec1ce19687d  4939   up       /Users/shenxiuqiang           2
+# 收尾：
+$ arc service stop -i probe        → Service stopped: probe
+$ arc service list                 → probe  ba9c736f19e7f60b  4942* stopped  /Users/shenxiuqiang/.afs-probe
+# 本仓护栏：
+$ ls -la providers                 → 空目录（mtime 未变）
+$ git diff --stat -- blocklet.yaml providers   → 空
+```
+
+所有 `arc blocklet build` 的输入/输出都在 `/tmp/provider-lab*`（`dist/` 的既有脏改动来自 W1 其他 teammate，见 §36(5) 的同类登记）。如需彻底清除实例：`arc service delete -i probe`（会删 `~/.afs-probe`，不可逆）——**本次未执行**，留 Lead 裁决。
+
+### 46.8 T1-1 该怎么写（一段结论）
+
+**照 §46.1 抄，并守住这 9 条**：① `mounts:` 显式声明、`required: false`；② `ops: [read, list, exec]` 最小面（要迁移再临时加写）；③ SQLite 句柄**只在 `onMount` 开**、import 期零副作用；④ 只 import `bun:*`/`node:*`，第三方依赖一个都不加；⑤ 全部数据结构都可由 AFS **单命令重建**（`rebuild`），首启回填幂等；⑥ 对外只注册**根自定义动作** `/.actions/<id>`（≥2 个：`stats` 只读 + `rebuild` 写派生），**不要**把 CLI/页面挂到 `mounts[].path` 上；⑦ 动作返回 `{success,data}`、entry 带 `meta.effect`，DB 不可用时**降级**返回 `degraded:true` 而不是抛；⑧ **激活判据读 `/blocklets/<id>`，绝不用 `arc blocklet run` 的退出码**（§46.4：坏挂载也 exit 0）；⑨ **授权别放根面**——根自定义动作拿不到 `caller` 且匿名可达（§46.6 ②④），只把**公开投影**放这里，需要身份/权限判定的读写留在 AUP 的 `exec`（`$session`）或平台 AFS 权限表里。
+
+### 46.9 未决问题（交给 T1 及后续）
+
+1. **P0-7 只答了一半**：根面的**匿名** caller 形状已测（= 无 caller）；**已登录会话**下根动作是否仍无 caller **未测**（需要 DID-Connect 会话）。要闭合应在 AUP 页面内 exec 根动作（页面有 `$session`），并测 `$session` 与 `caller` 的桥接。
+2. **T1-1 验收标准要改写**：原文「动作 exec 返回 runtime 校验的 `caller`」在当前平台形态下**不可直接达成**——收 `caller` 的只有 provider `exec`，而它在 flat topology 不可寻址。建议改为「根动作只做公开数据；身份判定回到 AUP `$session`」或另立探针寻找 `exec` 的可达形态（session small world / `mount` 动作）。
+3. **P1-3 未测**：`mounts[].options` 对**模块挂载**是否被采纳（F18 只在 `sandbox://` 有例）。
+4. **P0-3 仍无**：持久化 per-blocklet 落点没有文档化目录；本范式按 I2 用内存库 + AFS 回填（重启重建已证，§46.5）。
+5. 本骨架的 `seed` 只是探针便利动作（provider 写 AFS 真源）；**生产里 AFS 真源必须由 app/CLI 写**，provider 单向 AFS→DB（I4）。
+
+---
+
+## 47. `afs-list sort=` 与 `.actions/query orderBy` **不是同一层能力**（R26 实测）
+
+`.actions/query` 的 `orderBy` **只吃 entry 列**：`name|path|size|ctime|mtime|mimeType` 或 `meta.*`；
+写 `[["publishedAt","desc"]]` 被服务器直接拒：`ERROR: Invalid query spec: orderBy: must be 1-3 [field, asc|desc] tuples over name|path|size|ctime|mtime|mimeType or meta.* paths`。
+而 **页面侧 `afs-list sort={preset:{field:"content.sort", desc:false}}` 能按内容字段排**
+（本仓 `?page=heroes` 有 DOM 实证，REQ-030 §358）。
+⇒ 想按期号/发布时间排，**用 `afs-list` 的 `sort`**，不要指望把 `orderBy` 下推；
+`where` 侧 `{field:"tags", contains:"identity"}` 实测可用（Hub index 命中 1 条）。
+
+## 48. 更正 §29.7：`hub list` / `hub show` 是**纯读**（本次实测不复现「读取即回写」）
+
+`node scripts/arcblog-network.mjs hub list` 运行后，`hub/registrations/<hash>.json` 的
+`content.updatedAt` 与 `freshness.checkedAt` **保持旧值**（命令打印的 `checkedAt` 才是运行时刻）；
+代码侧读路径零 `writeJson`，唯一写路径是 `putHubRegistration`（被 `hub refresh` 与 tombstone 调用）。
+⇒ §29.7 的旧结论按本条更正；`hub refresh` 才是写路径。
+
+## 49. `hub/*` 对 guest **三重锁全拒**，且**不能**在私有父下嵌公开子目录
+
+`hub/` 同时被 `replicated.hub`（`readRole: admin`）、`networkRead` 的 `hub → admin`、以及权限测试的
+`ADMIN_PATHS`/`privateDirs` 拦住。平台规则不允许「私有父目录里挂公开子目录」⇒
+需要公开的 Hub 侧数据**只能**走 `node/` 顶层投影（零权限改动，推荐）或**另开独立顶层前缀**（权限敏感）。
+
+## 50. `hub/index` 是**派生**数据：`rebuild` 会全量覆盖
+
+`hub index rebuild` 是索引重建，写入即覆盖。因此**主题定义与人工策展次序不可派生**（§154.5 判据 4/5、§154.6 I1/I4）
+—— 它们必须落**非派生树**，否则一次 `rebuild` 抹掉策展。
+另：「不存在的路径静默返回 `{entries:[],total:0}`」（§44.1 陷阱）在 `hub/topics` 上复现，不能据此判定目录已建。
+
+## 51. 平台**有**原生调度，但它不在 `arc` 命令面上（R26 实测）
+
+`arc` 18 个顶层命令 + 85 个二级子命令的 `--help` 共 1406 行，`cron|schedul|timer|interval|periodic` **0 命中**；
+但 daemon 里 `/scheduler` provider 真实存在并在跑：`kind: scheduler:root`、动作含 `schedule`/`unschedule`、
+`accessMode: readwrite`，当前 1 条 enabled schedule `index-follower`（`cron: "* * * * *"`），
+`/scheduler/history` 100 条滚动窗口 ≈60.7 s/条（与表达式吻合）。
+`/blocklets/<id>/scheduler` 是 **projection 投影**（`{base:"scheduler-<id>", stack:[{kind:"project", source:"/scheduler"}]}`），**不是** per-blocklet 过滤。
+⚠️ `/scheduler` 是 `readwrite`：只读探针**只用 `ls`/`read`/`stat`**，不要 `exec`。
+
+## 52. manifest 的 `cron:` 字段**确实存在**（官方样例 + 官方文档双证），但 `arc blocklet check` **不能**作证
+
+- 官方自带参考应用 `~/.arc/current/assets/blocklets/discuss-kit/blocklet.yaml` 顶层 34–50 行有
+  `# Declarative cron (#1722)` + `cron:` 数组（`name` / `cron` / `task` / `args`）；
+  官方线上文档「运行时声明字段」表逐字列出 **`cron` = 激活时注册的声明式定时任务**。
+  ⇒ **spec §111 的原话成立**，`SPEC-APPROVAL-001` C-14 的「改为待验证」前提**不成立**。
+- **反证**：`arc blocklet check` **不校验未知顶层键** —— 往 discuss-kit 副本加一个不存在的顶层字段，
+  `check --json` 仍是 `ok:true, issues:[]`。⇒ **不得**用 check 的 ok 证明某个 manifest 字段合法。
+- `cron.task` 必须落在 blocklet small-world（`/packages` + `/dev/*` + `/instance`，**不含 `/registry`**）；
+  本仓今天无 `mounts:`、`providers/` 为空 ⇒ §111 的真实工作量在**动作载体**（provider 动作），不是写 yaml。
+
+## 53. 今天生产上在跑的"周期"机制 = 两个长驻 `watch`（结构上不满足 §111 的失败语义）
+
+`node scripts/arcblog-network.mjs hub watch` = `setInterval(tick, seconds*1000)`（默认 3 s，tick 内 try/catch，**无退出条件**）；
+`node scripts/arcblog-chain-worker.mjs watch` = `for(;;){await setTimeout(interval*1000); once(); await refreshSvg()}`（默认 3 s，**无退出条件、循环体无 try/catch**，文件头注明 Ctrl-C 停止）。
+`hub refresh` 是**写路径**（逐条 `putHubRegistration`）。⇒ §111「失败标记 offline 而不中断」目前**没有**承载物。

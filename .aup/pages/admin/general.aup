@@ -44,6 +44,39 @@ page general {
     site-name-label { en "Site name" zh "站点名称" }
     timezone-hint { en "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated feed." zh "生成的订阅中 <pubDate>/<lastBuildDate> UTC 偏移所用的 IANA 时区。" }
     timezone-label { en "Timezone" zh "时区" }
+    roles-title { en "Roles & capabilities" zh "角色与能力" }
+    roles-desc { en "Spec §15.9. This card shows the ENGINE's own role state: the five lifecycle words and every derived value come from scripts/lib/roles.mjs and its CLI, never from a second vocabulary typed into a page. The externalized config is read-only here (spec §9), and changing an address or a network is a CLI/operator step only." zh "spec §15.9。本卡片展示**引擎自己的**角色状态：五个生命周期词与所有派生取值都来自 scripts/lib/roles.mjs 及其 CLI，绝不来自页面里另写的一套词表。外部化配置在此只读（spec §9），修改地址或网络只能由 CLI/operator 完成。" }
+    roles-states { en "Lifecycle (source: STAKE_STATES in scripts/lib/roles.mjs): none → acquired → staked → revoking → claimable. The page repeats these five words verbatim so that a drift is visible, and revoking derives to claimable at read time once claimableAt has passed — the record itself is not rewritten." zh "生命周期（来源：scripts/lib/roles.mjs 的 STAKE_STATES）：none → acquired → staked → revoking → claimable。本页逐字重复这五个词，漂移即可见；revoking 在 claimableAt 到期后于读取时派生为 claimable——记录本身不被改写。" }
+    roles-states-note { en "Every state here is operator-declared: setting staked does NOT activate a role. Until a verifier exists every chain role stays active=false and its capabilities stay withheld (fail closed, spec §114/§115). This card never asserts that a role is active." zh "这些状态都是 operator 声明的：把状态设为 staked **不会**激活角色。在验证器接通前，每个链角色始终 active=false、能力始终 withheld（fail closed，spec §114/§115）。本卡片绝不断言某角色已激活。" }
+    roles-config-title { en "Externalized config (read-only)" zh "外部化配置（只读）" }
+    roles-config-desc { en "Collection address, network, assetType and the declared lifecycle are record values (config/roles.json, spec §9, admin-only). This page only displays them; the record is the authority and the CLI below is the only way to change it." zh "集合地址、网络、assetType 与已声明生命周期都是记录取值（config/roles.json，spec §9，仅管理员）。本页只做展示；记录才是权威，下方 CLI 是唯一的修改入口。" }
+    roles-no-input { en "There is no address and no network input on this page, on purpose — spec §1273 forbids typing an address into the UI. A value shown as unbound means \"not bound yet / unavailable\", never \"the record is empty\"." zh "本页刻意**没有**地址与网络输入框——spec §1273 禁止在界面手填地址。显示为未绑定的取值读作「尚未绑定 / 暂不可用」，绝不是「记录为空」。" }
+    roles-cmd-init { en "Change the address / network from the CLI (the only path)" zh "用 CLI 修改地址 / 网络（唯一路径）" }
+    roles-cmd-show { en "Read the record back" zh "读回记录" }
+    roles-cmd-check { en "Validate the record" zh "校验记录" }
+    roles-status-title { en "Withheld capabilities & the raw reason" zh "被扣留的能力与原始原因" }
+    roles-status-desc { en "Derived by the CLI (never typed here) from config/roles.json + node/factories.json + node/profile.json and landed under node/role-status/. The reason string is rendered verbatim in English: this console cannot translate a runtime value, and a paraphrase would hide the real cause." zh "由 CLI 从 config/roles.json + node/factories.json + node/profile.json 派生（绝不在此输入），落在 node/role-status/ 下。原因字符串按英文原文逐字展示：控制台无法翻译运行期取值，改写会掩盖真实原因。" }
+    roles-no-snapshot { en "No verification snapshot yet: node/role-verification.json does not exist, so the fields below read as unbound (that is not \"no roles\"). Queue a re-verification below and run the worker command." zh "尚无验证快照：node/role-verification.json 不存在，因此下方字段读作未绑定（这不是「没有角色」）。请在下方排队一次重新验证，再运行 worker 命令。" }
+    roles-honesty { en "Honesty note: a leftover assetId in the record (for example a test value) does NOT mean an asset is owned — assetOwned is derived from the lifecycle state. And this re-derivation is NOT a chain verification: chainVerification stays false and no value on this card is chain truth (spec §114/§115)." zh "诚实说明：记录里残留的 assetId（例如测试残留）**不**代表拥有资产——assetOwned 由生命周期状态派生。并且这次重新派生**不是**链上验证：chainVerification 保持 false，本卡片上没有任何链上事实（spec §114/§115）。" }
+    roles-verify-title { en "Re-verify — the real path (no fake button)" zh "重新验证——真实路径（无假按钮）" }
+    roles-verify-desc { en "The button queues ONE intent record under config/role-verify-intents/<id>.json (admin-only, the same config collection as the policy queue — zero permission change). It runs nothing itself and never touches config/roles.json. The node's worker consumes it:" zh "按钮只入队**一条**意图记录到 config/role-verify-intents/<id>.json（仅管理员，与策略队列同属 config 集合——零权限改动）。它自身不执行任何动作，也绝不动 config/roles.json。由本机 worker 消费：" }
+    roles-verify-kind { en "What the worker does: a READ-ONLY re-derivation of every RoleStatus from the existing records; it writes node/role-status/<role>.json + node/role-verification.json and reports whether config/roles.json and the public node/factories.json projection agree. It never flips chainVerification and signs nothing." zh "worker 做什么：只读地基于既有记录重新派生每个 RoleStatus，写入 node/role-status/<role>.json 与 node/role-verification.json，并报告 config/roles.json 与公开投影 node/factories.json 是否一致。它绝不翻转 chainVerification，也不做任何签名。" }
+    roles-verify-queue { en "writes: /instance/app/arcblog/config/role-verify-intents/<timestamp>.json with status pending — read it back; a toast is not evidence." zh "写入：/instance/app/arcblog/config/role-verify-intents/<时间戳>.json，status 为 pending——请读回；toast 不是证据。" }
+    roles-verify-worker { en "Run the worker (copyable)" zh "运行 worker（可复制）" }
+    roles-verify-button { en "Queue re-verification" zh "排队重新验证" }
+    roles-verify-confirm-title { en "Queue a re-verification?" zh "排队一次重新验证？" }
+    roles-verify-confirm-msg { en "Writes one intent record only; the snapshot changes when the worker runs. Nothing is verified on chain." zh "只写入一条意图记录；快照在 worker 运行后才变化。不会做任何链上验证。" }
+    roles-verify-queued { en "Intent queued — read config/role-verify-intents back." zh "意图已入队——请读回 config/role-verify-intents。" }
+    roles-verify-error { en "Not queued — the write was refused and nothing changed." zh "未入队——写入被拒绝，没有任何改动。" }
+    roles-factory-title { en "Buy / stake / revoke / claim" zh "购买 / 质押 / 撤回 / 取回" }
+    roles-factory-desc { en "These four actions already live on the Node NFT page and are NOT duplicated here: each one queues an intent record there and the node's chain worker signs it. This card only links there, so the purchase-to-stake guide stays inside the console (spec §15.9)." zh "这四个动作已在「节点 NFT」页实现，本页**不重复**：每个动作在该页入队一条意图记录，并由节点链 worker 签名执行。本卡片只做跳转，购买到质押的引导因此仍在控制台内闭环（spec §15.9）。" }
+    roles-factory-link { en "Open the Node NFT page" zh "打开节点 NFT 页" }
+    roles-source-note { en "Authoritative source for every value: node scripts/arcblog-roles.mjs status (RoleStatus) and capabilities. This card renders a projection; when the two disagree, the CLI wins." zh "每个取值的权威来源：node scripts/arcblog-roles.mjs status（RoleStatus）与 capabilities。本卡片渲染的是投影；两者不一致时以 CLI 为准。" }
+    roles-k-checked { en "Checked at" zh "核验时间" }
+    roles-claimable-note { en "Waiting period: the raw claimableAt value is shown above when the record carries one; this console deliberately renders no countdown (the platform's conditional `visible` cannot gate a relative-time row on a bound value, measured 2026-09-29 — and an empty value would otherwise read as \"just now\")." zh "等待期：记录里带有 claimableAt 时，上方展示其原始取值；本控制台刻意不渲染倒计时（实测 2026-09-29：平台的条件 `visible` 无法用绑定值门控相对时间行——而空值会被读成「刚刚」）。" }
+    roles-k-effective { en "effective capabilities" zh "实际授予的能力" }
+    roles-k-withheld { en "withheld capabilities" zh "被扣留的能力" }
+    roles-k-roles { en "declared roles" zh "声明角色" }
     title { en "General" zh "通用" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
@@ -245,6 +278,56 @@ page general {
                   action variant=secondary size=sm label=:init-basics confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/site-name.json", mode: create, content: {label: "Site name", description: "Channel title of the generated RSS feed. It does not rename the blocklet or the console brand.", scope: instance, type: text, maxLength: 120, value: ArcBlog}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: create, content: {label: Language, description: "Value of the RSS <language> element of the generated feed.", scope: instance, type: select, options: [en, zh], pattern: "en|zh", value: en}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/timezone.json", mode: create, content: {label: Timezone, description: "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated RSS feed.", scope: instance, type: select, options: [UTC, "Asia/Shanghai", "Asia/Tokyo", "Asia/Singapore", "Europe/London", "Europe/Berlin", "America/New_York", "America/Los_Angeles"], pattern: "UTC|Asia/Shanghai|Asia/Tokyo|Asia/Singapore|Europe/London|Europe/Berlin|America/New_York|America/Los_Angeles", value: UTC}}}]}}
                   action variant=secondary size=sm label=:init-switches confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/comments.json", mode: create, content: {label: Comments, description: "No consumer yet: ArcBlog has no comment feature, so this switch is recorded only.", scope: instance, type: toggle, value: false}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/rss.json", mode: create, content: {label: RSS, description: "When off, the generated RSS feed carries a channel with no items.", scope: instance, type: toggle, value: true}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/agent-access.json", mode: create, content: {label: "Agent Access", description: "When off, the Agent Access CLI refuses to run tools (fail closed).", scope: instance, type: toggle, value: true}}}]}}
                 }
+              }
+              // ---- Roles & capabilities (REQ-034 / spec §15.9) --------------------
+              // Read-only by design: spec §1273 forbids an address/network input on
+              // this page, so the config is displayed only. The five lifecycle words
+              // mirror STAKE_STATES in scripts/lib/roles.mjs — the engine stays the
+              // single vocabulary source; the derived values are read from the CLI's
+              // projection under node/ (written by `verify apply`, never by the page),
+              // and the ONE write here is a queued verification intent under config/
+              // (role-verify-intents) — a real consumer, not a fake button.
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={roles: "/instance/app/arcblog/config/roles.json", verification: "/instance/app/arcblog/node/role-verification.json", basic: "/instance/app/arcblog/node/role-status/basic.json", studio: "/instance/app/arcblog/node/role-status/studio.json", hub: "/instance/app/arcblog/node/role-status/hub.json"} {
+                h3 :roles-title level=3 style={fontSize: "var(--type-body)"}
+                p :roles-desc scale=sm intent=muted
+                p :roles-states scale=sm
+                p :roles-states-note scale=sm intent=muted
+                h3 :roles-config-title level=3 style={fontSize: "var(--type-body)"}
+                p :roles-config-desc scale=sm intent=muted
+                key-value-list roles-config-kv dense=true fields=[{label: chainVerification, value: "${state.roles.chainVerification}"}, {label: "studio.collectionAddress", value: "${state.roles.studio.collectionAddress}", monospace: true, hideWhenEmpty: true}, {label: "studio.network", value: "${state.roles.studio.network}", hideWhenEmpty: true}, {label: "studio.assetType", value: "${state.roles.studio.assetType}", hideWhenEmpty: true}, {label: "studio.lifecycle.state", value: "${state.roles.studio.lifecycle.state}"}, {label: "studio.lifecycle.assetId", value: "${state.roles.studio.lifecycle.assetId}", monospace: true, hideWhenEmpty: true}, {label: "studio.lifecycle.claimableAt", value: "${state.roles.studio.lifecycle.claimableAt}", hideWhenEmpty: true}, {label: "hub.collectionAddress", value: "${state.roles.hub.collectionAddress}", monospace: true, hideWhenEmpty: true}, {label: "hub.network", value: "${state.roles.hub.network}", hideWhenEmpty: true}, {label: "hub.assetType", value: "${state.roles.hub.assetType}", hideWhenEmpty: true}, {label: "hub.lifecycle.state", value: "${state.roles.hub.lifecycle.state}"}, {label: "hub.lifecycle.assetId", value: "${state.roles.hub.lifecycle.assetId}", monospace: true, hideWhenEmpty: true}]
+                p :roles-no-input scale=sm intent=muted
+                key-value-list roles-cmd-config dense=true fields=[{label: :roles-cmd-init, value: "node scripts/arcblog-roles.mjs init --update --studio-collection <addr> --hub-collection <addr> --network <net>", monospace: true, copyable: true}, {label: :roles-cmd-show, value: "node scripts/arcblog-roles.mjs show", monospace: true, copyable: true}, {label: :roles-cmd-check, value: "node scripts/arcblog-roles.mjs check", monospace: true, copyable: true}]
+                h3 :roles-status-title level=3 style={fontSize: "var(--type-body)"}
+                p :roles-status-desc scale=sm intent=muted
+                p :roles-no-snapshot scale=sm intent=info visible="!${state.verification.lastVerifiedAt}"
+                key-value-list roles-scope-kv dense=true fields=[{label: :roles-k-checked, value: "${state.verification.lastVerifiedAt}", hideWhenEmpty: true}, {label: :roles-k-effective, value: "${state.verification.effectiveCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-withheld, value: "${state.verification.withheldCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-roles, value: "${state.verification.declaredRolesLabel}", hideWhenEmpty: true}]
+                key-value-list roles-basic-kv dense=true fields=[{label: "basic.stakeState", value: "${state.basic.stakeState}"}, {label: "basic.active", value: "${state.basic.activeLabel}"}, {label: "basic.configured", value: "${state.basic.configuredLabel}"}, {label: "basic.assetOwned", value: "${state.basic.assetOwnedLabel}"}, {label: "basic.reason (verbatim)", value: "${state.basic.reason}"}]
+                key-value-list roles-studio-kv dense=true fields=[{label: "studio.stakeState", value: "${state.studio.stakeState}"}, {label: "studio.active", value: "${state.studio.activeLabel}"}, {label: "studio.configured", value: "${state.studio.configuredLabel}"}, {label: "studio.assetOwned", value: "${state.studio.assetOwnedLabel}"}, {label: "studio.reason (verbatim)", value: "${state.studio.reason}"}, {label: "studio config ↔ projection", value: "${state.studio.consistencyReason}"}]
+                key-value-list roles-hub-kv dense=true fields=[{label: "hub.stakeState", value: "${state.hub.stakeState}"}, {label: "hub.active", value: "${state.hub.activeLabel}"}, {label: "hub.configured", value: "${state.hub.configuredLabel}"}, {label: "hub.assetOwned", value: "${state.hub.assetOwnedLabel}"}, {label: "hub.reason (verbatim)", value: "${state.hub.reason}"}, {label: "hub config ↔ projection", value: "${state.hub.consistencyReason}"}]
+                // B4: the waiting period, shown honestly. The raw `claimableAt` value
+                // is rendered (hideWhenEmpty). A relative `time` row is deliberately
+                // NOT rendered: measured twice on this platform (2026-09-29) that
+                // `visible="${state.x}"` keeps an empty value visible while
+                // `visible="!!${state.x}"` hides a non-empty one — and the `time`
+                // primitive reads an EMPTY value as "just now". A fabricated
+                // "claimable now" is worse than no widget (L-R26R-4).
+                key-value-list roles-claimable-kv dense=true fields=[{label: "studio.claimableAt", value: "${state.studio.claimableAt}", monospace: true, hideWhenEmpty: true}]
+                p :roles-claimable-note scale=caption intent=muted
+                p :roles-honesty scale=sm intent=info
+                h3 :roles-verify-title level=3 style={fontSize: "var(--type-body)"}
+                p :roles-verify-desc scale=sm intent=muted
+                p :roles-verify-kind scale=sm intent=muted
+                p :roles-verify-queue scale=sm intent=muted
+                row gap=sm {
+                  action variant=secondary size=sm label=:roles-verify-button confirm={title: :roles-verify-confirm-title, message: :roles-verify-confirm-msg} onSuccessToast={intent: success, message: "$t(general.roles-verify-queued)", duration: 3000} onErrorToast={intent: error, message: "$t(general.roles-verify-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/role-verify-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: verify, role: all, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                }
+                key-value-list roles-verify-worker-cmds dense=true fields=[{label: :roles-verify-worker, value: "node scripts/arcblog-roles.mjs verify apply", monospace: true, copyable: true}, {label: :roles-cmd-show, value: "node scripts/arcblog-roles.mjs verify show", monospace: true, copyable: true}]
+                h3 :roles-factory-title level=3 style={fontSize: "var(--type-body)"}
+                p :roles-factory-desc scale=sm intent=muted
+                row gap=xs {
+                  action variant=primary size=sm label=:roles-factory-link href="/?page=factory" style={borderRadius: "var(--radius-md, 8px)"}
+                }
+                p :roles-source-note scale=caption intent=muted
               }
             }
           }

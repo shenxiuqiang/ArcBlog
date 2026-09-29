@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 95574,
+      "size": 81899,
       "contentType": "application/json",
-      "sha256": "8f49096f6c0d13286c812e6d96564a2a5af2eb94265cac08838528a8aa94d787"
+      "sha256": "c439329ec7fa64005c88f0690672cf694408ed576feefff93c3f71700de3c05b"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 92103,
+      "size": 78680,
       "contentType": "application/json",
-      "sha256": "2724a9d429057c8ff75d81d82b7e767ee03c4480ad5fdc2065b9671a61e39b84"
+      "sha256": "2aa697f2b86498387bf2205a1d952f242112da253469ac183c48c6a9286ca813"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -70,15 +70,15 @@
     },
     {
       "path": ".aup/man/compose-edit.yaml",
-      "size": 1560,
+      "size": 1860,
       "contentType": "text/yaml",
-      "sha256": "2fe5a51daf889824dd3f6bd068bfea96dc5205d3538a4a972fef6af62ab2e34d"
+      "sha256": "ee0f87f20ea6d178018ee2bc8aedd50ace49cb6e8a2b5b8ec0040b1a8b755af2"
     },
     {
       "path": ".aup/man/compose.yaml",
-      "size": 1355,
+      "size": 1766,
       "contentType": "text/yaml",
-      "sha256": "8da0cab4a2947395c9ddc717a0113bf6e8867df7f9f8f77f003120d2cdc81c34"
+      "sha256": "1cc4f2151df39a46f4c45b5f95a7087318e780f2efb7befd0dd300629306dce5"
     },
     {
       "path": ".aup/man/console.yaml",
@@ -88,9 +88,15 @@
     },
     {
       "path": ".aup/man/dashboard.yaml",
-      "size": 1069,
+      "size": 1343,
       "contentType": "text/yaml",
-      "sha256": "25f4e27f7a97627a90c340260faa9645a9699538f358ca4fe8c1a4fa7065101c"
+      "sha256": "e145ea854e8b725fb2f74786a4236aa959311cf994ea2719f9e08451af2502df"
+    },
+    {
+      "path": ".aup/man/diagnostics.yaml",
+      "size": 1776,
+      "contentType": "text/yaml",
+      "sha256": "6ac28f10fded940a309d87bc6e4e69cbe53319c2eb72c3cf6905e1bd377b3932"
     },
     {
       "path": ".aup/man/economy-admin.yaml",
@@ -130,9 +136,9 @@
     },
     {
       "path": ".aup/man/media-admin.yaml",
-      "size": 1286,
+      "size": 2190,
       "contentType": "text/yaml",
-      "sha256": "4e5b5dd630b491a96608844962e6d3fc974d368f3183fccf22c909708721af2f"
+      "sha256": "ed19f32021db023adafaf309e9e1ff1c0d49bba2d9408790e1131479c0348915"
     },
     {
       "path": ".aup/man/operations.yaml",
@@ -208,45 +214,45 @@
     },
     {
       "path": ".aup/pages/admin/compose-edit.aup",
-      "size": 7830,
+      "size": 6633,
       "contentType": "application/octet-stream",
-      "sha256": "b0bbebf86a82acb65f2ac96e7f3a9c6786ae2e909b9ce9d6d40c36403f45b461"
+      "sha256": "19b8e7bb73a9557f9f706537e71196d573596d21eb422cb58949bd8fec68ad8d"
     },
     {
       "path": ".aup/pages/admin/compose.aup",
-      "size": 16113,
+      "size": 14069,
       "contentType": "application/octet-stream",
-      "sha256": "7729911fc3ea77703d44cb347e880840c39bc247129015c3fd16c5f275d8fd65"
+      "sha256": "2393f5ffdb9d622e954f725c37bd2fa3cac03bc5f29b3261aedd29908e93873f"
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 24484,
+      "size": 15852,
       "contentType": "application/octet-stream",
-      "sha256": "cb94949832f6af57f0345a62a4d97ff713c3e12b5b7b9e4406834e248442f526"
+      "sha256": "19bf8e2d7e46eb276be2e010558e377c7e2d27adb47cfa8f3bfb38a3577b81d0"
     },
     {
       "path": ".aup/pages/admin/diagnostics.aup",
-      "size": 35696,
+      "size": 23207,
       "contentType": "application/octet-stream",
-      "sha256": "be9a355ab3e27d211b27382b8be3ea09a64c19ec167a81a2459a6dfe8cce7b5d"
+      "sha256": "94e2a9e8ba275eaf6d334003c45529d00eec912f261312cc95374dca1e62af8d"
     },
     {
       "path": ".aup/pages/admin/general.aup",
-      "size": 27771,
+      "size": 45084,
       "contentType": "application/octet-stream",
-      "sha256": "0faf9528d08e16dbe43588e8ce6d63e4aeef9f7247c8aae9c87a5579d9889f39"
+      "sha256": "6a8b6be4f998f63406b23fd9490f33c498454ce923d73cf64d0cf7440e3c1a8c"
     },
     {
       "path": ".aup/pages/admin/pages.aup",
-      "size": 19503,
+      "size": 21480,
       "contentType": "application/octet-stream",
-      "sha256": "31224bf20dbedef9526465a63acbc2cb33cfaa315e641d29f106090e9ba51d60"
+      "sha256": "504d6b6dc635b91719eb84c81d834587a671a1bec3ed235a003dbb03bb3edf02"
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 27409,
+      "size": 25691,
       "contentType": "application/octet-stream",
-      "sha256": "98d84a419e6884e6768fa7a4a8ef0522e796aa41ee69f6424ea8830335531f1c"
+      "sha256": "e978253376da0ac137c0137879b47227452a22e8b777fc8075ce3288a2523d2b"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -280,9 +286,9 @@
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 49646,
+      "size": 49868,
       "contentType": "application/octet-stream",
-      "sha256": "3d878b320f0b97daaba529a89c4e0310c26fd3ddeb604a14663bb9ad688c0bc7"
+      "sha256": "dee50b9bc18d2c2063e471465d39e714c79d7506d6d9534baa8ebcd411898147"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -310,15 +316,15 @@
     },
     {
       "path": ".aup/pages/ops/hub.aup",
-      "size": 37082,
+      "size": 20009,
       "contentType": "application/octet-stream",
-      "sha256": "d89bcbfffa3d0a67ac80a229bfbed4ee85824f996b9d53c9b576185b385f8f92"
+      "sha256": "9f4191e2680544108f19ef8bcba60a2f5b9eab550e98678679842554ab1c22bd"
     },
     {
       "path": ".aup/pages/ops/media.aup",
-      "size": 35835,
+      "size": 19430,
       "contentType": "application/octet-stream",
-      "sha256": "2bcc6be3ce2c7d3dd0cd19f15a623cebe2ba4d324eba07be1737e249f9e0653c"
+      "sha256": "a305a4bd426fa5c5ff0f108c648f983a135d6984138b8bd5b424ba54a7cc2e8b"
     },
     {
       "path": ".aup/pages/ops/operations.aup",
@@ -1300,9 +1306,9 @@
     },
     {
       "path": "AGENTS.md",
-      "size": 2973,
+      "size": 3217,
       "contentType": "text/markdown",
-      "sha256": "23b0b3e7a59f84a8fb5a6eab429e3da83b10a591a000d80ae26aded230c2bd80"
+      "sha256": "6673a52c8a2fa85310da7e1958e18e4e23bf3d202350db18bcabbc4efdd45fe5"
     },
     {
       "path": "agents/arcblog-agent/agent.dsl",
@@ -1330,27 +1336,27 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 29844,
+      "size": 30312,
       "contentType": "text/markdown",
-      "sha256": "7d78088e6cdc4cc5e492c05d8eea235ab90343e77efa839b04c66f0490c3589a"
+      "sha256": "fd95860bedd0c151e498d671583b2d27f01abb40a0e8e4b3f680abae9c55ee9c"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 178802,
+      "size": 220614,
       "contentType": "text/markdown",
-      "sha256": "774df2ad00c9386c8ecd1d70b8ba167e9cc2a2616712f49cab54941baf9f63ce"
+      "sha256": "5af29309e04dcd37f8d4d8103ed90acd4e9fba415e3024c142f610e81a321660"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
-      "size": 77289,
+      "size": 95671,
       "contentType": "text/markdown",
-      "sha256": "e3ff4a93cb6ae563afb23568de142344b8cc95bb76ed1371c1cf87077614fcab"
+      "sha256": "5b8c68144f156365d1199c18f4c2ef39e7d9a6ab66f5a085d4f4ebbd4af7b457"
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 93500,
+      "size": 93567,
       "contentType": "text/markdown",
-      "sha256": "b92a592624ec4eb214372925474785f8ae659daf8b778521319356b2906beafa"
+      "sha256": "395bb73dfbe37503201456c4964037169f845ec51168f7aa3fa64ed8db51a681"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1360,9 +1366,9 @@
     },
     {
       "path": "docs/ArcBlog-product-technical-spec.md",
-      "size": 125383,
+      "size": 127775,
       "contentType": "text/markdown",
-      "sha256": "67746baf16e6cba3014b00f11584454cc10acfaed2cd6bf7b6e335b75efd3850"
+      "sha256": "b2e5d786885d18864db01a4f7930016682a65620bfab3cb67f69566b669dd66d"
     },
     {
       "path": "docs/developer-guide.md",
@@ -1420,9 +1426,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 50905,
+      "size": 54920,
       "contentType": "text/markdown",
-      "sha256": "483e15920bf7387233cdc96e331954485a795517ef91f4b8561853131f822e6f"
+      "sha256": "d17e76e7cf6a8bc33fd08b94fd134a707b6423356e2ea869b26a39b0c742f449"
     },
     {
       "path": "docs/persistence.md",
@@ -1462,9 +1468,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 1194052,
+      "size": 1212155,
       "contentType": "text/markdown",
-      "sha256": "e419ab3d0ebe858aa0687e72539a2c2b3059b38d407c53c47ae0c3f5169ad9d6"
+      "sha256": "846edf37fc5dff4037955943ce8d6b3311ff7bc365625996aab6c5145b624f52"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1915,6 +1921,36 @@
       "size": 3021,
       "contentType": "text/markdown",
       "sha256": "725ed1071e84e26b0c2e3ef3d94ceee72fc177d4b3ad6ac0fede04f5ad9b3361"
+    },
+    {
+      "path": "docs/team/bugs/BUG-075-role-claimable-at-empty-renders-just-now.md",
+      "size": 4399,
+      "contentType": "text/markdown",
+      "sha256": "9aa7aaa4f0c825b0d3fc83051a577163f80dbd9838eace9f4753beacb6383ec2"
+    },
+    {
+      "path": "docs/team/bugs/BUG-076-ui-budget-general-tech-baseline-not-reproducible.md",
+      "size": 5204,
+      "contentType": "text/markdown",
+      "sha256": "6fc8b4eaa47971b89e1e79cc9b38ed8ecbd3272dba42d15f0cc8f094c868c10f"
+    },
+    {
+      "path": "docs/team/bugs/BUG-077-role-status-labels-english-on-zh-page.md",
+      "size": 2999,
+      "contentType": "text/markdown",
+      "sha256": "09155becf6a08ac055077cfc2d92f3ec99235913ad6fa01594815a2ab3dedec8"
+    },
+    {
+      "path": "docs/team/bugs/BUG-078-withheld-reason-label-on-granted-basic-role.md",
+      "size": 3226,
+      "contentType": "text/markdown",
+      "sha256": "45b0f738ac84dc22d4f77b53184ba2654080de3baa496b36b3886cc127210800"
+    },
+    {
+      "path": "docs/team/bugs/BUG-079-shared-workspace-rollback-wipes-uncommitted-pages.md",
+      "size": 4298,
+      "contentType": "text/markdown",
+      "sha256": "309c8cc592f5d3f4a3c7a1a70dec032bd12cd3b62a343f747b652ac7175fa1b2"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2614,9 +2650,9 @@
     },
     {
       "path": "docs/team/design/UI-016-console-content-simplification.md",
-      "size": 16234,
+      "size": 19834,
       "contentType": "text/markdown",
-      "sha256": "b2d78e48dd9dc1c4402e9d72630a8dbcb678642da406f53f4ba26419760c6010"
+      "sha256": "068a3df3737e7932e664a825b41f01958f12116b7a719657021f4f22b61bfbc9"
     },
     {
       "path": "docs/team/design/UI-017-console-menu-information-architecture.md",
@@ -2626,9 +2662,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 96729,
+      "size": 100768,
       "contentType": "text/markdown",
-      "sha256": "6062407164c9d162aa7d5fc5c2d40c5b2c334bbf8e224bf11de8da44d7eeedaf"
+      "sha256": "387add3cb1b6577538d221c4cec6023a07e46e69630b6b237246efc14efa0294"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2731,6 +2767,12 @@
       "size": 30090,
       "contentType": "text/markdown",
       "sha256": "7a0a584bf990fb0d0b2f96426f4847e3d17e4c5f0cf941b08dcc178cec51afcb"
+    },
+    {
+      "path": "docs/team/journal/round-26.md",
+      "size": 27028,
+      "contentType": "text/markdown",
+      "sha256": "5c0fc9c805d6f2a714136541fcca963fd430d5db0a57c65877f4a3e7301c04e4"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -3063,10 +3105,28 @@
       "sha256": "9a4bb54fd53bcc8758fbe5d71a8081f5ded7927e044fc6a17c14a950bb5d404c"
     },
     {
-      "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
-      "size": 23989,
+      "path": "docs/team/requirements/REQ-034-roles-capabilities-settings.md",
+      "size": 39887,
       "contentType": "text/markdown",
-      "sha256": "eed5d8f9642ebc21121765716dc4337c81e18290d2b3aafdc0befad51cfbab8b"
+      "sha256": "a50d44cf24a32dab121784967de8ae7f93a9571c387c58b7d8fb1b271e02c7c7"
+    },
+    {
+      "path": "docs/team/requirements/REQ-035-hub-topics-phase0.md",
+      "size": 63547,
+      "contentType": "text/markdown",
+      "sha256": "ddd26ba10d3866bf5580d17fb76b2c68d738ba5d5983008ad258d0b215522eb8"
+    },
+    {
+      "path": "docs/team/requirements/REQ-036-scheduler-phase0.md",
+      "size": 81104,
+      "contentType": "text/markdown",
+      "sha256": "e47c5cb79c76e4521e34e0945ff102d0981382d4bd70ea06f8a2f86c68f256e3"
+    },
+    {
+      "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
+      "size": 26623,
+      "contentType": "text/markdown",
+      "sha256": "69de6a77375037ace7fc5d7e7d7b9b75c8800fe4f2f6f9fcb3990af43e69968f"
     },
     {
       "path": "docs/team/requirements/SPEC-REVIEW-001-feasibility-and-operability.md",
@@ -5787,6 +5847,60 @@
       "sha256": "1fc32463011a33867dcb7ca2ce7b377e88dfff227ea6e9936811a1bc7e02977f"
     },
     {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-browser.mjs",
+      "size": 13332,
+      "contentType": "text/javascript",
+      "sha256": "82175729144a661cac10a11e1fec06ca5596c95e5504d6e459d8f5ddff88d6f1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-clear-diagnose.json",
+      "size": 1545,
+      "contentType": "application/json",
+      "sha256": "e0d9c7a7fdd9fdb1e31c22661ce2e2175a441a72308dceabf9aea8902e08976c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-clear-diagnose.mjs",
+      "size": 5754,
+      "contentType": "text/javascript",
+      "sha256": "5b76afb38e0c060ba5a9046edbb65085c306e4e581763c2a6245c4e57429a15c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-click.json",
+      "size": 336,
+      "contentType": "application/json",
+      "sha256": "f650c75ca294169b649e817c0221e60c3aae487375d45abe1c702fa4a8f5cea1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-click.mjs",
+      "size": 5774,
+      "contentType": "text/javascript",
+      "sha256": "713d9c5b674dba76d699fc2d01e24dc5d57dc6ad47ded57bd8af12feae626635"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-factory.json",
+      "size": 2728,
+      "contentType": "application/json",
+      "sha256": "02105072dba1f848f667022e2bd948ac483c1d543d0514191dc93f35a9dc82be"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-general.json",
+      "size": 16019,
+      "contentType": "application/json",
+      "sha256": "2910a0c061d4a976c4d32b4584c098b4dd97f20968b4c810f105341033679991"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-policy.json",
+      "size": 9088,
+      "contentType": "application/json",
+      "sha256": "53b4ab87efd5425d88ba0d492a9c0fe795e76bc54b53844445c93b3aadf211c1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-26/qa-r26-sweep.json",
+      "size": 10282,
+      "contentType": "application/json",
+      "sha256": "dc7318f3920041f365ee4616d8cefccf9cb3f57eda3875d47a6284c6fb3ddab0"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -5980,9 +6094,9 @@
     },
     {
       "path": "package.json",
-      "size": 715,
+      "size": 845,
       "contentType": "application/json",
-      "sha256": "081b12a4c2a7831061b43cfa2af77e108c634b6de36f0f12c78b10acff0bd4df"
+      "sha256": "65a0724915546e32b786d59de2b3a408f0836f03e51151fd345880447154441c"
     },
     {
       "path": "pages/hero-carousel/layout.aup",
@@ -6130,15 +6244,15 @@
     },
     {
       "path": "scripts/arcblog-dist-secrets.mjs",
-      "size": 7560,
+      "size": 10473,
       "contentType": "text/javascript",
-      "sha256": "2d587e7942498e376faddc5344e66297ab6e76b25ab40ea57e7491d82c061b6d"
+      "sha256": "105bfde0d18a5e6244100972a3ba9a5fd458974e88d61b38223a3e7106f3efd1"
     },
     {
       "path": "scripts/arcblog-dist-secrets.test.mjs",
-      "size": 4828,
+      "size": 14512,
       "contentType": "text/javascript",
-      "sha256": "73f5cdd98aca999c7bdb19d3a2ad1b459699398ed98ceec09f484dd8ddd3d11a"
+      "sha256": "654872bd008bf0a5f35626f8a6b5d94c95739ec357df019c52d708fec7dc35e5"
     },
     {
       "path": "scripts/arcblog-doctor.mjs",
@@ -6154,15 +6268,15 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 63754,
+      "size": 66218,
       "contentType": "text/javascript",
-      "sha256": "2cc85f4e23877f6f78e7702966b296c5a8c7d8492015c282358a0dcc9fc6bdb2"
+      "sha256": "77a5e9291260a137ff6cc1667bd72bb29de6ad5c54e21cbbbba5ab9a579b7853"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 54580,
+      "size": 56174,
       "contentType": "text/javascript",
-      "sha256": "1c6d76a4329cca822f26f1ccbc4f96cd48994769859813070f4f6c662359323b"
+      "sha256": "cee4a107a824e3c71af0c905e3e1a2f4e7c27450002a97576709a4430c14f20b"
     },
     {
       "path": "scripts/arcblog-factory.mjs",
@@ -6250,15 +6364,15 @@
     },
     {
       "path": "scripts/arcblog-pages.mjs",
-      "size": 8065,
+      "size": 25911,
       "contentType": "text/javascript",
-      "sha256": "65fca6e30cbdb7aa853b5f57756f5f688a71e471e65f03a9990d5f5224841de6"
+      "sha256": "7cd6fb55dc677b6670d555a42583885dacbaa39106b3614f417a83a368d46d6c"
     },
     {
       "path": "scripts/arcblog-pages.test.mjs",
-      "size": 3142,
+      "size": 14924,
       "contentType": "text/javascript",
-      "sha256": "a0df2019c6accd376d15071cca2c09e9b5959d7c3d40a8e4d3b69d8df55c2693"
+      "sha256": "aa3cd80acc48002b3b6fd21384ce832f2928e81dea89a287b44b537fee3c5850"
     },
     {
       "path": "scripts/arcblog-permissions.test.mjs",
@@ -6279,10 +6393,22 @@
       "sha256": "09a7b311f3591d6c2b9c4a118a7e7f82a8bd40c6223017c34d0923a4edfe868a"
     },
     {
-      "path": "scripts/arcblog-roles.mjs",
-      "size": 9264,
+      "path": "scripts/arcblog-roles-probe.mjs",
+      "size": 20399,
       "contentType": "text/javascript",
-      "sha256": "b02a6f03db26bdbf29a9ebc90e6828c1f363e3be7d37e9a6f3efa4a6526ef9db"
+      "sha256": "bc1ee1b968e7062e6f83e3e8f72de6549feda55ec31fd23d82d83f27d5345635"
+    },
+    {
+      "path": "scripts/arcblog-roles-settings.test.mjs",
+      "size": 7213,
+      "contentType": "text/javascript",
+      "sha256": "8d686956f6646fc19b9123608f1eb2480e5f2cda7a2fb0c0175c56474e29bf8a"
+    },
+    {
+      "path": "scripts/arcblog-roles.mjs",
+      "size": 16675,
+      "contentType": "text/javascript",
+      "sha256": "dc692cedff33e158d6c085298c4401a828154a762a56742c50d8d48b9176c186"
     },
     {
       "path": "scripts/arcblog-roles.test.mjs",
@@ -6346,15 +6472,15 @@
     },
     {
       "path": "scripts/arcblog-ui-budget.mjs",
-      "size": 12824,
+      "size": 15363,
       "contentType": "text/javascript",
-      "sha256": "10f155bbcfa5d03319a0a4d1f3d3b9922b374df7310b9cc64819c30831a0db13"
+      "sha256": "7c222679980d45cac8ef0aaa09803384cfe8da59efaf9424008b2c0bebe5235a"
     },
     {
       "path": "scripts/arcblog-ui-budget.test.mjs",
-      "size": 4912,
+      "size": 7284,
       "contentType": "text/javascript",
-      "sha256": "5e805f4e4820dbf24bdebe048cc90d96e1b356cc65082161f751d18fe2323e58"
+      "sha256": "b3a89d63e9e8b0d9565900d731446900f7841e7683a22eed8418a526e17e93ed"
     },
     {
       "path": "scripts/arcblog-verify.mjs",
@@ -6406,9 +6532,9 @@
     },
     {
       "path": "scripts/lib/cli-flags.mjs",
-      "size": 7012,
+      "size": 7043,
       "contentType": "text/javascript",
-      "sha256": "c8c15ec37a8f1b5f7dbfcecc5fb8ce2f417b02629cde0e5629666c334f76e824"
+      "sha256": "4a70194513f540bf7d0abbc7192af857ffc368fb2666a8a3aacc8a188e74fa01"
     },
     {
       "path": "scripts/lib/content-hash.mjs",
@@ -6448,9 +6574,9 @@
     },
     {
       "path": "scripts/lib/intents.mjs",
-      "size": 4669,
+      "size": 4829,
       "contentType": "text/javascript",
-      "sha256": "23d0b2a3117b2d5810f1a55e6f664e5b917cd93613fdbdba1cef11461e9a0507"
+      "sha256": "03ac8e2159f80de79c1435a38c5648d71e7181efc15800e137effdd325717b43"
     },
     {
       "path": "scripts/lib/manifest.mjs",
@@ -6495,6 +6621,12 @@
       "sha256": "fe3879e901be74824ad4fdac60d5308251a553cdd7e486bfed6437036f5b1e5e"
     },
     {
+      "path": "scripts/lib/role-verify.mjs",
+      "size": 16636,
+      "contentType": "text/javascript",
+      "sha256": "f5def278c6cbbf8667f0a7a0bd34382c619e84002631866a40ba28179623f668"
+    },
+    {
       "path": "scripts/lib/roles.mjs",
       "size": 10471,
       "contentType": "text/javascript",
@@ -6508,15 +6640,15 @@
     },
     {
       "path": "scripts/run-tests.mjs",
-      "size": 7997,
+      "size": 8680,
       "contentType": "text/javascript",
-      "sha256": "afde9b8a9677eefce9ebdc8d1c92c8e7441d48ae67a80cc45b880b10e2a2df13"
+      "sha256": "62368738b396110b31565171941712060b2433dbd0800d4dea230d4aa0c3e243"
     },
     {
       "path": "scripts/ui-budget-baseline.json",
       "size": 2941,
       "contentType": "application/json",
-      "sha256": "9968a4967936dcc59ee2f659f2f93a7d1a65ec5865ce243aac3c8459055cc235"
+      "sha256": "c0a22756c6c85924293ee48d64a48bc59db385f5802ade6d17a61ddb647958d7"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

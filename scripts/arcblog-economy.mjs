@@ -330,12 +330,41 @@ export function applyPolicyIntent(instance, intent) {
   const next = { ...intent };
   delete next.path;
   const previous = String(intent.status ?? '').trim();
+  // The status trail: `policy queue` / `policy apply` can then SHOW that a row
+  // really passed through the claim below (BUG-073) instead of asking the
+  // operator to take the legend on faith. A record written before this change
+  // has no trail, so it starts from its stored status.
+  const history =
+    Array.isArray(intent.statusHistory) && intent.statusHistory.length ? [...intent.statusHistory] : previous ? [previous] : [];
   if (isTerminalStatus(previous)) {
     next.status = INTENT_STATUS.noop;
+    next.statusHistory = [...history, INTENT_STATUS.noop];
     next.message = `already ${previous}${intent.appliedAt ? ` at ${intent.appliedAt}` : ''} — not executed again`;
     next.updatedAt = nowIso();
     writeJson(recordPath, next, instance);
     return next;
+  }
+  // BUG-073 (L-R26-3, option (a)): the worker REALLY claims the intent. `running`
+  // is written BEFORE any business work, so
+  //   1. the console legend ("running = claimed by the worker") describes a state
+  //      that actually occurs, and `policy queue` can show it mid-flight;
+  //   2. a worker that dies mid-flight leaves a `running` record the next `apply`
+  //      re-claims — `isInFlightStatus` already covers {pending, running}
+  //      (BUG-051), so crash recovery was designed for exactly this write.
+  // Cost/risk: ONE extra record write on the happy path, BEFORE the policy data
+  // write, and strictly additive — the data path below is untouched, so a
+  // refused/limited policy write still ends as `rejected` with zero data change,
+  // and an unreachable instance leaves the intent `pending` (retryable) exactly
+  // as before.
+  const claimedAt = nowIso();
+  if (history[history.length - 1] !== INTENT_STATUS.running) history.push(INTENT_STATUS.running);
+  if (previous !== INTENT_STATUS.running) {
+    next.status = INTENT_STATUS.running;
+    next.claimedAt = claimedAt;
+    next.statusHistory = history;
+    next.message = 'running — claimed by the local worker; the outcome is written back onto this record';
+    next.updatedAt = claimedAt;
+    writeJson(recordPath, next, instance);
   }
   try {
     const verdict = validatePolicyIntent(intent);
@@ -382,6 +411,7 @@ export function applyPolicyIntent(instance, intent) {
     next.elapsedMs = null;
     next.message = withNoDataChanged(err.message);
   }
+  next.statusHistory = [...history, next.status];
   next.updatedAt = nowIso();
   writeJson(recordPath, next, instance);
   return next;
@@ -404,6 +434,10 @@ function policyReport(intent) {
     status: intent.status,
     ...(intent.code ? { code: intent.code } : {}),
     changed: intent.changed ?? [],
+    // BUG-073: the claim is a real write, so its timestamp and the status trail
+    // are part of the report — "running happened" is evidence, not a claim.
+    ...(intent.claimedAt ? { claimedAt: intent.claimedAt } : {}),
+    ...(Array.isArray(intent.statusHistory) ? { statusHistory: intent.statusHistory } : {}),
     ...(intent.appliedAt ? { appliedAt: intent.appliedAt } : {}),
     message: intent.message,
   };
@@ -1293,7 +1327,11 @@ config/ tree, so no permission change is needed) and this CLI performs it:
 \`policy queue\` prints that queue (read only), \`policy apply\` / \`policy watch\`
 execute it, and the outcome (pending | running | applied | rejected | noop + a
 reason) is written back onto the record — the SAME vocabulary every other queue
-uses (scripts/lib/intents.mjs, D36). \`apply\` reads the existing policy FIRST and
+uses (scripts/lib/intents.mjs, D36). \`running\` is a REAL write since BUG-073:
+\`apply\` claims the record first (status \`running\` + \`claimedAt\` + \`statusHistory\`)
+and only then does the work, so a worker that dies mid-flight leaves a record the
+next \`apply\` re-claims, and the report shows the trail. \`apply\` reads the
+existing policy FIRST and
 merges (the \`policy init --update\` semantics), so \`version\`, \`createdAt\` and
 every field the intent does not name survive; an intent whose values the record
 already carries ends as \`noop\` with zero bytes written. A preset that does not

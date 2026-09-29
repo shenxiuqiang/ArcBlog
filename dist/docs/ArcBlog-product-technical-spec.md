@@ -5351,7 +5351,7 @@ Decentralized
 | **F5** | AFS 底层本身就是 SQLite（平台私有）→ 平台已提供持久化；自建 DB 的增量价值在**关系模型 / FTS5 / 读模型**，不是「有个库」 | `~/.afs/spaces/<scope>/.did-space/space.db`(+`-wal`/`-shm`)、`_resolve.db`、`_presence.db`、`versioned-content/space.db`、`agent-index/blocklet-index.db` |
 | **F6** | 平台查询层已覆盖大部分「要 DB」的诉求：`/.actions/query`（typed `where`/`orderBy`/`select`/`cursor`）与 `/.actions/aggregate`（多组 `groupBy`、`sum|avg|max|min|count`、`timeGranularity`、`annotate.memberOf` 连接）+ `/modules/index`（FTS/anchor/vector） | `arc afs explain /blocklets/arcblog/.actions/{query,aggregate}`；`/modules/index/.actions/{index,query,reindex,…}`；实测 `stats/total-entries = 1256`、`stale-entries = 0`，FTS 返回 AFS 路径 |
 | **F7** | **三个实测坑**（任何「用 AFS 当 DB」的设计都必须绕开）：① 大记录不进 `where`（`where status=published` 漏掉 4883 B 的 `hello-arcblog.json`，与 [arc-contracts §15.1](arc-contracts.md) 受控实验一致：2.5 KB/4.9 KB ❌）；② `select:["title"]` 返回 `content: {}`；③ `aggregate groupBy:"content.category"` 返回分组键 `null` 而 `n=3`（`query count` 同为 3） | 本轮 live 复跑（命令与输出见团队证据文件） |
-| **F8** | 历史坑：**dev 形态（`.route` 从源码服务）下模块挂载未被加载**（`No module found for path: /chain/.actions/ping`） | [arc-contracts §26.1/§26.2](arc-contracts.md)。本设计因此在 **P0-1 强制要求在目标部署形态（publish + instance deploy / 服务器）复测**后再进入实现 |
+| **F8** | 历史坑（**已被 R25 订正**）：dev 形态（`.route` 从源码服务）下 `No module found for path: /chain/.actions/ping`；当时判为"挂载未加载" | **订正来源 [arc-contracts §41](arc-contracts.md)**：该错误串是**命名空间寻址错位**的通用信号，**不能**据此判定挂载未加载；scope 与安装方式两个怀疑方向均被证伪（探针同样 `scope: app`、同走本地 daemon 注册路径）。**模块挂载确实被加载**（`onMount` 被调用、`registerCustomAction` 的动作可 exec），只是**声明路径在 flat topology 不可寻址** ⇒ 数据层对外只能暴露 **blocklet 根 `/.actions/<id>`** |
 | **F9** | 平台已有 Hub 派生索引的记录形态（**仅元数据、永不含正文**），字段齐备 | `world/content-index.yaml`（postId/studioDid/title/excerpt/cover/url/tags/publishedAt/contentHash/version/status/indexedAt/deletedAt/updatedAt）+ `scripts/lib/network.mjs` 的 `hub/index/`、tombstone、`indexEntryCurrent`（version+contentHash） |
 | **F10** | 平台对「派生 vs 真源」的现行判例：`arc dsl generate` **不再产出** `.aup/pages/*.json`，7 个历史物化副本属死产物（本轮调研结论） | `arc dsl generate --json` 的 `files` 只有 7 个非 page 产物；`arc dsl validate --json` 50 文件不含它们 |
 
@@ -5472,14 +5472,14 @@ Decentralized
 
 | 级别 | 待测（对应 §155 任务） | 通过判据 |
 | --- | --- | --- |
-| **P0-1** | 模块挂载在**目标部署形态**（publish + instance deploy / 服务器）是否加载（T0-1；F8 的 dev 形态失败不具代表性） | `/probe/.actions/ping` 可执行且返回 `caller.did` |
+| **P0-1** | ✅ **已证（R25 阶段 0，[arc-contracts §41](arc-contracts.md)）**：模块挂载**确实被加载**（`onMount(root, mountPath)` 的实参 = 声明路径；`registerCustomAction` 注册的动作可用 `arc afs exec` 调用）；**但声明路径在 flat topology 不可寻址** —— 唯一可达面 = **blocklet 根 `/.actions/<id>`** | 判据由「`/probe/.actions/ping` 可执行」**改为**「根自定义动作可 exec」；`No module found for path: X` 是**命名空间寻址错位**信号，不能据此判定挂载未加载（§41(4) 已订正 F8） |
 | **P0-2** | ✅ **已通过（2026-09-28）**：`bun:sqlite` 可用 —— SQLite 3.51.0、FTS5、文件库跨进程持久、聚合；`node:sqlite` 备选；native addon 不作依赖（F17） | 探针 `/tmp/probe-sqlite/probe.mjs` + `BUN_BE_BUN=1 <arc 二进制> run` |
 | **P0-3** | 是否存在**合法、持久、per-blocklet** 的本地落点；重启 daemon / `arc upgrade` / 重新部署后是否保留（T0-2；F14） | 明确结论：可用目录 → 用文件库；不可用 → 采用「内存/临时库 + 每次 `onMount` 从 AFS 回填」（§154.9） |
 | **P0-4** | ✅ **已通过（2026-09-28，T0-5）**：`arc blocklet build` 会复制 `providers/**` 进 `dist/` 与 `dist/.afs/manifest.json`，并把 `mounts` 展平进 `dist/blocklet.dist.json`（F15） | 推翻了原先"未证明"的登记 |
-| **P0-5** | 应用商店发布取件路径（T0-6；F16：beta.50 无 `arc blocklet publish`） | 明确"商店/索引读取什么产物、放哪"，并写出可复跑步骤 |
+| **P0-5** | ✅ **已答（R25 阶段 0，[arc-contracts §43](arc-contracts.md)）**：beta.50 无 `arc blocklet publish`，打包/发布走 `arc deploy --publish`（本地 DID Space）/`--server`/`blocklet deploy --cloud cf`/`instance deploy`；取件产物 = `deployments/<id>/files/` + `meta.json`；**Marketplace 是普通 AFS Index，不托管 blocklet 本体 ⇒ 取件端要自建 index 条目** | ⚠️ 同时发现 **BUG-074（P1）：Pages 部署产物会带真实私钥**，`scrub:dist-secrets` 只管 `dist/**` 管不到它 ⇒ 发布前须对两条通道做产物级扫描（§155 T5-1/T5-5） |
 | **P0-6** | provider **零依赖**是否成立（T1-1；F18：第三方依赖解析未文档化） | provider 仅用 `bun:*` / `node:*` 即可跑通；若必须依赖，先证明解析机制 |
-| **P0-7** | 匿名 / 自托管单实例下的 `options.context.caller` 形状（T1-1；F12 只证明 DID-Connect 会话调用者） | 给出匿名与已登录两种 caller 的实测样例；授权判定不得假设 `caller.did` 必然存在 |
-| **P1-1** | AFS `query`/`aggregate` 的字段路径与一致性校准（T0-4、F7 ③） | 能给出可用子集与已知坑清单 |
+| **P0-7** | ⚠️ **部分已答（R25 §46，T1-0 实测）**：能拿到 caller 的 `exec` 面在 flat topology **不可寻址**；**blocklet 根自定义动作只收 `(args)`，`caller` 恒为 `null`（匿名可达）** | 结论：**数据层不得以 `caller` 做任何授权判定**；根动作只能暴露**公开投影**，鉴权留在 AUP `$session`。（已登录样例仍缺，但不阻塞设计——因为该面根本收不到 caller） |
+| **P1-1** | ✅ **已完成（T0-4，[arc-contracts §44](arc-contracts.md)，2026-09-29）**：只可依赖「**≤ ~1.8 KB** 记录的**内容相对 dot-path**（**不写 `content.` 前缀**）`where`/`select`/`groupBy` + entry 列**单键** `orderBy` + `limit/offset/cursor`/`skipTotal`/`seekId` + `count`」；超过阈值的记录 `ds_entries.content IS NULL` → `where` **静默漏**、`select` **静默 `{}`**（字段不存在同样返回 `{}`）；`aggregate.total` 是**组行数**不是记录数；`annotate.memberOf` / `timeGranularity` / `semantic` 模式在本实例**实测无效** | **数据层必须自带内容索引与计数**；平台查询层只能当**可能不完整**的加速缓存，且每次与 `list`/`read` 对账 |
 | **P1-2** | 同步 I/O 对 daemon 的影响（大查询不阻塞事件循环） | 压测期间 daemon 仍响应 |
 | **P1-3** | 模块挂载的 `mounts[].options` 是否被采纳（F18 只在 `sandbox://` 有例） | 自定义 option 在 provider 内可读到，或明确不支持 |
 | **P2-1** | AUP 侧 `.md` 读/写能力（仅当 §154.7 触发条件成立时才做） | `propBind` 读文本 + textarea 回写 + `ifMatch` 可复现 |
@@ -5513,7 +5513,7 @@ Decentralized
 
 | ID | 任务 | 验收标准 | 依赖 |
 | --- | --- | --- | --- |
-| **T1-1** | provider 模块骨架（**零第三方依赖**，SQLite 句柄只在 `onMount` 打开）+ `blocklet.yaml mounts:` 正式声明（`ops: [read, list, exec]`，`required: true`） | 挂载可用；`exec` 返回 runtime 校验的 `caller`（含匿名样例，见 §154.10 **P0-7**）；`read/list` 可列 DB 中的表结构；provider 只 import `bun:*` / `node:*` | T0-1、T0-2、T0-6 |
+| **T1-1** | provider 模块骨架（**零第三方依赖**，SQLite 句柄只在 `onMount` 打开）+ `blocklet.yaml mounts:` 正式声明（`ops: [read, list, exec]`，**`required: false`** —— R25 §42：`required: true` + 坏挂载 = **整包不激活**且 `arc blocklet run` 静默 exit 0；`false` 正是 §154.6 I7 要的降级路径） | **可达面 = blocklet 根自定义动作 `/.actions/<id>`**（R25 §41：`mounts[].path` 在 flat topology **不可寻址**）；**根动作只暴露公开投影、不得依赖 `caller` 鉴权**（R25 §46：根自定义动作 handler 只收 `(args)`、`caller` 恒为 `null` 且**匿名可达** ⇒ 鉴权只能留在 AUP `$session`）；provider 只 import `bun:*` / `node:*`；**激活判据读 `/blocklets/<id>`，不得用 CLI 退出码** | T0-1、T0-2、T0-6 |
 | **T1-2** | 幂等 bootstrap + `schema_version` 迁移框架（I6） | 空库首启自动建表；重复启动不重复迁移；迁移失败 fail-closed 且不影响页面（I7） | T1-1、T0-2 |
 | **T1-3** | `arcblog-index.mjs` CLI：`rebuild` / `verify` / `stats`（I2 的可执行形式） | `rebuild` 后 `verify` 报告 0 差异；`stats` 输出表行数与 `last_indexed_at` | T1-2 |
 | **T1-4** | 降级路径接线（DB 不可用 → 页面回落 AFS 直读）+ 诊断页数据层卡 | 关掉挂载后页面仍可用且诊断页显式标注降级 | T1-2 |

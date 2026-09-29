@@ -863,6 +863,76 @@ and `--check` exited 1; after `npm run scrub:dist-secrets` the guard passed and
 > Verify with `shasum -a 256 node.key .env.local` before/after a scrub — R24F
 > measured `2305e487…` / `98320672…` unchanged, with the original mtime.
 
+### The SECOND channel: Pages deployment artifacts (BUG-074)
+
+`arc deploy` / `arc blocklet instance deploy` treat the **repository root** as the
+publish root — the same mistake as `arc blocklet build`, but the BUG-067 scrub only
+covers `dist/`. The leaked copies therefore also land (with the whole repository)
+under the ARC Pages deployment channel, and `bundle.json` inlines their content:
+
+```bash
+ls ~/.arc/pages/projects/arcblog/deployments/<id>/files/node.key   # real private key
+```
+
+Since Round 26 the guard is a **read-only directory scanner**, so both channels can
+be asserted with the same command:
+
+```bash
+node scripts/arcblog-dist-secrets.mjs --check                 # dist/ (BUG-067 channel)
+node scripts/arcblog-dist-secrets.mjs --check --dir <path>    # ANY directory, read-only
+node scripts/arcblog-dist-secrets.mjs --check --pages         # ~/.arc/pages/projects/<project>/deployments
+node scripts/arcblog-dist-secrets.mjs --check --pages --project <id>   # project id override
+npm run verify:artifacts                                      # both channels in one entry
+```
+
+> **Release gate (B-4):** scan **both** channels before publishing — asserting
+> `dist/` alone is not enough (BUG-074). `npm run verify:artifacts` chains the two
+> probes and exits non-zero on the first one that finds key material, so a red
+> Pages channel blocks the release even when `dist/` is clean.
+
+Rules that make this safe to run anywhere:
+
+* **`--dir` / `--pages` are read-only probes.** They never scrub; asking them to
+  scrub is refused with exit code `2` (scrubbing stays limited to this repo's own
+  `dist/`, reached by `npm run scrub:dist-secrets`).
+* **A missing directory is an explicit skip**, not a silent `ok`: the output carries
+  `"skipped": true` plus a `skippedReason` and exits `0`. A channel that exists and
+  carries key material exits `1` and lists every path. The default `dist/` target is
+  different on purpose — it is the build output you just produced, so its absence is
+  still a failure.
+* Measured 2026-09-29 (R26), read-only: `--check --pages` on this machine found
+  **40** copies (`deploy-*/files/node.key`, `deploy-*/files/.env.local`) and exited
+  `1`. Nothing was deleted.
+* **Do not clean the historical deployments and do not rotate `node.key` without
+  human approval.** Both touch user data and the existing content signatures
+  (spec §67) — R26 was explicitly scoped to the scan gate only (L-R26-4).
+
+### Roles & capabilities: re-verifying from the console (`?page=general`)
+
+`chainVerification` is `false` and stays `false` (fail closed, spec §114/§115), so
+"re-verify" on the settings page is a **read-only re-derivation**, never an on-chain
+verification. The page's button only queues an intent; this is the worker that
+consumes it:
+
+```bash
+node scripts/arcblog-roles.mjs verify request            # queue one intent from the CLI (page button parity)
+node scripts/arcblog-roles.mjs verify queue              # read the queue
+node scripts/arcblog-roles.mjs verify derive             # re-derive now, without queueing
+node scripts/arcblog-roles.mjs verify apply              # drain the queue: running -> applied|rejected
+node scripts/arcblog-roles.mjs verify watch              # keep draining
+node scripts/arcblog-roles.mjs verify show               # the current snapshot
+```
+
+It reads `config/roles.json`, `node/profile.json` and the public `node/factories.json`
+projection, then writes `node/role-status/<role>.json` plus the snapshot header
+`node/role-verification.json`. When the config record and the projection disagree
+(measured: `studio.lifecycle.state="none"` while `node/factories.json` says
+`"acquired"`), the snapshot **reports the disagreement and never picks a winner**.
+The queue lives under the admin-only `config/` tree, so a guest read is refused and
+`blocklet.yaml` needed no change. Buying / staking / revoking / claiming are **not**
+on this page: they are the four buttons on `?page=factory`, whose intents only the
+chain worker signs.
+
 ## Development instance hygiene
 
 The live test suite is non-hermetic: it writes to the default instance and the

@@ -109,6 +109,12 @@ npm test                  # fast tier: ~1s, no instance writes; take the count f
 npm run build             # only when .aup changed — build + scrub secrets out of dist/
 ```
 
+**QA batching (user ruling, 2026-09-29):** per-round QA is **paused**. Implement rounds now run
+`PM plan → Dev implement → Lead gate (validate + fast tier + build) → commit`, and the independent
+QA pass happens **once, at the end of a batch** (or on explicit request). Rationale: a full QA sweep
+costs more wall-clock than the implementation it checks. The fast tier and `arc dsl validate` remain
+mandatory on **every** round — a red gate is never committed.
+
 **Do not run the full `npm run test:live` as a routine gate** (user ruling, 2026-09-27). It mutates
 the shared dev instance and takes ~21 min (measured in Round 7: 212 pass / 0 fail, 1236 s, 60 test
 records cleaned). It stays in the repo for deliberate, human-requested runs only

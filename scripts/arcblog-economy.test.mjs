@@ -1010,6 +1010,28 @@ test('live: a queued preset really changes the named fields, and only those', ()
   assert.equal(after.paymentAdapter, before.paymentAdapter, 'an unnamed field must survive');
 });
 
+test('live: the worker claims an intent as `running` before it decides (BUG-073 / L-R26-3a)', () => {
+  // Order-independent on purpose: the request repeats the adapter the record
+  // ALREADY carries, so the run normally ends `noop` and changes no policy data
+  // — this test observes the CLAIM, not a policy change.
+  const current = policyShow();
+  const before = JSON.stringify(current ?? null);
+  const adapter = String(current?.paymentAdapter ?? 'none');
+  const queued = json(runQ(['policy', 'request', '--action', 'adapter', '--payment-adapter', adapter]).stdout);
+  assert.equal(queued.intent.status, 'pending', 'a fresh intent starts pending');
+  const row = json(runQ(['policy', 'apply']).stdout).intents.find((intent) => intent.id === queued.intent.id);
+  assert.equal(row.statusHistory?.[0], 'pending', `the trail must start at pending: ${row.message}`);
+  assert.equal(row.statusHistory?.[1], 'running', `BUG-073: the claim must really be written: ${row.message}`);
+  assert.equal(row.statusHistory?.at(-1), row.status, 'the trail must end at the reported terminal status');
+  assert.ok(row.claimedAt, 'the claim timestamp must be reported');
+  const stored = json(runQ(['policy', 'queue']).stdout).intents.find((intent) => intent.id === queued.intent.id);
+  assert.deepEqual(stored.statusHistory, row.statusHistory, 'the record itself carries the trail, not just the CLI view');
+  assert.equal(stored.claimedAt, row.claimedAt);
+  if (row.status === 'noop') {
+    assert.equal(JSON.stringify(policyShow()), before, 'a noop claim must still change zero policy bytes');
+  }
+});
+
 test('live: re-applying is a no-op and writes zero bytes; a repeated preset is noop too', () => {
   const before = JSON.stringify(policyShow());
   const again = json(runQ(['policy', 'apply']).stdout);

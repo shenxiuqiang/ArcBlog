@@ -2488,3 +2488,59 @@ $ git diff --stat -- blocklet.yaml providers   → 空
 3. **P1-3 未测**：`mounts[].options` 对**模块挂载**是否被采纳（F18 只在 `sandbox://` 有例）。
 4. **P0-3 仍无**：持久化 per-blocklet 落点没有文档化目录；本范式按 I2 用内存库 + AFS 回填（重启重建已证，§46.5）。
 5. 本骨架的 `seed` 只是探针便利动作（provider 写 AFS 真源）；**生产里 AFS 真源必须由 app/CLI 写**，provider 单向 AFS→DB（I4）。
+
+---
+
+## 47. `afs-list sort=` 与 `.actions/query orderBy` **不是同一层能力**（R26 实测）
+
+`.actions/query` 的 `orderBy` **只吃 entry 列**：`name|path|size|ctime|mtime|mimeType` 或 `meta.*`；
+写 `[["publishedAt","desc"]]` 被服务器直接拒：`ERROR: Invalid query spec: orderBy: must be 1-3 [field, asc|desc] tuples over name|path|size|ctime|mtime|mimeType or meta.* paths`。
+而 **页面侧 `afs-list sort={preset:{field:"content.sort", desc:false}}` 能按内容字段排**
+（本仓 `?page=heroes` 有 DOM 实证，REQ-030 §358）。
+⇒ 想按期号/发布时间排，**用 `afs-list` 的 `sort`**，不要指望把 `orderBy` 下推；
+`where` 侧 `{field:"tags", contains:"identity"}` 实测可用（Hub index 命中 1 条）。
+
+## 48. 更正 §29.7：`hub list` / `hub show` 是**纯读**（本次实测不复现「读取即回写」）
+
+`node scripts/arcblog-network.mjs hub list` 运行后，`hub/registrations/<hash>.json` 的
+`content.updatedAt` 与 `freshness.checkedAt` **保持旧值**（命令打印的 `checkedAt` 才是运行时刻）；
+代码侧读路径零 `writeJson`，唯一写路径是 `putHubRegistration`（被 `hub refresh` 与 tombstone 调用）。
+⇒ §29.7 的旧结论按本条更正；`hub refresh` 才是写路径。
+
+## 49. `hub/*` 对 guest **三重锁全拒**，且**不能**在私有父下嵌公开子目录
+
+`hub/` 同时被 `replicated.hub`（`readRole: admin`）、`networkRead` 的 `hub → admin`、以及权限测试的
+`ADMIN_PATHS`/`privateDirs` 拦住。平台规则不允许「私有父目录里挂公开子目录」⇒
+需要公开的 Hub 侧数据**只能**走 `node/` 顶层投影（零权限改动，推荐）或**另开独立顶层前缀**（权限敏感）。
+
+## 50. `hub/index` 是**派生**数据：`rebuild` 会全量覆盖
+
+`hub index rebuild` 是索引重建，写入即覆盖。因此**主题定义与人工策展次序不可派生**（§154.5 判据 4/5、§154.6 I1/I4）
+—— 它们必须落**非派生树**，否则一次 `rebuild` 抹掉策展。
+另：「不存在的路径静默返回 `{entries:[],total:0}`」（§44.1 陷阱）在 `hub/topics` 上复现，不能据此判定目录已建。
+
+## 51. 平台**有**原生调度，但它不在 `arc` 命令面上（R26 实测）
+
+`arc` 18 个顶层命令 + 85 个二级子命令的 `--help` 共 1406 行，`cron|schedul|timer|interval|periodic` **0 命中**；
+但 daemon 里 `/scheduler` provider 真实存在并在跑：`kind: scheduler:root`、动作含 `schedule`/`unschedule`、
+`accessMode: readwrite`，当前 1 条 enabled schedule `index-follower`（`cron: "* * * * *"`），
+`/scheduler/history` 100 条滚动窗口 ≈60.7 s/条（与表达式吻合）。
+`/blocklets/<id>/scheduler` 是 **projection 投影**（`{base:"scheduler-<id>", stack:[{kind:"project", source:"/scheduler"}]}`），**不是** per-blocklet 过滤。
+⚠️ `/scheduler` 是 `readwrite`：只读探针**只用 `ls`/`read`/`stat`**，不要 `exec`。
+
+## 52. manifest 的 `cron:` 字段**确实存在**（官方样例 + 官方文档双证），但 `arc blocklet check` **不能**作证
+
+- 官方自带参考应用 `~/.arc/current/assets/blocklets/discuss-kit/blocklet.yaml` 顶层 34–50 行有
+  `# Declarative cron (#1722)` + `cron:` 数组（`name` / `cron` / `task` / `args`）；
+  官方线上文档「运行时声明字段」表逐字列出 **`cron` = 激活时注册的声明式定时任务**。
+  ⇒ **spec §111 的原话成立**，`SPEC-APPROVAL-001` C-14 的「改为待验证」前提**不成立**。
+- **反证**：`arc blocklet check` **不校验未知顶层键** —— 往 discuss-kit 副本加一个不存在的顶层字段，
+  `check --json` 仍是 `ok:true, issues:[]`。⇒ **不得**用 check 的 ok 证明某个 manifest 字段合法。
+- `cron.task` 必须落在 blocklet small-world（`/packages` + `/dev/*` + `/instance`，**不含 `/registry`**）；
+  本仓今天无 `mounts:`、`providers/` 为空 ⇒ §111 的真实工作量在**动作载体**（provider 动作），不是写 yaml。
+
+## 53. 今天生产上在跑的"周期"机制 = 两个长驻 `watch`（结构上不满足 §111 的失败语义）
+
+`node scripts/arcblog-network.mjs hub watch` = `setInterval(tick, seconds*1000)`（默认 3 s，tick 内 try/catch，**无退出条件**）；
+`node scripts/arcblog-chain-worker.mjs watch` = `for(;;){await setTimeout(interval*1000); once(); await refreshSvg()}`（默认 3 s，**无退出条件、循环体无 try/catch**，文件头注明 Ctrl-C 停止）。
+`hub refresh` 是**写路径**（逐条 `putHubRegistration`）。⇒ §111「失败标记 offline 而不中断」目前**没有**承载物。

@@ -76,6 +76,43 @@ test('fails loudly when the sidebar anchor is missing (no silent whole-file fall
   assert.equal(metrics.styles, 0);
 });
 
+test('tech counts rendered identifiers, not prop wiring', () => {
+  // A P1 list page legitimately needs two collection paths plus the write targets;
+  // those are prop values, never visible to the operator (dev-posts, task-15).
+  const wiring =
+    'page x {\n  view {\n    afs-list from "/instance/app/arcblog/posts" {\n      action -> exec "/.actions/write" path="/instance/app/arcblog/drafts/${args.slug}.json"\n    }\n    afs-list propBind={drafts: "/instance/app/arcblog/drafts"} from "/instance/app/arcblog/drafts" {\n      p "row"\n    }\n  }\n}\n';
+  assert.equal(measure(wiring, 'synthetic.aup', false).tech, 0, 'wiring must not count');
+  const rendered = 'page x {\n  view {\n    key-value-list fields=[{label: "DID", value: "did:key:zABC123"}]\n    p "hash sha256:0123456789abcdef"\n  }\n}\n';
+  assert.equal(measure(rendered, 'synthetic.aup', false).tech, 2, 'rendered identifiers must still count');
+});
+
+test('page-level components are measured, but hidden write plumbing is not', () => {
+  // `component f() { … }` renders, so its visible controls count — otherwise a page
+  // could hide complexity in a component and the content-column cut would miss it
+  // (dev-posts, task-15). The 18 `input type=hidden name=e*` fields only carry one
+  // record into `exec /.actions/write`, exactly like the `path=` wiring `tech` drops.
+  const source =
+    'page x {\n' +
+    '  component fields() {\n' +
+    '    input type=hidden name=eTitle value="${entry.content.title}"\n' +
+    '    input type=hidden name=eSlug value="${entry.content.slug}"\n' +
+    '  }\n' +
+    '  view {\n' +
+    '    view style={background: "var(--card-bg)"} {\n' +
+    '      action "Save" -> exec "/.actions/write"\n' +
+    '      use fields()\n' +
+    '    }\n' +
+    '  }\n' +
+    '}\n';
+  const m = measure(source, 'synthetic.aup', false);
+  assert.equal(m.cards, 1, 'card inside the content root');
+  assert.equal(m.ctrl, 1, 'hidden plumbing does not count; the action does');
+  const visible = source.replace('input type=hidden name=eTitle', 'input name=eTitle');
+  assert.equal(measure(visible, 'synthetic.aup', false).ctrl, 2, 'a visible input counts');
+  const hiddenInline = source.replace('use fields()', 'input type=hidden name=eBody value="x"');
+  assert.equal(measure(hiddenInline, 'synthetic.aup', false).ctrl, 1, 'inlined hidden field still does not count');
+});
+
 test('ratchet: no page is worse than scripts/ui-budget-baseline.json', () => {
   const regressions = [];
   for (const row of report) {

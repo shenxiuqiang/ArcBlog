@@ -4,10 +4,10 @@ page pages {
     act-delete-msg { en "Pages have no soft delete — this removes the record." zh "页面没有软删除——这将直接移除记录。" }
     act-delete-title { en "Delete this page?" zh "删除这个页面？" }
     act-offline { en "Take offline" zh "下线" }
-    act-offline-msg { en "Keeps an offline copy under page-drafts/; remove the public copy to complete." zh "会在 page-drafts/ 保留离线副本；移除公开副本后完成下线。" }
+    act-offline-msg { en "Queues ONE \"Take offline\" intent under config/page-intents/ — this page writes nothing to your records. This node's worker performs the move (it reads the page, merges it into page-drafts/, then removes the public copy): `arcblog-pages.mjs apply` once, or `watch` to keep it running. Read the intent record back — a toast is not evidence." zh "只向 config/page-intents/ 入队一条「下线」意图——本页不改动任何记录。真正的迁移由本节点 worker 执行（读取页面→合并→写入 page-drafts/→移除公开副本）：`arcblog-pages.mjs apply` 跑一次，或用 `watch` 常驻。请读回意图记录——toast 不是证据。" }
     act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
     act-publish { en "Bring online" zh "上线" }
-    act-publish-msg { en "Writes a public copy under pages/. If a public copy already exists — for example one written by the old CLI or by root authority — the platform refuses this write (\"without a recoverable authority sidecar\"); click \"Remove public copy\" on the online row first, then bring it online." zh "会向 pages/ 写入公开副本。若公开副本已存在——例如旧 CLI 或 root 授权写入的既有记录——平台的写入会被拒绝（without a recoverable authority sidecar）；请先在上线区对应行点「移除公开副本」，再点「上线」。" }
+    act-publish-msg { en "Queues ONE \"Bring online\" intent under config/page-intents/ — this page writes nothing to your records. This node's worker writes the public copy and removes the offline copy; an older public copy (written by the old CLI or by root authority) is replaced too, because the worker writes with this node's own authority — the very write the platform refuses when a page asks for it." zh "只向 config/page-intents/ 入队一条「上线」意图——本页不改动任何记录。由本节点 worker 写入公开副本并移除离线副本；旧 CLI / root 授权留下的公开副本也会被替换，因为 worker 用的是本节点自己的权限——而这正是平台拒绝页面发起的那种写入。" }
     act-publish-title { en "Bring this page online?" zh "上线这个页面？" }
     act-remove-public { en "Remove public copy" zh "移除公开副本" }
     create { en "New page" zh "新建页面" }
@@ -22,12 +22,12 @@ page pages {
     gate-title { en "Pages" zh "页面" }
     list-empty { en "No pages yet. Create your first page above." zh "还没有页面。在上方创建第一个页面。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    offline-hint { en "Offline pages are admin-only. Bring one online when it is ready. If the public copy still exists (an older CLI / root-authorized record), the platform refuses that write — first click \"Remove public copy\" on the matching online row, then bring it online." zh "离线页面仅后台可见；准备好后点「上线」。若公开副本仍存在（旧 CLI / root 授权的既有记录），平台会拒绝写入——请先在上线区对应行点「移除公开副本」，再点「上线」。" }
+    offline-hint { en "Offline pages are admin-only. 「Bring online」 only queues an intent under config/page-intents/; the local worker performs the move (arcblog-pages.mjs queue prints those rows read-only, apply runs them once, watch keeps running). The list below the two page lists is that queue, read straight from AFS: action · status · message." zh "离线页面仅后台可见。「上线」只向 config/page-intents/ 入队一条意图；真正的迁移由本机 worker 执行（arcblog-pages.mjs queue 只读列出这些行，apply 执行一次，watch 常驻）。两个页面列表下方那个列表就是该队列，直接读 AFS：action · status · message。" }
     offline-list { en "Offline" zh "已下线" }
-    offline-ok { en "Offline copy saved." zh "已保存离线副本。" }
-    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。" }
+    offline-ok { en "Intent queued — read config/page-intents to confirm; the local worker takes the page offline." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行下线。" }
+    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index. 「Take offline」 only queues an intent under config/page-intents/ — the local worker completes the move. 「Remove public copy」 is a different, immediate action: it hard-deletes the public record (pages have no soft delete)." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。「下线」只向 config/page-intents/ 入队一条意图——真正的迁移由本机 worker 完成。「移除公开副本」是另一条立即生效的动作：硬删除公开记录（页面没有软删除）。" }
     online-list { en "Online" zh "已上线" }
-    published-ok { en "Page is online." zh "页面已上线。" }
+    published-ok { en "Intent queued — read config/page-intents to confirm; the local worker brings the page online." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行上线。" }
     removed-ok { en "Removed." zh "已移除。" }
     status-offline { en "Offline" zh "已下线" }
     status-online { en "Online" zh "已上线" }
@@ -173,14 +173,9 @@ page pages {
                     view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0, flexBasis: auto} {
                       p :view-page scale=sm
                     }
-                    action variant=secondary size=sm label=:act-offline confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.offline-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", summary: "${args.eSummary}", body: "${args.eBody}", status: offline, authorDid: "${args.eAuthorDid}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-remove-public path="/instance/app/arcblog/pages/${entry.content.slug}.json" confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                    action variant=secondary size=sm label=:act-offline confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages.offline-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/page-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: offline, slug: "${args.eSlug}", status: pending, message: "", changed: [], fromStatus: "", toStatus: "", requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-remove-public path="/instance/app/arcblog/pages/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
                     input type=hidden name=eSlug value="${entry.content.slug}"
-                    input type=hidden name=eTitle value="${entry.content.title}"
-                    input type=hidden name=eSummary value="${entry.content.summary}"
-                    input type=hidden name=eBody value="${entry.content.body}"
-                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
-                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
                   }
                 }
                 p :online-hint scale=sm intent=muted
@@ -200,18 +195,27 @@ page pages {
                       }
                       p "${entry.content.slug}" scale=sm intent=muted
                     }
-                    action variant=secondary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages-admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", summary: "${args.eSummary}", body: "${args.eBody}", status: online, authorDid: "${args.eAuthorDid}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages-admin.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                    action variant=secondary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/page-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: online, slug: "${args.eSlug}", status: pending, message: "", changed: [], fromStatus: "", toStatus: "", requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
                     input type=hidden name=eSlug value="${entry.content.slug}"
-                    input type=hidden name=eTitle value="${entry.content.title}"
-                    input type=hidden name=eSummary value="${entry.content.summary}"
-                    input type=hidden name=eBody value="${entry.content.body}"
-                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
-                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
                   }
                 }
                 p :offline-hint scale=sm intent=muted
               }
+            }
+            // 待执行意图队列（REQ-019 第四批）：两个页面列表下方的这个列表就是本页按钮写入的队列，
+            // 直接读 AFS（config/page-intents，admin-only），逐行显示 action · slug · status · message。
+            // 稳定 id 是 URL 契约（`pages-intent-list.page=<n>`，arc-contracts §38）。
+            view gap=sm {
+              afs-list pages-intent-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/page-intents" {
+                row gap=sm cross=start role=item {
+                  view gap=xs {
+                    p "${entry.content.slug} · ${entry.content.action} · ${entry.content.status}" scale=lg
+                    p "${entry.content.message}" scale=sm intent=muted
+                  }
+                }
+              }
+              key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
             }
           }
         }

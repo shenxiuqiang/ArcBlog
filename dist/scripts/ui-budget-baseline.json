@@ -140,7 +140,7 @@
     "nested": 0,
     "ctrl": 29,
     "styles": 43,
-    "i18n": 95,
+    "i18n": 94,
     "tech": 36
   },
   "access": {
@@ -172,12 +172,12 @@
   },
   "general": {
     "blocks": 2,
-    "cards": 4,
+    "cards": 5,
     "nested": 0,
-    "ctrl": 11,
-    "styles": 30,
-    "i18n": 45,
-    "tech": 20
+    "ctrl": 14,
+    "styles": 44,
+    "i18n": 87,
+    "tech": 32
   },
   "diagnostics": {
     "blocks": 2,

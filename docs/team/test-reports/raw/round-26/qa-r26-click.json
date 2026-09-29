@@ -1,0 +1,15 @@
+{
+  "mode": "click",
+  "at": "2026-09-29T05:04:48.958Z",
+  "clickBefore": {
+    "btns": [
+      {
+        "i": 39,
+        "text": "Re-verify from the existing records"
+      }
+    ],
+    "all": 46,
+    "url": "http://arcblog.localhost:4939/?page=general"
+  },
+  "clickAfter": "{\"clicked\":true,\"clearRows\":1,\"queuedToast\":true}"
+}

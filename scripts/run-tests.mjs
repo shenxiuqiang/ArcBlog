@@ -70,6 +70,7 @@ const FAST_TESTS = new Set([
   'arcblog-hero-carousel',
   'arcblog-i18n',
   'arcblog-permissions',
+  'arcblog-roles-settings',
   'arcblog-run-tests',
   'arcblog-runtime-ids',
   'arcblog-theme',
@@ -119,7 +120,15 @@ export function runGate(tierArg = 'all') {
       '\n',
   );
 
-  const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1', ...selected.map((e) => e.path)], {
+  // Fast tier files are read-only and independent, so they may overlap: measured
+  // 2026-09-29 — 1.88–1.95 s serial (concurrency 1) → 0.78–0.80 s at concurrency 4;
+  // the default (12 = CPU count) was no faster (0.82–0.88 s) and oversubscribes the
+  // ten short-lived processes. The LIVE tier stays serial on purpose: those files
+  // share one dev instance and the doctor's live checks intermittently read another
+  // file's half-written state (see the header note). Override with
+  // ARCBLOG_TEST_CONCURRENCY for measurement.
+  const concurrency = tier === 'fast' ? String(process.env.ARCBLOG_TEST_CONCURRENCY ?? 4) : '1';
+  const result = spawnSync(process.execPath, ['--test', `--test-concurrency=${concurrency}`, ...selected.map((e) => e.path)], {
     cwd: repoRoot,
     stdio: 'inherit',
     env: process.env,

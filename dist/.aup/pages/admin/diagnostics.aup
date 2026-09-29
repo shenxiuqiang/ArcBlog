@@ -1,77 +1,30 @@
 page diagnostics {
   i18n {
-    title { en "Diagnostics & maintenance" zh "诊断与维护" }
-    desc { en "Self-check results, storage and index, permissions, background work, logs, backup and first-line troubleshooting — readable without logging into the server. Every command here is copy-and-run; this page executes nothing." zh "自检结果、存储与索引、权限、后台任务、日志、备份与常见问题自助定位——不必登录服务器就能看懂。这里的命令一律「复制后自行执行」；本页不执行任何命令。" }
-    gate-desc { en "Sign in with DID Wallet to see this instance's diagnostics." zh "使用 DID Wallet 登录后查看本实例的诊断信息。" }
-    gate-title { en "Settings" zh "设置" }
+    title { en "Diagnostics" zh "诊断" }
+    desc { en "Is this node healthy right now? The verdict of the last recorded self-check, when it ran, and every check one row at a time. This page executes nothing: it only visualises the recorded result and offers commands you copy and run yourself. Level-3 detail — commands, storage, logs, backup, permissions, background work, troubleshooting — is folded into the Advanced tab." zh "本节点现在健康吗？最近一次已记录自检的总体结论、记录时间，以及逐项检查。本页不执行任何命令：只做「结果可视化 + 命令复制」。三级细节——命令、存储、日志、备份、权限、后台任务、常见问题——折进「高级」标签页。" }
+    gate-title { en "Diagnostics" zh "诊断" }
+    gate-desc { en "Sign in with DID Wallet to see this instance's self-check results." zh "使用 DID Wallet 登录后查看本实例的自检结果。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    honesty-title { en "How to read this page" zh "本页的形态" }
-    honesty-desc { en "An AUP page cannot execute server-side code — provider mounts are not loaded on this platform (arc-contracts §26.1/§26.2). So this page only visualises the last recorded self-check and offers commands you copy and run yourself; every value comes from an AFS record or is a literal command string. If the self-check card below stays empty, no snapshot has been recorded yet (no snapshot = 尚未运行): run the record command first." zh "AUP 页面无法执行服务端代码——本平台的 provider 挂载未生效（arc-contracts §26.1/§26.2）。因此本页只做「最近一次自检结果可视化 + 命令一键复制」：每个取值要么来自 AFS 记录，要么是字面命令字符串，页内没有任何按钮会去跑命令。若下方自检卡始终为空，说明尚未运行（no snapshot）：请先执行记录命令。" }
-    cmd-record { en "Run the self-check and record it" zh "运行自检并落成记录" }
-    cmd-record-help { en "List the checks and the record shape" zh "查看检查项清单与记录形状" }
-    snapshot-title { en "Last self-check (recorded)" zh "最近一次自检（已记录）" }
-    snapshot-desc { en "Source: /instance/app/arcblog/config/diagnostics/summary/last-run.json, written by the record command above and live-subscribed. Freshness: the recorded-at time below. The page never runs the check itself." zh "数据来源：/instance/app/arcblog/config/diagnostics/summary/last-run.json，由上方记录命令写入并实时订阅。新鲜度：以下记录时间。页面本身从不运行自检。" }
-    snapshot-ranat { en "Recorded at" zh "记录时间" }
-    snapshot-ok { en "Overall ok" zh "总体结论 ok" }
-    snapshot-count { en "Checks recorded" zh "已记录检查项" }
-    snapshot-failed { en "Failed (severity error)" zh "失败（severity error）" }
-    snapshot-warnings { en "Warnings" zh "警告" }
-    snapshot-command { en "Command that produced it" zh "产生该记录的命令" }
-    checks-title { en "Every check, one row each" zh "全部检查项，逐条一行" }
-    checks-desc { en "Source: one record per check under /instance/app/arcblog/config/diagnostics/checks/, live-subscribed. `severity` and `ok` are shown as text, so the state never depends on colour alone. The row count is whatever the last run recorded — this page hard-codes no number." zh "数据来源：/instance/app/arcblog/config/diagnostics/checks/ 下每个检查项一条记录，实时订阅。`severity` 与 `ok` 都以文字呈现，状态不只依赖颜色。行数等于上次记录的检查项数——本页不写死任何数字。" }
-    checks-hint { en "If this list is empty, no snapshot exists yet — run the record command above. Empty is not the same as “all checks passed”." zh "若此列表为空，说明还没有快照——请先执行上方的记录命令。「空」不等于「全部通过」。" }
-    check-severity { en "severity" zh "严重度" }
-    check-ok { en "ok" zh "ok" }
-    storage-title { en "Storage & index" zh "存储与索引" }
-    storage-desc { en "`arc space check` is read-only and answers through its EXIT CODE: 0 = every layout is files and the index is fresh; non-zero = something needs migrating or has drifted. The self-check above records that verdict as the `space-layout` check." zh "`arc space check` 只读，结论看退出码：0 = 所有布局已是 files 且索引新鲜；非零 = 有空间待迁移或索引已漂移。上方自检把它记录为 `space-layout` 检查项。" }
-    storage-warn { en "Do not pipe that command: its JSON report grows past 64KB and the CLI truncates piped output, so a captured fragment is not a report (arc-contracts §4.1a). Run it bare and read the exit code." zh "不要给该命令加管道：它的 JSON 报告会超过 64KB，CLI 会截断管道输出，截下来的片段不能当报告（arc-contracts §4.1a）。直接运行，看退出码。" }
-    cmd-check { en "Audit storage and index (read-only)" zh "审计存储与索引（只读）" }
-    cmd-check-folder { en "Audit one claimed folder only" zh "只审计一个已声明目录" }
-    user-title { en "DID Space user scope (/user)" zh "DID Space 用户作用域（/user）" }
-    user-desc { en "`/user` is a CALLER-SCOPED projection of this blocklet's user fragment, not a directory in the app tree: for the caller did:key:z… it is the same directory as /blocklets/arcblog/users/z…/arcblog/ (measured, REQ-028). It needs NO blocklet.yaml declaration — the session authorizes it. A signed-out visitor has no /user view at all (404 AFS_NOT_FOUND), and a different DID resolves the same path to its own, different directory. `arc afs` cannot address /user (no AUP session → `No module found for path`) — use the page, or address the fragment by DID." zh "`/user` 是本 blocklet 用户片段的「按调用者分区」投影，不是应用树里的目录：对调用者 did:key:z… 而言它与 /blocklets/arcblog/users/z…/arcblog/ 是同一个目录（REQ-028 实测）。它不需要任何 blocklet.yaml 声明——由会话授权。未登录访客根本没有 /user 视图（404 AFS_NOT_FOUND），另一个 DID 会把同一路径解析成它自己的、不同的目录。`arc afs` 无法访问 /user（没有 AUP 会话 → `No module found for path`）——请用页面，或按 DID 直接寻址该片段。" }
-    cmd-user-path { en "Print the AFS path of an app DID Space fragment" zh "打印应用 DID Space 片段的 AFS 路径" }
-    cmd-user-list { en "File counts per role for this instance's app spaces" zh "本实例应用空间的分角色文件数" }
-    cmd-bookmarks { en "Reading-list CLI (records addressed by reader DID)" zh "阅读清单 CLI（按读者 DID 寻址记录）" }
-    user-warn { en "AFS_DID_SPACE_SCOPE_SECRET is UNSET on this daemon, so DID Space scope directories are PLAINTEXT (de-identification OFF). It is a DAEMON environment variable: ArcBlog can only register it as a production prerequisite (the `de-identification` doctor check warns) — it cannot set it, and it must not turn on AFS_DID_SPACE_REQUIRE_DEID before the secret exists." zh "本 daemon 上 AFS_DID_SPACE_SCOPE_SECRET 未设置，因此 DID Space 作用域目录为明文（反标识关闭）。它是 daemon 的环境变量：ArcBlog 只能把它登记为生产前置条件（doctor 的 `de-identification` 检查会告警）——不能替它设置，也不得在 secret 存在之前打开 AFS_DID_SPACE_REQUIRE_DEID。" }
-    cmd-repair { en "Rebuild one folder's ledger from disk (`--index` is the default; `--no-index` fails closed)" zh "从磁盘重建某个目录的账本（`--index` 为默认；`--no-index` 会 fail closed）" }
-    cmd-list { en "List app spaces with file counts" zh "列出应用空间与文件数" }
-    perm-title { en "Permissions (platform boundary)" zh "权限（平台边界）" }
-    perm-desc { en "This platform gives the app exactly two roles: guest and admin (`blocklet.yaml` replicated.readRole / minRole). There is no finer-grained read grant and no member tier (arc-contracts §13; SPEC-REVIEW-001 §B6), so a lock-down must be expressed by the directory prefix a record lives under. The authoritative matrix is scripts/arcblog-permissions.test.mjs, which runs inside the fast tier (`npm test`) — it is not a doctor check." zh "本平台只给本应用两档角色：guest 与 admin（`blocklet.yaml` 的 replicated.readRole / minRole）。没有更细的读取授权，也没有会员档（arc-contracts §13；SPEC-REVIEW-001 §B6），因此收权只能通过「记录所在目录前缀」表达。权威矩阵是 scripts/arcblog-permissions.test.mjs，随快层（`npm test`）运行——它不是一个 doctor 检查项。" }
+    tab-checks { en "Self-check" zh "自检" }
+    tab-advanced { en "Advanced" zh "高级" }
+    sum-title { en "Last self-check (recorded)" zh "最近一次自检（已记录）" }
+    sum-ok { en "Overall ok" zh "总体结论 ok" }
+    sum-count { en "Checks / failed / warnings" zh "已记录 / 失败 / 警告" }
+    sum-empty { en "No self-check snapshot yet — 尚未运行: nothing has been recorded here, so this card shows no verdict and no invented time. Empty is not the same as “all checks passed”. Run the record command on the Advanced tab first." zh "尚无自检快照——尚未运行：这里从未记录过任何结果，因此本卡不显示结论，也不编造时间。「空」不等于「全部通过」。请先在「高级」标签页执行记录命令。" }
+    list-title { en "Every check, one row each" zh "全部检查项，逐条一行" }
+    list-desc { en "One record per check, live-subscribed; the row count is whatever the last run recorded — this page hard-codes no number. severity and ok are shown as text, so a state never depends on colour alone." zh "每个检查项一条记录，实时订阅；行数等于上次记录的检查项数——本页不写死任何数字。severity 与 ok 都以文字呈现，状态不只依赖颜色。" }
+    adv-desc { en "Level-3 detail, folded here: storage & index, the log surface, data export / backup, the permission surface, the background intent queue and first-line troubleshooting. Every command is copy-and-run; nothing on this page executes. How to read them: run the storage audit bare — it answers through its exit code (0 = every layout is files and the index is fresh) and its JSON report grows past 64KB, so a piped fragment is not a report (arc-contracts §4.1a). arc space sync converges --to toward --from and --mirror DELETES destination-only files, so preview with --dry-run. The AFS records are the source of truth and dist/ is rebuildable, so keep an OFFLINE copy of node.key (content-signing key) and .env.local (chain configuration) outside this repo — they are not AFS records; losing them loses the node identity, and they must never be committed or written into AFS. DID Space: /user is a caller-scoped projection, not a directory — arc space list --scope user and arc space path --scope user address it (substitute the app DID), and the reading-list CLI addresses records by reader DID; this daemon has AFS_DID_SPACE_SCOPE_SECRET UNSET, so scope directories are plaintext (de-identification OFF) — a daemon environment variable ArcBlog can only register as a production prerequisite, never set. Permissions: this platform gives the app exactly two roles, guest and admin (blocklet.yaml replicated.readRole / minRole) — there is no finer grant to look for. Background work: a console chain button only writes an intent record; the node's own worker signs it on the chain (the signing key never reaches the browser) — that is the worker command above. No heartbeat record exists anywhere in this codebase, so an empty queue is a normal state, not an error, and there is no last-seen time to show." zh "三级细节，折叠在此：存储与索引、日志面、数据导出/备份、权限面、后台意图队列与常见问题自助定位。所有命令一律「复制后自行执行」，本页不执行任何命令。读法：存储审计直接运行——结论看退出码（0 = 所有布局已是 files 且索引新鲜），它的 JSON 报告会超过 64KB，加管道截下来的片段不能当报告（arc-contracts §4.1a）。arc space sync 让 --to 向 --from 收敛，--mirror 会删除目的端多余文件，所以先用 --dry-run 预演。AFS 记录才是真源、dist/ 可由源码重建，因此必须在仓库之外离线备份 node.key（内容签名密钥）与 .env.local（链配置）——它们不是 AFS 记录，丢了等于丢了节点身份，且绝不提交、绝不写进 AFS。DID Space：/user 是按调用者分区的投影、不是目录——用 arc space list --scope user 与 arc space path --scope user 访问（替换成实际 app DID），阅读清单 CLI 则按读者 DID 寻址记录；本 daemon 未设置 AFS_DID_SPACE_SCOPE_SECRET，作用域目录为明文（反标识关闭）——它是 daemon 的环境变量，ArcBlog 只能登记为生产前置条件，不能替它设置。权限：本平台只给应用 guest 与 admin 两档角色（blocklet.yaml 的 replicated.readRole / minRole），没有更细的授权可找。后台任务：控制台的链上按钮只写一条意图记录，由节点自己的 worker 在链上签名（签名密钥不进浏览器）——即上方的 worker 命令。本仓库不存在任何心跳记录，因此队列为空是正常状态、不是错误，也没有「最后可见时间」可显示。" }
+    cmd-record { en "Run the self-check and record it — the source of the summary above; --help lists the checks and the record shape" zh "运行自检并落成记录——即上方摘要的数据来源；--help 列出检查项与记录形状" }
+    cmd-check { en "Audit storage and index, read-only (run it bare and read the exit code; --folder <space-dir> audits one claimed folder)" zh "审计存储与索引，只读（直接运行、看退出码；--folder <space-dir> 只审计一个已声明目录）" }
+    cmd-repair { en "Rebuild one folder's ledger from disk" zh "从磁盘重建某个目录的账本" }
+    cmd-logs { en "The only log surface: the daemon log (add --json, or -i <instance>)" zh "唯一的日志面：daemon 日志（可加 --json，或 -i <实例>）" }
+    cmd-backup { en "Preview a mirror export (writes nothing); drop --dry-run to run it" zh "预演镜像导出（不写任何东西）；去掉 --dry-run 才真正执行" }
     cmd-perm { en "Re-run the guest permission matrix alone" zh "单独重跑访客权限矩阵" }
-    logs-title { en "Logs" zh "日志" }
-    logs-desc { en "The daemon log is the only log surface. ArcBlog keeps no separate log file: the operational CLIs print JSON to stdout and the page data surfaces record their results in AFS instead. Commands verified against `arc service logs --help`." zh "唯一的日志面是 daemon 日志。ArcBlog 没有独立日志文件：运维 CLI 把 JSON 打到 stdout，页面数据面则把结果写进 AFS。命令已对照 `arc service logs --help` 核验。" }
-    cmd-logs { en "Recent daemon log" zh "最近的 daemon 日志" }
-    cmd-logs-follow { en "Follow new lines" zh "持续跟踪新日志" }
-    cmd-logs-json { en "Structured log lines" zh "结构化日志" }
-    cmd-logs-instance { en "A named instance" zh "指定实例" }
-    backup-title { en "Data export & backup" zh "数据导出与备份" }
-    backup-desc { en "The AFS records are the source of truth; dist/ is rebuildable from source with `arc blocklet build`, so backing up dist/ alone is not a backup. `arc space sync` makes `--to` converge toward `--from` and is additive by default — `--mirror` DELETES destination-only files. Both `--from` and `--to` are required, so preview with `--dry-run` first. Measured (REQ-028): a destination folder that was hand-edited fails closed (`index has diverged from disk`, exit 5) until you run `arc space repair --folder <dir>`, or pass `--full` to read both trees directly." zh "AFS 记录才是真源；dist/ 用 `arc blocklet build` 可由源码重建，所以只备份 dist/ 不算备份。`arc space sync` 让 `--to` 向 `--from` 收敛，默认 additive——`--mirror` 会删除目的端多余文件。`--from` 与 `--to` 都是必填，先用 `--dry-run` 预演。实测（REQ-028）：被手工改动过的目的端目录会 fail closed（`index has diverged from disk`，退出码 5），直到运行 `arc space repair --folder <dir>`，或加 `--full` 直接读两端真实文件树。" }
-    backup-key { en "Keep an OFFLINE copy, outside this repo: node.key (content signing key) and .env.local (chain configuration). They are not AFS records; losing them loses the node identity / chain credentials. Never commit them and never write them into AFS." zh "必须在仓库之外离线备份两份：node.key（内容签名密钥）与 .env.local（链配置）。它们不是 AFS 记录；丢了就等于丢了节点身份 / 链上凭据。绝不提交、绝不写进 AFS。" }
-    cmd-sync-dry { en "Preview a mirror export (writes nothing)" zh "预演镜像导出（不写任何东西）" }
-    cmd-sync { en "Mirror the space into an offline directory (`--mirror` deletes destination-only files)" zh "把空间镜像到离线目录（`--mirror` 会删目的端多余文件）" }
-    faq-title { en "First-line troubleshooting" zh "常见问题自助定位" }
-    faq-desc { en "Symptom → command or criterion. Every row points at an existing authority (an arc-contracts section or a CLI); none of it is an automatic diagnosis." zh "症状 → 命令或判据。每条都指向已有权威落点（arc-contracts 章节或 CLI）；没有任何一条是自动诊断。" }
-    faq-1 { en "A save looked accepted but the record is unchanged" zh "保存看似成功但记录没变" }
-    faq-1-v { en "The toast is not evidence — read the record back (arc-contracts §29.4): arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json" zh "toast 不是证据——回读记录才是（arc-contracts §29.4）：arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json" }
-    faq-2 { en "A write was refused" zh "写入被拒" }
-    faq-2-v { en "Conditional, not absolute: it depends on the record's origin, the write mode and the daemon process (arc-contracts §29.2). Probe before deleting anything — delete + recreate loses createdAt." zh "条件性而非绝对：与记录来源、写入模式和当时的 daemon 进程相关（arc-contracts §29.2）。先探针再动手——删除重建会丢掉 createdAt。" }
-    faq-3 { en "A record disappeared from a filtered list" zh "记录在筛选列表里消失" }
-    faq-3-v { en "`filter` / `serverFilters` push a query to the index, and editing a record leaves its index entry stale (arc-contracts §15) — re-check through the directory listing: arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json" zh "`filter` / `serverFilters` 会下推为服务端索引查询，而编辑记录会留下陈旧索引（arc-contracts §15）——改用目录列表复核：arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json" }
-    faq-4 { en "?page=<id> silently lands on the public home" zh "?page=<id> 静默回落公开首页" }
-    faq-4-v { en "That id is not a registered page. The authoritative page set is the sidebar model — verify with: node scripts/arcblog-console-nav.mjs --check" zh "该 id 不是已注册页面。权威页面集合就是侧栏模型——用这条命令核验：node scripts/arcblog-console-nav.mjs --check" }
-    faq-5 { en "A read is denied for a signed-in session" zh "已登录会话读取被拒" }
-    faq-5-v { en "The record's directory prefix decides: check replicated.readRole / minRole in blocklet.yaml (arc-contracts §13). There is no third role to grant." zh "取决于记录所在目录前缀：查看 blocklet.yaml 的 replicated.readRole / minRole（arc-contracts §13）。没有第三档角色可授。" }
-    faq-6 { en "Storage keeps growing" zh "存储持续膨胀" }
-    faq-6-v { en "Audit first (read-only), then rebuild one folder's ledger: arc space check → arc space repair --folder <space-dir>. Dev-instance test residue: node scripts/arcblog-clean.mjs (dry-run by default)." zh "先审计（只读），再重建某个目录的账本：arc space check → arc space repair --folder <space-dir>。开发实例的测试残留：node scripts/arcblog-clean.mjs（默认 dry-run）。" }
-    faq-7 { en "A publish never reached the public site" zh "发布没有到达公开站点" }
-    faq-7-v { en "Record a self-check and read space-layout / resources (node scripts/arcblog-doctor.mjs --record); for Hub state use node scripts/arcblog-network.mjs hub refresh." zh "记录一次自检并看 space-layout / resources（node scripts/arcblog-doctor.mjs --record）；Hub 侧用 node scripts/arcblog-network.mjs hub refresh。" }
+    cmd-worker { en "Keep draining pending chain intents (long-running); run drains once" zh "持续排空待处理的链上意图（长驻进程）；run 表示只排空一次" }
     intents-title { en "Background work (intent queue)" zh "后台任务（意图队列）" }
-    intents-desc { en "Source: the records under /instance/app/arcblog/config/chain-intents/, live-subscribed. A console chain button only writes an intent; node scripts/arcblog-chain-worker.mjs run (or watch) signs it on the chain — the key stays on the node — and writes the outcome back." zh "数据来源：/instance/app/arcblog/config/chain-intents/ 下的记录，实时订阅。控制台的链上按钮只写一条意图；node scripts/arcblog-chain-worker.mjs run（或 watch）负责在链上签名——私钥留在节点上——并回写结果。" }
-    intents-noheartbeat { en "No heartbeat record exists anywhere in this codebase, so this page shows no fake green light and no invented last-seen time. The newest updatedAt below is only an activity proxy. Empty means no chain intent has ever been recorded here — a normal state, not an error." zh "本仓库不存在任何心跳记录，因此本页不画假绿灯，也不编造最后可见时间。下方最新的 updatedAt 只是活动代理。为空表示这里从未记录过链上意图——正常状态，不是错误。" }
     intents-status { en "status" zh "状态" }
-    intents-updated { en "updatedAt" zh "更新时间" }
-    cmd-worker-run { en "Drain pending intents once" zh "一次性排空待处理意图" }
-    cmd-worker-watch { en "Keep draining (long-running process)" zh "持续排空（长驻进程）" }
+    faq-title { en "First-line troubleshooting (symptom → check)" zh "常见问题自助定位（症状 → 判据）" }
+    faq { en "A save looked accepted but the record is unchanged: the toast is not evidence — read the record back with arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json (arc-contracts §29.4). A write was refused: conditional, not absolute — it depends on the record's origin, the write mode and the daemon process (§29.2); probe before deleting, because delete + recreate loses createdAt. A record disappeared from a filtered list: filter / serverFilters push a query to the index and an edit leaves its index entry stale (§15) — re-check through arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json. ?page=<id> silently lands on the public home: that id is not a registered page — the authoritative page set is the sidebar model, guarded in the fast tier (npm test). A read is denied for a signed-in session: the record's directory prefix decides (blocklet.yaml replicated.readRole / minRole, §13); there is no third role to grant. Storage keeps growing: audit read-only first, then rebuild one folder's ledger (both commands above); dev-instance test residue is swept by arcblog-clean.mjs, dry-run by default. A publish never reached the public site: record a self-check (command above) and read the space-layout / resources rows; Hub state is refreshed on ?page=hub." zh "保存看似成功但记录没变：toast 不是证据——回读记录：arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs 路径>\"}' --json（arc-contracts §29.4）。写入被拒：条件性而非绝对——与记录来源、写入模式和当时的 daemon 进程相关（§29.2）；先探针再动手，删除重建会丢掉 createdAt。记录在筛选列表里消失：filter / serverFilters 会下推为服务端索引查询，而编辑记录会留下陈旧索引（§15）——改用目录列表复核：arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<目录>\"}' --json。?page=<id> 静默回落公开首页：该 id 不是已注册页面——权威页面集合就是侧栏模型，由快层（npm test）守卫。已登录会话读取被拒：取决于记录所在目录前缀（blocklet.yaml 的 replicated.readRole / minRole，§13），没有第三档角色可授。存储持续膨胀：先只读审计，再重建某个目录的账本（两条命令见上）；开发实例的测试残留由 arcblog-clean.mjs 清理（默认 dry-run）。发布没有到达公开站点：记录一次自检（命令见上）并查看 space-layout / resources 两行；Hub 状态到 ?page=hub 刷新。" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
     view style={gap: "0"} {
@@ -178,94 +131,58 @@ page diagnostics {
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=xs {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+          row gap=md cross=center {
+            view gap=xs size={flex: 1} {
+              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+              p :desc intent=muted
+            }
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :honesty-title level=3 style={fontSize: "var(--type-body)"}
-              p :honesty-desc scale=sm intent=muted
-              key-value-list diag-record-cmds dense=true fields=[{label: "$t(diagnostics.cmd-record)", value: "node scripts/arcblog-doctor.mjs --record", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-record-help)", value: "node scripts/arcblog-doctor.mjs --help", monospace: true, copyable: true}]
-            }
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :snapshot-title level=3 style={fontSize: "var(--type-body)"}
-              p :snapshot-desc scale=sm intent=muted
-              afs-list diagnostics-summary-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/summary" {
-                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                  row gap=xs cross=center {
-                    p :snapshot-ranat scale=sm intent=muted
-                    time mode=display value="${entry.content.ranAt}" timeMode=relative
+            view mode=tabs {
+              view gap=sm label=:tab-checks {
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h3 :sum-title level=3 style={fontSize: "var(--type-body)"}
+                  afs-list diagnostics-summary-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/summary" {
+                    view gap=xs role=item {
+                      row gap=xs cross=center {
+                        time mode=display value="${entry.content.ranAt}" timeMode=relative
+                      }
+                      key-value-list dense=true fields=[{label: "$t(diagnostics.sum-ok)", value: "${entry.content.ok}"}, {label: "$t(diagnostics.sum-count)", value: "${entry.content.count} / ${entry.content.failed} / ${entry.content.warnings}"}]
+                    }
                   }
-                  key-value-list dense=true fields=[{label: "$t(diagnostics.snapshot-ok)", value: "${entry.content.ok}"}, {label: "$t(diagnostics.snapshot-count)", value: "${entry.content.count}"}, {label: "$t(diagnostics.snapshot-failed)", value: "${entry.content.failed}", hideWhenEmpty: true}, {label: "$t(diagnostics.snapshot-warnings)", value: "${entry.content.warnings}", hideWhenEmpty: true}, {label: "$t(diagnostics.snapshot-command)", value: "${entry.content.command}", monospace: true, copyable: true}]
+                  p :sum-empty scale=caption intent=muted
+                }
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h3 :list-title level=3 style={fontSize: "var(--type-body)"}
+                  p :list-desc scale=sm intent=muted
+                  afs-list diagnostics-checks-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/checks" {
+                    view gap=xs role=item {
+                      row gap=xs cross=center {
+                        h3 "${entry.content.id}"
+                        p "${entry.content.severity} · ${entry.content.ok}" scale=sm intent=muted
+                        time mode=display value="${entry.content.ranAt}" timeMode=relative
+                      }
+                      p "${entry.content.detail}" scale=sm intent=muted
+                    }
+                  }
+                  p :sum-empty scale=caption intent=muted
                 }
               }
-              p :checks-hint scale=caption intent=muted
-            }
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :checks-title level=3 style={fontSize: "var(--type-body)"}
-              p :checks-desc scale=sm intent=muted
-              afs-list diagnostics-checks-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/checks" {
-                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                  h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
-                  p "$t(diagnostics.check-severity): ${entry.content.severity} · $t(diagnostics.check-ok): ${entry.content.ok}" scale=sm
-                  p "${entry.content.detail}" scale=sm intent=muted
-                  view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                    time mode=display value="${entry.content.ranAt}" timeMode=relative
+              view gap=sm label=:tab-advanced {
+                p :adv-desc scale=sm intent=muted
+                key-value-list diagnostics-advanced-cmds dense=true fields=[{label: "$t(diagnostics.cmd-record)", value: "node scripts/arcblog-doctor.mjs --record", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-check)", value: "arc space check", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-repair)", value: "arc space repair --folder <space-dir>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs)", value: "arc service logs --follow", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-backup)", value: "arc space sync --from <space-dir> --to <dir> --mirror --dry-run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-perm)", value: "npm run test:file -- scripts/arcblog-permissions.test.mjs", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-worker)", value: "node scripts/arcblog-chain-worker.mjs watch", monospace: true, copyable: true}]
+                h3 :intents-title level=3 style={fontSize: "var(--type-body)"}
+                afs-list diagnostics-chain-intents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/chain-intents" {
+                  view gap=xs role=item {
+                    h3 "${entry.content.action} · ${entry.content.role}"
+                    row gap=xs cross=center {
+                      p "$t(diagnostics.intents-status): ${entry.content.status}" scale=sm intent=muted
+                      time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                    }
                   }
                 }
+                key-value-list diagnostics-faq dense=true fields=[{label: "$t(diagnostics.faq-title)", value: "$t(diagnostics.faq)"}]
               }
-              p :checks-hint scale=caption intent=muted
-            }
-            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :storage-title level=3 style={fontSize: "var(--type-body)"}
-                p :storage-desc scale=sm intent=muted
-                key-value-list diag-storage-cmds dense=true fields=[{label: "$t(diagnostics.cmd-check)", value: "arc space check", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-check-folder)", value: "arc space check --folder <space-dir>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-repair)", value: "arc space repair --folder <space-dir>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-list)", value: "arc space list", monospace: true, copyable: true}]
-                p :storage-warn scale=sm intent=muted
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :user-title level=3 style={fontSize: "var(--type-body)"}
-                p :user-desc scale=sm intent=muted
-                key-value-list dense=true fields=[{label: "$t(diagnostics.cmd-user-path)", value: "arc space path did:blocklet:arcblog --scope user", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-user-list)", value: "arc space list --scope user", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-bookmarks)", value: "node scripts/arcblog-bookmarks.mjs list --user <did>", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-sync-dry)", value: "arc space sync --from <space-dir> --to <dir> --dry-run", monospace: true, copyable: true}]
-                p :user-warn scale=sm intent=muted
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :perm-title level=3 style={fontSize: "var(--type-body)"}
-                p :perm-desc scale=sm intent=muted
-                key-value-list diag-perm-cmds dense=true fields=[{label: "$t(diagnostics.cmd-perm)", value: "npm run test:file -- scripts/arcblog-permissions.test.mjs", monospace: true, copyable: true}]
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :logs-title level=3 style={fontSize: "var(--type-body)"}
-                p :logs-desc scale=sm intent=muted
-                key-value-list diag-logs-cmds dense=true fields=[{label: "$t(diagnostics.cmd-logs)", value: "arc service logs", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-follow)", value: "arc service logs --follow", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-json)", value: "arc service logs --json", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-logs-instance)", value: "arc service logs -i <instance>", monospace: true, copyable: true}]
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :backup-title level=3 style={fontSize: "var(--type-body)"}
-                p :backup-desc scale=sm intent=muted
-                key-value-list diag-backup-cmds dense=true fields=[{label: "$t(diagnostics.cmd-sync-dry)", value: "arc space sync --from <space-dir> --to <dir> --mirror --dry-run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-sync)", value: "arc space sync --from <space-dir> --to <dir> --mirror", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-check)", value: "arc space check", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-repair)", value: "arc space repair --folder <space-dir>", monospace: true, copyable: true}]
-                p :backup-key scale=sm intent=muted
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :faq-title level=3 style={fontSize: "var(--type-body)"}
-                p :faq-desc scale=sm intent=muted
-                key-value-list diag-faq dense=true fields=[{label: "$t(diagnostics.faq-1)", value: "$t(diagnostics.faq-1-v)"}, {label: "$t(diagnostics.faq-2)", value: "$t(diagnostics.faq-2-v)"}, {label: "$t(diagnostics.faq-3)", value: "$t(diagnostics.faq-3-v)"}, {label: "$t(diagnostics.faq-4)", value: "$t(diagnostics.faq-4-v)"}, {label: "$t(diagnostics.faq-5)", value: "$t(diagnostics.faq-5-v)"}, {label: "$t(diagnostics.faq-6)", value: "$t(diagnostics.faq-6-v)"}, {label: "$t(diagnostics.faq-7)", value: "$t(diagnostics.faq-7-v)"}]
-              }
-            }
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :intents-title level=3 style={fontSize: "var(--type-body)"}
-              p :intents-desc scale=sm intent=muted
-              key-value-list diag-intent-cmds dense=true fields=[{label: "$t(diagnostics.cmd-worker-run)", value: "node scripts/arcblog-chain-worker.mjs run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-worker-watch)", value: "node scripts/arcblog-chain-worker.mjs watch", monospace: true, copyable: true}]
-              afs-list diagnostics-chain-intents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/chain-intents" {
-                view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                  h3 "${entry.content.action} · ${entry.content.role}" style={fontSize: "var(--type-body)"}
-                  p "$t(diagnostics.intents-status): ${entry.content.status}" scale=sm
-                  view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                    time mode=display value="${entry.content.updatedAt}" timeMode=relative
-                  }
-                }
-              }
-              p :intents-noheartbeat scale=sm intent=muted
             }
           }
         }

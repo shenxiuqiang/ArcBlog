@@ -59,13 +59,12 @@ page policy {
     policy-adapter-edit { en "Payment adapter" zh "支付适配器" }
     policy-adapter-note { en "Adapter options are generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs — the same definition policy init --payment-adapter accepts (console-nav --check fails on drift)." zh "适配器选项由 scripts/lib/economy.mjs 的 PAYMENT_ADAPTERS 生成——与 policy init --payment-adapter 接受的定义同源（漂移会被 console-nav --check 拦住）。" }
     policy-adapter-save { en "Save adapter" zh "保存适配器" }
-    policy-empty { en "No policy record yet. A preset above queues one; the worker writes it with node scripts/arcblog-economy.mjs policy init." zh "尚无策略记录。点击上方预设即可入队；worker 会用 node scripts/arcblog-economy.mjs policy init 写入。" }
+    policy-standing-note { en "Standing rule: what is shown above is whatever economy/policies/active.json currently holds. A blank or unbound field means \"not read yet\", never \"there is no policy\" — this card makes no claim about the record's existence (BUG-072: the unconditional empty-state sentence is gone). The authority is the record itself: read it back with the CLI below." zh "常驻规则：上方展示的就是 economy/policies/active.json 当前的取值。字段为空或未绑定读作「尚未读取」，绝不是「没有策略」——本卡片不对记录是否存在作任何断言（BUG-072：无条件的空态文案已移除）。权威是记录本身：用下方 CLI 读回。" }
     policy-protocol-note { en "Protocol Fee transparency (spec §49): this record has no protocolRecipient field, so the console shows the protocol share only — there is no recipient to display, and none is invented." zh "Protocol Fee 公开（spec §49）：本记录没有 protocolRecipient 字段，因此本页只展示 protocol 比例——没有可展示的 recipient，也不编造。" }
     queue-clear { en "Clear" zh "清除" }
     queue-clear-msg { en "Deletes this intent record only. It does not touch economy/policies/active.json and does not undo a change the worker already applied." zh "只删除这条意图记录。不触碰 economy/policies/active.json，也不撤销 worker 已经应用的改动。" }
     queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
     queue-desc { en "One record per click under config/policy-intents. A click NEVER changes the policy itself: the node's local worker performs it (node scripts/arcblog-economy.mjs policy apply, or policy watch) and writes its outcome — status + reason — back onto the record." zh "每次点击在 config/policy-intents 下写一条记录。点击**绝不**改动策略本身：由本机 worker 执行（node scripts/arcblog-economy.mjs policy apply，或 policy watch），并把结果——状态 + 原因——回写到该记录上。" }
-    queue-empty { en "Nothing queued yet. A preset or adapter click adds one record here." zh "队列为空。点击预设或适配器会在此新增一条记录。" }
     queue-legend { en "pending = queued, not run yet · running = claimed by the worker · applied = the policy really changed · rejected = refused, zero change · noop = already in that state, zero bytes written" zh "pending = 已排队、尚未执行 · running = worker 已认领 · applied = 策略真的改变了 · rejected = 被拒绝、零改动 · noop = 已是该状态、零字节写入" }
     queue-standing-note { en "Standing rule: a control on this page only queues. The policy above is unchanged until the local worker runs — and a success toast is not evidence, so read the record back." zh "常驻规则：本页的控件只入队。本地 worker 运行之前，上方策略保持不变——成功 toast 不是证据，请读回记录。" }
     queue-title { en "Policy intent queue" zh "策略意图队列" }
@@ -218,7 +217,7 @@ page policy {
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={policy: "/instance/app/arcblog/economy/policies/active.json"} {
                   h2 :policy level=2 style={fontSize: "var(--type-body)"}
                   key-value-list dense=true fields=[{label: "$t(policy.k-version)", value: "${state.policy.version}", monospace: true}, {label: "$t(policy.k-creator)", value: "${state.policy.creator}"}, {label: "$t(policy.k-hub)", value: "${state.policy.hub}"}, {label: "$t(policy.k-protocol)", value: "${state.policy.protocol}"}, {label: "$t(policy.k-adapter)", value: "${state.policy.paymentAdapter}"}, {label: "$t(policy.k-created)", value: "${state.policy.createdAt}"}, {label: "$t(policy.k-updated)", value: "${state.policy.updatedAt}"}]
-                  p :policy-empty scale=sm intent=muted
+                  p :policy-standing-note scale=sm intent=muted
                   p :policy-split scale=sm intent=muted
                   p :preset-label scale=sm intent=muted
                   // BUG-069: five fixed-label buttons in one non-wrapping `row` overflowed the
@@ -279,7 +278,6 @@ page policy {
                       action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
                     }
                   }
-                  p :queue-empty scale=sm intent=muted
                   p :queue-standing-note scale=caption intent=muted
                 }
                 // Advanced: the CLI is a folded ALTERNATIVE, never the only path.

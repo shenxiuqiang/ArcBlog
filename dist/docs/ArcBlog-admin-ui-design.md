@@ -2,7 +2,7 @@
 
 > 让后台优雅的标准：不是更多装饰，而是更少意外。
 
-**文档版本：** V1.9（Round 17 · 2026-09-28，**用户会话授权**（原文：「我想完善 UI 设计规范，对管理后台内容区域进行优化，现在管理后台内容区域显得乱、复杂，不像一个轻博客系统该有的样子，如何优化 UI 设计规范，指导 AI 对页面重构」）→ Lead 代改：新增 **§2.7 内容区原型与复杂度预算**（P1–P5 原型 + 7 项硬预算（**内容区口径**，明确不含生成的侧栏）+ 三级信息分级 + 单一用途/能力保留 + §2.7.6 自检命令 + **§2.7.7 重复即生成**）；**§9 新增 5 条可判定条目**（原型 / 预算 / 分级 / 单一用途 / 能力保留）；附录 **A.3 提示词模板升级**为「原型 + 预算自报 + 信息分级」，新增 **A.4 给 AI 的重构协议**（一页一次）。诊断、实测数字与逐页改造清单见 [UI-016](team/design/UI-016-console-content-simplification.md)。**既有章节、期望值、断言表达式逐字节未动**（§9 只增不减））· V1.8（Round 13 · 2026-09-28，授权书 **Lead L-R13-1** + [REQ-016](team/requirements/REQ-016-v3-aii-and-visual-debt.md) §1.5 四项 + 版本行：§4.3 的 destructive 现状块由「记为 R12 设计项」改为**已实施**（路径 A-ii：静息文字 `var(--color-text)` 12.65:1、hover 文字 `var(--color-surface)` 5.47:1，红只留 1px 描边 + 图标；令牌与 `.aup` 零改动）；§3.1 新增「平台 `destructive` variant 文字/描边/图标同色 → 与淡底同色相时破 AA」的口径；§9 新增 **2 条**条目与对应可执行断言（`destructive` 静息/hover ≥4.5:1；命中区 ≥24×24，按 REQ-015 R3 探针**态①** 写硬断言）；§3.4 补 **D6** 判据（卡片内 `h2` 承担该页唯一可见标题 → 17px）；另把 §4.3 姊妹行「V3 方案指向」的状态词从「未实施」对齐为「已实施」。**既有期望值、既有断言表达式、既有 §9 条目逐字节未动**（§9 只增不减）；逐条 before/after 与原始实测值见 [UI-010](team/design/UI-010-v3-aii-implementation.md)）· V1.7（Round 11 · 2026-09-28，授权书 **D27 文档对齐：D1–D5 + V3/V8 裁定写入标准**：§3.3 写入 gate 卡 20px 豁免（D1，引 Lead D4）与 `auto-surface` 免责（D3）；§4.3 尺寸档高度改准为实测口径 36/38/29px（D2）；§2.1 菜单项内边距改准为 `8px 20px 8px 32px`（D5）；§2.5 + §9 写入「节数 ≥ 18 侧栏自滚可接受、页脚须可滚动到达」（V8/D24）；§4.3 记录 destructive 文字 3.99:1 为 R12 设计项（V3/D23）；另附带对齐 3 处过期的节数示例值（5 组 18 项）。**期望值、断言表达式、§9 条目结构逐字节未动**；逐条 before/after 见 [UI-008](team/design/UI-008-standard-gap-closure.md)）· V1.6（Round 11 · 2026-09-28，授权书 **L-R11-2 事实对齐**：§2.1「选中菜单项 / 当前菜单项」两行由「深色实心块（`background: var(--color-text)`）」改为实测的平台 `active=true` **强调色块**（`--color-accent-bg` / `--color-accent`，与 §2.3 第 122 行一致），并把「两者文字左缩进均为 20px」改准为实测 **32px**；期望值与 §9 条目未动。逐条 before/after 见 [UI-007](team/design/UI-007-console-pixel-walkthrough.md) §7.2）· V1.5（Round 10 · 2026-09-28 落盘（授权书 2026-09-27，**L-R10-1 事实对齐**）：**残留收口**——(a) §9 第 2 条条目文字里的 `console-pane` 按 §2.5 / §8 既有范式标注为本文档的**概念名**（条目判据与 `^□` 十二条不变）；(b) 附录 A.1 的参考 CSS 类名与提示词模板里的 `console-pane` / `console-shell` 同范式标注（CSS 骨架与 `docs/reference/console-shell-layout.html` 引用未动）；(c) 附录三处 §2.3 交叉引用改准为「§2.3 结构 + §2.5 滚动」（双滚动条那处直指 §2.5）。三项**只做事实对齐**：期望值、§9 条目结构、两个等价断言块逐字节未动。逐条 before/after 见 [UI-006](team/design/UI-006-appendix-residuals.md)，上一轮见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)）
+**文档版本：** V1.10（Round 26 · 2026-09-29，**Lead 裁定「并行路线 G」授权**：把 R23–R26 沉淀的界面契约**外科式**写入标准 —— 新增 **§4.7 列表分页契约**（`afs-list <稳定id> pagination=manual pageSize=N` 唯一口径 / `total<=pageSize` 平台不渲染控件且不得伪造 / BUG-063 的 `aup-list-pagesize` 覆盖陷阱与**常驻恢复说明**）、**§4.8 诚实降级**（无数据不得显示假 0/绿灯；平台破折号 + 常驻说明；`propBind` 首屏两段式取数）、**§4.9 禁止假按钮**（真实消费路径或如实标注「需 CLI/worker」）、**§4.10 意图队列卡**（`pending｜running｜applied｜rejected｜noop` 与 D36 词表同源）；**§5.5** 补角色五态同源 / withheld 原因原文可见 / 零地址输入；**§3.4** 增 1 行登记实测的**常驻说明**取值（`scale=caption` → `var(--type-caption)` 13px + `intent=muted` → `var(--color-dim)`，平台 `aup-core.css` 只读取样）；**§9 新增 5 条**可判定条目（分页 / 诚实降级 / 真实性 / 队列卡 / 角色与能力），并把「状态」原有 1 条改准为「无数据不显示假 0/假绿灯（§4.8）」。**来源**：REQ-030 §5 + `arc-contracts.md` §38 + BUG-063 / BUG-064（分页）、`arc-contracts.md` §20 / §21.11 / §28.1 + REQ-031 §11.2 + BUG-052 / BUG-056 / BUG-072（诚实降级）、REQ-019 §11 A8 + REQ-034 §3.3 C5 / L-R26-2 + BUG-068（禁假按钮）、REQ-032 §3.1 + `scripts/lib/intents.mjs`（队列卡）、REQ-034 §3.1–§3.2 + spec §15.9（角色与能力）。**既有章节、期望值、断言表达式与既有 §9 条目逐字节未动**（§9 只增不减））· V1.9（Round 17 · 2026-09-28，**用户会话授权**（原文：「我想完善 UI 设计规范，对管理后台内容区域进行优化，现在管理后台内容区域显得乱、复杂，不像一个轻博客系统该有的样子，如何优化 UI 设计规范，指导 AI 对页面重构」）→ Lead 代改：新增 **§2.7 内容区原型与复杂度预算**（P1–P5 原型 + 7 项硬预算（**内容区口径**，明确不含生成的侧栏）+ 三级信息分级 + 单一用途/能力保留 + §2.7.6 自检命令 + **§2.7.7 重复即生成**）；**§9 新增 5 条可判定条目**（原型 / 预算 / 分级 / 单一用途 / 能力保留）；附录 **A.3 提示词模板升级**为「原型 + 预算自报 + 信息分级」，新增 **A.4 给 AI 的重构协议**（一页一次）。诊断、实测数字与逐页改造清单见 [UI-016](team/design/UI-016-console-content-simplification.md)。**既有章节、期望值、断言表达式逐字节未动**（§9 只增不减））· V1.8（Round 13 · 2026-09-28，授权书 **Lead L-R13-1** + [REQ-016](team/requirements/REQ-016-v3-aii-and-visual-debt.md) §1.5 四项 + 版本行：§4.3 的 destructive 现状块由「记为 R12 设计项」改为**已实施**（路径 A-ii：静息文字 `var(--color-text)` 12.65:1、hover 文字 `var(--color-surface)` 5.47:1，红只留 1px 描边 + 图标；令牌与 `.aup` 零改动）；§3.1 新增「平台 `destructive` variant 文字/描边/图标同色 → 与淡底同色相时破 AA」的口径；§9 新增 **2 条**条目与对应可执行断言（`destructive` 静息/hover ≥4.5:1；命中区 ≥24×24，按 REQ-015 R3 探针**态①** 写硬断言）；§3.4 补 **D6** 判据（卡片内 `h2` 承担该页唯一可见标题 → 17px）；另把 §4.3 姊妹行「V3 方案指向」的状态词从「未实施」对齐为「已实施」。**既有期望值、既有断言表达式、既有 §9 条目逐字节未动**（§9 只增不减）；逐条 before/after 与原始实测值见 [UI-010](team/design/UI-010-v3-aii-implementation.md)）· V1.7（Round 11 · 2026-09-28，授权书 **D27 文档对齐：D1–D5 + V3/V8 裁定写入标准**：§3.3 写入 gate 卡 20px 豁免（D1，引 Lead D4）与 `auto-surface` 免责（D3）；§4.3 尺寸档高度改准为实测口径 36/38/29px（D2）；§2.1 菜单项内边距改准为 `8px 20px 8px 32px`（D5）；§2.5 + §9 写入「节数 ≥ 18 侧栏自滚可接受、页脚须可滚动到达」（V8/D24）；§4.3 记录 destructive 文字 3.99:1 为 R12 设计项（V3/D23）；另附带对齐 3 处过期的节数示例值（5 组 18 项）。**期望值、断言表达式、§9 条目结构逐字节未动**；逐条 before/after 见 [UI-008](team/design/UI-008-standard-gap-closure.md)）· V1.6（Round 11 · 2026-09-28，授权书 **L-R11-2 事实对齐**：§2.1「选中菜单项 / 当前菜单项」两行由「深色实心块（`background: var(--color-text)`）」改为实测的平台 `active=true` **强调色块**（`--color-accent-bg` / `--color-accent`，与 §2.3 第 122 行一致），并把「两者文字左缩进均为 20px」改准为实测 **32px**；期望值与 §9 条目未动。逐条 before/after 见 [UI-007](team/design/UI-007-console-pixel-walkthrough.md) §7.2）· V1.5（Round 10 · 2026-09-28 落盘（授权书 2026-09-27，**L-R10-1 事实对齐**）：**残留收口**——(a) §9 第 2 条条目文字里的 `console-pane` 按 §2.5 / §8 既有范式标注为本文档的**概念名**（条目判据与 `^□` 十二条不变）；(b) 附录 A.1 的参考 CSS 类名与提示词模板里的 `console-pane` / `console-shell` 同范式标注（CSS 骨架与 `docs/reference/console-shell-layout.html` 引用未动）；(c) 附录三处 §2.3 交叉引用改准为「§2.3 结构 + §2.5 滚动」（双滚动条那处直指 §2.5）。三项**只做事实对齐**：期望值、§9 条目结构、两个等价断言块逐字节未动。逐条 before/after 见 [UI-006](team/design/UI-006-appendix-residuals.md)，上一轮见 [UI-004](team/design/UI-004-ui-standard-assertion-and-residuals.md)）
 
 **关联文档：**
 [ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) §14–§16（后台信息架构，权威来源）·
@@ -256,12 +256,16 @@
 | 原型 | 一句话用途 | 固定骨架（自上而下） | 顶层区块上限 |
 | --- | --- | --- | --- |
 | **P1 列表** | 管理一类记录 | 页头 →〔过滤行，可选〕→ **恰好 1 个列表** → 空态 | 2 |
-| **P2 概览** | 一眼看清全局与待办 | 页头 → **1 行指标（≤4 项）** → ≤2 张卡 →〔折叠：更多〕 | 3 |
+| **P2 概览** | 一眼看清全局与待办 | 页头 → **1 行指标（≤4 项，可选）** → ≤2 张卡 →〔折叠：更多〕 | 3 |
 | **P3 编辑** | 编辑一条记录 | 页头（带返回）→ **1 张表单卡（字段组 ≤3）** → 底部动作条（1 主 + ≤1 次 + 危险） | 2 |
 | **P4 设置** | 改一组配置 | 页头 → 1 张卡（字段 ≤8）；超出即拆页 | 1 |
 | **P5 运维** | 看状态、取命令 | 页头 → 1 张状态摘要 → **命令统一「复制行」** →〔折叠：诊断细节〕 | 2 |
 
 **禁止**：一页同时是「列表 + 表单 + 状态 + 命令」的混装（当前多数页面的形态）。
+
+> **P2「指标行」的诚实降级（2026-09-29 Lead 裁定，W1-S1 实测）**：AUP 表达式语言**没有** `length` / 聚合 / 集合运算原语，平台也不提供预聚合，因此页面侧的任何"计数/统计"数字都只能靠**在页内编造**——那直接违反 §1 的诚实原则。
+> ⇒ 指标行是**可选**的：能由平台自己给出时才放（例：`afs-list` 的**分页器 total**，`pagination=manual` + `pageSize>0` 时平台渲染 `span.aup-list-pager-total`，compact 文案 `"46 total"`）。**禁止**页面自算数字或伪造占位。
+> 当同一张卡内聚了两个区块（标题 + 列表 + 底部动作）时，**允许用"一张卡两个区块"代替两张卡**（§A.4 已要求"多出来的卡片合并成区块"）；不得为了凑第二张卡而突破内联 `style` 硬上限。
 
 #### 2.7.2 预算（硬上限，超限 = 不通过）
 
@@ -388,6 +392,7 @@ lg    32px    页面大区块之间
 | `h2` / `h3`（卡片内） | 卡片标题、区块标题 | `fontSize: var(--type-body)`（15px） |
 | 正文 | 默认字号 | — |
 | `var(--type-small)` + `--color-dim` | 辅助说明、时间、元信息 | — |
+| `p … scale=caption intent=muted`（**常驻说明**） | 降级/常驻说明：分页恢复（§4.7）、诚实降级与空态（§4.8）、队列规则（§4.10） | 平台 `var(--type-caption)`（13px / `.8125rem`，字重 500）+ `var(--color-dim)`。**实测**（2026-09-29 只读 HTTP 取 `aup-core.css`，非猜值）：`.aup-text[data-scale=caption]{font-size:var(--type-caption,.8125rem);font-weight:500;letter-spacing:.01em}` 与 `.aup-text[data-intent=muted]{color:var(--color-dim)}`；两者都是 **token**，不是裸数值 |
 
 * 文章标题等关键文字 `line-height: 1.25`，允许 `clamp()` 流式缩放。
 * **数字、DID、哈希、金额**使用等宽/表格数字呈现，避免宽度抖动。
@@ -479,6 +484,101 @@ Danger      需确认           删除、撤销质押、退款
 | 高风险授权（agent.publish / economy） | 二次确认 + 明确权限范围（§15.8） |
 | 成功反馈 | 原地状态变化优先；不弹"操作成功"对话框 |
 
+### 4.7 列表分页契约（唯一口径：平台原生分页器）
+
+**一句话**：列表不许把页面拉长，也不许伪造翻页入口——可用的只有**平台原生分页器**这一套口径。
+
+**① 唯一配方**（`.aup` 只声明 prop，控件由运行时渲染）：
+
+```aup
+afs-list <stable-id> layout=list itemStyle=row subscribe=true clickMode=none \
+  pagination=manual pageSize=N from "/instance/app/arcblog/<dir>" { … }
+```
+
+平台据此渲染 `← Prev` / `Page X of Y` / `Total: M records` / 每页条数选择器；点击写 URL 查询参数 **`<id>.page=<n>`** 并按 `{offset:(n-1)*N, limit:N}` **重新取数**（是真切片，不是前端截断）。`<id>.page=3` 可深链；越界页码被**钳到末页**，`page=0` / `page=abc` 退回第 1 页；末页 `Next` 为 `disabled`（`arc-contracts.md` §38(1)(3)）。
+
+**② 禁止用 `pagination=auto`（默认值）当分页**：它只按 `pageSize` 截断 + **无限自动续载**，没有任何页码入口——页面在增长而用户以为只有一页（`arc-contracts.md` §38(2)）。**`pagination` 原语全仓零使用**：它的 `total` 必须是静态值，用它必然写死条数（同 §38(4)）。
+
+**③ `total <= pageSize` 时平台不渲染任何控件**：这类列表（小列表 / 空列表）的正确形态是**全量渲染 + 零假入口**——**不得**为它们补一个点了不换页的假分页器（REQ-030 §2.2 红线 L-R23-2）。判据以 REQ-030 §5 A2 第 3 条的**修正后口径**为准：`total>pageSize` 的列表必须有可见可操作的真入口；`total<=pageSize` 的必须全量渲染（一行不丢）且**无假入口**。
+
+**④ `<id>` 是用户可见的契约**（同时是 URL 参数名与 localStorage 键名）：必须**显式、稳定、页面内唯一**，落地后不得随重构改名。`arc dsl lint --fix` 会删掉"运行期才寻址"的 id，因此这些 id 由 `scripts/arcblog-runtime-ids.test.mjs` 守卫（`arc-contracts.md` §25.4 / §38(1)）。
+
+**⑤ 覆盖陷阱与常驻恢复说明（BUG-063，P2；平台限制未消除）**：平台把每页条数选择器的结果写进 **`localStorage['aup-list-pagesize:<list id>']`**，下次访问该键**覆盖**页面的 `pageSize`；一旦用户选到 **≥ `total`**，平台按 `total<=pageSize` 的规则**把整个分页器（含选择器本身）移除**，页面内再无入口改回（实测：选择器消失后 `{"error":"no size select"}`）。**页面必须给常驻恢复说明**——不能靠 toast、不能靠 hover、不能加假 `visible`、不能写死条数：
+
+- **落地形态**：受影响列表**紧邻列表的常驻 `p`**，`scale=caption intent=muted`（取值见 §3.4），**无条件渲染**。先例 = 8 个页面（`ledger` / `orders` / `policy` / `access` / `dashboard` / `posts` / `tags` / `store`）的 `pagesize-note`，en/zh 各 8/8 运行期 `innerText` 命中（修法见 REQ-032 §3.3 / §6；命中证据见 BUG-063 QA 复验记录 C1）。
+- **必须写清四件事**：① 这个选择被**本浏览器**记住（`localStorage['aup-list-pagesize:<列表 id>']`）；② 它**覆盖**页面默认值；③ 选到 **≥ 总数**会让平台移除整个分页器（**包括选择器本身**），页面内无法改回；④ **恢复路径 = 清除本站点数据 / 删除该 localStorage 键后刷新**。
+- **文案基线**（可同义改写，四要素不得少）：
+
+  ```text
+  Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as
+  localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the
+  total makes the platform drop the whole paginator — including the selector itself — so no in-page
+  control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload.
+  ```
+
+- **手动恢复**（运维/探针，只读口径）：
+
+  ```bash
+  Object.keys(localStorage).filter(k=>k.startsWith('aup-list-pagesize:')).forEach(k=>localStorage.removeItem(k))
+  ```
+
+- **新增/改动列表时**：只要该列表真的会分页（可能 `total>pageSize`），就必须带这条常驻说明；文案是**页面级 i18n key**（页面作用域），不是 `emptyText`。
+
+**⑥ 探针/测试纪律（BUG-064）**：`aup-list-pagesize:<id>` 是**共享 profile 残留**——探针与测试必须**每个身份、每种语言新建 context**，断言前不得把残留键带进结论（BUG-064 曾因此产生 7 个残留键）。
+
+**⑦ 行内布局**：分页控件加入 `itemStyle=row` 后，行子元素仍是平台给的 `flex: 1 1 0%`；固定尺寸元素必须写 **`flexBasis: "auto"`**（只写 `flexGrow: 0` 会塌成 0 宽并压住旁边按钮，BUG-033 / `arc-contracts.md` §29.8）。
+
+**验收（可观察）**：逐页探针输出 `{page, listIndex, renderedRows, pageSize, hasEntry}`，`renderedRows <= pageSize` 全部成立；`total>pageSize` 的列表有可见可点入口，点击后 URL 出现 `<id>.page=<n>`、行集变化、末页 `Next` 为 `disabled`；`total<=pageSize` 的列表全量渲染且 `hasEntry=false`；受影响列表的常驻说明在**分页器消失后仍然存在**（BUG-063 QA 复验 C3：删键后分页器恢复、说明仍在）。
+
+### 4.8 诚实降级（无数据不得显示假 0 / 假绿灯）
+
+界面永远反映真实状态（§1「诚实」）。当平台/记录拿不到值时，**唯一**允许的形态是**如实留白 + 常驻说明**：
+
+| 情形 | 允许 | 禁止 |
+| ---- | ---- | ---- |
+| 单记录绑定无值（`propBind` 未解析，或记录确实没有该字段） | 平台**破折号** `—`（空值由平台渲染）+ 同卡常驻说明 | 渲染成 `0` / `Online` / 绿灯 / 空字符串；页面自定义「尚无数据」字面（R24 口径：用平台破折号，页面零新增字串） |
+| 列表为空 | §4.4 的空状态引导（一句现状 + 一句价值 + 一个动作） | 假页码 / 假计数；把"无能力"渲染成"已就绪" |
+| 计数 / 统计 | 只放**平台自己给出**的数字（例：`afs-list` 分页器的 `Total: M records`，§2.7.1 P2 已登记） | 页面自算计数或伪造占位（AUP 无 `length` / 聚合原语） |
+
+**空态文案不得无条件渲染**：页级常驻元素**无法探测列表长度**，所以"队列为空 / 还没有…"这类断言**不得**无条件写在卡片里——队列非空时它就变成假话（BUG-052 `media` / BUG-056 `factory` / BUG-072 `policy`，同形第四处）。两条合法路径：① 改成**状态中性的常驻说明**（不断言为空，只说明"点击后写入一条记录、由本机 worker 执行"）；② 用**插值形式**条件渲染 `visible="${state.x}"`——表达式形式 `visible="$state.x"` 只求值一次且永不恢复（`arc-contracts.md` §28.1）。
+
+**首屏未就绪 = 两段式取数（必须写明）**：`propBind` 的数据在**新 context 的第一次直载**不解析（页面渲染早于绑定解析，且初始解析不触发重渲染），页内切页往返或刷新后才出现真值（`arc-contracts.md` §21.11；BUG-036 / BUG-062 同族）。因此：
+
+* **不得**把首屏空白/破折号解释为"数据不存在"，**也不得**据此断言"没有记录"；
+* 受影响卡片必须带常驻说明写明：**破折号 = 记录没有该值，或绑定尚未解析；切页 / 刷新即出现真值**（先例 = `?page=dashboard` 网络卡的 `net-empty-note`，R24 受限登记 ②）；
+* 验收用**两段式取数后的第二次读数**（或刷新后读数）作准，并对每次新开页复跑——单次通过不算数。
+
+**为什么空态只能走常驻元素**：`afs-list` 的 `emptyText` 不求值 `$t()`（`arc-contracts.md` §20），空列表渲染平台默认英文；空态引导只能由**页级常驻元素**承载（§8「空态文案」行），这与"常驻说明"是同一套机制。
+
+### 4.9 禁止假按钮（每个控件都要有真实消费路径）
+
+**规则（L-R26-2 / REQ-019 §11 A8）**：页面上每一个可点击控件，必须至少落进下列一条**真实**路径，并在页面上得到与路径等价的解释：
+
+| # | 真实路径 | 形态 | 页面必须写明 |
+| - | -------- | ---- | ------------ |
+| 1 | **直接 AFS 写** | `action -> exec "/.actions/write"`，目标落在 `blocklet.yaml` **已声明**的 `replicated` 集合内 | 写的是哪条记录 |
+| 2 | **意图队列 + worker**（平台不能直写时的标准降级） | 页面只写 `config/<x>-intents/<id>.json`（`mode: create`）→ 本机 worker/CLI `apply｜watch` 执行 → 回写终态 | 「点击**只入队**；本机 worker 运行前目标记录逐字节不变；请读回记录，**toast 不是证据**」+ 可复制的 worker 命令；CLI 折叠为「高级」且**不是唯一路径** |
+| 3 | **导航 / 页内切换** | `-> page <name>`、`view href`（新标签页规则见 §2.6） | 去哪（§2.6） |
+| 4 | **如实标注不可实现** | 探针证明平台不支持时：**不保留该控件**，改为常驻说明 + 可复制 CLI 命令 | 「需 CLI / worker：<命令>」+ 原因 |
+
+**禁止**：① 写了没人消费的意图（有写入方、无消费方）；② 目标记录没变却写成"已生效"——先例 = 平台按 authority sidecar 规则拒绝重写 CLI 创建的记录，5 个预设按钮 + Save adapter **全 no-op**（BUG-068，R25 改为意图队列）；③ 只写 `mode: create` 却不说明重复提交会被拒绝且零改动；④ 用 toast / 成功文案代替 AFS 读回（`arc-contracts.md` §29.4）；⑤ 保留"点了没反应"的按钮——不可实现就必须停手并如实标注（REQ-034 §3.3 C5）。
+
+**静态自检**：每个 `action` 的 `exec` path 指向真实队列根或已声明集合；该队列根有消费者（`grep -n "apply\|watch" scripts/arcblog-<domain>.mjs`）；页面存在"只入队 / 由本机 worker 执行"的常驻说明。
+
+### 4.10 意图队列卡（`pending｜running｜applied｜rejected｜noop`）
+
+平台不允许页面直写"由 CLI 创建的"记录（`arc-contracts.md` §29.2 / BUG-068），因此 **控件 → 意图记录 → 本机 worker → 目标记录** 是本后台的标准写入范式（REQ-019 第四批沿用、REQ-032 策略队列、REQ-034 重新验证）。承载它的卡片有固定形状：
+
+**① 状态词表唯一**：`pending｜running｜applied｜rejected｜noop`，唯一来源 `scripts/lib/intents.mjs`（D36 canonical：`INTENT_STATUS` / `TERMINAL_STATUSES` / `IN_FLIGHT_STATUSES`）。页面与 worker **只写词表常量**，卡内**图例**必须与词表**逐字对齐**；不得另造 `done` / `failed` / `success` 等同义词（两套状态词并存 = 缺陷，BUG-045 同族）。
+
+**② 卡内固定顺序**：标题 → 一句话说明（做什么、为什么排队）→ **图例**（每个状态词一句解释）→ `afs-list`（`pagination=manual pageSize=10`、`subscribe=true`、显式稳定 id，见 §4.7）→ 每行**终态 + 具体原因**（`message` 非空）→ 行内 `Clear`（`destructive` + confirm，confirm 文案写明"只删该意图记录，不撤销 worker 已应用的改动"）→ **常驻规则说明** → CLI 出路（折叠为「高级」，且不是唯一路径）。
+
+**③ `running` 必须自洽（BUG-073）**：要么 worker **真的**写入在途态（`pending → running → applied|rejected|noop`，可崩溃重拾）；要么在**三处对齐**地改述为"预留认领态 / 只读兼容 / 本 worker 不写"。**不得**让页面图例宣称一个不可达的状态（REQ-034 §3.6 F1/F3 二选一）。
+
+**④ 空态与诚实（BUG-072）**：队列卡**不得**无条件渲染"队列为空"（见 §4.8）；常驻说明应状态中性。
+
+**⑤ 验收（以 AFS 为准，toast 不算）**：点击后**目标记录逐字节不变**（sha256 前后相同）而队列记录 +1；worker 运行后目标记录**真的变**（`applied`）；重复执行 = `applied: 0` + 零改动（幂等）；非法/缺字段 = `rejected` + 具体原因 + 零改动（fail-closed）；目标字段已等于意图值 = `noop` + 零字节；非 `.json` 条目 = 显式 `queueEntryIgnored` 且不被消费；队列路径对 **guest 403**。
+
 ---
 
 ## 5. 领域信息呈现标准
@@ -520,6 +620,13 @@ Hub / Studio 的名称、图标、描述、分类来自链上 NFT data（§8.3�
 None ── Acquired ── ●Staked ── Revoking ── Claimable
                      当前      [撤销质押]
 ```
+
+**角色与能力区（设置页 / spec §15.9）的四条硬要求（REQ-034 §3.1–§3.2）**：
+
+* **五态同源**：五个词必须与 `scripts/lib/roles.mjs` 的 `STAKE_STATES` **同源且逐字一致**（`none → acquired → staked → revoking → claimable`）；页面**重复这五个词**（词表漂移即可见）并标出**当前（派生）态**。`revoking` 在 `claimableAt` 到期后于**读取时**派生为 `claimable`，**记录本身不被改写**。不得在页面里另写一套词表。
+* **withheld 原因原文可见**：每个 `active=false` 的链角色显示 `roleStatus().reason` 的**原始英文值**（本地化标签 + 原始值可见 + 常驻 dim 说明）——控制台无法翻译运行期取值，**改写会掩盖真实原因**（同 §4.1 的降级口径）。
+* **不得把记录值说成链上事实**：记录里残留的 `assetId` / `stakeId` **不代表**"拥有资产"（`assetOwned` 由生命周期状态派生）；`chainVerification=false` 时**不得**出现"链上已验证"措辞——"重新验证"是**只读重新派生**，不是链上验证（REQ-034 §3.2 B3 / §3.3 C4）。
+* **零地址输入**：spec §15.9 / `:1273` 禁止在界面手填地址；角色与能力卡内**地址 / 网络输入框 = 0**，改配置只能走 CLI（常驻可复制命令），文案必须写明"显示为未绑定的取值读作「尚未绑定 / 暂不可用」，不是「记录为空」"。购买 / 质押 / 撤回 / 取回**只链接**既有 `?page=factory` 四动作，**不重复实现第二套按钮**（REQ-034 §3.4 D1）。
 
 ---
 
@@ -571,7 +678,7 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 □ 布局：宽高 100% 流式；页面固定无纵向滚动条，滚动只发生在 console-pane（本文档的概念名，实现里没有这个选择器）内（无双滚动条）；节数 ≥ 18 时允许侧栏自身滚动（§2.5），但**页脚（品牌/关于/RSS/版权）必须能通过该滚动到达**——判据：侧栏滚动到底后页脚最后一行底边进入视口（不要求首屏可见，Lead D24）
 □ 页头：标题 + 一句话说明 + 至多一个主操作
 □ Token：无硬编码颜色 / 字号 / 间距 / 圆角
-□ 状态：空状态有引导和动作；加载有骨架；错误三要素齐全
+□ 状态：空状态有引导和动作；无数据不显示假 0 / 假绿灯（§4.8，用平台破折号 + 常驻说明）；加载有骨架；错误三要素齐全
 □ 双编码：状态不只依赖颜色
 □ 数据：DID/哈希中间截断可复制；金额带符号；时间相对+绝对
 □ 权限：无能力即隐藏；锁定字段附原因；匿名只见登录卡
@@ -587,9 +694,14 @@ None ── Acquired ── ●Staked ── Revoking ── Claimable
 □ 分级（§2.7.3）：三级技术细节默认不可见（折叠或独立高级页）；同屏技术标识 ≤2
 □ 单一用途（§2.7.4）：页面说明是一句「操作者在这里干什么」的话；写不出即拆分或降级
 □ 能力保留（§2.7.4）：本次移除的每个控件都有可达去向（同页折叠 / 独立高级页 / CLI 命令），并已登记 `ArcBlog-feature-checklist.md`
+□ 分页（§4.7）：每个 `total>pageSize` 的列表都是 `afs-list <稳定id> pagination=manual pageSize=N`（真入口；点击后 URL 出现 `<id>.page=<n>` 且行集真变化；末页 `Next` 为 disabled）；`total<=pageSize` 的列表**全量渲染且无假入口**；受影响列表都带**常驻恢复说明**（BUG-063）
+□ 诚实降级（§4.8）：无数据的取值渲染平台破折号（无自定义「尚无数据」字面、无 0、无绿灯）；空态/降级文案与 AFS 状态一致且**不无条件渲染**（BUG-052 / BUG-056 / BUG-072）；`propBind` 首屏未就绪按**两段式取数**写明（§21.11），不把空白解释为"数据不存在"
+□ 真实性（§4.9）：每个可点击控件都有真实消费路径（AFS 写 / 意图队列 + worker / 导航 / 如实标注"需 CLI/worker"）；不把"已入队"写成"已生效"；无"点了没反应"的按钮
+□ 意图队列卡（§4.10）：图例与 D36 词表（`pending｜running｜applied｜rejected｜noop`）**逐字一致**；每行有终态 + 具体原因；`running` 二选一自洽（BUG-073）；空态不无条件渲染（BUG-072）；验收以 **AFS 前后 sha256** 为准（toast 不算）
+□ 角色与能力（§5.5）：五态与 `STAKE_STATES` 同源且全部呈现 + 标出当前派生态；withheld 原因**原始英文值**可见；地址 / 网络**输入框 = 0** 且常驻 CLI 指引；不把记录残留 `assetId` 写成"链上已验证"
 ```
 
-末条的可执行断言（**执行前提：admin 会话、视口 1803×908**；在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
+「点击去向（§2.6）」条的可执行断言（**执行前提：admin 会话、视口 1803×908**；在任一控制台页面执行，例如 `?page=posts`、`?page=tags`；生成器已 id-less，因此按"内容区滚动容器"定位——`arc-contracts.md` §25.3）：
 
 ```js
 // 内容区滚动容器内的无 target 链接数 —— 期望 0（原断言；对视口敏感，判定见下面的等价断言）

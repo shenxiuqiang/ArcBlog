@@ -1,48 +1,58 @@
+// Prototype: P1 list (UI standard §2.7.1) — header → state legend card →
+// one tabbed list (published / drafts / archived) → folded CLI + pagination notes.
+// Capability inventory kept from the pre-refactor page (UI-016 §2.7.4):
+//   public reading  /posts/<slug>   (row title, published tab)
+//   private preview /preview/<slug> (row title, drafts + archived tabs)
+//   record editing  /edit/<slug>    (Edit link, every tab)
+//   archive (posts/ → drafts copy) · remove-from-public (delete posts/ record)
+//   publish (drafts → posts copy)   · soft-delete (drafts record → status deleted)
+// The three tabs are data views of the two AFS directory boundaries; the
+// archived tab splits the private directory with the record's own archivedAt
+// stamp because an index-backed `filter` silently drops large records
+// (docs/arc-contracts.md §15.1).
 page posts {
   i18n {
-    admin-archive { en "Archive" zh "归档" }
-    detail { en "Details" zh "详情" }
-    detail-hint { en "Pick a post to inspect it here — no page switch." zh "选一篇文章在此查看详情——不切换页面。" }
-    detail-open { en "Open the reader page" zh "打开阅读页" }
-    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
-    detail-status { en "Status" zh "状态" }
-    detail-category { en "Category" zh "分类" }
-    detail-tags { en "Tags" zh "标签" }
-    detail-summary { en "Summary" zh "摘要" }
-    detail-author { en "Author" zh "作者" }
-    admin-archive-msg { en "This writes an archived copy to private drafts. The public post stays live until you remove it from public." zh "这会在私有 drafts 中写入一份 archived 副本。公开文章会继续保留，直到你执行从公开移除。" }
-    admin-archive-title { en "Archive this post?" zh "归档这篇文章？" }
-    admin-delete { en "Delete" zh "删除" }
-    admin-delete-msg { en "The record stays in drafts with status deleted and can be republished later." zh "记录会以 deleted 状态保留在 drafts 中，后续仍可重新发布。" }
-    admin-delete-title { en "Soft-delete this record?" zh "软删除这条记录？" }
-    admin-publish { en "Publish" zh "发布" }
-    admin-publish-msg { en "This copies the draft into the public posts/ directory — the source draft record stays in your draft list (this page never moves records). The CLI behaves differently: node scripts/arcblog-lifecycle.mjs publish writes the public copy and then deletes the source draft (move semantics). Deleted records can be republished." zh "这会把草稿复制到公开 posts/ 目录——源草稿记录仍保留在草稿列表中（本页从不移动记录）。CLI 的语义不同：node scripts/arcblog-lifecycle.mjs publish 会写公开副本并随后删除源草稿（移动语义）。deleted 状态记录也可以重新发布。" }
-    admin-publish-title { en "Publish a copy of this draft?" zh "发布这条草稿的副本？" }
-    admin-unpublish { en "Remove from public" zh "从公开移除" }
-    admin-unpublish-msg { en "Archive first keeps a copy in drafts. Removing from public deletes the original from public posts." zh "请先归档以在 drafts 保留副本。从公开移除会删除公开 posts 中的原记录。" }
-    admin-unpublish-title { en "Remove this post from public?" zh "将这篇文章从公开移除？" }
-    appearance { en "Appearance settings" zh "外观设置" }
-    archived-ok { en "Archived copy saved to drafts." zh "已在 drafts 中保存归档副本。" }
-    content { en "Your content" zh "你的内容" }
-    content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
-    deleted-ok { en "Record soft-deleted." zh "记录已软删除。" }
-    drafts-note { en "Publish copies the draft into public posts/; the source draft record stays here. To move it instead, use the CLI — node scripts/arcblog-lifecycle.mjs publish deletes the source draft (move semantics)." zh "「发布」会把草稿复制到公开 posts/，源草稿记录仍保留在这里。若要移动，请改用 CLI——node scripts/arcblog-lifecycle.mjs publish 会删除源草稿（移动语义）。" }
-    edit { en "Edit" zh "编辑" }
-    gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
     gate-title { en "Studio" zh "创作者工作室" }
-    group-drafts { en "Drafts & archived" zh "草稿与归档" }
-    group-published { en "Published" zh "已发布" }
-    lifecycle { en "Lifecycle controls" zh "生命周期控制" }
-    lifecycle-desc { en "Archive copies a post to the private drafts directory; Remove from public takes it off the public feed. Drafts can be published or soft-deleted from the row actions." zh "归档会把文章复制到私有 drafts 目录；从公开移除会把它从公开 feed 下线。草稿可在行内操作中发布或软删除。" }
+    gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    title { en "Your studio" zh "你的工作室" }
+    desc { en "Your stories by state: published, drafts, archived. One primary action (write) and every lifecycle action kept." zh "按状态管理你的文章：已发布 / 草稿 / 归档。只有一个主操作（写作），生命周期动作一个不少。" }
     new-post { en "New post" zh "新建文章" }
-    published-ok { en "Published." zh "已发布。" }
-    status-in-drafts { en "Status" zh "状态" }
-    status-note { en "The dot and the status text are read from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown verbatim — docs/arc-contracts.md §28.8." zh "色点与状态文字直接读取记录。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原始状态值原样显示——docs/arc-contracts.md §28.8。" }
-    status-published { en "Published" zh "已发布" }
-    studio { en "Your studio" zh "你的工作室" }
-    studio-desc { en "Manage drafts, published stories, archived stories, and uploaded media from one wallet-bound workspace." zh "在一个与钱包绑定的工作区中管理草稿、已发布、已归档的文章和已上传的媒体。" }
-    unpublished-ok { en "Removed from public." zh "已从公开移除。" }
+    tab-published { en "Published" zh "已发布" }
+    tab-drafts { en "Drafts" zh "草稿" }
+    tab-archived { en "Archived" zh "归档" }
+    edit { en "Edit" zh "编辑" }
+    admin-archive { en "Archive" zh "归档" }
+    admin-archive-msg { en "Archive this post? Writes a copy into the private drafts directory with status archived. The public post stays online until you remove it from public." zh "归档这篇文章？把一份副本写入私有 drafts 目录，状态置为 archived。公开文章会继续在线，直到你从公开移除。" }
+    admin-publish { en "Publish" zh "发布" }
+    admin-publish-msg { en "Publish a copy of this draft? This page COPIES the draft into the public posts/ directory and keeps the source draft here (copy semantics). The CLI publish command is different: it moves the record and deletes the source draft." zh "发布这条草稿的副本？本页把草稿**复制**到公开 posts/ 目录，源草稿保留在这里（复制语义）。CLI 的 publish 命令不同：它是移动语义，会删除源草稿。" }
+    admin-delete { en "Delete" zh "删除" }
+    admin-delete-msg { en "Soft-delete this record? The record stays in the private drafts directory with status deleted and can be republished later." zh "软删除这条记录？记录会以 deleted 状态保留在私有 drafts 目录，之后仍可重新发布。" }
+    admin-unpublish { en "Remove from public" zh "从公开移除" }
+    admin-unpublish-msg { en "Remove this post from public? Deletes the record from the public posts directory. Archive first if you want to keep a private copy." zh "将这篇文章从公开移除？从公开 posts 目录删除该记录。若想保留私有副本，请先归档。" }
+    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
+    cli-note { en "Move semantics and bulk work stay in the CLI: node scripts/arcblog-lifecycle.mjs archive moves posts/ → drafts/, publish and republish move drafts/ → posts/, soft-delete marks a private record deleted. The console copies instead of moving, and drafts/ is one private directory (draft + archived + deleted) — the Archived tab is that same directory narrowed by each record's own archivedAt stamp." zh "移动语义与批量操作留在 CLI：node scripts/arcblog-lifecycle.mjs archive 把 posts/ 移到 drafts/，publish / republish 把 drafts/ 移到 posts/，soft-delete 把私有记录标记为 deleted。控制台是复制而非移动；drafts/ 是同一个私有目录（草稿 + 归档 + 已删），「归档」页签是用每条记录自带的 archivedAt 收窄的同一目录视图。" }
+    status-note { en "Per-record status is shown as the raw machine value: the platform cannot pick a localized label per record (a dynamic $t() key renders literally, docs/arc-contracts.md §28.8). Record counts are rendered by each tab's own list footer (“Total: N records”) — this page invents no number. An empty tab means that state holds no record yet; write one with the button above." zh "每条记录的状态显示机器原始值：本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染，docs/arc-contracts.md §28.8）。条数由每个页签列表自己的页脚（“Total: N records”）渲染——本页不臆造数字。页签为空表示该状态还没有记录；用上方按钮写一篇即可。" }
+  }
+  component recordFields() {
+    input type=hidden name=eTitle value="${entry.content.title}"
+    input type=hidden name=eSlug value="${entry.content.slug}"
+    input type=hidden name=eSummary value="${entry.content.summary}"
+    input type=hidden name=eBody value="${entry.content.body}"
+    input type=hidden name=eCoverImage value="${entry.content.coverImage}"
+    input type=hidden name=eTags value="${entry.content.tags}"
+    input type=hidden name=eCategory value="${entry.content.category}"
+    input type=hidden name=eSeoTitle value="${entry.content.seoTitle}"
+    input type=hidden name=eSeoDescription value="${entry.content.seoDescription}"
+    input type=hidden name=eOgTitle value="${entry.content.ogTitle}"
+    input type=hidden name=eOgDescription value="${entry.content.ogDescription}"
+    input type=hidden name=eOgImage value="${entry.content.ogImage}"
+    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
+    input type=hidden name=eAuthorName value="${entry.content.authorName}"
+    input type=hidden name=eStatus value="${entry.content.status}"
+    input type=hidden name=ePublishedAt value="${entry.content.publishedAt}"
+    input type=hidden name=eArchivedAt value="${entry.content.archivedAt}"
+    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -150,109 +160,92 @@ page posts {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            row gap=md cross=center style={justifyContent: space-between} {
-              view gap=xs {
-                h2 :studio level=2 style={fontSize: "var(--type-subheading)"}
-                p :studio-desc intent=muted
+            row gap=md cross=center {
+              view gap=xs size={flex: 1} {
+                h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+                p :desc intent=muted
               }
-              action -> page compose variant=primary label=:new-post style={borderRadius: "var(--radius-md, 8px)"}
+              action -> page compose variant=primary label=:new-post
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={detail: "/instance/app/arcblog/node/post-detail.json"} {
-                h3 :detail level=3 style={fontSize: "var(--type-body)"}
-                p :detail-hint intent=muted scale=sm visible="!${state.detail.slug}"
-                key-value-list dense=true fields=[{label: "$t(posts.detail-status)", value: "${state.detail.status}"}, {label: "$t(posts.detail-category)", value: "${state.detail.category}"}, {label: "$t(posts.detail-tags)", value: "${state.detail.tags}", hideWhenEmpty: true}, {label: "$t(posts.detail-author)", value: "${state.detail.authorName}", hideWhenEmpty: true}, {label: "$t(posts.detail-summary)", value: "${state.detail.summary}", hideWhenEmpty: true}] visible="${state.detail.slug}"
-                row cross=start {
-                  action -> navigate "/posts/${state.postSlug}" variant=secondary size=sm label=:detail-open style={borderRadius: "var(--radius-md, 8px)"} visible="${state.postSlug}"
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                row gap=xs cross=center {
+                  chip label=:tab-published color=success
+                  chip label=:tab-drafts color=default
+                  chip label=:tab-archived color=info
                 }
+                p :status-note scale=caption intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :lifecycle level=3 style={fontSize: "var(--type-body)"}
-                p :lifecycle-desc intent=muted
-                row cross=start {
-                  action -> page appearance variant=secondary size=sm label=:appearance style={borderRadius: "var(--radius-md, 8px)"}
-                }
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h2 :content level=2 style={fontSize: "var(--type-body)"}
-                h3 :group-published level=3 style={fontSize: "var(--type-body)"}
-                afs-list posts-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty autoSelect=false clickMode=none style={flexShrink: 0} pagination=manual pageSize=20 from "/instance/app/arcblog/posts" {
-                  row cross=start role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
-                    view layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
-                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
-                      row gap=xs cross=center {
-                        p "●" scale=sm intent=success
-                        p :status-published scale=sm intent=muted
-                        p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
-                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                          time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                view mode=tabs {
+                  view label=:tab-published {
+                    afs-list posts-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/posts" {
+                      row gap=sm cross=start role=item {
+                        view gap=xs size={flex: 1} href="/posts/${entry.content.slug}" target=_blank {
+                          h3 "${entry.content.title}"
+                          row gap=xs cross=center {
+                            p "●" scale=sm intent=success
+                            p :tab-published scale=sm intent=muted
+                            p "${entry.content.category}" scale=sm intent=muted
+                            time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                          }
                         }
+                        use recordFields()
+                        view href="/edit/${entry.content.slug}" target=_blank {
+                          p :edit scale=sm
+                        }
+                        action label=:admin-archive confirm={title: :admin-archive, message: :admin-archive-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: archived, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                        action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish, message: :admin-unpublish-msg}
                       }
                     }
-                    action variant=secondary size=sm label=:detail style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/post-detail.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", status: "${args.eStatus}", category: "${args.eCategory}", tags: "${args.eTags}", authorName: "${args.eAuthorName}", summary: "${args.eSummary}", updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:admin-archive confirm={title: :admin-archive-title, message: :admin-archive-msg} onSuccessToast={intent: success, message: "$t(admin.archived-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: archived, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish-title, message: :admin-unpublish-msg} onSuccessToast={intent: success, message: "$t(admin.unpublished-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"}
-                    input type=hidden name=eTitle value="${entry.content.title}"
-                    input type=hidden name=eSlug value="${entry.content.slug}"
-                    input type=hidden name=eSummary value="${entry.content.summary}"
-                    input type=hidden name=eBody value="${entry.content.body}"
-                    input type=hidden name=eCoverImage value="${entry.content.coverImage}"
-                    input type=hidden name=eTags value="${entry.content.tags}"
-                    input type=hidden name=eCategory value="${entry.content.category}"
-                    input type=hidden name=eSeoTitle value="${entry.content.seoTitle}"
-                    input type=hidden name=eSeoDescription value="${entry.content.seoDescription}"
-                    input type=hidden name=eOgTitle value="${entry.content.ogTitle}"
-                    input type=hidden name=eOgDescription value="${entry.content.ogDescription}"
-                    input type=hidden name=eOgImage value="${entry.content.ogImage}"
-                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
-                    input type=hidden name=eAuthorName value="${entry.content.authorName}"
-                    input type=hidden name=eStatus value="${entry.content.status}"
-                    input type=hidden name=ePublishedAt value="${entry.content.publishedAt}"
-                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
+                  }
+                  view label=:tab-drafts {
+                    afs-list posts-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/drafts" {
+                      row gap=sm cross=start role=item visible="!${entry.content.archivedAt}" {
+                        view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
+                          h3 "${entry.content.title}"
+                          row gap=xs cross=center {
+                            p "●" scale=sm intent=muted title="${entry.content.status}"
+                            p :tab-drafts scale=sm intent=muted
+                            p "${entry.content.status}" scale=sm
+                            p "${entry.content.category}" scale=sm intent=muted
+                            time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                          }
+                        }
+                        use recordFields()
+                        view href="/edit/${entry.content.slug}" target=_blank {
+                          p :edit scale=sm
+                        }
+                        action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                        action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
+                      }
+                    }
+                  }
+                  view label=:tab-archived {
+                    afs-list posts-archived-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/drafts" {
+                      row gap=sm cross=start role=item visible="${entry.content.archivedAt}" {
+                        view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
+                          h3 "${entry.content.title}"
+                          row gap=xs cross=center {
+                            p "●" scale=sm intent=muted title="${entry.content.status}"
+                            p :tab-archived scale=sm intent=muted
+                            p "${entry.content.status}" scale=sm
+                            p "${entry.content.category}" scale=sm intent=muted
+                            time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                          }
+                        }
+                        use recordFields()
+                        view href="/edit/${entry.content.slug}" target=_blank {
+                          p :edit scale=sm
+                        }
+                        action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                        action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
+                      }
+                    }
+                    p :cli-note scale=caption intent=muted
                   }
                 }
-                h3 :group-drafts level=3 style={fontSize: "var(--type-body)"}
-                p :drafts-note scale=sm intent=muted
                 p :pagesize-note scale=caption intent=muted
-                afs-list posts-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty autoSelect=false clickMode=none style={flexShrink: 0} pagination=manual pageSize=20 from "/instance/app/arcblog/drafts" {
-                  row cross=start role=item style={background: transparent, padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
-                    view layout=inline href="/preview/${entry.content.slug}" target=_blank size={flex: 1} style={display: block, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0} {
-                      h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
-                      row gap=xs cross=center {
-                        p "●" scale=sm intent=muted title="${entry.content.status}"
-                        p :status-in-drafts scale=sm intent=muted
-                        p "${entry.content.status}" scale=sm
-                        p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
-                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
-                        }
-                      }
-                    }
-                    action variant=secondary size=sm label=:admin-publish confirm={title: :admin-publish-title, message: :admin-publish-msg} onSuccessToast={intent: success, message: "$t(admin.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                    action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete-title, message: :admin-delete-msg} onSuccessToast={intent: success, message: "$t(admin.deleted-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
-                    view layout=inline href="/edit/${entry.content.slug}" target=_blank style={display: block, cursor: pointer, color: "var(--color-dim)", padding: "3px 0"} {
-                      p :edit scale=sm
-                    }
-                    input type=hidden name=eTitle value="${entry.content.title}"
-                    input type=hidden name=eSlug value="${entry.content.slug}"
-                    input type=hidden name=eSummary value="${entry.content.summary}"
-                    input type=hidden name=eBody value="${entry.content.body}"
-                    input type=hidden name=eCoverImage value="${entry.content.coverImage}"
-                    input type=hidden name=eTags value="${entry.content.tags}"
-                    input type=hidden name=eCategory value="${entry.content.category}"
-                    input type=hidden name=eSeoTitle value="${entry.content.seoTitle}"
-                    input type=hidden name=eSeoDescription value="${entry.content.seoDescription}"
-                    input type=hidden name=eOgTitle value="${entry.content.ogTitle}"
-                    input type=hidden name=eOgDescription value="${entry.content.ogDescription}"
-                    input type=hidden name=eOgImage value="${entry.content.ogImage}"
-                    input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
-                    input type=hidden name=eAuthorName value="${entry.content.authorName}"
-                    input type=hidden name=ePublishedAt value="${entry.content.publishedAt}"
-                    input type=hidden name=eArchivedAt value="${entry.content.archivedAt}"
-                    input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
-                  }
-                }
-                p :status-note scale=sm intent=muted
               }
             }
           }

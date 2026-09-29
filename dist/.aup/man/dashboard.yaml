@@ -7,9 +7,12 @@ description: >-
   and studio surfaces. Economy and Agent surfaces are shown as explicitly
   not-yet-enabled rather than omitted.
 synopsis: >-
-  Show what this instance is (DID, roles, capabilities, verification switch) and
-  what it currently holds (published stories, categories), then route the
-  operator into the right surface from one place.
+  Prototype P2 (overview, docs/ArcBlog-admin-ui-design.md §2.7.1): answer "what
+  needs me now" in one screen — the newest drafts waiting to be finished, with
+  the platform pager's own total, and the newest published stories — and offer
+  exactly one primary action, Write a post (?page=compose). Node, network,
+  order, Agent and Hub detail belongs to Operations / Orders / Agents / Hub; the
+  landing page shows no technical identifier at all (§2.7.3, level-3 content).
 flows:
   - Read the node profile written by scripts/arcblog-node.mjs.
   - Read the externalized role configuration and whether chain verification is on
