@@ -161,3 +161,21 @@
 - **镜像**：`docs/ArcBlog-feature-checklist.md`「菜单结构与能力驱动（§15.1/§15.2/§15.10）」行的备注补记本次目标 IA 与实施任务（状态列**不变** —— 能力驱动菜单仍未实现）。
 - **复核命令**：`grep -n '^## 15.2' docs/ArcBlog-product-technical-spec.md`；`node -e "import('./scripts/console-nav.mjs').then(m=>console.log(m.CONSOLE_SECTIONS.length))"`（=21）；`git diff docs/ArcBlog-product-technical-spec.md`。
 - **后续追认项**：UI-017 **提案 B**（行数 21→17 的合并）未授权、未实施；实施前需另立条目。
+
+---
+
+## 7. 补丁 3（已授权范围内的事实订正，2026-09-29）：§154 阶段 0 结论回填
+
+**授权基础**：C-15（人类授权把数据层设计写入 §154/§155）。本轮只**订正已写内容里被实测推翻/推进的事实**，不改设计意图、不新增章节：
+
+| 位置 | 订正 | 来源证据 |
+| --- | --- | --- |
+| §154.3 **F8** | 旧结论「dev 形态挂载未被加载」——**已订正**：那是**命名空间寻址错位**信号；挂载确实被加载，**声明路径在 flat topology 不可寻址**，对外只能走 blocklet **根自定义动作** | `arc-contracts` **§41(2)(3)(4)**（R25 阶段 0 实测） |
+| §154.10 **P0-1** | 判据由「`/probe/.actions/ping` 可执行」改为「**根自定义动作可 exec**」→ **✅ 已证** | 同上 |
+| §154.10 **P0-5** | 商店取件链路 **✅ 已答**（无 `arc blocklet publish`；Marketplace = AFS Index 不托管本体 ⇒ 取件端自建 index）；并登记 **BUG-074（P1）**：Pages 部署产物会带真实私钥 | `arc-contracts` **§43** |
+| §154.10 **P1-1** | **✅ 已完成**：只可依赖 ≤ ~1.8 KB 记录的**内容相对 dot-path** 查询（不写 `content.` 前缀）+ entry 列单键 `orderBy` + 分页/count；超阈值 `ds_entries.content IS NULL` → `where` 静默漏、`select` 静默 `{}`；`aggregate.total` 是**组行数**；`annotate.memberOf`/`timeGranularity`/`semantic` 实测无效 | `arc-contracts` **§44**（T0-4，只读校准） |
+| §155.3 **T1-1** | `required: true` → **`required: false`**（`true` + 坏挂载 = 整包不激活且 `arc blocklet run` 静默 exit 0；`false` 即 I7 的降级路径）；可达面改写为**根自定义动作**；激活判据改为读 `/blocklets/<id>` | `arc-contracts` **§42 / §41** |
+
+**镜像**：`ArcBlog-feature-checklist.md`「provider 挂载」行同步（T0-1/T0-2/T0-5/T0-6 ✅、T0-3 待验、`required: false` 等硬约束）。
+**任务板**：`task-6`（T0-1）✅、`task-11`（T0-6）✅、`task-9`（T0-4）✅；`task-8`（T0-3 `sqlite://`）仍 open。
+**纪律记录（两处偏差，均如实登记）**：① T0-4 探 action schema 时**误调用一次** `/modules/index/.actions/reindex --args '{}'` —— `explain` 谎报 `SIDE EFFECTS - none`，实际把 per-entry `state` 由 `active` 变 `stale`（零 AFS 写入、stats/计数/FTS 前后一致）；已作为平台发现写入 §44.3 末条，**待自然 reindex 修复**。② T0-4 只读探针窗口 12:52–13:03 与 `docs/team/.gate-lock`（12:59 起，`qa task-112 round-26`）**重叠约 4 分钟**——全程只读、零写入，13:03 对账未见过污染。
