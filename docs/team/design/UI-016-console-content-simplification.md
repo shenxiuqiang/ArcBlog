@@ -141,30 +141,14 @@
 
 **试点三问（W1 结束后写回本文件）**：① 预算是否真的做"轻"了（指标 + 截图）？② 有没有因预算而不可达的能力（有则**放宽预算**并记理由）？③ 同原型的第二页改造成本是否显著下降？
 
-### 5.1 集成收口 runbook（Lead 执行，2026-09-29 首版）
+### 5.1 集成收口
 
-并行改写页面时会出现**只有 Lead 能处理**的三个共享文件冲突；本波（W1+W2 共 7 页）按下表收口：
+**收口 runbook 的权威位置 = [`docs/team/bootstrap.md` §6](../bootstrap.md)**（七步：等 locales 释放 → `generate --write` → 逐键 prune 死键 → `runtime-ids` 复验 → baseline 重录 → `validate`+`npm test`+`npm run build` → 精确提交；含"基线例外上调"规则与已知例外清单）。本节**不再复制**那份表，避免两处漂移。
 
-| 步骤 | 命令 | 为什么必须由 Lead 做 |
-| --- | --- | --- |
-| 1. 等 `locales` 独占释放 | `git status --short .aup/locales/` 干净 / 对方已提交 | 页面任务只允许改自己页面的 `i18n {}`，**不允许**碰 `.aup/locales/**`（另一会话在写） |
-| 2. 重生成（合并） | `arc dsl generate --write` | 把各页新增键合进 locales；merge 语义，**永不裁剪** |
-| 3. **裁剪死键** | 读 `arc dsl lint --json` 的 `dead_locale_keys`，**只删这些键**（脚本按 lint 结果逐键删，不要用 `arc dsl lint --fix`） | `lint --fix` 会顺带删掉**只有运行期才引用**的 id（`site-header`／`hero-carousel-frame`／`theme-bridge-frame`），有前车之鉴（arc-contracts §25.4）。`generate` 只合并不删 ⇒ **不裁剪则 `no locale key is dead` 永远红**（dev-dashboard 用最小 fixture 复验过） |
-| 4. 运行期 id 复验 | `node --test scripts/arcblog-runtime-ids.test.mjs` | 上一步若误伤，必须在这里暴露 |
-| 5. 预算重录（只许下调） | `node scripts/arcblog-ui-budget.mjs --write-baseline`，然后 `node scripts/arcblog-ui-budget.mjs --check` 语义自检 | 页面变轻后基线必须跟着降，否则后续回归测不出来 |
-| 6. 全绿门 + 安全构建 | `arc dsl validate --json` → `npm test` → **`npm run build`** | 必须用 `npm run build`（= build + `scrub:dist-secrets`）：裸 `arc blocklet build` 会把 `node.key`/`.env.local` 复制进 `dist/`（BUG-067） |
-| 7. 派 QA | `task-17`（目视两态 / 滚动 / 深链 / 能力去向复核） | 并行期间浏览器会话受限，目视只能在此后补 |
+UI 侧只需记住与本标准相关的两点：
 
-**已知例外（不算失败）**：`stale_generated_locale_json`（每页 ×2，en/zh）在步骤 2 之前必然存在；`unreferenced_explicit_id`（warning）是 REQ-030 要求的分页列表显式 id，**必须保留**；`arc dsl format` 的 `content_dropped`（arc#2764，arc-contracts §45）是**真实错误**，谁的文件谁修，不能当例外。
-
-**基线重录的例外规则（2026-09-29 增补）**：棘轮是**逐指标**严格比较，但一次重构可能"这里 +1、那里 −6"（先例：`media` 的 `blocks 1→2` 换 `cards 9→2 / styles 37→7 / i18n 61→22`；`compose-edit` 的 `styles +1` 换 `cards 7→2`）。
-⇒ 允许**例外上调**某指标，当且仅当同时满足：① 该页**所有**指标仍在 §2.7.2 阈值内（含 P2/P3 豁免）；② 该页 `over` 集合**严格变小**（用 `arcblog-ui-budget.mjs --json` 的 `over` 长度比较）；③ 在维护记录/回报里写明"上调哪个指标、换来了什么"。
-不满足任一条 ⇒ 按原规则**只许下调**，打回重做。
-
-**收口顺序的实测修正（2026-09-29，task-21 dev-diagnostics 观测）**：本平台的 `arc dsl generate --write` **会重写"页面前缀"键集** —— diagnostics 删掉的 59 个 `diagnostics.*` 键在 generate 后确实从 locales 中消失（这与 CLAUDE.md 记的"只合并不裁剪"不同，说明该行为至少按页前缀生效）。
-因此：**顺序必须是「所有页面改动提交 → 再 generate → 再核 `dead_locale_keys`」**；在页面提交**之前**跑 generate，只会把当时的工作区状态写进 locales，之后提交的页面（例：media）会再次留下死键（实测 media 的 41 个键就这么来的）。剩余死键仍然**逐键手删**，不要 `lint --fix`。
-
----
+1. **基线只许下调**，例外上调必须同时满足：全部指标仍在 §2.7.2 阈值内 · 该页 `over` 集合严格变小 · 留痕写明换来了什么（先例：`media` 用 `blocks 1→2` 换 `cards 9→2`）。
+2. **`generate --write` 会重写页面前缀键集**，但只对当时的工作区状态生效 ⇒ 必须"所有页面提交完 → 再 generate → 再核死键"（波次中途 generate 会留下新死键，media 的 41 个就是这么来的）。
 
 ## 6. 度量模板（每页复制填写）
 
