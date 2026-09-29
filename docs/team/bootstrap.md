@@ -29,6 +29,8 @@
 | 问题 | 答案 |
 | --- | --- |
 | 一轮有几个人在写？ | **开发类 ≤10 并行** + PM/QA/Lead 各 1；见 §4 |
+| **谁真的去写代码？** | **全部在子 agent 里跑**（teammate / subagent / workflow，默认后台）；Lead 的 turn 只做接任务、建任务、派发、收口；见 §4.1 |
+| **聊天窗口来了新任务怎么办？** | Lead 按 §4.2 立即处置：不相交就派发、相交就排队、满 10 路就 pending；先回一句「已派发 + task id」 |
 | 谁提交？ | **Lead**（并发回滚风险下可一次性授权作者只提交自己那一个文件）；见 §7 |
 | 改完一个文件跑什么？ | `arc dsl validate --json` + 单文件 `node --test`（或 `npm test -- --changed`）；页面类再过 `arcblog-ui-budget.mjs`；见 §5 |
 | 什么时候跑全量 `npm test`？ | **每波收口一次**（~1 s，10 文件，自带耗时表与超时终止）；见 §5 |
@@ -90,6 +92,9 @@ docs/team/bootstrap.md（重点：§0 速查、§4 并发配额、§5 门与节�
    逐项写清：工作目录、必读顺序、自己的写范围与禁止事项、自检命令、i18n 键清单要求、/tmp 副本要求、回报格式。
    **共享文件只有唯一写者（默认你）**：.aup/locales/**、dist/**、scripts/console-nav.mjs + arcblog-console-nav.mjs、
    scripts/ui-budget-baseline.json、blocklet.yaml、spec、checklist、backlog、journal。
+   **你自己不做实现**：所有实现/调研/验证都派给子 agent（teammate / subagent / workflow，默认后台），
+   你的 turn 只做「接任务 → 建任务 → 派发 → 收口」（§4.1）。**聊天窗口必须随时能接新任务**：人类在中途发来新任务时，
+   当轮按 §4.2 处置并先回一句「已派发 / 已排队 + task id」。
 4. 跑一波：
    ① PM 规划（REQ + 可执行验收标准）→ ② 开发 ≤10 并行实现（各自落盘 + /tmp 副本 + 回报）
    → ③ **Lead 收口**：按 §6 的七步走完（validate + 全量 npm test + generate --write + locale prune +
@@ -104,6 +109,7 @@ docs/team/bootstrap.md（重点：§0 速查、§4 并发配额、§5 门与节�
 纪律：每个 agent 同一时刻 ≤1 个 in_progress 任务；黑名单命令（git push/reset、改 spec、删 node.key/.env.local）
 一律禁止；**Lead 是唯一提交者**（并发回滚风险下可一次性授权作者只提交自己那一个文件）；结论必须落到 docs/team/
 下的文件，消息只做「叫醒 + 摘要」；并发超过 10 路、要改架构、要动真实链或资金时停下来问我。
+**Lead 不阻塞聊天**：不在自己的 turn 里做实现，也不长时间 wait_agent；聊天里随时来的新任务当轮按 §4.2 处置并回执。
 ```
 
 ---
@@ -186,6 +192,42 @@ i18n 纪律：可以改本页 `i18n {}` 块，但**必须在回报里列全删�
 **开发 agent 的纪律**（与 §5 门、§7 保护、§3 模板同源，此处只列要点，不重复正文）：
 一个 agent 同时 ≤1 个 in_progress 任务 · 只写自己的 scope · 不 build / 不 generate / 不碰 locales ·
 开工先 `git status` 认领在途文件 · 目视类验收留给批次末 QA。
+
+### 4.1 执行模型：一切工作在子 agent 里跑（Lead 的 turn 只做派发与收口）
+
+**规矩**：Lead 的每个 turn 只允许做四件事 —— ① 接人类的新任务、读子 agent 的回报；② 建/改任务板条目；
+③ 派发或唤醒子 agent；④ 收口（§6 的共享文件动作 + 提交）。**任何实现、调试、读代码、跑测试都派给子 agent。**
+
+**为什么**：聊天窗口必须**随时可接新任务**。Lead 一旦在自己的 turn 里做实现，就会同时发生两件坏事 ——
+聊天被占住（人类发不了新指令），而且本波多了一个不可并行的写者（§4 的"唯一写者"约束本来只留给共享文件）。
+
+**机制（都异步，派发后立刻把控制权交回聊天）**
+
+| 用途 | 工具 | 说明 |
+| --- | --- | --- |
+| 持久 teammate（跨波复用、可被 `send_message` 唤醒） | `spawn_teammate` | 名字稳定（如 `dev-hub`、`dev-media`），inactive 不等于完成；一个 agent 一个写范围 |
+| 一次性子任务（研究、审计、单个修复） | `subagent` / `subagent_fork` | **默认后台**；只有下一步动作依赖它的结果时才 `run_in_background: false` |
+| 大规模扇出（>3 个同构子任务） | `workflow` | `run_in_background: true`，脚本里 `parallel`/`pipeline` 扇出；见 §10 |
+
+**Lead 唯一必须亲手做、且必须短的例外**（因为它们是共享文件的唯一写者，不是"Lead 更会写"）：
+`.aup/locales/**` 的 `generate`/prune · `ui-budget-baseline.json` 重录 · `npm run build` · 提交。
+除此之外，Lead 在 turn 里**不写** `.aup`、`scripts`、页面、测试。
+
+**不要阻塞聊天**：子 agent 完成会推回通知；不必轮询，也不要长时间 `wait_agent`。
+短等待（≤2 分钟）拿到进展就重新列一次 agent/任务板，然后继续做派发或收口；等不到就先回人类一句话。
+
+### 4.2 任务到达协议（聊天窗口随时可以给新任务）
+
+人类在任意时刻（哪怕一波还在跑）发来新任务时，Lead **当轮**按下表处置，并**先回一句**「已派发/已排队 + task id」：
+
+| 情形 | Lead 动作 |
+| --- | --- |
+| 写范围与在途任务**不相交**，且开发额度 <10 | `team_task_create`（必带 `write_scopes`）→ 派给空闲 teammate，或 `spawn_teammate` 新的 → 回「已派发 + task id + 谁在做」 |
+| 写范围与在途任务**相交** | 建任务并 `blocked_by` 那个在途任务 → 回「已排队，等 <task id> 完成后自动开工」 |
+| 开发额度**已满 10** | 任务板 `pending`，滚动补位；回「已入队，当前 10/10」 |
+| 任务落在**共享文件**（locales/dist/生成器/baseline/spec/checklist/backlog） | 由 Lead 自己串行做（§4.1 例外），但仍要建任务板条目留痕 |
+| 任务需要**人类决策**（动链/资金/架构/超过 10 路） | 停下来问，不要自行加码 |
+| 任务与**本波目标**无关 | 照样按上面处置（先入板），但要在回报里标明它与当前波次的关系，避免悄悄改范围 |
 
 ---
 
