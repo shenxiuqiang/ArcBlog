@@ -2544,3 +2544,35 @@ $ git diff --stat -- blocklet.yaml providers   → 空
 `node scripts/arcblog-network.mjs hub watch` = `setInterval(tick, seconds*1000)`（默认 3 s，tick 内 try/catch，**无退出条件**）；
 `node scripts/arcblog-chain-worker.mjs watch` = `for(;;){await setTimeout(interval*1000); once(); await refreshSvg()}`（默认 3 s，**无退出条件、循环体无 try/catch**，文件头注明 Ctrl-C 停止）。
 `hub refresh` 是**写路径**（逐条 `putHubRegistration`）。⇒ §111「失败标记 offline 而不中断」目前**没有**承载物。
+
+---
+
+## 54. **能力驱动的菜单显隐在本平台不可表达**（R27 实测；清单 §15.1/§15.2/§15.10）
+
+- 生成器侧 0 个 capability 字段（`grep -c capability scripts/console-nav.mjs` = 0）；侧栏唯一可见性条件是
+  `visible=$session.authenticated`；63 个原语里无 capability/role 求值。
+- 运行期 `visible` 只吃**同步** `$session.*`（§28.1/§28.8），而 `$session` 实际只有
+  `authenticated / did / displayName / role / authMethod / isAdmin / isOwner`，且表达式只有 `! && ||`
+  ⇒ **没有 `hasCapability()` 这类求值**，也没有比较/映射。
+- 结论：**按 Capability 运行期隐藏 = 不可表达**。可核验的替代：按 `$session.isAdmin` 只分「登录/管理员」两档、
+  把能力清单做成**只读展示**（`?page=general` 现有角色卡已在做）、构建期产出多份侧栏（成本高、非运行期）。
+  详见 `docs/team/requirements/REQ-037-menu-capability-hiding-phase0.md`。
+
+## 55. settings 挂载是**封闭注册表**：CLI 写入的新字段对运行期**不可见**
+
+`/instance/settings/arcblog` 运行期只列出**打包注册**过的字段（本机 3 条：`tone/palette/theme`）。
+实测：用 CLI 写 `home.json` → CLI 读回 OK，但 guest 的 `afs.list('/instance/settings/arcblog')` **仍只有 3 条**、
+`tryRead('/arcblog/home.json')` 报 `Path not found` ⇒ **新增 settings 字段必须由 `seed/settings/arcblog/**` 打包注册**，
+运行期随手写不算数。挂载记录形态：`{id,path,content:"<JSON字符串>",meta:{accessMode:"readonly",visible,editable,scope,version}}`
+（`tone/palette` = `scope:instance` + `visible:false`；`theme` = `scope:shared` + `visible:true`）。
+
+## 56. 条件闸门只有**行内 entry 上下文**可靠（page-state 绑定值上的 `visible` 不可靠）
+
+同一份构建里双向实测：
+- ✅ **可靠**：`afs-list` 行内 `visible="${entry.content.<字段>}"` —— 有 `coverImage` 的行渲染缩略图（240×174、带 `url()`），
+  空值行**节点不在 DOM**。
+- ❌ **不可靠**：`visible="${state.post.coverImage}"`（reader 封面块）在空值时**仍占位**（1136×280、`url()` 空）；
+  `visible="${state.post.previewOnly}"` 为 false 时节点**仍在**；取反形式（`!${…}`）与正向**不互斥**。
+- 对照：同一页的**普通插值**（`${state.x}`）是真的（绑定时间戳确实渲染）⇒ 坏的是**闸门语义**，不是绑定通道。
+⇒ 需要"有值才显示"时，把判断放到 **`afs-list` 行内**；单记录页上的条件渲染不要依赖 `visible`。
+（与 §28.1/§28.8 一致；`docs/team/requirements/REQ-039-home-module-switch.md` 有完整探针。）

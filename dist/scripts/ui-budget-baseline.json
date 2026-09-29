@@ -1,39 +1,39 @@
 {
   "dashboard": {
     "blocks": 2,
-    "cards": 8,
+    "cards": 1,
     "nested": 0,
-    "ctrl": 7,
-    "styles": 36,
-    "i18n": 44,
-    "tech": 11
+    "ctrl": 2,
+    "styles": 8,
+    "i18n": 14,
+    "tech": 0
   },
   "posts": {
     "blocks": 1,
-    "cards": 3,
+    "cards": 2,
     "nested": 0,
-    "ctrl": 42,
-    "styles": 34,
-    "i18n": 43,
-    "tech": 13
+    "ctrl": 7,
+    "styles": 6,
+    "i18n": 21,
+    "tech": 2
   },
   "pages": {
     "blocks": 2,
     "cards": 1,
     "nested": 0,
-    "ctrl": 21,
+    "ctrl": 9,
     "styles": 20,
     "i18n": 33,
-    "tech": 7
+    "tech": 3
   },
   "compose": {
     "blocks": 3,
-    "cards": 5,
+    "cards": 1,
     "nested": 0,
     "ctrl": 14,
-    "styles": 16,
-    "i18n": 25,
-    "tech": 2
+    "styles": 7,
+    "i18n": 20,
+    "tech": 0
   },
   "heroes": {
     "blocks": 1,
@@ -42,16 +42,16 @@
     "ctrl": 13,
     "styles": 27,
     "i18n": 27,
-    "tech": 4
+    "tech": 0
   },
   "categories": {
     "blocks": 1,
     "cards": 5,
     "nested": 0,
-    "ctrl": 11,
+    "ctrl": 10,
     "styles": 26,
     "i18n": 56,
-    "tech": 17
+    "tech": 12
   },
   "tags": {
     "blocks": 1,
@@ -60,7 +60,7 @@
     "ctrl": 6,
     "styles": 24,
     "i18n": 37,
-    "tech": 11
+    "tech": 6
   },
   "seo": {
     "blocks": 2,
@@ -69,7 +69,7 @@
     "ctrl": 5,
     "styles": 8,
     "i18n": 13,
-    "tech": 3
+    "tech": 2
   },
   "feeds": {
     "blocks": 2,
@@ -96,25 +96,25 @@
     "ctrl": 0,
     "styles": 15,
     "i18n": 21,
-    "tech": 7
+    "tech": 4
   },
   "hub": {
     "blocks": 2,
-    "cards": 5,
+    "cards": 2,
     "nested": 0,
-    "ctrl": 13,
-    "styles": 32,
-    "i18n": 81,
-    "tech": 25
+    "ctrl": 9,
+    "styles": 8,
+    "i18n": 25,
+    "tech": 2
   },
   "media": {
     "blocks": 1,
-    "cards": 9,
+    "cards": 2,
     "nested": 0,
-    "ctrl": 7,
-    "styles": 37,
-    "i18n": 61,
-    "tech": 24
+    "ctrl": 0,
+    "styles": 7,
+    "i18n": 22,
+    "tech": 2
   },
   "agents": {
     "blocks": 1,
@@ -123,7 +123,7 @@
     "ctrl": 0,
     "styles": 19,
     "i18n": 40,
-    "tech": 21
+    "tech": 20
   },
   "orders": {
     "blocks": 1,
@@ -132,16 +132,16 @@
     "ctrl": 0,
     "styles": 21,
     "i18n": 59,
-    "tech": 16
+    "tech": 14
   },
   "policy": {
     "blocks": 1,
     "cards": 5,
     "nested": 0,
-    "ctrl": 29,
+    "ctrl": 28,
     "styles": 43,
     "i18n": 94,
-    "tech": 36
+    "tech": 19
   },
   "access": {
     "blocks": 1,
@@ -150,7 +150,7 @@
     "ctrl": 0,
     "styles": 8,
     "i18n": 10,
-    "tech": 1
+    "tech": 0
   },
   "ledger": {
     "blocks": 1,
@@ -159,7 +159,7 @@
     "ctrl": 0,
     "styles": 21,
     "i18n": 48,
-    "tech": 16
+    "tech": 14
   },
   "factory": {
     "blocks": 3,
@@ -168,33 +168,57 @@
     "ctrl": 7,
     "styles": 26,
     "i18n": 73,
-    "tech": 12
+    "tech": 4
   },
   "general": {
     "blocks": 2,
     "cards": 5,
     "nested": 0,
-    "ctrl": 14,
-    "styles": 44,
-    "i18n": 87,
-    "tech": 32
+    "ctrl": 12,
+    "styles": 38,
+    "i18n": 96,
+    "tech": 15
   },
   "diagnostics": {
     "blocks": 2,
-    "cards": 10,
+    "cards": 2,
     "nested": 0,
     "ctrl": 0,
-    "styles": 31,
-    "i18n": 72,
-    "tech": 27
+    "styles": 8,
+    "i18n": 25,
+    "tech": 2
   },
   "compose-edit": {
     "blocks": 1,
-    "cards": 7,
+    "cards": 2,
     "nested": 0,
     "ctrl": 16,
     "styles": 11,
-    "i18n": 24,
-    "tech": 3
+    "i18n": 20,
+    "tech": 0
+  },
+  "_sources": {
+    "dashboard": "19bf8e2d7e46eb27",
+    "posts": "e978253376da0ac1",
+    "pages": "504d6b6dc635b917",
+    "compose": "2393f5ffdb9d622e",
+    "heroes": "3554d9551d1001b5",
+    "categories": "e558a4f2124012a0",
+    "tags": "eb57ca8c365e40a9",
+    "seo": "5ea7f1adb6c76987",
+    "feeds": "85642bdf965dddde",
+    "appearance": "3145c23eb34c25c1",
+    "operations": "cd603609333de2b5",
+    "hub": "8b23768ac4b0c57d",
+    "media": "a305a4bd426fa5c5",
+    "agents": "5058bdc56ec3fc6a",
+    "orders": "beb47c5911002931",
+    "policy": "dee50b9bc18d2c20",
+    "access": "969c024b632bc350",
+    "ledger": "9aa058329cd74d9c",
+    "factory": "f337328336a0e092",
+    "general": "9541003583b9cace",
+    "diagnostics": "94e2a9e8ba275eaf",
+    "compose-edit": "19b8e7bb73a9557f"
   }
 }

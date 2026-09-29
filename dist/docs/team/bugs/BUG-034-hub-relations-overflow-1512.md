@@ -87,3 +87,16 @@ zh_1512  itemW=574.59  kv over=[0×30]  kvMax=0  docOver=0
 - B34-2 溢出归零：**通过**（修前 en/1512 kv over 最大 92、zh/1512 31、1803 0 → 现全 0）。
 - B34-4 无新溢出 / 无横向滚动：**通过**（`docOver=0`，四组无横向滚动；页面壳层仍有 2 处 `.aup-view` `cw=1136/sw=1324 over=188`（1512）、`cw=1200/sw=1356 over=156`，与修前基线 `dev-r22-geom-baseline.json` 的 cw/sw/over **逐值相同** → 属既有平台壳层裁切，`overflowX: visible`，非本轮引入、非 scroller）。
 - B34-3 三动作仍可用且真写数据：**受限未验证** —— 未做 approve/reject/purge 的真实写点击（会改写 live 收录关系记录）。静态复核：三条 `exec`（tree-merge ×2、`/.actions/delete` ×1）与 `confirm` 文案逐字保留，`arc dsl validate --json` `issues: []`。建议 Lead/Dev 决定是否在隔离实例补一次点击取证。
+
+---
+
+## Dev lane K 复验（2026-09-29 14:00，HEAD `4d9e0e7`；CDP 探针 `/tmp/dev-k-hub-geom.mjs`）
+
+**登记两件与上文 Round 22 结论冲突的事实**（Lead 要求先复测再动手）：
+
+1. **Round 22 的页内修复不在 HEAD 里**：`d8b3476`（"protect the W1/W2 console refactors from an external rollback"）用 `/tmp/hub.aup.task19` 快照覆盖了 hub 页，该快照早于 BUG-034 的修法。当前 HEAD 的关系行**没有** `key-value-list hub-row-cmds`（Round 22 溢出的那个元素）：四组视口探针 `kvCount=0`、`.aup-kv-row` 0 条。因此「1512 仍 over 92px」在 HEAD **不可复现**。
+2. **残留改为另一种形态**：关系行第 2 个子元素（固定尺寸 action 簇）被平台行规则拉成 `flex: 1 1 0%` → 吃掉半行，内容列只剩 50%（1803 `715.28/1440.56`、1512 `591.59/1193.20`），按钮停在一行正中、右侧 ~428px 空白。这正是 BUG-034 的同一个机制（内容列被 action 挤窄），违反 `ArcBlog-admin-ui-design.md` §4.7⑦ / `arc-contracts.md` §29.8(3)（固定尺寸行子元素必须写 `flexBasis: "auto"`）。
+
+**本 lane 的修法**：`.aup/pages/ops/hub.aup` 关系行的 action 簇加 `style={flexGrow: 0, flexBasis: auto}`（外科式，+6/-1 行，226→231 行）。**注意**：dev daemon（pid 76734，instance `37a8eec1ce19687d`，13:47 启动，sha `edd62e1`）按启动快照服务 app，**不读改动后的 `.aup` 源码**（同证据：并行 lane 未提交的 `general.aup` 改动同样不生效：live `?page=general&locale=zh` 仍显示英文旧字面量 `basic.stakeState`、无新 `roles-reason-note`）。故源码级 live 复验**受限**，需 Lead 重载 daemon 后重跑探针。
+
+**已在真实页面（同快照）验证的机制等价证据**：对 live DOM 的 5 条关系行注入同两条声明（等价于编译产物），四组视口的数值见 Lead 回报；另有一条 live 先例证明该构造在同位置被尊重 —— 首页 `feed-list-row-1-view-2`（`.aup/pages/index.aup:23` 的 `view layout=inline` 行子元素，DSL 写 `flexGrow: 0, flexShrink: 0, flexBasis: "240px"`）在 DOM 里是内联 `flex: 0 0 240px`、`cw/sw=240/240 over=0`。

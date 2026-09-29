@@ -5,12 +5,18 @@
  * Fast tier: reads `.aup/pages/**` only, never touches the instance.
  *
  * The repo currently starts OVER budget on most pages, so this suite does not
- * assert compliance — it asserts the two things that make the standard real:
+ * assert compliance — it asserts the three things that make the standard real:
  *
  *   1. the tool measures the CONTENT COLUMN, not the whole file (the generated
  *      sidebar is worth ~51 `style={}` + ~24 `action` nodes per page, and
  *      counting it would charge the generator's cost to the page author);
- *   2. no page gets WORSE than `scripts/ui-budget-baseline.json` (a ratchet).
+ *   2. no page gets WORSE than `scripts/ui-budget-baseline.json` (a ratchet);
+ *   3. the baseline IS the measurement it claims to be (BUG-076): the tool is
+ *      pure static and byte-reproducible, and for any page whose source hash is
+ *      unchanged since recording, the recorded metrics must equal a fresh
+ *      measurement exactly. `general.tech` was recorded as 32 while the same
+ *      committed bytes measured 15, so a loosened ratchet used to be
+ *      indistinguishable from a correct one.
  *
  * When the W1..W3 refactors land, the baseline is re-recorded
  * (`node scripts/arcblog-ui-budget.mjs --write-baseline`); once every page is
@@ -19,12 +25,22 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CONSOLE_SECTIONS } from './console-nav.mjs';
-import { THRESHOLDS, checkBudget, limitsFor, measure, overBudget, pageFiles } from './arcblog-ui-budget.mjs';
+import {
+  THRESHOLDS,
+  baselineDrift,
+  checkBudget,
+  limitsFor,
+  measure,
+  overBudget,
+  pageFiles,
+  stalePages,
+} from './arcblog-ui-budget.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const baseline = JSON.parse(readFileSync(join(repoRoot, 'scripts', 'ui-budget-baseline.json'), 'utf8'));
@@ -129,6 +145,63 @@ test('baseline carries every metric for every page (no partial snapshots)', () =
   const metricNames = Object.keys(THRESHOLDS).sort();
   for (const row of report) {
     assert.deepEqual(Object.keys(baseline[row.page]).sort(), metricNames, `${row.page}: baseline shape`);
+  }
+});
+
+test('the measurement is pure: two independent runs are byte-identical', () => {
+  // BUG-076 asked whether `general.tech` could vary between two measurements of
+  // the same file. It cannot: `measure()` reads one string and no clock, no
+  // instance, no network — but the tool DID have one order-sensitive input
+  // (`readdirSync` + a last-wins map keyed by page stem, covered below).
+  assert.equal(JSON.stringify(checkBudget()), JSON.stringify(checkBudget()));
+});
+
+test('the baseline is the recorded snapshot — an unchanged page cannot drift (BUG-076)', () => {
+  // `general.tech` was recorded as 32 while the committed tool measured 15 on the
+  // committed page; 20 of 22 pages disagreed on at least one metric, and every
+  // disagreement loosened the ratchet. A baseline entry that no longer matches its
+  // own source hash is not a snapshot, it is a hand-kept number.
+  assert.deepEqual(
+    baselineDrift(report, baseline),
+    [],
+    'scripts/ui-budget-baseline.json disagrees with a fresh measurement for an unchanged page — re-record: node scripts/arcblog-ui-budget.mjs --write-baseline',
+  );
+  for (const row of report) {
+    assert.equal(
+      typeof baseline._sources?.[row.page],
+      'string',
+      `${row.page}: the snapshot must anchor the page source (--write-baseline)`,
+    );
+  }
+  // A page another lane has edited since the recording is NOT a failure: its hash
+  // no longer matches, so it drops out of the exact check above and is judged by
+  // the ratchet instead. Proven on a synthetic row (BUG-076 must not redden a
+  // parallel lane's page edit — only a wrong number on an UNCHANGED page).
+  const synthetic = [{ page: 'p', hash: 'h2', metrics: { blocks: 1 } }];
+  assert.deepEqual(
+    baselineDrift(synthetic, { p: { blocks: 9 }, _sources: { p: 'h2' } }),
+    [{ page: 'p', metric: 'blocks', recorded: 9, measured: 1 }],
+    'an unchanged page with a different recorded number must drift',
+  );
+  assert.deepEqual(baselineDrift(synthetic, { p: { blocks: 9 }, _sources: { p: 'h1' } }), [], 'changed source → ratchet only');
+  assert.deepEqual(stalePages(synthetic, { p: { blocks: 9 }, _sources: { p: 'h1' } }), ['p']);
+});
+
+test('page discovery is order-independent and fails loudly on a duplicate stem', () => {
+  // Two page files with the same stem used to resolve by filesystem order (the
+  // map was last-wins over an unsorted `readdirSync`), so the same tree could
+  // measure two different files on two machines. Now the walk is sorted and a
+  // duplicate is an error, never a silent pick.
+  const root = mkdtempSync(join(tmpdir(), 'arcblog-ui-budget-'));
+  try {
+    const body = 'page dup {\n  view {\n    p "x"\n  }\n}\n';
+    mkdirSync(join(root, '.aup', 'pages', 'a'), { recursive: true });
+    mkdirSync(join(root, '.aup', 'pages', 'b'), { recursive: true });
+    writeFileSync(join(root, '.aup', 'pages', 'a', 'dup.aup'), body);
+    writeFileSync(join(root, '.aup', 'pages', 'b', 'dup.aup'), body);
+    assert.throws(() => pageFiles(root), /duplicate page stem/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });
 

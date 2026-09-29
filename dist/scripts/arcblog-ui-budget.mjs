@@ -27,6 +27,21 @@
  *   becomes the default once the baseline reaches the thresholds.
  * - `--strict`: enforce UI standard §2.7.2 (with its P2/P3 exemptions).
  *
+ * WHY THE BASELINE CARRIES SOURCE HASHES (BUG-076)
+ * The baseline is documented as "the current measured snapshot" and REQ-034 H9
+ * forbids a SILENT loosening of the ratchet — but on 2026-09-29 the committed
+ * `general.tech` was 32 while the committed tool measured 15 on the committed
+ * page (20 of 22 pages disagreed on at least one metric). A file of numbers that
+ * nothing ties to the sources it claims to describe cannot be reproduced, and a
+ * loosened number therefore looks exactly like a correct one.
+ * `_sources` records the sha256 of each measured page file, so the snapshot is
+ * provable: for any page whose hash still matches, the recorded metrics MUST
+ * equal a fresh measurement (the default run and the fast tier fail otherwise),
+ * and `--write-baseline` prints the per-page metric diff it just applied.
+ * A page whose hash changed since recording is reported as STALE and is judged
+ * by the ratchet only — so a parallel edit to another page never needs this file
+ * to be re-recorded by someone outside its write scope.
+ *
  * Metrics (content column subtree; UI standard §2.7.2):
  *   blocks  content-column direct children (visible sections)
  *   cards   `var(--card-bg)` occurrences
@@ -40,6 +55,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, realpathSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -149,17 +165,37 @@ function i18nRange(lines) {
 export function pageFiles(root = repoRoot) {
   const wanted = [...CONSOLE_SECTIONS, ...EXTRA_PAGES];
   const found = new Map();
+  // Sorted walk: `readdirSync` order is filesystem-defined, and the map below is
+  // keyed by page STEM, so an unsorted walk plus a duplicate stem would silently
+  // pick whichever file the filesystem listed last (BUG-076: the only
+  // order-sensitive input this tool ever had). Sorting makes the result a pure
+  // function of the tree; a duplicate stem is now a loud failure instead.
   const walk = (dir) => {
-    for (const name of readdirSync(dir)) {
+    for (const name of readdirSync(dir).sort()) {
       const abs = join(dir, name);
-      if (statSync(abs).isDirectory()) walk(abs);
-      else if (name.endsWith('.aup')) found.set(name.replace(/\.aup$/, ''), relative(root, abs));
+      if (statSync(abs).isDirectory()) {
+        walk(abs);
+        continue;
+      }
+      if (!name.endsWith('.aup')) continue;
+      const stem = name.replace(/\.aup$/, '');
+      const rel = relative(root, abs);
+      const previous = found.get(stem);
+      if (previous && previous !== rel) {
+        throw new Error(`duplicate page stem "${stem}": ${previous} and ${rel} — one of them is never measured`);
+      }
+      found.set(stem, rel);
     }
   };
   walk(join(root, '.aup', 'pages'));
   const missing = wanted.filter((page) => !found.has(page));
   if (missing.length) throw new Error(`console page file(s) not found: ${missing.join(', ')}`);
   return wanted.map((page) => ({ page, file: found.get(page) }));
+}
+
+/** sha256 (truncated) of one page source — the anchor that makes a snapshot provable. */
+export function sourceHash(source) {
+  return createHash('sha256').update(source).digest('hex').slice(0, 16);
 }
 
 /** Page-level `component … { … }` block ranges plus the set of lines they cover. */
@@ -293,9 +329,57 @@ export function overBudget(page, metrics) {
 export function checkBudget(root = repoRoot) {
   return pageFiles(root).map(({ page, file }) => {
     const hasSidebar = CONSOLE_SECTIONS.includes(page);
-    const metrics = measure(readFileSync(join(root, file), 'utf8'), file, hasSidebar);
-    return { page, file, hasSidebar, metrics, over: overBudget(page, metrics), limits: limitsFor(page) };
+    const source = readFileSync(join(root, file), 'utf8');
+    const metrics = measure(source, file, hasSidebar);
+    return {
+      page,
+      file,
+      hasSidebar,
+      hash: sourceHash(source),
+      metrics,
+      over: overBudget(page, metrics),
+      limits: limitsFor(page),
+    };
   });
+}
+
+/** The baseline's source-hash map (`.aup` sources as recorded). */
+function recordedSources(baseline) {
+  return baseline && typeof baseline._sources === 'object' && baseline._sources ? baseline._sources : {};
+}
+
+/** Pages whose SOURCE changed since the snapshot was recorded (ratchet-only). */
+export function stalePages(report, baseline) {
+  const sources = recordedSources(baseline);
+  return report.filter((row) => sources[row.page] !== row.hash).map((row) => row.page);
+}
+
+/**
+ * Recorded metrics that DISAGREE with a fresh measurement for an unchanged page.
+ * Non-empty means the baseline is not reproducible — the exact BUG-076 failure
+ * (`general.tech` recorded 32 while the tool measured 15 on the same bytes).
+ */
+export function baselineDrift(report, baseline) {
+  const sources = recordedSources(baseline);
+  const out = [];
+  for (const row of report) {
+    if (sources[row.page] === undefined) {
+      // No recorded hash means the snapshot cannot be tied to any bytes: exactly
+      // the state BUG-076 found (numbers nobody could reproduce). Report it.
+      out.push({ page: row.page, metric: 'source-hash', recorded: 'missing', measured: row.hash });
+      continue;
+    }
+    if (sources[row.page] !== row.hash) continue; // source changed → the ratchet judges it
+    const base = baseline?.[row.page];
+    if (!base) {
+      out.push({ page: row.page, metric: '*', recorded: 'absent', measured: 'present' });
+      continue;
+    }
+    for (const [metric, value] of Object.entries(row.metrics)) {
+      if (base[metric] !== value) out.push({ page: row.page, metric, recorded: base[metric], measured: value });
+    }
+  }
+  return out;
 }
 
 function readBaseline() {
@@ -319,6 +403,31 @@ function regressionsAgainstBaseline(report, baseline) {
   return out;
 }
 
+/**
+ * Per-page summary of what a re-recording changes — the audit trail REQ-034 H9
+ * asks for ("explicit re-record + what changed", never a silent raise).
+ */
+function describeSnapshotChange(previous, report) {
+  if (!previous) return ['  (first recording — no previous baseline)'];
+  const lines = [];
+  for (const row of report) {
+    const base = previous[row.page];
+    if (!base) {
+      lines.push(`  + ${row.page}: new page ${Object.entries(row.metrics).map(([k, v]) => `${k}=${v}`).join(' ')}`);
+      continue;
+    }
+    const changed = Object.entries(row.metrics)
+      .filter(([metric, value]) => base[metric] !== value)
+      .map(([metric, value]) => `${metric}: ${base[metric]} -> ${value}`);
+    if (changed.length) lines.push(`  ~ ${row.page}: ${changed.join(', ')}`);
+  }
+  for (const page of Object.keys(previous)) {
+    if (page === '_sources') continue;
+    if (!report.some((row) => row.page === page)) lines.push(`  - ${page}: page no longer measured`);
+  }
+  return lines.length ? lines : ['  (no metric changed)'];
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const json = Boolean(args.json);
@@ -327,18 +436,28 @@ function main() {
   const report = checkBudget(repoRoot);
 
   if (writeBaseline) {
+    const previous = readBaseline();
     const snapshot = Object.fromEntries(report.map((row) => [row.page, row.metrics]));
-    writeFileSync(BASELINE_PATH, `${JSON.stringify(snapshot, null, 2)}\n`);
+    // `_sources` is what makes the snapshot provable instead of decorative: see
+    // the header note (BUG-076). Every page must carry one.
+    const next = { ...snapshot, _sources: Object.fromEntries(report.map((row) => [row.page, row.hash])) };
+    writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);
     console.log(`wrote ${relative(repoRoot, BASELINE_PATH)} (${report.length} pages)`);
+    console.log('change vs the previous baseline:');
+    for (const line of describeSnapshotChange(previous, report)) console.log(line);
     return 0;
   }
 
   const baseline = readBaseline();
   const regressions = baseline ? regressionsAgainstBaseline(report, baseline) : [];
+  const drift = baseline ? baselineDrift(report, baseline) : [];
+  const stale = baseline ? stalePages(report, baseline) : [];
   const over = report.filter((row) => row.over.length);
 
   if (json) {
-    console.log(JSON.stringify({ report, strict, regressions, overBudget: over.map((r) => r.page) }, null, 2));
+    console.log(
+      JSON.stringify({ report, strict, regressions, drift, stale, overBudget: over.map((r) => r.page) }, null, 2),
+    );
   } else {
     console.log('page                 blocks cards nest ctrl styles i18n tech   over-budget');
     for (const row of report) {
@@ -352,6 +471,11 @@ function main() {
     if (!baseline) console.log('no baseline recorded — run with --write-baseline to start ratcheting');
     else console.log(`regressions vs baseline: ${regressions.length}`);
     for (const r of regressions) console.log(`  REGRESSION ${r.page}.${r.metric}: ${r.was} -> ${r.now}`);
+    if (baseline) {
+      console.log(`baseline snapshot drift (unchanged pages): ${drift.length}`);
+      for (const d of drift) console.log(`  DRIFT ${d.page}.${d.metric}: recorded ${d.recorded} -> measured ${d.measured}`);
+      if (stale.length) console.log(`stale baseline entries (page source changed since recording): ${stale.join(', ')}`);
+    }
   }
 
   if (strict && over.length) {
@@ -360,6 +484,13 @@ function main() {
   }
   if (regressions.length) {
     console.error('\nratchet failed: a page got worse than scripts/ui-budget-baseline.json');
+    return 1;
+  }
+  if (drift.length) {
+    console.error(
+      '\nbaseline is not the recorded snapshot: an UNCHANGED page disagrees with the baseline ' +
+        '(BUG-076) — re-record it: node scripts/arcblog-ui-budget.mjs --write-baseline',
+    );
     return 1;
   }
   return 0;

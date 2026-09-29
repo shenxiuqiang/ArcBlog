@@ -167,7 +167,12 @@ page hub {
                     }
                     p "${entry.content.sync.lastError}" scale=sm intent=warning visible="${entry.content.sync.lastError}"
                   }
-                  row gap=sm cross=center {
+                  // §4.7⑦ / arc-contracts §29.8(3): every `afs-list itemStyle=row`
+                  // child is `flex: 1 1 0%`, so this fixed-size action cluster used to
+                  // stretch to half the row (content column got 50% instead of the
+                  // full remaining width — the BUG-034 overflow mechanism). Basis must
+                  // be `auto`, not just `flexGrow: 0`, or the cluster collapses to 0.
+                  row gap=sm cross=center style={flexGrow: 0, flexBasis: auto} {
                     action variant=secondary size=sm label=:approve onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: indexed, removedAt: "", updatedAt: "${generate.timeiso}"}}}}
                     action variant=secondary size=sm label=:reject onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {relation: removed, removedAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
                     action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:purge path="${entry.path}" confirm={title: :purge, message: :purge-msg} onErrorToast={intent: error, message: "$t(hub.write-failed)", duration: 4000}

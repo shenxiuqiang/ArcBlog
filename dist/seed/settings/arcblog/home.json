@@ -1,0 +1,8 @@
+{
+  "label": "Home modules",
+  "description": "Home module switch (spec §15.5 / §55–§57): which home modules render, and in which order. RECORDED ONLY as of 2026-09-29 — no page consumes it yet, and this description says so on purpose (see REQ-037): measured on this build (live daemon 4939, Chrome/153) that a bound record cannot gate page blocks — `visible` on `$state.*` fails open for an empty value, and only synchronous `$session.*` is a dependable conditional, so a settings-record-driven block switch is not expressible today. The value grammar is a comma-ordered token list over the two modules that exist today: hero = the hero-carousel frame, latest = the latest-published list. Values are constrained by `options` (fail closed: the settings CLI rejects anything outside them).",
+  "scope": "instance",
+  "type": "select",
+  "options": ["hero,latest", "latest,hero", "hero", "latest", "none"],
+  "value": "hero,latest"
+}

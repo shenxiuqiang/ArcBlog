@@ -77,6 +77,24 @@ page general {
     roles-k-effective { en "effective capabilities" zh "实际授予的能力" }
     roles-k-withheld { en "withheld capabilities" zh "被扣留的能力" }
     roles-k-roles { en "declared roles" zh "声明角色" }
+    roles-k-basic-stake-state { en "basic.stakeState" zh "基本角色·生命周期状态" }
+    roles-k-basic-active { en "basic.active" zh "基本角色·能力状态" }
+    roles-k-basic-configured { en "basic.configured" zh "基本角色·已配置" }
+    roles-k-basic-asset-owned { en "basic.assetOwned" zh "基本角色·持有资产" }
+    roles-k-basic-reason { en "basic.reason (verbatim)" zh "基本角色·原因（逐字；非扣留原因）" }
+    roles-k-studio-stake-state { en "studio.stakeState" zh "Studio 角色·生命周期状态" }
+    roles-k-studio-active { en "studio.active" zh "Studio 角色·能力状态" }
+    roles-k-studio-configured { en "studio.configured" zh "Studio 角色·已配置" }
+    roles-k-studio-asset-owned { en "studio.assetOwned" zh "Studio 角色·持有资产" }
+    roles-k-studio-reason { en "studio.reason (verbatim)" zh "Studio 角色·扣留原因（逐字）" }
+    roles-k-studio-consistency { en "studio config ↔ projection" zh "Studio 配置 ↔ 公开投影" }
+    roles-k-hub-stake-state { en "hub.stakeState" zh "Hub 角色·生命周期状态" }
+    roles-k-hub-active { en "hub.active" zh "Hub 角色·能力状态" }
+    roles-k-hub-configured { en "hub.configured" zh "Hub 角色·已配置" }
+    roles-k-hub-asset-owned { en "hub.assetOwned" zh "Hub 角色·持有资产" }
+    roles-k-hub-reason { en "hub.reason (verbatim)" zh "Hub 角色·扣留原因（逐字）" }
+    roles-k-hub-consistency { en "hub config ↔ projection" zh "Hub 配置 ↔ 公开投影" }
+    roles-reason-note { en "How to read these rows: the label is this console's own field name and the value is the role engine's own text, rendered verbatim. Why verbatim: a `$t()` key must be a compile-time constant (arc-contracts §28.8) and `visible` only supports synchronous `$session.*` expressions (arc-contracts §28.1), so this console has no mechanism to switch a value's wording from a record value — the engine vocabulary is therefore glossed here: `granted` = the capability is granted; `withheld` = it is withheld (fail closed); `yes` / `no` = the boolean the engine derived; `(none)` = nothing is withheld (not a missing value). A granted role has nothing withheld — for `basic` the `reason` explains why the capability is implicit, not why it is withheld; a withheld capability carries its cause in the same row." zh "如何读这些行：标签是本控制台自己的字段名，取值是角色引擎自己的原文。为何逐字：`$t()` 的 key 必须是编译期常量（arc-contracts §28.8），`visible` 只支持同步的 `$session.*` 表达式（arc-contracts §28.1），因此本控制台没有「按运行期取值切换文案」的机制——引擎词表在此对照：`granted` = 能力已授予；`withheld` = 能力被扣留（fail closed）；`yes` / `no` = 引擎派生的布尔取值；`(none)` = 无 withheld（不是取值缺失）。能力已授予的角色没有被扣留的东西——`basic` 那行的 `reason` 说明的是「为什么它是隐式授予」，不是「为什么被扣留」；能力被扣留的角色在同一行给出扣留原因。" }
     title { en "General" zh "通用" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
@@ -287,6 +305,16 @@ page general {
               // projection under node/ (written by `verify apply`, never by the page),
               // and the ONE write here is a queued verification intent under config/
               // (role-verify-intents) — a real consumer, not a fake button.
+              // BUG-077/BUG-078 (Round 27): the role rows used to carry English
+              // literals as LABELS and the engine's own words (granted / withheld /
+              // yes / no) as VALUES. The labels are static, so they are page i18n
+              // keys now (general.roles-k-*) and the zh side glosses the engine
+              // vocabulary inline. The VALUES stay verbatim: `$t()` keys must be
+              // compile-time constants (arc-contracts §28.8) and this console cannot
+              // translate a runtime value — the design-doc degradation path is
+              // "localized label + raw value visible" (docs/ArcBlog-admin-ui-design.md
+              // §4.1 / §5.5). The roles-reason-note line states unconditionally that a
+              // granted role carries no withheld reason instead of faking a condition.
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={roles: "/instance/app/arcblog/config/roles.json", verification: "/instance/app/arcblog/node/role-verification.json", basic: "/instance/app/arcblog/node/role-status/basic.json", studio: "/instance/app/arcblog/node/role-status/studio.json", hub: "/instance/app/arcblog/node/role-status/hub.json"} {
                 h3 :roles-title level=3 style={fontSize: "var(--type-body)"}
                 p :roles-desc scale=sm intent=muted
@@ -301,9 +329,10 @@ page general {
                 p :roles-status-desc scale=sm intent=muted
                 p :roles-no-snapshot scale=sm intent=info visible="!${state.verification.lastVerifiedAt}"
                 key-value-list roles-scope-kv dense=true fields=[{label: :roles-k-checked, value: "${state.verification.lastVerifiedAt}", hideWhenEmpty: true}, {label: :roles-k-effective, value: "${state.verification.effectiveCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-withheld, value: "${state.verification.withheldCapabilitiesLabel}", hideWhenEmpty: true}, {label: :roles-k-roles, value: "${state.verification.declaredRolesLabel}", hideWhenEmpty: true}]
-                key-value-list roles-basic-kv dense=true fields=[{label: "basic.stakeState", value: "${state.basic.stakeState}"}, {label: "basic.active", value: "${state.basic.activeLabel}"}, {label: "basic.configured", value: "${state.basic.configuredLabel}"}, {label: "basic.assetOwned", value: "${state.basic.assetOwnedLabel}"}, {label: "basic.reason (verbatim)", value: "${state.basic.reason}"}]
-                key-value-list roles-studio-kv dense=true fields=[{label: "studio.stakeState", value: "${state.studio.stakeState}"}, {label: "studio.active", value: "${state.studio.activeLabel}"}, {label: "studio.configured", value: "${state.studio.configuredLabel}"}, {label: "studio.assetOwned", value: "${state.studio.assetOwnedLabel}"}, {label: "studio.reason (verbatim)", value: "${state.studio.reason}"}, {label: "studio config ↔ projection", value: "${state.studio.consistencyReason}"}]
-                key-value-list roles-hub-kv dense=true fields=[{label: "hub.stakeState", value: "${state.hub.stakeState}"}, {label: "hub.active", value: "${state.hub.activeLabel}"}, {label: "hub.configured", value: "${state.hub.configuredLabel}"}, {label: "hub.assetOwned", value: "${state.hub.assetOwnedLabel}"}, {label: "hub.reason (verbatim)", value: "${state.hub.reason}"}, {label: "hub config ↔ projection", value: "${state.hub.consistencyReason}"}]
+                key-value-list roles-basic-kv dense=true fields=[{label: :roles-k-basic-stake-state, value: "${state.basic.stakeState}"}, {label: :roles-k-basic-active, value: "${state.basic.activeLabel}"}, {label: :roles-k-basic-configured, value: "${state.basic.configuredLabel}"}, {label: :roles-k-basic-asset-owned, value: "${state.basic.assetOwnedLabel}"}, {label: :roles-k-basic-reason, value: "${state.basic.reason}"}]
+                key-value-list roles-studio-kv dense=true fields=[{label: :roles-k-studio-stake-state, value: "${state.studio.stakeState}"}, {label: :roles-k-studio-active, value: "${state.studio.activeLabel}"}, {label: :roles-k-studio-configured, value: "${state.studio.configuredLabel}"}, {label: :roles-k-studio-asset-owned, value: "${state.studio.assetOwnedLabel}"}, {label: :roles-k-studio-reason, value: "${state.studio.reason}"}, {label: :roles-k-studio-consistency, value: "${state.studio.consistencyReason}"}]
+                key-value-list roles-hub-kv dense=true fields=[{label: :roles-k-hub-stake-state, value: "${state.hub.stakeState}"}, {label: :roles-k-hub-active, value: "${state.hub.activeLabel}"}, {label: :roles-k-hub-configured, value: "${state.hub.configuredLabel}"}, {label: :roles-k-hub-asset-owned, value: "${state.hub.assetOwnedLabel}"}, {label: :roles-k-hub-reason, value: "${state.hub.reason}"}, {label: :roles-k-hub-consistency, value: "${state.hub.consistencyReason}"}]
+                p :roles-reason-note scale=caption intent=muted
                 // B4: the waiting period, shown honestly. The raw `claimableAt` value
                 // is rendered (hideWhenEmpty). A relative `time` row is deliberately
                 // NOT rendered: measured twice on this platform (2026-09-29) that
