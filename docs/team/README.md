@@ -103,7 +103,7 @@ QA 独立重跑质量门，**不看 Dev 的自述结论**，按 REQ 的验收标
 ```bash
 arc dsl validate --json      # issues 必须为空
 npm test                     # 快层全绿（含 arc dsl generate --check 漂移门）
-arc blocklet build           # 改了 .aup 才需要
+npm run build           # 改了 .aup 才需要
 git add <本轮产物路径>        # 只加本轮产物，绝不 git add -A
 git commit -m "<type>(<scope>): 本轮净结果"
 ```
@@ -158,7 +158,7 @@ arc dsl validate --json     # 主质量门：issues 为空（每步都跑）
 npm test                    # 快层：6 文件 / 28 测试 / ~1s，**不写实例**（每步都跑）
                             # 含：产物漂移门（arc dsl generate --check）+ 死 locale key 门
                             #     + 生成的侧栏 + 运行时寻址 id + 主题契约 + guest 权限矩阵
-arc blocklet build          # 仅当改了 .aup 源码（重新生成 dist/）
+npm run build          # 仅当改了 .aup 源码（重新生成 dist/）
 npm run test:file -- scripts/arcblog-tags.test.mjs   # 定向单文件（见下）
 ```
 

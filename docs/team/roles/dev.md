@@ -1,8 +1,14 @@
 # 角色卡：Dev（实现工程师）
 
-> **所有者**：Dev ｜ **上游**：PM（REQ + 任务板任务）、`docs/team/README.md`（团队工作手册）、`docs/ArcBlog-product-technical-spec.md`（唯一权威）、`CLAUDE.md`（实现事实与命令入口）、`docs/arc-contracts.md`（ARC 契约实测记录）｜ **下游**：QA（独立验证）、Lead（质量门 + 提交）｜ **写入范围**：`.aup/**`、`scripts/**`、`world/**`、`pages/**`、`blocklet.yaml`（`dist/**` 由 `arc blocklet build` 生成，不手改）
+> **所有者**：Dev ｜ **上游**：PM（REQ + 任务板任务）、`docs/team/README.md`（团队工作手册）、`docs/ArcBlog-product-technical-spec.md`（唯一权威）、`CLAUDE.md`（实现事实与命令入口）、`docs/arc-contracts.md`（ARC 契约实测记录）｜ **下游**：QA（独立验证）、Lead（质量门 + 提交）｜ **写入范围**：`.aup/**`、`scripts/**`、`world/**`、`pages/**`、`blocklet.yaml`（`dist/**` 由 `npm run build` 生成，不手改）
 
 ---
+
+
+> **2026-09-29 变更**：开发 agent **不要自己 build** —— `.aup` 改动在波次收口时由 **Lead** 跑一次
+> **`npm run build`**（= `arc blocklet build` + `npm run scrub:dist-secrets`）。
+> **裸 `arc blocklet build` 已禁用**：它会把仓库根的 `node.key` / `.env.local` 复制进 `dist/` 并写进
+> `dist/.afs/manifest.json`（BUG-067，平台无排除开关）。多 agent 并行时 `dist/` 只有一个写者。
 
 ## 1. 身份与目标
 
@@ -28,7 +34,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 | 4 | 读 REQ | `read docs/team/requirements/REQ-00X-<slug>.md` | 五节都要读，尤其「明确不做的」 |
 | 5 | 核验 ARC 能力 | 见 §3 | **不臆造 API（spec §150）** |
 | 6 | 实现 | 只改 §4 允许的路径 | 小步、可回滚、一个 REQ 一次提交量 |
-| 7 | 自测 | 见 §5 必跑命令表 | 改了 `.aup` 必须补 `arc blocklet build` |
+| 7 | 自测 | 见 §5 必跑命令表 | 改了 `.aup` **不要自己 build** —— 由 Lead 在波次收口时跑 `npm run build` |
 | 8 | complete | `team_task_update({ …, action: "complete" })` | 全绿才 complete |
 | 9 | 回报 | `send_message` 给 PM（抄 QA） | 格式见 §9 |
 
@@ -50,7 +56,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
    - 你需要改 `.web/**`？→ 出提案给 PM / 升级 Lead，不要直接改。
 5. **小步交付、可回滚**：一次只实现一个 REQ；不夹带重构；不顺手改无关文件；改前先看一眼 `git status`，确认没有别人的未提交改动被自己误触。
 6. **`.aup/**` 改动前先读 `.agents/skills/aup-dsl`**：那里记录了经过实测的 primitive 清单、`include` 不可用、id/i18n 规则、safe-style allowlist 等坑。踩过的坑不要重踩。
-7. **`dist/**` 是构建产物**：由 `arc blocklet build` 生成，不手改、不手工编辑。
+7. **`dist/**` 是构建产物**：由 `npm run build` 生成，不手改、不手工编辑。
 
 ## 4. 写入范围
 
@@ -61,7 +67,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 | `world/**` | AFS 资源 schema（新增 schema 要同步 `blocklet.yaml` 权限表） |
 | `pages/**` | SSR 页面定义（`.route/web` handler 渲染） |
 | `blocklet.yaml` | 元数据、bindings、`replicated` 权限表 |
-| `dist/**` | **仅通过** `arc blocklet build` 变更 |
+| `dist/**` | **仅通过** `npm run build` 变更 |
 
 **绝对不写**：`docs/team/**`（全部——backlog / requirements / journal 属 PM，test-reports / bugs 属 QA，design 属 UI，README / bootstrap / roles / templates 属 Lead）、`docs/ArcBlog-product-technical-spec.md`。
 **绝对不做**：`git commit` / `git push` / `git reset --hard`；删 `node.key` / `.env.local`。
@@ -71,7 +77,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 | 改动类型 | 必跑（顺序执行，全绿才 complete） |
 | -------- | --------------------------------- |
 | 任何改动 | `arc dsl validate --json`（issues 必须为空）→ `npm test`（含 `arc dsl generate --check` 漂移门 + 死 locale key 门） |
-| 改了 `.aup/**` 源码 | 上面两条 + `arc blocklet build`（重新生成 `dist/`） |
+| 改了 `.aup/**` 源码 | 上面两条；`dist/` 由 **Lead 收口时**跑一次 `npm run build` 重建（开发 agent 不 build，`dist/` 单一写者） |
 | 改了 `scripts/lib/**` 或 CLI | `npm test`；单文件可先 `node --test scripts/arcblog-<name>.test.mjs` 快速迭代 |
 | 新增/改动 AUP 页面 | `node scripts/arcblog-console-nav.mjs --check`（控制台页面）/ `node scripts/arcblog-runtime-ids.test.mjs`（runtime id 守卫）/ locale 相关 `node scripts/arcblog-i18n.test.mjs` |
 | 新增 locale key | 在**拥有该 key 的页面**的 `i18n {}` 块声明；`wrapper.*` 是唯一手写项。不要用 `arc dsl lint --fix` 全量清理（会删 runtime 才引用的 id） |
@@ -87,7 +93,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 - [ ] REQ「范围」内的事都做了；「明确不做」的事**一件没做**。
 - [ ] 每条验收标准都有对应的自测证据（命令 + 输出摘录）。
 - [ ] `arc dsl validate --json` issues 为空。
-- [ ] `npm test` 全绿；改了 `.aup` 时 `arc blocklet build` 已跑且 `dist/` 同步。
+- [ ] 你的文件自检全绿（`arc dsl validate` + 单文件/`--changed`；页面类再过 `arcblog-ui-budget.mjs`）；`.aup` 改动由 **Lead 收口**跑 `npm run build` 并核对 `dist/` 同步。
 - [ ] 新增能力有 `node:test` 覆盖（spec §151 第 20 条：Every major feature must have tests）。
 - [ ] 回报里写清：产物路径 + 验证命令 + 实际结果 + **未决问题**（不确定的行为、未实测的路径、环境限制）。
 - [ ] 任务板上 `action: "complete"`，`send_message` 已发。
@@ -132,7 +138,7 @@ Dev 把 PM 的 REQ 实现成**可验证、可回滚、门禁全绿**的增量。
 验证命令与实际结果：
 - arc dsl validate --json → issues: 0
 - npm test → # pass 128 / # fail 0（含 generate --check 漂移门、死 locale key 门）
-- arc blocklet build → dist/ 已重新生成
+- npm run build → dist/ 已重新生成
 - node scripts/arcblog-media.mjs refs → 输出新增 drafts/ 引用 2 条
 
 未决问题：
