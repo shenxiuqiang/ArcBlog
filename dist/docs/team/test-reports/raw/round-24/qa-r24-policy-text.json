@@ -1,0 +1,91 @@
+{
+  "at": "2026-09-29T01:41:41.742Z",
+  "text": "ArcBlog\n▾\nContent\nDashboard\nStudio\nPages\nWrite\nSite\nHeroes\nCategories\nTags\nSEO\nFeeds\nAppearance\nOperations\nOperations\nHub console\nMedia\nAgents\nEconomy\nOrders\nPolicy\nAccess\nSettlements & ledger\nFactory\nSettings\nGeneral\nDiagnostics\nArcBlog\nAbout\nRSS\n© 2026 ArcBlog\nSplit policy\nThe split policy and the product catalogue.\nEvery write below goes to a declared replicated collection (economy-products / economy-policy) and is admin-only; read-backs are the evidence, not toasts.\nPlatform rule (docs/arc-contracts.md §29.2): this console can only rewrite records IT created. A browser write to a record written by the CLI or by root is refused with 'network write target exists without a recoverable authority sidecar' and zero change — which is why the CLI-created economy/policies/active.json and the catalogue products pre-dating this page answer a preset / adapter / delist click with exactly that reason. Records created from this page are fully manageable (create, edit price, publish/delist); for the CLI-created ones use node scripts/arcblog-economy.mjs.\nSettlement policy\nversion\nv1\ncreator\n0.8\nhub\n0.15\nprotocol\n0.05\npaymentAdapter\nnone\ncreatedAt\n2026-09-23T11:07:49.535Z\nupdatedAt\n2026-09-23T11:07:49.535Z\nHow to set it: node scripts/arcblog-economy.mjs policy init\nSplit (creator / hub / protocol)\nPreset splits (each sums to 1)\n0.80 / 0.15 / 0.05\n0.90 / 0.05 / 0.05\n0.95 / 0.03 / 0.02\n0.70 / 0.25 / 0.05\n1.00 / 0.00 / 0.00\nEvery preset above is a complete triple that sums to exactly 1, so an invalid split cannot be written from this page. Arbitrary values stay in the CLI, where validateSettlementPolicy enforces the sum (policy init --update …).\nPayment adapter\nnone\nmanual\nSave adapter\nAdapter options are generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs — the same definition policy init --payment-adapter accepts (console-nav --check fails on drift).\nProtocol Fee transparency (spec §49): this record has no protocolRecipient field, so the console shows the protocol share only — there is no recipient to display, and none is invented.\nPayout account\nPayout account: this platform has no AFS landing spot for an account address — world/settlement-policy.yaml declares no address field, so the console shows none and offers no input. A changed payout address therefore stays a CLI/operator step (spec §15.9 forbids typing an address into the UI).\nThere is no address <input> on this page, on purpose: no declared record field, no AFS landing spot.\nThis page never accepts or stores a mnemonic, private key or seed phrase. The node key stays on the node (never in a record, never in a page).\nSet the split from the CLI\nnode scripts/arcblog-economy.mjs policy init --update --creator 0.80 --hub 0.15 --protocol 0.05 --payment-adapter none\nRead the policy back\nnode scripts/arcblog-economy.mjs policy show\nProducts\nCatalogue from economy/products. Row actions only flip visibility between the two declared values; delete stays in the CLI (refused while orders or posts reference the product, spec §45/§50).\necon-test-fc-product-1790621430746\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-fc-product-1790621977307\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-fc-product-1790622723993\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-fc-product-1790627726629\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n5 hours ago\nPublish\nDelist\necon-test-fc-product-1790628862763\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\necon-test-fc-product-1790629475989\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\necon-test-fc-product-1790645960973\nPrice\n1 USDC\ntype\narticle\nvisibility\npublic\n2 minutes ago\nPublish\nDelist\necon-test-paid-1790621440546\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-paid-1790621987036\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-paid-1790622734493\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-paid-1790627736419\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n5 hours ago\nPublish\nDelist\necon-test-paid-1790628872909\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\necon-test-paid-1790629485923\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\necon-test-paid-1790645972372\nPrice\n2 USDC\ntype\narticle\nvisibility\npublic\n2 minutes ago\nPublish\nDelist\necon-test-product-1790621421633\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-product-1790621968235\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-product-1790622714245\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n6 hours ago\nPublish\nDelist\necon-test-product-1790627717600\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n5 hours ago\nPublish\nDelist\necon-test-product-1790628853393\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\necon-test-product-1790629466713\nPrice\n10 USDC\ntype\narticle\nvisibility\npublic\n4 hours ago\nPublish\nDelist\nShow\n10\n20\n25\n50\n100\nRecords\n← Prev\nPage 1 of 4\nNext →\nTotal: 61 records\nHow to add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>\nNew product\nCreate is mode=create: the platform refuses a path that already exists, so re-submitting an existing id is rejected with zero change instead of overwriting the record.\nid\ncreatorDid\ntype\narticle\nmembership\ndigital\nsubscription\ncontentId (optional)\npriceAmount\npriceAsset\nvisibility\npublic\nprivate\nsettlementPolicy\nperiodDays\n0\n7\n30\n90\n365\nCreate product\npriceAmount must be a non-negative decimal string; type and visibility are constrained selects, so an out-of-vocabulary value cannot be submitted. The CLI (product add) remains the typed path — the console sends periodDays as a decimal string because a form input only yields text.\nEdit price\nWrites ONLY priceAmount on the record you name (mode tree-merge). Every other field is left byte-for-byte untouched; a product id that does not exist is refused with NOT_FOUND and zero change.\nProduct id\nNew priceAmount\nSave price\nThe CLI is the authority for the whole record: node scripts/arcblog-economy.mjs product add --id <id> --update …",
+  "inputs": [
+    {
+      "name": "eAdapter",
+      "type": "select-one",
+      "options": [
+        "none",
+        "manual"
+      ]
+    },
+    {
+      "name": "ePid",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "eCreator",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "eType",
+      "type": "select-one",
+      "options": [
+        "article",
+        "membership",
+        "digital",
+        "subscription"
+      ]
+    },
+    {
+      "name": "eContent",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "ePrice",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "eAsset",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "eVisibility",
+      "type": "select-one",
+      "options": [
+        "public",
+        "private"
+      ]
+    },
+    {
+      "name": "ePolicy",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "ePeriod",
+      "type": "select-one",
+      "options": [
+        "0",
+        "7",
+        "30",
+        "90",
+        "365"
+      ]
+    },
+    {
+      "name": "eEditId",
+      "type": "text",
+      "options": null
+    },
+    {
+      "name": "eEditPrice",
+      "type": "text",
+      "options": null
+    }
+  ],
+  "secretRefusal": [
+    "This page never accepts or stores a mnemonic, private key or seed phrase. The node key stays on the node (never in a record, never in a page)."
+  ],
+  "protocolNote": [
+    "Protocol Fee transparency (spec §49): this record has no protocolRecipient field, so the console shows the protocol share only — there is no recipient to display, and none is invented."
+  ],
+  "addressInputs": [],
+  "targetsAfterFiltered": []
+}

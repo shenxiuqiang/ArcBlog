@@ -1,0 +1,237 @@
+{
+  "at": "2026-09-29T02:29:52.814Z",
+  "phase": "layout",
+  "steps": {
+    "1803x908_en": {
+      "url": "/?page=policy",
+      "policyResolved": true,
+      "presetRow": {
+        "over": 0,
+        "cw": 698,
+        "sw": 698,
+        "rect": {
+          "x": 315,
+          "y": 704,
+          "w": 698,
+          "h": 66,
+          "right": 1014
+        },
+        "overflowX": "visible",
+        "lines": 2
+      },
+      "presetChildMaxOver": 0,
+      "card": {
+        "over": 0,
+        "rect": {
+          "x": 300,
+          "y": 277,
+          "w": 728,
+          "h": 1044,
+          "right": 1029
+        }
+      },
+      "accountRowOver": 0,
+      "siblingBleedMax": 0,
+      "doc": {
+        "over": 0,
+        "sh": 908,
+        "ch": 908
+      },
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionFailed": false,
+      "worstOver": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 334,
+          "text": "Content Dashboard Studio Pages Write Site "
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 302,
+          "text": "Content Dashboard Studio Pages Write Site "
+        }
+      ],
+      "pageText": "Page 1 of 3"
+    },
+    "1803x908_zh": {
+      "url": "/?page=policy&locale=zh",
+      "policyResolved": true,
+      "presetRow": {
+        "over": 0,
+        "cw": 698,
+        "sw": 698,
+        "rect": {
+          "x": 315,
+          "y": 685,
+          "w": 698,
+          "h": 66,
+          "right": 1014
+        },
+        "overflowX": "visible",
+        "lines": 2
+      },
+      "presetChildMaxOver": 0,
+      "card": {
+        "over": 0,
+        "rect": {
+          "x": 300,
+          "y": 258,
+          "w": 728,
+          "h": 987,
+          "right": 1029
+        }
+      },
+      "accountRowOver": null,
+      "siblingBleedMax": 0,
+      "doc": {
+        "over": 0,
+        "sh": 908,
+        "ch": 908
+      },
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionFailed": false,
+      "worstOver": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 334,
+          "text": "内容 仪表盘 工作室 页面 写文章 站点 Hero 分类 标签 SEO 分发 外观设"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 302,
+          "text": "内容 仪表盘 工作室 页面 写文章 站点 Hero 分类 标签 SEO 分发 外观设"
+        }
+      ],
+      "pageText": "Page 1 of 3"
+    },
+    "1512x765_en": {
+      "url": "/?page=policy",
+      "policyResolved": true,
+      "presetRow": {
+        "over": 0,
+        "cw": 575,
+        "sw": 575,
+        "rect": {
+          "x": 272,
+          "y": 724,
+          "w": 575,
+          "h": 66,
+          "right": 846
+        },
+        "overflowX": "visible",
+        "lines": 2
+      },
+      "presetChildMaxOver": 0,
+      "card": {
+        "over": 0,
+        "rect": {
+          "x": 257,
+          "y": 296,
+          "w": 605,
+          "h": 1141,
+          "right": 861
+        }
+      },
+      "accountRowOver": 0,
+      "siblingBleedMax": 0,
+      "doc": {
+        "over": 0,
+        "sh": 765,
+        "ch": 765
+      },
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionFailed": false,
+      "worstOver": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 188,
+          "text": "Content Dashboard Studio Pages Write Site "
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 156,
+          "text": "Content Dashboard Studio Pages Write Site "
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 35,
+          "text": "econ-test-product-1790621421633 Price 10 U"
+        }
+      ],
+      "pageText": "Page 1 of 3"
+    },
+    "1512x765_zh": {
+      "url": "/?page=policy&locale=zh",
+      "policyResolved": true,
+      "presetRow": {
+        "over": 0,
+        "cw": 575,
+        "sw": 575,
+        "rect": {
+          "x": 272,
+          "y": 704,
+          "w": 575,
+          "h": 66,
+          "right": 846
+        },
+        "overflowX": "visible",
+        "lines": 2
+      },
+      "presetChildMaxOver": 0,
+      "card": {
+        "over": 0,
+        "rect": {
+          "x": 257,
+          "y": 277,
+          "w": 605,
+          "h": 1026,
+          "right": 861
+        }
+      },
+      "accountRowOver": null,
+      "siblingBleedMax": 0,
+      "doc": {
+        "over": 0,
+        "sh": 765,
+        "ch": 765
+      },
+      "active": 1,
+      "ariaCurrent": 1,
+      "sessionFailed": false,
+      "worstOver": [
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 188,
+          "text": "内容 仪表盘 工作室 页面 写文章 站点 Hero 分类 标签 SEO 分发 外观设"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 156,
+          "text": "内容 仪表盘 工作室 页面 写文章 站点 Hero 分类 标签 SEO 分发 外观设"
+        },
+        {
+          "tag": "DIV",
+          "cls": "aup-view",
+          "over": 29,
+          "text": "econ-test-product-1790621421633 价格 10 USDC"
+        }
+      ],
+      "pageText": "Page 1 of 3"
+    }
+  },
+  "browser": "Chrome/153.0.8010.54",
+  "adminCookieFound": true,
+  "targetsAfterFiltered": []
+}

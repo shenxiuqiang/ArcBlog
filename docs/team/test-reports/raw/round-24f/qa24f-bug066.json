@@ -1,0 +1,345 @@
+{
+  "at": "2026-09-29T02:28:25.045Z",
+  "stamp": 1790648905045,
+  "ids": {
+    "article": "qa24f-art-1790648905045",
+    "subscription": "qa24f-sub-1790648905045"
+  },
+  "steps": {
+    "controls": [
+      {
+        "name": "ePid",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eCreator",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eType",
+        "present": true,
+        "tag": "SELECT",
+        "type": "select-one",
+        "required": true,
+        "value": "article",
+        "options": [
+          "article",
+          "membership",
+          "digital"
+        ]
+      },
+      {
+        "name": "eContent",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": false,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "ePrice",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eAsset",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eVisibility",
+        "present": true,
+        "tag": "SELECT",
+        "type": "select-one",
+        "required": true,
+        "value": "public",
+        "options": [
+          "public",
+          "private"
+        ]
+      },
+      {
+        "name": "ePolicy",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eSubPeriod",
+        "present": true,
+        "tag": "SELECT",
+        "type": "select-one",
+        "required": true,
+        "value": "7",
+        "options": [
+          "7",
+          "30",
+          "90",
+          "365"
+        ]
+      },
+      {
+        "name": "eEditId",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      },
+      {
+        "name": "eEditPrice",
+        "present": true,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true,
+        "value": "",
+        "options": null
+      }
+    ],
+    "sessionFailed": false,
+    "n1_typeNonVocab": {
+      "button": "Create product",
+      "field": "eType",
+      "forcedValue": "subscription",
+      "note": "a real user cannot pick it: not in the option set",
+      "valueAfterForce": "",
+      "click": "clicked:Create product",
+      "invalid": "[{\"name\":\"eType\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "n2_visibilityNonVocab": {
+      "button": "Create product",
+      "field": "eVisibility",
+      "forcedValue": "hidden",
+      "note": "out-of-vocabulary visibility",
+      "valueAfterForce": "",
+      "click": "clicked:Create product",
+      "invalid": "[{\"name\":\"eVisibility\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "n3_visibilityEmpty": {
+      "button": "Create product",
+      "field": "eVisibility",
+      "forcedValue": "",
+      "note": "empty select (required)",
+      "valueAfterForce": "",
+      "click": "clicked:Create product",
+      "invalid": "[{\"name\":\"eVisibility\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "n4_periodZero": {
+      "button": "Create subscription",
+      "field": "eSubPeriod",
+      "forcedValue": "0",
+      "note": "subscription must never carry periodDays 0",
+      "valueAfterForce": "",
+      "click": "clicked:Create subscription",
+      "invalid": "[{\"name\":\"eSubPeriod\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "n5_periodNegative": {
+      "button": "Create subscription",
+      "field": "eSubPeriod",
+      "forcedValue": "-7",
+      "note": "negative period",
+      "valueAfterForce": "",
+      "click": "clicked:Create subscription",
+      "invalid": "[{\"name\":\"eSubPeriod\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "n6_periodEmpty": {
+      "button": "Create subscription",
+      "field": "eSubPeriod",
+      "forcedValue": "",
+      "note": "empty period (required)",
+      "valueAfterForce": "",
+      "click": "clicked:Create subscription",
+      "invalid": "[{\"name\":\"eSubPeriod\",\"value\":\"\"}]",
+      "countBefore": 54,
+      "countAfter": 54,
+      "delta": 0,
+      "recordWritten": false,
+      "record": null,
+      "toasts": [
+        "f94c53f0e819a4f7"
+      ]
+    },
+    "pos_article": {
+      "id": "qa24f-art-1790648905045",
+      "button": "Create product",
+      "period": null,
+      "click": "clicked:Connecting...",
+      "invalid": "[]",
+      "countBefore": 54,
+      "countAfter": 55,
+      "delta": 1,
+      "recordWritten": true,
+      "content": {
+        "id": "qa24f-art-1790648905045",
+        "creatorDid": "did:blocklet:arcblog",
+        "type": "article",
+        "contentId": "",
+        "priceAmount": "1.50",
+        "priceAsset": "USDC",
+        "visibility": "public",
+        "settlementPolicy": "active",
+        "periodDays": "0",
+        "createdAt": "2026-09-29T02:29:02.728Z",
+        "updatedAt": "2026-09-29T02:29:02.728Z"
+      },
+      "fieldCount": 11,
+      "literalHits": 0,
+      "metaVersion": "1790648942731.3645-157515755-331",
+      "validator": {
+        "status": 0,
+        "out": "{\"issues\":[]}"
+      },
+      "toasts": [
+        "Write accepted — read the record back: a success toast is not proof.✕",
+        "Write accepted — read the record back: a success toast is not proof.",
+        "Write accepted — read the record back: a success toast is not proof.",
+        "✕"
+      ]
+    },
+    "pos_subscription": {
+      "id": "qa24f-sub-1790648905045",
+      "button": "Create subscription",
+      "period": "30",
+      "click": "clicked:Connecting...",
+      "invalid": "[]",
+      "countBefore": 55,
+      "countAfter": 56,
+      "delta": 1,
+      "recordWritten": true,
+      "content": {
+        "id": "qa24f-sub-1790648905045",
+        "creatorDid": "did:blocklet:arcblog",
+        "type": "subscription",
+        "contentId": "",
+        "priceAmount": "1.50",
+        "priceAsset": "USDC",
+        "visibility": "public",
+        "settlementPolicy": "active",
+        "periodDays": "30",
+        "createdAt": "2026-09-29T02:29:07.718Z",
+        "updatedAt": "2026-09-29T02:29:07.718Z"
+      },
+      "fieldCount": 11,
+      "literalHits": 0,
+      "metaVersion": "1790648947720.9976-157515787-337",
+      "validator": {
+        "status": 0,
+        "out": "{\"issues\":[]}"
+      },
+      "toasts": [
+        "Write accepted — read the record back: a success toast is not proof.✕",
+        "Write accepted — read the record back: a success toast is not proof.",
+        "Write accepted — read the record back: a success toast is not proof.",
+        "✕"
+      ]
+    },
+    "cleanup": {
+      "deleted": [
+        {
+          "id": "qa24f-art-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-sub-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n1-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n2-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n3-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n4-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n5-1790648905045",
+          "status": 0
+        },
+        {
+          "id": "qa24f-neg-n6-1790648905045",
+          "status": 0
+        }
+      ],
+      "countBefore": 56,
+      "countAfter": 54,
+      "backToBaseline": true
+    }
+  },
+  "afs": {
+    "baselineCount": 54
+  },
+  "browser": "Chrome/153.0.8010.54",
+  "adminCookieFound": true,
+  "targetsAfterFiltered": []
+}

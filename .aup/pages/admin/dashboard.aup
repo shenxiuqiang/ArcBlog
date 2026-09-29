@@ -3,6 +3,12 @@ page dashboard {
     agents { en "Agent grants" zh "Agent 授权" }
     agents-empty { en "No agent grants. Read-only tools are available by default; write tools need a grant." zh "还没有 Agent 授权。读工具默认可用；写工具需要授权。" }
     agents-guide { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "授权方式：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
+    alert-agents { en "Agent grants" zh "Agent 授权" }
+    alert-hub { en "Hub sync" zh "Hub 同步" }
+    alert-ledger { en "Settlement / ledger" zh "结算 / 账本" }
+    alerts { en "Anomaly alerts" zh "异常提醒" }
+    alerts-desc { en "One click to the page that owns the anomaly. This bar counts nothing: the platform's expression language has no length or comparison primitive (docs/arc-contracts.md §21), so a number here would have to be invented." zh "一次点击直达负责该异常的页面。本提醒条不做任何计数：本平台表达式语言没有 length 或比较原语（docs/arc-contracts.md §21），这里的数字只能是编造的。" }
+    alerts-honest { en "The only pre-computed aggregate this instance publishes is node/health.json.hubs (total / fresh / offline) — it is shown verbatim in the network card above. Per-source failure counts are not derivable on this page." zh "本实例唯一预先算好的聚合值是 node/health.json.hubs（total / fresh / offline）——已在上方网络卡原样展示。按来源的失败计数无法在本页推导。" }
     capabilities-label { en "Capabilities" zh "能力" }
     content { en "Recent published" zh "最近发布" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
@@ -14,6 +20,17 @@ page dashboard {
     gate-desc { en "Sign in with DID Wallet to view node identity, roles, taxonomy and operations data." zh "使用 DID Wallet 登录后查看节点身份、角色、分类与运营数据。" }
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    net-empty-note { en "A dash (—) means the record does not carry the value, the record was never published, or this binding has not resolved yet — a cold first load does not resolve propBind (BUG-036/062, docs/arc-contracts.md §28.1); switching pages or reloading fills the values in. Nothing is rendered as 0 and no green light is invented." zh "破折号（—）表示记录没有该取值、记录从未发布，或该绑定尚未解析——冷启动首屏不会解析 propBind（BUG-036/062，docs/arc-contracts.md §28.1）；切页或刷新后取值即出现。绝不渲染为 0，也不伪造绿灯。" }
+    net-endpoint { en "Endpoint" zh "端点" }
+    net-fresh { en "Hubs fresh" zh "新鲜 Hub" }
+    net-node { en "Node DID" zh "节点 DID" }
+    net-offline { en "Hubs offline" zh "离线 Hub" }
+    net-roles { en "Roles" zh "角色" }
+    net-source { en "Source: node/health.json (hubs aggregate) + node/discovery.json (DID / endpoint / transport), both guest-readable and read verbatim." zh "取值来源：node/health.json（hubs 聚合）+ node/discovery.json（DID / 端点 / transport），二者均为游客可读，且原样展示。" }
+    net-total { en "Hubs registered" zh "已登记 Hub" }
+    net-transport { en "Transport" zh "传输" }
+    network { en "Network overview" zh "网络概览" }
+    network-desc { en "Studio side: how many Hubs this node has registered and how fresh they are. The per-Hub rows (sync state, freshness, last error) live on Hub, one click away." zh "Studio 视角：本节点已登记的 Hub 数量与新鲜度。逐个 Hub 的行（同步状态、新鲜度、最近错误）在「Hub」页，一次点击直达。" }
     node { en "Node" zh "节点" }
     node-empty { en "If a value above is empty, run: node scripts/arcblog-node.mjs init" zh "若上方取值为空，请运行：node scripts/arcblog-node.mjs init" }
     node-hint { en "Values come from node/profile.json and node/health.json." zh "取值来自 node/profile.json 与 node/health.json。" }
@@ -156,6 +173,33 @@ page dashboard {
                 }
                 p :node-hint scale=sm intent=muted
                 p :node-empty scale=sm intent=muted
+              }
+              // Network overview (spec §15.3, REQ-031 ③) — READ ONLY, and
+              // deliberately without any `visible=` condition: the dashboard
+              // must not carry a fabricated predicate, and an empty value is
+              // rendered as the platform's own "—" by key-value-list, never as
+              // 0 and never as a green light. `hubs` is the instance's only
+              // PRE-COMPUTED aggregate (the page cannot count: the expression
+              // language has no length/comparison primitive, arc-contracts §21).
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={netHealth: "/instance/app/arcblog/node/health.json", netDiscovery: "/instance/app/arcblog/node/discovery.json"} {
+                h2 :network level=2 style={fontSize: "var(--type-body)"}
+                p :network-desc scale=sm intent=muted
+                key-value-list dense=true fields=[{label: "$t(dashboard.net-total)", value: "${state.netHealth.hubs.total}"}, {label: "$t(dashboard.net-fresh)", value: "${state.netHealth.hubs.fresh}"}, {label: "$t(dashboard.net-offline)", value: "${state.netHealth.hubs.offline}"}]
+                key-value-list dense=true fields=[{label: "$t(dashboard.net-node)", value: "${state.netDiscovery.node.did}", monospace: true, copyable: true}, {label: "$t(dashboard.net-endpoint)", value: "${state.netDiscovery.node.endpoint}"}, {label: "$t(dashboard.net-roles)", value: "${state.netDiscovery.roles}"}, {label: "$t(dashboard.net-transport)", value: "${state.netDiscovery.transport}"}]
+                p :net-empty-note scale=sm intent=muted
+                p :net-source scale=caption intent=muted
+              }
+              // Anomaly alert bar (spec §15.3) — one click to the page that owns
+              // the anomaly, no counts, no popup, no write path.
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h2 :alerts level=2 style={fontSize: "var(--type-body)"}
+                p :alerts-desc scale=sm intent=muted
+                row gap=sm {
+                  action -> page hub variant=secondary label=:alert-hub style={borderRadius: "var(--radius-md, 8px)"}
+                  action -> page ledger variant=secondary label=:alert-ledger style={borderRadius: "var(--radius-md, 8px)"}
+                  action -> page agents variant=secondary label=:alert-agents style={borderRadius: "var(--radius-md, 8px)"}
+                }
+                p :alerts-honest scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :content level=2 style={fontSize: "var(--type-body)"}

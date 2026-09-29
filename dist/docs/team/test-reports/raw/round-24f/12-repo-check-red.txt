@@ -1,0 +1,17 @@
+$ node scripts/arcblog-dist-secrets.mjs --check   # after bare build
+{
+  "action": "check",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "ok": false,
+  "distExists": true,
+  "files": [
+    ".env.local",
+    "node.key"
+  ],
+  "privateKeyFiles": [],
+  "manifestEntries": [
+    ".env.local",
+    "node.key"
+  ]
+}
+rc=1

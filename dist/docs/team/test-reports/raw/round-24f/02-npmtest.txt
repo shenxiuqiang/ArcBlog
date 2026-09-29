@@ -1,0 +1,58 @@
+$ npm test
+
+> test
+> node scripts/run-tests.mjs fast
+
+tier: fast — 8/30 file(s) (no instance writes)
+
+✔ every console page carries the canonical sidebar (57.598542ms)
+✔ the sidebar exists exactly once per console page (24.066459ms)
+✔ every menu item switches to a declared page (23.536917ms)
+✔ the sidebar is not a hash router any more (19.336333ms)
+✔ each console page marks exactly its own row active (19.399209ms)
+✔ the grouped menu labels resolve in both locales (1.312083ms)
+✔ each console page gates on the session and shares the shell (19.201875ms)
+✔ dist/ carries no key material, and the scrub removes only the dist copies (BUG-067) (18.709083ms)
+✔ script.js is in sync with the vendored widget and init.js (3.025375ms)
+✔ the vendored engine keeps its provenance header (0.392833ms)
+✔ the component is declared with a client script and the page wires it up (0.275125ms)
+✔ the home page embeds the carousel frame instead of the old slideshow (0.534167ms)
+✔ every $t() reference in the generated app has a locale string (5.429375ms)
+✔ en and zh carry the same key set (2.072834ms)
+✔ the wrapper i18n keys survive regeneration (0.998792ms)
+✔ the wrapper declaration and its locale keys stay in step (3.483375ms)
+✔ no locale key is dead (724.874958ms)
+✔ public prefixes stay readable to a signed-out visitor (52.689208ms)
+✔ admin-only prefixes deny the guest by role (51.944792ms)
+✔ an undeclared path is refused rather than served (3.428791ms)
+✔ a guest cannot write, even to a guest-readable prefix (3.705792ms)
+✔ every replicated collection matches its declared readRole for a guest (84.267291ms)
+✔ the replicated table itself keeps the private prefixes admin-only (0.465916ms)
+✔ the shared header lives once in the wrapper and keeps the site-header id (3.568666ms)
+✔ the hero carousel frame keeps its id (2.18625ms)
+✔ wrapper frames keep their ids (0.157167ms)
+✔ every paginated afs-list keeps a stable, unique, explicit id (3.4755ms)
+✔ the app declares an explicit theme mode (0.467084ms)
+✔ a fixed site default theme matches the compiled mode (0.429ms)
+✔ the theme bridge still resolves system mode and manual overrides (1.07ms)
+✔ covers every console page plus the sidebar-less sub-page (1.468042ms)
+✔ thresholds match UI standard §2.7.2 (cannot drift silently) (0.078042ms)
+✔ measures the content column, not the whole file (1.365667ms)
+✔ fails loudly when the sidebar anchor is missing (no silent whole-file fallback) (0.330958ms)
+✔ ratchet: no page is worse than scripts/ui-budget-baseline.json (0.121542ms)
+✔ baseline carries every metric for every page (no partial snapshots) (0.104375ms)
+✔ overBudget reports the metric names, not a boolean (0.060209ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1661.694958
+
+fast tier passed — this is the gate. For a change to a CLI / AFS record / chain adapter,
+run just the affected file: `npm run test:file -- scripts/<file>.test.mjs` (serial, writes
+the dev instance — take docs/team/.gate-lock first). The full `npm run test:live` is no
+longer a routine gate (user ruling 2026-09-27).
+rc=0

@@ -1,0 +1,59 @@
+$ npm run build   # the runbook wrapper: arc blocklet build && npm run scrub:dist-secrets
+
+> build
+> arc blocklet build && npm run scrub:dist-secrets
+
+Warning: Pre-render produced no .web-cache/ artifact for 2 built-in route(s) of "/Users/shenxiuqiang/workspace/ArcBlog": /p/en/search/, /p/zh/search/. The runtime serves these on every site, so each one falls through to a request-time SiteServer.init() — the slowest path there is (measured at 16.2s of a 17.5s response on a cold isolate). This is a pre-render bug, not a content problem: run `arc blocklet build` locally to see the render error. Pre-render was not explicitly requested (default-on); set ARC_PRERENDER=1 to make this a hard failure.
+Pre-rendered 0, reused 5 web pages (no input changed) → .web-cache/
+Published 1030 file(s) → /Users/shenxiuqiang/workspace/ArcBlog/dist
+  .afs/manifest.json  (http-mount protocol)
+  blocklet.dist.json  (flat manifest)
+  instance: requires /instance DID Space
+
+Next: arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog
+
+Deploy to CF Pages:
+  arc blocklet deploy /Users/shenxiuqiang/workspace/ArcBlog --project <project-name>
+
+> scrub:dist-secrets
+> node scripts/arcblog-dist-secrets.mjs
+
+{
+  "action": "scrub",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "dryRun": false,
+  "removed": [
+    ".env.local",
+    "node.key"
+  ],
+  "privateKeyRemoved": [],
+  "manifestRemoved": [
+    ".env.local",
+    "node.key"
+  ],
+  "manifestFilesBefore": 1030,
+  "manifestFilesAfter": 1028
+}
+rc=0
+
+$ ls -la dist/node.key dist/.env.local
+ls: dist/.env.local: No such file or directory
+ls: dist/node.key: No such file or directory
+$ ls -la dist/docs/team/.gate-lock
+ls: dist/docs/team/.gate-lock: No such file or directory
+
+$ node scripts/arcblog-dist-secrets.mjs --check
+{
+  "action": "check",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "ok": true,
+  "distExists": true,
+  "files": [],
+  "privateKeyFiles": [],
+  "manifestEntries": []
+}
+rc=0
+
+$ python3 manifest count
+files: 1028
+[]

@@ -15,6 +15,8 @@
 // Labels are wrapper-namespace keys (`$t(wrapper.nav-*)`): pages may reference
 // them, so the copy lives in `.aup/wrapper.aup` + `.aup/locales/*.json` once.
 
+import { PAYMENT_ADAPTERS } from './lib/economy.mjs';
+
 /** Groups, each with the console pages it contains. */
 export const CONSOLE_MENU = [
   {
@@ -224,4 +226,47 @@ export function blockEnd(lines, start) {
     if (depth === 0 && i > start) return i;
   }
   throw new Error(`unbalanced block starting at line ${start + 1}`);
+}
+
+// ---------------------------------------------------------------------------
+// Economy payment-adapter options (REQ-031 ②/D1) — the second generated block.
+//
+// A `.aup` page cannot import JavaScript, so the ONLY way the console's
+// payment-adapter picker can share one definition with
+// `policy init --payment-adapter <x>` is a generated block, exactly like the
+// sidebar. The markers below delimit it: `arcblog-console-nav.mjs` rewrites the
+// lines between them from `PAYMENT_ADAPTERS`, and `console-nav --check` (in the
+// fast tier) fails on drift, so the accepted set has exactly one definition —
+// `scripts/lib/economy.mjs`.
+//
+// The page owns the write (the action that consumes `${args.eAdapter}`); this
+// generator owns only the option set, which is the part that could silently
+// diverge from the CLI.
+// ---------------------------------------------------------------------------
+
+/** First line of the generated adapter block. */
+export const ADAPTER_BLOCK_BEGIN = '// economy-adapters:begin';
+/** Last line of the generated adapter block. */
+export const ADAPTER_BLOCK_END = '// economy-adapters:end';
+
+/**
+ * The canonical payment-adapter picker lines for ONE page.
+ *
+ * `label=:policy-adapter-edit` is page-scoped i18n and is declared by hand in
+ * `pages/economy/policy.aup`; the option list is generated.
+ *
+ * `required=true` is part of the generated contract, not decoration: the value
+ * comes from the bound policy record, so a cold load (or a policy record with no
+ * `paymentAdapter`) leaves the select empty and the save action must fail closed
+ * rather than write an empty adapter.
+ */
+export function adapterOptionLines(indent = 4) {
+  const pad = ' '.repeat(indent);
+  const options = PAYMENT_ADAPTERS.map((adapter) => `{label: ${adapter}, value: ${adapter}}`).join(', ');
+  return [
+    `${pad}${ADAPTER_BLOCK_BEGIN} — generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs`,
+    `${pad}// edit the list there, then run: node scripts/arcblog-console-nav.mjs`,
+    `${pad}input type=select name=eAdapter label=:policy-adapter-edit required=true options=[${options}] value="\${state.policy.paymentAdapter}"`,
+    `${pad}${ADAPTER_BLOCK_END}`,
+  ];
 }

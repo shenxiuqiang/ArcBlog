@@ -56,6 +56,7 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
  */
 const FAST_TESTS = new Set([
   'arcblog-console-nav',
+  'arcblog-dist-secrets',
   'arcblog-hero-carousel',
   'arcblog-i18n',
   'arcblog-permissions',

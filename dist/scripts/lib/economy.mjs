@@ -16,6 +16,24 @@
 /** Scale used for amount strings: 6 decimals (matches stablecoin precision). */
 export const AMOUNT_SCALE = 6;
 
+/**
+ * Payment adapters ArcBlog knows about (spec §44). `manual` is dev-only.
+ *
+ * SINGLE SOURCE (REQ-031 ②/D1): this list used to live only inside
+ * `scripts/arcblog-economy.mjs`, so the console's adapter picker had no way to
+ * stay in step with `policy init --payment-adapter <x>` except by hand. The CLI
+ * imports it from here and the console's option block is GENERATED from it by
+ * `scripts/arcblog-console-nav.mjs` (gated by `console-nav --check`), so the
+ * accepted set has exactly one definition.
+ */
+export const PAYMENT_ADAPTERS = ['none', 'manual'];
+
+/** Product types a Product record may carry (spec §41). Console options mirror this. */
+export const PRODUCT_TYPES = ['article', 'membership', 'digital', 'subscription'];
+
+/** Product visibility values a Product record may carry. */
+export const PRODUCT_VISIBILITIES = ['public', 'private'];
+
 const AMOUNT_RE = /^\d+(\.\d+)?$/;
 
 function str(value) {
@@ -127,8 +145,6 @@ export function buildProduct(input = {}, { now = new Date().toISOString(), exist
   };
 }
 
-const PRODUCT_TYPES = ['article', 'membership', 'digital', 'subscription'];
-
 /** Validate a Product record; returns issues (empty = ok). */
 export function validateProduct(product) {
   const issues = [];
@@ -142,7 +158,7 @@ export function validateProduct(product) {
     issues.push('priceAmount must be a non-negative decimal string');
   }
   if (!str(product.priceAsset)) issues.push('priceAsset is required');
-  if (!['public', 'private'].includes(str(product.visibility))) issues.push('visibility must be public or private');
+  if (!PRODUCT_VISIBILITIES.includes(str(product.visibility))) issues.push('visibility must be public or private');
   // spec §38: a subscription needs a period; manual renewal only.
   if (str(product.type) === 'subscription' && !(Number(product.periodDays) > 0)) {
     issues.push('periodDays must be a positive number for a subscription');

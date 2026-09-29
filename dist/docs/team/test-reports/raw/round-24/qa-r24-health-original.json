@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "version": "0.3.7",
+  "roles": [
+    "basic"
+  ],
+  "capabilities": [
+    "blog.read",
+    "blog.write",
+    "blog.publish"
+  ],
+  "did": "did:blocklet:arcblog",
+  "checkedAt": "2026-09-28T21:12:21.632Z",
+  "hubs": {
+    "total": 5,
+    "fresh": 1,
+    "offline": 4
+  }
+}

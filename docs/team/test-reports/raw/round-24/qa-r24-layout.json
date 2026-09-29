@@ -1,0 +1,187 @@
+{
+  "at": "2026-09-29T01:40:20.005Z",
+  "layout": {
+    "doc": {
+      "scrollW": 0,
+      "scrollH": 908,
+      "clientH": 908
+    },
+    "rowCount": 20,
+    "rowOverflow": [
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      },
+      {
+        "over": 0,
+        "cw": 698,
+        "sw": 698
+      }
+    ],
+    "maxRowOver": 0,
+    "docOverEls": [
+      {
+        "tag": "DIV",
+        "cls": "aup-view",
+        "over": 302,
+        "cw": 1200,
+        "sw": 1502,
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "rect": {
+          "x": 302,
+          "w": 1200
+        },
+        "text": "Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Ag",
+        "hasForm": true,
+        "hasList": true
+      },
+      {
+        "tag": "DIV",
+        "cls": "aup-view",
+        "over": 334,
+        "cw": 1136,
+        "sw": 1470,
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "rect": {
+          "x": 334,
+          "w": 1136
+        },
+        "text": "Content | Dashboard | Studio | Pages | Write | Site | Heroes | Categories | Tags | SEO | Feeds | Appearance | Operations | Operations | Hub console | Media | Ag",
+        "hasForm": true,
+        "hasList": true
+      },
+      {
+        "tag": "DIV",
+        "cls": "aup-view",
+        "over": 30,
+        "cw": 726,
+        "sw": 756,
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "rect": {
+          "x": 300,
+          "w": 728
+        },
+        "text": "Settlement policy | version | — | creator | — | hub | — | protocol | — | paymentAdapter | — | createdAt | — | updatedAt | — | How to set it: node scripts/arcblo",
+        "hasForm": false,
+        "hasList": false
+      },
+      {
+        "tag": "DIV",
+        "cls": "aup-view",
+        "over": 44,
+        "cw": 698,
+        "sw": 742,
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "rect": {
+          "x": 315,
+          "w": 698
+        },
+        "text": "0.80 / 0.15 / 0.05 | 0.90 / 0.05 / 0.05 | 0.95 / 0.03 / 0.02 | 0.70 / 0.25 / 0.05 | 1.00 / 0.00 / 0.00",
+        "hasForm": false,
+        "hasList": false
+      }
+    ],
+    "docOverCount": 4,
+    "createForm": {
+      "over": 0,
+      "cw": 1803,
+      "sw": 1803
+    }
+  },
+  "targetsAfterFiltered": []
+}

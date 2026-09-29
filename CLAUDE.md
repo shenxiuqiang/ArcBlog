@@ -29,7 +29,9 @@ npm run test:live         # the live suites (serial, ~21 min measured in Round 7
                           # (user ruling 2026-09-27; see Quality gates)
 npm run test:all          # fast + live (deliberate, human-requested runs only)
 npm run test:file -- scripts/arcblog-media.test.mjs   # one file — the way to cover a single live path
-arc blocklet build        # regenerate dist/ from source (run after .aup changes, before committing)
+npm run build             # arc blocklet build + scrub:dist-secrets (the ONLY safe build entry)
+                          # bare `arc blocklet build` copies node.key/.env.local into dist/ and
+                          # lists them in dist/.afs/manifest.json (BUG-067, no platform ignore switch)
 node --test scripts/arcblog-lifecycle.test.mjs   # run a single test file
 
 # Content operations (via scripts/, which wrap the `arc` CLI):
@@ -104,7 +106,7 @@ file may carry a chain address or a token symbol — the console reads the publi
 arc dsl validate --json   # issues must be []
 npm test                  # fast tier: ~1s, no instance writes; take the count from the run itself
                           # (35 when the UI budget suite landed, 36 after R23's paginated-list id guard)
-arc blocklet build        # only when .aup changed — rebuilds dist/
+npm run build             # only when .aup changed — build + scrub secrets out of dist/
 ```
 
 **Do not run the full `npm run test:live` as a routine gate** (user ruling, 2026-09-27). It mutates

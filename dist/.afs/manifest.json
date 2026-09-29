@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 81396,
+      "size": 89373,
       "contentType": "application/json",
-      "sha256": "8383422de8856181be057d68766c3c7cccc865e4571e54fc09ffebbfbb35d993"
+      "sha256": "bec9e08904d00e826722929de655570589d8730fd32577728fa714432a0a76e9"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 78683,
+      "size": 86179,
       "contentType": "application/json",
-      "sha256": "e179886f7cf531298d441bf83a4ee2cd3301f03be4cc9dedf888f3375b4fb768"
+      "sha256": "b1cd8e390c74d66ae76c1d3f0514de36ae96e54ae11162d699433d273635e098"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -220,9 +220,9 @@
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 18077,
+      "size": 23618,
       "contentType": "application/octet-stream",
-      "sha256": "dcea432785e7953146c53f49be84365858e05a1aebbeeded31e583ca02e5a96e"
+      "sha256": "be348b9f7ce56d8f605e069122f7a5eb61f999ae483ac245e17817b5d8e31f83"
     },
     {
       "path": ".aup/pages/admin/diagnostics.aup",
@@ -280,9 +280,9 @@
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 12449,
+      "size": 35426,
       "contentType": "application/octet-stream",
-      "sha256": "e34e14156f9c9a27efac91c35769d194ae381b1b684cb91391ff291a75988fea"
+      "sha256": "3041d6c6ad98cc9dac40cc649cafcb909a7bde1394d72d19b075519d66bb0f4a"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -427,12 +427,6 @@
       "size": 707,
       "contentType": "application/octet-stream",
       "sha256": "6254fbff3847f9f6d8e075f17bd1b580e2498270cf87f82014686a404337abf9"
-    },
-    {
-      "path": ".env.local",
-      "size": 499,
-      "contentType": "application/octet-stream",
-      "sha256": "98320672f04e9271fd94042f74df8605ba88befdb34e9719999f2700e7cf2bbb"
     },
     {
       "path": ".gitignore",
@@ -1306,9 +1300,9 @@
     },
     {
       "path": "AGENTS.md",
-      "size": 2725,
+      "size": 2973,
       "contentType": "text/markdown",
-      "sha256": "70c12b59f15d7e582c8fb6289d25ff793e925a21c9497b8235f1363641ae63f2"
+      "sha256": "23b0b3e7a59f84a8fb5a6eab429e3da83b10a591a000d80ae26aded230c2bd80"
     },
     {
       "path": "agents/arcblog-agent/agent.dsl",
@@ -1336,15 +1330,15 @@
     },
     {
       "path": "CLAUDE.md",
-      "size": 29630,
+      "size": 29844,
       "contentType": "text/markdown",
-      "sha256": "02042e4dd537ac4da219f2258177f8a259b26fa495804187787564ffa437b7b5"
+      "sha256": "7d78088e6cdc4cc5e492c05d8eea235ab90343e77efa839b04c66f0490c3589a"
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 171300,
+      "size": 173577,
       "contentType": "text/markdown",
-      "sha256": "69ce119a86e445a9e5dcd8b3811120312549f478e547fa9fba4b5a11662a4920"
+      "sha256": "07a36eff7f4423d8077b03d27d24f4c1a0cbabc7267b4ec530789b70a438d4c5"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1354,9 +1348,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 87883,
+      "size": 90274,
       "contentType": "text/markdown",
-      "sha256": "2c51e68973a14f0c6347ac748769dd15fc7df82b5f8ab32d2f9af99a84b61797"
+      "sha256": "d724e65a13d5dc434a0f4a60cc0011388689a868e386e7734d9f354514fd6e8f"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1426,9 +1420,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 46856,
+      "size": 48955,
       "contentType": "text/markdown",
-      "sha256": "311c3fb35b3d56634fe6c9f2f51f9880ada913108739ad6e8d95b5af1d7feb3f"
+      "sha256": "2d1feb357e784e8b86ef4024ec2d4d0cab829677b577d96dab3d50dca4651e8f"
     },
     {
       "path": "docs/persistence.md",
@@ -1468,9 +1462,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 1029067,
+      "size": 1130813,
       "contentType": "text/markdown",
-      "sha256": "864ad3148f67f1ffbc5419bbf9db87b7f3fa80f3232bc7e28a640b17a3d023d5"
+      "sha256": "407beb5bd5970b40bd141470239d55e7910a65ed584dbe27c9c478bcc378ce0d"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1867,6 +1861,42 @@
       "size": 5400,
       "contentType": "text/markdown",
       "sha256": "138d37f458f890d9d33e7cc100f56639900ae4d64784e47cddd87f579df8433a"
+    },
+    {
+      "path": "docs/team/bugs/BUG-066-policy-create-bypasses-product-validation.md",
+      "size": 7683,
+      "contentType": "text/markdown",
+      "sha256": "9868a7e94013f270fce99e3a00afa03c04c942ae9e07b01a2f5fdce130a3d348"
+    },
+    {
+      "path": "docs/team/bugs/BUG-067-blocklet-build-mirrors-node-key-and-env-local.md",
+      "size": 7131,
+      "contentType": "text/markdown",
+      "sha256": "5117b7585edb036bd0fc0b3a1f3e4b2ef4dd6dde0658039f0af7c9f2db5acbf6"
+    },
+    {
+      "path": "docs/team/bugs/BUG-068-policy-write-refused-on-cli-created-record.md",
+      "size": 5389,
+      "contentType": "text/markdown",
+      "sha256": "9c22af81c3968b7fb7efdfd8b5aa5e12c0fd730dd85f0b3ad3f235490fa135bd"
+    },
+    {
+      "path": "docs/team/bugs/BUG-069-policy-preset-row-overflows-card.md",
+      "size": 4694,
+      "contentType": "text/markdown",
+      "sha256": "841bf40a4d73eae5c6e0fb0c54800c4038ba1f8f142c7cbbe34aa0eaf9fec746"
+    },
+    {
+      "path": "docs/team/bugs/BUG-070-console-product-perioddays-string-type.md",
+      "size": 5137,
+      "contentType": "text/markdown",
+      "sha256": "91c12b7cea2f681165f1b7583fe001521655a93e0f645b958fa2a73a2000dd49"
+    },
+    {
+      "path": "docs/team/bugs/BUG-071-dist-secret-guard-not-enforced-on-documented-build-paths.md",
+      "size": 5449,
+      "contentType": "text/markdown",
+      "sha256": "7da44bb2332dd71d68f479905b3ffec9e80bb2bcc1a3f8ebe78d6747281018d7"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2578,9 +2608,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 82113,
+      "size": 94265,
       "contentType": "text/markdown",
-      "sha256": "de88b1208dce4f9374f24f237898f632ab541ea89eb858a4a904fea658e08bdd"
+      "sha256": "124bc5d1f802d93575f9ad0bce0c1e087f44a3de8f37bb5785398afc9fc803d4"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2665,6 +2695,18 @@
       "size": 48917,
       "contentType": "text/markdown",
       "sha256": "75cfe6707921770ca3576c1781ba123e192d012e8c9235c74a11e33af30b26b3"
+    },
+    {
+      "path": "docs/team/journal/round-24.md",
+      "size": 53171,
+      "contentType": "text/markdown",
+      "sha256": "089bc1deb40938f172402bef2e0f2b1475899aacc5547c6b23ecf195fa3d9240"
+    },
+    {
+      "path": "docs/team/journal/round-24f.md",
+      "size": 29343,
+      "contentType": "text/markdown",
+      "sha256": "a8158fc033846563c83121fdc1ab9c127b24254c1b2b5e6d700e299a064990bd"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -2977,6 +3019,12 @@
       "size": 79310,
       "contentType": "text/markdown",
       "sha256": "67d5faecc16a1c1288d132dbacb3afa09b3ab8c00f4b714cabec1eda2b605188"
+    },
+    {
+      "path": "docs/team/requirements/REQ-031-round24-console-completion.md",
+      "size": 54500,
+      "contentType": "text/markdown",
+      "sha256": "e613391f9e0d92e175a6dbb56f1032c6b9d91e490dd9d18469a0d1967c318b12"
     },
     {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
@@ -5091,6 +5139,336 @@
       "sha256": "99b5db12f83d12319604a5515515fe66c6d79f65e0ca3d9a9d0428c54a6d6e15"
     },
     {
+      "path": "docs/team/test-reports/raw/round-24/01-validate.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/01-validate.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/02-npmtest.txt",
+      "size": 3071,
+      "contentType": "text/plain",
+      "sha256": "71d550befe48d131ce6f919aaece2da2fc1cf410a32b4381b2ed17bf337c9421"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/03-generate-check.txt",
+      "size": 114,
+      "contentType": "text/plain",
+      "sha256": "9ac2ec45b136ce9a7191a35c784e71a0ed719fb391b528f690651cfd9594a801"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/04-console-nav-check.txt",
+      "size": 53,
+      "contentType": "text/plain",
+      "sha256": "f56a954b310887a9fcf20e69bfdc9b997887d749f5ad8dd505f52c1381f3ca4d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/05-build-tmp.txt",
+      "size": 1343,
+      "contentType": "text/plain",
+      "sha256": "6f6c620b8d2342179c2aaccdce2accfda899e0f445118fe7422fed9778447a3a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/06-dsl-lint.txt",
+      "size": 14067,
+      "contentType": "text/plain",
+      "sha256": "3c9f455782cb1b0ffb3b58db09e30724a83a6f969ae7d5e69930e91a72ca62de"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/07-ui-budget.txt",
+      "size": 1954,
+      "contentType": "text/plain",
+      "sha256": "e27bc7403a8f8d6b01e8580ffcdfb85e27072f1e4afc176302ed392e3b720364"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/08-integrity-before-live.json",
+      "size": 381,
+      "contentType": "application/json",
+      "sha256": "d9f993f2c7d88411f952b1e4c10babde48e2f9ff58086d3f0f6d46430f522555"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/08-versions-before-live.txt",
+      "size": 216,
+      "contentType": "text/plain",
+      "sha256": "aeec0fee36d1c13d780d43fba9909695136363557801de1818098ea89487c5b1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/09-economy-live.txt",
+      "size": 3960,
+      "contentType": "text/plain",
+      "sha256": "f2fe67025b0f3a61260d1e0d2832ad907dac701784d2ca7a33028ebd38c371b5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/10-secrets.txt",
+      "size": 619,
+      "contentType": "text/plain",
+      "sha256": "d86203c7ccbc1d6607bc00b449681f7415f7459f196f1695159459cb22b2b1b9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-all.json",
+      "size": 143248,
+      "contentType": "application/json",
+      "sha256": "f015196c2ffc9ba2d14435c4899e791b10c415e8b6ea1ad8703d2ca0b4e3d7cc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-all.log",
+      "size": 3619,
+      "contentType": "text/plain",
+      "sha256": "74deb075e1c20ab367455ea45bf9407cf4ba2e004b4a5ca06f454f4c24b42a85"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-empty.json",
+      "size": 4078,
+      "contentType": "application/json",
+      "sha256": "dabccc39e49578dc8b52f15440ec39bb64fc6c7ec06593faa150507f863721eb"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-empty.mjs",
+      "size": 5685,
+      "contentType": "text/javascript",
+      "sha256": "5c49d83d2c5d040aa83b6422ce349330788a4022eb5246adbe119b37353e0573"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-health-original.json",
+      "size": 294,
+      "contentType": "application/json",
+      "sha256": "1a8872206922badef25b2733f2c14c48c5546786806a9e7cb8d3bbca5d4089f9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-layout.json",
+      "size": 3733,
+      "contentType": "application/json",
+      "sha256": "932f32d4bd064b3c449b28a71ab3ad6a6616bc45aaaf6397b2124b4469d3a115"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-layout.mjs",
+      "size": 4597,
+      "contentType": "text/javascript",
+      "sha256": "07b897d74fc8488434c8de7fbb24cbe2ec31b74897a0d7b5bc2ee0aaae11768b"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-policy-layout.png",
+      "size": 249396,
+      "contentType": "image/png",
+      "sha256": "ba78bc16adc9fdacd87e8184b93599f2afeed5d2835d47fd777a66f71bb0708e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-policy-text.json",
+      "size": 8393,
+      "contentType": "application/json",
+      "sha256": "94db527b49cf9ce17df24fd4ea599d48b7b2e0eb1a68af149eba170ceef5ea6d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-probe.mjs",
+      "size": 26499,
+      "contentType": "text/javascript",
+      "sha256": "5350860119aaf033336dd4e833c6ece3186473973f048a76c50c6f8cf8e543e9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-recon.json",
+      "size": 44293,
+      "contentType": "application/json",
+      "sha256": "fc1254b2c99c97011a84a683cb8f1773fcfcffd2baa1f928e729a3d39816df75"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-recon.mjs",
+      "size": 4962,
+      "contentType": "text/javascript",
+      "sha256": "16b714f9ed4eab201ae3de0a80a255a81fc269cdaec1d474ddbf571f8fb7dc7c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-reg.json",
+      "size": 6290,
+      "contentType": "application/json",
+      "sha256": "e9ef9be793ca8f59f3baad316095326957d61ce4b21d70490a5261e2b785a309"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-reg.mjs",
+      "size": 10856,
+      "contentType": "text/javascript",
+      "sha256": "bd1a053fd1e9344f7d8ab8f5b53717ecda4a04b45856e795bb99908d01a608fb"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-text.mjs",
+      "size": 4568,
+      "contentType": "text/javascript",
+      "sha256": "2e6969641817862572936c6d4217bc61f318b8ec6af414732d7d75c9eae79b30"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-visual.json",
+      "size": 1278,
+      "contentType": "application/json",
+      "sha256": "ed197e4170bdba427d8770c7ea49cbc9968529d9d90b447a99a3b31b09ce6476"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-visual.mjs",
+      "size": 5441,
+      "contentType": "text/javascript",
+      "sha256": "dc99d571e6f181f3d842c82176eb43c7716e8e2640b8b23c7d7163fce9db00f8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24/qa-r24-w1.json",
+      "size": 6819,
+      "contentType": "application/json",
+      "sha256": "c0297432eb06d7a76b8ace87dfaf41656b810f3f9fa0727b55eb7449616ae7bb"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/01-validate.txt",
+      "size": 1945,
+      "contentType": "text/plain",
+      "sha256": "42fe692eda74734ed6d8c220275e7ecd04cfc8433e52e07e02ad3c1d7c0978e1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/02-npmtest.txt",
+      "size": 3193,
+      "contentType": "text/plain",
+      "sha256": "80e240dba9d5798fc999bdb2a15322866ad6c80f6d596b65ea5659f988891211"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/03-generate-check.txt",
+      "size": 146,
+      "contentType": "text/plain",
+      "sha256": "12ecb3ffaecaf7f2a10b29cff4320a201bb25a76f1ca77e3916b2208790e5b41"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/04-console-nav-check.txt",
+      "size": 105,
+      "contentType": "text/plain",
+      "sha256": "abd2978bd36db0ab1e7557b429e7512d1bf8f15e495481d618cd2f592c0d83dc"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/05-sources-before.txt",
+      "size": 300,
+      "contentType": "text/plain",
+      "sha256": "0445008fb5aa89ecca633a8cabf26c35b378762257c01def4be92fe8dd6521ae"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/06-dist-check-baseline.txt",
+      "size": 237,
+      "contentType": "text/plain",
+      "sha256": "7752e46a0a2ba2899a44b9f1eef8e1b27a9e3ef351e6d4b9bc96f64712c5230c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/07-dist-check-red.txt",
+      "size": 320,
+      "contentType": "text/plain",
+      "sha256": "083517cc4671bca9471b9e1917f77051cb082fd43b9191f093c91eaeb7a01b0d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/08-npmtest-red.txt",
+      "size": 3870,
+      "contentType": "text/plain",
+      "sha256": "ac14d77b51129e508959848bb31e805ef454390b9da291d158eb4bed19101d29"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/09-dist-scrub-fakes.txt",
+      "size": 595,
+      "contentType": "text/plain",
+      "sha256": "c59283410503c7959f8f1fa8dc7e30f19d3ddb3b6c81b4f776fc554a1df746c1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/10-npmtest-green.txt",
+      "size": 3218,
+      "contentType": "text/plain",
+      "sha256": "9db0fac437ff83fcb43363cc25ef6aacf64507df79276b8d5f8ff6e32e233020"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/11-repo-build.txt",
+      "size": 1757,
+      "contentType": "text/plain",
+      "sha256": "f603b72331d215e7e9a185aa4a35b17cd310d2caebc84f900e364fea31e2b52e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/12-repo-check-red.txt",
+      "size": 331,
+      "contentType": "text/plain",
+      "sha256": "07255dad5c7ee9f500ee3f7a706d4a4922e0d60d175127ab5d5d994e6e328aeb"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/13-repo-scrub.txt",
+      "size": 359,
+      "contentType": "text/plain",
+      "sha256": "b08c66e5ef3e28c986811eb08e957bf40b7613cb0dd082a8c7b7dc14fad337cb"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/14-repo-check-green.txt",
+      "size": 253,
+      "contentType": "text/plain",
+      "sha256": "42bfe5592e944eb4dd58fac743ebe32a8b50e8faabf7094a0965e513e0b37751"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/15-build-dryrun.json",
+      "size": 6217,
+      "contentType": "application/json",
+      "sha256": "471e9156b229da7e9cc85b11d8b08934ddd7c5a5042d8ac30d3479a8600143f6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/16-tempout-build.txt",
+      "size": 1344,
+      "contentType": "text/plain",
+      "sha256": "f6e6b2658cdd4ba7e6e31b90a55fc7d41ac0405a01a9c5ee56e176ca38cc7812"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/17-sources-after.txt",
+      "size": 462,
+      "contentType": "text/plain",
+      "sha256": "c8078feed766feb79774bea1cfb75e1bdb96d4355ee0c8f42bc9e3a09bf86b11"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/18-diff-src-dist.txt",
+      "size": 60,
+      "contentType": "text/plain",
+      "sha256": "dd4d0b166bc56dace2cdabbade06e0e1f197d7883d4853468ea10821bd06350f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/19-npm-build.txt",
+      "size": 2009,
+      "contentType": "text/plain",
+      "sha256": "2e9c534bcf6855d9dd892991f4697c205697e5969263c7c8753064e183a52240"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-bug066.json",
+      "size": 8776,
+      "contentType": "application/json",
+      "sha256": "2a87a0890b7bfea3c287943b4bebcb9e620ce3bcbc66f297955d95f569121357"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-bug066.mjs",
+      "size": 14135,
+      "contentType": "text/javascript",
+      "sha256": "b4003e19f49db1a34bd97cf517378c07381c8229ae4dad73f909e2a11cbf4324"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-layout.json",
+      "size": 5326,
+      "contentType": "application/json",
+      "sha256": "ea7a54e36783bacc4354be80df0c774adb1726dcfaa5bd570e80928a4f89ba46"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-nav.json",
+      "size": 12003,
+      "contentType": "application/json",
+      "sha256": "5f586f8782e877659bdcf682037022dd2f1b2fe222e85605f2c88aa3658527d2"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-r21r23.json",
+      "size": 3353,
+      "contentType": "application/json",
+      "sha256": "ddc0f104481ac50626e382432b6cfe34530efda3a11a6c18a6b8a2bd0bfcecba"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-24f/qa24f-ui.mjs",
+      "size": 12747,
+      "contentType": "text/javascript",
+      "sha256": "d2e978fbc94c35010b47c4fd0b36734cd9dc02c0b883eab14bac66b81fe72c19"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -5205,6 +5583,18 @@
       "sha256": "9f9159dc3a5cc98d0c886e7044a04dc9ef81f2426d8f34b62df4c3f2b76f6ab1"
     },
     {
+      "path": "docs/team/test-reports/round-24.md",
+      "size": 36825,
+      "contentType": "text/markdown",
+      "sha256": "919967c19024d8b6c4d9f5951202bb43e9b56dd484964a1655f37bd1f6041b31"
+    },
+    {
+      "path": "docs/team/test-reports/round-24f.md",
+      "size": 24046,
+      "contentType": "text/markdown",
+      "sha256": "7c81aed339c305394378a62c42b6d62b57fe04e55822dfd35d8d7bad2bc9a4b7"
+    },
+    {
       "path": "docs/team/test-reports/round-6-reverify.md",
       "size": 19544,
       "contentType": "text/markdown",
@@ -5259,12 +5649,6 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "path": "node.key",
-      "size": 119,
-      "contentType": "application/octet-stream",
-      "sha256": "2305e48729fe914aa9718832c2c77a0cccbecb9ba234daaa6bda198acd34195c"
-    },
-    {
       "path": "package-lock.json",
       "size": 31339,
       "contentType": "application/json",
@@ -5272,9 +5656,9 @@
     },
     {
       "path": "package.json",
-      "size": 583,
+      "size": 715,
       "contentType": "application/json",
-      "sha256": "7ab12886b63051e7490340c784841553c3fb8482507ff4e65ce1d655f21867e8"
+      "sha256": "081b12a4c2a7831061b43cfa2af77e108c634b6de36f0f12c78b10acff0bd4df"
     },
     {
       "path": "pages/hero-carousel/layout.aup",
@@ -5386,9 +5770,9 @@
     },
     {
       "path": "scripts/arcblog-console-nav.mjs",
-      "size": 5071,
+      "size": 7031,
       "contentType": "text/javascript",
-      "sha256": "19a788088c04c0aecbd4fcdf81865d3fcbcc23b939304c32cb820c3e2e7466cb"
+      "sha256": "b689d1655c3bc7ab3b57ef8b03afd0b7733ee025870b3d86561d308a2d09f258"
     },
     {
       "path": "scripts/arcblog-console-nav.test.mjs",
@@ -5421,6 +5805,18 @@
       "sha256": "7f8f85f1a34d6b39f6b7df46401966badbe5e3228f19e84cd88a7d02e593ec75"
     },
     {
+      "path": "scripts/arcblog-dist-secrets.mjs",
+      "size": 7560,
+      "contentType": "text/javascript",
+      "sha256": "2d587e7942498e376faddc5344e66297ab6e76b25ab40ea57e7491d82c061b6d"
+    },
+    {
+      "path": "scripts/arcblog-dist-secrets.test.mjs",
+      "size": 4828,
+      "contentType": "text/javascript",
+      "sha256": "73f5cdd98aca999c7bdb19d3a2ad1b459699398ed98ceec09f484dd8ddd3d11a"
+    },
+    {
       "path": "scripts/arcblog-doctor.mjs",
       "size": 8600,
       "contentType": "text/javascript",
@@ -5434,9 +5830,9 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 44063,
+      "size": 44381,
       "contentType": "text/javascript",
-      "sha256": "181308d4d557a104c709930a510ba6ff76a4812991acc07a1491a25523f9afb3"
+      "sha256": "b020a44a4efdb260b8128152f6316bf1a0340673ad1f683ca5143ea360788eff"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
@@ -5638,9 +6034,9 @@
     },
     {
       "path": "scripts/console-nav.mjs",
-      "size": 11090,
+      "size": 13348,
       "contentType": "text/javascript",
-      "sha256": "9a0c2dd3f25fa540fdd49b0d1ec8cbc72b4dfd6c6da01ee763801b8c65bd9485"
+      "sha256": "e621d5c3ecfb21d7b2153c3b26e46eca86e2b45087d44116e6ebc78c885832b3"
     },
     {
       "path": "scripts/lib/agents.mjs",
@@ -5710,9 +6106,9 @@
     },
     {
       "path": "scripts/lib/economy.mjs",
-      "size": 16637,
+      "size": 17425,
       "contentType": "text/javascript",
-      "sha256": "c837256a2178e45d05641d9d563da975b53d5d97ebb6789981158f191cc05681"
+      "sha256": "590b1538b8ba32ed58d603d9cb85f490298b0ea73e2c16e2e820d31bffa8bfa5"
     },
     {
       "path": "scripts/lib/general-settings.mjs",
@@ -5782,15 +6178,15 @@
     },
     {
       "path": "scripts/run-tests.mjs",
-      "size": 6148,
+      "size": 6174,
       "contentType": "text/javascript",
-      "sha256": "302ade8ab36f4b66250d0f0b4fb35f3399400cd7968392adfbeb3c4cf76ad301"
+      "sha256": "b303a515480b64e187db497b45c7771194e46c898d2a2f8f54a42945e69eb523"
     },
     {
       "path": "scripts/ui-budget-baseline.json",
-      "size": 2937,
+      "size": 2940,
       "contentType": "application/json",
-      "sha256": "feaeea3a53301854edac15fbfd97412295a3bc0718ef4770a0ce2b561556c7b9"
+      "sha256": "ae2d8277bc9882270d2c2f3f56a7d04d6f5c8c25f3249c52a33514d86278dca5"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

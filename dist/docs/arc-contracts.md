@@ -1990,3 +1990,32 @@ afs-list <stable-id>  layout=list itemStyle=row  subscribe=true  clickMode=none 
 于是当前标签页内**无法改回**，列表又变长（BUG-063，P2，已排 R24；缓解只能靠页面级常驻说明 + 本条登记）。
 **探针/测试必须每个身份、每种语言用新 context**，不要把共享 profile 的该键带进断言（BUG-064 曾因此产生 7 个残留键）。
 清理：任意页面执行 `Object.keys(localStorage).filter(k=>k.startsWith('aup-list-pagesize:')).forEach(k=>localStorage.removeItem(k))`。
+
+---
+
+## 39. `arc blocklet build` 会把**仓库根文件**（含私钥与助记词）复制进 `dist/`，且没有排除开关（R24F 实测）
+
+`arc blocklet build` 的语义是「把 blocklet 目录整包拷成 `dist/`」。仓库根同时放着
+`node.key`（Ed25519 私钥，119 B）与 `.env.local`（含链助记词，499 B），于是**两者被原样复制进 `dist/`**，
+并被写进 `dist/.afs/manifest.json` 的 files 清单。**被 publish 的正是 `dist/`** —— 也就是说不做处理就会
+把运营者私钥与助记词打进发布包。
+
+**(1) 平台侧没有排除能力**：`arc blocklet build --help` 只有 `--output` / `--dry-run` / `--clean`，
+**无 `--exclude`/`--ignore`**；平台资产里也检索不到 `.blockletignore` 的识别逻辑（保守按「不认」处理；
+写一个 `.blockletignore` 去验证它是否被认，属受限未验证）。
+
+**(2) 现行控制（本仓已落地）**：
+- `package.json` 的 **`build` = `arc blocklet build && npm run scrub:dist-secrets`**；
+  `scripts/arcblog-dist-secrets.mjs`（无参清理、`--check` 只读）只删 `dist/**` 下的密钥与 manifest 条目，
+  带**运行时 `assertInside`** 断言（越界即抛）+ 单测断言，**绝不触碰源 `node.key`/`.env.local`**。
+- **fast-tier 守卫** `scripts/arcblog-dist-secrets.test.mjs`（已入 `FAST_TESTS`，基线 36→37）：
+  断言 `dist/` 无密钥材料、manifest 不列出密钥；**两态已证**（放伪密钥 → `npm test` 变红并指名文件；
+  scrub 后 37/37 绿）。
+- 实测：裸 build 后 manifest 1030 条（含 `node.key`/`.env.local`）→ `npm run build` 后 **1028 条**、`--check ok:true`。
+
+**(3) 契约**：**`dist/` 永远不得携带密钥材料**；一切构建入口都应走 `npm run build`。
+文档里若还写着裸 `arc blocklet build`（AGENTS.md / CLAUDE.md 旧文案）视为门禁缺口 —— 已在 R24F 一并改指 `npm run build`。
+
+**(4) 另一条同轮暴露的纪律根因**：`scripts/run-tests.mjs` **没有 main 守卫**，
+`node -e "import('./scripts/run-tests.mjs')"` 会**直接开跑 live 层**（实测触发了一次，30/30 文件被立即 kill，
+仅 1 条残渣并已清理）。**测试入口应加 main 守卫**（只有直接执行才跑），已排 R25。

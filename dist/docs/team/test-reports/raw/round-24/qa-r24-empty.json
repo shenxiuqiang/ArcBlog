@@ -1,0 +1,91 @@
+{
+  "at": "2026-09-29T01:38:27.305Z",
+  "original": {
+    "meta": {
+      "size": 294,
+      "version": "1790645901722.223-155475408-294",
+      "mimeType": "application/json"
+    },
+    "hasHubs": true,
+    "content": {
+      "status": "ok",
+      "version": "0.3.7",
+      "roles": [
+        "basic"
+      ],
+      "capabilities": [
+        "blog.read",
+        "blog.write",
+        "blog.publish"
+      ],
+      "did": "did:blocklet:arcblog",
+      "checkedAt": "2026-09-28T21:12:21.632Z",
+      "hubs": {
+        "total": 5,
+        "fresh": 1,
+        "offline": 4
+      }
+    }
+  },
+  "write": {
+    "status": 0,
+    "out": "{\"id\":\"health.json\",\"path\":\"/instance/app/arcblog/node/health.json\",\"createdAt\":\"2026-09-23T11:32:24.602Z\",\"updatedAt\":\"2026-09-29T01:38:28.265Z\",\"content\":\"{\\n  \\\"status\\\": \\\"ok\\\",\\n  \\\"version\\\": \\\""
+  },
+  "strippedRead": {
+    "meta": {
+      "size": 228,
+      "version": "1790645908265.5085-155475408-228",
+      "mimeType": "application/json"
+    },
+    "content": {
+      "status": "ok",
+      "version": "0.3.7",
+      "roles": [
+        "basic"
+      ],
+      "capabilities": [
+        "blog.read",
+        "blog.write",
+        "blog.publish"
+      ],
+      "did": "did:blocklet:arcblog",
+      "checkedAt": "2026-09-28T21:12:21.632Z"
+    },
+    "raw": "{\n  \"status\": \"ok\",\n  \"version\": \"0.3.7\",\n  \"roles\": [\n    \"basic\"\n  ],\n  \"capabilities\": [\n    \"blog.read\",\n    \"blog.write\",\n    \"blog.publish\"\n  ],\n  \"did\": \"did:blocklet:arcblog\",\n  \"checkedAt\": \"2026-09-28T21:12:21.632Z\"\n}\n"
+  },
+  "domWithNoHubs": "Network overview\nStudio side: how many Hubs this node has registered and how fresh they are. The per-Hub rows (sync state, freshness, last error) live on Hub, one click away.\nHubs registered\n—\nHubs fresh\n—\nHubs offline\n—\nNode DID\n—\nEndpoint\n—\nRoles\n—\nTransport\n—\nA dash (—) means the record does not carry the value, the record was never published, or this binding has not resolved yet — a cold first load does not resolve propBind (BUG-036/062, docs/arc-contracts.md §28.1); switching pages or reloading fills the values in. Nothing is rendered as 0 and no green light is invented.\nSource: node/health.json (hubs aggregate) + node/discovery.json (DID / endpoint / transport), both guest-readable and read verbatim.\n",
+  "domWithNoHubsPass2": "Network overview\nStudio side: how many Hubs this node has registered and how fresh they are. The per-Hub rows (sync state, freshness, last error) live on Hub, one click away.\nHubs registered\n—\nHubs fresh\n—\nHubs offline\n—\nNode DID\ndid:blocklet:arcblog\nEndpoint\n—\nRoles\nbasic\nTransport\nafs,mcp\nA dash (—) means the record does not carry the value, the record was never published, or this binding has not resolved yet — a cold first load does not resolve propBind (BUG-036/062, docs/arc-contracts.md §28.1); switching pages or reloading fills the values in. Nothing is rendered as 0 and no green light is invented.\nSource: node/health.json (hubs aggregate) + node/discovery.json (DID / endpoint / transport), both guest-readable and read verbatim.\n",
+  "restore": {
+    "status": 0,
+    "out": "{\"id\":\"health.json\",\"path\":\"/instance/app/arcblog/node/health.json\",\"createdAt\":\"2026-09-23T11:32:24.602Z\",\"updatedAt\":\"2026-09-29T01:38:42.921Z\",\"content\":\"{\\n  \\\"status\\\": \\\"ok\\\",\\n  \\\"version\\\": \\\""
+  },
+  "restored": {
+    "meta": {
+      "size": 294,
+      "version": "1790645922921.3152-155475408-294",
+      "mimeType": "application/json"
+    },
+    "content": {
+      "status": "ok",
+      "version": "0.3.7",
+      "roles": [
+        "basic"
+      ],
+      "capabilities": [
+        "blog.read",
+        "blog.write",
+        "blog.publish"
+      ],
+      "did": "did:blocklet:arcblog",
+      "checkedAt": "2026-09-28T21:12:21.632Z",
+      "hubs": {
+        "total": 5,
+        "fresh": 1,
+        "offline": 4
+      }
+    },
+    "equal": true,
+    "rawEqual": true
+  },
+  "targetsAfterFiltered": []
+}

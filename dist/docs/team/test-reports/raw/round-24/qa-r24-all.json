@@ -1,0 +1,4861 @@
+{
+  "at": "2026-09-29T01:33:27.381Z",
+  "phase": "all",
+  "stamp": 1790645607381,
+  "productId": "qa24-1790645607381",
+  "steps": {
+    "w1": {
+      "beforeCount": 54,
+      "beforeHasPid": false,
+      "fill": "{\"id\":\"qa24-1790645607381\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"article\",\"content\":\"\",\"price\":\"1.50\",\"asset\":\"USDC\",\"visibility\":\"public\",\"policy\":\"active\",\"period\":\"0\"}",
+      "click": "clicked:Create product",
+      "invalid": "[]",
+      "read": {
+        "value": {
+          "id": "qa24-1790645607381.json",
+          "path": "/instance/app/arcblog/economy/products/qa24-1790645607381.json",
+          "createdAt": "2026-09-29T01:33:34.610Z",
+          "updatedAt": "2026-09-29T01:33:34.610Z",
+          "content": "{\n  \"id\": \"qa24-1790645607381\",\n  \"creatorDid\": \"did:blocklet:arcblog\",\n  \"type\": \"article\",\n  \"contentId\": \"\",\n  \"priceAmount\": \"1.50\",\n  \"priceAsset\": \"USDC\",\n  \"visibility\": \"public\",\n  \"settlementPolicy\": \"active\",\n  \"periodDays\": \"0\",\n  \"createdAt\": \"2026-09-29T01:33:34.603Z\",\n  \"updatedAt\": \"2026-09-29T01:33:34.603Z\"\n}",
+          "meta": {
+            "size": 326,
+            "version": "1790645614610.1897-157493779-326",
+            "mimeType": "application/json"
+          },
+          "actions": []
+        },
+        "content": {
+          "id": "qa24-1790645607381",
+          "creatorDid": "did:blocklet:arcblog",
+          "type": "article",
+          "contentId": "",
+          "priceAmount": "1.50",
+          "priceAsset": "USDC",
+          "visibility": "public",
+          "settlementPolicy": "active",
+          "periodDays": "0",
+          "createdAt": "2026-09-29T01:33:34.603Z",
+          "updatedAt": "2026-09-29T01:33:34.603Z"
+        }
+      },
+      "afterCount": 55,
+      "afterHasPid": true,
+      "contentRaw": "{\n  \"id\": \"qa24-1790645607381\",\n  \"creatorDid\": \"did:blocklet:arcblog\",\n  \"type\": \"article\",\n  \"contentId\": \"\",\n  \"priceAmount\": \"1.50\",\n  \"priceAsset\": \"USDC\",\n  \"visibility\": \"public\",\n  \"settlementPolicy\": \"active\",\n  \"periodDays\": \"0\",\n  \"createdAt\": \"2026-09-29T01:33:34.603Z\",\n  \"updatedAt\": \"2026-09-29T01:33:34.603Z\"\n}",
+      "literalHits": 0,
+      "fieldCount": 11,
+      "fields": {
+        "id": "qa24-1790645607381",
+        "creatorDid": "did:blocklet:arcblog",
+        "type": "article",
+        "contentId": "",
+        "priceAmount": "1.50",
+        "priceAsset": "USDC",
+        "visibility": "public",
+        "settlementPolicy": "active",
+        "periodDays": "0",
+        "createdAt": "2026-09-29T01:33:34.603Z",
+        "updatedAt": "2026-09-29T01:33:34.603Z"
+      },
+      "metaVersion": "1790645614610.1897-157493779-326"
+    },
+    "w2": {
+      "before": {
+        "id": "qa24-1790645607381",
+        "creatorDid": "did:blocklet:arcblog",
+        "type": "article",
+        "contentId": "",
+        "priceAmount": "1.50",
+        "priceAsset": "USDC",
+        "visibility": "public",
+        "settlementPolicy": "active",
+        "periodDays": "0",
+        "createdAt": "2026-09-29T01:33:34.603Z",
+        "updatedAt": "2026-09-29T01:33:34.603Z"
+      },
+      "beforeVersion": "1790645614610.1897-157493779-326",
+      "ordersCountBefore": 66,
+      "ordersNamesBefore": [
+        "econ-test-fc-order-1790621430746.json",
+        "econ-test-fc-order-1790621977307.json",
+        "econ-test-fc-order-1790622723993.json",
+        "econ-test-fc-order-1790627726629.json",
+        "econ-test-fc-order-1790628862763.json",
+        "econ-test-fc-order-1790629475989.json",
+        "econ-test-order-1790621421633.json",
+        "econ-test-order-1790621968235.json",
+        "econ-test-order-1790622714245.json",
+        "econ-test-order-1790627717600.json",
+        "econ-test-order-1790628853393.json",
+        "econ-test-order-1790629466713.json",
+        "econ-test-paid-order-1790621440546.json",
+        "econ-test-paid-order-1790621987036.json",
+        "econ-test-paid-order-1790622734493.json",
+        "econ-test-paid-order-1790627736419.json",
+        "econ-test-paid-order-1790628872909.json",
+        "econ-test-paid-order-1790629485923.json",
+        "econ-test-rf-order-1790621456673.json",
+        "econ-test-rf-order-1790622006111.json",
+        "econ-test-rf-order-1790622757396.json",
+        "econ-test-rf-order-1790627761790.json",
+        "econ-test-rf-order-1790628901693.json",
+        "econ-test-rf-order-1790629517754.json",
+        "econ-test-rn-order-1790621471844.json",
+        "econ-test-rn-order-1790622024225.json",
+        "econ-test-rn-order-1790622779072.json",
+        "econ-test-rn-order-1790627786105.json",
+        "econ-test-rn-order-1790628929431.json",
+        "econ-test-rn-order-1790629548624.json",
+        "econ-test-sub-order-1790621474408.json",
+        "econ-test-sub-order-1790622026779.json",
+        "econ-test-sub-order-1790622781636.json",
+        "econ-test-sub-order-1790627788728.json",
+        "econ-test-sub-order-1790628932026.json",
+        "econ-test-sub-order-1790629551217.json",
+        "econ-test-sub-order2-1790621474408.json",
+        "econ-test-sub-order2-1790622026779.json",
+        "econ-test-sub-order2-1790622781636.json",
+        "econ-test-sub-order2-1790627788728.json",
+        "econ-test-sub-order2-1790628932026.json",
+        "econ-test-sub-order2-1790629551217.json",
+        "econ-test-tip-1790621433662.json",
+        "econ-test-tip-1790621980160.json",
+        "econ-test-tip-1790622727063.json",
+        "econ-test-tip-1790627729510.json",
+        "econ-test-tip-1790628865771.json",
+        "econ-test-tip-1790629478898.json",
+        "econ-test-type-order-1790621501147.json",
+        "econ-test-type-order-1790622072420.json",
+        "econ-test-type-order-1790622841580.json",
+        "econ-test-type-order-1790627861081.json",
+        "econ-test-type-order-1790629016802.json",
+        "econ-test-type-order-1790629647845.json",
+        "ledger-order-1790621445652.json",
+        "ledger-order-1790621995166.json",
+        "ledger-order-1790622746053.json",
+        "ledger-order-1790627750761.json",
+        "ledger-order-1790628890558.json",
+        "ledger-order-1790629506603.json",
+        "p1-verify-order-1790621934038.json",
+        "p1-verify-order-1790622125070.json",
+        "p1-verify-order-1790622910831.json",
+        "p1-verify-order-1790627944106.json",
+        "p1-verify-order-1790629114709.json",
+        "p1-verify-order-1790629759627.json"
+      ],
+      "fill": "{\"id\":\"qa24-1790645607381\",\"price\":\"2.50\"}",
+      "click": "clicked:Save price",
+      "invalid": "[]",
+      "after": {
+        "id": "qa24-1790645607381",
+        "creatorDid": "did:blocklet:arcblog",
+        "type": "article",
+        "contentId": "",
+        "priceAmount": "2.50",
+        "priceAsset": "USDC",
+        "visibility": "public",
+        "settlementPolicy": "active",
+        "periodDays": "0",
+        "createdAt": "2026-09-29T01:33:34.603Z",
+        "updatedAt": "2026-09-29T01:33:44.023Z"
+      },
+      "afterVersion": "1790645624031.0918-157493779-281",
+      "ordersCountAfter": 66,
+      "diff": [
+        {
+          "key": "contentId",
+          "before": "",
+          "after": "",
+          "same": true
+        },
+        {
+          "key": "createdAt",
+          "before": "2026-09-29T01:33:34.603Z",
+          "after": "2026-09-29T01:33:34.603Z",
+          "same": true
+        },
+        {
+          "key": "creatorDid",
+          "before": "did:blocklet:arcblog",
+          "after": "did:blocklet:arcblog",
+          "same": true
+        },
+        {
+          "key": "id",
+          "before": "qa24-1790645607381",
+          "after": "qa24-1790645607381",
+          "same": true
+        },
+        {
+          "key": "periodDays",
+          "before": "0",
+          "after": "0",
+          "same": true
+        },
+        {
+          "key": "priceAmount",
+          "before": "1.50",
+          "after": "2.50",
+          "same": false
+        },
+        {
+          "key": "priceAsset",
+          "before": "USDC",
+          "after": "USDC",
+          "same": true
+        },
+        {
+          "key": "settlementPolicy",
+          "before": "active",
+          "after": "active",
+          "same": true
+        },
+        {
+          "key": "type",
+          "before": "article",
+          "after": "article",
+          "same": true
+        },
+        {
+          "key": "updatedAt",
+          "before": "2026-09-29T01:33:34.603Z",
+          "after": "2026-09-29T01:33:44.023Z",
+          "same": false
+        },
+        {
+          "key": "visibility",
+          "before": "public",
+          "after": "public",
+          "same": true
+        }
+      ],
+      "changedKeys": [
+        "priceAmount",
+        "updatedAt"
+      ]
+    },
+    "w3": [
+      {
+        "step": "find-row",
+        "rowPage": 3
+      },
+      {
+        "step": "delist-click",
+        "v": "clicked-row:Delist"
+      },
+      {
+        "step": "delist-confirm",
+        "v": "{\"dialogOpen\":true,\"text\":\"Take this product offline?\\nSets visibility to private. Existing orders are untouched (a price change or a delisting never rewrites a settled order).\\nCancel\\nDelist\",\"buttons\":[\"Cancel\",\"Delist\"],\"confirmLabel\":\"Delist\",\"dialogGone\":true}"
+      },
+      {
+        "step": "after-delist",
+        "visibility": "private",
+        "version": "1790645644880.0798-157493779-282",
+        "diff": [
+          "visibility",
+          "updatedAt"
+        ]
+      },
+      {
+        "step": "publish-click",
+        "v": "clicked-row:Publish"
+      },
+      {
+        "step": "publish-confirm",
+        "v": "{\"dialogOpen\":true,\"text\":\"Publish this product?\\nSets visibility to public. No other field of the record is touched.\\nCancel\\nPublish\",\"buttons\":[\"Cancel\",\"Publish\"],\"confirmLabel\":\"Publish\",\"dialogGone\":true}"
+      },
+      {
+        "step": "after-publish",
+        "visibility": "public",
+        "version": "1790645652500.5269-157493779-281",
+        "diff": [
+          "visibility",
+          "updatedAt"
+        ]
+      },
+      {
+        "step": "list-rerender",
+        "rowText": "\"qa24-1790645607381\\nPrice\\n2.50 USDC\\ntype\\narticle\\nvisibility\\npublic\\njust now\\nPublish\\nDelist\""
+      }
+    ],
+    "neg": {
+      "beforeCount": 55,
+      "activeVersionBefore": "1790161669932.8792-155467735-189",
+      "n1": {
+        "fill": "{\"id\":\"qa24-bad-1790645607381\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"article\",\"content\":\"\",\"price\":\"abc\",\"asset\":\"USDC\",\"visibility\":\"public\",\"policy\":\"active\",\"period\":\"0\"}",
+        "click": "clicked:Create product",
+        "invalid": "[{\"name\":\"ePrice\",\"value\":\"abc\",\"text\":null}]",
+        "read": {
+          "raw": "NOT_FOUND exec Path not found: /app/arcblog/economy/products/qa24-bad-1790645607381.json"
+        },
+        "countAfter": 55
+      },
+      "n2": {
+        "fill": "{\"id\":\"\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"article\",\"content\":\"\",\"price\":\"1.00\",\"asset\":\"USDC\",\"visibility\":\"public\",\"policy\":\"active\",\"period\":\"0\"}",
+        "click": "clicked:Create product",
+        "invalid": "[{\"name\":\"ePid\",\"value\":\"\",\"text\":null}]",
+        "countAfter": 55
+      },
+      "n3": {
+        "fill": "{\"id\":\"qa24-hidden-1790645607381\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"article\",\"content\":\"\",\"price\":\"1.00\",\"asset\":\"USDC\",\"visibility\":\"\",\"policy\":\"active\",\"period\":\"0\"}",
+        "selectValueAfterSet": "",
+        "click": "clicked:Connecting...",
+        "invalid": "[]",
+        "read": {
+          "value": {
+            "id": "qa24-hidden-1790645607381.json",
+            "path": "/instance/app/arcblog/economy/products/qa24-hidden-1790645607381.json",
+            "createdAt": "2026-09-29T01:34:29.948Z",
+            "updatedAt": "2026-09-29T01:34:29.948Z",
+            "content": "{\n  \"id\": \"qa24-hidden-1790645607381\",\n  \"creatorDid\": \"did:blocklet:arcblog\",\n  \"type\": \"article\",\n  \"contentId\": \"\",\n  \"priceAmount\": \"1.00\",\n  \"priceAsset\": \"USDC\",\n  \"visibility\": \"\",\n  \"settlementPolicy\": \"active\",\n  \"periodDays\": \"0\",\n  \"createdAt\": \"2026-09-29T01:34:29.946Z\",\n  \"updatedAt\": \"2026-09-29T01:34:29.946Z\"\n}",
+            "meta": {
+              "size": 327,
+              "version": "1790645669948.8098-157493915-327",
+              "mimeType": "application/json"
+            },
+            "actions": []
+          },
+          "content": {
+            "id": "qa24-hidden-1790645607381",
+            "creatorDid": "did:blocklet:arcblog",
+            "type": "article",
+            "contentId": "",
+            "priceAmount": "1.00",
+            "priceAsset": "USDC",
+            "visibility": "",
+            "settlementPolicy": "active",
+            "periodDays": "0",
+            "createdAt": "2026-09-29T01:34:29.946Z",
+            "updatedAt": "2026-09-29T01:34:29.946Z"
+          }
+        },
+        "validator": {
+          "status": 0,
+          "out": "{\"issues\":[\"visibility must be public or private\"]}"
+        },
+        "countAfter": 56
+      },
+      "n4": {
+        "dupId": "qa24-1790645607381",
+        "fill": "{\"id\":\"qa24-1790645607381\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"article\",\"content\":\"\",\"price\":\"9.99\",\"asset\":\"USDC\",\"visibility\":\"public\",\"policy\":\"active\",\"period\":\"0\"}",
+        "click": "clicked:Create product",
+        "invalid": "[]",
+        "dialogOrToast": "{\"dialog\":false,\"toast\":[\"Path already exists: /app/arcblog/economy/products/qa24-1790645607381.json\\n✕\",\"Path already exists: /app/arcblog/economy/products/qa24-1790645607381.json\\n✕\",\"\"]}",
+        "metaBefore": {
+          "size": 281,
+          "version": "1790645652500.5269-157493779-281",
+          "mimeType": "application/json"
+        },
+        "metaAfter": {
+          "size": 281,
+          "version": "1790645652500.5269-157493779-281",
+          "mimeType": "application/json"
+        },
+        "versionSame": true,
+        "contentAfter": {
+          "id": "qa24-1790645607381",
+          "creatorDid": "did:blocklet:arcblog",
+          "type": "article",
+          "contentId": "",
+          "priceAmount": "2.50",
+          "priceAsset": "USDC",
+          "visibility": "public",
+          "settlementPolicy": "active",
+          "periodDays": "0",
+          "createdAt": "2026-09-29T01:33:34.603Z",
+          "updatedAt": "2026-09-29T01:34:12.493Z"
+        }
+      },
+      "countFinal": 56,
+      "n5": {
+        "fill": "{\"id\":\"qa24-sub-1790645607381\",\"creator\":\"did:blocklet:arcblog\",\"type\":\"subscription\",\"content\":\"\",\"price\":\"1.00\",\"asset\":\"USDC\",\"visibility\":\"public\",\"policy\":\"active\",\"period\":\"0\"}",
+        "selectValues": "{\"type\":\"subscription\",\"period\":\"0\",\"required\":[{\"name\":\"ePid\",\"required\":true},{\"name\":\"eCreator\",\"required\":true},{\"name\":\"ePrice\",\"required\":true},{\"name\":\"eAsset\",\"required\":true},{\"name\":\"ePolicy\",\"required\":true},{\"name\":\"eType\",\"required\":false},{\"name\":\"eVisibility\",\"required\":false},{\"name\":\"ePeriod\",\"required\":false}]}",
+        "click": "clicked:Create product",
+        "invalid": "[]",
+        "read": {
+          "value": {
+            "id": "qa24-sub-1790645607381.json",
+            "path": "/instance/app/arcblog/economy/products/qa24-sub-1790645607381.json",
+            "createdAt": "2026-09-29T01:34:46.614Z",
+            "updatedAt": "2026-09-29T01:34:46.615Z",
+            "content": "{\n  \"id\": \"qa24-sub-1790645607381\",\n  \"creatorDid\": \"did:blocklet:arcblog\",\n  \"type\": \"subscription\",\n  \"contentId\": \"\",\n  \"priceAmount\": \"1.00\",\n  \"priceAsset\": \"USDC\",\n  \"visibility\": \"public\",\n  \"settlementPolicy\": \"active\",\n  \"periodDays\": \"0\",\n  \"createdAt\": \"2026-09-29T01:34:46.607Z\",\n  \"updatedAt\": \"2026-09-29T01:34:46.607Z\"\n}",
+            "meta": {
+              "size": 335,
+              "version": "1790645686615.143-157493944-335",
+              "mimeType": "application/json"
+            },
+            "actions": []
+          },
+          "content": {
+            "id": "qa24-sub-1790645607381",
+            "creatorDid": "did:blocklet:arcblog",
+            "type": "subscription",
+            "contentId": "",
+            "priceAmount": "1.00",
+            "priceAsset": "USDC",
+            "visibility": "public",
+            "settlementPolicy": "active",
+            "periodDays": "0",
+            "createdAt": "2026-09-29T01:34:46.607Z",
+            "updatedAt": "2026-09-29T01:34:46.607Z"
+          }
+        },
+        "validator": {
+          "status": 0,
+          "out": "{\"issues\":[\"periodDays must be a positive number for a subscription\"]}"
+        },
+        "countAfter": 57
+      },
+      "activeVersionAfter": "1790161669932.8792-155467735-189",
+      "activeVersionSame": true
+    },
+    "pol": {
+      "activeBefore": {
+        "version": "v1",
+        "creator": 0.8,
+        "hub": 0.15,
+        "protocol": 0.05,
+        "paymentAdapter": "none",
+        "createdAt": "2026-09-23T11:07:49.535Z",
+        "updatedAt": "2026-09-23T11:07:49.535Z"
+      },
+      "versionBefore": "1790161669932.8792-155467735-189",
+      "policiesCountBefore": 1,
+      "policiesBefore": [
+        "active.json"
+      ],
+      "dom": "{\"adapter\":{\"value\":\"none\",\"required\":true,\"options\":[\"none\",\"manual\"]},\"presets\":[\"0.80 / 0.15 / 0.05\",\"0.90 / 0.05 / 0.05\",\"0.95 / 0.03 / 0.02\",\"0.70 / 0.25 / 0.05\",\"1.00 / 0.00 / 0.00\"],\"addressInputs\":[]}",
+      "presetClick": "clicked:0.90 / 0.05 / 0.05",
+      "presetConfirm": "{\"dialogOpen\":true,\"text\":\"Apply this split?\\nWrites creator / hub / protocol on economy/policies/active.json with mode=tree-merge (version, createdAt and paymentAdapter are left untouched). Historical policy records are never deleted.\\nCancel\\n0.90 / 0.05 / 0.05\",\"buttons\":[\"Cancel\",\"0.90 / 0.05 / 0.05\"],\"confirmLabel\":\"0.90 / 0.05 / 0.05\",\"dialogGone\":true}",
+      "activeAfterPreset": {
+        "version": "v1",
+        "creator": 0.8,
+        "hub": 0.15,
+        "protocol": 0.05,
+        "paymentAdapter": "none",
+        "createdAt": "2026-09-23T11:07:49.535Z",
+        "updatedAt": "2026-09-23T11:07:49.535Z"
+      },
+      "versionAfterPreset": "1790161669932.8792-155467735-189",
+      "presetNoChange": true,
+      "invalidAfterPreset": "[]",
+      "adapterSet": "manual",
+      "adapterClick": "clicked:Connecting...",
+      "activeAfterAdapter": {
+        "version": "v1",
+        "creator": 0.8,
+        "hub": 0.15,
+        "protocol": 0.05,
+        "paymentAdapter": "none",
+        "createdAt": "2026-09-23T11:07:49.535Z",
+        "updatedAt": "2026-09-23T11:07:49.535Z"
+      },
+      "versionAfterAdapter": "1790161669932.8792-155467735-189",
+      "policiesCountAfter": 1
+    },
+    "dash": {
+      "health": {
+        "status": "ok",
+        "version": "0.3.7",
+        "roles": [
+          "basic"
+        ],
+        "capabilities": [
+          "blog.read",
+          "blog.write",
+          "blog.publish"
+        ],
+        "did": "did:blocklet:arcblog",
+        "checkedAt": "2026-09-28T21:12:21.632Z",
+        "hubs": {
+          "total": 5,
+          "fresh": 1,
+          "offline": 4
+        }
+      },
+      "discovery": {
+        "protocol": "arcblog",
+        "version": "1",
+        "node": {
+          "did": "did:blocklet:arcblog",
+          "name": "ArcBlog",
+          "endpoint": ""
+        },
+        "roles": [
+          "basic"
+        ],
+        "capabilities": [
+          "blog.read",
+          "blog.write",
+          "blog.publish"
+        ],
+        "endpoints": {
+          "profile": "",
+          "posts": "",
+          "health": ""
+        },
+        "transport": [
+          "afs",
+          "mcp"
+        ],
+        "afs": {
+          "profile": "/instance/app/arcblog/node/profile.json",
+          "identity": "/instance/app/arcblog/node/identity.json",
+          "health": "/instance/app/arcblog/node/health.json",
+          "discovery": "/instance/app/arcblog/node/discovery.json",
+          "posts": "/instance/app/arcblog/posts",
+          "categories": "/instance/app/arcblog/categories",
+          "hubRegistrations": "/instance/app/arcblog/hub/registrations"
+        },
+        "generatedAt": "2026-09-28T21:12:20.495Z",
+        "blockletVersion": "0.3.7"
+      },
+      "registrations": [
+        "31caa15539047182.json",
+        "42b02720d0b6bb68.json",
+        "6d86a84e377ad736.json",
+        "8133a1ea682714e5.json",
+        "e8f453792619a8f9.json"
+      ],
+      "registrationsCount": 5,
+      "dom": "{\"seg\":\"Network overview\\nStudio side: how many Hubs this node has registered and how fresh they are. The per-Hub rows (sync state, freshness, last error) live on Hub, one click away.\\nHubs registered\\n5\\nHubs fresh\\n1\\nHubs offline\\n4\\nNode DID\\ndid:blocklet:arcblog\\nEndpoint\\n—\\nRoles\\nbasic\\nTransport\\nafs,mcp\\nA dash (—) means the record does not carry the value, the record was never published, or this binding has not resolved yet — a cold first load does not resolve propBind (BUG-036/062, docs/arc-contracts.md §28.1); switching pages or reloading fills the values in. Nothing is rendered as 0 and no green light is invented.\\nSource: node/health.json (hubs aggregate) + node/discovery.json (DID / endpoint / transport), both guest-readable and read verbatim.\\nAnomaly alerts\\nOne click to the page that owns the anomaly. This bar counts nothing: the platform's expression language has no length or comparison primitive (docs/arc-contracts.md §21), so a number here would have to be invented.\\nHub sync\\nSettlement / ledger\\nAgent grants\\nThe only pre-computed aggregate this instance publishes is node/health.json.hubs (total / fresh / offline) — it is shown verbatim in the network card above. Per-source failure counts are not derivable on this page.\\n\",\"linkHub\":true,\"linkLedger\":true,\"linkAgents\":true}",
+      "clickHub": "clicked:Hub sync",
+      "afterHub": "{\"url\":\"/?page=hub\",\"active\":1,\"ariaCurrent\":1,\"sessionFailed\":false,\"docScrollW\":0,\"inputs\":[{\"name\":\"ePath\",\"type\":\"hidden\",\"value\":\"/instance/app/arcblog/hub/registrations/31caa15539047182.json\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"ePath\",\"type\":\"hidden\",\"value\":\"/instance/app/arcblog/hub/registrations/42b02720d0b6bb68.json\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"ePath\",\"type\":\"hidden\",\"value\":\"/instance/app/arcblog/hub/registrations/6d86a84e377ad736.json\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"ePath\",\"type\":\"hidden\",\"value\":\"/instance/app/arcblog/hub/registrations/8133a1ea682714e5.json\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"ePath\",\"type\":\"hidden\",\"value\":\"/instance/app/arcblog/hub/registrations/e8f453792619a8f9.json\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"hubDid\",\"type\":\"text\",\"value\":\"\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"hubEndpoint\",\"type\":\"text\",\"value\":\"\",\"required\":false,\"invalid\":null,\"options\":null},{\"name\":\"hubUpdate\",\"type\":\"select-one\",\"value\":\"\",\"required\":false,\"invalid\":null,\"options\":[\"\",\"yes\"]}]}"
+    },
+    "audit": {
+      "dashboard": {
+        "url": "/?page=dashboard",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "10",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "25",
+              "50",
+              "100"
+            ]
+          }
+        ]
+      },
+      "posts": {
+        "url": "/?page=posts",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "Hello ArcBlog",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "hello-arcblog",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "A tour of the node: DID-native authorship, the draft→published lifecycle, the economy, the network, and the agent surface.",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "# Hello ArcBlog\n\nArcBlog is a DID-native publishing space: a **Blocklet** that runs on the Arc\nstack, keeps every story in the Arc File System, and binds authorship to a wallet\ninstead of a password. This first post is a tour of what the node can do.\n\n## What it is\n\nArcBlog is not a hosted blog service and not a static site generator. It is a\nself-contained node you run yourself:\n\n- **Content** lives as Markdown-first records in AFS, one JSON record per story.\n- **Identity** comes from DID Wallet. There is no separate account database —\n  the wallet *is* the account.\n- **The public site** is rendered from those records; nothing is duplicated into\n  a CMS database.\n\nBecause the records are the product, everything else — the editor, the feed, the\nRSS file, the agent surface — is a view over the same data.\n\n## The content model\n\nOne schema, two directories, and a deliberate lifecycle:\n\n| Stage | Where it lives | Who can read it |\n|---|---|---|\n| Draft | `drafts/` | Administrators only |\n| Published | `posts/` | Everyone |\n| Archived | `drafts/` | Administrators only |\n| Deleted (soft) | `drafts/` | Administrators only |\n\n`draft → published → archived → published` are all reversible; deleting is a soft\ndelete that keeps the record. The split is not cosmetic: the public directory is\nguest-readable and the private one is not, so an unpublished draft can never leak\nthrough a URL.\n\n## Authorship you can verify\n\nEvery published story carries an `authorDid`. When you write from the studio, the\nrecord is stamped with the wallet that signed in (`$session.did`); when you write\nfrom the CLI you pass `--author-did` explicitly. Run\n\n```bash\nnode scripts/arcblog-doctor.mjs\n```\n\nto audit the node: resource layout, identity records, taxonomy, and any story\nwhose authorship is missing.\n\n## The public surface\n\n`/posts` is the feed, `/posts/{slug}` is the reader, `/author` describes who\npublishes here, and `/p/rss.xml` is the feed for readers who prefer a reader.\nCategories and tags are data, not hard-coded strings — the taxonomy is stored in\nAFS and the publish validator checks against it.\n\n## An economy, not just a page\n\nThe node ships with a small, honest economy:\n\n- a **versioned split policy** (creator / hub / protocol) that always adds up;\n- **tips** for a story you liked, and **paid reading** for one you want to sell;\n- an **append-only ledger** with deterministic entry ids, and access grants that\n  are written only after a payment is verified;\n- **signed discovery proofs**: a hub earns a share only when it can prove it sent\n  the reader, verifiable offline against its public key.\n\nPayments and payouts are separate steps on purpose. Nothing settles on an\nunverified payment, and no hub is paid on an unverified claim.\n\n## A network of nodes\n\nA node is both a **Studio** (where you publish) and a **Hub** (where you curate).\nNodes publish a discovery document, register the hubs they work with, and track\nsync state — all as AFS records, so the same data is reachable from the CLI, the\nadmin console, and an agent.\n\n## Agents are first-class readers\n\nThe runtime already exposes an agent surface (MCP, AFS RPC). ArcBlog declares what\nan agent may touch instead of inventing a protocol: a read-only agent over\npublished stories, taxonomy, the node profile and the public economy data — with\nthe write tools closed by default.\n\n## Run it yourself\n\n```bash\nnode scripts/arcblog-lifecycle.mjs publish --title \"My story\" \\\n  --author-did did:key:z... --body-file story.md --category technology\n\nnode scripts/arcblog-economy.mjs policy show\nnode scripts/arcblog-network.mjs health\nnode scripts/arcblog-agent.mjs check\n```\n\nThat is the whole idea: your words, your identity, your node — and every layer\nabove it is just a view.\n",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "https://picsum.photos/seed/arcblog-overview/1600/900",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"identity\",\n  \"product\",\n  \"guide\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "Hello ArcBlog — a DID-native publishing node",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "What ArcBlog is: Markdown-first stories in the Arc File System, wallet-bound authorship, a versioned economy, and an agent-ready surface.",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "https://picsum.photos/seed/arcblog-overview/1200/630",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zDemo",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "Demo",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eStatus",
+            "type": "hidden",
+            "value": "published",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-18T08:02:09.589Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-18T08:02:09.589Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "paid-test-1790472790603",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "paid-test-1790472790603",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eStatus",
+            "type": "hidden",
+            "value": "published",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-27T01:33:13.351Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-27T01:33:13.351Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "sign-test-1790502598928",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "sign-test-1790502598928",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "signed body",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zSigner",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eStatus",
+            "type": "hidden",
+            "value": "published",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-27T09:50:01.325Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-27T09:50:01.325Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-post-1790606092171",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-post-1790606092171",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "categorized",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:34:55.883Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-post-1790608402573",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-post-1790608402573",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "categorized",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:13:25.437Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tag-1790605733599",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tag-1790605733599",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagtest_new\",\n  \"other\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:28:55.754Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tag-1790608081011",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tag-1790608081011",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagtest_new\",\n  \"other\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:08:02.561Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-invalid-1790606026604",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-invalid-1790606026604",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_keep_1790606026604\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:33:48.809Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-invalid-1790608342678",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-invalid-1790608342678",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_keep_1790608342678\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:12:24.339Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-multi-1790605802728",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-multi-1790605802728",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"multislot_c_1790605802728\",\n  \"multislot_d_1790605802728\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:30:05.057Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-multi-1790608142213",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-multi-1790608142213",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"multislot_c_1790608142213\",\n  \"multislot_d_1790608142213\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:09:03.782Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-noop-1790605975556",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-noop-1790605975556",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_keep_1790605975556\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:32:57.786Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-noop-1790608292890",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-noop-1790608292890",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_keep_1790608292890\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:11:34.447Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-normalize-1790606038057",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-normalize-1790606038057",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tag_001_good_1790606038057\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:34:00.151Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-normalize-1790608351600",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-normalize-1790608351600",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tag_001_good_1790608351600\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:12:33.228Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-proj-1790605872095",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-proj-1790605872095",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagproj_1790605872095\",\n  \"tagproj_keep\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:31:14.617Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-proj-1790608201793",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-proj-1790608201793",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagproj_1790608201793\",\n  \"tagproj_keep\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:10:03.372Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-queue-1790605921064",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-queue-1790605921064",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_new_1790605921064\",\n  \"tagqueue_keep_1790605921064\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T14:32:03.397Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "cat-test-tags-queue-1790608245140",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "cat-test-tags-queue-1790608245140",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "tagged",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[\n  \"tagqueue_new_1790608245140\",\n  \"tagqueue_keep_1790608245140\"\n]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T15:10:46.698Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "hub-idx-test-1790621554848",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "hub-idx-test-1790621554848",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "indexable body",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-28T18:52:36.728Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "2026-09-28T18:53:18.545Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T18:52:36.728Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "hub-idx-test-1790622558283",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "hub-idx-test-1790622558283",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "indexable body",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-28T19:09:20.185Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "2026-09-28T19:10:03.450Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T19:09:20.185Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "hub-idx-test-1790629956242",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "hub-idx-test-1790629956242",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "indexable body",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-28T21:12:38.133Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "2026-09-28T21:13:24.334Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-28T21:12:38.133Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "sign-keys-1790417127451",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "sign-keys-1790417127451",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "key rotation fixture",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCoverImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTags",
+            "type": "hidden",
+            "value": "[]",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCategory",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSeoDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgDescription",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eOgImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zKeyListTest1790417127451",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorName",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePublishedAt",
+            "type": "hidden",
+            "value": "2026-09-26T10:05:29.782Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eArchivedAt",
+            "type": "hidden",
+            "value": "2026-09-26T10:05:35.337Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-26T10:05:29.782Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          }
+        ]
+      },
+      "pages": {
+        "url": "/?page=pages",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "slug",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "title",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "summary",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSlug",
+            "type": "hidden",
+            "value": "page-test-1790504571866",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eTitle",
+            "type": "hidden",
+            "value": "Test Page",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eSummary",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eBody",
+            "type": "hidden",
+            "value": "hello page",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAuthorDid",
+            "type": "hidden",
+            "value": "did:key:zTest",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreatedAt",
+            "type": "hidden",
+            "value": "2026-09-27T10:22:52.576Z",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "compose": {
+        "url": "/?page=compose",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "title",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "slug",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "category",
+            "type": "select-one",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "technology",
+              "design",
+              "life"
+            ]
+          },
+          {
+            "name": "tags",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "summary",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "coverImage",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "seoTitle",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "seoDescription",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ogTitle",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ogDescription",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ogImage",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "heroes": {
+        "url": "/?page=heroes",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "heroId",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "heroTitle",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "heroDesc",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "heroImage",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "heroUrl",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "heroSort",
+            "type": "text",
+            "value": "0",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "qaTitle",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "qaDesc",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "qaImage",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "qaSlug",
+            "type": "hidden",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "categories": {
+        "url": "/?page=categories",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "cTarget",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "cFrom",
+            "type": "hidden",
+            "value": "design",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "cTarget",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "cFrom",
+            "type": "hidden",
+            "value": "life",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "cTarget",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "cFrom",
+            "type": "hidden",
+            "value": "technology",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "catSlug",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "catName",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "catDesc",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "tags": {
+        "url": "/?page=tags",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          },
+          {
+            "name": "tagFrom",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "tagTo",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "seo": {
+        "url": "/?page=seo",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "name",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ogImage",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "endpoint",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "feeds": {
+        "url": "/?page=feeds",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": []
+      },
+      "appearance": {
+        "url": "/?page=appearance",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "natural",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "neutral",
+              "natural",
+              "warm",
+              "vivid",
+              "electric"
+            ]
+          },
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "system",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "system",
+              "light",
+              "dark"
+            ]
+          },
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "editorial",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "clean",
+              "editorial",
+              "mono",
+              "bold"
+            ]
+          }
+        ]
+      },
+      "operations": {
+        "url": "/?page=operations",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": []
+      },
+      "hub": {
+        "url": "/?page=hub",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/hub/registrations/31caa15539047182.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/hub/registrations/42b02720d0b6bb68.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/hub/registrations/6d86a84e377ad736.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/hub/registrations/8133a1ea682714e5.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/hub/registrations/e8f453792619a8f9.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "hubDid",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "hubEndpoint",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "hubUpdate",
+            "type": "select-one",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "",
+              "yes"
+            ]
+          }
+        ]
+      },
+      "media": {
+        "url": "/?page=media",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "orphanIds",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "agents": {
+        "url": "/?page=agents",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": []
+      },
+      "orders": {
+        "url": "/?page=orders",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          }
+        ]
+      },
+      "policy": {
+        "url": "/?page=policy",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "eAdapter",
+            "type": "select-one",
+            "value": "none",
+            "required": true,
+            "invalid": null,
+            "options": [
+              "none",
+              "manual"
+            ]
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790621430746.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790621977307.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790622723993.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790627726629.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790628862763.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-fc-product-1790629475989.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790621440546.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790621987036.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790622734493.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790627736419.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790628872909.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-paid-1790629485923.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790621421633.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790621968235.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790622714245.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790627717600.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790628853393.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-product-1790629466713.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-rf-product-1790621456673.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/economy/products/econ-test-rf-product-1790622006111.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          },
+          {
+            "name": "ePid",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eCreator",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eType",
+            "type": "select-one",
+            "value": "article",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "article",
+              "membership",
+              "digital",
+              "subscription"
+            ]
+          },
+          {
+            "name": "eContent",
+            "type": "text",
+            "value": "",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePrice",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eAsset",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eVisibility",
+            "type": "select-one",
+            "value": "public",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "public",
+              "private"
+            ]
+          },
+          {
+            "name": "ePolicy",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "ePeriod",
+            "type": "select-one",
+            "value": "0",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "0",
+              "7",
+              "30",
+              "90",
+              "365"
+            ]
+          },
+          {
+            "name": "eEditId",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eEditPrice",
+            "type": "text",
+            "value": "",
+            "required": true,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "access": {
+        "url": "/?page=access",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          }
+        ]
+      },
+      "ledger": {
+        "url": "/?page=ledger",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          },
+          {
+            "name": null,
+            "type": "select-one",
+            "value": "20",
+            "required": false,
+            "invalid": null,
+            "options": [
+              "10",
+              "20",
+              "25",
+              "50",
+              "100"
+            ]
+          }
+        ]
+      },
+      "factory": {
+        "url": "/?page=factory",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": []
+      },
+      "general": {
+        "url": "/?page=general",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": [
+          {
+            "name": "eValue",
+            "type": "text",
+            "value": "ArcBlog",
+            "required": true,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "eValue",
+            "type": "select-one",
+            "value": "en",
+            "required": true,
+            "invalid": null,
+            "options": [
+              "",
+              "en",
+              "zh"
+            ]
+          },
+          {
+            "name": "eValue",
+            "type": "select-one",
+            "value": "UTC",
+            "required": true,
+            "invalid": null,
+            "options": [
+              "",
+              "UTC",
+              "Asia/Shanghai",
+              "Asia/Tokyo",
+              "Asia/Singapore",
+              "Europe/London",
+              "Europe/Berlin",
+              "America/New_York",
+              "America/Los_Angeles"
+            ]
+          },
+          {
+            "name": "sPath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/config/switches/agent-access.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "sPath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/config/switches/comments.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          },
+          {
+            "name": "sPath",
+            "type": "hidden",
+            "value": "/instance/app/arcblog/config/switches/rss.json",
+            "required": false,
+            "invalid": null,
+            "options": null
+          }
+        ]
+      },
+      "diagnostics": {
+        "url": "/?page=diagnostics",
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docScrollW": 0,
+        "inputs": []
+      }
+    }
+  },
+  "browser": "Chrome/153.0.8010.54",
+  "adminCookieFound": true,
+  "cleanup": {
+    "qa24-1790645607381": {
+      "status": 0,
+      "out": "{\"path\":\"/instance/app/arcblog/economy/products/qa24-1790645607381.json\"}"
+    },
+    "qa24-bad-1790645607381": {
+      "status": 0,
+      "out": "NOT_FOUND exec Path not found: /app/arcblog/economy/products/qa24-bad-1790645607381.json"
+    },
+    "qa24-hidden-1790645607381": {
+      "status": 0,
+      "out": "{\"path\":\"/instance/app/arcblog/economy/products/qa24-hidden-1790645607381.json\"}"
+    },
+    "qa24-sub-1790645607381": {
+      "status": 0,
+      "out": "{\"path\":\"/instance/app/arcblog/economy/products/qa24-sub-1790645607381.json\"}"
+    },
+    "countAfter": 54
+  },
+  "targetsBefore": [
+    "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+    "worker:",
+    "worker:",
+    "worker:",
+    "worker:",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "page:http://arcblog.localhost:4939/?page=hub",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/"
+  ],
+  "openedClosed": [
+    {
+      "targetId": "03E0F8B5C0CB7F1B4D7871B460D25DB6",
+      "browserContextId": "EC898167E828B5CF72BEB8FE7FC2B3C1"
+    }
+  ],
+  "targetsAfter": [
+    "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+    "worker:",
+    "worker:",
+    "worker:",
+    "worker:",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "page:http://arcblog.localhost:4939/?page=hub",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/"
+  ],
+  "targetsAfterFiltered": []
+}

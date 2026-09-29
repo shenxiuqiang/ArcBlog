@@ -1,0 +1,9 @@
+$ sha256sum node.key .env.local  (AFTER build+scrub)
+2305e48729fe914aa9718832c2c77a0cccbecb9ba234daaa6bda198acd34195c  node.key
+98320672f04e9271fd94042f74df8605ba88befdb34e9719999f2700e7cf2bbb  .env.local
+$ stat -f '%N %m %Sm'
+node.key 1790497894 Sep 27 16:31:34 2026
+.env.local 1790497919 Sep 27 16:31:59 2026
+$ ls -la node.key .env.local
+-rw-------@ 1 shenxiang  staff  499  9月 27 16:31 .env.local
+-rw-------@ 1 shenxiang  staff  119  9月 27 16:31 node.key

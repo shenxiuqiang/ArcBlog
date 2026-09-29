@@ -1,0 +1,27 @@
+$ node scripts/arcblog-dist-secrets.mjs   # scrub the planted fakes
+{
+  "action": "scrub",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "dryRun": false,
+  "removed": [
+    ".env.local",
+    "node.key"
+  ],
+  "privateKeyRemoved": [],
+  "manifestRemoved": [],
+  "manifestFilesBefore": 1028,
+  "manifestFilesAfter": 1028
+}
+rc=0
+
+$ node scripts/arcblog-dist-secrets.mjs --check   # GREEN STATE
+{
+  "action": "check",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "ok": true,
+  "distExists": true,
+  "files": [],
+  "privateKeyFiles": [],
+  "manifestEntries": []
+}
+rc=0

@@ -1,17 +1,78 @@
 page policy {
   i18n {
+    account-cmd-init { en "Set the split from the CLI" zh "用 CLI 设置分成" }
+    account-cmd-show { en "Read the policy back" zh "读回策略" }
+    account-desc { en "Payout account: this platform has no AFS landing spot for an account address — world/settlement-policy.yaml declares no address field, so the console shows none and offers no input. A changed payout address therefore stays a CLI/operator step (spec §15.9 forbids typing an address into the UI)." zh "收款账户：本平台在 AFS 侧没有账户地址的落点——world/settlement-policy.yaml 未声明任何地址字段，因此本页不展示、也不提供输入。地址变更因此仍属 CLI/operator 步骤（spec §15.9 明文禁止在界面手填地址）。" }
+    account-no-input { en "There is no address <input> on this page, on purpose: no declared record field, no AFS landing spot." zh "本页刻意不提供地址 <input>：既无已声明的记录字段，也无 AFS 落点。" }
+    account-secret-refusal { en "This page never accepts or stores a mnemonic, private key or seed phrase. The node key stays on the node (never in a record, never in a page)." zh "本页绝不接受或存储助记词、私钥或助记种子。节点密钥只留在节点上（绝不进记录、绝不进页面）。" }
+    account-title { en "Payout account" zh "收款账户" }
     desc { en "The split policy and the product catalogue." zh "分成策略与商品目录。" }
+    down-confirm-msg { en "Sets visibility to private. Existing orders are untouched (a price change or a delisting never rewrites a settled order)." zh "把 visibility 置为 private。既有订单不受影响（改价或下架绝不重写已成交订单）。" }
+    down-confirm-title { en "Take this product offline?" zh "下架该商品？" }
+    edit-desc { en "Writes ONLY priceAmount on the record you name (mode tree-merge). Every other field is left byte-for-byte untouched; a product id that does not exist is refused with NOT_FOUND and zero change." zh "只写你指定记录上的 priceAmount（mode tree-merge）。其余字段逐字节不变；不存在的商品 id 会被拒绝（NOT_FOUND）且零改动。" }
+    edit-id { en "Product id" zh "商品 id" }
+    edit-note { en "The CLI is the authority for the whole record: node scripts/arcblog-economy.mjs product add --id <id> --update …" zh "整条记录的权威入口是 CLI：node scripts/arcblog-economy.mjs product add --id <id> --update …" }
+    edit-price { en "New priceAmount" zh "新的 priceAmount" }
+    edit-save { en "Save price" zh "保存价格" }
+    edit-title { en "Edit price" zh "编辑价格" }
     gate-desc { en "Sign in with DID Wallet to view the split policy and products." zh "使用 DID Wallet 登录后查看分成策略与商品。" }
     gate-title { en "Economy" zh "经济" }
+    k-adapter { en "paymentAdapter" zh "paymentAdapter" }
+    k-created { en "createdAt" zh "createdAt" }
+    k-creator { en "creator" zh "creator" }
+    k-hub { en "hub" zh "hub" }
+    k-protocol { en "protocol" zh "protocol" }
+    k-updated { en "updatedAt" zh "updatedAt" }
+    k-version { en "version" zh "version" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
+    new-asset { en "priceAsset" zh "priceAsset" }
+    new-content { en "contentId (optional)" zh "contentId（可选）" }
+    new-creator { en "creatorDid" zh "creatorDid" }
+    new-desc { en "Create is mode=create: the platform refuses a path that already exists, so re-submitting an existing id is rejected with zero change instead of overwriting the record." zh "新建使用 mode=create：平台会拒绝已存在的路径，因此对已存在 id 的重复提交会被拒绝且零改动，而不是覆盖记录。" }
+    new-id { en "id" zh "id" }
+    new-note { en "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy are shared by the two buttons below; type and visibility are required constrained selects, so an empty or out-of-vocabulary value cannot be submitted. A non-subscription product writes periodDays 0 — legal, because only a subscription needs a period; a subscription is created by its own button below, whose periodDays select carries positive values only. The CLI (product add) remains the typed authority." zh "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy 由下方两个按钮共用；type 与 visibility 是 required 的受控选择框，空值与词汇表外的取值都无法提交。非订阅商品写入 periodDays 0——这是合法的，因为只有订阅需要周期；订阅由下方独立按钮创建，其 periodDays 选择框只提供正数值。带类型的权威入口仍是 CLI（product add）。" }
+    new-period { en "periodDays" zh "periodDays" }
+    new-sub-note { en "This button writes type=subscription and reads periodDays from a required select of positive values only (7 / 30 / 90 / 365) — the page can therefore never submit subscription + periodDays 0. The other fields are the shared ones above; an empty forced select value is refused by the platform (required) with zero change." zh "该按钮写入 type=subscription，periodDays 来自只含正数值的 required 选择框（7 / 30 / 90 / 365）——本页因此永远无法提交 subscription + periodDays 0。其余字段使用上方共用值；被强制置空的选择框会被平台按 required 拒绝且零改动。" }
+    new-sub-save { en "Create subscription" zh "新建订阅" }
+    new-sub-title { en "New subscription" zh "新建订阅" }
+    new-policy { en "settlementPolicy" zh "settlementPolicy" }
+    new-price { en "priceAmount" zh "priceAmount" }
+    new-save { en "Create product" zh "新建商品" }
+    new-title { en "New product" zh "新建商品" }
+    new-type { en "type" zh "type" }
+    new-visibility { en "visibility" zh "visibility" }
     policy { en "Settlement policy" zh "结算策略" }
     policy-adapter { en "Payment adapter" zh "支付适配器" }
+    policy-adapter-edit { en "Payment adapter" zh "支付适配器" }
+    policy-adapter-note { en "Adapter options are generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs — the same definition policy init --payment-adapter accepts (console-nav --check fails on drift)." zh "适配器选项由 scripts/lib/economy.mjs 的 PAYMENT_ADAPTERS 生成——与 policy init --payment-adapter 接受的定义同源（漂移会被 console-nav --check 拦住）。" }
+    policy-adapter-save { en "Save adapter" zh "保存适配器" }
     policy-empty { en "How to set it: node scripts/arcblog-economy.mjs policy init" zh "如何设置：node scripts/arcblog-economy.mjs policy init" }
+    policy-protocol-note { en "Protocol Fee transparency (spec §49): this record has no protocolRecipient field, so the console shows the protocol share only — there is no recipient to display, and none is invented." zh "Protocol Fee 公开（spec §49）：本记录没有 protocolRecipient 字段，因此本页只展示 protocol 比例——没有可展示的 recipient，也不编造。" }
     policy-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
+    policy-sum-note { en "Every preset above is a complete triple that sums to exactly 1, so an invalid split cannot be written from this page. Arbitrary values stay in the CLI, where validateSettlementPolicy enforces the sum (policy init --update …)." zh "上方每个预设都是和为 1 的完整三元组，因此本页无法写出非法分成。任意取值仍走 CLI，由 validateSettlementPolicy 强制校验（policy init --update …）。" }
+    preset-1 { en "0.80 / 0.15 / 0.05" zh "0.80 / 0.15 / 0.05" }
+    preset-2 { en "0.90 / 0.05 / 0.05" zh "0.90 / 0.05 / 0.05" }
+    preset-3 { en "0.95 / 0.03 / 0.02" zh "0.95 / 0.03 / 0.02" }
+    preset-4 { en "0.70 / 0.25 / 0.05" zh "0.70 / 0.25 / 0.05" }
+    preset-5 { en "1.00 / 0.00 / 0.00" zh "1.00 / 0.00 / 0.00" }
+    preset-confirm-msg { en "Writes creator / hub / protocol on economy/policies/active.json with mode=tree-merge (version, createdAt and paymentAdapter are left untouched). Historical policy records are never deleted." zh "以 mode=tree-merge 把 creator / hub / protocol 写入 economy/policies/active.json（version、createdAt 与 paymentAdapter 不变）。历史策略记录绝不删除。" }
+    preset-confirm-title { en "Apply this split?" zh "应用该分成？" }
+    preset-label { en "Preset splits (each sums to 1)" zh "预设分成（每个和为 1）" }
+    product-down { en "Delist" zh "下架" }
     product-price { en "Price" zh "价格" }
+    product-type { en "type" zh "type" }
+    product-up { en "Publish" zh "上架" }
+    product-visibility { en "visibility" zh "visibility" }
     products { en "Products" zh "商品" }
+    products-desc { en "Catalogue from economy/products. Row actions only flip visibility between the two declared values; delete stays in the CLI (refused while orders or posts reference the product, spec §45/§50)." zh "目录来自 economy/products。行内动作只在两个已声明取值之间切换 visibility；删除仍在 CLI（被订单或文章引用时拒绝，spec §45/§50）。" }
     products-empty { en "How to add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "如何添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
+    rejected { en "Refused — nothing was written. A toast is not evidence: read the record back (the platform refuses an existing path in create mode and validates required/pattern fields before the write)." zh "已拒绝——未写入任何内容。toast 不是证据：请读回记录（create 模式拒绝已存在路径，并在写入前校验 required/pattern 字段）。" }
+    saved { en "Write accepted — read the record back: a success toast is not proof." zh "写入已接受——请读回记录：成功 toast 不是证据。" }
     title { en "Split policy" zh "分成策略" }
+    up-confirm-msg { en "Sets visibility to public. No other field of the record is touched." zh "把 visibility 置为 public。记录其余字段不受影响。" }
+    up-confirm-title { en "Publish this product?" zh "上架该商品？" }
+    write-guard { en "Platform rule (docs/arc-contracts.md §29.2): this console can only rewrite records IT created. A browser write to a record written by the CLI or by root is refused with 'network write target exists without a recoverable authority sidecar' and zero change — which is why the CLI-created economy/policies/active.json and the catalogue products pre-dating this page answer a preset / adapter / delist click with exactly that reason. Records created from this page are fully manageable (create, edit price, publish/delist); for the CLI-created ones use node scripts/arcblog-economy.mjs." zh "平台规则（docs/arc-contracts.md §29.2）：本控制台只能重写**它自己创建**的记录。对 CLI 或 root 写入的记录，浏览器写入会被拒绝（'network write target exists without a recoverable authority sidecar'）且零改动——这正是 CLI 创建的 economy/policies/active.json 与本页之前就存在的商品目录，对预设 / 适配器 / 上下架点击给出该理由的原因。本页创建的记录可完整管理（新建、改价、上下架）；CLI 创建的记录请用 node scripts/arcblog-economy.mjs。" }
+    write-note { en "Every write below goes to a declared replicated collection (economy-products / economy-policy) and is admin-only; read-backs are the evidence, not toasts." zh "下方每次写入都落在已声明的 replicated 集合（economy-products / economy-policy），且仅限 admin；以读回为证据，而非 toast。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -122,32 +183,118 @@ page policy {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
               p :desc intent=muted
+              p :write-note scale=sm intent=muted
+              p :write-guard scale=sm intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+                // ---- Strategy + payout account ---------------------------------
+                // Reads economy/policies/active.json (guest-readable, spec §50).
+                // Writes are tree-merge onto the keys the operator actually
+                // changed, so version / createdAt / paymentAdapter survive a
+                // split change and vice versa (REQ-031 ②).
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={policy: "/instance/app/arcblog/economy/policies/active.json"} {
                   h2 :policy level=2 style={fontSize: "var(--type-body)"}
-                  row gap=xs {
-                    p :policy-split scale=sm intent=muted
-                    p "${state.policy.creator} / ${state.policy.hub} / ${state.policy.protocol}" scale=sm
-                    p :policy-adapter scale=sm intent=muted
-                    p "${state.policy.paymentAdapter}" scale=sm
-                  }
+                  key-value-list dense=true fields=[{label: "$t(policy.k-version)", value: "${state.policy.version}", monospace: true}, {label: "$t(policy.k-creator)", value: "${state.policy.creator}"}, {label: "$t(policy.k-hub)", value: "${state.policy.hub}"}, {label: "$t(policy.k-protocol)", value: "${state.policy.protocol}"}, {label: "$t(policy.k-adapter)", value: "${state.policy.paymentAdapter}"}, {label: "$t(policy.k-created)", value: "${state.policy.createdAt}"}, {label: "$t(policy.k-updated)", value: "${state.policy.updatedAt}"}]
                   p :policy-empty scale=sm intent=muted
+                  p :policy-split scale=sm intent=muted
+                  p :preset-label scale=sm intent=muted
+                  // BUG-069: five fixed-label buttons in one non-wrapping `row` overflowed the
+                  // card by 44px at 1803px (style whitelist has no wordBreak/flexWrap key,
+                  // §29.8). A grid is the structural fix: cells wrap to a second row instead.
+                  view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px", flexShrink: 0} {
+                    action variant=secondary size=sm label=:preset-1 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.8, hub: 0.15, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-2 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.9, hub: 0.05, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-3 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.95, hub: 0.03, protocol: 0.02, updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-4 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.7, hub: 0.25, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-5 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 1, hub: 0, protocol: 0, updatedAt: "${generate.timeiso}"}}}}
+                  }
+                  p :policy-sum-note scale=sm intent=muted
+                  row gap=xs cross=center {
+                    // economy-adapters:begin — generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs
+                    // edit the list there, then run: node scripts/arcblog-console-nav.mjs
+                    input type=select name=eAdapter label=:policy-adapter-edit required=true options=[{label: none, value: none}, {label: manual, value: manual}] value="${state.policy.paymentAdapter}"
+                    // economy-adapters:end
+                    action variant=secondary size=sm label=:policy-adapter-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {paymentAdapter: "${args.eAdapter}", updatedAt: "${generate.timeiso}"}}}}
+                  }
+                  p :policy-adapter-note scale=sm intent=muted
+                  p :policy-protocol-note scale=sm intent=muted
+                  h3 :account-title level=3 style={fontSize: "var(--type-body)"}
+                  p :account-desc scale=sm intent=muted
+                  p :account-no-input scale=sm intent=muted
+                  p :account-secret-refusal scale=sm intent=muted
+                  key-value-list dense=true fields=[{label: "$t(policy.account-cmd-init)", value: "node scripts/arcblog-economy.mjs policy init --update --creator 0.80 --hub 0.15 --protocol 0.05 --payment-adapter none", monospace: true, copyable: true}, {label: "$t(policy.account-cmd-show)", value: "node scripts/arcblog-economy.mjs policy show", monospace: true, copyable: true}]
                 }
+                // ---- Product catalogue + management ----------------------------
+                // R23 contract kept as-is: this list is `pagination=manual` with
+                // pageSize=20 and a stable explicit id (REQ-030 / arc-contracts §38).
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   h2 :products level=2 style={fontSize: "var(--type-body)"}
+                  p :products-desc scale=sm intent=muted
                   afs-list policy-products-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:products-empty pagination=manual pageSize=20 from "/instance/app/arcblog/economy/products" {
-                    row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                      h3 "${entry.content.id}"
-                      p :product-price scale=sm intent=muted
-                      p "${entry.content.priceAmount} ${entry.content.priceAsset}" scale=sm
-                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                        time mode=display value="${entry.content.createdAt}" timeMode=relative
+                    row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                      view gap=xs style={flex: "1 1 0%"} {
+                        h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
+                        row gap=xs cross=center {
+                          p :product-price scale=sm intent=muted
+                          p "${entry.content.priceAmount} ${entry.content.priceAsset}" scale=sm
+                          p :product-type scale=sm intent=muted
+                          p "${entry.content.type}" scale=sm
+                          p :product-visibility scale=sm intent=muted
+                          p "${entry.content.visibility}" scale=sm
+                          view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                            time mode=display value="${entry.content.createdAt}" timeMode=relative
+                          }
+                        }
                       }
+                      row gap=xs cross=center style={flexShrink: 0} {
+                        action variant=secondary size=sm label=:product-up confirm={title: :up-confirm-title, message: :up-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {visibility: public, updatedAt: "${generate.timeiso}"}}}}
+                        action variant=secondary size=sm label=:product-down confirm={title: :down-confirm-title, message: :down-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "${args.ePath}", mode: tree-merge, content: {visibility: private, updatedAt: "${generate.timeiso}"}}}}
+                      }
+                      input type=hidden name=ePath value="${entry.path}"
                     }
                   }
                   p :products-empty scale=sm intent=muted
+                  view gap=xs {
+                    h3 :new-title level=3 style={fontSize: "var(--type-body)"}
+                    p :new-desc scale=sm intent=muted
+                    row gap=xs cross=center {
+                      input type=text name=ePid label=:new-id required=true pattern="[a-z0-9][a-z0-9-]{1,63}"
+                      input type=text name=eCreator label=:new-creator required=true pattern="did:[A-Za-z0-9:._-]+|z[1-9A-HJ-NP-Za-km-z]{20,}"
+                      input type=select name=eType label=:new-type required=true options=[{label: article, value: article}, {label: membership, value: membership}, {label: digital, value: digital}]
+                    }
+                    row gap=xs cross=center {
+                      input type=text name=eContent label=:new-content
+                      input type=text name=ePrice label=:new-price required=true pattern="[0-9]+([.][0-9]+)?"
+                      input type=text name=eAsset label=:new-asset required=true pattern="[A-Za-z0-9._-]{1,12}"
+                    }
+                    row gap=xs cross=center {
+                      input type=select name=eVisibility label=:new-visibility required=true options=[{label: public, value: public}, {label: private, value: private}]
+                      input type=text name=ePolicy label=:new-policy required=true pattern="[A-Za-z0-9._-]{1,32}"
+                    }
+                    row gap=xs {
+                      action variant=primary size=sm label=:new-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: "${args.eType}", contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                    }
+                    p :new-note scale=sm intent=muted
+                    h3 :new-sub-title level=3 style={fontSize: "var(--type-body)"}
+                    p :new-sub-note scale=sm intent=muted
+                    row gap=xs cross=center {
+                      input type=select name=eSubPeriod label=:new-period required=true options=[{label: "7", value: "7"}, {label: "30", value: "30"}, {label: "90", value: "90"}, {label: "365", value: "365"}]
+                    }
+                    row gap=xs {
+                      action variant=primary size=sm label=:new-sub-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: "${args.eSubPeriod}", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                    }
+                  }
+                  view gap=xs {
+                    h3 :edit-title level=3 style={fontSize: "var(--type-body)"}
+                    p :edit-desc scale=sm intent=muted
+                    row gap=xs cross=center {
+                      input type=text name=eEditId label=:edit-id required=true pattern="[a-z0-9][a-z0-9-]{1,63}"
+                      input type=text name=eEditPrice label=:edit-price required=true pattern="[0-9]+([.][0-9]+)?"
+                      action variant=secondary size=sm label=:edit-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.eEditId}.json", mode: tree-merge, content: {priceAmount: "${args.eEditPrice}", updatedAt: "${generate.timeiso}"}}}}
+                    }
+                    p :edit-note scale=sm intent=muted
+                  }
                 }
               }
             }

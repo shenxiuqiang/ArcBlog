@@ -791,6 +791,45 @@ RSS feed) do *not* need a restart; the compiled AUP bundle does.
 > daemon that predates the edit. (R20 could not restart the `default` instance:
 > L-R20-1 forbids it, so BUG-052's runtime DOM check is recorded as 受限未验证.)
 
+### Build artifacts must never carry key material (BUG-067)
+
+`arc blocklet build` mirrors the repository into `dist/` and writes every copied
+path into `dist/.afs/manifest.json`. It has **no exclude switch** — `arc blocklet
+build --help` offers only `--output` / `--dry-run` / `--clean`, and
+`.blockletignore` is not read (measured 2026-09-29, R24F) — so the root `node.key`
+(private key) and `.env.local` (chain mnemonic) end up inside the Pages-ready
+package and inside its manifest:
+
+```bash
+arc blocklet build
+ls -la dist/node.key dist/.env.local            # both present (private key / mnemonic copy)
+python3 -c "import json;m=json.load(open('dist/.afs/manifest.json'));print([f['path'] for f in m['files'] if 'node.key' in f['path'] or 'env.local' in f['path']])"
+# ['.env.local', 'node.key']
+```
+
+Run the build through the wrapper, which scrubs the copies **and** their manifest
+entries right after the build:
+
+```bash
+npm run build                    # arc blocklet build && npm run scrub:dist-secrets
+# or, after a manual `arc blocklet build`:
+npm run scrub:dist-secrets       # deletes dist/node.key + dist/.env.local, drops both manifest entries
+node scripts/arcblog-dist-secrets.mjs --check   # read-only; exits 1 while dist/ carries secrets
+```
+
+The guard sits in the fast tier (`npm test`): `scripts/arcblog-dist-secrets.test.mjs`
+fails when `dist/` carries a key file, a PEM private key, or a manifest entry that
+names one. Two states measured in R24F: before the scrub the guard failed with
+`key files inside dist/ (run \`npm run scrub:dist-secrets\`): .env.local, node.key`
+and `--check` exited 1; after `npm run scrub:dist-secrets` the guard passed and
+`--check` exited 0.
+
+> ⚠️ **Iron rule**: the scrub only ever touches paths inside `dist/` (asserted at
+> runtime by `assertInside`, and by the guard test). The **source** `node.key` /
+> `.env.local` at the repository root are never deleted, moved or rewritten.
+> Verify with `shasum -a 256 node.key .env.local` before/after a scrub — R24F
+> measured `2305e487…` / `98320672…` unchanged, with the original mtime.
+
 ## Development instance hygiene
 
 The live test suite is non-hermetic: it writes to the default instance and the

@@ -1,0 +1,482 @@
+{
+  "at": "2026-09-29T02:30:35.989Z",
+  "phase": "nav",
+  "steps": {
+    "pages": {
+      "dashboard": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=dashboard"
+      },
+      "posts": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=posts"
+      },
+      "pages": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=pages"
+      },
+      "compose": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=compose"
+      },
+      "heroes": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=heroes"
+      },
+      "categories": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=categories"
+      },
+      "tags": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=tags"
+      },
+      "seo": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=seo"
+      },
+      "feeds": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=feeds"
+      },
+      "appearance": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=appearance"
+      },
+      "operations": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=operations"
+      },
+      "hub": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=hub"
+      },
+      "media": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=media"
+      },
+      "agents": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=agents"
+      },
+      "orders": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=orders"
+      },
+      "policy": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=policy"
+      },
+      "access": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=access"
+      },
+      "ledger": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=ledger"
+      },
+      "factory": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=factory"
+      },
+      "general": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=general"
+      },
+      "diagnostics": {
+        "active": 1,
+        "ariaCurrent": 1,
+        "sessionFailed": false,
+        "docOver": 0,
+        "worstOver": [
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 334,
+            "text": "Content Dashboard Studio Pages Write Site "
+          },
+          {
+            "tag": "DIV",
+            "cls": "aup-view",
+            "over": 302,
+            "text": "Content Dashboard Studio Pages Write Site "
+          }
+        ],
+        "url": "/?page=diagnostics"
+      }
+    },
+    "pageList": [
+      "dashboard",
+      "posts",
+      "pages",
+      "compose",
+      "heroes",
+      "categories",
+      "tags",
+      "seo",
+      "feeds",
+      "appearance",
+      "operations",
+      "hub",
+      "media",
+      "agents",
+      "orders",
+      "policy",
+      "access",
+      "ledger",
+      "factory",
+      "general",
+      "diagnostics"
+    ],
+    "summary": {
+      "pagesChecked": 21,
+      "activeExactlyOne": 21,
+      "ariaExactlyOne": 21,
+      "sessionFailedAny": [],
+      "docOverNonZero": []
+    }
+  },
+  "browser": "Chrome/153.0.8010.54",
+  "adminCookieFound": true,
+  "targetsAfterFiltered": []
+}

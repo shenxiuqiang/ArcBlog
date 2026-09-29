@@ -1,0 +1,63 @@
+{
+  "at": "2026-09-29T01:41:16.169Z",
+  "at1803": {
+    "presetRow": {
+      "over": 44,
+      "cw": 698,
+      "sw": 742,
+      "rect": {
+        "x": 315,
+        "y": 704,
+        "w": 698,
+        "h": 29,
+        "right": 1014
+      },
+      "overflowX": "visible"
+    },
+    "strategyCard": {
+      "over": 30,
+      "cw": 726,
+      "sw": 756,
+      "rect": {
+        "x": 300,
+        "y": 277,
+        "w": 728,
+        "h": 1007,
+        "right": 1029
+      },
+      "overflowX": "visible"
+    },
+    "accountRow": {
+      "over": 30,
+      "cw": 726,
+      "sw": 756,
+      "rect": {
+        "x": 300,
+        "y": 277,
+        "w": 728,
+        "h": 1007,
+        "right": 1029
+      },
+      "overflowX": "visible"
+    },
+    "siblingCard": {
+      "rect": {
+        "x": 1043,
+        "y": 277,
+        "w": 728,
+        "h": 2657,
+        "right": 1771
+      },
+      "text": "Products | Catalogue from economy/products. Row actions only flip visibility between the two declared values; delete stays in the CLI (refused while orders or posts reference the product, spec §45/§50)."
+    },
+    "overlapPx": 0,
+    "doc": {
+      "sw": 0,
+      "sh": 908,
+      "ch": 908
+    },
+    "policyResolved": true,
+    "gridChildren": 2
+  },
+  "targetsAfterFiltered": []
+}

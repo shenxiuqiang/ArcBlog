@@ -1,0 +1,4 @@
+$ diff -r .aup dist/.aup
+rc=0
+$ diff -r .web dist/.web
+rc=0

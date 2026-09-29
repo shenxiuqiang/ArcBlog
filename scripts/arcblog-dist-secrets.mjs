@@ -1,0 +1,166 @@
+#!/usr/bin/env node
+/**
+ * Build-artifact secret guard + scrub (BUG-067).
+ *
+ * `arc blocklet build` copies the whole repository into `dist/` and lists every
+ * copied file in `dist/.afs/manifest.json` — including `node.key` (the node's
+ * Ed25519 private key) and `.env.local` (the chain mnemonic). The platform's
+ * build has no exclude switch (`arc blocklet build --help` offers only
+ * `--output` / `--dry-run` / `--clean`; `.blockletignore` is not recognised), so
+ * the exclusion has to happen **after** the build.
+ *
+ *   node scripts/arcblog-dist-secrets.mjs            # scrub dist/ (delete copies, rewrite manifest)
+ *   node scripts/arcblog-dist-secrets.mjs --check    # read-only guard: exit 1 when dist/ carries secrets
+ *
+ * Iron rule (AGENTS.md §4 / roles/dev.md §8): the **source** `node.key` and
+ * `.env.local` at the repository root are never deleted, moved or rewritten.
+ * Every path this module touches is asserted to live inside `dist/`.
+ *
+ * The guard test is `scripts/arcblog-dist-secrets.test.mjs` (fast tier).
+ */
+
+import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+export const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+export const DIST_DIR = join(REPO_ROOT, 'dist');
+
+/** Basenames that are key material no matter what they contain. */
+export const SECRET_BASENAMES = new Set(['node.key', '.env.local']);
+
+/** A PEM private key header — the second line of defence for key-ish files. */
+export const PRIVATE_KEY_RE = /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----/;
+
+/**
+ * Only key-ish basenames are content-scanned. A generic "any file containing the
+ * header" rule would flag the bug report that documents this very issue
+ * (`docs/team/bugs/BUG-067-*.md` quotes `-----BEGIN PRIVATE KEY-----`) and the
+ * scrub would then delete documentation from dist/ — a false positive, not a
+ * leak. `arc blocklet build` copies files verbatim, so a real leak keeps its name.
+ */
+export const KEYISH_RE = /(^id_(rsa|dsa|ecdsa|ed25519))|\.(key|pem|p12|pfx|jks|keystore)$/i;
+
+/** Files larger than this are not content-scanned (keys are tiny; avoid reading big assets). */
+const MAX_SCAN_BYTES = 2 * 1024 * 1024;
+
+/** Refuse to touch anything that is not inside `root` (defence in depth for the iron rule). */
+export function assertInside(root, target) {
+  const r = resolve(root);
+  const t = resolve(target);
+  if (t !== r && !t.startsWith(r + sep)) {
+    throw new Error(`refusing to touch a path outside ${r}: ${t}`);
+  }
+  return t;
+}
+
+/** Every regular file under `dir`, as posix-style paths relative to `dir`. */
+export function walkFiles(dir, base = dir) {
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkFiles(full, base));
+    else if (entry.isFile()) out.push(relative(base, full).split(sep).join('/'));
+  }
+  return out;
+}
+
+/**
+ * Read-only scan of a dist tree.
+ * Returns `{ distExists, files, privateKeyFiles, manifestEntries }` — all arrays sorted.
+ */
+export function findDistSecrets(distDir = DIST_DIR) {
+  const findings = { distExists: existsSync(distDir), files: [], privateKeyFiles: [], manifestEntries: [] };
+  if (!findings.distExists) return findings;
+
+  for (const rel of walkFiles(distDir)) {
+    const full = join(distDir, rel);
+    if (SECRET_BASENAMES.has(basename(rel))) {
+      findings.files.push(rel);
+      continue;
+    }
+    try {
+      if (!KEYISH_RE.test(basename(rel))) continue;
+      if (statSync(full).size > MAX_SCAN_BYTES) continue;
+      if (PRIVATE_KEY_RE.test(readFileSync(full, 'utf8'))) findings.privateKeyFiles.push(rel);
+    } catch {
+      // unreadable/binary — the name check above is the primary rule
+    }
+  }
+
+  const manifestPath = join(distDir, '.afs', 'manifest.json');
+  if (existsSync(manifestPath)) {
+    try {
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+      for (const entry of Array.isArray(manifest?.files) ? manifest.files : []) {
+        const p = typeof entry?.path === 'string' ? entry.path : '';
+        if (p && SECRET_BASENAMES.has(basename(p))) findings.manifestEntries.push(p);
+      }
+    } catch {
+      // an unparsable manifest is not this guard's business
+    }
+  }
+  findings.files.sort();
+  findings.privateKeyFiles.sort();
+  findings.manifestEntries.sort();
+  return findings;
+}
+
+/**
+ * Delete the secret copies inside `dist/` and drop their manifest entries.
+ * Never touches the repository-root sources.
+ */
+export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
+  const root = resolve(distDir);
+  const report = { distDir: root, dryRun, removed: [], privateKeyRemoved: [], manifestRemoved: [], manifestFilesBefore: null, manifestFilesAfter: null };
+  if (!existsSync(root)) return report;
+
+  const findings = findDistSecrets(root);
+  for (const rel of [...findings.files, ...findings.privateKeyFiles]) {
+    const target = assertInside(root, join(root, rel));
+    if (!existsSync(target)) continue;
+    if (!dryRun) rmSync(target, { force: true });
+    (SECRET_BASENAMES.has(basename(rel)) ? report.removed : report.privateKeyRemoved).push(rel);
+  }
+
+  const manifestPath = assertInside(root, join(root, '.afs', 'manifest.json'));
+  if (existsSync(manifestPath)) {
+    const raw = readFileSync(manifestPath, 'utf8');
+    const manifest = JSON.parse(raw);
+    const files = Array.isArray(manifest?.files) ? manifest.files : [];
+    report.manifestFilesBefore = files.length;
+    const kept = files.filter((entry) => !SECRET_BASENAMES.has(basename(typeof entry?.path === 'string' ? entry.path : '')));
+    report.manifestRemoved = files.filter((entry) => !kept.includes(entry)).map((entry) => entry.path);
+    report.manifestFilesAfter = kept.length;
+    if (report.manifestRemoved.length > 0 && !dryRun) {
+      manifest.files = kept;
+      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + (raw.endsWith('\n') ? '\n' : ''));
+    }
+  }
+  return report;
+}
+
+// ------------------------------------------------------------------- CLI ----
+const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
+if (isMain) {
+  const args = process.argv.slice(2);
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`Usage: node scripts/arcblog-dist-secrets.mjs [--check] [--dist <dir>]
+
+  (no flag)  scrub dist/: delete node.key / .env.local copies and drop them from
+             dist/.afs/manifest.json — the repository-root sources are never touched
+  --check    read-only: print the findings and exit 1 when dist/ carries secrets
+  --dist     dist directory to inspect (default: <repo>/dist)`);
+    process.exit(0);
+  }
+  const di = args.indexOf('--dist');
+  const distDir = di >= 0 ? resolve(args[di + 1] || '') : DIST_DIR;
+  if (args.includes('--check')) {
+    const findings = findDistSecrets(distDir);
+    console.log(JSON.stringify({ action: 'check', distDir, ok: findings.distExists && findings.files.length === 0 && findings.privateKeyFiles.length === 0 && findings.manifestEntries.length === 0, ...findings }, null, 2));
+    process.exit(findings.distExists && findings.files.length === 0 && findings.privateKeyFiles.length === 0 && findings.manifestEntries.length === 0 ? 0 : 1);
+  }
+  const report = scrubDist(distDir);
+  console.log(JSON.stringify({ action: 'scrub', ...report }, null, 2));
+  process.exit(0);
+}

@@ -1,0 +1,11 @@
+$ node scripts/arcblog-dist-secrets.mjs --check
+{
+  "action": "check",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "ok": true,
+  "distExists": true,
+  "files": [],
+  "privateKeyFiles": [],
+  "manifestEntries": []
+}
+rc=0

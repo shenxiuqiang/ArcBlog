@@ -1,12 +1,12 @@
 {
   "dashboard": {
     "blocks": 2,
-    "cards": 6,
+    "cards": 8,
     "nested": 0,
-    "ctrl": 4,
-    "styles": 29,
-    "i18n": 26,
-    "tech": 9
+    "ctrl": 7,
+    "styles": 36,
+    "i18n": 43,
+    "tech": 11
   },
   "posts": {
     "blocks": 1,
@@ -138,10 +138,10 @@
     "blocks": 1,
     "cards": 3,
     "nested": 0,
-    "ctrl": 0,
-    "styles": 12,
-    "i18n": 12,
-    "tech": 6
+    "ctrl": 24,
+    "styles": 31,
+    "i18n": 73,
+    "tech": 22
   },
   "access": {
     "blocks": 1,

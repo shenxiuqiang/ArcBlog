@@ -28,6 +28,7 @@ import {
   summarize,
 } from './lib/chain-orders.mjs';
 import {
+  PAYMENT_ADAPTERS,
   buildAccessGrant,
   buildOrder,
   buildProduct,
@@ -58,8 +59,15 @@ const LEDGER_DIR = `${ECONOMY_DIR}/ledger`;
 const ACCESS_DIR = `${ECONOMY_DIR}/access-grants`;
 const REFUNDS_DIR = `${ECONOMY_DIR}/refunds`;
 
-/** Payment adapters ArcBlog knows about (spec §44). `manual` is dev-only. */
-const ADAPTERS = ['none', 'manual'];
+/**
+ * Payment adapters ArcBlog knows about (spec §44). `manual` is dev-only.
+ *
+ * The list itself lives in `scripts/lib/economy.mjs` (`PAYMENT_ADAPTERS`) so the
+ * console's adapter picker can be GENERATED from the same definition instead of
+ * keeping a second hand-maintained copy (REQ-031 ②/D1; the drift is caught by
+ * the console-nav check gate in the fast tier).
+ */
+const ADAPTERS = PAYMENT_ADAPTERS;
 
 function recordsIn(dir, instance) {
   const out = [];
