@@ -1,0 +1,17 @@
+=== A5 NON-.json ENTRY 2026-09-29T03:35:10Z ===
+--- write qa25-not-an-intent.txt ---
+{"id":"qa25-not-an-intent.txt","path":"/instance/app/arcblog/config/policy-intents/qa25-not-an-intent.txt","createdAt":"2026-09-29T03:35:10.594Z","updatedAt":"2026-09-29T03:35:10.594Z","content":"this is not a policy intent","meta":{"size":27,"version":"1790652910594.0725-157538120-27"}}
+--- read it back ---
+{"id":"qa25-not-an-intent.txt","path":"/instance/app/arcblog/config/policy-intents/qa25-not-an-intent.txt","createdAt":"2026-09-29T03:35:10.594Z","updatedAt":"2026-09-29T03:35:10.594Z","content":"this is not a policy intent","meta":{"size":27,"version":"1790652910594.0725-157538120-27","mimeType":"text/plain"},"actions":[]}
+--- policy queue ---
+count 11 queueEntryIgnored 1
+ignored [{"path": "/instance/app/arcblog/config/policy-intents/qa25-not-an-intent.txt", "reason": "queue entries must be named <id>.json — \"qa25-not-an-intent.txt\" has no .json extension, so no worker will ever consume it (D38)"}]
+--- policy apply (must not consume it) ---
+applied 0 queueEntryIgnored 1
+ignored [{"path": "/instance/app/arcblog/config/policy-intents/qa25-not-an-intent.txt", "reason": "queue entries must be named <id>.json — \"qa25-not-an-intent.txt\" has no .json extension, so no worker will ever consume it (D38)"}]
+--- the .txt is still there, byte-for-byte ---
+content= 'this is not a policy intent' version= 1790652910594.0725-157538120-27
+--- cleanup delete .txt ---
+{"path":"/instance/app/arcblog/config/policy-intents/qa25-not-an-intent.txt"}
+--- queue after delete ---
+count 11 ignored 0

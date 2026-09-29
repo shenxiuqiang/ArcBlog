@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -934,4 +934,149 @@ test('the CLI flag registry covers every flag the CLIs actually read (drift guar
   }
   assert.deepEqual(gaps, [], 'every flag a CLI reads must be in the registry');
   assert.ok(registered >= 20, `expected the whole CLI surface, saw ${registered}`);
+});
+
+// --- REQ-032 / D-R24-3 ③: the policy intent queue (console page → worker) ----
+//
+// The queue is ISOLATED per run (same convention as arcblog-network.test.mjs /
+// arcblog-media.test.mjs), so this suite never reads or writes the live
+// `config/policy-intents` queue the running console is watching. The CLI module
+// is spawned (not imported: `arcblog-economy.mjs` is a CLI with a main block) and
+// resolves POLICY_INTENTS_DIR at module-init time from the env var.
+//
+// `economy/policies/active.json` is the ONE shared record this section mutates —
+// the whole point of the worker — so the original policy is snapshotted first and
+// restored in `after()` even when a test fails (the other live suites in this
+// file settle orders against the policy).
+
+const policyQueueStamp = Date.now();
+const POLICY_QUEUE = `/instance/app/arcblog/config/policy-intents-test-${policyQueueStamp}`;
+const queueEnv = { ...process.env, ARCBLOG_POLICY_INTENTS_PATH: POLICY_QUEUE };
+const queueScript = join(repoRoot, 'scripts', 'arcblog-economy.mjs');
+
+function runQ(args) {
+  return spawnSync(process.execPath, [queueScript, ...args], { encoding: 'utf8', cwd: repoRoot, env: queueEnv });
+}
+
+const policyShow = () => json(run(['policy', 'show']).stdout).policy;
+const policySnapshot = policyShow();
+
+after(async () => {
+  const { list, remove } = await import('./lib/arc.mjs');
+  for (const entry of list(POLICY_QUEUE)) {
+    const raw = typeof entry === 'string' ? entry : entry?.path ?? entry?.id ?? entry?.key ?? '';
+    const name = String(raw).split('/').pop();
+    if (name) remove(`${POLICY_QUEUE}/${name}`);
+  }
+  // Restore the policy record even if a test above failed.
+  const current = policyShow();
+  const restore = run([
+    'policy', 'init', '--update',
+    '--version', String(current.version),
+    '--creator', String(policySnapshot.creator),
+    '--hub', String(policySnapshot.hub),
+    '--protocol', String(policySnapshot.protocol),
+    '--payment-adapter', String(policySnapshot.paymentAdapter),
+  ]);
+  assert.equal(restore.status, 0, restore.stderr);
+});
+
+test('policy --help documents the queue worker surface (queue|apply|watch)', () => {
+  const help = run(['--help']);
+  assert.equal(help.status, 0);
+  assert.match(help.stdout, /arcblog-economy\.mjs policy queue/);
+  assert.match(help.stdout, /arcblog-economy\.mjs policy apply/);
+  assert.match(help.stdout, /arcblog-economy\.mjs policy watch/);
+  assert.match(help.stdout, /policy request --action preset/);
+  assert.match(help.stdout, /config\/policy-intents/);
+});
+
+test('live: a queued preset really changes the named fields, and only those', () => {
+  const before = policyShow();
+  const queued = json(runQ(['policy', 'request', '--action', 'preset', '--creator', '0.9', '--hub', '0.05', '--protocol', '0.05']).stdout);
+  assert.equal(queued.intent.status, 'pending');
+  assert.equal(queued.intent.requestedVia, 'cli');
+  assert.deepEqual(policyShow(), before, 'queueing alone must not change the policy record');
+
+  const applied = json(runQ(['policy', 'apply']).stdout);
+  const row = applied.intents.find((intent) => intent.id === queued.intent.id);
+  assert.equal(row.status, 'applied', row.message);
+  const after = policyShow();
+  assert.equal(after.creator, 0.9);
+  assert.equal(after.hub, 0.05);
+  assert.equal(after.protocol, 0.05);
+  assert.equal(after.version, before.version, 'version must survive (spec §29)');
+  assert.equal(after.createdAt, before.createdAt, 'createdAt must survive');
+  assert.equal(after.paymentAdapter, before.paymentAdapter, 'an unnamed field must survive');
+});
+
+test('live: re-applying is a no-op and writes zero bytes; a repeated preset is noop too', () => {
+  const before = JSON.stringify(policyShow());
+  const again = json(runQ(['policy', 'apply']).stdout);
+  assert.equal(again.applied, 0, 'terminal intents are never re-executed');
+  assert.equal(JSON.stringify(policyShow()), before, 'a second apply must not rewrite the record');
+
+  const queued = json(runQ(['policy', 'request', '--action', 'preset', '--creator', '0.9', '--hub', '0.05', '--protocol', '0.05']).stdout);
+  const row = json(runQ(['policy', 'apply']).stdout).intents.find((intent) => intent.id === queued.intent.id);
+  assert.equal(row.status, 'noop');
+  assert.match(row.message, /already carries/);
+  assert.equal(JSON.stringify(policyShow()), before, 'noop must write zero bytes');
+});
+
+test('live: an adapter intent changes paymentAdapter and leaves the shares alone', () => {
+  const before = policyShow();
+  const queued = json(runQ(['policy', 'request', '--action', 'adapter', '--payment-adapter', 'manual']).stdout);
+  const row = json(runQ(['policy', 'apply']).stdout).intents.find((intent) => intent.id === queued.intent.id);
+  assert.equal(row.status, 'applied', row.message);
+  const after = policyShow();
+  assert.equal(after.paymentAdapter, 'manual');
+  assert.equal(after.creator, before.creator);
+  assert.equal(after.hub, before.hub);
+  assert.equal(after.protocol, before.protocol);
+  assert.equal(after.version, before.version);
+  assert.equal(after.createdAt, before.createdAt);
+  // put it back so the following assertions start from a known adapter
+  const back = json(runQ(['policy', 'request', '--action', 'adapter', '--payment-adapter', String(before.paymentAdapter)]).stdout);
+  assert.equal(json(runQ(['policy', 'apply']).stdout).intents.find((i) => i.id === back.intent.id).status, 'applied');
+});
+
+test('live: invalid intents are rejected with a reason and zero change (fail closed)', () => {
+  const before = JSON.stringify(policyShow());
+  const cases = [
+    { args: ['--action', 'preset', '--creator', '0.9', '--hub', '0.9', '--protocol', '0.9'], expect: /must sum to 1/ },
+    { args: ['--action', 'preset', '--creator', 'abc', '--hub', '0.5', '--protocol', '0.5'], expect: /not a finite number/ },
+    { args: ['--action', 'preset', '--creator', '-0.5', '--hub', '0.9', '--protocol', '0.6'], expect: /between 0 and 1/ },
+    { args: ['--action', 'preset', '--hub', '0.5', '--protocol', '0.5'], expect: /payload\.creator is required/ },
+    { args: ['--action', 'adapter', '--payment-adapter', 'stripe'], expect: /is not one of/ },
+  ];
+  const ids = cases.map(({ args }) => json(runQ(['policy', 'request', ...args]).stdout).intent.id);
+  const applied = json(runQ(['policy', 'apply']).stdout);
+  for (let i = 0; i < cases.length; i += 1) {
+    const row = applied.intents.find((intent) => intent.id === ids[i]);
+    assert.equal(row.status, 'rejected', `${cases[i].args.join(' ')} → ${row.message}`);
+    assert.equal(row.code, 'VALIDATION');
+    assert.match(row.message, cases[i].expect);
+    assert.match(row.message, /no data changed/);
+  }
+  assert.equal(JSON.stringify(policyShow()), before, 'a rejected intent must change nothing');
+});
+
+test('live: an unknown action is refused at queue time (never written)', () => {
+  const bad = runQ(['policy', 'request', '--action', 'nuke']);
+  assert.equal(bad.status, 1);
+  assert.equal(json(bad.stderr).code, 'VALIDATION');
+  assert.match(json(bad.stderr).error, /unknown policy intent action/);
+});
+
+test('live: a queue entry without the .json extension is diagnosed, not consumed', async () => {
+  const { write } = await import('./lib/arc.mjs');
+  const path = `${POLICY_QUEUE}/not-an-intent.txt`;
+  write(path, 'hello\n');
+  const queued = json(runQ(['policy', 'queue']).stdout);
+  assert.ok(queued.queueEntryIgnored >= 1, 'the ignored entry must be reported');
+  assert.match(JSON.stringify(queued.ignored), /no \.json extension/);
+  const applied = json(runQ(['policy', 'apply']).stdout);
+  assert.ok(applied.queueEntryIgnored >= 1);
+  const { read } = await import('./lib/arc.mjs');
+  assert.equal(read(path)?.content, 'hello\n', 'the ignored entry must still be there, unchanged');
 });

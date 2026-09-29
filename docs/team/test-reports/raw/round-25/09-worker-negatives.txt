@@ -1,0 +1,169 @@
+=== NEGATIVES 2026-09-29T03:34:55Z ===
+--- active BEFORE ---
+version 1790652880932.6794-155467735-192
+{
+  "version": "v1",
+  "creator": 0.95,
+  "hub": 0.03,
+  "protocol": 0.02,
+  "paymentAdapter": "manual",
+  "createdAt": "2026-09-23T11:07:49.535Z",
+  "updatedAt": "2026-09-29T03:34:40.601Z"
+}
+
+--- N1 sum != 1 ---
+{
+  "ok": true,
+  "action": "policy-request",
+  "path": "/instance/app/arcblog/config/policy-intents/qa25-bad-sum.json",
+  "intent": {
+    "id": "qa25-bad-sum",
+    "action": "preset",
+    "payload": {
+      "creator": "0.9",
+      "hub": "0.9",
+      "protocol": "0.9"
+    },
+    "status": "pending",
+    "message": "queued — a local worker has not run this yet",
+    "changed": [],
+    "requestedVia": "cli",
+    "requestedBy": "",
+    "requestedAt": "2026-09-29T03:34:55.854Z",
+    "updatedAt": "2026-09-29T03:34:55.854Z"
+  }
+exit=0
+--- N2 negative share (sum=1) ---
+{
+  "ok": true,
+  "action": "policy-request",
+  "path": "/instance/app/arcblog/config/policy-intents/qa25-bad-neg.json",
+  "intent": {
+    "id": "qa25-bad-neg",
+    "action": "preset",
+    "payload": {
+      "creator": "-0.5",
+      "hub": "0.8",
+      "protocol": "0.7"
+    },
+    "status": "pending",
+    "message": "queued — a local worker has not run this yet",
+    "changed": [],
+    "requestedVia": "cli",
+    "requestedBy": "",
+    "requestedAt": "2026-09-29T03:34:56.588Z",
+    "updatedAt": "2026-09-29T03:34:56.589Z"
+  }
+exit=0
+--- N3 non-finite share ---
+{
+  "ok": true,
+  "action": "policy-request",
+  "path": "/instance/app/arcblog/config/policy-intents/qa25-bad-nan.json",
+  "intent": {
+    "id": "qa25-bad-nan",
+    "action": "preset",
+    "payload": {
+      "creator": "abc",
+      "hub": "0.5",
+      "protocol": "0.5"
+    },
+    "status": "pending",
+    "message": "queued — a local worker has not run this yet",
+    "changed": [],
+    "requestedVia": "cli",
+    "requestedBy": "",
+    "requestedAt": "2026-09-29T03:34:57.303Z",
+    "updatedAt": "2026-09-29T03:34:57.304Z"
+  }
+exit=0
+--- N4 adapter out of vocabulary ---
+{
+  "ok": true,
+  "action": "policy-request",
+  "path": "/instance/app/arcblog/config/policy-intents/qa25-bad-adapter.json",
+  "intent": {
+    "id": "qa25-bad-adapter",
+    "action": "adapter",
+    "payload": {
+      "paymentAdapter": "stripe"
+    },
+    "status": "pending",
+    "message": "queued — a local worker has not run this yet",
+    "changed": [],
+    "requestedVia": "cli",
+    "requestedBy": "",
+    "requestedAt": "2026-09-29T03:34:58.022Z",
+    "updatedAt": "2026-09-29T03:34:58.023Z"
+  }
+}
+exit=0
+--- N5 unknown action (must fail closed at enqueue) ---
+{
+  "ok": false,
+  "code": "VALIDATION",
+  "error": "unknown policy intent action: bogus (use preset|adapter)"
+}
+exit=0
+--- APPLY with the 4 negative intents ---
+{
+  "ok": true,
+  "action": "policy-apply",
+  "applied": 4,
+  "intents": [
+    {
+      "id": "qa25-bad-sum",
+      "action": "preset",
+      "target": "{\"creator\":\"0.9\",\"hub\":\"0.9\",\"protocol\":\"0.9\"}",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "preset: shares must sum to 1 (got 2.7000) — no data changed"
+    },
+    {
+      "id": "qa25-bad-neg",
+      "action": "preset",
+      "target": "{\"creator\":\"-0.5\",\"hub\":\"0.8\",\"protocol\":\"0.7\"}",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "preset: payload.creator must be a fraction between 0 and 1 — no data changed"
+    },
+    {
+      "id": "qa25-bad-nan",
+      "action": "preset",
+      "target": "{\"creator\":\"abc\",\"hub\":\"0.5\",\"protocol\":\"0.5\"}",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "preset: payload.creator \"abc\" is not a finite number — no data changed"
+    },
+    {
+      "id": "qa25-bad-adapter",
+      "action": "adapter",
+      "target": "stripe",
+      "status": "rejected",
+      "code": "VALIDATION",
+      "changed": [],
+      "message": "adapter: paymentAdapter \"stripe\" is not one of: none, manual — no data changed"
+    }
+  ],
+  "queueEntryIgnored": 0
+}
+exit=0
+--- active AFTER ---
+version 1790652880932.6794-155467735-192
+{
+  "version": "v1",
+  "creator": 0.95,
+  "hub": 0.03,
+  "protocol": 0.02,
+  "paymentAdapter": "manual",
+  "createdAt": "2026-09-23T11:07:49.535Z",
+  "updatedAt": "2026-09-29T03:34:40.601Z"
+}
+
+ZERO CHANGE — content identical: True | meta.version identical: True
+--- policies / ledger counts ---
+policies 1
+ledger 84

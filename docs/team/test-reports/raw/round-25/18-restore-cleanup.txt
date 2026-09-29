@@ -1,0 +1,51 @@
+=== RESTORE + PROBE CLEANUP 2026-09-29T03:39:57Z ===
+--- restore active.json to the pre-QA state (0.80/0.15/0.05/none) ---
+{
+  "ok": true,
+  "action": "policy-update",
+  "path": "/instance/app/arcblog/economy/policies/active.json",
+  "policy": {
+    "version": "v1",
+    "creator": 0.8,
+    "hub": 0.15,
+    "protocol": 0.05,
+    "paymentAdapter": "none",
+    "createdAt": "2026-09-23T11:07:49.535Z",
+    "updatedAt": "2026-09-29T03:39:57.787Z"
+  }
+}
+exit=0
+--- restore a single no-op apply so the queue is drained of my pending intents (none pending) ---
+applied 0 ignored 0
+--- delete MY 7 probe intent records ---
+{"path":"/instance/app/arcblog/config/policy-intents/2026-09-29T03:30:53.378Z.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/2026-09-29T03:30:59.200Z.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/2026-09-29T03:31:08.739Z.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/qa25-bad-sum.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/qa25-bad-neg.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/qa25-bad-nan.json"}
+{"path":"/instance/app/arcblog/config/policy-intents/qa25-bad-adapter.json"}
+--- final queue (Dev's 4 records remain) ---
+count 4
+['2026-09-29T03:03:04.444Z.json', 'policy-intent-mum3dvtzeixn.json', 'policy-intent-mum3e0qiu6qp.json', 'policy-intent-mum3e3o687be.json']
+--- final active.json ---
+version 1790653198120.2952-155467735-189
+{
+  "version": "v1",
+  "creator": 0.8,
+  "hub": 0.15,
+  "protocol": 0.05,
+  "paymentAdapter": "none",
+  "createdAt": "2026-09-23T11:07:49.535Z",
+  "updatedAt": "2026-09-29T03:39:57.787Z"
+}
+
+--- final counts: products / policies / ledger / orders / settlements / access-grants ---
+products         54
+policies         1
+ledger           84
+orders           66
+settlements      38
+access-grants    30
+--- chain-intents untouched (count only; NEVER run/watch) ---
+chain-intents 6

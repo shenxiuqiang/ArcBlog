@@ -1,0 +1,88 @@
+{
+  "window": [
+    1790653200000,
+    1790653900000
+  ],
+  "confirm": false,
+  "dirs": {
+    "products": {
+      "total": 63,
+      "mine": [
+        "econ-test-fc-product-1790653229650.json",
+        "econ-test-paid-1790653240435.json",
+        "econ-test-product-1790653219642.json",
+        "econ-test-rf-product-1790653278753.json",
+        "econ-test-rn-product-1790653316202.json",
+        "econ-test-sub-product-1790653319058.json",
+        "econ-test-type-product-1790653438722.json",
+        "ledger-product-1790653266447.json",
+        "p1-verify-product-1790653577495.json"
+      ]
+    },
+    "orders": {
+      "total": 77,
+      "mine": [
+        "econ-test-fc-order-1790653229650.json",
+        "econ-test-order-1790653219642.json",
+        "econ-test-paid-order-1790653240435.json",
+        "econ-test-rf-order-1790653278753.json",
+        "econ-test-rn-order-1790653316202.json",
+        "econ-test-sub-order-1790653319058.json",
+        "econ-test-sub-order2-1790653319058.json",
+        "econ-test-tip-1790653232785.json",
+        "econ-test-type-order-1790653438722.json",
+        "ledger-order-1790653266447.json",
+        "p1-verify-order-1790653577495.json"
+      ]
+    },
+    "settlements": {
+      "total": 44,
+      "mine": [
+        "econ-test-order-1790653219642.json",
+        "econ-test-rf-order-1790653278753.json",
+        "econ-test-tip-1790653232785.json",
+        "econ-test-type-order-1790653438722.json",
+        "ledger-order-1790653266447.json",
+        "p1-verify-order-1790653577495.json"
+      ]
+    },
+    "access-grants": {
+      "total": 35,
+      "mine": [
+        "econ-test-paid-order-1790653240435.json",
+        "econ-test-rf-order-1790653278753.json",
+        "econ-test-sub-order-1790653319058.json",
+        "econ-test-sub-order2-1790653319058.json",
+        "p1-verify-order-1790653577495.json"
+      ]
+    },
+    "refunds": {
+      "total": 6,
+      "mine": []
+    },
+    "attributions": {
+      "error": "SyntaxError: Unexpected token 'L', \"LIST_ERROR\"... is not valid JSON"
+    },
+    "ledger": {
+      "total": 98,
+      "mine": [
+        "econ-test-order-1790653219642:creator_share.json",
+        "econ-test-order-1790653219642:protocol_fee.json",
+        "econ-test-rf-order-1790653278753:creator_share.json",
+        "econ-test-rf-order-1790653278753:protocol_fee.json",
+        "econ-test-rf-order-1790653278753:refund:creator_share.json",
+        "econ-test-rf-order-1790653278753:refund:protocol_fee.json",
+        "econ-test-tip-1790653232785:creator_share.json",
+        "econ-test-tip-1790653232785:protocol_fee.json",
+        "econ-test-type-order-1790653438722:creator_share.json",
+        "econ-test-type-order-1790653438722:protocol_fee.json",
+        "ledger-order-1790653266447:creator_share.json",
+        "ledger-order-1790653266447:protocol_fee.json",
+        "p1-verify-order-1790653577495:creator_share.json",
+        "p1-verify-order-1790653577495:protocol_fee.json"
+      ]
+    }
+  },
+  "deleted": [],
+  "failed": []
+}

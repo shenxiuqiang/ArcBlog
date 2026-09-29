@@ -5,8 +5,8 @@
 | 编号 | BUG-063 |
 | 严重级 | P2 |
 | 发现轮次 | round-23 |
-| 关联 REQ | [REQ-030-list-pagination](../requirements/REQ-030-list-pagination.md)（L-R23-1 采用平台原生配方 / L-R23-2 假分页红线） |
-| 状态 | 待裁决 |
+| 关联 REQ | [REQ-030-list-pagination](../requirements/REQ-030-list-pagination.md)（L-R23-1 采用平台原生配方 / L-R23-2 假分页红线）；缓解轮次 REQ-032 §6（Lead L-R25-3） |
+| 状态 | **QA 独立复验（round-25，`task-108`）**：页级常驻说明（C1/C2）与恢复路径（C3）**通过**；平台边界（`arc-contracts §38`）属 Lead 写范围。**注意**：本条的平台限制**未消除**（选择器仍随分页器消失），只是**诚实缓解 + 边界登记** → 关闭与否请 PM 按「缓解是否足够」裁决 |
 
 ## 复现命令与最小步骤
 
@@ -76,3 +76,60 @@ $ node -e '…steps.paging.localStorageAfter'
 ## 备注（与 Dev 自述的差异，已在 round-23 报告 §7-4 记录）
 
 Dev 报告 A1 的方法写的是「把 `.aup-list-pager-size` 设成 100 ≈ 不分页，**再切回**；切回后数值/高度复原」。按上述实测，**设成 100 之后选择器已随分页器移除，无法「再切回」**；Dev 报告中的数值（`26734` / `69404`）与 QA 实测逐值相同，其复原应是通过直接写 `localStorage` 完成的（这也解释了共享 profile 里残留的 7 个 `aup-list-pagesize:<id>=20` 键，见 BUG-064）。建议 Dev 后续在报告里改用可复现的写法。
+
+---
+
+## QA 复验记录（round-25，`task-108`，2026-09-29）——独立取证，不采信 Dev 自述
+
+**方法与口径**：REQ-032 §6 的修法是「(a) 页级常驻说明 + (b) 平台边界登记（Lead）」。QA 只验 (a) 与判据 C1–C4；原始产物 `docs/team/test-reports/raw/round-25/qa-r25-all.json`（`steps.pagesize` / `steps.pagesizeRecovery`）+ `qa-r25-queue.mjs`。
+
+**C1 受影响列表页的常驻说明（en/zh 各 1 次真实渲染；`innerText` 命中即"真的渲染"，不是隐藏节点）**
+
+```text
+$ node docs/team/test-reports/raw/round-25/qa-r25-queue.mjs pagesize
+PAGESIZE {"enNote":{"ledger":true,"orders":true,"policy":true,"access":true,"dashboard":true,"posts":true,"tags":true,"store":true},
+          "zhNote":{"ledger":true,"orders":true,"policy":true,"access":true,"dashboard":true,"posts":true,"tags":true,"store":true}, …}
+# 8 页 × 2 语言全部 true；每页均为新 context（每语言一个），单 tab 导航
+```
+
+说明文案（en 渲染原文，zh 为同一 key 的对照译文）：
+
+```text
+Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as
+localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the
+total makes the platform drop the whole paginator — including the selector itself — so no in-page
+control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload.
+```
+
+**C2 零假条件 / 零写死条数**
+
+```text
+$ git diff -U0 -- .aup/pages | grep -E "^\+" | grep -o "visible=[^ )]*" | sort | uniq -c
+   1 visible=$state.open          # policy.aup 高级折叠（A 组，由 set 驱动）
+   1 visible=$state.open`;        # 同一行的注释文本（非可执行 DSL）
+$ git diff --stat -- .aup/pages
+ .aup/pages/economy/policy.aup | 128 ++++++++++---   （其中队列卡/高级区/A 组）
+ dashboard/posts/access/ledger/orders/tags/store 各 +2 行 = i18n key + 无条件 p :pagesize-note
+# 受影响 8 页里 7 页只新增「key + 无条件 p」；policy.aup 的 pagesize-note 同样无条件
+```
+
+**C3 复现 BUG-063 场景：选择器消失后说明仍在，删键后分页器恢复**
+
+```text
+$ 实测（?page=policy，列表 id policy-products-list，localStorage 键 aup-list-pagesize:policy-products-list）
+before      : keyValue=null, pagerButtons=2, note=true,  rows=27
+set  key=100: keyValue="100", pagerButtons=0, note=true,  rows=61     # 分页器（含选择器）消失，说明仍在
+remove key  : keyValue=null, pagerButtons=2, note=true,  rows=27      # 删除 localStorage 键 → 分页器恢复
+# 复现方式与 BUG-063 原文一致：直接写 localStorage 键（因为选择器本身已消失，页面内无法回退）
+```
+
+**C4 不回归 R23（真入口仍在）**
+
+```text
+$ 实测（?page=ledger）
+默认            : Pager 存在；URL 不变
+点击 Next       : URL → /?page=ledger&ledger-list.page=2     # 真的翻页，不是假分页
+深链 page=2     : URL → /?page=ledger&ledger-list.page=2     # ?<id>.page= 生效
+```
+
+**平台边界（不是 QA 写范围，仅核对存在）**：`docs/arc-contracts.md §38` 已登记「`aup-list-pagesize` 覆盖 + 分页器移除条件」（Lead 落笔）。本条的限制**没有被消除**——选择器仍然随分页器一起消失；本轮交付的是**诚实缓解 + 恢复路径 + 边界登记**。若 PM 认为「用户仍须手动清 localStorage」不可接受，则本条应保持开放并升级为需要平台能力的需求，而不是当作已修复。

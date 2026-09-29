@@ -15,6 +15,7 @@
 import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT, list, nowIso, remove } from './lib/arc.mjs';
+import { INTENT_STATUS, isInFlightStatus, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { findVerifiedAttribution } from './lib/attribution.mjs';
 import { scanPosts } from './lib/content-scan.mjs';
 import { resolveChainConfig, realChainHint } from './lib/chain.mjs';
@@ -110,6 +111,387 @@ function commandPolicyShow(opts, instance) {
   if (!record) fail('NOT_FOUND', `settlement policy not found: ${POLICY_PATH} (run: policy init)`);
   const example = splitAmount('10', record.value);
   console.log(JSON.stringify({ ok: true, path: POLICY_PATH, policy: record.value, exampleSplitOf10: example }, null, 2));
+}
+
+// --- policy intent queue (REQ-032 / D-R24-3 option ③) ------------------------
+//
+// The console can only rewrite records IT created (docs/arc-contracts.md §29.2):
+// `economy/policies/active.json` is written by this CLI, so a browser preset /
+// adapter click is refused with zero change (BUG-068). The page therefore
+// QUEUES the change — ONE record per click under `config/policy-intents/`, the
+// same contract every other console queue already uses (scripts/lib/intents.mjs
+// vocabulary D36, `<id>.json` naming D38, explicit non-.json diagnostics) — and
+// this CLI performs it with the ordinary policy writer:
+//
+//   policy request --action preset|adapter …   queue the same intent the page writes
+//   policy queue                               print the queue (read only)
+//   policy apply                               execute EVERY pending intent
+//   policy watch [--interval n]                keep applying
+//
+// The queue lives under the admin-only `config/` tree, so it is authorized by
+// the EXISTING `config` replicated collection: zero `blocklet.yaml` change, and
+// a guest read is refused. `ARCBLOG_POLICY_INTENTS_PATH` overrides the root so
+// tests never touch the live queue.
+
+export const POLICY_INTENTS_DIR = String(
+  process.env.ARCBLOG_POLICY_INTENTS_PATH || `${INSTANCE_ROOT}/config/policy-intents`,
+).replace(/\/+$/, '');
+
+/** The two console actions this queue carries. */
+export const POLICY_INTENT_ACTIONS = Object.freeze(['preset', 'adapter']);
+
+/** The terminal reason every rejected intent carries exactly once. */
+const POLICY_NO_DATA_CHANGED = 'no data changed';
+
+/**
+ * Read the queue root, keeping the `<id>.json` convention explicit (D38).
+ *
+ * The root is admin-writable, so an entry without the `.json` extension can
+ * exist (an operator, an agent, a future page). `apply` only ever consumes
+ * `<id>.json`, so such an entry would stay `pending` on the console page
+ * forever. Every read therefore returns a diagnostic per ignored entry instead
+ * of dropping it silently — the same wording as `arcblog-network.mjs`.
+ */
+function readPolicyQueueDir(dir, instance) {
+  const files = [];
+  const ignored = [];
+  for (const entry of list(dir, instance)) {
+    const raw = typeof entry === 'string' ? entry : entry?.path ?? entry?.id ?? entry?.key ?? '';
+    const name = String(raw).split('/').pop();
+    if (!name) continue;
+    if (!name.endsWith('.json')) {
+      ignored.push({
+        path: `${dir}/${name}`,
+        reason: `queue entries must be named <id>.json — "${name}" has no .json extension, so no worker will ever consume it (D38)`,
+      });
+      continue;
+    }
+    files.push(name);
+  }
+  return { files, ignored };
+}
+
+/** Every queued intent in queue order (oldest first), each with its record path. */
+export function scanPolicyQueue(instance) {
+  const dir = readPolicyQueueDir(POLICY_INTENTS_DIR, instance);
+  const intents = [];
+  for (const name of dir.files) {
+    const path = `${POLICY_INTENTS_DIR}/${name}`;
+    const stored = readJson(path, instance);
+    if (!stored) {
+      dir.ignored.push({ path, reason: 'queue entry could not be read — no worker will consume it (D38)' });
+      continue;
+    }
+    // D36 read-side compatibility (same shape as category/media/hub/chain): a
+    // record written before the vocabulary was unified is canonicalized and
+    // repaired in place, so the console never renders a word the legend does not
+    // define.
+    const { record, changed, from } = normalizeIntentRecord(stored.value);
+    if (changed) writeJson(path, record, instance, stored.ifMatch);
+    intents.push({ path, ...record, ...(changed ? { normalizedFrom: from } : {}) });
+  }
+  intents.sort((a, b) => String(a.requestedAt ?? '').localeCompare(String(b.requestedAt ?? '')));
+  return { intents, ignored: dir.ignored };
+}
+
+/** The queue without diagnostics — the shape callers that only want the rows use. */
+export function listPolicyIntents(instance) {
+  return scanPolicyQueue(instance).intents;
+}
+
+/**
+ * Queue one policy intent — the same record shape the console's buttons write.
+ *
+ * Only the ACTION is checked here. The business guards (does the triple sum to
+ * 1? is the adapter in the vocabulary?) are applied in `applyPolicyIntent`,
+ * because the page cannot validate either and a rejection must be written onto
+ * the record rather than thrown into a button click.
+ *
+ * A pending intent is never silently replaced (BUG-002): re-submitting the
+ * *same* intent is idempotent, a *different* one under the same id fails with
+ * CONFLICT instead of overwriting work that has not run yet.
+ */
+export function enqueuePolicyIntent(instance, { action, payload = null, by = '', via = 'cli', id = '' } = {}) {
+  const name = String(action ?? '').trim();
+  ensure(POLICY_INTENT_ACTIONS.includes(name), `unknown policy intent action: ${name || '(missing)'} (use ${POLICY_INTENT_ACTIONS.join('|')})`);
+  const intent = {
+    id: id || `policy-intent-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+    action: name,
+    payload: payload && typeof payload === 'object' && !Array.isArray(payload) ? payload : {},
+    status: INTENT_STATUS.pending,
+    message: 'queued — a local worker has not run this yet',
+    changed: [],
+    requestedVia: via,
+    requestedBy: String(by ?? ''),
+    requestedAt: nowIso(),
+    updatedAt: nowIso(),
+  };
+  const path = `${POLICY_INTENTS_DIR}/${intent.id}.json`;
+  const existing = readJson(path, instance)?.value ?? null;
+  // A record still in flight (`pending` OR a `running` claim whose worker died)
+  // is never silently overwritten (BUG-002 / BUG-051).
+  if (existing && isInFlightStatus(existing.status)) {
+    const same =
+      existing.action === intent.action && JSON.stringify(existing.payload ?? null) === JSON.stringify(intent.payload);
+    ensure(
+      same,
+      `intent "${intent.id}" is still pending (${existing.action}); run \`policy apply\` or \`policy watch\` first, or pick another --intent-id`,
+      'CONFLICT',
+    );
+  }
+  writeJson(path, intent, instance);
+  return intent;
+}
+
+/** The shares a preset intent must carry, in vocabulary order. */
+const POLICY_SHARES = Object.freeze(['creator', 'hub', 'protocol']);
+
+/**
+ * Validate the SHAPE of one intent without touching the policy record.
+ *
+ * This is the fail-closed gate: an unknown action, a missing payload, a missing
+ * / non-finite / out-of-range share, a triple that does not sum to 1, or a
+ * `paymentAdapter` outside `ADAPTERS` all throw BEFORE anything is built or
+ * written, so `apply` records `rejected` with a reason and zero data change.
+ * The rules are the EXISTING ones (`validateSettlementPolicy` + `ADAPTERS`) —
+ * this function adds no new business semantics.
+ */
+export function validatePolicyIntent(intent) {
+  const action = String(intent?.action ?? '').trim();
+  ensure(POLICY_INTENT_ACTIONS.includes(action), `unknown policy intent action: ${action || '(missing)'} (use ${POLICY_INTENT_ACTIONS.join('|')})`);
+  const payload = intent?.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload) ? intent.payload : null;
+  ensure(payload, `${action}: an intent payload object is required — ${POLICY_NO_DATA_CHANGED}`);
+  if (action === 'adapter') {
+    const paymentAdapter = String(payload.paymentAdapter ?? '').trim();
+    ensure(paymentAdapter, `adapter: payload.paymentAdapter is required — ${POLICY_NO_DATA_CHANGED}`);
+    ensure(
+      ADAPTERS.includes(paymentAdapter),
+      `adapter: paymentAdapter "${paymentAdapter}" is not one of: ${ADAPTERS.join(', ')} — ${POLICY_NO_DATA_CHANGED}`,
+    );
+    return { action, paymentAdapter, shares: null };
+  }
+  const shares = {};
+  for (const share of POLICY_SHARES) {
+    const raw = payload[share];
+    ensure(
+      raw !== undefined && raw !== null && String(raw).trim() !== '',
+      `preset: payload.${share} is required — ${POLICY_NO_DATA_CHANGED}`,
+    );
+    const value = Number(raw);
+    ensure(Number.isFinite(value), `preset: payload.${share} "${raw}" is not a finite number — ${POLICY_NO_DATA_CHANGED}`);
+    ensure(value >= 0 && value <= 1, `preset: payload.${share} must be a fraction between 0 and 1 — ${POLICY_NO_DATA_CHANGED}`);
+    shares[share] = value;
+  }
+  // The sum rule is the existing one (basis points, exact): never re-implemented.
+  const verdict = validateSettlementPolicy({ version: 'v1', ...shares });
+  ensure(verdict.ok, `preset: ${verdict.issues.join('; ')} — ${POLICY_NO_DATA_CHANGED}`);
+  return { action, shares, paymentAdapter: null };
+}
+
+/**
+ * Append the terminal "no data changed" reason **once** (BUG-057 shape): the
+ * thrown message may already carry it, and appending blindly would render
+ * `… — no data changed — no data changed` on the console page.
+ */
+function withNoDataChanged(message) {
+  const text = String(message ?? '').trim();
+  if (!text) return POLICY_NO_DATA_CHANGED;
+  return text.includes(POLICY_NO_DATA_CHANGED) ? text : `${text} — ${POLICY_NO_DATA_CHANGED}`;
+}
+
+/** Field names whose value really differs between two records. */
+function changedFields(before, after) {
+  const keys = new Set([...Object.keys(before ?? {}), ...Object.keys(after ?? {})]);
+  const changed = [];
+  for (const key of keys) {
+    if (JSON.stringify(before?.[key] ?? null) !== JSON.stringify(after?.[key] ?? null)) changed.push(key);
+  }
+  return changed.sort();
+}
+
+/**
+ * Execute one intent and write the outcome back onto its own record.
+ *
+ * The write path is the ordinary policy writer: the existing record is read
+ * FIRST and merged (the `policy init --update` semantics — `buildSettlementPolicy`
+ * keeps `version`, `createdAt` and every field the intent does not name),
+ * `validateSettlementPolicy` + `ADAPTERS` are re-checked at execution time, and
+ * only then is `economy/policies/active.json` written. Nothing else in
+ * `economy/policies/` is touched, no ledger entry is written, and a terminal
+ * record is never re-executed (idempotence).
+ *
+ * IDEMPOTENCE BY VALUE: when the record already carries exactly the values the
+ * intent asks for, the outcome is `noop` and the policy record is not written at
+ * all — `updatedAt` is not refreshed either, so a repeated preset click really
+ * changes zero bytes.
+ */
+export function applyPolicyIntent(instance, intent) {
+  const recordPath = typeof intent.path === 'string' && intent.path ? intent.path : `${POLICY_INTENTS_DIR}/${intent.id}.json`;
+  const next = { ...intent };
+  delete next.path;
+  const previous = String(intent.status ?? '').trim();
+  if (isTerminalStatus(previous)) {
+    next.status = INTENT_STATUS.noop;
+    next.message = `already ${previous}${intent.appliedAt ? ` at ${intent.appliedAt}` : ''} — not executed again`;
+    next.updatedAt = nowIso();
+    writeJson(recordPath, next, instance);
+    return next;
+  }
+  try {
+    const verdict = validatePolicyIntent(intent);
+    const existing = readJson(POLICY_PATH, instance);
+    const current = existing?.value ?? null;
+    const target =
+      verdict.action === 'adapter'
+        ? { paymentAdapter: verdict.paymentAdapter }
+        : { creator: verdict.shares.creator, hub: verdict.shares.hub, protocol: verdict.shares.protocol };
+    const describe = (values) => Object.entries(values).map(([key, value]) => `${key}=${value}`).join(' / ');
+    const alreadyThere =
+      current !== null &&
+      Object.entries(target).every(([key, value]) =>
+        typeof value === 'number' ? Number(current[key]) === value : String(current[key]) === String(value),
+      );
+    if (alreadyThere) {
+      next.status = INTENT_STATUS.noop;
+      next.changed = [];
+      next.elapsedMs = null;
+      next.message = `${verdict.action}: ${POLICY_PATH} already carries ${describe(target)} — ${POLICY_NO_DATA_CHANGED}`;
+    } else {
+      const policy = buildSettlementPolicy(
+        verdict.action === 'adapter' ? { paymentAdapter: verdict.paymentAdapter } : { ...verdict.shares },
+        { existing: current },
+      );
+      const checked = validateSettlementPolicy(policy);
+      ensure(checked.ok, `${verdict.action}: ${checked.issues.join('; ')}`);
+      ensure(ADAPTERS.includes(policy.paymentAdapter), `paymentAdapter must be one of: ${ADAPTERS.join(', ')}`);
+      writeJson(POLICY_PATH, policy, instance, existing?.ifMatch ?? undefined);
+      next.status = INTENT_STATUS.applied;
+      next.changed = changedFields(current, policy);
+      next.appliedAt = nowIso();
+      next.elapsedMs = null;
+      next.message =
+        verdict.action === 'adapter'
+          ? `adapter applied: paymentAdapter=${policy.paymentAdapter} written to ${POLICY_PATH}`
+          : `preset applied: creator=${policy.creator} hub=${policy.hub} protocol=${policy.protocol} written to ${POLICY_PATH}` +
+            (current ? ' (version, createdAt and every unnamed field are unchanged)' : ' (policy record created — none existed)');
+    }
+  } catch (err) {
+    next.status = INTENT_STATUS.rejected;
+    next.code = err.code || 'RUNTIME_ERROR';
+    next.changed = [];
+    next.elapsedMs = null;
+    next.message = withNoDataChanged(err.message);
+  }
+  next.updatedAt = nowIso();
+  writeJson(recordPath, next, instance);
+  return next;
+}
+
+/** Drain every pending intent (oldest first), reporting ignored queue entries. */
+export function runPendingPolicyIntents(instance) {
+  const { intents, ignored } = scanPolicyQueue(instance);
+  const pending = intents.filter((intent) => isInFlightStatus(intent.status));
+  const applied = pending.map((intent) => applyPolicyIntent(instance, intent));
+  return { applied: applied.length, intents: applied, queueEntryIgnored: ignored.length, ignored };
+}
+
+/** Compact projection of a result record for CLI output. */
+function policyReport(intent) {
+  return {
+    id: intent.id,
+    action: intent.action,
+    target: intent.action === 'adapter' ? intent.payload?.paymentAdapter ?? '' : JSON.stringify(intent.payload ?? {}),
+    status: intent.status,
+    ...(intent.code ? { code: intent.code } : {}),
+    changed: intent.changed ?? [],
+    ...(intent.appliedAt ? { appliedAt: intent.appliedAt } : {}),
+    message: intent.message,
+  };
+}
+
+function commandPolicyRequest(opts, instance) {
+  // No business validation here on purpose (same as `request` in
+  // arcblog-network.mjs): the page's button cannot validate either, so
+  // `request` reproduces a submission verbatim and `apply` decides. Values are
+  // kept as given (`Number(…)` happens in the validator) so a negative or
+  // non-numeric share reaches the fail-closed guard instead of being coerced.
+  const action = optString(opts.action) || 'preset';
+  const payload =
+    action === 'adapter'
+      ? { paymentAdapter: optString(opts['payment-adapter']) }
+      : { creator: optString(opts.creator), hub: optString(opts.hub), protocol: optString(opts.protocol) };
+  const intent = enqueuePolicyIntent(instance, {
+    action,
+    payload,
+    by: optString(opts.by),
+    via: 'cli',
+    id: optString(opts['intent-id']),
+  });
+  console.log(JSON.stringify({ ok: true, action: 'policy-request', path: `${POLICY_INTENTS_DIR}/${intent.id}.json`, intent }, null, 2));
+}
+
+function commandPolicyQueue(opts, instance) {
+  const { intents, ignored } = scanPolicyQueue(instance);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        path: POLICY_INTENTS_DIR,
+        count: intents.length,
+        intents: intents.map(policyReport),
+        // D38/BUG-049: the queue root only accepts `<id>.json`; anything else is
+        // reported here instead of disappearing into a permanent `pending` row.
+        queueEntryIgnored: ignored.length,
+        ...(ignored.length ? { ignored } : {}),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+function commandPolicyApply(opts, instance) {
+  const result = runPendingPolicyIntents(instance);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        action: 'policy-apply',
+        applied: result.applied,
+        intents: result.intents.map(policyReport),
+        queueEntryIgnored: result.queueEntryIgnored,
+        ...(result.queueEntryIgnored ? { ignored: result.ignored } : {}),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/** Paths already reported by the watch loop — once per process, not per tick. */
+const reportedPolicyQueueDiagnostics = new Set();
+
+function commandPolicyWatch(opts, instance) {
+  const seconds = Math.max(1, Number(optString(opts.interval) || '3') || 3);
+  const tick = () => {
+    try {
+      const result = runPendingPolicyIntents(instance);
+      for (const entry of result.ignored ?? []) {
+        if (reportedPolicyQueueDiagnostics.has(entry.path)) continue;
+        reportedPolicyQueueDiagnostics.add(entry.path);
+        console.error(`[${nowIso()}] queue entry ignored — ${entry.path}: ${entry.reason}`);
+      }
+      if (result.applied) {
+        const summary = result.intents.map((intent) => `${intent.id}:${intent.status}`).join(', ');
+        console.log(`[${nowIso()}] applied ${result.applied} intent(s) — ${summary}`);
+      }
+    } catch (err) {
+      // A single bad tick (instance restart, transient read) must not kill the worker.
+      console.error(`[${nowIso()}] ${err.message}`);
+    }
+  };
+  tick();
+  setInterval(tick, seconds * 1000);
 }
 
 // --- products ---------------------------------------------------------------
@@ -897,6 +1279,30 @@ Resources live under ${ECONOMY_DIR}. Payment and settlement are separate phases
 to the order amount exactly. Paying a purchase of content also writes an Access
 Grant (spec §37/§88); a tip never does (spec §36).
 
+The console page (?page=policy) cannot rewrite ${POLICY_PATH} — the platform
+only lets a browser rewrite a record IT created (§29.2/BUG-068) — so its preset
+and adapter controls write ONE intent record each under
+${POLICY_INTENTS_DIR} (nested inside the admin-only
+config/ tree, so no permission change is needed) and this CLI performs it:
+  node scripts/arcblog-economy.mjs policy request --action preset --creator 0.80 --hub 0.15 --protocol 0.05
+  node scripts/arcblog-economy.mjs policy request --action adapter --payment-adapter none
+  node scripts/arcblog-economy.mjs policy queue
+  node scripts/arcblog-economy.mjs policy apply
+  node scripts/arcblog-economy.mjs policy watch [--interval <seconds>]
+
+\`policy queue\` prints that queue (read only), \`policy apply\` / \`policy watch\`
+execute it, and the outcome (pending | running | applied | rejected | noop + a
+reason) is written back onto the record — the SAME vocabulary every other queue
+uses (scripts/lib/intents.mjs, D36). \`apply\` reads the existing policy FIRST and
+merges (the \`policy init --update\` semantics), so \`version\`, \`createdAt\` and
+every field the intent does not name survive; an intent whose values the record
+already carries ends as \`noop\` with zero bytes written. A preset that does not
+sum to 1, a negative / non-finite share, or a \`paymentAdapter\` outside
+${ADAPTERS.join('|')} is \`rejected\` with a reason and ZERO change. Nothing here
+writes a ledger entry, and no historical policy record is ever deleted (§29).
+Queue entries must be named <id>.json; any other name is reported as a
+diagnostic (\`queueEntryIgnored\`) and never consumed (D38/BUG-049).
+
 Read-only reconciliation (REQ-021 stage-2 P1, spec §44/§89–§92): \`order verify\`
 and \`settlement reconcile\` classify every target into exactly four states —
 verified | mismatch | not-on-chain | no-hash — from the record's
@@ -924,7 +1330,12 @@ produced (including 0 records or mismatch rows), 1 = the command could not run
     if (cmd === 'policy') {
       if (sub === 'init') return commandPolicyInit(args, instance);
       if (sub === 'show') return commandPolicyShow(args, instance);
-      fail('VALIDATION', `unknown policy command: ${sub ?? '(none)'} (use init|show)`);
+      // REQ-032 / D-R24-3 ③: the console's policy intent queue (page buttons → this worker).
+      if (sub === 'request') return commandPolicyRequest(args, instance);
+      if (sub === 'queue') return commandPolicyQueue(args, instance);
+      if (sub === 'apply') return commandPolicyApply(args, instance);
+      if (sub === 'watch') return commandPolicyWatch(args, instance);
+      fail('VALIDATION', `unknown policy command: ${sub ?? '(none)'} (use init|show|request|queue|apply|watch)`);
     }
     if (cmd === 'product') {
       if (sub === 'add') return commandProductAdd(args, instance);

@@ -1,0 +1,42 @@
+
+> build
+> arc blocklet build && npm run scrub:dist-secrets
+
+Site artifact budget:
+  /sitemap.xml         raw     0.2 KB  gzip          —  ok
+  /sitemap-pages.xml   raw     0.6 KB  gzip          —  ok
+  /robots.txt          raw     0.1 KB  gzip          —  ok
+  /llms.txt            raw     0.5 KB  gzip          —  ok
+  /llms-full.txt       raw     0.0 KB  gzip          —  ok
+Warning: Pre-render produced no .web-cache/ artifact for 2 built-in route(s) of "/Users/shenxiuqiang/workspace/ArcBlog": /p/en/search/, /p/zh/search/. The runtime serves these on every site, so each one falls through to a request-time SiteServer.init() — the slowest path there is (measured at 16.2s of a 17.5s response on a cold isolate). This is a pre-render bug, not a content problem: run `arc blocklet build` locally to see the render error. Pre-render was not explicitly requested (default-on); set ARC_PRERENDER=1 to make this a hard failure.
+Pre-rendered 5 web pages (theme/site-config changed) → .web-cache/
+Access exceptions materialised: 0 → .web-cache/.access.json
+Published 1112 file(s) → /Users/shenxiuqiang/workspace/ArcBlog/dist
+  .afs/manifest.json  (http-mount protocol)
+  blocklet.dist.json  (flat manifest)
+  instance: requires /instance DID Space
+
+Next: arc blocklet run /Users/shenxiuqiang/workspace/ArcBlog
+
+Deploy to CF Pages:
+  arc blocklet deploy /Users/shenxiuqiang/workspace/ArcBlog --project <project-name>
+
+> scrub:dist-secrets
+> node scripts/arcblog-dist-secrets.mjs
+
+{
+  "action": "scrub",
+  "distDir": "/Users/shenxiuqiang/workspace/ArcBlog/dist",
+  "dryRun": false,
+  "removed": [
+    ".env.local",
+    "node.key"
+  ],
+  "privateKeyRemoved": [],
+  "manifestRemoved": [
+    ".env.local",
+    "node.key"
+  ],
+  "manifestFilesBefore": 1112,
+  "manifestFilesAfter": 1110
+}

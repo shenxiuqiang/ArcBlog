@@ -7,6 +7,15 @@ page policy {
     account-secret-refusal { en "This page never accepts or stores a mnemonic, private key or seed phrase. The node key stays on the node (never in a record, never in a page)." zh "本页绝不接受或存储助记词、私钥或助记种子。节点密钥只留在节点上（绝不进记录、绝不进页面）。" }
     account-title { en "Payout account" zh "收款账户" }
     desc { en "The split policy and the product catalogue." zh "分成策略与商品目录。" }
+    adv-desc { en "Operators can drive the same queue from the CLI. It stays available and copyable, but it is NOT the only path — every control above queues a real intent record." zh "运维可以用 CLI 驱动同一个队列。CLI 保持可用、可复制，但它**不再是唯一路径**——上方每个控件都会写入一条真实的意图记录。" }
+    adv-hide { en "Hide advanced details" zh "收起高级详情" }
+    adv-show { en "Show advanced details" zh "展开高级详情" }
+    adv-title { en "Advanced / CLI" zh "高级 / CLI" }
+    cmd-apply { en "Execute the queued intents once" zh "执行一次队列中的意图" }
+    cmd-queue { en "Print the queue (read only)" zh "只读打印队列" }
+    cmd-request-adapter { en "Queue an adapter change from the CLI" zh "用 CLI 排队一次适配器变更" }
+    cmd-request-preset { en "Queue a split from the CLI" zh "用 CLI 排队一次分成" }
+    cmd-watch { en "Keep executing queued intents" zh "常驻执行队列中的意图" }
     down-confirm-msg { en "Sets visibility to private. Existing orders are untouched (a price change or a delisting never rewrites a settled order)." zh "把 visibility 置为 private。既有订单不受影响（改价或下架绝不重写已成交订单）。" }
     down-confirm-title { en "Take this product offline?" zh "下架该商品？" }
     edit-desc { en "Writes ONLY priceAmount on the record you name (mode tree-merge). Every other field is left byte-for-byte untouched; a product id that does not exist is refused with NOT_FOUND and zero change." zh "只写你指定记录上的 priceAmount（mode tree-merge）。其余字段逐字节不变；不存在的商品 id 会被拒绝（NOT_FOUND）且零改动。" }
@@ -30,11 +39,15 @@ page policy {
     new-creator { en "creatorDid" zh "creatorDid" }
     new-desc { en "Create is mode=create: the platform refuses a path that already exists, so re-submitting an existing id is rejected with zero change instead of overwriting the record." zh "新建使用 mode=create：平台会拒绝已存在的路径，因此对已存在 id 的重复提交会被拒绝且零改动，而不是覆盖记录。" }
     new-id { en "id" zh "id" }
-    new-note { en "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy are shared by the two buttons below; type and visibility are required constrained selects, so an empty or out-of-vocabulary value cannot be submitted. A non-subscription product writes periodDays 0 — legal, because only a subscription needs a period; a subscription is created by its own button below, whose periodDays select carries positive values only. The CLI (product add) remains the typed authority." zh "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy 由下方两个按钮共用；type 与 visibility 是 required 的受控选择框，空值与词汇表外的取值都无法提交。非订阅商品写入 periodDays 0——这是合法的，因为只有订阅需要周期；订阅由下方独立按钮创建，其 periodDays 选择框只提供正数值。带类型的权威入口仍是 CLI（product add）。" }
-    new-period { en "periodDays" zh "periodDays" }
-    new-sub-note { en "This button writes type=subscription and reads periodDays from a required select of positive values only (7 / 30 / 90 / 365) — the page can therefore never submit subscription + periodDays 0. The other fields are the shared ones above; an empty forced select value is refused by the platform (required) with zero change." zh "该按钮写入 type=subscription，periodDays 来自只含正数值的 required 选择框（7 / 30 / 90 / 365）——本页因此永远无法提交 subscription + periodDays 0。其余字段使用上方共用值；被强制置空的选择框会被平台按 required 拒绝且零改动。" }
-    new-sub-save { en "Create subscription" zh "新建订阅" }
+    new-note { en "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy are shared by the buttons below; type and visibility are required constrained selects, so an empty or out-of-vocabulary value cannot be submitted. This button writes periodDays as the JSON number 0 — legal, because only a subscription needs a period, and world/product.yaml declares `number` (BUG-070: a form input can only yield text, so a literal is the only way to land a number). The CLI (product add) remains the typed authority." zh "id / creatorDid / priceAmount / priceAsset / visibility / settlementPolicy 由下方按钮共用；type 与 visibility 是 required 的受控选择框，空值与词汇表外的取值都无法提交。本按钮把 periodDays 写成 JSON 数字 0——这是合法的，因为只有订阅需要周期，且 world/product.yaml 声明的是 `number`（BUG-070：表单只能产出文本，因此字面量是落数字的唯一途径）。带类型的权威入口仍是 CLI（product add）。" }
+    new-period { en "periodDays (world/product.yaml declares a NUMBER): each button writes its period as a real JSON number — there is no period <select>, because a form value is always text and would land as \"30\" (BUG-070)." zh "periodDays（world/product.yaml 声明为 NUMBER）：每个按钮把周期写成真正的 JSON 数字——这里没有周期 <select>，因为表单值永远是文本，会落成 \"30\"（BUG-070）。" }
+    new-sub-7 { en "7 days" zh "订阅 7 天" }
+    new-sub-30 { en "30 days" zh "订阅 30 天" }
+    new-sub-90 { en "90 days" zh "订阅 90 天" }
+    new-sub-365 { en "365 days" zh "订阅 365 天" }
+    new-sub-note { en "Each button below writes type=subscription plus a REAL JSON number periodDays (7 / 30 / 90 / 365). The value is a bare literal, never an interpolated form value: on this platform an exec `content` preserves number literals (probe 2026-09-29: a page-written record read back typeof number) while \"${args.x}\" always lands as a string, which is what BUG-070 was. The other fields are the shared ones above." zh "下方每个按钮写入 type=subscription，并把 periodDays 写成真正的 JSON 数字（7 / 30 / 90 / 365）。该值是裸字面量，不是插值的表单值：本平台上 exec 的 `content` 会保留数字字面量（2026-09-29 探针：页面写入的记录读回 typeof number），而 \"${args.x}\" 永远落成字符串，这正是 BUG-070。其余字段使用上方共用值。" }
     new-sub-title { en "New subscription" zh "新建订阅" }
+    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
     new-policy { en "settlementPolicy" zh "settlementPolicy" }
     new-price { en "priceAmount" zh "priceAmount" }
     new-save { en "Create product" zh "新建商品" }
@@ -46,16 +59,24 @@ page policy {
     policy-adapter-edit { en "Payment adapter" zh "支付适配器" }
     policy-adapter-note { en "Adapter options are generated from PAYMENT_ADAPTERS in scripts/lib/economy.mjs — the same definition policy init --payment-adapter accepts (console-nav --check fails on drift)." zh "适配器选项由 scripts/lib/economy.mjs 的 PAYMENT_ADAPTERS 生成——与 policy init --payment-adapter 接受的定义同源（漂移会被 console-nav --check 拦住）。" }
     policy-adapter-save { en "Save adapter" zh "保存适配器" }
-    policy-empty { en "How to set it: node scripts/arcblog-economy.mjs policy init" zh "如何设置：node scripts/arcblog-economy.mjs policy init" }
+    policy-empty { en "No policy record yet. A preset above queues one; the worker writes it with node scripts/arcblog-economy.mjs policy init." zh "尚无策略记录。点击上方预设即可入队；worker 会用 node scripts/arcblog-economy.mjs policy init 写入。" }
     policy-protocol-note { en "Protocol Fee transparency (spec §49): this record has no protocolRecipient field, so the console shows the protocol share only — there is no recipient to display, and none is invented." zh "Protocol Fee 公开（spec §49）：本记录没有 protocolRecipient 字段，因此本页只展示 protocol 比例——没有可展示的 recipient，也不编造。" }
+    queue-clear { en "Clear" zh "清除" }
+    queue-clear-msg { en "Deletes this intent record only. It does not touch economy/policies/active.json and does not undo a change the worker already applied." zh "只删除这条意图记录。不触碰 economy/policies/active.json，也不撤销 worker 已经应用的改动。" }
+    queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
+    queue-desc { en "One record per click under config/policy-intents. A click NEVER changes the policy itself: the node's local worker performs it (node scripts/arcblog-economy.mjs policy apply, or policy watch) and writes its outcome — status + reason — back onto the record." zh "每次点击在 config/policy-intents 下写一条记录。点击**绝不**改动策略本身：由本机 worker 执行（node scripts/arcblog-economy.mjs policy apply，或 policy watch），并把结果——状态 + 原因——回写到该记录上。" }
+    queue-empty { en "Nothing queued yet. A preset or adapter click adds one record here." zh "队列为空。点击预设或适配器会在此新增一条记录。" }
+    queue-legend { en "pending = queued, not run yet · running = claimed by the worker · applied = the policy really changed · rejected = refused, zero change · noop = already in that state, zero bytes written" zh "pending = 已排队、尚未执行 · running = worker 已认领 · applied = 策略真的改变了 · rejected = 被拒绝、零改动 · noop = 已是该状态、零字节写入" }
+    queue-standing-note { en "Standing rule: a control on this page only queues. The policy above is unchanged until the local worker runs — and a success toast is not evidence, so read the record back." zh "常驻规则：本页的控件只入队。本地 worker 运行之前，上方策略保持不变——成功 toast 不是证据，请读回记录。" }
+    queue-title { en "Policy intent queue" zh "策略意图队列" }
     policy-split { en "Split (creator / hub / protocol)" zh "分成（创作者 / Hub / 协议）" }
-    policy-sum-note { en "Every preset above is a complete triple that sums to exactly 1, so an invalid split cannot be written from this page. Arbitrary values stay in the CLI, where validateSettlementPolicy enforces the sum (policy init --update …)." zh "上方每个预设都是和为 1 的完整三元组，因此本页无法写出非法分成。任意取值仍走 CLI，由 validateSettlementPolicy 强制校验（policy init --update …）。" }
+    policy-sum-note { en "Every preset above is a complete triple that sums to exactly 1, so an invalid split cannot be queued from this page. Arbitrary values stay in the CLI (policy request … / policy init --update …), and the worker re-checks the sum with validateSettlementPolicy before writing — a hand-edited queue record that does not sum to 1 is rejected with zero change." zh "上方每个预设都是和为 1 的完整三元组，因此本页无法写出非法分成。任意取值仍走 CLI（policy request … / policy init --update …），且 worker 在写入前用 validateSettlementPolicy 重新校验和——手工改过、和不为 1 的队列记录会被拒绝且零改动。" }
     preset-1 { en "0.80 / 0.15 / 0.05" zh "0.80 / 0.15 / 0.05" }
     preset-2 { en "0.90 / 0.05 / 0.05" zh "0.90 / 0.05 / 0.05" }
     preset-3 { en "0.95 / 0.03 / 0.02" zh "0.95 / 0.03 / 0.02" }
     preset-4 { en "0.70 / 0.25 / 0.05" zh "0.70 / 0.25 / 0.05" }
     preset-5 { en "1.00 / 0.00 / 0.00" zh "1.00 / 0.00 / 0.00" }
-    preset-confirm-msg { en "Writes creator / hub / protocol on economy/policies/active.json with mode=tree-merge (version, createdAt and paymentAdapter are left untouched). Historical policy records are never deleted." zh "以 mode=tree-merge 把 creator / hub / protocol 写入 economy/policies/active.json（version、createdAt 与 paymentAdapter 不变）。历史策略记录绝不删除。" }
+    preset-confirm-msg { en "Queues creator / hub / protocol for economy/policies/active.json. This page does NOT write the policy record — the node's local worker merges the values (version, createdAt and every unnamed field survive) and writes the outcome back onto the queued record. Historical policy records are never deleted." zh "把 creator / hub / protocol 入队到 economy/policies/active.json。本页**不写**策略记录——由本机 worker 合并这些值（version、createdAt 及所有未涉及字段保持不变），并把结果回写到队列记录上。历史策略记录绝不删除。" }
     preset-confirm-title { en "Apply this split?" zh "应用该分成？" }
     preset-label { en "Preset splits (each sums to 1)" zh "预设分成（每个和为 1）" }
     product-down { en "Delist" zh "下架" }
@@ -66,13 +87,14 @@ page policy {
     products { en "Products" zh "商品" }
     products-desc { en "Catalogue from economy/products. Row actions only flip visibility between the two declared values; delete stays in the CLI (refused while orders or posts reference the product, spec §45/§50)." zh "目录来自 economy/products。行内动作只在两个已声明取值之间切换 visibility；删除仍在 CLI（被订单或文章引用时拒绝，spec §45/§50）。" }
     products-empty { en "How to add one: node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" zh "如何添加：node scripts/arcblog-economy.mjs product add --id <id> --creator-did <did> --price-amount <n>" }
-    rejected { en "Refused — nothing was written. A toast is not evidence: read the record back (the platform refuses an existing path in create mode and validates required/pattern fields before the write)." zh "已拒绝——未写入任何内容。toast 不是证据：请读回记录（create 模式拒绝已存在路径，并在写入前校验 required/pattern 字段）。" }
-    saved { en "Write accepted — read the record back: a success toast is not proof." zh "写入已接受——请读回记录：成功 toast 不是证据。" }
+    rejected { en "Refused — nothing was queued. A toast is not evidence: read config/policy-intents back (create mode refuses a path that already exists)." zh "已拒绝——未入队任何内容。toast 不是证据：请读回 config/policy-intents（create 模式拒绝已存在的路径）。" }
+    saved { en "Intent queued — read config/policy-intents back: a success toast is not proof, and the policy changes only when the worker runs." zh "意图已入队——请读回 config/policy-intents：成功 toast 不是证据，策略只在 worker 运行时才改变。" }
     title { en "Split policy" zh "分成策略" }
     up-confirm-msg { en "Sets visibility to public. No other field of the record is touched." zh "把 visibility 置为 public。记录其余字段不受影响。" }
     up-confirm-title { en "Publish this product?" zh "上架该商品？" }
-    write-guard { en "Platform rule (docs/arc-contracts.md §29.2): this console can only rewrite records IT created. A browser write to a record written by the CLI or by root is refused with 'network write target exists without a recoverable authority sidecar' and zero change — which is why the CLI-created economy/policies/active.json and the catalogue products pre-dating this page answer a preset / adapter / delist click with exactly that reason. Records created from this page are fully manageable (create, edit price, publish/delist); for the CLI-created ones use node scripts/arcblog-economy.mjs." zh "平台规则（docs/arc-contracts.md §29.2）：本控制台只能重写**它自己创建**的记录。对 CLI 或 root 写入的记录，浏览器写入会被拒绝（'network write target exists without a recoverable authority sidecar'）且零改动——这正是 CLI 创建的 economy/policies/active.json 与本页之前就存在的商品目录，对预设 / 适配器 / 上下架点击给出该理由的原因。本页创建的记录可完整管理（新建、改价、上下架）；CLI 创建的记录请用 node scripts/arcblog-economy.mjs。" }
-    write-note { en "Every write below goes to a declared replicated collection (economy-products / economy-policy) and is admin-only; read-backs are the evidence, not toasts." zh "下方每次写入都落在已声明的 replicated 集合（economy-products / economy-policy），且仅限 admin；以读回为证据，而非 toast。" }
+    worker-note { en "Queued — executed by the LOCAL worker on this node, not by this page: node scripts/arcblog-economy.mjs policy apply (once) or policy watch (keep running). Until that worker runs, the policy shown above is still the old one." zh "已排队，由本机 worker 执行——不是本页执行：node scripts/arcblog-economy.mjs policy apply（执行一次）或 policy watch（常驻）。在该 worker 运行之前，上方显示的策略仍是旧值。" }
+    write-guard { en "This page queues policy changes; the node's local worker writes them with the CLI (node scripts/arcblog-economy.mjs policy apply|watch). The reason is recorded in docs/arc-contracts.md §29.2: only the process that created economy/policies/active.json may rewrite it, and that is this CLI — a direct browser write to it would be refused with zero change (BUG-068). Queuing keeps the history intact: the worker reads the record first and merges, so version, createdAt and every field the intent does not name survive, and no historical policy record is deleted (spec §29)." zh "本页把策略变更**排队**，由本机 worker 用 CLI 落库（node scripts/arcblog-economy.mjs policy apply|watch）。原因记录在 docs/arc-contracts.md §29.2：只有创建 economy/policies/active.json 的那个进程才能重写它，而那就是本 CLI——浏览器直写会被拒绝且零改动（BUG-068）。排队保持了历史完整：worker 先读记录再合并，因此 version、createdAt 及意图未涉及的字段都保持不变，也不删除任何历史策略记录（spec §29）。" }
+    write-note { en "A policy control below queues ONE record under config/policy-intents (admin-only, the existing config collection — no permission change); the product controls write economy/products directly. Read-backs are the evidence, not toasts." zh "下方策略控件在 config/policy-intents 下入队一条记录（仅 admin，复用既有 config 集合——零权限改动）；商品控件直接写 economy/products。以读回为证据，而非 toast。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -202,12 +224,19 @@ page policy {
                   // BUG-069: five fixed-label buttons in one non-wrapping `row` overflowed the
                   // card by 44px at 1803px (style whitelist has no wordBreak/flexWrap key,
                   // §29.8). A grid is the structural fix: cells wrap to a second row instead.
+                  // REQ-032 / D-R24-3 ③: BUTTON-FIRST. The platform lets a browser
+                  // rewrite only a record IT created (§29.2/BUG-068), and
+                  // economy/policies/active.json is created by the CLI, so a
+                  // direct write here is refused. Each button therefore queues
+                  // ONE intent record; the node's worker
+                  // (`node scripts/arcblog-economy.mjs policy apply|watch`)
+                  // performs it and writes the outcome back onto that record.
                   view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px", flexShrink: 0} {
-                    action variant=secondary size=sm label=:preset-1 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.8, hub: 0.15, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:preset-2 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.9, hub: 0.05, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:preset-3 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.95, hub: 0.03, protocol: 0.02, updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:preset-4 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 0.7, hub: 0.25, protocol: 0.05, updatedAt: "${generate.timeiso}"}}}}
-                    action variant=secondary size=sm label=:preset-5 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {creator: 1, hub: 0, protocol: 0, updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-1 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: preset, payload: {creator: 0.8, hub: 0.15, protocol: 0.05}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-2 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: preset, payload: {creator: 0.9, hub: 0.05, protocol: 0.05}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-3 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: preset, payload: {creator: 0.95, hub: 0.03, protocol: 0.02}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-4 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: preset, payload: {creator: 0.7, hub: 0.25, protocol: 0.05}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:preset-5 confirm={title: :preset-confirm-title, message: :preset-confirm-msg} onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: preset, payload: {creator: 1, hub: 0, protocol: 0}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
                   }
                   p :policy-sum-note scale=sm intent=muted
                   row gap=xs cross=center {
@@ -215,7 +244,7 @@ page policy {
                     // edit the list there, then run: node scripts/arcblog-console-nav.mjs
                     input type=select name=eAdapter label=:policy-adapter-edit required=true options=[{label: none, value: none}, {label: manual, value: manual}] value="${state.policy.paymentAdapter}"
                     // economy-adapters:end
-                    action variant=secondary size=sm label=:policy-adapter-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/policies/active.json", mode: tree-merge, content: {paymentAdapter: "${args.eAdapter}", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=secondary size=sm label=:policy-adapter-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/policy-intents/${generate.timeiso}.json", mode: create, content: {id: "${generate.timeiso}", action: adapter, payload: {paymentAdapter: "${args.eAdapter}"}, status: pending, message: "queued — a local worker has not run this yet", changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
                   }
                   p :policy-adapter-note scale=sm intent=muted
                   p :policy-protocol-note scale=sm intent=muted
@@ -225,12 +254,60 @@ page policy {
                   p :account-secret-refusal scale=sm intent=muted
                   key-value-list dense=true fields=[{label: "$t(policy.account-cmd-init)", value: "node scripts/arcblog-economy.mjs policy init --update --creator 0.80 --hub 0.15 --protocol 0.05 --payment-adapter none", monospace: true, copyable: true}, {label: "$t(policy.account-cmd-show)", value: "node scripts/arcblog-economy.mjs policy show", monospace: true, copyable: true}]
                 }
+                // ---- Policy intent queue (REQ-032 / D-R24-3 ③) ------------------
+                // The queue: one record per click, carrying the worker's outcome
+                // (status / reason), subscribed live from the admin-only config/
+                // tree. Nothing on this page executes an intent.
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+                  p :worker-note scale=sm intent=muted
+                  p :queue-desc scale=sm intent=muted
+                  p :queue-legend scale=caption intent=muted
+                  afs-list policy-intents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/policy-intents" {
+                    row gap=sm cross=center role=item {
+                      view gap=xs style={flex: "1 1 0%"} {
+                        row gap=xs cross=center {
+                          p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                          p "${entry.content.action}" scale=sm
+                          p "${entry.content.status}" scale=sm
+                          view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                            time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                          }
+                        }
+                        p "${entry.content.message}" scale=sm intent=muted
+                      }
+                      action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
+                    }
+                  }
+                  p :queue-empty scale=sm intent=muted
+                  p :queue-standing-note scale=caption intent=muted
+                }
+                // Advanced: the CLI is a folded ALTERNATIVE, never the only path.
+                // The collapse is a `-> set policy-advanced state {open: "true"}`
+                // patch plus an expression `visible=$state.open`; the values are
+                // strings because boolean literals trip the DSL formatter's
+                // round-trip guard (ArcBlock/arc#2764) — same as hub/media.
+                view policy-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h3 :adv-title level=3 style={fontSize: "var(--type-body)"}
+                  p :adv-desc scale=sm intent=muted
+                  row cross=start {
+                    action -> set policy-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                  view gap=sm visible=$state.open {
+                    key-value-list policy-queue-cmds dense=true fields=[{label: "$t(policy.cmd-queue)", value: "node scripts/arcblog-economy.mjs policy queue", monospace: true, copyable: true}, {label: "$t(policy.cmd-apply)", value: "node scripts/arcblog-economy.mjs policy apply", monospace: true, copyable: true}, {label: "$t(policy.cmd-watch)", value: "node scripts/arcblog-economy.mjs policy watch", monospace: true, copyable: true}]
+                    key-value-list policy-enqueue-cmds dense=true fields=[{label: "$t(policy.cmd-request-preset)", value: "node scripts/arcblog-economy.mjs policy request --action preset --creator 0.80 --hub 0.15 --protocol 0.05", monospace: true, copyable: true}, {label: "$t(policy.cmd-request-adapter)", value: "node scripts/arcblog-economy.mjs policy request --action adapter --payment-adapter none", monospace: true, copyable: true}]
+                    row cross=start {
+                      action -> set policy-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                    }
+                  }
+                }
                 // ---- Product catalogue + management ----------------------------
                 // R23 contract kept as-is: this list is `pagination=manual` with
                 // pageSize=20 and a stable explicit id (REQ-030 / arc-contracts §38).
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   h2 :products level=2 style={fontSize: "var(--type-body)"}
                   p :products-desc scale=sm intent=muted
+                  p :pagesize-note scale=caption intent=muted
                   afs-list policy-products-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:products-empty pagination=manual pageSize=20 from "/instance/app/arcblog/economy/products" {
                     row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       view gap=xs style={flex: "1 1 0%"} {
@@ -273,16 +350,23 @@ page policy {
                       input type=text name=ePolicy label=:new-policy required=true pattern="[A-Za-z0-9._-]{1,32}"
                     }
                     row gap=xs {
-                      action variant=primary size=sm label=:new-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: "${args.eType}", contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                      action variant=primary size=sm label=:new-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: "${args.eType}", contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: 0, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
                     }
                     p :new-note scale=sm intent=muted
                     h3 :new-sub-title level=3 style={fontSize: "var(--type-body)"}
                     p :new-sub-note scale=sm intent=muted
+                    // BUG-070: periodDays is declared `number` in world/product.yaml
+                    // and buildProduct writes a number, so the period is a bare
+                    // numeric literal here — a form input can only yield TEXT
+                    // (`"${args.x}"` always lands as a string, measured R24/R25),
+                    // which is why there is no period <select>: one button per
+                    // period, each writing a real JSON number.
+                    p :new-period scale=sm intent=muted
                     row gap=xs cross=center {
-                      input type=select name=eSubPeriod label=:new-period required=true options=[{label: "7", value: "7"}, {label: "30", value: "30"}, {label: "90", value: "90"}, {label: "365", value: "365"}]
-                    }
-                    row gap=xs {
-                      action variant=primary size=sm label=:new-sub-save onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: "${args.eSubPeriod}", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                      action variant=primary size=sm label=:new-sub-7 onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: 7, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                      action variant=primary size=sm label=:new-sub-30 onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: 30, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                      action variant=primary size=sm label=:new-sub-90 onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: 90, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                      action variant=primary size=sm label=:new-sub-365 onSuccessToast={intent: success, message: "$t(policy.saved)", duration: 2500} onErrorToast={intent: error, message: "$t(policy.rejected)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/economy/products/${args.ePid}.json", mode: create, content: {id: "${args.ePid}", creatorDid: "${args.eCreator}", type: subscription, contentId: "${args.eContent}", priceAmount: "${args.ePrice}", priceAsset: "${args.eAsset}", visibility: "${args.eVisibility}", settlementPolicy: "${args.ePolicy}", periodDays: 365, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
                     }
                   }
                   view gap=xs {

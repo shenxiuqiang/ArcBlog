@@ -22,15 +22,15 @@
     },
     {
       "path": ".aup/locales/en.json",
-      "size": 89373,
+      "size": 95574,
       "contentType": "application/json",
-      "sha256": "bec9e08904d00e826722929de655570589d8730fd32577728fa714432a0a76e9"
+      "sha256": "8f49096f6c0d13286c812e6d96564a2a5af2eb94265cac08838528a8aa94d787"
     },
     {
       "path": ".aup/locales/zh.json",
-      "size": 86179,
+      "size": 92103,
       "contentType": "application/json",
-      "sha256": "b1cd8e390c74d66ae76c1d3f0514de36ae96e54ae11162d699433d273635e098"
+      "sha256": "2724a9d429057c8ff75d81d82b7e767ee03c4480ad5fdc2065b9671a61e39b84"
     },
     {
       "path": ".aup/man/about.yaml",
@@ -220,9 +220,9 @@
     },
     {
       "path": ".aup/pages/admin/dashboard.aup",
-      "size": 23618,
+      "size": 24484,
       "contentType": "application/octet-stream",
-      "sha256": "be348b9f7ce56d8f605e069122f7a5eb61f999ae483ac245e17817b5d8e31f83"
+      "sha256": "cb94949832f6af57f0345a62a4d97ff713c3e12b5b7b9e4406834e248442f526"
     },
     {
       "path": ".aup/pages/admin/diagnostics.aup",
@@ -244,9 +244,9 @@
     },
     {
       "path": ".aup/pages/admin/posts.aup",
-      "size": 26543,
+      "size": 27409,
       "contentType": "application/octet-stream",
-      "sha256": "a6e3d3d337eab8aa0fe683b3eb8e17ee48916cff9c38e4f81779ae11734b5f88"
+      "sha256": "98d84a419e6884e6768fa7a4a8ef0522e796aa41ee69f6424ea8830335531f1c"
     },
     {
       "path": ".aup/pages/author.aup",
@@ -262,27 +262,27 @@
     },
     {
       "path": ".aup/pages/economy/access.aup",
-      "size": 11533,
+      "size": 12401,
       "contentType": "application/octet-stream",
-      "sha256": "5144ab5c500aef441d48b87505e196b50d194b7fce6e294af5b30605b5ee8636"
+      "sha256": "969c024b632bc35014555970d528c5806db69a89b9c77aefe784776e3586b409"
     },
     {
       "path": ".aup/pages/economy/ledger.aup",
-      "size": 25641,
+      "size": 26507,
       "contentType": "application/octet-stream",
-      "sha256": "5d429b86877d756e284912d27575c2503cfcd90454499524ef409da7ffc85617"
+      "sha256": "9aa058329cd74d9cdca9f03678e40946b7dd4c625df0d50d9702daeec7a31765"
     },
     {
       "path": ".aup/pages/economy/orders.aup",
-      "size": 24761,
+      "size": 25627,
       "contentType": "application/octet-stream",
-      "sha256": "7542c7100dacc0b9fe5437e865135ff748386512abd1798228850810fffc3a67"
+      "sha256": "beb47c59110029318bb3092253dd009f0d6b9f1177a774b1471671afb44c4a93"
     },
     {
       "path": ".aup/pages/economy/policy.aup",
-      "size": 35426,
+      "size": 49646,
       "contentType": "application/octet-stream",
-      "sha256": "3041d6c6ad98cc9dac40cc649cafcb909a7bde1394d72d19b075519d66bb0f4a"
+      "sha256": "3d878b320f0b97daaba529a89c4e0310c26fd3ddeb604a14663bb9ad688c0bc7"
     },
     {
       "path": ".aup/pages/index.aup",
@@ -394,15 +394,15 @@
     },
     {
       "path": ".aup/pages/site/tags.aup",
-      "size": 21442,
+      "size": 22308,
       "contentType": "application/octet-stream",
-      "sha256": "28c3be4c036e543d8cb57518e97487a8b4fde781224e3c04d894be9ac73b4304"
+      "sha256": "eb57ca8c365e40a9ee4210fc947ece46d180619003906ca8ec05ddb66f520ac6"
     },
     {
       "path": ".aup/pages/store.aup",
-      "size": 3177,
+      "size": 4035,
       "contentType": "application/octet-stream",
-      "sha256": "f8f94420f80a7093797f1776c11a1b1307c55a20a41a9751ed2d28a391bae906"
+      "sha256": "b1926da2cf3aef424ba0dbbf2958a35b0c2ef77423a97e6dca94d44498a5ed1b"
     },
     {
       "path": ".aup/pages/store.json",
@@ -1336,9 +1336,9 @@
     },
     {
       "path": "docs/arc-contracts.md",
-      "size": 173577,
+      "size": 178802,
       "contentType": "text/markdown",
-      "sha256": "07a36eff7f4423d8077b03d27d24f4c1a0cbabc7267b4ec530789b70a438d4c5"
+      "sha256": "774df2ad00c9386c8ecd1d70b8ba167e9cc2a2616712f49cab54941baf9f63ce"
     },
     {
       "path": "docs/ArcBlog-admin-ui-design.md",
@@ -1348,9 +1348,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 90274,
+      "size": 93500,
       "contentType": "text/markdown",
-      "sha256": "d724e65a13d5dc434a0f4a60cc0011388689a868e386e7734d9f354514fd6e8f"
+      "sha256": "b92a592624ec4eb214372925474785f8ae659daf8b778521319356b2906beafa"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -1420,9 +1420,9 @@
     },
     {
       "path": "docs/operations-runbook.md",
-      "size": 48955,
+      "size": 50905,
       "contentType": "text/markdown",
-      "sha256": "2d1feb357e784e8b86ef4024ec2d4d0cab829677b577d96dab3d50dca4651e8f"
+      "sha256": "483e15920bf7387233cdc96e331954485a795517ef91f4b8561853131f822e6f"
     },
     {
       "path": "docs/persistence.md",
@@ -1462,9 +1462,9 @@
     },
     {
       "path": "docs/team/backlog.md",
-      "size": 1130813,
+      "size": 1194052,
       "contentType": "text/markdown",
-      "sha256": "407beb5bd5970b40bd141470239d55e7910a65ed584dbe27c9c478bcc378ce0d"
+      "sha256": "e419ab3d0ebe858aa0687e72539a2c2b3059b38d407c53c47ae0c3f5169ad9d6"
     },
     {
       "path": "docs/team/bootstrap.md",
@@ -1846,9 +1846,9 @@
     },
     {
       "path": "docs/team/bugs/BUG-063-pagesize-override-irreversible.md",
-      "size": 5917,
+      "size": 9860,
       "contentType": "text/markdown",
-      "sha256": "05e39157b4761eeab4cfbd51ebdb646999c5d7c06fb2f8c306d785296177807e"
+      "sha256": "048fd7c672907bf607855c096a95be369065ece58c388448ce0f3f9d0ffc36c3"
     },
     {
       "path": "docs/team/bugs/BUG-064-pinned-profile-pagesize-residue.md",
@@ -1888,15 +1888,33 @@
     },
     {
       "path": "docs/team/bugs/BUG-070-console-product-perioddays-string-type.md",
-      "size": 5137,
+      "size": 8681,
       "contentType": "text/markdown",
-      "sha256": "91c12b7cea2f681165f1b7583fe001521655a93e0f645b958fa2a73a2000dd49"
+      "sha256": "7686b6bd920fd4deeb7c0504f718234f6ef042953535c12e177e6e540577c9ac"
     },
     {
       "path": "docs/team/bugs/BUG-071-dist-secret-guard-not-enforced-on-documented-build-paths.md",
       "size": 5449,
       "contentType": "text/markdown",
       "sha256": "7da44bb2332dd71d68f479905b3ffec9e80bb2bcc1a3f8ebe78d6747281018d7"
+    },
+    {
+      "path": "docs/team/bugs/BUG-072-policy-queue-empty-state-always-rendered.md",
+      "size": 5370,
+      "contentType": "text/markdown",
+      "sha256": "bd068b3304346254a0b85cff5117f3a7136345f6b4a1514518cb0776236f64d1"
+    },
+    {
+      "path": "docs/team/bugs/BUG-073-policy-running-status-never-written.md",
+      "size": 5602,
+      "contentType": "text/markdown",
+      "sha256": "02a4acdc08b5133096924527a4739b1d6f7bde64536e1724d98c626f01e47b8f"
+    },
+    {
+      "path": "docs/team/bugs/BUG-074-deployment-artifacts-carry-real-private-key.md",
+      "size": 3021,
+      "contentType": "text/markdown",
+      "sha256": "725ed1071e84e26b0c2e3ef3d94ceee72fc177d4b3ad6ac0fede04f5ad9b3361"
     },
     {
       "path": "docs/team/design/raw/REQ-020-after-console.json",
@@ -2608,9 +2626,9 @@
     },
     {
       "path": "docs/team/journal/README.md",
-      "size": 94251,
+      "size": 100802,
       "contentType": "text/markdown",
-      "sha256": "89b873c2a5895db20980bd7aabdd6c578ed782e85d7d54b89947026376e99450"
+      "sha256": "5bc3b3e934609cad9a41c3db0df41678bbbec48de8af6f3659e078205030989a"
     },
     {
       "path": "docs/team/journal/round-10.md",
@@ -2707,6 +2725,12 @@
       "size": 30588,
       "contentType": "text/markdown",
       "sha256": "df5e62ead9cfbd87b4502f7d67076e2ec46d6b6e1dc0ed72a093e3066b75654f"
+    },
+    {
+      "path": "docs/team/journal/round-25.md",
+      "size": 28894,
+      "contentType": "text/markdown",
+      "sha256": "869d0fa29886567f0d805a02b7be559ba5433a98484030ff9539261fcabef9c4"
     },
     {
       "path": "docs/team/journal/round-6.md",
@@ -3025,6 +3049,18 @@
       "size": 54500,
       "contentType": "text/markdown",
       "sha256": "e613391f9e0d92e175a6dbb56f1032c6b9d91e490dd9d18469a0d1967c318b12"
+    },
+    {
+      "path": "docs/team/requirements/REQ-032-policy-intent-queue.md",
+      "size": 36941,
+      "contentType": "text/markdown",
+      "sha256": "eafad3faba12418f7cc67c5af34948468f23dc84ea8c34bb6239c0e45dc5de21"
+    },
+    {
+      "path": "docs/team/requirements/REQ-033-datalayer-phase0-probes.md",
+      "size": 58483,
+      "contentType": "text/markdown",
+      "sha256": "9a4bb54fd53bcc8758fbe5d71a8081f5ded7927e044fc6a17c14a950bb5d404c"
     },
     {
       "path": "docs/team/requirements/SPEC-APPROVAL-001-spec-revision-requests.md",
@@ -5469,6 +5505,288 @@
       "sha256": "d2e978fbc94c35010b47c4fd0b36734cd9dc02c0b883eab14bac66b81fe72c19"
     },
     {
+      "path": "docs/team/test-reports/raw/round-25/.a2-after.json",
+      "size": 503,
+      "contentType": "application/json",
+      "sha256": "8332fe352aa5c6bef8a1b78ce007fe167dea9175ab77510a81e7ad6bc9a3edc8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.a2-before.json",
+      "size": 503,
+      "contentType": "application/json",
+      "sha256": "8332fe352aa5c6bef8a1b78ce007fe167dea9175ab77510a81e7ad6bc9a3edc8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.d1a.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.d1a.out",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.d1b.out",
+      "size": 53,
+      "contentType": "application/octet-stream",
+      "sha256": "0568074e8a50635e732269c022e3fd8ebe86ff4797e6fc2d8d4c5ab8dc6c3e95"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.n5b.json",
+      "size": 520,
+      "contentType": "application/json",
+      "sha256": "9a09aea1dc10136158fbf1b86478f6d2e0a038d079fd830ad24007b2aaa1c4e9"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.neg-after.json",
+      "size": 503,
+      "contentType": "application/json",
+      "sha256": "8332fe352aa5c6bef8a1b78ce007fe167dea9175ab77510a81e7ad6bc9a3edc8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.neg-before.json",
+      "size": 503,
+      "contentType": "application/json",
+      "sha256": "8332fe352aa5c6bef8a1b78ce007fe167dea9175ab77510a81e7ad6bc9a3edc8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.pid-after",
+      "size": 6,
+      "contentType": "application/octet-stream",
+      "sha256": "d903ec248dd047abb8ae133a45c8dd27fdd6f3d5128573d9e290dee67508220c"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/.pid-before",
+      "size": 6,
+      "contentType": "application/octet-stream",
+      "sha256": "ada1ec23c54e3aa83e3e3e1d15fbb1e292b8006a9fe19d8019b089be153267d1"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/00-active-before.json",
+      "size": 500,
+      "contentType": "application/json",
+      "sha256": "22fdef19b3c376fc560c87ad5f0dce23fc073c555d2650fea25f904b604d4d82"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/01-validate.err",
+      "size": 0,
+      "contentType": "application/octet-stream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/01-validate.json",
+      "size": 1877,
+      "contentType": "application/json",
+      "sha256": "90cb463f2a3aa4263dd19eb3af4063c36b4af9ad920dd032a21a6840b1f50fd6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/02-npmtest.txt",
+      "size": 3456,
+      "contentType": "text/plain",
+      "sha256": "85080445b29f8e24262d6d3bd42a2703753ca285185dfe1e0c8c123ef01d95c8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/03-generate-check.txt",
+      "size": 114,
+      "contentType": "text/plain",
+      "sha256": "9ac2ec45b136ce9a7191a35c784e71a0ed719fb391b528f690651cfd9594a801"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/04-console-nav-check.txt",
+      "size": 53,
+      "contentType": "text/plain",
+      "sha256": "f56a954b310887a9fcf20e69bfdc9b997887d749f5ad8dd505f52c1381f3ca4d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/05-npm-build.txt",
+      "size": 1799,
+      "contentType": "text/plain",
+      "sha256": "9485b06964e3a72e474fbc4da35c3302bf7c455e2e043b6f9eede8e3abfefd12"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/06-worker-baseline.txt",
+      "size": 3051,
+      "contentType": "text/plain",
+      "sha256": "58ead6fbb72efb330cafc1f9f8a8bdee31a50b487f4739b5561327fc9fec0efd"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/07-worker-apply1.txt",
+      "size": 2046,
+      "contentType": "text/plain",
+      "sha256": "bd8f2d20da6ca1c74497ba5145f5689461c7e6992bba7671aacd4be17b4d92a4"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/08-worker-apply2.txt",
+      "size": 705,
+      "contentType": "text/plain",
+      "sha256": "9499b6beb2066f24f4efcd359ac6af9f65204f7301ff96259d01c180c293b393"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/09-worker-negatives.txt",
+      "size": 4471,
+      "contentType": "text/plain",
+      "sha256": "8a19911a9b9daa435964fdc7d5a5a38361a43162b5734a871e02cfdfd0fff195"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/10-worker-nonjson.txt",
+      "size": 1593,
+      "contentType": "text/plain",
+      "sha256": "63e9c11b2d486e2c17cab1fbf18a87b090ae324ac94292248d4c23973acf36e8"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/11-guest-403.txt",
+      "size": 1208,
+      "contentType": "text/plain",
+      "sha256": "efa5dd492b994522d6f7f1e1edb23e354d92827ab8af57f113e74e8e47121468"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/12-static-checks.txt",
+      "size": 2238,
+      "contentType": "text/plain",
+      "sha256": "0c38ec107711b709e4eff521ac8697994ebf0f57e72c2194f0d1e0bbeaecc1e5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/13-main-guard.txt",
+      "size": 627,
+      "contentType": "text/plain",
+      "sha256": "9f21e0a2f67b97171b08d4cc4a73a29b9cca878e753ac27fed57889c0ff63bfe"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/14-run-tests-suite.txt",
+      "size": 1059,
+      "contentType": "text/plain",
+      "sha256": "448b931fcee8a8cca6c3097a8490f700ebd151b1fa430e485f645ece69860daf"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/15-audit.log",
+      "size": 232,
+      "contentType": "text/plain",
+      "sha256": "bafa7b39b79db35967511d6a15b81ba8648041fbf8aa212fb6cd4201b4054307"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/16-runtime-acceptance.txt",
+      "size": 2679,
+      "contentType": "text/plain",
+      "sha256": "7487f8fcb406d02ce02985e9bbcf4c7829a5fd6146641f29396057cbdb5b978f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/17-recovery-read.txt",
+      "size": 795,
+      "contentType": "text/plain",
+      "sha256": "dbb26f0e13e3907783c8b573cc5f3999f174645b9394ab5a8a9b2b75bbe72060"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/18-restore-cleanup.txt",
+      "size": 1904,
+      "contentType": "text/plain",
+      "sha256": "44fe49f4e0c50a51e7ecc8be1246a1bd6e92b5042f9f6c205a0113238cc9421e"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/19-economy-live.txt",
+      "size": 1692,
+      "contentType": "text/plain",
+      "sha256": "29507c024f4361c2683c6b530bb55395f5591ad81264f0985347d11afecac5a5"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/20-clean-dryrun.txt",
+      "size": 2689,
+      "contentType": "text/plain",
+      "sha256": "575149dc2f672b3f2ac02aad1ac769bd1ca9b6d7139e9702679624a87d99b1fa"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/21-cleanup-dryrun.json",
+      "size": 3001,
+      "contentType": "application/json",
+      "sha256": "c42238e513c3f968e68351b31dac95bd6f1e6e50bdd1e3f5cc9639c0ef9658f0"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/21-surgical-cleanup.txt",
+      "size": 4860,
+      "contentType": "text/plain",
+      "sha256": "8db32e44bdcb8bde9c03859d5780d50fe86a3b3845a3e8f0a986b7e5fede3503"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/22-cleanup-confirm.json",
+      "size": 7165,
+      "contentType": "application/json",
+      "sha256": "f6bf099061bbeacd5fd0e81048b15e14c26589c8c41c6adc85c81b25e6a156a7"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/23-exit-codes.txt",
+      "size": 1401,
+      "contentType": "text/plain",
+      "sha256": "8e955078068d3e289de4804a908861dd725662ddbc779a847ed8aa990d69de54"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/24-final-gate.txt",
+      "size": 3709,
+      "contentType": "text/plain",
+      "sha256": "a1cd9ca3f06f3446d90d6138e1478acfb5c1df7d507b0e1c250ea5fe4628e321"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/25-final-build.txt",
+      "size": 1799,
+      "contentType": "text/plain",
+      "sha256": "67e34dc036c97b63fcaee90bebf9780f6f0c3d49e1451c80ed33adcf10c8ef76"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/26-final-build2.txt",
+      "size": 1799,
+      "contentType": "text/plain",
+      "sha256": "7ffb56187d980b795c4fd5a2f82574a7ce25866636563fabcc90f2b33db0ed6f"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-all.json",
+      "size": 71558,
+      "contentType": "application/json",
+      "sha256": "aee4e3f7335ef0ec4d4d02a534bbfce659064583e914b630d89edf5ad68a3bfa"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-audit.json",
+      "size": 10357,
+      "contentType": "application/json",
+      "sha256": "dc0d8affecbf5c23dc01edd9e1c89451af5bbf00c4257c658699e5b57e1e5b02"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-audit.mjs",
+      "size": 9012,
+      "contentType": "text/javascript",
+      "sha256": "79cddc0e839a12c0119194b9968b32fcdaa2dd2540eae71ca4327af13cd4353a"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-bug072.json",
+      "size": 2444,
+      "contentType": "application/json",
+      "sha256": "f4f8f911df2753973f7e35c20ce7cc1b7569b58bd739c8be56f195ba913d42d0"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-bug072.mjs",
+      "size": 4255,
+      "contentType": "text/javascript",
+      "sha256": "7bb0582d49049795c47a5cfa6790644973fc21b0adb461a5010fbe1436e57cb6"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-bug072b.json",
+      "size": 673,
+      "contentType": "application/json",
+      "sha256": "35ba5b683d03c7d2537280c658eb01c3c22783e3b826571bcd0aaba76e0c0092"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-cleanup.mjs",
+      "size": 2167,
+      "contentType": "text/javascript",
+      "sha256": "21e635456159bd9c3172b370bab2307dc10751c4f769e6c903fe1f1e4a0d7d1d"
+    },
+    {
+      "path": "docs/team/test-reports/raw/round-25/qa-r25-queue.mjs",
+      "size": 20802,
+      "contentType": "text/javascript",
+      "sha256": "1fc32463011a33867dcb7ca2ce7b377e88dfff227ea6e9936811a1bc7e02977f"
+    },
+    {
       "path": "docs/team/test-reports/REQ-026-reverify.md",
       "size": 16070,
       "contentType": "text/markdown",
@@ -5593,6 +5911,12 @@
       "size": 24046,
       "contentType": "text/markdown",
       "sha256": "7c81aed339c305394378a62c42b6d62b57fe04e55822dfd35d8d7bad2bc9a4b7"
+    },
+    {
+      "path": "docs/team/test-reports/round-25.md",
+      "size": 41945,
+      "contentType": "text/markdown",
+      "sha256": "03b2e7ccef7fdb23283659ec236824080cf4b73a7eb432d896423835e5ddaada"
     },
     {
       "path": "docs/team/test-reports/round-6-reverify.md",
@@ -5830,15 +6154,15 @@
     },
     {
       "path": "scripts/arcblog-economy.mjs",
-      "size": 44381,
+      "size": 63754,
       "contentType": "text/javascript",
-      "sha256": "b020a44a4efdb260b8128152f6316bf1a0340673ad1f683ca5143ea360788eff"
+      "sha256": "2cc85f4e23877f6f78e7702966b296c5a8c7d8492015c282358a0dcc9fc6bdb2"
     },
     {
       "path": "scripts/arcblog-economy.test.mjs",
-      "size": 46792,
+      "size": 54580,
       "contentType": "text/javascript",
-      "sha256": "68a843749b0797401c4e908239be9b23ff9ac5a6b531f7ebbce822acbcb869b3"
+      "sha256": "1c6d76a4329cca822f26f1ccbc4f96cd48994769859813070f4f6c662359323b"
     },
     {
       "path": "scripts/arcblog-factory.mjs",
@@ -5979,6 +6303,12 @@
       "sha256": "50fa174480ae949ff67a5ebbaff9f576fd6ebc9f60d0a53c2e895693e81b6a1b"
     },
     {
+      "path": "scripts/arcblog-run-tests.test.mjs",
+      "size": 3283,
+      "contentType": "text/javascript",
+      "sha256": "2538f152ee762ebf9ab17d956307a94705a1d09884441258a8980a92281a9fae"
+    },
+    {
       "path": "scripts/arcblog-runtime-ids.test.mjs",
       "size": 4355,
       "contentType": "text/javascript",
@@ -6076,9 +6406,9 @@
     },
     {
       "path": "scripts/lib/cli-flags.mjs",
-      "size": 6971,
+      "size": 7012,
       "contentType": "text/javascript",
-      "sha256": "c38d542abae5d1c257f8b0eb25b1add1381a5c62ddab7146cf78643c6b474544"
+      "sha256": "c8c15ec37a8f1b5f7dbfcecc5fb8ce2f417b02629cde0e5629666c334f76e824"
     },
     {
       "path": "scripts/lib/content-hash.mjs",
@@ -6178,15 +6508,15 @@
     },
     {
       "path": "scripts/run-tests.mjs",
-      "size": 6174,
+      "size": 7997,
       "contentType": "text/javascript",
-      "sha256": "b303a515480b64e187db497b45c7771194e46c898d2a2f8f54a42945e69eb523"
+      "sha256": "afde9b8a9677eefce9ebdc8d1c92c8e7441d48ae67a80cc45b880b10e2a2df13"
     },
     {
       "path": "scripts/ui-budget-baseline.json",
-      "size": 2940,
+      "size": 2941,
       "contentType": "application/json",
-      "sha256": "ae2d8277bc9882270d2c2f3f56a7d04d6f5c8c25f3249c52a33514d86278dca5"
+      "sha256": "9968a4967936dcc59ee2f659f2f93a7d1a65ec5865ce243aac3c8459055cc235"
     },
     {
       "path": "seed/settings/arcblog/palette.json",

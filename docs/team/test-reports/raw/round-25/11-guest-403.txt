@@ -1,0 +1,16 @@
+=== A6 GUEST 403 2026-09-29T03:35:28Z ===
+--- POST /api/afs/rpc type=list path=/instance/app/arcblog/config/policy-intents (NO cookies) ---
+HTTP 403
+{"ok":false,"error":"Forbidden at /instance/app/arcblog/config/policy-intents: role 'guest' is below readRole 'admin'","code":"AFS_FORBIDDEN"}
+--- POST type=read of one pending-turned-applied intent ---
+HTTP 403
+{"ok":false,"error":"Forbidden at /instance/app/arcblog/config/policy-intents/2026-09-29T03:30:53.378Z.json: role 'guest' is below readRole 'admin'","code":"AFS_FORBIDDEN"}
+--- control: guest read of the PUBLIC policy record must NOT be 403 ---
+HTTP 200
+{"ok":true,"data":{"id":"active.json","path":"/instance/app/arcblog/economy/policies/active.json","createdAt":"2026-09-23T11:07:49.932Z","updatedAt":"2026-09-29T03:34:40.932Z","content":"{\n  \"versio
+--- control: guest read of economy/products (public) ---
+HTTP 200
+{"ok":true,"data":[{"id":"econ-test-fc-product-1790621430746.json","path":"/instance/app/arcblog/economy/products/econ-t
+--- control: guest read of drafts (admin-only) must also be 403 ---
+HTTP 403
+{"ok":false,"error":"Forbidden at /instance/app/arcblog/drafts: role 'guest' is below readRole 'admin'","code":"AFS_FORBIDDEN"}

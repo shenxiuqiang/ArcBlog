@@ -1,0 +1,35 @@
+=== A8/A9 STATIC CHECKS 2026-09-29T03:35:31Z ===
+--- grep -rn "status: .\(done\|failed\)" scripts/ .aup/ ---
+scripts/arcblog-chain-worker.test.mjs:143:  writeJson(legacyDone, { id: `legacy-done-${stamp}`, action: 'claim', role: 'studio', status: 'done', requestedAt: '2026-01-01T00:00:00.000Z' });
+scripts/arcblog-chain-worker.test.mjs:144:  writeJson(legacyFailed, { id: `legacy-failed-${stamp}`, action: 'acquire', role: 'studio', status: 'failed', error: 'boom', requestedAt: '2026-01-01T00:00:01.000Z' });
+scripts/arcblog-category.test.mjs:265:      { id: 'r19-legacy-done', action: 'merge', from: 'legacy_a', to: 'legacy_b', rawFrom: 'legacy_a', rawTo: 'legacy_b', status: 'done', message: '', requestedAt },
+scripts/arcblog-tags.test.mjs:418:      { id: doneId, action: 'merge', from: 'legacy_a', to: 'legacy_b', rawFrom: 'legacy_a', rawTo: 'legacy_b', status: 'done', message: '', migrated: 1, requestedAt },
+scripts/arcblog-tags.test.mjs:423:      { id: failedId, action: 'merge', rawFrom: 'legacy_a', rawTo: 'legacy_b', status: 'failed', message: 'boom', requestedAt },
+hits=0
+--- grep -rn "status:\s*\(done\|failed\)" scripts/arcblog-economy.mjs .aup/pages/economy/policy.aup ---
+hits=1
+--- literal status words written by the page (policy.aup) ---
+235:status: pending
+236:status: pending
+237:status: pending
+238:status: pending
+239:status: pending
+247:status: pending
+--- INTENT_STATUS usage in economy script ---
+18:import { INTENT_STATUS, isInFlightStatus, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
+189:    const { record, changed, from } = normalizeIntentRecord(stored.value);
+221:    status: INTENT_STATUS.pending,
+233:  if (existing && isInFlightStatus(existing.status)) {
+333:  if (isTerminalStatus(previous)) {
+334:    next.status = INTENT_STATUS.noop;
+355:      next.status = INTENT_STATUS.noop;
+368:      next.status = INTENT_STATUS.applied;
+379:    next.status = INTENT_STATUS.rejected;
+393:  const pending = intents.filter((intent) => isInFlightStatus(intent.status));
+--- git diff -- blocklet.yaml (must be empty) ---
+rc=0
+--- git diff -- world/ (must be empty) ---
+rc=0
+--- new visible= added by this round (git diff of .aup pages) ---
+   1 visible=$state.open
+   1 visible=$state.open`;

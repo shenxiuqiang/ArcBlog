@@ -5,7 +5,7 @@
     "nested": 0,
     "ctrl": 7,
     "styles": 36,
-    "i18n": 43,
+    "i18n": 44,
     "tech": 11
   },
   "posts": {
@@ -14,7 +14,7 @@
     "nested": 0,
     "ctrl": 42,
     "styles": 34,
-    "i18n": 42,
+    "i18n": 43,
     "tech": 13
   },
   "pages": {
@@ -59,7 +59,7 @@
     "nested": 0,
     "ctrl": 6,
     "styles": 24,
-    "i18n": 36,
+    "i18n": 37,
     "tech": 11
   },
   "seo": {
@@ -131,17 +131,17 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 21,
-    "i18n": 58,
+    "i18n": 59,
     "tech": 16
   },
   "policy": {
     "blocks": 1,
-    "cards": 3,
+    "cards": 5,
     "nested": 0,
-    "ctrl": 24,
-    "styles": 31,
-    "i18n": 73,
-    "tech": 22
+    "ctrl": 29,
+    "styles": 43,
+    "i18n": 95,
+    "tech": 36
   },
   "access": {
     "blocks": 1,
@@ -149,7 +149,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 8,
-    "i18n": 9,
+    "i18n": 10,
     "tech": 1
   },
   "ledger": {
@@ -158,7 +158,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 21,
-    "i18n": 47,
+    "i18n": 48,
     "tech": 16
   },
   "factory": {

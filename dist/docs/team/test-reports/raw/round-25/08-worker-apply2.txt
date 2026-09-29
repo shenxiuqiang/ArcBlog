@@ -1,0 +1,34 @@
+=== APPLY #2 (idempotence) 2026-09-29T03:34:46Z ===
+version 1790652880932.6794-155467735-192
+{
+  "version": "v1",
+  "creator": 0.95,
+  "hub": 0.03,
+  "protocol": 0.02,
+  "paymentAdapter": "manual",
+  "createdAt": "2026-09-23T11:07:49.535Z",
+  "updatedAt": "2026-09-29T03:34:40.601Z"
+}
+
+--- command ---
+{
+  "ok": true,
+  "action": "policy-apply",
+  "applied": 0,
+  "intents": [],
+  "queueEntryIgnored": 0
+}
+exit=0
+version 1790652880932.6794-155467735-192
+{
+  "version": "v1",
+  "creator": 0.95,
+  "hub": 0.03,
+  "protocol": 0.02,
+  "paymentAdapter": "manual",
+  "createdAt": "2026-09-23T11:07:49.535Z",
+  "updatedAt": "2026-09-29T03:34:40.601Z"
+}
+
+content byte-identical: True
+meta.version identical: True

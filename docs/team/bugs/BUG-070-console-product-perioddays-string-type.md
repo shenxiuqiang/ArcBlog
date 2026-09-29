@@ -5,8 +5,8 @@
 | 编号 | BUG-070 |
 | 严重级 | **P2**（数据/契约类型不一致；已验证**无功能中断**，故不按 P1 处理，理由见「影响范围」） |
 | 发现轮次 | round-24f（QA task-104 复验 BUG-066 正例时发现） |
-| 关联 REQ | REQ-031 §3/W3（商品新建）；schema 出处 `world/product.yaml:11` |
-| 状态 | 待裁决 |
+| 关联 REQ | REQ-031 §3/W3（商品新建）；schema 出处 `world/product.yaml:11`；修复轮次 REQ-032 §5（Lead L-R25-3） |
+| 状态 | **QA 独立复验（round-25，`task-108`）：「可表达数字」分支成立，已修复 → 建议 PM 关闭**（复验记录见文末：page 落 `periodDays: 0` / `7` 均为 JSON **number**，探针商品已删、`economy/products` 回 54） |
 
 ## 复现命令与最小步骤
 
@@ -80,3 +80,58 @@ $ sed -n '11p' world/product.yaml
 - `.aup/pages/economy/policy.aup:276`（非订阅按钮 `periodDays: "0"`）与 `:285`（订阅按钮 `periodDays: "${args.eSubPeriod}"`）
 - `world/product.yaml:11`（`periodDays: number`）
 - `scripts/lib/economy.mjs:142`（CLI `buildProduct` 用 `Number(...)`）
+
+---
+
+## QA 复验记录（round-25，`task-108`，2026-09-29）——独立取证，不采信 Dev 自述
+
+**方法与口径**：REQ-032 §5 要求**先探针**（spec §150），再判分支。QA 的探针 = 真实浏览器点击写入 → `arc afs exec … read` 读回 → `typeof`。原始产物：`docs/team/test-reports/raw/round-25/qa-r25-all.json`（`steps.products`）、`qa-r25-queue.mjs`。
+
+**命令与真实输出**：
+
+```text
+$ node docs/team/test-reports/raw/round-25/qa-r25-queue.mjs products
+PRODUCTS {"baselineCount":54,"ids":{"ART":"qa25-art-1790652644207","SUB":"qa25-sub-1790652644207"},
+          "artFill":"{\"id\":\"qa25-art-1790652644207\",…,\"type\":\"article\",…}",
+          "artClick":"clicked:Create product", … }
+
+# 读回（同一 JSON）：
+art  periodDays = 0            typeof = number   priceAmount = "1.50"  typeof = string
+sub  periodDays = 7            typeof = number   type = "subscription"
+art content {"id":"qa25-art-1790652644207","creatorDid":"did:blocklet:arcblog","type":"article","contentId":"",
+             "priceAmount":"1.50","priceAsset":"USDC","visibility":"public","settlementPolicy":"active",
+             "periodDays":0,"createdAt":"2026-09-29T03:33:09.033Z","updatedAt":"2026-09-29T03:33:09.033Z"}
+sub content {"id":"qa25-sub-1790652644207",…,"type":"subscription",…,"periodDays":7,…}
+# 订阅按钮不再来自 <select>：DOM 实测 periodSelect=false、sub7/sub30/sub90/sub365=true
+# （即 "7 days"/"30 days"/"90 days"/"365 days" 四个按钮，各自写裸数字字面量）
+
+baseline 54 → after 56 → after cleanup 54    baselineRestored = true
+```
+
+**同一探针的旁证**（队列意图的 payload 也走同一条 `exec content` 通道）：
+
+```text
+$ arc afs exec … read …/config/policy-intents/2026-09-29T03:30:53.378Z.json
+"payload": { "creator": 0.95, "hub": 0.03, "protocol": 0.02 }     # typeof 三者皆 number
+```
+
+**判据结论**：
+
+| 判据 | 结论 | 证据 |
+| ---- | ---- | ---- |
+| B1 先探针、有真实命令 + 原始输出 | **通过** | 上两段：页面点击 → AFS 读回 → `typeof`；未臆造平台能力 |
+| B2 落 number，与 CLI 一致，`validateProduct` `issues: []`，探针删除、products 回 54 | **通过** | `periodDays` = `number`（0 / 7）；`products` 54 → 56 → 54 |
+| B3（若不可表达才适用） | **不适用** | 平台**可表达**裸数字字面量；`priceAmount` 保持 string（`world/product.yaml:7` 即 `string`） |
+
+**读侧归一化（即使 B2 成立也一并核对，作为回归保护）**：
+
+```text
+$ grep -n "Number(" scripts/lib/economy.mjs
+76:    const raw = Number(policy[share]);
+94/95/96: Number(input.creator|hub|protocol …)
+142:    periodDays: Number(input.periodDays ?? existing?.periodDays ?? 0) || 0,   # buildProduct
+163:  if (str(product.type) === "subscription" && !(Number(product.periodDays) > 0))  # validateProduct
+300:  const periodDays = Number(product?.periodDays ?? 0);                        # resolveAccessExpiry
+```
+
+**残留**：探针商品 `qa25-art-*` / `qa25-sub-*` 已定向删除；`economy/products` 回到基线 54。**受限**：本轮未复验 CLI `product add` 侧的 `--period-days` 新写入（既有实现未改，且 `npm test` + 定向 live 全绿）。

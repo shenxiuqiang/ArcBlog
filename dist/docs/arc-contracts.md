@@ -1722,7 +1722,9 @@ REQ-021 阶段一只读，**未调用任何 `send*` 方法**；真实发送路�
 `info: null`），而 `nodes.studio` 是真链哈希。**任何按文件头 `adapter` 决定是否查链的消费者，都会把模拟事实当链上事实**
 （今天没有页面渲染 hub，故未暴露；已在 BUG-043 立项）。
 
-## 33. provider 挂载 / 打包 / SQLite 供应（数据层设计取证，2026-09-28，只读实测）
+## 40. provider 挂载 / 打包 / SQLite 供应（数据层设计取证，2026-09-28，只读实测）
+
+> 编号说明（R25 修正）：本节原与「§33 意图队列」重号；现改为 **§40**，R25 阶段 0 探针结论紧随其后（§41–§43），使数据层主题连续。
 
 > 用途：spec §154（AFS 真源 + SQLite 派生）的**平台事实底座**。本节只登记事实与置信度，不做设计结论。
 > 全部为只读手段取得（`arc ... --help`、`--dry-run --json`、`ps eww`、读 `assets/**`、`grep`），**未写任何文件、未挂载任何 provider**。
@@ -2019,3 +2021,60 @@ afs-list <stable-id>  layout=list itemStyle=row  subscribe=true  clickMode=none 
 **(4) 另一条同轮暴露的纪律根因**：`scripts/run-tests.mjs` **没有 main 守卫**，
 `node -e "import('./scripts/run-tests.mjs')"` 会**直接开跑 live 层**（实测触发了一次，30/30 文件被立即 kill，
 仅 1 条残渣并已清理）。**测试入口应加 main 守卫**（只有直接执行才跑），已排 R25。
+
+---
+
+## 41. `mounts:` 必须显式声明；模块挂载**确实被加载**，但**声明的路径在 flat topology 不可寻址**（R25 阶段 0 实测）
+
+**(1) 不写 `mounts:` 就没有挂载。** `providers/` **不在**平台保留目录名单里（`blocklet-spec.md` §6.1），
+所以「把 provider 放进 `providers/` 就自动生效」是错的：负面控制实测——有 `providers/probe/` 但 `blocklet.yaml` 无 `mounts:`
+→ `dist/blocklet.dist.json` 为 `"mounts": []`。本仓现状：`blocklet.yaml` 无 `mounts:`、`providers/` 空
+→ **今天 ArcBlog 零自定义 provider 挂载**。
+
+**(2) 写了就会被加载（动态证据，非静态推断）。** 探针 provider 的 `onMount(root, mountPath)` **确实被调用**，
+且实参 `mountPath === "/probe"`（声明路径被采纳）；`onMount` 内 `registerCustomAction` 注册的动作出现在
+`arc afs ls /blocklets/<probe-id>/.actions` 并可用 `arc afs exec /blocklets/<probe-id>/.actions/<id>` 调用成功。
+
+**(3) 但 `/blocklets/<id>/probe` 这类**声明路径**取不到**：`arc afs ls /blocklets/<id>/probe` → `No data found`；
+`arc afs exec /blocklets/<id>/probe/.actions/ping` 与 `arc afs exec /probe/.actions/ping` → `No module found for path … in namespace 'default'`。
+机制依据 `blocklet-afs-vs-flat-topology.md` §1.3：flat topology **不挂 blocklet 自定义 provider**。
+⇒ **唯一可达面 = blocklet 根 `/.actions/<id>`**（即 `onMount` 里 `registerCustomAction` 的 id）。
+**因此页面/CLI 读写数据层必须经根自定义动作暴露，不能假设 `mounts[].path` 可寻址。**
+⚠️ 该错误串（`No module found for path: X in namespace 'default'`）是**命名空间寻址错位**的通用信号，
+**不能**据此判定「挂载没被加载」。
+
+**(4) F8 归因订正**：数据层取证 §33（现 §40）里「失败点是挂载没被加载」的结论**不成立**；
+scope 与安装方式两个怀疑方向也都被证伪（探针同样 `scope: app`、同样走本地 daemon 注册路径）。
+
+## 42. `required` 是**整包生死开关**：`required: true` + 坏挂载 ⇒ 整个 blocklet 不激活（且 CLI 静默 exit 0）
+
+实测对照：
+| 场景 | `/blocklets/<id>` | daemon 日志 | `arc blocklet run` |
+| --- | --- | --- | --- |
+| `required: true` + 无法解析的 mount target | **完全不存在** | `warn afs:core [createBlockletAFS] Module mount … failed: Cannot find module …` + `warn node:server [mountAndActivateBlocklet] register … failed:` | **exit 0（静默）** |
+| `required: false` + 同样的坏 target | 完整存在（激活成功） | 只有 `afs:core … failed` 一条 warn | exit 0 |
+
+⇒ **I 组 §155 T1-1 现写的 `required: true` 必须改成 `false`**：`true` 会让一次挂载写错就**整站起不来**，
+而且 `arc blocklet run` **不会**以非零退出码告诉你；`false` 天然就是 §154.6 I7 要的**降级路径**（挂载失败、站点照常）。
+两条配套纪律：① **CLI 退出码不得作为激活判据**，必须读 `/blocklets/<id>`（或 grep daemon 日志）；
+② `arc blocklet build` **不校验** mount target（构建期无法发现这类错误）。
+
+## 43. 发布/取件命令面，与**部署产物会带私钥**（R25 阶段 0 + 安全发现）
+
+**(1) 命令面**：beta.50 **没有 `arc blocklet publish`**（子命令表实测），但打包/发布能力在别处：
+`arc deploy <path> --publish`（目标 Local DID Space，`--dry-run` 显示 `Files: N`，零网络零鉴权）、
+`arc deploy <path> --server`（需鉴权）、`arc blocklet deploy --cloud cf`（需 `CLOUDFLARE_API_TOKEN`+`ACCOUNT_ID`）、
+`arc blocklet instance deploy`（本地 Pages，`--domain` 必填）。
+取件产物 = `deployments/<id>/files/` + `meta.json`（逐文件 sha256）；staging 侧另有
+`aliases.json` 与 **`bundle.json`（path → 全文内联）**。
+**Marketplace 是普通 AFS Index，不托管 blocklet 本体** ⇒ 「一键部署」的取件端要**自建 index 条目**，平台无官方商店钩子。
+
+**(2) 跨平台**：`arc blocklet build` 不 `npm install`、不编译，只整树复制 + 写 `dist/.afs/manifest.json`（逐文件 sha256）。
+⇒ 零第三方依赖的 `.mjs` provider 原样进包、原样被 daemon import，**无「按平台编译 native」的约束**
+（`bun:sqlite` 是编译进 arc 单二进制的内建能力，不是 addon）；一旦引入 native addon 即破。
+
+**(3) 🔴 部署产物会带私钥（BUG-074，P1）**：`~/.arc/pages/projects/<project>/deployments/<id>/files/node.key`
+含**真实 Ed25519 私钥**（`-----BEGIN PRIVATE KEY-----`，119 B），同级还带 `package-lock.json` 等不该进包的文件。
+这是 **BUG-067 未被覆盖的另一条通道**：`npm run build` 的 `scrub:dist-secrets` 只管 `dist/**`，
+**管不到 Pages 部署产物**；而 `bundle.json` 会把这些文件**全文内联**，下发即泄漏。
+⇒ 发布前必须对**两条通道**都做产物级扫描（§155 T5-1/T5-5），并且**不得**把仓库根当发布根。

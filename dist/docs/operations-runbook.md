@@ -386,6 +386,39 @@ Rules the commands enforce:
   withheld and folded into the creator (`hubShareWithheld: true`). A hub DID on
   its own is a claim, not evidence.
 
+### Settlement policy from the console: the policy intent queue (REQ-032 / D-R24-3 ③)
+
+`?page=policy` cannot write `economy/policies/active.json` directly: the platform
+only lets a browser rewrite a record **it created**, and that record is created by
+this CLI (`docs/arc-contracts.md` §29.2 / BUG-068). The page therefore queues — one
+record per click under `config/policy-intents/<id>.json`, the same contract every
+other console queue uses — and a worker on the node performs it:
+
+```bash
+node scripts/arcblog-economy.mjs policy queue      # read the queue (writes nothing)
+node scripts/arcblog-economy.mjs policy apply      # execute every pending intent once
+node scripts/arcblog-economy.mjs policy watch      # keep executing (run under a supervisor)
+# queue one intent by hand (the same record the page's buttons write):
+node scripts/arcblog-economy.mjs policy request --action preset --creator 0.80 --hub 0.15 --protocol 0.05
+node scripts/arcblog-economy.mjs policy request --action adapter --payment-adapter none
+```
+
+What the worker guarantees:
+
+- `apply` reads `active.json` **first** and merges (the `policy init --update`
+  semantics), so `version`, `createdAt` and every field the intent does not name
+  survive; only `updatedAt` is refreshed.
+- An intent whose values the record already carries ends as **`noop` with zero
+  bytes written**; a terminal intent is never executed twice.
+- Fail closed: a triple that does not sum to 1, a negative / non-finite share, a
+  missing payload field or a `paymentAdapter` outside `none|manual` ends as
+  `rejected` with a reason and **zero change**.
+- It never writes a ledger entry and never deletes a historical policy record
+  (spec §29). Queue entries must be named `<id>.json`; any other name is reported
+  as `queueEntryIgnored` and never consumed.
+- The queue lives under the admin-only `config/` tree, so a guest read is refused
+  (403) and no `blocklet.yaml` change was needed.
+
 ### Read-only reconciliation (REQ-021 stage-2 P1) — zero chain writes, zero funds
 
 `order verify` and `settlement reconcile` answer "is this record's hash really on

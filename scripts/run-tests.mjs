@@ -37,11 +37,21 @@
  * live checks read it — with the default parallel file execution the doctor
  * intermittently saw another file's half-written state (its test failed ~1 run
  * in 3, always on a different check).
+ *
+ * IMPORTING THIS MODULE RUNS NOTHING (BUG-073 / L-R25-3): the runner lives in
+ * `runGate()`, and `main` is guarded by `isDirectExecution()`. Before the guard
+ * a bare `import('./scripts/run-tests.mjs')` executed the whole tier — during the
+ * R24F fix that meant an accidental full `test:live` (the user's named R24
+ * incident). Probe 2026-09-29: `node --input-type=module -e` reports
+ * `import.meta.main === true` (Node v24.14.0) for the ENTRY module, but the repo
+ * already has the portable idiom next door (`scripts/arcblog-clean.mjs` compares
+ * `process.argv[1]` with `fileURLToPath(import.meta.url)`), so the guard uses
+ * that comparison instead of an API that only exists on newer runtimes.
  */
 
 import { readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { findTestRecords } from './arcblog-clean.mjs';
@@ -60,83 +70,111 @@ const FAST_TESTS = new Set([
   'arcblog-hero-carousel',
   'arcblog-i18n',
   'arcblog-permissions',
+  'arcblog-run-tests',
   'arcblog-runtime-ids',
   'arcblog-theme',
   'arcblog-ui-budget',
 ]);
 
 const TIERS = ['fast', 'live', 'all'];
-const tier = (process.argv[2] ?? 'all').trim();
-if (!TIERS.includes(tier)) {
-  console.error(`unknown tier "${tier}" — use one of: ${TIERS.join(', ')}`);
-  process.exit(2);
-}
 
-const all = readdirSync(join(repoRoot, 'scripts'))
-  .filter((name) => name.endsWith('.test.mjs'))
-  .sort()
-  .map((name) => ({ name: name.replace(/\.test\.mjs$/, ''), path: join('scripts', name) }));
-
-const isFast = (entry) => FAST_TESTS.has(entry.name);
-const selected = tier === 'all' ? all : all.filter((entry) => (tier === 'fast' ? isFast(entry) : !isFast(entry)));
-
-console.log(
-  `tier: ${tier} — ${selected.length}/${all.length} file(s)` +
-    (tier === 'fast' ? ' (no instance writes)' : ' (writes to the dev instance; serial)') +
-    '\n',
-);
-
-const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1', ...selected.map((e) => e.path)], {
-  cwd: repoRoot,
-  stdio: 'inherit',
-  env: process.env,
-});
-
-const status = result.status ?? 1;
-if (status !== 0) {
-  console.log(
-    tier === 'fast' ? '\ntests failed' : '\ntests failed — keeping test residue so the failure can be inspected',
-  );
-  process.exit(status);
-}
-
-if (tier === 'fast') {
-  console.log(
-    '\nfast tier passed — this is the gate. For a change to a CLI / AFS record / chain adapter,\n' +
-      'run just the affected file: `npm run test:file -- scripts/<file>.test.mjs` (serial, writes\n' +
-      'the dev instance — take docs/team/.gate-lock first). The full `npm run test:live` is no\n' +
-      'longer a routine gate (user ruling 2026-09-27).',
-  );
-  process.exit(0);
-}
-
-if (process.env.ARCBLOG_NO_CLEAN) {
-  console.log('\nARCBLOG_NO_CLEAN set — keeping test residue');
-  process.exit(0);
-}
-
-// BUG-053: this is the ONLY branch of the gate that deletes anything, and a
-// single-file run of `scripts/arcblog-clean.test.mjs` used to reach it for real —
-// silently wiping every historical residue record on the developer's instance
-// (204 records measured in Round 19). `ARCBLOG_CLEAN_DRY_RUN=1` reports the exact
-// set the gate would delete (paths included) and removes nothing, so the test can
-// name the probe it expects to go without touching anyone's data. The real delete
-// path stays available for an explicit opt-in run.
-try {
-  const instance = resolveInstance({});
-  const residue = findTestRecords(instance);
-  const dryRun = process.env.ARCBLOG_CLEAN_DRY_RUN === '1';
-  if (dryRun) {
-    console.log(
-      `\nwould clean ${residue.length} test record(s) from the ${instance || 'default'} instance (dry run — nothing removed)`,
-    );
-    for (const record of residue) console.log(`  ${record.path}`);
-  } else {
-    for (const record of residue) remove(record.path, instance);
-    console.log(`\ncleaned ${residue.length} test record(s) from the ${instance || 'default'} instance`);
+/**
+ * True only when THIS file is the entry point of the process.
+ *
+ * `import.meta.url` is the module's own URL; `process.argv[1]` is the script the
+ * runtime was asked to run. When the module is imported (a test, a REPL, another
+ * CLI) argv[1] is that other file, so the runner stays silent. Both sides go
+ * through `resolve()`, so a relative argv entry (`node scripts/run-tests.mjs`)
+ * and an absolute one are the same thing.
+ */
+export function isDirectExecution(argv = process.argv, moduleUrl = import.meta.url) {
+  const entry = argv?.[1];
+  if (!entry) return false;
+  try {
+    return resolve(entry) === fileURLToPath(moduleUrl);
+  } catch {
+    return false;
   }
-} catch (err) {
-  // A cleanup problem must not turn a green test run red; report and move on.
-  console.log(`\ntest residue cleanup skipped: ${err.message}`);
 }
-process.exit(0);
+
+/** The gate itself — every side effect (spawn, cleanup, exit) lives in here. */
+export function runGate(tierArg = 'all') {
+  const tier = String(tierArg ?? 'all').trim();
+  if (!TIERS.includes(tier)) {
+    console.error(`unknown tier "${tier}" — use one of: ${TIERS.join(', ')}`);
+    process.exit(2);
+  }
+
+  const all = readdirSync(join(repoRoot, 'scripts'))
+    .filter((name) => name.endsWith('.test.mjs'))
+    .sort()
+    .map((name) => ({ name: name.replace(/\.test\.mjs$/, ''), path: join('scripts', name) }));
+
+  const isFast = (entry) => FAST_TESTS.has(entry.name);
+  const selected = tier === 'all' ? all : all.filter((entry) => (tier === 'fast' ? isFast(entry) : !isFast(entry)));
+
+  console.log(
+    `tier: ${tier} — ${selected.length}/${all.length} file(s)` +
+      (tier === 'fast' ? ' (no instance writes)' : ' (writes to the dev instance; serial)') +
+      '\n',
+  );
+
+  const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1', ...selected.map((e) => e.path)], {
+    cwd: repoRoot,
+    stdio: 'inherit',
+    env: process.env,
+  });
+
+  const status = result.status ?? 1;
+  if (status !== 0) {
+    console.log(
+      tier === 'fast' ? '\ntests failed' : '\ntests failed — keeping test residue so the failure can be inspected',
+    );
+    process.exit(status);
+  }
+
+  if (tier === 'fast') {
+    console.log(
+      '\nfast tier passed — this is the gate. For a change to a CLI / AFS record / chain adapter,\n' +
+        'run just the affected file: `npm run test:file -- scripts/<file>.test.mjs` (serial, writes\n' +
+        'the dev instance — take docs/team/.gate-lock first). The full `npm run test:live` is no\n' +
+        'longer a routine gate (user ruling 2026-09-27).',
+    );
+    process.exit(0);
+  }
+
+  if (process.env.ARCBLOG_NO_CLEAN) {
+    console.log('\nARCBLOG_NO_CLEAN set — keeping test residue');
+    process.exit(0);
+  }
+
+  // BUG-053: this is the ONLY branch of the gate that deletes anything, and a
+  // single-file run of `scripts/arcblog-clean.test.mjs` used to reach it for real —
+  // silently wiping every historical residue record on the developer's instance
+  // (204 records measured in Round 19). `ARCBLOG_CLEAN_DRY_RUN=1` reports the exact
+  // set the gate would delete (paths included) and removes nothing, so the test can
+  // name the probe it expects to go without touching anyone's data. The real delete
+  // path stays available for an explicit opt-in run.
+  try {
+    const instance = resolveInstance({});
+    const residue = findTestRecords(instance);
+    const dryRun = process.env.ARCBLOG_CLEAN_DRY_RUN === '1';
+    if (dryRun) {
+      console.log(
+        `\nwould clean ${residue.length} test record(s) from the ${instance || 'default'} instance (dry run — nothing removed)`,
+      );
+      for (const record of residue) console.log(`  ${record.path}`);
+    } else {
+      for (const record of residue) remove(record.path, instance);
+      console.log(`\ncleaned ${residue.length} test record(s) from the ${instance || 'default'} instance`);
+    }
+  } catch (err) {
+    // A cleanup problem must not turn a green test run red; report and move on.
+    console.log(`\ntest residue cleanup skipped: ${err.message}`);
+  }
+  process.exit(0);
+}
+
+// Import must be side-effect free (BUG-073): only a direct run starts a tier.
+if (isDirectExecution()) runGate(process.argv[2] ?? 'all');
+
