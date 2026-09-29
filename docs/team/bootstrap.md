@@ -173,6 +173,27 @@ i18n 纪律：可以改本页 `i18n {}` 块，但**必须在回报里列全删�
 
 **QA 分批（用户裁定 2026-09-29）**：逐轮 QA 暂停；实现轮只跑 **Lead 门（validate + 快层 + build）**，独立 QA 在**批次结束时一次做完**（或用户点名）。
 
+### npm test 的节奏与耗时（2026-09-29 实测，`scripts/run-tests.mjs`）
+
+**结论：不需要每次改动都跑全量快层。** 按用途分四档，全量只跑一次/轮：
+
+| 场景 | 命令 | 频率 |
+| --- | --- | --- |
+| 增量自检（开发 agent 自己） | `node --test scripts/<相关>.test.mjs`（单文件）或 `npm test -- --changed`（按 diff 选套件） | 每次改动后 |
+| 页面类任务自检 | `node scripts/arcblog-ui-budget.mjs --json`（本页七项 + over + 棘轮） | 每次改动后 |
+| **轮次/波次收口（Lead）** | **`npm test`** —— 全量快层，10 文件，~1 s | **每轮一次** |
+| 改动涉及 CLI / AFS 记录 / 链适配器 | `npm run test:file -- scripts/<x>.test.mjs`（先写 `docs/team/.gate-lock`） | 定向，不跑全量 |
+| 全量 live 层 | **不做**（用户裁定 2026-09-27：~21 min 且写共享实例） | 仅人类点名 |
+
+runner 自带三件事（别再自己写计时/超时脚本）：
+
+1. **逐文件耗时表**（最慢在前）+ 总计；并单独汇总**三个 spawn `arc` 的套件**（`i18n` / `console-nav` / `dist-secrets`）——它们是全场瓶颈（实测占 CPU 时间 ~2.4 s / 墙钟 ~1 s，见下）。
+2. **超时与总预算**：默认 **25 s/文件 + 30 s 总预算**（fast 层）；超时即 `SIGKILL` 该子进程并打印 `TIMEOUT`，总预算耗尽则**不再启动后续文件**并列出未跑的清单；两种情况都**退出码 1**（挂死绝不伪装成"慢"）。可用 `ARCBLOG_TEST_TIMEOUT_MS` / `ARCBLOG_TEST_BUDGET_MS` / `ARCBLOG_TEST_CONCURRENCY` 覆盖（live 层默认 10 min/文件、无总预算、并发 1）。
+3. **`--changed`**：只跑"守卫文件命中当前 `git status`/diff"的套件（守卫表在同文件的 `GUARDS`）。**没有守卫条目的套件永远会被选中**——沉默不允许假装有覆盖。
+4. **`--json`**（机器可读，人读信息走 stderr）：`node scripts/run-tests.mjs fast --json` → `{tier, elapsedMs, budgetHit, files:[{name,ms,code,pass,fail,timedOut}], skipped, failed, timedOut}`。别用 `npm test -- --json` 喂脚本（npm 会在 stdout 前插自己的 banner）。
+
+实测基线（2026-09-29，10 个快层文件）：串行 1.9 s → 并发 4 **~1.0 s**；最慢 `arcblog-i18n` ~1.0–1.3 s（它 spawn 两次 `arc dsl`），其次 `dist-secrets`（0.6–0.7 s，扫 `dist/` + 3 次脚本 spawn）、`permissions`（0.5 s，HTTP 只读）。
+
 ---
 
 ## 并发配额与任务分配（开发 ≤10）
