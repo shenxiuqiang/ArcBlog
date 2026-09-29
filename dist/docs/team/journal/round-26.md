@@ -3,7 +3,7 @@
 | 字段 | 值 |
 | ---- | -- |
 | 日期 | **2026-09-29** |
-| Lead 提交 | ⬜ **待 Lead 填**（提交只加本轮产物路径、绝不 `git add -A`；提交前须再跑一次 `npm run build` 同步 `dist/**`，并确认 `dist/docs/team/.gate-lock` 不存在，`§36(5)`） |
+| Lead 提交 | `76ddd78` — *feat(console,docs): roles settings, page buttons, artifact gate — five dev lanes in parallel*（并行批次 A/B/C/D/F/G；111 个非 dist 产物路径 + dist 镜像）。**Lead 收口门**：`arc dsl validate --json` issues=[]、**`npm test` 52/52**、`generate --check` 无漂移、`npm run build` 后 `.aup`/`.web`/`docs` 对 dist 全一致、`console-nav --check` pages 21、`dist-secrets --check` ok、**`arc blocklet check .` ok=true issues=0**；无 gate-lock 入库。**Lead 落笔**：`arc-contracts.md` **§47–§50**（Hub Topics：sort 与 orderBy 分层 / 更正 §29.7 / hub 三重锁与公开面投影 / hub-index 派生）+ **§51–§53**（调度：命令面 0 命中 vs 平台 `/scheduler` 在跑 / `cron:` 字段双证与 check 不可作证 / 长驻 watch 的结构性缺口）；checklist **:129 → ✅**（去重后逐组校验与正文相等）→ **✅86 / 🟡4 / ⬜18 / ⚪2 = 110**。**未结**：BUG-074 历史产物清理与密钥轮换（需用户批准）、批次末统一 QA（用户裁定）、I 组 T1 等 `SPEC-APPROVAL-001`。|
 | 清单变化 | ⬜ **待轮末（PM `task-113` 只建议、Lead 落笔）**：`:129` 设置 - 角色与能力 **🟡→✅（视判据 A/B/C/D 结果）**；预计计数 **✅ 85 → 86 ｜ 🟡 5 → 4 ｜ ⬜ 18 ｜ ⚪ 2 = 110**（以 Lead 落笔为准；**PM 不改 checklist**） |
 | 性质 | **精简轮** —— 唯一源码写者 = **Dev（`task-111`）**；QA = **`task-112`（`blocked_by task-111`）**；PM = **`task-110`（规划）/ `task-113`（裁决）**；**PM 不调用 `team_task_*`**（任务板由 Lead 维护） |
 | 本轮 REQ | **[REQ-034](../requirements/REQ-034-roles-capabilities-settings.md)**（主项 §3.1–§3.4 + BUG-072 §3.5 / BUG-073 §3.6 / BUG-074 §3.7 + 零回归 §3.8；**PM 建**） |

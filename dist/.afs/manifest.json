@@ -1354,9 +1354,9 @@
     },
     {
       "path": "docs/ArcBlog-feature-checklist.md",
-      "size": 93567,
+      "size": 96763,
       "contentType": "text/markdown",
-      "sha256": "395bb73dfbe37503201456c4964037169f845ec51168f7aa3fa64ed8db51a681"
+      "sha256": "b4af9bfa701f8adc602d6d31d3e89b11bfa004050866d336b80b892d6801be3e"
     },
     {
       "path": "docs/ArcBlog-nft-factory.md",
@@ -2770,9 +2770,9 @@
     },
     {
       "path": "docs/team/journal/round-26.md",
-      "size": 27028,
+      "size": 27910,
       "contentType": "text/markdown",
-      "sha256": "5c0fc9c805d6f2a714136541fcca963fd430d5db0a57c65877f4a3e7301c04e4"
+      "sha256": "14def6b797b0a590b061bae48c2218f834e40b85e41ac996e3048fd8457f90e8"
     },
     {
       "path": "docs/team/journal/round-6.md",
