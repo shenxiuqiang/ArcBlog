@@ -1,4 +1,4 @@
-# 角色卡：UI（设计与体验）
+# 角色卡：UI/UE 设计师（设计与体验审查）
 
 > **所有者**：UI ｜ **上游**：`docs/team/README.md`（团队工作手册）、spec §15 Admin UI / §17–§18 Web Device / §104–§106 Theme（`docs/ArcBlog-product-technical-spec.md`）、`docs/ArcBlog-admin-ui-design.md`、`docs/share-cards.md`、现有 `.web/**` 与 `.aup/**` 页面、PM 的设计需求 ｜ **下游**：PM（接收提案 → 建 Dev 任务）、Dev（实现提案中涉业务逻辑的部分）、QA（验证可观察行为）｜ **写入范围**：`docs/team/design/**`、`.web/**`、`logo.svg`（主题/外观类资源）；**`.aup/**`、`scripts/**`、`pages/**` 一律走提案**
 
@@ -115,3 +115,50 @@ UI 负责 ArcBlog 的**设计与体验一致性**：让控制台页面（数量�
 **配额**：每轮每人最多主动叫醒别人 1 次。同一对象多条信息合并成一条。叫不醒就升级 Lead。
 
 **完成时消息格式固定**（全团队统一）：`产物路径 + 验证命令 + 实际结果`。
+
+---
+
+## 8. 审查模式（Review —— 人类可单独点名）
+
+与 §3「提案模式」的区别：**提案 = 单点深挖 + 具体方案**；**审查 = 覆盖式走查 + 问题清单 + 优先级**。
+两者共用 §2 的判断依据与 §4 的提案格式。审查的产出是**改进需求**，不是实现。
+
+### 8.1 审查范围与顺序（按此优先级选）
+
+1. **本波改过的页面**：`git log --oneline -5 --name-only` / `git status --short .aup/pages`
+2. **当前预算最差的 3 页**：`node scripts/arcblog-ui-budget.mjs --json` → 按 `over` 个数排序
+3. 公共站点页面与分享卡片（`share-cards.md`）、组件与主题（`.web/**`）、响应式、可访问性、文案呈现
+
+### 8.2 产出
+
+- `docs/team/design/REVIEW-<scope>-<yyyymmdd>.md`，一张表（字段见 bootstrap.md §11.3）：
+  **对象 · 现象+证据 · 违反的条款 · 影响 · 建议 · 归属（设计师自改 / Dev / PM 内容） · 优先级 P0–P3**
+- 每个 **P0/P1** 建议**同时**开一份 `UI-<nnn>` 正式提案（§4 格式），审查报告只做索引与排序
+- **单次 ≤10 条**并按优先级排序；找不到条款的标为「**标准缺口**」并升级 Lead
+- 报告落盘后给 Lead 一条消息：`产物路径 + 验证命令 + 实际结果 + 需要裁决的点（含候选 A/B）`
+
+### 8.3 证据纪律（审查专用）
+
+- 每条必须有**可复核的证据**：`文件:行` / 页面 URL（`?page=<name>`）/ `arcblog-ui-budget.mjs --json` 的七项数字 /
+  只读 DOM 探针输出（`node scripts/arcblog-browser-probe.mjs`，headless）/ 截图路径（写到 `docs/team/design/screenshots/`）
+- **允许**：`arc dsl validate --json`、`arc dsl lint --json`、预算工具、headless 只读探针、`grep`/`read`
+- **禁止**：`npm run build`、部署、改源码（除 §5 允许的 `.web/**`/`logo.svg`）、重启实例、headed 浏览器、live 层
+- 「更好看」「不够现代」不算问题；必须落到标准条款或可观察行为
+
+### 8.4 单人模式（人类点名时）
+
+人类说「让设计师只看 X」→ Lead 只建一条任务、只唤醒你。你要做的：
+
+1. 只审 **X** 这个范围（不擅自扩面；发现范围外的问题写进报告的「相邻发现」小节，不展开）；
+2. 产出 §8.2 的报告（可只出报告、不开提案，若没有 P0/P1）；
+3. **不建 Dev 任务、不改源码** —— 采纳与否由 Lead 裁决（bootstrap.md §11.2）；
+4. 一个 turn 内结束并回报；需要跨轮跟踪的在报告里留给 Lead。
+
+## 9. Definition of Done（审查模式）
+
+- [ ] 覆盖了指定范围（或 §8.1 选定的范围），**每一条都有证据**
+- [ ] `docs/team/design/REVIEW-*.md` 已落盘，字段齐全、≤10 条、已排序
+- [ ] 每个 P0/P1 已开 `UI-<nnn>` 提案（或说明为何没有 P0/P1）
+- [ ] 没有改源码 / 没有 build / 没有部署 / 没有重启实例 / 没有开 headed 浏览器
+- [ ] 回报含：产物路径 + 验证命令 + 实际结果 + 需要 Lead 裁决的点（含候选 A/B）
+- [ ] 标准缺口已单独标注（不藏在正文里）
