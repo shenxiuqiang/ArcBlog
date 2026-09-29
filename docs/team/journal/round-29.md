@@ -7,7 +7,7 @@
 | 模式 | 单 lane 修复 + Lead 最终账目；QA 已在 R28 批次末做过一次 |
 | 门 | validate issues=[]、**npm test 55/55**、generate --check 无漂移、build 后 `.aup`/`.web` 对 dist 一致、console-nav 21、dist 无密钥 |
 | 清单 | **✅86 / 🟡4 / ⬜18 / ⚪2 = 110** |
-| 提交 | `PLACEHOLDER` |
+| 提交 | `f9f38bc` — *fix(console): close the last two UI defects and publish the final accounting*（R29；含 dist 镜像）。**Lead 收口门**：validate issues=[]、**npm test 55/55**、generate --check 无漂移、build 后 `.aup`/`.web` 对 dist 一致、console-nav pages 21、dist 无密钥；无 gate-lock 入库。**Lead 落笔**：本账目文件 + checklist 维护记录一行（计数保持 ✅86 / 🟡4 / ⬜18 / ⚪2 = 110）。|
 
 ## 1. 本轮交付（lane P）
 
