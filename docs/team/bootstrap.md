@@ -335,37 +335,66 @@ i18n 纪律：可以改本页 `i18n {}` 块，但**必须在回报里列全删�
     （侧栏就是先例）。别试图用 `component`/`use` 跨页复用外壳（arc-contracts §16/§22）。
 12. **大记录不进 `where`**：AFS 查询层只对 **≤ ~1.8 KB** 的内联记录可靠，超过就 `content IS NULL` ⇒
     `where` 静默漏、`select` 静默 `{}`、`aggregate.total` 是**组行数**（arc-contracts §44）。列表用目录边界或 `afs-list`。
+13. **headed 浏览器会抢人类焦点**（2026-09-29 人类反馈）：macOS 上新启动的浏览器 App 自动激活；
+    旧配方在 9333 起 headed Chrome，人类在另一个浏览器打字时被夺走焦点。**一律用 headless**
+    （`node scripts/arcblog-browser-probe.mjs`，无窗口、零依赖、自动复用 target）→ 详见 §9。
 
 ---
 
 ## 9. 浏览器验证配方（UI / 页面类任务）
 
+**首选：headless 浏览器（无窗口 = 不可能抢焦点）。** 旧配方在 9333 起 **headed** Chrome，而 macOS 上
+新启动的浏览器 App 会自己激活成当前窗口 —— 人类在**另一个浏览器**里打字时就被夺走焦点，等于不可用。
+`--headless=new` **不注册任何窗口**，CDP 照常可用（DOM/几何/截图全都能断言）。
+
 ```bash
-# 共享调试 Chrome（被 kill 过就重启；端口 9333）
+# 一次启动、长期复用；脚本会自动做这件事，通常你不需要手敲
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-  --remote-debugging-port=9333 --user-data-dir=/tmp/arcblog-chrome-test --no-first-run about:blank
+  --headless=new --remote-debugging-port=9334 \
+  --user-data-dir=/tmp/arcblog-chrome-headless --no-first-run --disable-gpu about:blank &
 ```
 
-- 用 `list_pages` 拿当前 pageId（**每次会话都可能变，别硬编码**），再 `navigate_page` + `evaluate_script` 量几何/取文本。
-- **标签页纪律（必守，本文唯一权威位置）**：**整个 sweep 复用同一个标签页**（`Page.navigate` 换页），
-  跑完关闭自己开的 target。2026-09-28 实测事故：18 页 × 多脚本的探针把调试 Chrome 攒到 **53 个 page target**，
-  Chrome 濒临崩溃——人类看到的现象是「每点一个菜单就冒出一个新窗口」，**那不是链接问题**（控制台侧栏每行都是
-  `action "$t(wrapper.nav-*)" -> page <page>` 的页内切换），而是脚本每页新开了 tab。
-  每波结束（以及 Lead 收口时）跑一次清理，只留 1 个页面：
+**用仓库脚本（零依赖，Node 内建 WebSocket 直连 CDP）**——它自动复用/启动上面的 headless 实例、
+**复用已有 page target**（不新开窗口，从结构上杜绝"53 个 target"那类事故），并输出 JSON 结论：
+
+```bash
+node scripts/arcblog-browser-probe.mjs 'http://arcblog.localhost:4939/?page=feeds'
+node scripts/arcblog-browser-probe.mjs '<url>' --json            # 机器可读
+node scripts/arcblog-browser-probe.mjs '<url>' --screenshot /tmp/x.png
+node scripts/arcblog-browser-probe.mjs '<url>' --port 9335       # 另一个实例
+```
+
+判定与退出码：打印 `{title, url, sessionInitFailed, aupNodes, firstNode{id,w,h}, gateText, text}`；
+`SESSION INIT FAILED` 或 `aupNodes === 0` ⇒ **退出码 1**（页面没挂载/daemon 没起）。
+注意它**不校验 `?page=` 名是否合法**（AUP 会静默回退到默认页）——那由 `npm test` 的 `console-nav --check` 守。
+
+**纪律**
+
+- **绝不为了"看一眼"再起 headed Chrome。** 真需要 headed（字体/WebGL 目视）时：
+  用 `open -gj -a "Google Chrome" --args --remote-debugging-port=9334 …` **后台启动且不激活**（`-g` = 不进前台），
+  **只启动一次**并长期复用；自动化**只 attach**，**禁止** `Page.bringToFront` / `Target.activateTarget` / 新建窗口（要新页面就开 tab）。
+- **复用同一个 page target**：脚本已内建；手工用 CDP 时用 `Page.navigate` 换页，别 `Target.createTarget` 刷 target。
+  2026-09-28 实测事故：18 页 × 多脚本把调试 Chrome 攒到 **53 个 page target**，Chrome 濒临崩溃——
+  人类看到的现象是「每点一个菜单就冒出一个新窗口」，**那不是链接问题**（控制台侧栏每行都是
+  `action "$t(wrapper.nav-*)" -> page <page>` 的页内切换），而是脚本每页新开了 tab。收尾清理：
 
   ```bash
   # 列出：page 数量应保持个位数
-  curl -s http://127.0.0.1:9333/json/list | python3 -c 'import json,sys;print(len([t for t in json.load(sys.stdin) if t.get("type")=="page"]))'
+  curl -s http://127.0.0.1:9334/json/list | python3 -c 'import json,sys;print(len([t for t in json.load(sys.stdin) if t.get("type")=="page"]))'
   # 清理：只保留最近使用的 1 个 page，其余全部关闭
-  curl -s http://127.0.0.1:9333/json/list | python3 -c "
+  curl -s http://127.0.0.1:9334/json/list | python3 -c "
   import json,sys,urllib.request
   pages=[t for t in json.load(sys.stdin) if t.get('type')=='page']
   for t in pages[1:]:
-      urllib.request.urlopen('http://127.0.0.1:9333/json/close/'+t['id']).read()
+      urllib.request.urlopen('http://127.0.0.1:9334/json/close/'+t['id']).read()
   print('closed', len(pages)-1)
   "
   ```
-- 截图必须**内联**（`filePath` 会被拒）；要留下来时写到仓库外的临时目录。
+- **工具选择**：不要用每次会话各起一个 **headed** Chrome 的插件（`agent-browser`、`chrome-devtools-mcp`
+  的默认配置就是 headed ⇒ 抢焦点）。优先"外部起 headless + 只 attach"，或 Playwright 的
+  `chromium.launch({ headless: true })` / `connectOverCDP(...)`（注意本机 Playwright 只有 CLI 可解析，
+  脚本里 `import 'playwright'` 会 `ERR_MODULE_NOT_FOUND`，所以仓库脚本走零依赖 CDP 更稳）。
+- 截图写到**仓库外**的临时目录（本仓的 agent 工具要求截图内联，但 CDP 落盘无此限制）。
 - 页面地址：`http://arcblog.localhost:4939/?page=<name>`（公共页：`/`、`/posts/<slug>`、`/store`）。
 - 判绿标准：`SESSION INIT FAILED` 不出现；要量的元素有非零几何；关键文案/链接在 DOM 里可断言。
 - guest 会话的权限边界见 §8 第 2 条；**目视类验收按 §4 的 QA 分批，在批次末做**。
