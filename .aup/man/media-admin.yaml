@@ -1,42 +1,35 @@
-# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
-# point, not finished documentation. Fill in description/synopsis/examples/flows,
-# then this file is the authoritative man page for "media-admin".
 schemaVersion: 1
 page: media-admin
 description: >-
-  TODO: describe what "media-admin" is for and when an agent should use it
-  (auto-scaffolded stub — fill in before relying on this man page).
-refs:
-  actions:
-    - id: site-header
-      event: user-menu-item
-    - id: site-header
-      event: nav-click
-    - id: console-frame-view-2-action-3
-      event: click
-    - id: console-nav-dashboard
-      event: click
-    - id: console-nav-admin
-      event: click
-    - id: console-nav-pages-admin
-      event: click
-    - id: console-nav-heroes-admin
-      event: click
-    - id: console-nav-categories-admin
-      event: click
-    - id: console-nav-seo-admin
-      event: click
-    - id: console-nav-feeds-admin
-      event: click
-    - id: console-nav-operations
-      event: click
-    - id: console-nav-hub-admin
-      event: click
-    - id: console-nav-media-admin
-      event: click
-    - id: console-nav-agent-admin
-      event: click
-    - id: console-nav-policy-admin
-      event: click
-    - id: console-nav-access-admin
-      event: click
+  Media operations for this ArcBlog instance: the platform upload surface
+  (afs-dropzone) and this node's upload index, plus the CLI commands that compute
+  where an asset is used and that remove an index record. The binary lands in the
+  operator's own DID space; the upload index is CLI-maintained and admin-only
+  (a record exposes the upload path).
+synopsis: >-
+  Prototype P1 list + P5 operations (docs/ArcBlog-admin-ui-design.md §2.7.1):
+  the page answers "what is indexed on this node, and how do I clean it up".
+  Skeleton = header (title + one-sentence purpose, no primary action — the only
+  action on the page is the upload, and the platform's afs-dropzone owns it) +
+  exactly one upload card + exactly one media index list. Row actions are the two
+  platform copy buttons the index row owns (AFS path, refs command). Everything
+  level-3 — the command family (refs / orphans / remove --force / add / queue /
+  watch), the reference/CONFLICT semantics and the platform limits — lives in the
+  second tab of the index card and is hidden by default (§2.7.3 ①, the platform's
+  own view mode=tabs). The page carries no in-page destructive control: a console
+  page cannot delete a record, so cleanup is CLI-only and the page says so
+  instead of pretending.
+flows:
+  - Upload a file with afs-dropzone (declared without props on purpose: the
+    platform exposes no prop metadata for it, arc-contracts.md §26 / REQ-011;
+    measured 2026-09-27 the prop-less drop fails with "targetDir must be a
+    non-empty string").
+  - Read the upload index — one row per index record, with MIME type, byte size
+    and indexed time.
+  - Copy an asset's AFS path, or its refs command, straight from the row.
+  - Run refs --id <id> before any cleanup: it reports every referring record
+    (posts / drafts / pages / page-drafts / heroes).
+  - Run orphans to refresh the unreferenced list; remove deletes the index record
+    only (never the binary) and is refused with code CONFLICT while the asset is
+    still referenced — pass --force to override.
+  - Run queue / watch to inspect and execute the intents the CLI has queued.

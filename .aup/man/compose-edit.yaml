@@ -4,13 +4,16 @@ description: >-
   DID Wallet-gated editing surface bound to /edit/{slug}: loads an existing
   record from the private `/instance/app/arcblog/drafts/` directory via the
   sites binding (`$params.slug` → propBind → `${state.post.*}`), pre-fills the
-  compose-shaped form, and writes back preserving the original createdAt and
-  version.
+  compose-shaped form (same one-card / two-tab P3 paradigm), and writes back
+  preserving the original createdAt and version.
 synopsis: >-
-  Open /edit/<slug> from the studio drafts list or the draft preview page.
-  The form initial values come from the bound record (`${state.post.*}`); the
-  save button overwrites the draft in place (createdAt and version preserved,
-  updatedAt bumped), and the publish button writes the record to the
+  Prototype P3 (edit). Open /edit/<slug> from the studio drafts list or the
+  draft preview page: a header with a back link, ONE form card whose
+  `Essentials` tab groups the fields and whose folded `Advanced` tab holds the
+  SEO/OG five fields plus the dropzone, and a bottom action bar ("Save draft" /
+  "Publish"). The form initial values come from the bound record
+  (`${state.post.*}`); save overwrites the draft in place (createdAt and version
+  preserved, updatedAt bumped) and publish writes the record to the
   guest-readable `/instance/app/arcblog/posts/` directory.
 examples:
   - label: Save draft
@@ -22,7 +25,7 @@ examples:
 flows:
   - Connect the DID Wallet to unlock the editor (admin-gated writes).
   - The record at `/instance/app/arcblog/drafts/<slug>.json` is bound server-side and pre-fills every field.
-  - If the record is missing (or the slug is unknown), a not-found card with a back link renders instead of the form.
+  - If the record is missing (or the slug is unknown), a card-less "Draft not found" notice renders instead of the form (the header's back link stays reachable).
   - Save draft overwrites the draft record keeping createdAt and version, bumping updatedAt.
   - Publish writes the record to the public posts directory with status=published and a fresh publishedAt.
   - No optimistic concurrency on the UI path — version is preserved as-is.

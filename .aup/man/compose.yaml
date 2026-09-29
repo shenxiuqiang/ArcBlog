@@ -6,10 +6,13 @@ description: >-
   `/instance/app/arcblog/drafts/`, publishes to the guest-readable
   `/instance/app/arcblog/posts/`.
 synopsis: >-
-  Connect wallet, fill title/slug/metadata/Markdown body, then either save a
-  private draft or publish immediately. Both submit buttons exec
-  `/.actions/write` with the collected inputs (`${args.*}`) and session
-  identity (`$session.did` / `$session.displayName`).
+  Prototype P3 (edit). Connect wallet, then work in ONE form card: the
+  `Essentials` tab groups the fields (content / category & tags / publish) and
+  the folded `Advanced` tab holds the SEO/OG five fields plus the image
+  dropzone; a bottom action bar carries "Save draft" (secondary) and "Publish"
+  (primary). Both submit buttons exec `/.actions/write` with the collected
+  inputs (`${args.*}`) and session identity (`$session.did` /
+  `$session.displayName`).
 examples:
   - label: Save draft
     action: click
@@ -19,7 +22,8 @@ examples:
     target: publish-now
 flows:
   - Connect the DID Wallet to unlock the editor and media upload.
-  - Enter title, slug, category/tags/summary, an optional cover image URL, plus optional SEO and OG overrides.
+  - "Essentials tab: title, slug, summary, Markdown body, then the category/tags group and the cover image URL group."
+  - "Advanced tab (folded, hidden by default): SEO title/description and OG title/description/image, plus the image dropzone — upload there, then paste the URL into the cover field or the Markdown body."
   - The cover image feeds the story-list card thumbnail and the reader/preview banner.
   - Save draft writes the record to the private drafts directory (preview at /preview/<slug>).
   - Publish writes the record to the public posts directory (readable at /posts/<slug>).
