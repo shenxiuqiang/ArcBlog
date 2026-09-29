@@ -143,7 +143,7 @@ page heroes {
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   p :hero-admin-desc intent=muted
                 }
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-list-empty autoSelect=false clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} style={flexShrink: 0} from "/instance/app/arcblog/heroes" {
+                afs-list heroes-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-list-empty autoSelect=false clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} style={flexShrink: 0} pagination=manual pageSize=12 from "/instance/app/arcblog/heroes" {
                   row cross=start role=item style={background: transparent, padding: "0"} {
                     row gap=sm cross=start style={flex: 1, padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 10px)", minWidth: 0} {
                       view gap=xs size={flex: 1} style={minWidth: 0} {
@@ -181,7 +181,7 @@ page heroes {
                 view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   h3 :hero-quickadd-title level=3 style={fontSize: "var(--type-body)"}
                   p :hero-quickadd-hint intent=muted scale=caption
-                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true style={flexShrink: 0} from "/instance/app/arcblog/posts" events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} {
+                  afs-list heroes-posts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true style={flexShrink: 0} pagination=manual pageSize=20 from "/instance/app/arcblog/posts" events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} {
                     row cross=center role=item style={padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
                       view gap=xs size={flex: 1} style={minWidth: 0} {
                         h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}

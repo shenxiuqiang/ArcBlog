@@ -1,0 +1,74 @@
+{
+  "at": "2026-09-29T00:15:24.816Z",
+  "dom": {
+    "rendered": 12,
+    "total": "54",
+    "info": "Page 1 of 5",
+    "ids": [
+      "econ-test-fc-product-1790621430746.json",
+      "econ-test-fc-product-1790621977307.json",
+      "econ-test-fc-product-1790622723993.json",
+      "econ-test-fc-product-1790627726629.json",
+      "econ-test-fc-product-1790628862763.json",
+      "econ-test-fc-product-1790629475989.json",
+      "econ-test-paid-1790621440546.json",
+      "econ-test-paid-1790621987036.json",
+      "econ-test-paid-1790622734493.json",
+      "econ-test-paid-1790627736419.json",
+      "econ-test-paid-1790628872909.json",
+      "econ-test-paid-1790629485923.json"
+    ],
+    "loginGate": false
+  },
+  "rpcCount": 5,
+  "rpc": [
+    {
+      "url": "/api/afs/rpc",
+      "postData": "{\"type\":\"read\",\"path\":\"/instance/.meta/.capabilities\",\"blocklet\":\"arcblog\",\"sessionId\":\"0d6eef7e41c21aed\"}"
+    },
+    {
+      "url": "/api/afs/rpc",
+      "postData": "{\"type\":\"exec\",\"path\":\"/.actions/query\",\"args\":{\"path\":\"/instance/app/arcblog/economy/products\",\"where\":{\"field\":\"visibility\",\"eq\":\"public\"},\"limit\":12},\"blocklet\":\"arcblog\",\"sessionId\":\"0d6eef7e41c21aed\"}"
+    },
+    {
+      "url": "/api/afs/rpc",
+      "postData": "{\"type\":\"read\",\"path\":\"/instance/settings/arcblog/tone.json\",\"optional\":true,\"blocklet\":\"arcblog\",\"sessionId\":\"0d6eef7e41c21aed\"}"
+    },
+    {
+      "url": "/api/afs/rpc",
+      "postData": "{\"type\":\"read\",\"path\":\"/instance/settings/arcblog/palette.json\",\"optional\":true,\"blocklet\":\"arcblog\",\"sessionId\":\"0d6eef7e41c21aed\"}"
+    },
+    {
+      "url": "/api/afs/rpc",
+      "postData": "{\"type\":\"read\",\"path\":\"/instance/settings/arcblog/theme.json\",\"optional\":true,\"blocklet\":\"arcblog\",\"sessionId\":\"0d6eef7e41c21aed\"}"
+    }
+  ],
+  "targetsAfter": [
+    "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "page:http://arcblog.localhost:4939/",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "page:http://arcblog.localhost:4939/?locale=zh",
+    "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/",
+    "browser_ui:chrome://omnibox-popup.top-chrome/"
+  ]
+}

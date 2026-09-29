@@ -60,3 +60,33 @@ test('wrapper frames keep their ids', () => {
   const wrapper = readFileSync(join(repoRoot, '.aup', 'wrapper.aup'), 'utf8');
   assert.match(wrapper, /frame theme-bridge-frame\b/, 'the theme bridge frame lost its id');
 });
+
+// REQ-030 / arc-contracts §38: a paginated `afs-list` addresses its own page
+// through the URL, not through another node — `<id>.page=<n>` is the param name
+// the runtime derives from the node id, and `aup-list-pagesize:<id>` is the
+// localStorage key for the per-list page size. Both are user-visible contracts,
+// so the id must be explicit (auto-inferred ids move when a sibling is added)
+// and unique inside its page (`arc dsl lint --fix` would happily strip it).
+test('every paginated afs-list keeps a stable, unique, explicit id', () => {
+  const malformed = [];
+  const seen = new Map();
+  const duplicate = [];
+  let paginated = 0;
+  for (const path of sources()) {
+    const rel = path.slice(repoRoot.length + 1);
+    for (const line of readFileSync(path, 'utf8').split('\n')) {
+      if (!/^\s*afs-list\b/.test(line) || !line.includes('pagination=manual')) continue;
+      paginated += 1;
+      const match = line.match(/^\s*afs-list\s+([a-z0-9][a-z0-9-]*)\s/);
+      if (!match) {
+        malformed.push(`${rel}: ${line.trim().slice(0, 100)}`);
+        continue;
+      }
+      if (seen.has(match[1])) duplicate.push(`${match[1]} (${seen.get(match[1])} and ${rel})`);
+      else seen.set(match[1], rel);
+    }
+  }
+  assert.ok(paginated > 0, 'no paginated afs-list left — did the REQ-030 rollout get reverted?');
+  assert.deepEqual(malformed, [], 'a paginated afs-list lost its explicit id — `<id>.page` is the URL contract');
+  assert.deepEqual(duplicate, [], 'two paginated lists share one id — they would share one URL page param');
+});

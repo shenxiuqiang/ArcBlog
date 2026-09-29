@@ -1,0 +1,24 @@
+### copy scan: claims about completeness / paging in locales + .aup
+(end)
+
+### paging claims in locales
+.aup/locales/en.json:45:  "categories.cat-remove-msg": "A bare delete (no migration) stays a CLI-only action: it is only safe when nothing references the category, and this page cannot prove that. Use the buttons above — they always migrate first.",
+.aup/locales/en.json:196:  "heroes.hero-admin-desc": "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending.",
+.aup/locales/en.json:272:  "page-view.back": "Back to latest stories",
+.aup/locales/en.json:273:  "page-view.not-found": "Page not found.",
+.aup/locales/en.json:274:  "page-view.title": "Page",
+.aup/locales/en.json:275:  "pages-admin.created-ok": "Page created offline. Bring it online when ready.",
+.aup/locales/en.json:276:  "pages-admin.offline-ok": "Offline copy saved.",
+.aup/locales/en.json:277:  "pages-admin.published-ok": "Page is online.",
+.aup/locales/en.json:278:  "pages-admin.removed-ok": "Removed.",
+.aup/locales/en.json:279:  "pages.act-delete": "Delete",
+.aup/locales/en.json:280:  "pages.act-delete-msg": "Pages have no soft delete — this removes the record.",
+.aup/locales/en.json:281:  "pages.act-delete-title": "Delete this page?",
+.aup/locales/en.json:282:  "pages.act-offline": "Take offline",
+.aup/locales/en.json:283:  "pages.act-offline-msg": "Keeps an offline copy under page-drafts/; remove the public copy to complete.",
+.aup/locales/en.json:284:  "pages.act-offline-title": "Take this page offline?",
+.aup/locales/en.json:285:  "pages.act-publish": "Bring online",
+.aup/locales/en.json:286:  "pages.act-publish-msg": "Writes a public copy under pages/. If a public copy already exists — for example one written by the old CLI or by root authority — the platform refuses this write (\"without a recoverable authority sidecar\"); click \"Remove public copy\" on the online row first, then bring it online.",
+.aup/locales/en.json:287:  "pages.act-publish-title": "Bring this page online?",
+.aup/locales/en.json:288:  "pages.act-remove-public": "Remove public copy",
+.aup/locales/en.json:289:  "pages.create": "New page",

@@ -1,0 +1,458 @@
+{
+  "at": "2026-09-29T00:12:04.840Z",
+  "phase": "regress",
+  "stamp": 1790640724840,
+  "hubDid": "did:key:zR23QA1790640724840",
+  "steps": {
+    "regress": {
+      "storeFilter": {
+        "rendered": 12,
+        "total": 54,
+        "pageSize": 12,
+        "info": "Page 1 of 5",
+        "afsProducts": 54,
+        "afsPublic": 0,
+        "allRenderedArePublic": false,
+        "renderedIdsCount": 12
+      },
+      "heroes": {
+        "listTotal": 2,
+        "heroRecords": [
+          {
+            "id": "hello-arcblog.json"
+          },
+          {
+            "id": "welcome-hero.json"
+          }
+        ],
+        "sortAscending": false,
+        "heroRowsText": [
+          "Hello ArcBlog A tour of the node: DID-native authorship, the draft→published lif",
+          "Welcome to ArcBlog DID-native writing, Markdown-first publishing. /posts/hello-a"
+        ],
+        "beforeSelect": {
+          "qaTitle": "",
+          "qaDesc": "",
+          "qaImage": "",
+          "qaSlug": ""
+        },
+        "clickRow": {
+          "clicked": true,
+          "text": "Hello ArcBlog Technology https://picsum.photos/seed/arcblog-overview/1600/900"
+        },
+        "afterSelect": {
+          "qaTitle": "Hello ArcBlog",
+          "qaDesc": "A tour of the node: DID-native authorship, the draft→published lifecycle, the economy, the network, and the agent surface.",
+          "qaImage": "https://picsum.photos/seed/arcblog-overview/1600/900",
+          "qaSlug": "hello-arcblog"
+        }
+      },
+      "hubIntent": {
+        "listBefore": {
+          "id": "hub-intents",
+          "rendered": 0,
+          "declaredRendered": 0,
+          "declaredLoaded": 0,
+          "total": 0,
+          "empty": "true",
+          "pageSize": null,
+          "pageSizeKey": null,
+          "pager": false,
+          "info": null,
+          "pagerTotal": null,
+          "prevDisabled": null,
+          "nextDisabled": null,
+          "listScrollH": 103,
+          "ancScrollH": 3611,
+          "ancClientH": 759,
+          "firstEntry": null,
+          "lastEntry": null,
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "confirmDialogOpenedWithoutWrite": true,
+        "intentsBefore": [],
+        "intentsAfterDialog": [],
+        "intentsAfter": [
+          "2026-09-29T00:12:53.955Z.json"
+        ],
+        "newIntent": "2026-09-29T00:12:53.955Z.json",
+        "pendingRaw": {
+          "id": "2026-09-29T00:12:53.955Z.json",
+          "path": "/instance/app/arcblog/config/hub-intents/2026-09-29T00:12:53.955Z.json",
+          "createdAt": "2026-09-29T00:12:53.968Z",
+          "updatedAt": "2026-09-29T00:12:53.968Z",
+          "content": "{\n  \"id\": \"2026-09-29T00:12:53.955Z\",\n  \"action\": \"register\",\n  \"hubDid\": \"did:key:zR23QA1790640724840\",\n  \"endpoint\": \"https://hub.r23qa.example.com\",\n  \"update\": \"\",\n  \"status\": \"pending\",\n  \"message\": \"\",\n  \"changed\": [],\n  \"counts\": null,\n  \"elapsedMs\": null,\n  \"requestedVia\": \"console\",\n  \"requestedAt\": \"2026-09-29T00:12:53.955Z\"\n}",
+          "meta": {
+            "size": 338,
+            "version": "1790640773968.6636-157463540-338",
+            "mimeType": "application/json"
+          },
+          "actions": []
+        },
+        "apply": {
+          "status": 0,
+          "stdout": "{\n  \"ok\": true,\n  \"action\": \"hub-apply\",\n  \"applied\": 1,\n  \"intents\": [\n    {\n      \"id\": \"2026-09-29T00:12:53.955Z\",\n      \"action\": \"register\",\n      \"target\": \"did:key:zR23QA1790640724840\",\n      \"status\": \"applied\",\n      \"changed\": [\n        \"direction\",\n        \"endpoint\",\n        \"hubDid\",\n        \"id\",\n        \"registeredAt\",\n        \"relation\",\n        \"removedAt\",\n        \"removedReason\",\n        \"status\",\n        \"sync\",\n        \"updatedAt\"\n      ],\n      \"elapsedMs\": 1318,\n      \"appliedAt\": \"2026-09-29T00:12:59.704Z\",\n      \"message\": \"register: hub did:key:zR23QA1790640724840 registered (id 1aa4a991838c629a, relation applied, direction studio)\"\n    }\n  ],\n  \"queueEntryIgnored\": 0\n}",
+          "stderr": ""
+        },
+        "terminalRaw": {
+          "id": "2026-09-29T00:12:53.955Z.json",
+          "path": "/instance/app/arcblog/config/hub-intents/2026-09-29T00:12:53.955Z.json",
+          "createdAt": "2026-09-29T00:12:53.968Z",
+          "updatedAt": "2026-09-29T00:13:00.143Z",
+          "content": "{\n  \"id\": \"2026-09-29T00:12:53.955Z\",\n  \"action\": \"register\",\n  \"hubDid\": \"did:key:zR23QA1790640724840\",\n  \"endpoint\": \"https://hub.r23qa.example.com\",\n  \"update\": \"\",\n  \"status\": \"applied\",\n  \"message\": \"register: hub did:key:zR23QA1790640724840 registered (id 1aa4a991838c629a, relation applied, direction studio)\",\n  \"changed\": [\n    \"direction\",\n    \"endpoint\",\n    \"hubDid\",\n    \"id\",\n    \"registeredAt\",\n    \"relation\",\n    \"removedAt\",\n    \"removedReason\",\n    \"status\",\n    \"sync\",\n    \"updatedAt\"\n  ],\n  \"counts\": null,\n  \"elapsedMs\": 1318,\n  \"requestedVia\": \"console\",\n  \"requestedAt\": \"2026-09-29T00:12:53.955Z\",\n  \"appliedAt\": \"2026-09-29T00:12:59.704Z\",\n  \"updatedAt\": \"2026-09-29T00:12:59.704Z\"\n}\n",
+          "meta": {
+            "size": 711,
+            "version": "1790640780143.9268-157463540-711",
+            "mimeType": "application/json"
+          },
+          "actions": []
+        },
+        "regsBefore": [
+          "31caa15539047182.json",
+          "42b02720d0b6bb68.json",
+          "6d86a84e377ad736.json",
+          "8133a1ea682714e5.json",
+          "e8f453792619a8f9.json"
+        ],
+        "regsAfter": [
+          "1aa4a991838c629a.json",
+          "31caa15539047182.json",
+          "42b02720d0b6bb68.json",
+          "6d86a84e377ad736.json",
+          "8133a1ea682714e5.json",
+          "e8f453792619a8f9.json"
+        ],
+        "newRegs": [
+          "1aa4a991838c629a.json"
+        ],
+        "queueRowText": [
+          "● register did:key:zR23QA1790640724840 Status applied just now register: hub did:key:zR23QA1790640724840 registered (id 1aa4a991838c629a, relation applied, direction studio) elapse"
+        ],
+        "cleanup": [
+          {
+            "path": "/instance/app/arcblog/config/hub-intents/2026-09-29T00:12:53.955Z.json",
+            "status": 0,
+            "stdout": "{\"path\":\"/instance/app/arcblog/config/hub-intents/2026-09-29T00:12:53.955Z.json\"}",
+            "stderr": ""
+          },
+          {
+            "path": "/instance/app/arcblog/hub/registrations/1aa4a991838c629a.json",
+            "status": 0,
+            "stdout": "{\"path\":\"/instance/app/arcblog/hub/registrations/1aa4a991838c629a.json\"}",
+            "stderr": ""
+          }
+        ],
+        "afterCleanup": {
+          "intents": {
+            "error": "SyntaxError: Unexpected token 'L', \"LIST_ERROR\"... is not valid JSON",
+            "names": []
+          },
+          "regs": {
+            "names": [
+              "31caa15539047182.json",
+              "42b02720d0b6bb68.json",
+              "6d86a84e377ad736.json",
+              "8133a1ea682714e5.json",
+              "e8f453792619a8f9.json"
+            ]
+          },
+          "discoveryUnchanged": true
+        }
+      },
+      "inlineActions": {
+        "categories": {
+          "listPresent": true,
+          "rendered": 3,
+          "rowButtons": [
+            "Merge into…",
+            "Delete and migrate to…"
+          ],
+          "docOver": 0
+        },
+        "media": {
+          "listPresent": true,
+          "rendered": 0,
+          "rowButtons": [],
+          "docOver": 0
+        },
+        "posts": {
+          "listPresent": true,
+          "rendered": 3,
+          "rowButtons": [
+            "Details",
+            "Archive",
+            "Remove from public"
+          ],
+          "docOver": 0
+        },
+        "pages": {
+          "listPresent": true,
+          "rendered": 1,
+          "rowButtons": [
+            "Take offline",
+            "Remove public copy"
+          ],
+          "docOver": 0
+        }
+      }
+    },
+    "guest": {
+      "index": {
+        "url": "/",
+        "loginGate": false,
+        "sessionFailed": false,
+        "docScrollH": 908,
+        "docScrollW": 0,
+        "list": {
+          "id": "feed-list",
+          "rendered": 3,
+          "declaredRendered": 3,
+          "declaredLoaded": 3,
+          "total": 3,
+          "empty": "false",
+          "pageSize": null,
+          "pageSizeKey": null,
+          "pager": false,
+          "info": null,
+          "pagerTotal": null,
+          "prevDisabled": null,
+          "nextDisabled": null,
+          "listScrollH": 608,
+          "ancScrollH": 1427,
+          "ancClientH": 908,
+          "firstEntry": "hello-arcblog.json",
+          "lastEntry": "sign-test-1790502598928.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "renderedIds": [
+          "hello-arcblog.json",
+          "paid-test-1790472790603.json",
+          "sign-test-1790502598928.json"
+        ]
+      },
+      "author": {
+        "url": "/?page=author",
+        "loginGate": false,
+        "sessionFailed": false,
+        "docScrollH": 908,
+        "docScrollW": 0,
+        "list": {
+          "id": "author-list",
+          "rendered": 3,
+          "declaredRendered": 3,
+          "declaredLoaded": 3,
+          "total": 3,
+          "empty": "false",
+          "pageSize": null,
+          "pageSizeKey": null,
+          "pager": false,
+          "info": null,
+          "pagerTotal": null,
+          "prevDisabled": null,
+          "nextDisabled": null,
+          "listScrollH": 148,
+          "ancScrollH": 908,
+          "ancClientH": 908,
+          "firstEntry": "hello-arcblog.json",
+          "lastEntry": "sign-test-1790502598928.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "renderedIds": [
+          "hello-arcblog.json",
+          "paid-test-1790472790603.json",
+          "sign-test-1790502598928.json"
+        ]
+      },
+      "store": {
+        "url": "/?page=store",
+        "loginGate": false,
+        "sessionFailed": false,
+        "docScrollH": 908,
+        "docScrollW": 0,
+        "list": {
+          "id": "store-list",
+          "rendered": 12,
+          "declaredRendered": 12,
+          "declaredLoaded": 12,
+          "total": 54,
+          "empty": "false",
+          "pageSize": 12,
+          "pageSizeKey": null,
+          "pager": true,
+          "info": "Page 1 of 5",
+          "pagerTotal": "Total: 54 records",
+          "prevDisabled": true,
+          "nextDisabled": false,
+          "listScrollH": 984,
+          "ancScrollH": 1607,
+          "ancClientH": 908,
+          "firstEntry": "econ-test-fc-product-1790621430746.json",
+          "lastEntry": "econ-test-paid-1790629485923.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "renderedIds": [
+          "econ-test-fc-product-1790621430746.json",
+          "econ-test-fc-product-1790621977307.json",
+          "econ-test-fc-product-1790622723993.json",
+          "econ-test-fc-product-1790627726629.json",
+          "econ-test-fc-product-1790628862763.json",
+          "econ-test-fc-product-1790629475989.json",
+          "econ-test-paid-1790621440546.json",
+          "econ-test-paid-1790621987036.json",
+          "econ-test-paid-1790622734493.json",
+          "econ-test-paid-1790627736419.json",
+          "econ-test-paid-1790628872909.json",
+          "econ-test-paid-1790629485923.json"
+        ]
+      },
+      "storeHeightContrast": {
+        "at12": {
+          "rendered": 12,
+          "total": 54,
+          "pageSize": 12,
+          "docScrollH": 908,
+          "listScrollH": 984,
+          "info": "Page 1 of 5"
+        },
+        "at100": {
+          "rendered": 54,
+          "total": 54,
+          "pageSize": null,
+          "docScrollH": 908,
+          "listScrollH": 4131,
+          "info": null
+        }
+      },
+      "saved": {
+        "loginGate": true,
+        "listCount": 0,
+        "sessionFailed": false,
+        "docScrollH": 908
+      },
+      "savedAdmin": {
+        "loginGate": false,
+        "lists": [
+          {
+            "id": "saved-list",
+            "rendered": 1,
+            "declaredRendered": 1,
+            "declaredLoaded": 1,
+            "total": 1,
+            "empty": "false",
+            "pageSize": null,
+            "pageSizeKey": null,
+            "pager": false,
+            "info": null,
+            "pagerTotal": null,
+            "prevDisabled": null,
+            "nextDisabled": null,
+            "listScrollH": 90,
+            "ancScrollH": 1146,
+            "ancClientH": 908,
+            "firstEntry": "hello-arcblog.json",
+            "lastEntry": "hello-arcblog.json",
+            "rowOverflow": 0,
+            "allRowsVisible": true
+          }
+        ],
+        "sessionFailed": false
+      },
+      "ledgerZh": {
+        "url": "/?page=ledger&locale=zh",
+        "lang": "zh",
+        "docScrollH": 908,
+        "docScrollW": 0,
+        "hasPagingCopy": true,
+        "forbiddenWording": [],
+        "lists": [
+          {
+            "id": "ledger-list",
+            "rendered": 20,
+            "total": 84,
+            "pageSize": 20,
+            "info": "Page 1 of 5",
+            "listScrollH": 13422,
+            "ancScrollH": 26677
+          },
+          {
+            "id": "ledger-settlements-list",
+            "rendered": 20,
+            "total": 38,
+            "pageSize": 20,
+            "info": "Page 1 of 2",
+            "listScrollH": 12105,
+            "ancScrollH": 26677
+          }
+        ]
+      }
+    }
+  },
+  "browser": {
+    "Browser": "Chrome/153.0.8010.54"
+  },
+  "adminCookieFound": true,
+  "cleanup": {
+    "openedTargets": 3,
+    "targetsBefore": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "targetsAfter": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "leftoverByThisRun": []
+  }
+}

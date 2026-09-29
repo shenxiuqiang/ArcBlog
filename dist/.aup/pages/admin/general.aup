@@ -193,7 +193,7 @@ page general {
                 }
                 h3 :records-title level=3 style={fontSize: "var(--type-body)"}
                 p :records-desc scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/general" {
+                afs-list general-config-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/general" {
                   view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     h3 "${entry.content.label}" style={fontSize: "var(--type-body)"}
                     p "${entry.content.description}" scale=sm intent=muted
@@ -223,7 +223,7 @@ page general {
                   p :sw-agent-impact scale=sm
                   p :sw-agent-consumer scale=sm intent=muted
                 }
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/switches" {
+                afs-list general-switches-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/switches" {
                   view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     input type=hidden name=sPath value="${entry.path}"
                     row cross=center gap=sm {

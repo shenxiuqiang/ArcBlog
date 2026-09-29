@@ -195,7 +195,7 @@ page hub {
             view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :relations level=3 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:relations-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/registrations" {
+                afs-list hub-relations-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:relations-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/hub/registrations" {
                   row gap=sm cross=start role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace} format=did title="${entry.content.hubDid}"
@@ -273,7 +273,7 @@ page hub {
                 h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
                 p :queue-desc scale=sm intent=muted
                 p :queue-legend scale=caption intent=muted
-                afs-list hub-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/hub-intents" {
+                afs-list hub-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/hub-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       row gap=xs cross=center {
@@ -320,7 +320,7 @@ page hub {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :index-card level=3 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:index-empty autoSelect=false clickMode=none from "/instance/app/arcblog/hub/index" {
+                afs-list hub-index-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:index-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/hub/index" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%", minWidth: 0} {
                       p "${entry.content.title}" scale=lg

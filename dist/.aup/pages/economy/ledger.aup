@@ -39,8 +39,8 @@ page ledger {
     ledger-fields-title { en "Ledger entries" zh "账本条目" }
     ledger-note { en "The list below is whatever the AFS directory currently holds; it makes no claim about being complete. Use ledger list --all (totalCount) or --limit <n> to bound or widen it." zh "下方列表即 AFS 目录当前的内容，不声称完整。用 ledger list --all（看 totalCount）或 --limit <n> 收窄 / 放宽口径。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    paging-desc { en "CLI paging: no flags = the newest 20 entries; --limit <n> = the newest n; --all = everything. The JSON output carries count, totalCount, truncated and a hint — the page shows a list, not a total, so it never claims to show the whole ledger." zh "CLI 分页口径：不带参数 = 最新 20 条；--limit <n> = 最新 n 条；--all = 全量。JSON 输出带 count、totalCount、truncated 与 hint——本页只显示列表、不显示总数，因此不声称展示全量。" }
-    paging-title { en "Paging is a CLI decision" zh "分页口径以 CLI 为准" }
+    paging-desc { en "The list is paged on the page itself: 20 rows per page, Prev/Next, the current page and the total all read from the AFS listing — every page is reachable, so no row is hidden. The CLI stays the audit path: no flags = the newest 20 entries; --limit <n> = the newest n; --all = everything (the JSON output carries count, totalCount and truncated)." zh "列表在页面内翻页：每页 20 条，含上一页/下一页、当前页与总数（总数取自 AFS 列表返回，非写死）——各页均可达，不会隐藏任何一行。CLI 仍是审计路径：不带参数 = 最新 20 条；--limit <n> = 最新 n 条；--all = 全量（JSON 输出带 count、totalCount、truncated）。" }
+    paging-title { en "Paging" zh "分页" }
     readonly-title { en "Read-only, append-only" zh "只读、只增不改" }
     row-cmds { en "Row commands" zh "行级命令" }
     settlements-empty { en "No settlement yet: settle --order <id> writes one settlement plus its ledger entries (payment and settlement are separate phases, spec §89)." zh "尚无结算：settle --order <id> 会写入一份结算记录及其账本条目（支付与结算是两个阶段，spec §89）。" }
@@ -163,7 +163,7 @@ page ledger {
                 h3 :ledger-fields-title level=3 style={fontSize: "var(--type-body)"}
                 p :legend-ledger-fields scale=sm intent=muted
                 p :ledger-note scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:ledger-empty from "/instance/app/arcblog/economy/ledger" {
+                afs-list ledger-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 emptyText=:ledger-empty from "/instance/app/arcblog/economy/ledger" {
                   row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     view gap=xs style={flex: "1 1 0%"} {
                       key-value-list dense=true fields=[{label: "$t(ledger.label-id)", value: "${entry.content.id}", monospace: true, copyable: true}, {label: "$t(ledger.label-order-id)", value: "${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.label-type-raw)", value: "${entry.content.type}"}, {label: "$t(ledger.label-from)", value: "${entry.content.from}"}, {label: "$t(ledger.label-to)", value: "${entry.content.to}"}, {label: "$t(ledger.label-amount)", value: "${entry.content.amount}"}, {label: "$t(ledger.label-asset)", value: "${entry.content.asset}"}, {label: "$t(ledger.label-status-raw)", value: "${entry.content.status}"}, {label: "$t(ledger.label-policy-version)", value: "${entry.content.policyVersion}"}, {label: "$t(ledger.label-hash)", value: "${entry.content.transactionHash}", monospace: true}, {label: "$t(ledger.label-created)", value: "${entry.content.createdAt}"}]
@@ -203,7 +203,7 @@ page ledger {
                 h3 :settlements-title level=3 style={fontSize: "var(--type-body)"}
                 p :legend-settlement-fields scale=sm intent=muted
                 p :withheld-note scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:settlements-empty from "/instance/app/arcblog/economy/settlements" {
+                afs-list ledger-settlements-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 emptyText=:settlements-empty from "/instance/app/arcblog/economy/settlements" {
                   row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     view gap=xs style={flex: "1 1 0%"} {
                       key-value-list dense=true fields=[{label: "$t(ledger.label-order-id)", value: "${entry.content.orderId}", monospace: true, copyable: true}, {label: "$t(ledger.label-amount)", value: "${entry.content.amount}"}, {label: "$t(ledger.label-asset)", value: "${entry.content.asset}"}, {label: creatorAmount, value: "${entry.content.creatorAmount}"}, {label: hubAmount, value: "${entry.content.hubAmount}"}, {label: protocolAmount, value: "${entry.content.protocolAmount}"}, {label: "$t(ledger.label-policy-version)", value: "${entry.content.policyVersion}"}, {label: "$t(ledger.label-status-raw)", value: "${entry.content.status}"}, {label: "$t(ledger.label-hash)", value: "${entry.content.transactionHash}", monospace: true}, {label: "$t(ledger.label-created)", value: "${entry.content.createdAt}"}]

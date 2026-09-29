@@ -153,7 +153,7 @@ page operations {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :hubs level=2 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:hubs-empty transform={syncAt: "content.sync.lastSync", syncVersion: "content.sync.lastVersion"} from "/instance/app/arcblog/hub/registrations" {
+                afs-list operations-hubs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:hubs-empty transform={syncAt: "content.sync.lastSync", syncVersion: "content.sync.lastVersion"} pagination=manual pageSize=20 from "/instance/app/arcblog/hub/registrations" {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     p "${entry.content.hubDid}" scale=sm style={fontFamily: monospace}
                     p :hub-endpoint scale=sm intent=muted

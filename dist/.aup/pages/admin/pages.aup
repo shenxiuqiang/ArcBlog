@@ -157,7 +157,7 @@ page pages {
               }
               view gap=sm style={flexShrink: 0} {
                 h3 :online-list level=3 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/pages" {
+                afs-list pages-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/pages" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.title}" scale=lg
@@ -187,7 +187,7 @@ page pages {
               }
               view gap=sm style={flexShrink: 0} {
                 h3 :offline-list level=3 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none from "/instance/app/arcblog/page-drafts" {
+                afs-list pages-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/page-drafts" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.title}" scale=lg

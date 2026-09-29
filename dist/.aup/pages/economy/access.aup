@@ -124,7 +124,7 @@ page access {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view visible=$session.authenticated {
-                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:grants-empty from "/instance/app/arcblog/economy/access-grants" {
+                  afs-list access-grants-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:grants-empty pagination=manual pageSize=20 from "/instance/app/arcblog/economy/access-grants" {
                     row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       p "${entry.content.contentId}" scale=sm
                       p :grant-reader scale=sm intent=muted

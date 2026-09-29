@@ -188,7 +188,7 @@ page media {
                 h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
                 p :queue-desc scale=sm intent=muted
                 p :queue-legend scale=caption intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/media-intents" {
+                afs-list media-intents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/media-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       row gap=xs cross=center {
@@ -219,7 +219,7 @@ page media {
                 h3 :index-title level=3 style={fontSize: "var(--type-body)"}
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view gap=sm visible=$session.authenticated {
-                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-standing-note from "/instance/app/arcblog/media" {
+                  afs-list media-records-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:media-standing-note pagination=manual pageSize=12 from "/instance/app/arcblog/media" {
                     row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       view gap=xs style={flex: "1 1 0%", minWidth: 0} {
                         h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}

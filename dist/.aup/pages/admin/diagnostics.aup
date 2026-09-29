@@ -191,7 +191,7 @@ page diagnostics {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :snapshot-title level=3 style={fontSize: "var(--type-body)"}
               p :snapshot-desc scale=sm intent=muted
-              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/diagnostics/summary" {
+              afs-list diagnostics-summary-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/summary" {
                 view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                   row gap=xs cross=center {
                     p :snapshot-ranat scale=sm intent=muted
@@ -205,7 +205,7 @@ page diagnostics {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :checks-title level=3 style={fontSize: "var(--type-body)"}
               p :checks-desc scale=sm intent=muted
-              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/diagnostics/checks" {
+              afs-list diagnostics-checks-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/diagnostics/checks" {
                 view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                   h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}
                   p "$t(diagnostics.check-severity): ${entry.content.severity} · $t(diagnostics.check-ok): ${entry.content.ok}" scale=sm
@@ -256,7 +256,7 @@ page diagnostics {
               h3 :intents-title level=3 style={fontSize: "var(--type-body)"}
               p :intents-desc scale=sm intent=muted
               key-value-list diag-intent-cmds dense=true fields=[{label: "$t(diagnostics.cmd-worker-run)", value: "node scripts/arcblog-chain-worker.mjs run", monospace: true, copyable: true}, {label: "$t(diagnostics.cmd-worker-watch)", value: "node scripts/arcblog-chain-worker.mjs watch", monospace: true, copyable: true}]
-              afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+              afs-list diagnostics-chain-intents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/chain-intents" {
                 view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                   h3 "${entry.content.action} · ${entry.content.role}" style={fontSize: "var(--type-body)"}
                   p "$t(diagnostics.intents-status): ${entry.content.status}" scale=sm

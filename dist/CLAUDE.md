@@ -18,7 +18,7 @@ arc dsl validate --json   # validate all AUP DSL — must pass (primary quality 
 arc dsl generate --write  # regenerate app.json / pages/*.json / wrapper.json / locales from .aup sources
                           # (generate defaults to DRY-RUN — without --write nothing is written;
                           #  `--check` is the drift gate and runs inside npm test)
-npm test                  # THE gate (~1s): the 6 suites that never write to the instance — it
+npm test                  # THE gate (~1s): the fast suites that never write to the instance — it
                           # gates artifact drift (`arc dsl generate --check`), dead locale keys,
                           # the generated sidebar, the runtime-addressed ids, the theme contract and
                           # the guest permission matrix (HTTP reads only)
@@ -102,7 +102,8 @@ file may carry a chain address or a token symbol — the console reads the publi
 
 ```bash
 arc dsl validate --json   # issues must be []
-npm test                  # fast tier: ~1s, 28 tests, no instance writes
+npm test                  # fast tier: ~1s, no instance writes; take the count from the run itself
+                          # (35 when the UI budget suite landed, 36 after R23's paginated-list id guard)
 arc blocklet build        # only when .aup changed — rebuilds dist/
 ```
 

@@ -20,7 +20,7 @@ page author {
       }
       view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h2 :stories level=2
-        afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty from "/instance/app/arcblog/posts" {
+        afs-list author-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
           row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
             view layout=inline href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
               h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}

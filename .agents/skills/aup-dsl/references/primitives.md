@@ -84,10 +84,20 @@ one becomes current text with `aria-current="page"`. Emits `.aup-breadcrumb`.
 For AFS-bound data prefer `afs-list` (which also reads `columns`, `layout`,
 `pageSize`, `actions`, `clickMode`, `autoSelect`, `accessMode`, `bufferItems`…).
 
-### `pagination`
-`current`/`currentPage`, `total`/`totalPages`, `pageSize`, `nextPage`,
-`previousPage`, `page` (on token click), `tokens`, `type` (`page`), plus
-`boundaryCount`, `siblingCount` in the token builder.
+### `pagination` — ⚠️ **部分支持，本仓零使用；列表翻页请用 `afs-list` 原生分页**（R23 实测更正）
+
+**节点 prop（渲染器真正读的，仅此四项）**：`id`、`page`、`pageSize`、`total`。
+运行期 DOM 为 `<nav class="aup-pagination" data-page data-total-pages>`。
+
+**`current` / `currentPage` / `totalPages` / `siblingCount` / `boundaryCount`** 是 **token builder 的内部入参**
+（由 `page`+`total`+`pageSize` 算出），**不是节点 prop**；**`nextPage` / `previousPage` / `tokens` / `type`**
+是它的**返回结构**，同样不能当 prop 写。此前本文件把它们混列为 prop，是文档漂移（BUG-065）。
+**`total` 必须静态**（没有求任意长度的原语）⇒ 用它必然写死条数 ⇒ **本仓 0 处使用**。
+`onChange` 事件在本部署**无任何可观察效果**（`set:$args.page` / `set:$args.data.page` / `navigate` 三种接线
+实测点击后 state/URL/active 全不变）—— 见 `docs/arc-contracts.md` §38。
+
+**要翻页/限长就用 `afs-list` 的原生模式**：`afs-list <stable-id> … pagination=manual pageSize=N`
+（默认 `pagination=auto` 只截断 + 自动续载，**没有页码入口**，正是"页面被拉长"的机制）。
 
 ### `searchable-dropdown`
 `options`, `placeholder`, `searchable`, `selected`, `disabled`, `onchange`.

@@ -1952,3 +1952,41 @@ ArcBlog 侧的处理保持 BUG-036 的收口：页面加**常驻说明**把「�
 `cw=0 / sw=31`，并压住相邻按钮 20.92×16）；加 **`flexBasis: "auto"`** 后恢复
 （`cw=31 / sw=31 / over=0`，与相邻控件 bounding box 零相交）。同理，把行内 action **移出该行**到内容列下方
 是消除长哈希/多控件溢出的可靠结构改法（关系行四组视口由 over 179/118/55 降到 0）。
+
+---
+
+## 38. 列表翻页的**原生配方**（`afs-list pagination=manual`）与 `pagination` 原语的部分支持（Round 23 实测）
+
+**用户目标**：列表不能把页面越拉越长。平台有解，且**不需要**碰 `pagination` 原语。
+
+**(1) 可用配方（37 处列表已按此改造，全仓统一）**：
+
+```
+afs-list <stable-id>  layout=list itemStyle=row  subscribe=true  clickMode=none \
+  pagination=manual  pageSize=20  from "/instance/app/arcblog/<dir>" { … }
+```
+
+平台**自渲染**分页器：`← Prev` / `Page X of Y` / `Total: M records` / 每页条数选择器。
+点击 → `pushState` 写 URL 查询参数 **`<id>.page=<n>`** → 以 `{offset:(n-1)*N, limit:N}` **重新取数**（真切片）。
+**`total <= pageSize` 时整个控件不渲染** —— 所以小列表/空列表天然没有假页码，**不要**为它们伪造入口。
+`<id>` 是 **URL 与 localStorage 的契约**：必须显式、稳定、唯一（`scripts/arcblog-runtime-ids.test.mjs`
+新增守卫：每个分页列表都要有稳定唯一 id，且 `arc dsl lint --fix` 会删没人引用的 id）。
+
+**(2) 默认 `pagination=auto` = 假分页（这是"页面被拉长"的根因）**：它只 `pageSize` 截断 + **无限自动续载**
+（实测 dashboard 三处 `pageSize=5` 的 rpc body 依次 `{offset:0,limit:5}`、`{offset:5,limit:5}`…），
+**没有任何页码入口** —— 用户以为"只有 5 条"，其实页面在无限增长。R23 已把 3 处 `pageSize=5` 改为 `10` + `manual`。
+
+**(3) 深度链接与越界**：`<id>.page=3` 可直接打开第 3 页；`page=99` 被**钳到最后一页**，
+`page=0` / `page=abc` / `page=-2` 退回第 1 页（平台行为，实测）。末页 `Next` 为 disabled。
+
+**(4) `pagination` 原语 = 部分支持 ⇒ 本仓零使用**：节点 prop 只有 `id`/`page`/`pageSize`/`total`；
+`total` **必须静态**（没有求任意长度的原语）⇒ 用它必然写死条数；且 `onChange` 在本部署
+**无任何可观察效果**（`set:$args.page` / `set:$args.data.page` / `navigate` 三种接线实测均无变化）。
+`current/currentPage/totalPages/siblingCount/boundaryCount` 是 token builder **内部入参**，
+`nextPage/previousPage/tokens/type` 是它的**返回结构**，都不是节点 prop（原 `aup-dsl` 文档把它们混列，已更正）。
+
+**(5) 运行期陷阱：`localStorage['aup-list-pagesize:<id>']` 会覆盖页面的 `pageSize`。**
+用户一旦在分页器的"每页条数"里选了更大的值（例如 ≥ 总数），该键就持久化，**并且平台此时不再渲染分页器** ——
+于是当前标签页内**无法改回**，列表又变长（BUG-063，P2，已排 R24；缓解只能靠页面级常驻说明 + 本条登记）。
+**探针/测试必须每个身份、每种语言用新 context**，不要把共享 profile 的该键带进断言（BUG-064 曾因此产生 7 个残留键）。
+清理：任意页面执行 `Object.keys(localStorage).filter(k=>k.startsWith('aup-list-pagesize:')).forEach(k=>localStorage.removeItem(k))`。

@@ -159,7 +159,7 @@ page dashboard {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :content level=2 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:content-empty from "/instance/app/arcblog/posts" {
+                afs-list dashboard-content-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:content-empty pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     view layout=inline href="/posts/${entry.content.slug}" target=_blank style={display: block, textDecoration: none, color: inherit} {
                       h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
@@ -176,7 +176,7 @@ page dashboard {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :economy level=2 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:economy-empty from "/instance/app/arcblog/economy/orders" {
+                afs-list dashboard-orders-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:economy-empty pagination=manual pageSize=10 from "/instance/app/arcblog/economy/orders" {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     h3 "${entry.content.id}"
                     p "${entry.content.amount} ${entry.content.asset}" scale=sm
@@ -193,7 +193,7 @@ page dashboard {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h2 :agents level=2 style={fontSize: "var(--type-body)"}
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pageSize=5 emptyText=:agents-empty from "/instance/app/arcblog/config/agent-grants" {
+                afs-list dashboard-agents-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agents-empty pagination=manual pageSize=10 from "/instance/app/arcblog/config/agent-grants" {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     p "${entry.content.agentDid}" scale=sm style={fontFamily: monospace}
                     p "${entry.content.capabilities}" scale=sm intent=muted

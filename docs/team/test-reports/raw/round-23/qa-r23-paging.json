@@ -1,0 +1,371 @@
+{
+  "at": "2026-09-29T00:08:29.180Z",
+  "phase": "paging",
+  "stamp": 1790640509180,
+  "hubDid": "did:key:zR23QA1790640509180",
+  "steps": {
+    "paging": {
+      "clickSeries": [
+        {
+          "url": "/?page=ledger",
+          "lang": "en",
+          "active": 1,
+          "ariaCurrent": 1,
+          "sessionFailed": false,
+          "loginGate": false,
+          "docScrollH": 908,
+          "docScrollW": 0,
+          "forbiddenWording": [],
+          "hasPagingCopy": true,
+          "listCount": 2,
+          "lists": [
+            {
+              "id": "ledger-list",
+              "rendered": 20,
+              "declaredRendered": 20,
+              "declaredLoaded": 20,
+              "total": 84,
+              "empty": "false",
+              "pageSize": 20,
+              "pageSizeKey": null,
+              "pager": true,
+              "info": "Page 1 of 5",
+              "pagerTotal": "Total: 84 records",
+              "prevDisabled": true,
+              "nextDisabled": false,
+              "listScrollH": 13422,
+              "ancScrollH": 26734,
+              "ancClientH": 714,
+              "firstEntry": "econ-test-order-1790621421633:creator_share.json",
+              "lastEntry": "econ-test-rf-order-1790622006111:refund:protocol_fee.json",
+              "rowOverflow": 0,
+              "allRowsVisible": true
+            },
+            {
+              "id": "ledger-settlements-list",
+              "rendered": 20,
+              "declaredRendered": 20,
+              "declaredLoaded": 20,
+              "total": 38,
+              "empty": "false",
+              "pageSize": 20,
+              "pageSizeKey": null,
+              "pager": true,
+              "info": "Page 1 of 2",
+              "pagerTotal": "Total: 38 records",
+              "prevDisabled": true,
+              "nextDisabled": false,
+              "listScrollH": 12105,
+              "ancScrollH": 26734,
+              "ancClientH": 714,
+              "firstEntry": "econ-test-order-1790621421633.json",
+              "lastEntry": "econ-test-type-order-1790622072420.json",
+              "rowOverflow": 0,
+              "allRowsVisible": true
+            }
+          ]
+        },
+        {
+          "click": {
+            "clicked": "Next →",
+            "disabledAtClick": false,
+            "before": {
+              "info": "Page 1 of 5",
+              "url": "http://arcblog.localhost:4939/?page=ledger",
+              "first": "econ-test-order-1790621421633:creator_share.json"
+            }
+          },
+          "url": "/?page=ledger&ledger-list.page=2",
+          "info": "Page 2 of 5",
+          "rendered": 20,
+          "first": "econ-test-rf-order-1790622757396:creator_share.json",
+          "last": "econ-test-tip-1790621980160:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": false,
+          "listScrollH": 13422,
+          "docScrollH": 908,
+          "ancScrollH": 26734
+        },
+        {
+          "click": {
+            "clicked": "Next →",
+            "disabledAtClick": false,
+            "before": {
+              "info": "Page 2 of 5",
+              "url": "http://arcblog.localhost:4939/?page=ledger&ledger-list.page=2",
+              "first": "econ-test-rf-order-1790622757396:creator_share.json"
+            }
+          },
+          "url": "/?page=ledger&ledger-list.page=3",
+          "info": "Page 3 of 5",
+          "rendered": 20,
+          "first": "econ-test-tip-1790622727063:creator_share.json",
+          "last": "econ-test-type-order-1790629647845:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": false,
+          "listScrollH": 13422,
+          "docScrollH": 908,
+          "ancScrollH": 26734
+        },
+        {
+          "click": {
+            "clicked": "Next →",
+            "disabledAtClick": false,
+            "before": {
+              "info": "Page 3 of 5",
+              "url": "http://arcblog.localhost:4939/?page=ledger&ledger-list.page=3",
+              "first": "econ-test-tip-1790622727063:creator_share.json"
+            }
+          },
+          "url": "/?page=ledger&ledger-list.page=4",
+          "info": "Page 4 of 5",
+          "rendered": 20,
+          "first": "ledger-order-1790621445652:creator_share.json",
+          "last": "p1-verify-order-1790627944106:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": false,
+          "listScrollH": 13422,
+          "docScrollH": 908,
+          "ancScrollH": 26734
+        },
+        {
+          "click": {
+            "clicked": "Next →",
+            "disabledAtClick": false,
+            "before": {
+              "info": "Page 4 of 5",
+              "url": "http://arcblog.localhost:4939/?page=ledger&ledger-list.page=4",
+              "first": "ledger-order-1790621445652:creator_share.json"
+            }
+          },
+          "url": "/?page=ledger&ledger-list.page=5",
+          "info": "Page 5 of 5",
+          "rendered": 4,
+          "first": "p1-verify-order-1790629114709:creator_share.json",
+          "last": "p1-verify-order-1790629759627:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": true,
+          "listScrollH": 2736,
+          "docScrollH": 908,
+          "ancScrollH": 16048
+        }
+      ],
+      "back": {
+        "click": {
+          "clicked": "← Prev",
+          "disabledAtClick": false,
+          "before": {
+            "info": "Page 5 of 5",
+            "url": "http://arcblog.localhost:4939/?page=ledger&ledger-list.page=5",
+            "first": "p1-verify-order-1790629114709:creator_share.json"
+          }
+        },
+        "url": "/?page=ledger&ledger-list.page=4",
+        "info": "Page 4 of 5",
+        "first": "ledger-order-1790621445652:creator_share.json"
+      },
+      "deepLink": {
+        "page3": {
+          "url": "/?page=ledger&ledger-list.page=3",
+          "info": "Page 3 of 5",
+          "rendered": 20,
+          "first": "econ-test-tip-1790622727063:creator_share.json",
+          "last": "econ-test-type-order-1790629647845:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": false
+        },
+        "page5": {
+          "url": "/?page=ledger&ledger-list.page=5",
+          "info": "Page 5 of 5",
+          "rendered": 4,
+          "first": "p1-verify-order-1790629114709:creator_share.json",
+          "last": "p1-verify-order-1790629759627:protocol_fee.json",
+          "prevDisabled": false,
+          "nextDisabled": true
+        }
+      },
+      "negative": {
+        "ledger-list.page=99": {
+          "url": "/?page=ledger&ledger-list.page=5",
+          "info": "Page 5 of 5",
+          "rendered": 4,
+          "first": "p1-verify-order-1790629114709:creator_share.json",
+          "prevDisabled": false,
+          "nextDisabled": true,
+          "sessionFailed": false
+        },
+        "ledger-list.page=0": {
+          "url": "/?page=ledger&ledger-list.page=0",
+          "info": "Page 1 of 5",
+          "rendered": 20,
+          "first": "econ-test-order-1790621421633:creator_share.json",
+          "prevDisabled": true,
+          "nextDisabled": false,
+          "sessionFailed": false
+        },
+        "ledger-list.page=abc": {
+          "url": "/?page=ledger&ledger-list.page=abc",
+          "info": "Page 1 of 5",
+          "rendered": 20,
+          "first": "econ-test-order-1790621421633:creator_share.json",
+          "prevDisabled": true,
+          "nextDisabled": false,
+          "sessionFailed": false
+        },
+        "ledger-list.page=-2": {
+          "url": "/?page=ledger&ledger-list.page=-2",
+          "info": "Page 1 of 5",
+          "rendered": 20,
+          "first": "econ-test-order-1790621421633:creator_share.json",
+          "prevDisabled": true,
+          "nextDisabled": false,
+          "sessionFailed": false
+        }
+      },
+      "pageSizeContrast": {
+        "paged20": {
+          "id": "ledger-list",
+          "rendered": 20,
+          "declaredRendered": 20,
+          "declaredLoaded": 20,
+          "total": 84,
+          "empty": "false",
+          "pageSize": 20,
+          "pageSizeKey": null,
+          "pager": true,
+          "info": "Page 1 of 5",
+          "pagerTotal": "Total: 84 records",
+          "prevDisabled": true,
+          "nextDisabled": false,
+          "listScrollH": 13422,
+          "ancScrollH": 26734,
+          "ancClientH": 714,
+          "firstEntry": "econ-test-order-1790621421633:creator_share.json",
+          "lastEntry": "econ-test-rf-order-1790622006111:refund:protocol_fee.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "at100": {
+          "id": "ledger-list",
+          "rendered": 84,
+          "declaredRendered": 84,
+          "declaredLoaded": 84,
+          "total": 84,
+          "empty": "false",
+          "pageSize": null,
+          "pageSizeKey": "100",
+          "pager": false,
+          "info": null,
+          "pagerTotal": null,
+          "prevDisabled": null,
+          "nextDisabled": null,
+          "listScrollH": 56092,
+          "ancScrollH": 69404,
+          "ancClientH": 714,
+          "firstEntry": "econ-test-order-1790621421633:creator_share.json",
+          "lastEntry": "p1-verify-order-1790629759627:protocol_fee.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "back20": {
+          "id": "ledger-list",
+          "rendered": 84,
+          "declaredRendered": 84,
+          "declaredLoaded": 84,
+          "total": 84,
+          "empty": "false",
+          "pageSize": null,
+          "pageSizeKey": "100",
+          "pager": false,
+          "info": null,
+          "pagerTotal": null,
+          "prevDisabled": null,
+          "nextDisabled": null,
+          "listScrollH": 56092,
+          "ancScrollH": 69404,
+          "ancClientH": 714,
+          "firstEntry": "econ-test-order-1790621421633:creator_share.json",
+          "lastEntry": "p1-verify-order-1790629759627:protocol_fee.json",
+          "rowOverflow": 0,
+          "allRowsVisible": true
+        },
+        "docScrollH": {
+          "paged20": 908,
+          "at100": 908,
+          "back20": 908
+        }
+      },
+      "localStorageAfter": "[\"aup-list-pagesize:ledger-list=100\"]",
+      "smallListNoPager": {
+        "id": "ledger-settlements-list",
+        "total": 38,
+        "rendered": 20,
+        "pager": true
+      }
+    }
+  },
+  "browser": {
+    "Browser": "Chrome/153.0.8010.54"
+  },
+  "adminCookieFound": true,
+  "cleanup": {
+    "openedTargets": 1,
+    "targetsBefore": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "targetsAfter": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "leftoverByThisRun": []
+  }
+}

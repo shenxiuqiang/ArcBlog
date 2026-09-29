@@ -1,0 +1,162 @@
+{
+  "at": "2026-09-29T00:21:38.629Z",
+  "phase": "pub",
+  "stamp": 1790641298629,
+  "hubDid": "did:key:zR23QA1790641298629",
+  "steps": {
+    "pub": {
+      "saved": {
+        "docScrollH": 908,
+        "docScrollW": 0,
+        "loginGate": false,
+        "lists": [
+          {
+            "id": "saved-list",
+            "rendered": 1,
+            "declaredRendered": 1,
+            "declaredLoaded": 1,
+            "total": 1,
+            "empty": "false",
+            "pageSize": null,
+            "pageSizeKey": null,
+            "pager": false,
+            "info": null,
+            "pagerTotal": null,
+            "prevDisabled": null,
+            "nextDisabled": null,
+            "listScrollH": 90,
+            "ancScrollH": 1146,
+            "ancClientH": 908,
+            "firstEntry": "hello-arcblog.json",
+            "lastEntry": "hello-arcblog.json",
+            "rowOverflow": 0,
+            "allRowsVisible": true
+          }
+        ]
+      },
+      "store": {
+        "total": 54,
+        "pageSize": 12,
+        "pages": 5,
+        "afsProducts": 54,
+        "afsPublic": 54,
+        "unionCount": 54,
+        "missingPublic": [],
+        "wrongVisibility": [],
+        "lastPageHasLastPublic": true,
+        "perPage": [
+          {
+            "page": 1,
+            "rendered": 12,
+            "info": "Page 1 of 5",
+            "first": "econ-test-fc-product-1790621430746.json",
+            "last": "econ-test-paid-1790629485923.json",
+            "prevDisabled": true,
+            "nextDisabled": false
+          },
+          {
+            "page": 2,
+            "rendered": 12,
+            "info": "Page 2 of 5",
+            "first": "econ-test-product-1790621421633.json",
+            "last": "econ-test-rf-product-1790629517754.json",
+            "prevDisabled": false,
+            "nextDisabled": false
+          },
+          {
+            "page": 3,
+            "rendered": 12,
+            "info": "Page 3 of 5",
+            "first": "econ-test-rn-product-1790621471844.json",
+            "last": "econ-test-sub-product-1790629551217.json",
+            "prevDisabled": false,
+            "nextDisabled": false
+          },
+          {
+            "page": 4,
+            "rendered": 12,
+            "info": "Page 4 of 5",
+            "first": "econ-test-type-product-1790621501147.json",
+            "last": "ledger-product-1790629506603.json",
+            "prevDisabled": false,
+            "nextDisabled": false
+          },
+          {
+            "page": 5,
+            "rendered": 6,
+            "info": "Page 5 of 5",
+            "first": "p1-verify-product-1790621934038.json",
+            "last": "p1-verify-product-1790629759627.json",
+            "prevDisabled": false,
+            "nextDisabled": true
+          }
+        ]
+      },
+      "storeFilterRpc": "see raw/round-23/qa-r23-storefilter.json"
+    }
+  },
+  "browser": {
+    "Browser": "Chrome/153.0.8010.54"
+  },
+  "adminCookieFound": true,
+  "cleanup": {
+    "openedTargets": 1,
+    "targetsBefore": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "targetsAfter": [
+      "service_worker:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/service-worker.js",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "background_page:chrome-extension://ibjflpbmadchofnbpppegdbnifdgincp/offscreen.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "page:http://arcblog.localhost:4939/",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "page:http://arcblog.localhost:4939/?locale=zh",
+      "iframe:http://arcblog.localhost:4939/p/en/theme-bridge/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/",
+      "browser_ui:chrome://omnibox-popup.top-chrome/"
+    ],
+    "leftoverByThisRun": []
+  }
+}

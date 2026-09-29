@@ -184,7 +184,7 @@ page categories {
                 h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
                 p :queue-desc scale=sm intent=muted
                 p :queue-legend intent=muted scale=caption
-                afs-list cat-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/category-intents" {
+                afs-list cat-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/category-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       row gap=xs cross=center {
@@ -215,7 +215,7 @@ page categories {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
                 p :list-desc scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/categories" {
+                afs-list categories-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/categories" {
                   view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     h3 "${entry.content.name}" style={fontSize: "var(--type-body)"}
                     p "${entry.content.slug}" scale=sm intent=muted

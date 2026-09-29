@@ -41,6 +41,14 @@
 | I. 数据层与部署（§154/§155） | 0 | 0 | 6 | 0 | 6 |
 | **合计** | **82** | **7** | **19** | **2** | **110** |
 
+**未完成项汇总（2026-09-28 逐行复核，Lead）**：**26 项未完成** = ⬜ **19**（13 项功能 + 6 项 §154 数据层）+ 🟡 **7**。其中 ——
+
+* **8 项属 V2+ / 第二阶段**（首页模块开关、内容缓存复制、Hub AI、评论、Follow/Social Graph、订阅绑定 DID、Cross-Hub Discovery、AI Creator）；
+* **2 项受平台或前置决策限制**（能力驱动菜单显隐 —— `visible` 只吃同步 `$session`；内容可见性 `unlisted`/`members` —— 平台读权限只有 guest/admin 两档）；
+* **16 项已有明确归属**（`task-6` T0-1、`task-11` T0-6、`task-14` W1-S1、`task-18` 菜单重排，以及 spec §155 各阶段 T1–T5）。
+
+每一行的**缺口 + 证据 + 归属/下一步**已就地标注为 `〔复核 2026-09-28〕…`；⚪ 的 2 行是按 spec 明确划出的边界，**不算欠债**。
+
 ---
 
 ## A. 平台与架构基础
@@ -81,7 +89,7 @@
 | 分类（受控白名单） | §12、§15.4 | ✅ | `scripts/arcblog-category.mjs`；发布校验读取分类资源 |
 | 标签（自由词 + 校验） | §15.4 | ✅ | 生命周期校验：小写、≤10 个 |
 | 媒体索引 | §15.4 | ✅ | `scripts/arcblog-media.mjs`；`media/` schema |
-| 内容可见性五档 | §21 | 🟡 | public / paid 已实现（含服务端门禁）；unlisted / members 待实现——feed 基于目录边界，无法诚实过滤，需先决策存储模型 |
+| 内容可见性五档 | §21 | 🟡 | public / paid 已实现（含服务端门禁）；unlisted / members 待实现——feed 基于目录边界，无法诚实过滤，需先决策存储模型  〔复核 2026-09-28〕缺口：`unlisted` / `members` 未实现。证据：`world/post.yaml:27` 仅有 `public \| paid`；平台读权限只有 guest/admin 两档。归属：需先决策存储模型。 |
 | 付费内容访问控制（非前端隐藏） | §23–§24、§86 | ✅ | 付费正文存 `paid/`（admin-only），公开记录 previewOnly；`access read` 凭 Grant 放行；归档自动合并回全文 |
 | 内容 Hash / 签名 / Provenance | §65–§67 | ✅ | `scripts/lib/content-hash.mjs`（§66 内容哈希）+ `scripts/lib/content-sign.mjs`（§67 Ed25519 签名：覆盖 contentHash + slug + authorDid + version）；`arcblog-lifecycle.mjs publish --sign-key <pem>` 签名并登记公钥到 `config/signing-keys/`；`arcblog-verify.mjs content --slug <slug>` 双检（哈希是否仍匹配 + 签名是否可验），`keys`/`key` 查看已登记公钥。私钥只在本地文件（0600），永不入 AFS；代他人验证需线下获取公钥（与 §30–§33 同一信任模型） |
 | 静态页面管理（About 等） | §15.4 | ✅ | `scripts/arcblog-pages.mjs`；pages/ 与 page-drafts/ 目录边界；`page-view` 渲染页（/pages/{slug}） |
@@ -89,8 +97,8 @@
 | 分类合并 / 删除迁移 | §15.4 | ✅ | `arcblog-category.mjs usage/merge/remove --migrate-to`；引用中拒绝删除，迁移自动 bump version + 重算 hash |
 | 标签合并 / 零引用清理 | §15.4 | ✅ | `arcblog-tags.mjs list/merge`；标签无注册表，list 即审计（零引用天然不存在） |
 | RSS / Atom | §124 | ✅ | `scripts/arcblog-rss.mjs` |
-| SEO / OG / 分享卡片 | §126 | 🟡 | `docs/share-cards.md`；站点级默认 + 文章继承未完整落地 |
-| 内容对象目录化（content/articles/<slug>/） | §19 | ⬜ | 当前为单 JSON 记录 + 封面 URL；目录化内容对象为 V2 形态 |
+| SEO / OG / 分享卡片 | §126 | 🟡 | `docs/share-cards.md`；站点级默认 + 文章继承未完整落地  〔复核 2026-09-28〕缺口：文章级 OG/分享卡片未渲染（字段在记录里但阅读页未输出）。证据：`grep ogImage\|ogTitle .aup/pages/reader.aup .aup/wrapper.aup` = 0。归属：reader 页增强。 |
+| 内容对象目录化（content/articles/<slug>/） | §19 | ⬜ | 当前为单 JSON 记录 + 封面 URL；目录化内容对象为 V2 形态  〔复核 2026-09-28〕缺口：目录化内容对象未实现（正文仍内联在单 JSON 记录）。证据：`ls content` → No such file；仓库内 `content.md` = 0。归属：spec §154.7 已决策本阶段不拆，查询交给 L1 派生索引。 |
 
 ## D. 管理后台
 
@@ -109,20 +117,20 @@
 | 节点身份（Profile / DID / Discovery / Health） | §15.6 | ✅ | `operations.json`；`arcblog-node.mjs`、`arcblog-network.mjs` |
 | Hub 注册（Studio 侧列表 / 申请 / 被收录） | §15.6、§70.1–70.2 | ✅ | CLI 完整（register=申请/approve/reject/add=主动收录/remove=Tombstone）；AUP 界面仅有列表，申请流与被收录列表待补 【Round 13 收口】`?page=hub` 补「Studio 侧申请流（register）」+「被收录列表」两块：5 条命令与 `node scripts/arcblog-network.mjs hub --help` **逐字一致**（register / show / add / sync / index rebuild），每行真实 DID + 隐藏输入 `${args.e*}` 通道 + `onErrorToast`，关系行显示 direction 图例与 §112 的 `sync.status/lastSync/lastVersion/lastError`（空值渲染平台自带 `—`，不伪造版本号）；真实点击 + **AFS 复核**（不看 toast）：Approve `applied→indexed`、被收录行 Terminate `indexed→removed`（`removedAt` 落库）、再 Approve 仍成功（互不阻塞）。**降级登记**：① 关系 id = `sha256(did)` 前 16 位，AUP 无哈希原语 → **新关系只能 CLI**，页面只组装+复制真命令，禁止用 `${args.hubDid}` 伪造写入（A9 反证通过）；② spec §15.6「不需要离开此页面」平台不可达 → 已登记 spec 修订候选 D29；③ 链上动作保持 operator-declared（§8.3 质押列表未实现，页面不作此声称）；④ `hub refresh` 真实可用但不在 `hub --help` → BUG-029（P3，已裁下一轮修）；⑤ 实例基线 4 条全为 `removed/studio`，「被收录」路径由探针验证后已清理 【R21】注册面已**按钮化**（`?page=hub` 三按钮 → `config/hub-intents/<id>.json` → worker `arcblog-network.mjs queue|apply|watch`，派生哈希 id 落 `hub/registrations`；以 AFS 前后对比验收）；队列层新增 DID **文本形态**守卫（不解析链，CLI 侧仍只有非空校验）；CLI 折叠为「高级」；guest 读队列 403。未做：`hub sync` 仍是 CLI（**声明值**，REQ-022 结论 = 平台支持 + 我们未实现）。残留 P3 = BUG-057 |
 | Hub 管理（Studio 列表 / 主动收录 / 申请审批） | §15.6、§70 | ✅ | `hub-admin` 控制台页：关系行内 通过/终止/彻底删除 + 内容索引视图；主动收录与索引重建为 CLI（关系 id 是 DID 哈希，AUP 无法计算，页面如实标注）；Round 7 关系行补 `role=item`（此前渲染成默认文件清单）；**Round 8 已收口 BUG-006**（行内 Approve 降 `secondary`，同屏 `primary` 4→0）+ BUG-005 同页状态呈现（relation/direction/freshness 均带本地化标签，原始值可见）；**Round 9 修复 BUG-012 同类写法**：Approve/Terminate 原写 `args.path="${entry.path}"` 字面量路径（点击被拒），改为隐藏输入 + delete/write 链后 QA 真实点击复验（Approve→relation indexed、Terminate→relation removed 且 `removedAt` 已置）；**Round 10 修复 BUG-016**：Approve/Terminate 改为单次 `/.actions/write` + `mode: "tree-merge"`（只写 `{relation, removedAt, updatedAt}`，删掉 10 个隐藏输入），QA 复验 `sync.lastVersion` 原类型保留（null 仍 null、数字仍 number） 【R21】既有 Approve / Reject / Purge 三条页面直写**零回归**；主动收录 / 索引重建改走意图队列；`index rebuild` 为全量扫描——页面入队前披露 R20 实测量级（约 19s，非承诺），终态写回**真实 `elapsedMs`**（本机 18314/18299/17994/19798 ms） |
-| Hub 内容索引 / Topics / 推荐策略 | §15.6、§52、§73 | 🟡 | 索引与搜索 CLI ✅（rebuild/list/search + Tombstone）；Topics 与推荐策展待实现 【R21】索引重建 / 列表 / 搜索的界面入口已按钮化（upsert/skip/tombstone 计数可见）；Topic 策展与推荐策略仍待实现（状态维持 🟡） |
-| 商品管理 | §15.7 | 🟡 | `.aup/pages/economy/policy.aup` 只读商品目录（id / 价格+币种 / 类型 / 关联内容）；**创建 / 编辑 / 上下架（`visibility`）只有 CLI**（`arcblog-economy.mjs product add --update` / `product remove`），界面待补（spec §15.7 功能列「创建 / 编辑 / 上下架」） 【Round 11 重基线降级备注】降级路径 = CLI 管理商品（`arcblog-economy.mjs product add --update` / `product remove`）；界面补全见 R12 路线 #5 |
+| Hub 内容索引 / Topics / 推荐策略 | §15.6、§52、§73 | 🟡 | 索引与搜索 CLI ✅（rebuild/list/search + Tombstone）；Topics 与推荐策展待实现 【R21】索引重建 / 列表 / 搜索的界面入口已按钮化（upsert/skip/tombstone 计数可见）；Topic 策展与推荐策略仍待实现（状态维持 🟡）  〔复核 2026-09-28〕缺口：Topics 与推荐策展未实现（索引/搜索 CLI 已 ✅）。归属：网络+经济线。 |
+| 商品管理 | §15.7 | 🟡 | `.aup/pages/economy/policy.aup` 只读商品目录（id / 价格+币种 / 类型 / 关联内容）；**创建 / 编辑 / 上下架（`visibility`）只有 CLI**（`arcblog-economy.mjs product add --update` / `product remove`），界面待补（spec §15.7 功能列「创建 / 编辑 / 上下架」） 【Round 11 重基线降级备注】降级路径 = CLI 管理商品（`arcblog-economy.mjs product add --update` / `product remove`）；界面补全见 R12 路线 #5  〔复核 2026-09-28〕缺口：创建/编辑/上下架只有 CLI，界面只读。证据：`arcblog-ui-budget.mjs` 报 policy 内容列 `ctrl = 0`（零可写控件）。归属：UI-016 W2-S8。 |
 | 订单管理（含六问追溯） | §15.7、§50 | ✅ | 订单记录字段 + CLI `order create/list/show/pay/refund`（**退款已于实现轮次 1 落地**，原备注「退款操作待补」为过时描述）+ dashboard 最近订单卡；**无订单列表 / 订单详情页**，spec §15.7 达成标准要求的「订单详情页完整回答六问」目前只有 CLI `order show` 【Round 11 重基线降级备注】降级路径 = CLI `order show` 回答六问；订单列表 / 详情页见 R12 路线 #5 【Round 14 收口 + R14F】新增 `?page=orders`（订单列表 + 详情回答 spec §50 六问：买家 DID / creator / hub / policyVersion / settledAt / 状态；**交易哈希只从 settlement|ledger 取，缺则诚实占位，绝不伪造**）+ CLI 只读；行内接平台 time 原语（相对 + 绝对 title/ISO，BUG-030 已修）；状态双编码路径 B。**降级登记**：① 页 id `orders`，`?page=orders&id=` 非平台特性 → 走 path B；② 链上/支付 operator-declared（真链支付见 REQ-021）；③ `failed` 订单态无 CLI 写入路径（受限）；④ 空 `afs-list` 恒英文兜底（§28.6）；⑤ 「未结算」行内字面句不可达（§28.8）→ 路径 B；⑥ 卡片顺序改为「列表=第一屏」（消除开局滚到底 340→0，PM 已追认）；⑦ 分页靠 CLI 命令（页面不做假筛选，§15 index 陷阱） |
 | 结算与账本（append-only） | §15.7、§91–§92 | ✅ | 账本确定性 id + CLI `ledger list [--order] [--limit\|--all]`（**无 `--type`**，spec §15.7 的「按类型筛选」未实现）；**无结算列表 / 账本界面**（17 个控制台页中没有 ledger 页） 【Round 11 重基线降级备注】降级路径 = CLI `ledger list --order`；账本界面与 `--type` 筛选见 R12 路线 #5（改 CLI 需 `.gate-lock` + 定向单跑） 【Round 14 收口 + R14F】新增 `?page=ledger`（结算 + 账本视图，`world/ledger-entry.yaml` 逐字段、确定性 id `<orderId>:<type>`、append-only = 零写接线）+ **CLI `ledger list --type <t>`**（真过滤 + 非法/缺值 fail-closed；`--order/--limit/--all` 旧语义不回归；新增 3 条 live 用例 → 30/30）+ 行内 time 原语。**降级登记**：① 分页/筛选仍以 CLI 为准（页面如实标注）；② spec §15.7 列 7 类 ledger type，真实只有 4 类（creator_share/hub_share/protocol_fee/refund）→ 如实登记不补齐；③ append-only 无修改/删除入口（符合 spec）；④ BUG-032（`--type=` 等号形式静默忽略，P3）→ R15；⑤ 平台 kv grid 在 1512 下长哈希仍溢出（BUG-035 → R15） |
-| 策略与账户（分成版本 / 钱包 / Adapter） | §15.7 | 🟡 | 分成策略版本化 ✅；收款账户与 Adapter 配置界面待补 |
+| 策略与账户（分成版本 / 钱包 / Adapter） | §15.7 | 🟡 | 分成策略版本化 ✅；收款账户与 Adapter 配置界面待补  〔复核 2026-09-28〕缺口：收款账户与 Adapter 配置界面未实现。证据：`ADAPTERS = ['none','manual']`（`scripts/arcblog-economy.mjs:62`）、经济页无 wallet 相关。归属：REQ-021 阶段二。 |
 | Agent 能力与工具页 | §15.8 | ✅ | `?page=agents` 控制台页：工具清单按 read 9 / write 4 / closed 6 三分类（19 项，closed 已 zh 本地化）+ 策略只读（`check` 的 neverExposed 11 前缀 / defaultClosed 3 / 预算）+ 授权与撤销的 CLI 指引（`agent.admin` 不可授予）+ grants 列表（空/非空两态实测）；与 `arcblog-agent.mjs show/tools/check/grants` 逐项一致（Round 9，REQ-006 A3）。**降级路径**：spec §15.8 的「启用开关」未实现——平台无哈希原语，无法在页面寻址 `config/agent-grants/<didHash>.json`，故页面只读 + CLI 引导。**已知限制**：工具目录是静态镜像，`npm test` 不覆盖「页面工具名 vs CLI 实时输出」一致性（CLI 目录变化需人工同步） |
 | Agent 授权（Grants） | §15.8 | ✅ | `config/agent-grants/`；TTL、撤销、`agent.admin` 不可授予 |
 | Agent 审计日志 | §15.8 | ✅ | `scripts/arcblog-audit.mjs` |
 | 设置 - 通用 | §15.9 | ✅ | **原备注「外观设置 ✅」是 §15.5 的外观页（`.aup/pages/admin/appearance.aup` 的 `auto-surface from /instance/settings/arcblog`），与 spec §15.9「通用」不是同一件事**；§15.9 通用实际只有「站点名称」可由 SEO 页写 `node/profile.json`（`.aup/pages/site/seo.aup`）；语言 / 时区、Instance 级开关（评论 / RSS / Agent Access 总开关）未实现，且没有「设置 - 通用」页 【Round 11 / R11F 收口】`?page=general`（第 18 个控制台页，Settings 组）：站点名称 / 语言 / 时区 + 三个 Instance 开关（评论 / RSS / Agent Access）真实可读写；`scripts/lib/general-settings.mjs` 为单一事实源，`arcblog-settings.mjs general install|show|set` 按记录自身 options fail-closed；**有消费方**：RSS 的 channel title/`<language>`/时区偏移与 `<item>` 开关、Agent Access 关闭时 `arcblog-agent.mjs check` exit 1 + run `AGENT_DISABLED`；选项外值**两侧都挡**（页面受控控件 + 读取侧回退默认并 WARN 留痕）。**降级登记**：① 页 id 是 `general`（`settings` 是 AUP 保留字 `invalid_settings_dsl`；副作用：`?page=settings` 与旧 `?page=settings-general` 静默回落首页）② 记录落点 `config/{general,switches}/<field>.json`，不是平台设置面（平台设置面是 seed 驱动闭集；D25 本轮不补 seed）③ Comments 开关**零消费方、仅记录**（spec §15.9 明文列该开关，故保留）④ `propBind` 首屏不解析 → 全新标签页控件显示占位，靠「占位 + required + 只读 Stored records」兜底（arc-contracts §21.11）⑤ 缺口：general CLI 无单测（R12 补进 live 文件）、诊断页仍缺（见下一行）→「设置」组尚未完整 |
-| 设置 - 角色与能力（含购买/质押引导） | §15.9、§8.2–8.5 | 🟡 | 角色状态只读展示 ✅（dashboard 节点卡 `roles` / `capabilities`）；**原备注「Factory 卡片、购买、质押操作全部待补」已过时**：`?page=factory` 已有一键 acquire / stake / revoke / claim（写 chain-intents intent → `arcblog-chain-worker.mjs` 签名）+ 工厂卡 + 四步 tx；仍缺：外部化配置「重新验证」按钮、质押 NFT data 表单、等待期倒计时（现仅显示 `claimableAt` 时间值）、独立的「设置 - 角色与能力」页 |
+| 设置 - 角色与能力（含购买/质押引导） | §15.9、§8.2–8.5 | 🟡 | 角色状态只读展示 ✅（dashboard 节点卡 `roles` / `capabilities`）；**原备注「Factory 卡片、购买、质押操作全部待补」已过时**：`?page=factory` 已有一键 acquire / stake / revoke / claim（写 chain-intents intent → `arcblog-chain-worker.mjs` 签名）+ 工厂卡 + 四步 tx；仍缺：外部化配置「重新验证」按钮、质押 NFT data 表单、等待期倒计时（现仅显示 `claimableAt` 时间值）、独立的「设置 - 角色与能力」页  〔复核 2026-09-28〕缺口：设置页缺角色编辑/购买/质押引导（`?page=factory` 已有一键四动作：acquire/stake/revoke/claim 实测命中）。归属：§15.9。 |
 | 设置 - 诊断与维护 | §15.9 | ✅ | 自检 CLI `arcblog-doctor.mjs`（resources / node-profile / node-identity / categories / authorship / space-layout / space-app / de-identification，live 测试在位）；**无「设置 - 诊断与维护」页**（17 个 CONSOLE_SECTIONS 无 settings / diagnostics 页），`?page=operations` 的健康卡是 §15.6/§110 Node Health，不是诊断页；spec §15.9 的同步与后台任务状态（cron / §111）、日志查看导出、数据导出 / 备份入口均未实现 【Round 11 复核维持 🟡】spec §15.9 诊断页仍无界面（`?page=operations` 的健康卡属 §15.6/§110，不是诊断页）；降级路径 = CLI 自检 + `arc service logs` + `arc space sync/check/repair`；诚实形态（页面只做「结果可视化 + 命令复制」，不做页内执行）见 SPEC-REVIEW-001 C-13 → R12 路线 #2 【Round 12 收口】`?page=diagnostics`（第 19 个控制台页，Settings 组）：9 项 doctor 自检可视化（`arcblog-doctor.mjs --record` 写 `config/diagnostics/{summary,checks}`，无快照显示「尚未运行」不伪造）、存储/空间摘要（`arc space check`，附 >64KB 勿用管道提示）、权限面（guest/admin，明确不是 doctor 检查项）、后台意图队列（无心跳记录就不画绿灯）、日志指引（`arc service logs`）、**数据导出/备份**（`arc space sync/check/repair` + 「AFS 记录是真源、`dist` 可重建、`node.key`/`.env.local` 必须离线备份」）、常见问题自助定位 7 条。**诚实边界**：页面只做「结果可视化 + 命令一键复制」，**页内不能执行命令**（AUP 不能执行任意服务端代码；provider 挂载未生效，arc-contracts §26.2）——`grep -nE "exec|events=" diagnostics.aup` = 0 接线。**缺口登记**：`doctor --help` 只列 8 项（漏 `test-records`，已补）；repair `--index` / sync `--mirror` 真实演练、真钱包回跳、硬件 hover、dark/非 admin/zh 逐页复核为受限未验证；`hideWhenEmpty` 对空数组不生效（已留档）。残留：`arc dsl lint` 警告 24 条（新增 8 条 unreferenced_explicit_id，非门禁，禁止整体 `--fix`） |
-| 菜单结构与能力驱动（六组 + 设置组；按 Capability 隐藏） | §15.1、§15.2、§15.10 | ⬜ | 侧栏由 `scripts/console-nav.mjs` 生成（**2026-09-28 实测：5 组 21 页** = content / site / ops / economy / settings，`--check` 进 `npm test`）——本行原有的「4 组 17 页、没有设置组」已过时，本次一并更正；**目标 IA 已批准并入 spec §15.2**（5 组：写作 / 站点 / 收入 / 节点与网络 / 高级；只改显示文案+归组+顺序，`?page=` 零改动），提案见 [UI-017](team/design/UI-017-console-menu-information-architecture.md)、实施 = `task-18`、授权记录 = SPEC-APPROVAL-001 **C-16**；生成器里没有任何 capability 字段，侧栏唯一可见性条件是 `visible=$session.authenticated`，Basic 节点也会看到网络 / 经济菜单——spec §15.1 硬规则 1/2「菜单由 Capability 驱动」「隐藏而不是禁用」未实现 |
-| Dashboard 网络概览与异常提醒 | §15.3 | ⬜ | `.aup/pages/admin/dashboard.aup` 只有节点 + 角色、最近发布、经济订单、Agent 授权、快捷操作五块（i18n 无 network / hub / alert 类键）；spec §15.3 的「网络概览（按角色）：Studio 显示已注册 Hub 数 / Hub 显示已索引 Studio 数」与「异常提醒条（同步失败 / 结算失败 / 授权即将过期，一次点击直达）」无实现 |
-| 首页模块开关与按角色首页 | §15.5、§55–§57 | ⬜ | `.aup/pages/index.aup` 只有 hero 轮播 frame + 最新发布 `afs-list`；spec §15.5 的「首页模块开关：Featured / Latest / Topics 显隐与排序」与「按角色显示 Studio Home / Hub Home」无实现（Hero 管理本体见本表「首页与推荐位」行） |
+| 菜单结构与能力驱动（六组 + 设置组；按 Capability 隐藏） | §15.1、§15.2、§15.10 | ⬜ | 侧栏由 `scripts/console-nav.mjs` 生成（**2026-09-28 实测：5 组 21 页** = content / site / ops / economy / settings，`--check` 进 `npm test`）——本行原有的「4 组 17 页、没有设置组」已过时，本次一并更正；**目标 IA 已批准并入 spec §15.2**（5 组：写作 / 站点 / 收入 / 节点与网络 / 高级；只改显示文案+归组+顺序，`?page=` 零改动），提案见 [UI-017](team/design/UI-017-console-menu-information-architecture.md)、实施 = `task-18`、授权记录 = SPEC-APPROVAL-001 **C-16**；生成器里没有任何 capability 字段，侧栏唯一可见性条件是 `visible=$session.authenticated`，Basic 节点也会看到网络 / 经济菜单——spec §15.1 硬规则 1/2「菜单由 Capability 驱动」「隐藏而不是禁用」未实现  〔复核 2026-09-28〕缺口：能力驱动显隐未实现（spec §15.1 硬规则 1/2）。证据：`grep -c capability scripts/console-nav.mjs` = 0；侧栏唯一可见性是 `visible=$session.authenticated`。归属：目标 IA 已入 spec §15.2（C-16），重排 = `task-18`；能力隐藏受平台 `visible` 限制（只吃同步 `$session`）。 |
+| Dashboard 网络概览与异常提醒 | §15.3 | ⬜ | `.aup/pages/admin/dashboard.aup` 只有节点 + 角色、最近发布、经济订单、Agent 授权、快捷操作五块（i18n 无 network / hub / alert 类键）；spec §15.3 的「网络概览（按角色）：Studio 显示已注册 Hub 数 / Hub 显示已索引 Studio 数」与「异常提醒条（同步失败 / 结算失败 / 授权即将过期，一次点击直达）」无实现  〔复核 2026-09-28〕缺口：无网络/Hub/告警区块。证据：dashboard 内容列 `blocks 2 / cards 6`，无 network/hub/alert 容器。归属：UI-016 W1-S1（`task-14`）把它重构为轻博客首页，网络信息归 `operations`。 |
+| 首页模块开关与按角色首页 | §15.5、§55–§57 | ⬜ | `.aup/pages/index.aup` 只有 hero 轮播 frame + 最新发布 `afs-list`；spec §15.5 的「首页模块开关：Featured / Latest / Topics 显隐与排序」与「按角色显示 Studio Home / Hub Home」无实现（Hero 管理本体见本表「首页与推荐位」行）  〔复核 2026-09-28〕缺口：首页无模块开关、无按角色差异。证据：`index.aup` 内 switch/modules 消费 = 0；`config/switches` 目前只有 `agent-access.json` 一条。归属：V2。 |
 
 ## E. 经济系统
 
@@ -133,7 +141,7 @@
 | Product 抽象（价格与文章解耦） | §39、§41、§45 | ✅ | `product.yaml`；文章只挂 productId |
 | Order | §42 | ✅ | `order.yaml`；pending/paid/failed/refunded 状态机 【R17】`world/order.yaml` **无 transactionHash**（哈希只可能存在于 settlement/ledger）→ 页面不跨记录 join，`?page=orders` 的 Q6 诚实指向而非伪造；幂等键实为**两键**：`<orderId>:<type>` 与 `<orderId>:refund:<type>`（`scripts/lib/economy.mjs:258/:376`，:382 为冲正）。今天 `status:paid` 由 `order pay` 自declared + 操作者手填 `paymentRef`，**全程零链调用** |
 | Payment 与 Settlement 分离 | §89 | ✅ | 支付与结算两个独立步骤 |
-| Payment Adapter（可替换支付） | §44 | 🟡 | adapter 接缝 + manual 模式 ✅；真实链上支付通道待接 【R17 阶段一调研，状态仍 🟡】只读真机实测（beta）：读侧 **40 query + 1 mutation(`sendTx`) + 38 个 `send*Tx`**；`getTx(hash)` 4 个真实哈希 `info!=null` 且字段完整，**未知哈希返回 `{code:"OK", info:null}`**（判存在必须用 `info != null`）；余额须走 `getAccountTokens`（`getAccountState().state.balance` 为 **null**）；beta `blockHeight=0` → **无确认深度可用**；fail-closed 三条实测（缺三件套 VALIDATION / `ARCBLOG_CHAIN_ENV=beta` 与 `roles.json network=arcblock` 冲突 VALIDATION / 缺助记词 CHAIN_UNAVAILABLE）。**真链支付通道（阶段二 P3）需真实链 + 资金批准，唯一前置 = 用户批准；未批准前不得写「链上支付已实现」** 【R21】新增**只读对账 CLI**（`order verify` / `settlement reconcile`：四态 `verified/mismatch/not-on-chain/no-hash`、只读白名单 guard、`mock/manual` 绝不声称链上已验证）；真实链上支付通道仍未接（🟡 维持）；**P2-a 真链小额 = 唯一花钱批准点**，未批准前不动资金 |
+| Payment Adapter（可替换支付） | §44 | 🟡 | adapter 接缝 + manual 模式 ✅；真实链上支付通道待接 【R17 阶段一调研，状态仍 🟡】只读真机实测（beta）：读侧 **40 query + 1 mutation(`sendTx`) + 38 个 `send*Tx`**；`getTx(hash)` 4 个真实哈希 `info!=null` 且字段完整，**未知哈希返回 `{code:"OK", info:null}`**（判存在必须用 `info != null`）；余额须走 `getAccountTokens`（`getAccountState().state.balance` 为 **null**）；beta `blockHeight=0` → **无确认深度可用**；fail-closed 三条实测（缺三件套 VALIDATION / `ARCBLOG_CHAIN_ENV=beta` 与 `roles.json network=arcblock` 冲突 VALIDATION / 缺助记词 CHAIN_UNAVAILABLE）。**真链支付通道（阶段二 P3）需真实链 + 资金批准，唯一前置 = 用户批准；未批准前不得写「链上支付已实现」** 【R21】新增**只读对账 CLI**（`order verify` / `settlement reconcile`：四态 `verified/mismatch/not-on-chain/no-hash`、只读白名单 guard、`mock/manual` 绝不声称链上已验证）；真实链上支付通道仍未接（🟡 维持）；**P2-a 真链小额 = 唯一花钱批准点**，未批准前不动资金  〔复核 2026-09-28〕缺口：真实链上支付通道未接。证据：`ADAPTERS = ['none','manual']`；REQ-021 阶段一（只读调研）已完成，阶段二需**真链小额演练**（唯一必须花钱的批准点）。归属：REQ-021。 |
 | Settlement | §43 | ✅ | `settlement.yaml` 【R21】结算记录可被只读对账分类：live 20 条 `transactionHash:""` → 全部 `no-hash`（未上链/待验证），不得计入 verified；哈希写入属 P2 的加法（`world/settlement.yaml` 本轮未改） |
 | Revenue Split 版本化 | §29 | ✅ | `settlement-policy.yaml`；历史订单按当时版本 |
 | Hub Share + Attribution 验证 | §30–§33 | ✅ | `config/trusted-hubs/` + attributions；未验证归属归入创作者 |
@@ -142,7 +150,7 @@
 | 退款（Refund + 结算冲正） | §90 | ✅ | `arcblog-economy.mjs order refund`：退款事件 + `<orderId>:refund:<type>` 冲正账本 + 结算置 reversed + 授权吊销；幂等 【R17】官方文档**无「退款反做」表述**（REQ-025 U3，属「未取得证据」而非已证否）→ 真链退款只能是**反向转账**（节点侧签名，阶段二 P2，**逐笔需用户批准**）；缺哈希显示「未上链 / 待验证」，**绝不伪造哈希** 【R21】退款记录同样纳入只读对账口径（缺哈希 → `no-hash`，绝不声称链上已验证）；链上退款转账（P2-b）未实现；幂等两键 `<orderId>:<type>` / `<orderId>:refund:<type>` 不变 |
 | 订阅（Subscription，手动续期） | §38 | ✅ | product `--type subscription --period-days`；授权按期限时，续期 = 新订单产生新 Grant，无自动扣款 |
 | Creator Store / 数字商品 | §39 | ✅ | 公开商店页 `store`（绑定 `/store`，guest 可读 §50）：商品目录（id / 价格+币种 / 类型 / 关联内容 id）、空态提示、购买流程说明（下单→适配器支付→结算分账→Access Grant 解锁；本页不含收银台）、公共页脚已加 Store 入口；**私有商品不出现在商店**：`filter={field: "content.visibility", match: public}`（实测 private 商品被排除；注意该过滤走 provider 查询，只覆盖"小且已索引"的记录——商品记录满足，正文类大记录不满足，见 arc-contracts §15.1） |
-| 付费推广与自然发现区分 | §51 | ⬜ | Hub 侧功能，依赖 Hub 管理实现 |
+| 付费推广与自然发现区分 | §51 | ⬜ | Hub 侧功能，依赖 Hub 管理实现  〔复核 2026-09-28〕缺口：Hub 侧付费推广标记/区分未实现。归属：依赖 Hub 管理 + 经济读模型（spec §154.5、§155.5 T3）。 |
 
 ## F. 网络与发现
 
@@ -159,8 +167,8 @@
 | 内容删除 Tombstone（Hub 侧） | §119 | ✅ | rebuild 时消失的文章自动转 Tombstone（status=deleted + deletedAt），历史保留 |
 | 内容版本比对与更新（version + contentHash） | §120 | ✅ | `indexEntryCurrent`：version + contentHash 相同即跳过，变化才重新索引 |
 | Hub 离线 / Studio 离线语义 | §75–§76 | ✅ | `scripts/lib/network.mjs` 的 `hubFreshness`/`withFreshness` 派生 `fresh/stale/never/offline`（失败→offline、未同步→never、超期→stale，`--stale-after` 默认 24h）；`arcblog-network.mjs hub refresh` 落盘、`hub list` 汇总、`health.hubs` 计数；hub-admin 关系行显示状态 + 图例说明 |
-| Hub Sync Scheduler（周期同步） | §111 | ⬜ | `blocklet.yaml` / `.aup/app.aup` 均无 `cron` 字段（全仓 `.yaml` / `.aup` / `.json` 内 `grep cron` 为空），无声明式周期任务；`arcblog-network.mjs hub sync` 是手动 CLI |
-| 内容缓存 / 复制 | §77 | ⬜ | 第二阶段 |
+| Hub Sync Scheduler（周期同步） | §111 | ⬜ | `blocklet.yaml` / `.aup/app.aup` 均无 `cron` 字段（全仓 `.yaml` / `.aup` / `.json` 内 `grep cron` 为空），无声明式周期任务；`arcblog-network.mjs hub sync` 是手动 CLI  〔复核 2026-09-28〕缺口：周期同步未实现。证据：`grep cron blocklet.yaml .aup/app.aup` = 0；daemon `/scheduler` 存在但未接。归属：spec §154.8 + T4-4。 |
+| 内容缓存 / 复制 | §77 | ⬜ | 第二阶段  〔复核 2026-09-28〕缺口：Hub 侧内容缓存（须带 `source`/`contentHash`/`cachedAt`）未实现。归属：§77 第二阶段。 |
 
 ## G. Agent
 
@@ -174,29 +182,29 @@
 | 高风险工具默认关闭 | §130 | ✅ | settle_payment / change_wallet / change_role 永不暴露 |
 | Agent 身份与 Caller 留痕 | §62 | ✅ | 审计记录 Caller DID + Agent Identity |
 | AI 自动写作（草稿→人工审核→发布） | §63 | ✅ | 结构性落地：create_draft 需 agent.write、publish_post 需独立的 agent.publish 授权——AI 无法无授权直接发布 |
-| Hub AI（分类 / 摘要 / 推荐 / 语义搜索） | §64、§131 | ⬜ | |
+| Hub AI（分类 / 摘要 / 推荐 / 语义搜索） | §64、§131 | ⬜ |  〔复核 2026-09-28〕缺口：无 AI/向量接线。证据：`/modules/index` 的 `semantic` 在本机回落 `fts`（向量未配置）。归属：V2。 |
 
 ## H. 未来（V2+）
 
 | 功能 | 规格章节 | 状态 | 实现位置 / 备注 |
 | ---- | ---- | ---- | ---- |
-| 评论（本地 → DID → 跨 Hub） | §121 | ⬜ | |
-| Follow / Social Graph | §122 | ⬜ | |
-| 订阅绑定 DID | §123 | ⬜ | |
-| Cross-Hub Discovery | §144 | ⬜ | 第一版不要求 Hub-to-Hub |
-| AI Creator / Agent 经营 Studio | §132–§133 | ⬜ | |
+| 评论（本地 → DID → 跨 Hub） | §121 | ⬜ |  〔复核 2026-09-28〕缺口：无评论存储与界面。证据：`.aup` 内 `comments-surface` 命中 = 0。归属：V2。 |
+| Follow / Social Graph | §122 | ⬜ |  〔复核 2026-09-28〕缺口：无关注关系存储/界面。归属：V2。 |
+| 订阅绑定 DID | §123 | ⬜ |  〔复核 2026-09-28〕缺口：订阅与 DID 绑定未实现。归属：V2。 |
+| Cross-Hub Discovery | §144 | ⬜ | 第一版不要求 Hub-to-Hub  〔复核 2026-09-28〕缺口：Hub-to-Hub 发现未实现（第一版不要求）。归属：V2。 |
+| AI Creator / Agent 经营 Studio | §132–§133 | ⬜ |  〔复核 2026-09-28〕缺口：未实现。归属：V2。 |
 | 明确不做：DAO / Token / 治理 / 跨链 / NFT 市场等 | §139 | ⚪ | 边界声明，永不进入清单 |
 
 ## I. 数据层与部署（§154 / §155，2026-09-28 新增）
 
 | 功能 | 规格章节 | 状态 | 实现位置 / 备注 |
 | ---- | ---- | ---- | ---- |
-| provider 挂载：SQLite 派生索引的载体（包内 `providers/**` + `blocklet.yaml mounts:`） | §154.2–§154.3、§155.3 | ⬜ | 前置 = 阶段 0 探针：**T0-2 ✅ / T0-5 ✅**（`bun:sqlite` 实测可用：SQLite 3.51.0 + FTS5；`providers/**` 已证打包进 `dist/` 与 manifest）；**仍待 T0-1**（部署形态挂载是否真加载）**/ T0-6**（商店取件路径）。provider 必须**零第三方依赖**、SQLite 句柄只在 `onMount` 打开。平台事实见 [arc-contracts §33](arc-contracts.md)（含 (9) 探针实测）；dev 形态挂载未加载的历史见 §26 |
-| 元数据派生索引 + FTS5（Post / Page / Category / Tag / Media） | §154.5、§155.4 | ⬜ | 真源仍是 AFS；必须能单命令 `rebuild` 重建（I2）；Tag 投影与 `arcblog-tags.mjs` 逐条对照 |
-| 经济读模型（Order / Settlement / Ledger / Refund 聚合 + 对账口径） | §154.5、§155.5 | ⬜ | 只读；链上=资金权威、AFS=意图权威，冲突只标记不改写；**不得参与授权判定**（I3） |
-| Hub 派生索引 DB 化 + 跨节点摄入 | §73、§154.8、§155.6 | ⬜ | 字段 = `world/content-index.yaml`；**只元数据、永不含正文**（§72/§76）；tombstone + version/contentHash 语义沿用 |
-| 数据层运维契约（首启幂等 / 迁移 / 备份 / 降级 / 诊断页数据层卡） | §154.9、§155.7 | ⬜ | DB 不可用必须回落 AFS 直读（I7）；诊断页只做「可视化 + 命令复制」 |
-| 商店一键部署硬化（包完整性 / 跨平台无 native 编译 / 升级与灾备演练） | §154.2、§155.7 | ⬜ | 干净机器安装后挂载自动生效；不得依赖安装后编译 native 模块 |
+| provider 挂载：SQLite 派生索引的载体（包内 `providers/**` + `blocklet.yaml mounts:`） | §154.2–§154.3、§155.3 | ⬜ | 前置 = 阶段 0 探针：**T0-2 ✅ / T0-5 ✅**（`bun:sqlite` 实测可用：SQLite 3.51.0 + FTS5；`providers/**` 已证打包进 `dist/` 与 manifest）；**仍待 T0-1**（部署形态挂载是否真加载）**/ T0-6**（商店取件路径）。provider 必须**零第三方依赖**、SQLite 句柄只在 `onMount` 打开。平台事实见 [arc-contracts §33](arc-contracts.md)（含 (9) 探针实测）；dev 形态挂载未加载的历史见 §26  〔复核 2026-09-28〕缺口：provider 尚未挂载。证据：仓库 `providers/` 为空、`blocklet.yaml` 无 `mounts:`；阶段 0 仅 T0-2/T0-5 通过（`bun:sqlite` 可用、`providers/**` 会被打包）。归属：spec §155 阶段 0（`task-6` T0-1 待跑）。 |
+| 元数据派生索引 + FTS5（Post / Page / Category / Tag / Media） | §154.5、§155.4 | ⬜ | 真源仍是 AFS；必须能单命令 `rebuild` 重建（I2）；Tag 投影与 `arcblog-tags.mjs` 逐条对照  〔复核 2026-09-28〕缺口：整条派生索引未实现。归属：§155 T2（在 task-13 之后建）。 |
+| 经济读模型（Order / Settlement / Ledger / Refund 聚合 + 对账口径） | §154.5、§155.5 | ⬜ | 只读；链上=资金权威、AFS=意图权威，冲突只标记不改写；**不得参与授权判定**（I3）  〔复核 2026-09-28〕缺口：只读聚合与对账口径未实现。归属：§155 T3。 |
+| Hub 派生索引 DB 化 + 跨节点摄入 | §73、§154.8、§155.6 | ⬜ | 字段 = `world/content-index.yaml`；**只元数据、永不含正文**（§72/§76）；tombstone + version/contentHash 语义沿用  〔复核 2026-09-28〕缺口：跨节点摄入未实现（现状 `hub index rebuild` 只扫本节点）。归属：§155 T4。 |
+| 数据层运维契约（首启幂等 / 迁移 / 备份 / 降级 / 诊断页数据层卡） | §154.9、§155.7 | ⬜ | DB 不可用必须回落 AFS 直读（I7）；诊断页只做「可视化 + 命令复制」  〔复核 2026-09-28〕缺口：首启幂等/迁移/备份/降级/诊断卡未实现。归属：§155 T1/T5。 |
+| 商店一键部署硬化（包完整性 / 跨平台无 native 编译 / 升级与灾备演练） | §154.2、§155.7 | ⬜ | 干净机器安装后挂载自动生效；不得依赖安装后编译 native 模块  〔复核 2026-09-28〕缺口：发布取件链路未定论（beta.50 无 `arc blocklet publish`）。归属：阶段 0 T0-6（`task-11`）。 |
 
 ---
 
@@ -245,3 +253,5 @@
 | 2026-09 | 精简轮次 20（自动续轮 16/14：轮次上限已达，按用户指令继续）：**REQ-022 双节点 Studio/Hub 测试台**—— 用真实第二实例 `arcblog-hub`（4941、独立 home、**独立 DID** `z1dRy…` vs Studio `z1csB…`）跑通 M1 注册 / M3 approve（**Hub 侧看不到 Studio 的记录**）/ M5 sync / M6 refresh / M7 index rebuild（**实测 19s**，耗时已披露）/ M8 角色对照，测完 **stop→delete 回滚干净**（4941 无监听、`~/.afs-hub` 消失、default 未受影响）。**核心诚实结论**：`hub sync` 是**声明值**（Studio 记录仅 `sync.*`+`updatedAt` 变、**Hub 侧 AFS 逐字节不变**、运行时 HTTP 客户端命中 0）→ 「**平台支持（`arc space sync`）、我们未实现**」，未写成「已同步」；远程端点形态（https 证书 / http 授权 5min 超时）**受限未验证**。同轮 **BUG-052 关闭**（空态改常驻说明；授权重启 default 后运行期两态×zh/en 复验）、**BUG-053 关闭**（默认路径不再真删，`found 206→206`）并**解除 BUG-048 的 C6 → BUG-048 关闭**；新增 BUG-055（内联闭环）/BUG-056（P3 → R21）；新立项 **REQ-022b 节点间 AFS 客户端**（设计+只读探针，未派发）。**新平台事实**（→ arc-contracts **§35**）：命名实例是真实隔离单元；`--blocklet` 不等于已挂载（要 `arc blocklet run`）；`hub sync` 无传输层；`arc space sync` 远程端点需 token/证书；**`.aup` 改动对运行中 daemon 不生效 → 必须重启**（`arc blocklet run` 不是 reload）；两台 daemon 成本实测 419MB/349MB。计数零变化：**✅82 / 🟡7 / ⬜19 / ⚪2 = 110**|
 | 2026-09-28 | 精简轮次 21（自动续轮 17/14：轮次上限已达、按用户指令继续）：**REQ-019 第三批**——`?page=hub` 注册/索引重建按钮化（按钮只写意图 → worker 派生哈希 id 落 `hub/registrations`；`index rebuild` 全量扫描，页面入队前披露量级 + 终态真实 `elapsedMs`；空/畸形 DID → `VALIDATION`、重复 → `CONFLICT` 均零改动；幂等 `noop`；既有 Approve/Reject/Purge 零回归；CLI 折叠；guest 403；**零 `blocklet.yaml` 改动**） + **REQ-021 阶段二 P1**——只读对账 CLI（四态分类 + 只读白名单 guard（真实 client 上 9/9 写方法被拒）+ mock/manual 不谎报 + 链上指纹前后逐值不变；**零链写零资金**） + **BUG-056 关闭**。QA-017 **VERDICT=pass / BLOCKING=0**；新增 P3×3：BUG-057（终态 message 后缀重复）/BUG-058（未抓指纹却 `equal:true`）→ R22；BUG-059（hub 控件数 13 > UI 标准 12）= **显式接受页债**、交 Lead 定 ratchet 语义。**状态计数零变化：✅82 / 🟡7 / ⬜19 / ⚪2 = 110**（第 110/111 行 ✅、第 112 行 🟡、第 136 行 🟡、第 137/142 行 ✅ 均维持）|
 | 2026-09-29 | **收口轮次 22（八项缺陷一次结清 + 交账）**：BUG-032（D32 `--k=v`≡`--k v` + 未知 flag fail-closed，中央注册表 `scripts/lib/cli-flags.mjs` + 26 CLI 统一）、BUG-033（`?page=pages` View 链接 `flexBasis:auto` → 0 宽压按钮消除）、BUG-034（hub 关系行 action 移出该行 → 四组视口溢出 179/118/55 → 0）、BUG-036（**诚实呈现**：常驻说明把「—」读作「尚未绑定/暂不可用」）、BUG-037（mock SVG 加可见「未上链 / SIMULATED」，证据字段零删除，真链模板逐字节不变）、BUG-038（`ArcBlog-nft-factory.md` 链环境两级前置条件与 TBA 更正）、BUG-057（终态 message 后缀去重）、BUG-058（未抓指纹 ⇒ `equal:null` + `compared:false`）——**全部关闭**。新增 P3：BUG-060（4 个 CLI 的 help 面缺口）/ BUG-061（**证伪**："media 不接受 data: URI" → 实测会渲染 `data:image/svg+xml;base64`）/ BUG-062（**不可复现**："propBind 冷载必然为空" → 新 target 直载 4.4s 即真值；只能写「偶发首载时序」+ 复现条件）。QA-018 **VERDICT=pass / BLOCKING=0**；门全绿（validate issues=[]、npm test 35/35、generate --check 0 漂移、build 后 `diff -r` rc=0、pages 21）；定向 live economy 43/43、network 24/24；**零链写、零资金**（余额/nonce 前后一致、pending 链意图仍在、未跑 `--mirror`/`rm`）。**状态列与计数零变化：✅82 / 🟡7 / ⬜19 / ⚪2 = 110**（A7/B11/C16/D27/E15/F13/G9/H6/I6）。**提交**：R6 `4429f39`→R21 `374fdb5`（+日志 `5fd1379`），R22 由 Lead 提交（见 journal/round-22.md §1.8 全量账目）|
+| 2026-09-28 | **未完成项逐行复核与标注（Lead；用户要求「检查还有哪些没有完成，进行标注」）**：对 **19 项 ⬜ + 7 项 🟡（共 26 项）**逐行加注 `〔复核 2026-09-28〕缺口 + 证据 + 归属/下一步`，并在总览下新增「未完成项汇总」段（8 项 V2+/第二阶段、2 项平台或前置决策受限、16 项已有归属任务）。**状态列与计数零变化**（✅82 / 🟡7 / ⬜19 / ⚪2 = 110）。复核结论：**未发现状态错标**；关键证据：无 `content/` 目录（§19）、`console-nav.mjs` 无 capability 字段（§15.1）、`world/post.yaml` 仅 `public \| paid`（§21）、`ADAPTERS = none\|manual`（§44）、`.aup` 内 `comments-surface` 命中 0（§121）、`cron` 命中 0（§111）。顺带发现 **8 行既有表格未转义 `\|`**（行 65/103/104/114/122/241/243/244），本次未动、登记为 P3 文档债。 |
+| 2026-09-29 | **列表翻页轮（用户新指令「所有列表都应该有翻页，避免列表太长拉长页面」）**：平台原生配方 `afs-list <稳定id> … pagination=manual pageSize=N`（自渲染 ← Prev / Page X of Y / Total: M records / 每页条数；点击 pushState 写 `<id>.page=<n>` 并以 {offset,limit} 真切片；`total<=pageSize` 时不渲染控件 ⇒ 小/空列表无假页码）。**37 处真实 `afs-list` / 21 个含列表页面文件全覆盖**（`grep` 的 39 行 − 1 注释 − 1 i18n 文案 = 37）；pageSize 分布 10×19 / 12×4 / 20×14；**dashboard 3 处 `pageSize=5` 属假分页**（默认 `pagination=auto` 只截断+无限自动续载、无页码入口）→ 已改 10 + manual。**高度受控**：`documentElement.scrollHeight` 恒 908（ledger 内容列 26734 vs 未分页 69404）；**数据可达**：9 个 total>pageSize 的列表逐页 id 并集 == AFS 全量（missingIds=[]）；**零回归**：21/21 active、0 SESSION INIT FAILED、store filter 仍下推、heroes transform/select 正常、R21 hub 队列全程绿。平台边界：`pagination` 原语**部分支持**（节点 prop 仅 id/page/pageSize/total；`total` 必须静态；`onChange` 无效果）⇒ **本仓零使用**，并更正了 `aup-dsl` skill 的 prop 漂移；`localStorage['aup-list-pagesize:<id>']` 会覆盖 pageSize 且移除分页器（BUG-063）。QA-019 **VERDICT=pass / BLOCKING=0**；新缺陷 BUG-063（P2 → R24）/BUG-064（P3，7 个残留键已由 Lead 清理）/BUG-065（P3，skill 已更正）。**快层基线 35 → 36**（新增分页列表 id 守卫）；**状态列与计数零变化：✅82 / 🟡7 / ⬜19 / ⚪2 = 110**｜平台事实沉淀 → `arc-contracts.md` **§38**|

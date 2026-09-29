@@ -224,7 +224,7 @@ page factory {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :queue level=3 style={fontSize: "var(--type-body)"}
                 p :queue-admin intent=muted scale=sm
-                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none from "/instance/app/arcblog/config/chain-intents" {
+                afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/chain-intents" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
                       row gap=xs cross=center {

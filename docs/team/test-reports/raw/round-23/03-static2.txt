@@ -1,0 +1,62 @@
+### non-afs-list changed lines in .aup/pages
+-    paging-desc { en "CLI paging: no flags = the newest 20 entries; --limit <n> = the newest n; --all = everything. The JSON output carries count, totalCount, 
+-    paging-title { en "Paging is a CLI decision" zh "分页口径以 CLI 为准" }
++    paging-desc { en "The list is paged on the page itself: 20 rows per page, Prev/Next, the current page and the total all read from the AFS listing — every p
++    paging-title { en "Paging" zh "分页" }
+
+### locales diff summary
+2	2	.aup/locales/en.json
+2	2	.aup/locales/zh.json
+
+### id list from source (paginated afs-list)
+access-grants-list 20
+agents-grants-list 10
+author-list 10
+cat-intents 10
+categories-list 10
+dashboard-agents-list 10
+dashboard-content-list 10
+dashboard-orders-list 10
+diagnostics-chain-intents-list 10
+diagnostics-checks-list 10
+diagnostics-summary-list 10
+factory-intents 10
+feed-list 10
+general-config-list 10
+general-switches-list 10
+heroes-list 12
+heroes-posts-list 20
+hub-index-list 20
+hub-intents 10
+hub-relations-list 20
+ledger-list 20
+ledger-settlements-list 20
+media-intents-list 10
+media-records-list 12
+operations-hubs-list 20
+orders-list 20
+orders-policy-list 10
+pages-drafts-list 20
+pages-published-list 20
+policy-products-list 20
+posts-drafts-list 20
+posts-published-list 20
+saved-list 12
+store-list 12
+tags-intents-list 10
+tags-items-list 20
+tags-snapshot-list 10
+
+### duplicate ids?
+
+### count of paginated declarations
+      37
+
+### checklist/backlog diffs (other members)
+ docs/ArcBlog-feature-checklist.md | 61 ++++++++++++++++------------
+ docs/team/backlog.md              | 85 +++++++++++++++++++++++++++++++++++++++
+ docs/team/journal/README.md       |  1 +
+ 3 files changed, 121 insertions(+), 26 deletions(-)
+
+### dsh-workflow doc untracked (not mine)
+?? docs/dsh-workflow-and-ralph.md

@@ -16,7 +16,7 @@ page store {
       }
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
         h3 :products level=3
-        afs-list layout=list itemStyle=row autoSelect=false clickMode=none subscribe=true showBreadcrumb=false showParent=false filter={field: "content.visibility", match: public} emptyText=:empty style={flexShrink: 0} from "/instance/app/arcblog/economy/products" {
+        afs-list store-list layout=list itemStyle=row autoSelect=false clickMode=none subscribe=true showBreadcrumb=false showParent=false filter={field: "content.visibility", match: public} emptyText=:empty style={flexShrink: 0} pagination=manual pageSize=12 from "/instance/app/arcblog/economy/products" {
           row role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
             view gap=xs size={flex: 1} style={minWidth: 0} {
               h3 "${entry.content.id}" style={fontSize: "var(--type-body)"}

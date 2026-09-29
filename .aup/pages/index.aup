@@ -7,7 +7,7 @@ page index {
     view gap=lg {
       frame hero-carousel-frame src="/p/en/hero-carousel/" loading=eager aspectRatio="16 / 7" title="Hero carousel" sandbox=allow-top-navigation-by-user-activation
       h2 :feed level=2
-      afs-list layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none from "/instance/app/arcblog/posts" {
+      afs-list feed-list layout=list itemStyle=row subscribe=true autoSelect=false showBreadcrumb=false showParent=false emptyText=:feed-empty clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
         row cross=stretch role=item style={padding: "0", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 12px)", marginBottom: "var(--space-block, 20px)", overflow: hidden, minHeight: "176px"} {
           view layout=inline href="/posts/${entry.content.slug}" size={flex: 1} style={display: flex, flexDirection: column, justifyContent: center, textDecoration: none, color: inherit, cursor: pointer, minWidth: 0, padding: "24px 30px"} {
             h3 "${entry.content.title}" scale=lg style={margin: "0", fontSize: "clamp(1.3rem, 2vw, 1.62rem)", lineHeight: "1.25"}

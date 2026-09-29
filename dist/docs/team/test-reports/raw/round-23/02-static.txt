@@ -1,0 +1,114 @@
+### diff numstat .aup/pages
+3	3	.aup/pages/admin/dashboard.aup
+3	3	.aup/pages/admin/diagnostics.aup
+2	2	.aup/pages/admin/general.aup
+2	2	.aup/pages/admin/pages.aup
+2	2	.aup/pages/admin/posts.aup
+1	1	.aup/pages/author.aup
+1	1	.aup/pages/economy/access.aup
+4	4	.aup/pages/economy/ledger.aup
+2	2	.aup/pages/economy/orders.aup
+1	1	.aup/pages/economy/policy.aup
+1	1	.aup/pages/index.aup
+1	1	.aup/pages/ops/agents.aup
+1	1	.aup/pages/ops/factory.aup
+3	3	.aup/pages/ops/hub.aup
+2	2	.aup/pages/ops/media.aup
+1	1	.aup/pages/ops/operations.aup
+1	1	.aup/pages/saved.aup
+2	2	.aup/pages/site/categories.aup
+2	2	.aup/pages/site/heroes.aup
+3	3	.aup/pages/site/tags.aup
+1	1	.aup/pages/store.aup
+
+### changed files (tracked)
+.aup/locales/en.json
+.aup/locales/zh.json
+.aup/pages/admin/dashboard.aup
+.aup/pages/admin/diagnostics.aup
+.aup/pages/admin/general.aup
+.aup/pages/admin/pages.aup
+.aup/pages/admin/posts.aup
+.aup/pages/author.aup
+.aup/pages/economy/access.aup
+.aup/pages/economy/ledger.aup
+.aup/pages/economy/orders.aup
+.aup/pages/economy/policy.aup
+.aup/pages/index.aup
+.aup/pages/ops/agents.aup
+.aup/pages/ops/factory.aup
+.aup/pages/ops/hub.aup
+.aup/pages/ops/media.aup
+.aup/pages/ops/operations.aup
+.aup/pages/saved.aup
+.aup/pages/site/categories.aup
+.aup/pages/site/heroes.aup
+.aup/pages/site/tags.aup
+.aup/pages/store.aup
+dist/.afs/manifest.json
+dist/.aup/locales/en.json
+dist/.aup/locales/zh.json
+dist/.aup/pages/admin/dashboard.aup
+dist/.aup/pages/admin/diagnostics.aup
+dist/.aup/pages/admin/general.aup
+dist/.aup/pages/admin/pages.aup
+dist/.aup/pages/admin/posts.aup
+dist/.aup/pages/author.aup
+dist/.aup/pages/economy/access.aup
+dist/.aup/pages/economy/ledger.aup
+dist/.aup/pages/economy/orders.aup
+dist/.aup/pages/economy/policy.aup
+dist/.aup/pages/index.aup
+dist/.aup/pages/ops/agents.aup
+dist/.aup/pages/ops/factory.aup
+dist/.aup/pages/ops/hub.aup
+dist/.aup/pages/ops/media.aup
+dist/.aup/pages/ops/operations.aup
+dist/.aup/pages/saved.aup
+dist/.aup/pages/site/categories.aup
+dist/.aup/pages/site/heroes.aup
+dist/.aup/pages/site/tags.aup
+dist/.aup/pages/store.aup
+dist/docs/ArcBlog-feature-checklist.md
+dist/docs/team/backlog.md
+dist/docs/team/journal/README.md
+dist/scripts/arcblog-runtime-ids.test.mjs
+docs/ArcBlog-feature-checklist.md
+docs/team/backlog.md
+docs/team/journal/README.md
+scripts/arcblog-runtime-ids.test.mjs
+
+### untracked
+?? dist/docs/dsh-workflow-and-ralph.md
+?? dist/docs/team/journal/round-23.md
+?? dist/docs/team/requirements/REQ-030-list-pagination.md
+?? docs/dsh-workflow-and-ralph.md
+?? docs/team/journal/round-23.md
+?? docs/team/requirements/REQ-030-list-pagination.md
+?? docs/team/test-reports/raw/round-23/
+
+### pagination primitive usage (must be 0)
+       0
+
+### afs-list without pagination=manual
+.aup/pages/ops/media.aup:24:    limits-grid { en "The list/grid switch from the spec is not implemented: afs-list layout=grid is locked to 6 auto-fill columns and a columns prop is ignored at runtime (docs/arc-contracts.md §25)." zh "规范里的「列表 / 网格」视图切换未实现：afs-list layout=grid 固定为 6 列 auto-fill，columns 参数在运行期被忽略（docs/arc-contracts.md §25）。" }
+
+### pageSize hits
+   3 .aup/pages/admin/diagnostics.aup 10
+   3 .aup/pages/admin/dashboard.aup 10
+   2 .aup/pages/site/tags.aup 10
+   2 .aup/pages/site/categories.aup 10
+   2 .aup/pages/ops/hub.aup 20
+   2 .aup/pages/economy/ledger.aup 20
+   2 .aup/pages/admin/posts.aup 20
+   2 .aup/pages/admin/pages.aup 20
+   2 .aup/pages/admin/general.aup 10
+   1 .aup/pages/store.aup 12
+
+### filter/serverFilters now vs HEAD
+       2
+       2
+
+### business CLI changed?
+
+### blocklet.yaml/world changed?

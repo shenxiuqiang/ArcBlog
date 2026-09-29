@@ -173,7 +173,7 @@ page orders {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :orders-title level=3 style={fontSize: "var(--type-body)"}
                 p :orders-empty scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:orders-empty from "/instance/app/arcblog/economy/orders" {
+                afs-list orders-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:orders-empty pagination=manual pageSize=20 from "/instance/app/arcblog/economy/orders" {
                   row gap=sm cross=start role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     view gap=xs style={flex: "1 1 0%"} {
                       p "${entry.content.id}" scale=sm style={fontFamily: monospace}
@@ -215,7 +215,7 @@ page orders {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :policy-title level=3 style={fontSize: "var(--type-body)"}
                 p :policy-note scale=sm intent=muted
-                afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:policy-note from "/instance/app/arcblog/economy/policies" {
+                afs-list orders-policy-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:policy-note pagination=manual pageSize=10 from "/instance/app/arcblog/economy/policies" {
                   row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                     p :policy-split scale=sm intent=muted
                     p "${entry.content.creator} / ${entry.content.hub} / ${entry.content.protocol}" scale=sm

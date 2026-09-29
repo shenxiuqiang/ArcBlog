@@ -157,7 +157,7 @@ page agents {
                 p :grants-desc intent=muted
                 p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view visible=$session.authenticated {
-                  afs-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agent-grants-empty from "/instance/app/arcblog/config/agent-grants" {
+                  afs-list agents-grants-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agent-grants-empty pagination=manual pageSize=10 from "/instance/app/arcblog/config/agent-grants" {
                     row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
                       p "${entry.content.agentDid}" scale=sm style={fontFamily: monospace} format=did title="${entry.content.agentDid}"
                       p "${entry.content.capabilities}" scale=sm
