@@ -1,5 +1,7 @@
 # AGENTS.md — ArcBlog
 
+> 版本：v1.0 ｜ 2026-09-30 ｜ Stage 8b 定稿（独立核验 + Lead 放行）
+
 在本仓库工作的任何 agent（包括 teammate）请按下面顺序加载上下文：
 
 1. [`CLAUDE.md`](CLAUDE.md) —— **实现事实与命令入口**（先读它；本文件不重复它的内容）
