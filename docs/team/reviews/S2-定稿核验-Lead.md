@@ -16,12 +16,12 @@
 a15c9ffe2a4901bcc8fb591957e4aa2b3940acc66cb9f72d38459c8ec5639ac6  00-需求地图与规范.md      (300 行)
 1b01545ef264100588ca2a4e44153e6636357277d3631e45b00da95b26c20a14  00a-需求模板与验收规范.md  (223 行)
 68141bf6f0be05158775ea7291bdaa5b894813b91e3ae85ad4cb8197091d2d28  01-CNT-内容创作.md
-e78d7072846aa6b1d82be72dc01a57b770df2c499cf87764033eebfe2997be5d  02-SITE-发布与站点.md
+7db6153cc3ab80698cfb2f869e144ebedad23974c628dd72cf5cb64ced7a0230  02-SITE-发布与站点.md   ← v1.1（受控修订：C1 快层口径，见 §1.1）
 c92605c904779d37c1e17f0f3fefff3091b9b3bede51c0a8805867008de50262  03-NET-发现与网络.md
 4a3f0f546f37ca6be5db5c62b1086abbe3ec5c21494107279c78c48b01b3da93  04-ECO-经济与付费.md   ← v1.1（冻结后**受控修订**：**撤回"价格投影进公开 post 记录"**，改读 guest 可读的 `economy/products`；含 **Lead 直接修正一处残留**——`§8` 那一行仍写旧裁决，由 Lead 一行改为撤回口径；主笔随后补了变更记录行。最终哈希 = 本行值）
-504b9e9ffb220ff343636777c4f0ddeb3d72d7257b34e6fd206180bf8b34d39b  05-ID-身份与角色.md
-78e8fdf4783150c882a8ebeb278be2cde4374c059f01ad552632a4ad4e5f2c1c  06-AGT-Agent接入.md
-27225acb177a662ffd8b5ea799ab90bf3462b17d4f1a02b3787e2c918ffc53ca  07-OPS-治理与运维.md   ← v1.1（冻结后**受控修订**：Lead 裁决 Q9 → `PRD-OPS-01` 的「待 Stage 3 确认」改为「已确认：维持」；其余与 v1.0 一致）
+408ce0cd0d74ab2bc745bf96b4cc332075dc8ba6cae3b85ba8a341cd8f3d4248  05-ID-身份与角色.md     ← v1.1（受控修订：C1 快层口径，见 §1.1）
+e00258aac3ceb7c56a0c35fcc60aef8131291223a2a1c48e9e96066688b74f7b  06-AGT-Agent接入.md     ← v1.1（受控修订：C1 快层口径，见 §1.1）
+d8259e4600d02a6bff54b58e5593e7944096b5fdd14f7555a4cf6ebb583af358  07-OPS-治理与运维.md   ← **v1.2**（受控修订：Q9 确认维持 + C1 快层口径，见 §1.1）
 9e4846742043fa00051ebb555437584e37405a0af84a8ce9c6c77136b2465705  08-SET-设置与外观.md
 ```
 
@@ -33,6 +33,8 @@ c92605c904779d37c1e17f0f3fefff3091b9b3bede51c0a8805867008de50262  03-NET-发现�
 | --- | --- | --- | --- | --- |
 | 2026-09-30 | `07-OPS-治理与运维.md` | v1.0 → **v1.1** | `PRD-OPS-01` 的「待 Stage 3 确认」→「已确认：维持」 | Lead 裁决 Q9 |
 | 2026-09-30 | `04-ECO-经济与付费.md` | v1.0 → **v1.1** | **撤回 `PRD-ECO-01` 的价格投影方案**，改为"读 guest 可读的 `economy/products/<productId>.json`"；约束改写为三条（无派生写入 / 不新增 schema 字段 / `posts` 只留 `productId`）；`reader` 价格行标【未验证】+ 降级（"付费内容 + 去商店"）；价格在 `store` 展示；立 **Stage 5 随机取数探针前置门** | Stage 3 审查 R1（pm）+ Lead 取证：`world/post.yaml:26` 明文 "the price lives on the Product, **never on the post**"（spec §45），投影需新增字段（被本条约束禁止）且违反 spec；且 `blocklet.yaml:124-126` 的 `economy/products` 实为 **`role: guest`**，原"墙内不可读"前提有误 |
+
+| 2026-09-30 | `02-SITE`、`05-ID`、`06-AGT`、`07-OPS` | v1.0/v1.1 → **v1.1/v1.1/v1.1/v1.2** | **C1 快层口径改正**（四条）：`PRD-SITE-05`/`PRD-ID-03`/`PRD-AGT-02`/`PRD-OPS-02` 的 C1 原写「`npm test` 快层通过（含 <suite>）」或泛化"快层通过"，但 `arcblog-rss`/`arcblog-roles`/`arcblog-agent`/`arcblog-doctor` **都不在** `FAST_TESTS`（快层仅 10 文件）⇒ **假陈述**；已改为「快层门（validate + 快层）+ `npm run test:file -- scripts/<suite>.test.mjs`（live，先持 `.gate-lock`）」。`PRD-AGT-02` 更严重：其"目录一致性断言"**今天根本不存在** | Stage 6 调研 `S6-01` 实测（六态清点）+ Lead 复核 `scripts/run-tests.mjs` 的 `FAST_TESTS` 成员表 |
 
 > **教训（写入 Stage 7 规范候选）**：一条需求**自身约束与自身目标冲突**时，审查不一定能一次发现——Stage 2 的 `PRD-ECO-01` 就是"要求投影价格"与"不新增 schema 字段"并存，直到 Stage 3 做页面落点才暴露。⇒ **凡"派生/投影"类需求，必须同时说明"真源在哪 + 是否新增字段 + 谁维护一致性"三件事**。
 
