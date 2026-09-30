@@ -78,6 +78,8 @@ arc service start -i hr3 --port 4947 --home /tmp/hr-lab/home-hr3 \
 
 被测目录 = 仓库源码的 `rsync` 副本（**排除 `node_modules`/`dist`/`.git`/`logs`，且排除 `node.key`/`.env.local`**），改动只发生在副本里，仓库工作区零改动。
 
+> **密钥纪律**：§4.4 第 P3 步为了完整复现 issue 的复现步骤，在**副本**里跑了一次裸 `arc blocklet build`（仓库铁律只允许 `npm run build`，因为它会 scrub）。该副本在 `rsync` 时已排除 `node.key`/`.env.local`，`ls` 复核两者均不存在（`No such file or directory`），因此这一步没有把任何密钥材料写进 `dist/`；副本的 `dist/` 也已随实例一起作废。
+
 ---
 
 ## 4. 实测记录
@@ -340,9 +342,9 @@ Scan blocklet directory conventions and report results    ← 静态扫描器，
 
 | 文件 | 修订 |
 | --- | --- |
-| [`docs/05-开发文档/02-平台能力与边界.md`](../05-开发文档/02-平台能力与边界.md) | 能力 **#70**（`.aup` 改动对运行中 daemon 生效）的证据/降级列补：`ARC_BLOCKLET_DIR` 已退役、`--blocklet` 是现代写法、`arc deploy` hot-add ≠ reload、restart 与复挂分工 |
-| [`docs/05-开发文档/04-构建·部署·运行.md`](../05-开发文档/04-构建·部署·运行.md) | §2「`.aup` 改动的生效路径」：命令块与「两个面」表按 §4.7 修正（HTTP 面 restart 即恢复；复挂属 AFS RPC 面） |
-| [`docs/05-开发文档/02a-平台禁止与降级模式.md`](../05-开发文档/02a-平台禁止与降级模式.md) | F19 的成功判据澄清：**「站点 200」不能证明挂载恢复** |
+| [`docs/05-开发文档/02-平台能力与边界.md`](../../05-开发文档/02-平台能力与边界.md) | 能力 **#70**（`.aup` 改动对运行中 daemon 生效）的证据/降级列补：`ARC_BLOCKLET_DIR` 已退役、`--blocklet` 是现代写法、`arc deploy` hot-add ≠ reload、restart 与复挂分工 |
+| [`docs/05-开发文档/04-构建·部署·运行.md`](../../05-开发文档/04-构建·部署·运行.md) | §2「`.aup` 改动的生效路径」：命令块与「两个面」表按 §4.7 修正（HTTP 面 restart 即恢复；复挂属 AFS RPC 面） |
+| [`docs/05-开发文档/02a-平台禁止与降级模式.md`](../../05-开发文档/02a-平台禁止与降级模式.md) | F19 的成功判据澄清：**「站点 200」不能证明挂载恢复** |
 
 ---
 
