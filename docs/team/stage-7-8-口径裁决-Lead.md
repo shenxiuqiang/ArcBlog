@@ -59,7 +59,7 @@
   2. 归档 UI 标准的 **9 条失效条款**（Stage 4 `00 §3` 已逐条给替代）；
   3. 归档期的"计数一律不引"口径；
   4. **`arc dsl generate --check` 在 `npm test` 里**（假门，代码零命中）；
-  5. `_docs/arc-contracts.md §43(3)`「发布根 = 仓库根」→ 实测 **`dist/`**（`04-构建·部署·运行` 已记）。
+  5. **发布根归属订正（2026-09-30，`doc-final` 回原文核出 Lead 的错误）**：旧说法「发布根 = 仓库根」的真正出处是 **`_docs/operations-runbook.md:868`**（"`arc deploy` / `arc blocklet instance deploy` treat the **repository root** as the publish root"）；而 `_docs/arc-contracts.md` **§43(3) 写的是反向警示「不得把仓库根当发布根」**（与实测一致）——**Lead 此前把出处归错了**（并传播进 Stage 5 `04 §7 D4` 与 Stage 6 `02 ENG-24`，已发受控修订）。**结论不变**：以 CLI 原文/实测为准，发布根 = **`dist/`**（`04-构建·部署·运行` 已记）。
 
 ## 6. 术语总表的形态（回答 `S8-01 §6-3`）
 
