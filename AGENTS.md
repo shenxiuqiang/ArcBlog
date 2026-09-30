@@ -1,32 +1,43 @@
 # AGENTS.md — ArcBlog
 
-> ⚠️ **文档体系重建中（2026-09-29 起）**：旧 `docs/` 已整体归档为 [`_docs/`](_docs/)（**只读参考**），
-> 新文档体系见 [`docs/README.md`](docs/README.md)（8 类分阶段生成，当前进行中）。
-> 下方"权威来源"与角色卡指向的是**归档路径**；新体系定稿后本文件由 Stage 7/8 重写。
-
 在本仓库工作的任何 agent（包括 teammate）请按下面顺序加载上下文：
 
 1. [`CLAUDE.md`](CLAUDE.md) —— **实现事实与命令入口**（先读它；本文件不重复它的内容）
-2. [`docs/README.md`](docs/README.md) —— **新的文档体系总纲**（在建）；过程协作规则暂沿用 [`_docs/team/README.md`](_docs/team/README.md)
-3. 自己的角色卡（归档版）：PM [`_docs/team/roles/pm.md`](_docs/team/roles/pm.md) ｜ Dev [`_docs/team/roles/dev.md`](_docs/team/roles/dev.md) ｜ QA [`_docs/team/roles/qa.md`](_docs/team/roles/qa.md) ｜ UI [`_docs/team/roles/ui.md`](_docs/team/roles/ui.md)
+2. [`docs/README.md`](docs/README.md) —— **文档体系总纲**（写 `docs/**` 之前必读：阶段门、文档规范、术语归属）
+3. [`docs/07-团队与开发规范/00-角色与写入范围.md`](docs/07-团队与开发规范/00-角色与写入范围.md) —— **团队角色与写入范围**（5 角色 + 3 职能位；越界怎么报）
+4. 其余按 [`docs/08-其他/00-索引与阅读路径.md`](docs/08-其他/00-索引与阅读路径.md) 的三类读者路径进入
+
+> 过程协作的口径**不再**沿用归档手册：归档 [`_docs/team/README.md`](_docs/team/README.md) 只作**历史参考**（`_docs/**` 只读，**不是规则来源**）。
 
 ## 权威来源
 
-| 内容 | 文件（**已归档**） |
+| 内容 | 文件 |
 | --- | --- |
-| 产品与技术方向（唯一权威） | [`_docs/ArcBlog-product-technical-spec.md`](_docs/ArcBlog-product-technical-spec.md) |
-| 功能实现状态与变更日志 | [`_docs/ArcBlog-feature-checklist.md`](_docs/ArcBlog-feature-checklist.md) |
-| 平台实测结论 / 不支持的降级路径 | [`_docs/arc-contracts.md`](_docs/arc-contracts.md) |
-| 开发计划与架构决策 D1–D7 | [`_docs/development-plan.md`](_docs/development-plan.md) |
-| 团队进度看板 | [`_docs/team/backlog.md`](_docs/team/backlog.md) |
+| 文档体系宪法（阶段门 / 文档规范 / 术语归属） | [`docs/README.md`](docs/README.md) |
+| 产品概念、用户、旅程、术语 | [`docs/01-产品概念/`](docs/01-产品概念/00-导读.md) |
+| 产品需求（`PRD-*`；六态**定义**在 [`00 §4.2`](docs/02-产品需求/00-需求地图与规范.md)） | [`docs/02-产品需求/`](docs/02-产品需求/00-需求地图与规范.md) |
+| 产品设计（页面 / 流程 / 跨页契约） | [`docs/03-产品设计/`](docs/03-产品设计/00-设计原则与导航.md) |
+| UI 设计规范（条款库 / 验收清单） | [`docs/04-UI设计规范/`](docs/04-UI设计规范/00-总则与形态纪律.md) |
+| 开发文档（架构 / 数据 / **平台边界** / 选型 / 构建 / 测试 / 运维 / 探针） | [`docs/05-开发文档/`](docs/05-开发文档/00-架构总览.md)（平台边界 = [`02`](docs/05-开发文档/02-平台能力与边界.md)；未验证 = [`07 §1`](docs/05-开发文档/07-未决技术问题与探针计划.md)） |
+| 功能台账（`FP-*`/`ENG-*`/`DEF-*`；**实现状态与证据**） | [`docs/06-功能开发列表/`](docs/06-功能开发列表/00-台账总览与规范.md) |
+| 团队与开发规范（角色 / 流程 / 审查 / 门 / 交接 / 写作纪律） | [`docs/07-团队与开发规范/`](docs/07-团队与开发规范/00-角色与写入范围.md) |
+| 其他（索引与阅读路径 / 决策记录 / 迁移对照 / 归档停用声明 / 任务导航 / 错误码） | [`docs/08-其他/`](docs/08-其他/README.md) |
+| 工作台（阶段日志、审查与核验记录；**不是产品文档**） | [`docs/team/`](docs/team/reviews/S6-定稿核验-Lead.md) |
+| **归档区**（旧 `docs/` 全量迁移） | [`_docs/`](_docs/) —— **只读参考，不是规则来源**；引用必须**全路径** + 注明"归档依据" |
 
-> 新体系定稿后，上表由 `docs/01-产品概念` ~ `docs/08-其他` 的对应文档替代（Stage 7/8 落笔）。
+> **三条仅存于归档的内容**（新体系**有意不迁移**，清单见 [`docs/08-其他/02 §6`](docs/08-其他/02-迁移对照.md)）：
+> 工厂规格与 GLofter 字段映射 = [`_docs/ArcBlog-nft-factory.md`](_docs/ArcBlog-nft-factory.md)；
+> `arcblog-lifecycle` 逐子命令参数参考 = [`_docs/publishing-ops.md`](_docs/publishing-ops.md)；
+> 历史发布记录 = [`_docs/release-notes-v0.3.0.md`](_docs/release-notes-v0.3.0.md)。
+> 引用它们**只作"归档依据"**，不得当作现行契约。
 
 ## 铁律（teammate 一律遵守）
 
-1. **不臆造 ARC API**（spec §150）：先 `arc <cmd> --help` / `explain` / `/.knowledge` 核验，再写代码；平台不支持的能力写进 `_docs/arc-contracts.md` 并给降级路径（新体系定稿后改指 `docs/05-开发文档` 的平台边界篇）。
-2. **每步全绿**：`arc dsl validate --json`（issues 为空）+ `npm test`（**快层，约 1 秒**，不写实例）；改了 `.aup` 还要跑 **`npm run build`**（= `arc blocklet build` + `npm run scrub:dist-secrets`）——**不要只跑裸 `arc blocklet build`**：它会把仓库根的 `node.key`/`.env.local` 复制进 `dist/` 并写进 `dist/.afs/manifest.json`（BUG-067，平台无 ignore 开关）。**不再跑全量 `npm run test:live`**（用户裁定 2026-09-27，实测 ~21 分钟且写共享实例）——改动涉及 CLI / AFS 记录 / 链适配器 / daemon 路由时，改为**定向单跑受影响的测试文件**（`npm run test:file -- scripts/<file>.test.mjs`，先写 `docs/team/.gate-lock`），分层说明见 CLAUDE.md「Quality gates」。失败自己回滚，不要把红仓库交出去。 **QA 分批（用户裁定 2026-09-29）**：逐轮 QA 暂停；每轮只跑「Lead 门（validate + 快层 + build）」，独立 QA 在**批次结束时统一做一次**（或用户点名时）。门仍然每轮必跑，红门不得提交。
-3. **只写自己角色卡里写明的写入范围**；需要越界时给 PM 发消息，由 PM 建任务或升级 Lead。
-4. **禁止** `git commit` / `git push` / `git reset --hard`，禁止改 `_docs/ArcBlog-product-technical-spec.md`，禁止删除 `node.key` / `.env.local`。提交由 Lead 在轮次末尾统一做。
-5. **交接靠文件，不靠记忆**：新体系下 = `docs/0X-*/**`；过程记录（backlog / 评审 / 阶段日志）→ `docs/team/**`。归档期的旧约定见 [`_docs/team/README.md`](_docs/team/README.md)。
-6. **完成即汇报**：给 PM 与 Lead 发一条固定格式消息 —— `产物路径 + 验证命令 + 实际结果`。任务板上的任务要 `team_task_update` 置为 `completed`。
+1. **不臆造 ARC API**：先 `arc <cmd> --help` / `explain` / `/.knowledge` 核验，再写代码；平台做不到的能力写进 [`docs/05-开发文档/02`](docs/05-开发文档/02-平台能力与边界.md)（禁止项见 [`02a`](docs/05-开发文档/02a-平台禁止与降级模式.md)）并给降级路径。
+2. **每步全绿**：`arc dsl validate --json`（`issues: []`）+ `npm test`（快层，约 1 秒，不写实例）；改了 `.aup`/`blocklet.yaml`/`world/**` 还要跑 **`npm run build`**（= `arc blocklet build` + `npm run scrub:dist-secrets`）。**不要只跑裸 `arc blocklet build`**：它会把仓库根的 `node.key`/`.env.local` 复制进 `dist/` 并写进 `dist/.afs/manifest.json`（BUG-067，平台无 ignore 开关）。红门不得交接。
+3. **不跑全量 `npm run test:live`**（~21 分钟且写共享实例，用户裁定 2026-09-27）：涉及 CLI / AFS 记录 / 链适配器 / daemon 路由时改为**定向单跑**（`npm run test:file -- scripts/<file>.test.mjs`），**先写 `docs/team/.gate-lock`、跑完删除**（[锁纪律](docs/05-开发文档/05-测试分层与质量门.md) §5）。**QA 分批的适用域**（代码批次可分批、文档 Stage 门不豁免）见 [质量门 §6](docs/07-团队与开发规范/03-质量门与命令手册.md)。
+4. **只写自己写范围内的文件**（glob 级表见 [角色与写入范围 §2](docs/07-团队与开发规范/00-角色与写入范围.md)）；需要越界时：**① 停手 → ② 报 Lead → ③ 由 Lead 建任务 / 扩权 / 亲自做**（§2.3）。**不要自己扩范围、不要直接改别人的阶段正文。**
+5. **禁止** `git commit` / `git push` / `git reset --hard`：**唯一提交人 = Lead**，在检查点提交，**精确 `add`**、**提交前 `git diff` 过内容**（[提交纪律](docs/07-团队与开发规范/04-交接·记录·提交.md) §3）。**禁止改 `_docs/**`**（只读；归档里的已知过时项只在 `docs/` 侧登记）；**禁止删除 `node.key` / `.env.local`**。
+6. **交接靠文件，不靠记忆**：结论落 `docs/0X-*/**`；过程记录（阶段日志 / 审查与核验）→ `docs/team/**`；**待办的三个权威载体** = [功能台账](docs/06-功能开发列表/00-台账总览与规范.md) + 各阶段 `S*-定稿核验-Lead.md` 的「遗留」+ [未决技术问题与探针计划](docs/05-开发文档/07-未决技术问题与探针计划.md)。**没有** `docs/team/backlog.md`（不重建）。
+7. **完成即汇报**：一条固定格式消息 = **产物路径 + 验证命令 + 实际结果**。
+8. **必须人类批准的动作**（不可逆 / 对外）：`push`、真实资金与链上写、删数据与清理实例、入口三文件最终重写、产品口径追认 —— 清单见 [人类检查点](docs/07-团队与开发规范/04-交接·记录·提交.md) §6。
