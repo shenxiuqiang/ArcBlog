@@ -1,76 +1,183 @@
-# ArcBlog documentation
+# ArcBlog 文档体系 · 总纲
 
-## Authoritative specification
+> **本文件是新文档体系的宪法**：任何人（人 / agent）写 `docs/**` 之前先读它。
+> 旧文档已整体归档到 [`_docs/`](../_docs/)（834 文件，只作参考，**不迁移、不复制、不拆分**）。
+> 建档日期：2026-09-29 ｜ 状态：**生成中（Stage 0 完成，Stage 1 进行中）** ｜ 维护人：Lead ｜ 主笔：`doc-owner`（teammate）
 
-**[ArcBlog-product-technical-spec.md](ArcBlog-product-technical-spec.md) — V2.0**
+---
 
-This is the single source of truth for ArcBlog's product positioning, architecture,
-roles, economy and delivery phases. Every other document here is a supporting
-reference for the current implementation or its operation. If a supporting
-document ever disagrees with the spec, the spec wins — update or remove the
-other document.
+## 0. 为什么要重做
 
-**[ArcBlog-feature-checklist.md](ArcBlog-feature-checklist.md)** tracks the
-implementation status of every feature in the spec (✅ / 🟡 / ⬜ / ⚪). The two
-documents are linked: any change to the spec must be mirrored in the checklist.
+旧 `docs/` 是**边开发边写**出来的：规格、实现状态、缺陷、轮次日志、设计标准、运维手册混在同一层，
+后果是——同一个事实有 3～5 个出处且互相漂移（例：`docs/ArcBlog-feature-checklist.md` 的总览计数与正文不一致；
+`docs/ArcBlog-admin-ui-design.md` 的版本行长达数百字；`docs/team/backlog.md` 单条横幅上千字）。
+本次不是"整理"，而是**重建**：先想清楚产品是什么，再推导需求、设计、规范、实现，让每份文档有**唯一出处**与**明确的上游**。
 
-## External references
+**新体系的三条硬原则**
 
-- **ArcBlock official technical docs** — <https://www.arcblock.io/zh/docs/> —
-  consult before guessing any ARC / AFS / AUP / Blocklet API.
-- **ArcBlock agent knowledge base** — `ArcBlock/agent-skills`, installed under
-  `.agents/skills/` (`arcblock-context` + the `arc` booklets), tracked by
-  `skills-lock.json`.
+1. **单向依赖**：`概念 → 需求 → 设计 → UI 规范 → 开发 → 功能列表`。下游可以引用上游，上游**绝不**引用下游（避免互相漂移）。
+2. **一个事实一个出处**：同一事实只在一个文件里定义，其它地方用链接引用，不复制正文。
+3. **状态显式**：任何"已实现/未实现/平台不支持"的断言必须带证据（文件:行、命令输出、AFS 记录、`arc` 实测），并区分
+   **【已实现】【规划中】【平台边界】【决策待定】【未验证】** 五类标签（定义见 §4）。禁止"应该能""大概支持"。
 
-## Implementation
+---
 
-- [ArcBlog-admin-ui-design.md](ArcBlog-admin-ui-design.md) — admin console UI
-- [ArcBlog-nft-factory.md](ArcBlog-nft-factory.md) — node NFT factories (§8.1–§8.4): factory specs, the GLofter field mapping, the `mock`/`ocap` chain adapter and the operator runbook
-  standard (spec §15): layout, tokens, components, states, acceptance checklist.
-  Appendix A maps §2.5 (full-height fluid layout, inner-scroll pane) to
-  framework-free references, with a runnable skeleton at
-  [reference/console-shell-layout.html](reference/console-shell-layout.html).
+## 1. 目录结构
 
-- [development-plan.md](development-plan.md) — spec → phase plan, architecture
-  decisions, increment breakdown and acceptance gates.
-- [arc-contracts.md](arc-contracts.md) — Phase 0 verified ARC contracts (AFS,
-  manifest, Web Device, DID Space, identity, agent access) with command evidence.
-- [developer-guide.md](developer-guide.md) — repository layout, content model,
-  AUP conventions, theme bridge, URL bindings, scripts and tests.
-- [persistence.md](persistence.md) — AFS / DID Space storage and identity
-  contract; where posts, drafts, heroes, media and audits live.
+```text
+docs/
+├── README.md                 ← 本文件：体系总纲 + 生成计划 + 评审协议
+├── 01-产品概念/               ← 我们做一个什么样的产品；谁在什么场景下用它（Stage 1）
+├── 02-产品需求/               ← 由概念推导的 PRD：领域 → 能力 → 功能 → 交互，由大到小（Stage 2）
+├── 03-产品设计/               ← 由需求推导的页面与流程设计：有哪些页、怎么走、状态怎么表达（Stage 3）
+├── 04-UI设计规范/             ← 操作与样式一致性：token、组件、布局、文案、验收清单（Stage 4）
+├── 05-开发文档/               ← 技术调研、架构设计、技术选型、数据模型、集成与运维（Stage 5）
+├── 06-功能开发列表/           ← 每个可开发功能点 + 完成情况 + 证据（Stage 6）
+├── 07-团队与开发规范/         ← 团队角色、协作协议、编码/评审/质量门规范（Stage 7）
+├── 08-其他/                   ← README、调研笔记、决策记录、风险与术语表（Stage 8 + 全程沉淀）
+└── team/                     ← 工作台（backlog、journal、评审记录）；不是产品文档
+```
 
-## Operations
+`_docs/` = 归档区：**只读参考**。新文档需要旧文档的结论时，用 `_docs/...` 链接引用并注明"归档依据"，**不得成段搬运**。
 
-- [operations-runbook.md](operations-runbook.md) — daily checks, publish /
-  archive / republish / delete, queries, audit, RSS, incident response.
-- [publishing-ops.md](publishing-ops.md) — full CLI reference for
-  `scripts/arcblog-lifecycle.mjs` and the query/audit/report helpers.
-- [error-codes.md](error-codes.md) — structured JSON failure codes returned by
-  the lifecycle script.
-- [share-cards.md](share-cards.md) — OG/SEO field precedence, image sizes and
-  publishing examples.
+---
 
-## History
+## 2. 生成顺序与阶段门（严格串行）
 
-- [release-notes-v0.3.0.md](release-notes-v0.3.0.md) — what shipped in v0.3.0.
-  Historical record only; it does not describe the V2.0 target architecture.
+| Stage | 产出目录 | 上游输入 | 定稿门（缺一不可） |
+| :---: | --- | --- | --- |
+| 0 | 骨架 + 本总纲 | 用户指令 | 目录就位；`arc dsl validate` + `npm test` 仍绿 |
+| 1 | `01-产品概念/` | 归档权威（spec/清单/契约）+ 用户视角调研 + 平台边界 | 五问自洽（见 §4 清单）｜ 每个角色有可走通的旅程 ｜ 无【平台边界】越界承诺 |
+| 2 | `02-产品需求/` | Stage 1 定稿 | 每条需求可追溯到概念条款 ｜ 每条有可执行验收标准 ｜ 由大到小（领域→能力→功能→交互）无断链 |
+| 3 | `03-产品设计/` | Stage 2 定稿 | 每个需求有落点页面 ｜ 页面「一句话用途」唯一 ｜ 空/错/降级态齐全 |
+| 4 | `04-UI设计规范/` | Stage 3 定稿 | 规范条款可判定（能给断言）｜ 覆盖所有组件与状态 ｜ 有页面验收清单 |
+| 5 | `05-开发文档/` | Stage 1–4 定稿 | 架构与需求一致 ｜ 技术选型有实测依据 ｜ 平台边界有降级路径 |
+| 6 | `06-功能开发列表/` | Stage 2+5 定稿 | 每个功能点可独立开发/验收 ｜ 状态与证据相符（不许 ✅ 空挂） |
+| 7 | `07-团队与开发规范/` | Stage 5+6 定稿 | 角色写范围不重叠 ｜ 质量门可执行 ｜ 交接格式固定 |
+| 8 | `08-其他/` + 根 `README.md` | 全部定稿 | 索引完整 ｜ 无死链 ｜ 根 README 能让人 5 分钟上手 |
 
-## Removed in the 2026-09-23 docs cleanup
+**冻结规则**：上一 Stage 未定稿，下一 Stage 不得开写。定稿 = 主笔自检 + 独立审查通过 + Lead 放行三件事都完成。
 
-These described or planned the superseded single-node blog product and
-conflicted with the V2.0 spec:
+---
 
-- `product-summary.md` — called ArcBlog "a DID-native, Markdown-first publishing
-  Blocklet"; the spec (§1, §147, §153) defines it as a content-network node.
-- `roadmap.md` — the Iteration 1–4 roadmap of the previous product; replaced by
-  the spec's MVP scope (§134–139) and Phase 0–9 plan (§149).
-- `release-checklist.md` — Iteration-1 release gates tied to the removed
-  roadmap, including a stale draft path (`/blocklets/arcblog/users/<did>/drafts`)
-  that contradicts `persistence.md` and spec §82–83.
-- `superpowers/` (hardening design + plans) — scoped the product to a
-  single-admin blog and listed economy, payment and NFT as non-goals, which is
-  the opposite of spec §7–11 and §25–49.
+## 3. 每阶段的工作流（四步）
 
-Deleted files remain recoverable from git history, e.g.
-`git log --all -- docs/roadmap.md`.
+```text
+① 调研（可并行，子智能体）   证据落 docs/08-其他/调研/<stage>-<n>-<topic>.md
+        ↓
+② 撰写（主笔 = doc-owner）     产出 docs/<stage>/…，版本 v0.1
+        ↓
+③ 独立审查（子智能体，≥1 人）  审查者不写正文，只出问题清单 → docs/team/reviews/
+        ↓
+④ 修订 → v0.5 → 再审 → v1.0    Lead 放行 → 冻结（此后改动需版本号 + 变更记录）
+```
+
+- **调研**：可以多头并行；每人**只写自己那一个文件**（写范围不重叠）。
+- **撰写**：同一 Stage 只有一个主笔；主笔负责结构、取舍与文字，调研员只提供素材。
+- **审查**：默认两路——**产品审查**（该不该这样、有没有兑现）＋**事实审查**（每句话有没有证据、有没有臆造平台能力）。
+  审查者必须给"文件:行 / 命令输出 / 明确的反例"，不接受"更好""更完善"。
+- **修订**：主笔对每条审查意见必须给出**采纳 / 部分采纳 / 不采纳（写明理由）**，不允许静默丢弃。
+
+---
+
+## 4. 文档规范
+
+**每篇文档头部必备**（表格或引用块）：
+
+| 字段 | 含义 |
+| --- | --- |
+| 状态 | 草稿 / 评审中 / 已定稿 / 已过期 |
+| 版本 | `v1.0`，定稿后每次改动 +0.1 并记变更行 |
+| 上游 | 本文件依据哪些文档（路径 + 章节） |
+| 下游 | 谁会消费它 |
+| 证据基线 | 代码基线 commit + 关键命令；写"实现"必须给证据 |
+
+**写作纪律**
+
+- 中文正文；标识符/命令/路径保持原文（`?page=compose`、`afs-list`、`scripts/*.mjs`）。
+- 每篇 ≤ 400 行；超了就拆文件并在目录 README 里建索引——**长文不如多层索引**。
+- 一张表胜过三段话；一条断言一行证据。
+- 不写"我们认为/我们感觉"；写"我们相信 X 会让 Y 的 Z 指标变好"（假设可证伪）。
+- 每篇末尾给「开放问题」小节（未决事项 + 建议的裁决人），而不是把疑问留在正文里。
+
+**事实标签**（正文里直接使用；**唯一出处 = 本节**，各文档只使用、不重定义）
+
+```text
+【已实现】证据 = 文件:行 / 命令输出 / AFS 记录
+【规划中】说明目标 Stage / 需求编号
+【平台边界】证据 = arc 实测输出 + 降级路径（引用 _docs/arc-contracts.md 对应节）
+【决策待定】写明候选 A/B + 需要谁拍板
+【未验证】断言尚未用实测钉死：写明"未验证什么 + 为什么现在验不了 + 验证方法/判定式"，不得据此下结论
+```
+
+> **【未验证】与【决策待定】的分工**：前者 = 事实还不知道（需一次探针/实测）；后者 = 事实已清楚但选择未拍板（需人裁决）。
+> 归档期两类最贵的事故都出在这里：把"未验证"当"已知"（把 `$session.*` 对**带引号**形态的实测外推到**裸 token**），
+> 以及把"未验证"长期挂着不落盘（`_docs/team/requirements/REQ-002:94` → `BUG-012` 字面量写进公开 feed）。
+> 规则：**凡【未验证】必须同时写出验证步骤与判定式**；验证完成后立刻改成四大标签之一并留证据。
+> （该标签由 Stage 2 实践引入，2026-09-30 经 Lead 纳入本节，成为全局第五类。）
+
+---
+
+## 5. 独立审查清单（每个 Stage 复用）
+
+- [ ] **可追溯**：每条结论能指到上游某一条（反之，每条上游承诺在本 Stage 有落点或明确"不做"）
+- [ ] **可证伪**：所有"已实现"都带证据；所有"规划中"都有验收标准
+- [ ] **无臆造**：没有为平台编造 API；平台不支持的写了降级路径
+- [ ] **无内部矛盾**：同一术语/状态/数字全文一致（尤其状态词表与计数）
+- [ ] **无死链**：相对链接可达（含指向 `_docs/` 的归档引用）
+- [ ] **有边界**：写了"明确不做"及其理由
+- [ ] **可执行**：读者照文档能动手（命令能跑、页面能点）
+
+---
+
+## 6. 术语与唯一出处（跨文档统一）
+
+| 术语 | 唯一出处 | 说明 |
+| --- | --- | --- |
+| Studio / Hub | `01-产品概念/04-概念与术语.md` | **节点角色**（不是两个产品、不是两个代码库）；Basic / Studio / Hub / Studio+Hub 四种节点形态 |
+| 角色代号 C / RD / V / H / O / A / G | `01-产品概念/04-概念与术语.md` | 创作者 / 付费读者 / 访客与爬虫 / Hub 运营者 / 节点运营者 / Agent 接入方 / 平台方；归档调研曾用 R1–R7 编号，两套编号映射见该文件 |
+| 事实标签（**五类**） | `docs/README.md` §4（本文件） | 【已实现】【规划中】【平台边界】【决策待定】【未验证】；各文档只使用、不重定义 |
+| 角色生命周期 | 名称与顺序 → `01-产品概念/04`；语义与转换规则 → `02-产品需求/` | `none / acquired / staked / revoking / claimable`（Lead 追认 `04` O3：拆分是为了避免归档期"同一概念多套词表"复发） |
+| 意图队列 | `03-产品设计/` | 页面写意图 → 本机 worker 落库；状态词表 `pending / running / applied / rejected / noop`；概念层只在 `04` 登记名词 |
+| 体验红线 | `04-UI设计规范/`（Stage 4 硬化） | Stage 1 的 `03 §10` 只是**承接登记**，判据不在概念层 |
+| Access Grant / Discovery Context / Attribution | 语义 → `02-产品需求/`；实现 → `05-开发文档/` | 概念层 `04` 只登记名字 |
+| 平台边界 | `05-开发文档/` | 汇总所有"平台做不到 + 降级"，归档证据在 `_docs/arc-contracts.md` |
+| 质量门 | `07-团队与开发规范/` | `arc dsl validate` + `npm test`（快层）+ `npm run build` |
+
+> 新增术语先在本表登记，再去正文使用——避免同一个东西在不同文档里叫不同名字。
+
+---
+
+## 7. 工作台（`docs/team/`）与过渡期协作规则
+
+| 路径 | 用途 |
+| --- | --- |
+| `docs/team/journal/` | 阶段日志（Stage N 计划 / 产出 / 审查结论 / 遗留） |
+| `docs/team/reviews/` | 独立审查报告（审查者写，主笔不改） |
+| `docs/team/backlog.md` | 文档待办与阻塞 |
+| `docs/team/.gate-lock` | 跑写实例测试前的串行锁（跑完删除） |
+
+**归档不是权威（R4 审查修正）**：`_docs/**` 在新体系里只是**证据来源**，不是规则来源。任何**生效的规则**必须写在
+`docs/**` 之内——否则"唯一出处"原则在第一天就破了（规则住在被声明为"只读参考"的归档里）。
+在 Stage 7（团队与开发规范）定稿前，过渡期规则以下表为准（少而硬，够用即可）：
+
+| 规则 | 内容 |
+| --- | --- |
+| 唯一写者 | 同一 Stage 只有一个主笔；调研员只写自己那一个 `docs/08-其他/调研/*.md` |
+| 写范围互斥 | 任何时刻一名成员只持有一个 `in_progress` 任务；写范围不重叠（提示性，不是锁） |
+| 每步全绿 | `arc dsl validate --json`（issues=[]）+ `npm test`（快层）；红门不交接 |
+| 交接靠文件 | 结论落盘，`send_message` 只负责叫醒 + 一句摘要 |
+| 审查独立 | 审查者不写正文、不信自述，只出带证据的问题清单 |
+| 实例串行 | 任何写实例的测试先写 `docs/team/.gate-lock`，跑完删除 |
+
+**入口文件的过渡横幅**：`CLAUDE.md` / `AGENTS.md` / 根 `README.md` 目前带"旧 `docs/` 读作 `_docs/`"的临时替换说明，
+它们是**过渡措施**（R4 指出这类全局替换规则本身脆弱）——Stage 5/7/8 定稿时必须把这些文件重写为直接指向新文档，并删除横幅。
+
+---
+
+## 8. 变更记录
+
+| 日期 | 版本 | 变更 |
+| --- | --- | --- |
+| 2026-09-29 | v0.1 | 建档：`docs/` → `_docs/` 归档；新骨架 8 类 + `team/`；本总纲首版 |
+| 2026-09-30 | v0.2 | §4 新增**第五类事实标签【未验证】**（Stage 2 实践引入，Lead 纳入宪法：未验证 ≠ 决策待定，且验证步骤与判定式必须同时写出）；§6 术语表同步为"五类"；§7 改为"归档不是权威 + 过渡期协作规则表"（采纳 R4 审查意见）；§6 补登角色代号、术语归属拆分等 |

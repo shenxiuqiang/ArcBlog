@@ -1,5 +1,8 @@
 # ArcBlog
 
+> ⚠️ **文档体系重建中**：旧文档已归档到 [`_docs/`](_docs/)（只读参考）；新文档从 [`docs/README.md`](docs/README.md) 开始。
+> 本 README 将在 Stage 8 重写。
+
 ArcBlog is a DID-native, Markdown-first publishing Blocklet.
 
 ## Highlights

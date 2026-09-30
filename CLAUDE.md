@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+> ⚠️ **文档体系重建中（2026-09-29 起）**：旧 `docs/` 已整体归档为 `_docs/`（只读参考）。
+> **本文件下文出现的所有 `docs/<文件名>` 路径，一律读作 `_docs/<文件名>`**，直到 Stage 5/7 重写本文件为止。
+> 新的文档体系入口：`docs/README.md`（8 类分阶段生成，当前进行中）。
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What ArcBlog is
