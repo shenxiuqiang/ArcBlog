@@ -19,6 +19,7 @@
 2. **缺口只有三块**：① 把 `list_studios`/`get_studio` 从 `unavailable` 激活（**发现源未定**，见 §7-①）；② 聚合/聚簇/chat/生成的智能层（AIHOT 的"KnowHow 即提示词" + AIGNE 正好补）；③ **拆掉 hub 与整个经济体系**（文档 + 代码 + 5 个控制台页面）。
 3. **最大的定义分歧不是技术，是"无 hub 之后目录从哪来"**：链上枚举 / 由某 agent 发布的公开目录 / gossip 播种——**必须先由人类拍**（§8-Q1）。
 4. **三道验证门按风险排序**：发现源 → `arc space sync` 远程端点（已有编号 **`U10`**，是 `PRD-NET-06` 前置门）→ 远端 `/mcp` 可达性与鉴权（**建议新增探针**）。但**`/p/` HTTP 匿名只读这条路已被实测可用**，不必等 `U10` 才能开工。
+5. **三条产品级约束（引入 AIGNE 前必须知道）**：① 许可 **Elastic-2.0**（非 OSI 开源，限制"作为托管服务对外提供"）；② **DID Space 记忆靠人工凭证**（`blocklet-xxx`），**文档未说明**逐用户取得/委托/撤销 ⇒ "用户自己的空间"目前不是自动的；③ **"agent 有 DID / 可被授权 / 可被审计"在 AIGNE 文档里完全未说明** ⇒ 若产品要求 agent 可追责，**得由 ArcBlog 侧承担**（既有 `agent.*` 能力档 + 审计 + 内容签名）。
 
 ## 1. 人类命题（原话要点，2026-09-30）
 
@@ -60,18 +61,28 @@
 4. **匿名只读 + 条件请求 + 降级阶梯，比 apiKey 联盟更易真跑起来**；**Key 只留给写入侧**。
 5. **抄"可解释排序 + 保守合并门槛"，别抄热度绝对数字**——形态可搬（独立来源去重 + 半衰期 + 最小证据量），**48h/24h/2 必须按自己节点频率重标定**；宁可少合并，也别把两件事焊在一起。
 
-## 3. AIGNE 能提供什么
+## 3. AIGNE 能提供什么（**已按字段级深挖修正**）
 
-| 能力 | 事实 | 对 ArcBlog 的意义 |
+| 能力 | 事实（已核） | 对 ArcBlog 的意义 |
 | --- | --- | --- |
-| 形态 | `@aigne/core` **1.72.0**、`@aigne/cli` **1.59.0**（`npm view` 实测）；Node ≥20 | 可直接作为依赖引入 |
-| 记忆 | `DIDSpacesMemory`（`@aigne/agent-library`）：`{url, auth:{authorization:"Bearer …"}}` | **chat 记忆可落用户自己的 DID Space**，不落节点运营者 ⇒ 与"内容归创作者"同原则 |
-| MCP | 双向：`McpAgent` 连外部；也能作 MCP Server / **MCP Blocklet**（示例只需 `BLOCKLET_APP_URL`，自带 `--interactive`） | **对接 ArcBlog 已有 `/mcp` 面（能力 #48）** |
-| 模型 | 官方 **AIGNE Hub** 或自托管（Blocklet Store）；亦支持第三方 key | **模型费用可由用户自己的 Hub 承担**，运营者不垫钱 |
-| 可观测 | `aigne observe`（本地 :7893 agent 追踪） | 与 ArcBlog 已有 `agent.*` 能力档 + **审计视图**互补 |
-| 运行位置 | AUP 应用**无运行时依赖**（【平台边界】`blocklet.yaml` 只声明 AUP 资产） | AIGNE 只能落在**应用之外**：运营者脚本层 / 用户机器 / 独立 Blocklet（§8-Q3） |
+| 形态 | `@aigne/core` **1.72.0**、`@aigne/cli` **1.59.0**、`@aigne/agent-library` 1.24.0、`@aigne/did-space-memory` 1.4.0、`@aigne/afs` 1.4.0（`npm view` 实测）；**纯 ESM**、Node ≥20；CLI = `aigne create/run/test/serve-mcp/observe` | 可作依赖引入 `scripts/*.mjs`（已是 ESM，形态匹配） |
+| **许可**【决策待定】 | **Elastic-2.0（非 OSI 开源）**，限制"作为托管服务对外提供" | ⚠️ **产品级约束**：若 ArcBlog 要让他人托管 agent，引入前需法务口径 |
+| **依赖面**【决策待定】 | core 已含 zod/nunjucks/jsonata/`@modelcontextprotocol/sdk`/`@opentelemetry/*`；cli 另含 express/openai/ink/react | ArcBlog 今天**只有 5 个 npm 依赖**（仅服务链脚本）⇒ 依赖面扩张明显 |
+| 记忆 | `MemoryAgent` = Recorder + Retriever（**两者都要自己实现**）；现成实现：`@aigne/fs-memory`（本地盘）、**`@aigne/did-space-memory`**（`DIDSpacesMemory({url, auth})`，写入 `/memories/<id>/memory.yaml`）、default/agentic | 记忆后端可自选 ⇒ **可先本地、再上 DID Space** |
+| **DID Space 记忆的真实门槛** | 鉴权是**一串 DID Space 访问密钥**（`DID_SPACES_URL` + `DID_SPACES_AUTHORIZATION="blocklet-xxx"`，需人手动在 Blocklet 后台取）；**文档未说明**多用户下如何逐个取得/委托/撤销 | ⇒ 与 §8-**Q2** 直接相关：**"用户自己的空间"目前靠人工凭证，不是 DID 自动授权** |
+| MCP（消费方） | `MCPAgent.from()`：stdio / sse / **`streamableHttp`**（`opts.requestInit.headers.Authorization` 可传令牌）；连上后自动挂载为 skills/prompts/resources | 这正是**读远端节点**的原语（见 §7-③ 探针设计） |
+| MCP（提供方） | `aigne serve-mcp --port <n>`，端点 `http://host:port/mcp`；`@aigne/transport` 提供组件间 HTTP SDK（文档站未记载） | 可把 agent 暴露给别的 agent |
+| ~~MCP Blocklet~~ **（前提纠正）** | `examples-mcp-blocklet` **是消费方**：设 `BLOCKLET_APP_URL` 后**用 MCP 去连一个托管在 Blocklet 平台上的应用**，把它的能力当 MCP 技能用——**不是**"把 agent 打包成 Blocklet" | ⇒ "agent 被打包成 Blocklet"这条路**只在仓库 `blocklets/agent-runtime` 有痕迹，文档站未记载**，属未验证 |
+| **命名撞车（重要）** | AIGNE 文档里的 **"AFS" = Agentic File System**（`@aigne/afs`：local-fs/history/sqlite/git/json/explorer/…），**与 ARC 平台的 AFS（`/instance/app/…`）不是同一个东西**；全语料**未出现**挂载 ARC AFS 的模块 | ⚠️ 写方案时**必须区分**，否则会误以为 AIGNE 能直接读写 ArcBlog 的 AFS |
+| 编排 | `TeamAgent`（sequential/parallel/iterateOn/**reflection**）、`OrchestratorAgent`（Planner→Worker→Completer + `max_iterations`/`max_tokens`）、router 模式 | **②汇总/聚簇**与**④生成草稿**的既定形态 |
+| 流式与 hooks | `{stream:true}` → `delta.text`/`delta.json`，`AgentResponseStreamSSE` 可直出 SSE；**7 个 hook**（onStart/onSuccess/onError/onEnd/onSkillStart/onSkillEnd/onHandoff，onStart 可改写输入、onSuccess 可改写输出） | 适合"**边聊边生成草稿**"；**审计——部分适合**（可记录委派链 + `aigne observe`） |
+| **hooks 不是安全边界** | 文档**没有任何一处**把 hooks 描述为鉴权或强制门；唯一强制权限机制是 **Bash agent** 的 `permissions.allow/deny/defaultMode/guard` | ⇒ **不得**把 hooks 当权限控制用（与 ArcBlog 既有 `agent.*` 能力档 + 审计的关系见 §4） |
+| 代码执行 | `examples-workflow-code-execution` 的 "Sandbox Agent" 其实是 **`eval(code)`**（**无沙箱**）；**真沙箱**是 `agent-library-bash`（默认 `sandbox:true`，基于 Anthropic 沙盒运行时；**Windows 不支持**，关掉即"移除所有安全保护"） | ⇒ 跑不可信生成代码**只能**走 Bash agent 口径，且要接受平台限制 |
+| 模型接入 | 12+ provider（OpenAI/Anthropic/Gemini/DeepSeek/豆包/OpenRouter/Ollama/LMStudio/xAI/Poe/Bedrock…）+ **AIGNE Hub** | 有 **Ollama** ⇒ 可完全本地 |
+| **AIGNE Hub 计费** | 托管多厂商网关；首次接入 = 浏览器**连接钱包**授权，新用户 **40 万 token**；图像/视频按 **credits**（Veo 6s=150、Sora 8s=200） | **认证与计费入口**，可自托管（Blocklet Store）⇒ 与 §8-**Q3**（谁付模型费）相关 |
+| **agent 身份（缺口）** | **文档完全未说明**：全语料 `DID` 只命中 **DID Space（存储/凭证）** 与 Hub 的"连接钱包"；**没有任何一处**说 AIGNE agent 自身持有 DID、可被 DID 授权、或其 trace 可归因到身份 | ⚠️ **不可作为方案前提**。"agent 去发现汇总"若需要**可追责**，得由 ArcBlog 侧（`agent.*` 能力档 + 审计 + 内容签名）承担 |
 
-> 更细的 AIGNE 字段级深挖（YAML 定义、hooks、streaming、Orchestrator、代码执行沙箱）**本轮仍在进行**，结论未回；本节只列已核项。
+**结论**：AIGNE **足以支撑 ②汇总 / ③chat / ④生成草稿**；**①跨节点发现是双重空白**（AIGNE 无联邦原语 + ArcBlog 无跨节点搬运）；**⑤发布必须落在应用之外的运营脚本层**（见 §7-③）。
 
 ## 4. ArcBlog 家底盘点（三张清单）
 
@@ -134,7 +145,9 @@
 
 **② `U10`（已有编号与判定式）**：`arc space sync` 远程端点。需**写权限环境**（隔离命名实例 + 受信证书或 `--token`）；先 `--dry-run`；`--mirror`/`rm` 一律不跑。**它是 `PRD-NET-06` 的前置门。**
 
-**③ 远端 `/mcp` 可达性与鉴权（建议新增探针）**：两个隔离实例，A 节点经 `/mcp` 读 B 节点公开只读面；核 **可达性 / 身份 / 权限面（路径+操作+深度）**。参考：AIHOT 的 MCP **做 Host 校验**（非 `SITE_URL` 域名返回 421，跨节点需 `MCP_ALLOWED_HOSTS` 加白）⇒ **同类问题在 ARC 上必须实测，不得推断**。
+**③ 远端 `/mcp` 可达性与鉴权（建议新增探针）**：两个隔离实例，A 节点经 `/mcp` 读 B 节点公开只读面；核 **可达性 / 身份 / 权限面（路径+操作+深度）**。
+**探针的客户端已经现成**：AIGNE `MCPAgent.from({url, transport:"streamableHttp", opts:{requestInit:{headers:{Authorization:…}}}})` 就是"带 Authorization 头连远端 MCP"的原语 ⇒ 探针可同时回答"**AIGNE 能否当聚合客户端**"。
+**两条外部参照**：AIHOT 的 MCP **做 Host 校验**（非 `SITE_URL` 域名返回 421，跨节点需 `MCP_ALLOWED_HOSTS` 加白）；AIGNE agent 侧**无身份**（§3 末行）⇒ **ARC 上同类问题必须实测，不得推断**。
 
 ## 8. 待人类裁决（阻塞概念 v2 提纲）
 
@@ -142,13 +155,13 @@
 | :-: | --- | --- | --- |
 | **Q1** | **发现源** | A 链上枚举 / B 允许"某 agent 发布的公开目录" / C 纯 gossip 播种 | 决定 `list_studios` 实现与"是否真的去 hub 化" |
 | **Q2** | **chat 记忆归属** | A AIGNE `DIDSpacesMemory`（用户 DID Space，需凭证）/ B 先本地或节点侧 | 决定隐私承诺与上手门槛 |
-| **Q3** | **聚合 agent 跑在哪** | A 运营者脚本层 / B 用户机器（MCP 客户端）/ C 独立 AIGNE Blocklet | 决定部署形态与计费方 |
+| **Q3** | **聚合 agent 跑在哪** | **A 运营者脚本层（推荐）** / B 用户机器（MCP 客户端）/ C 独立 AIGNE Blocklet（`blocklets/agent-runtime` 路径存在但**文档站未记载**，属未验证） | 决定部署形态与计费方；**硬约束**：AUP 应用无运行时依赖、agent 面**写工具不跑**（`agent.admin` 不可授予）⇒ **发布只能走运营侧 CLI**（`arcblog-lifecycle.mjs publish --sign-key`，与既有"页面写意图 + worker 签名回写"同构，**风险最低**） |
 | **Q4** | **旧 hub 与经济怎么处置** | A 直接删除（文档+代码）/ B 标记废弃保留一版 | 决定 `PRD-ECO` 8 条是"作废"还是"删号" |
 | **Q5** | **是否 push 本地 111 个提交** | A 先 push v1 存档再开 v2 / B 本地直接演进 | 决定 v2 的起点与回滚面 |
 
 ## 9. 未核验与边界（诚实声明）
 
-- **AIGNE 的字段级深挖未回**（YAML 定义 / hooks / streaming / Orchestrator / 代码执行沙箱 / `AIGNE Hub` 计费细节）⇒ §3 只列已核项，**未写"文档未说明"以外的推断**。
+- **AIGNE 字段级深挖已完成**（33 页文档 + GitHub 仓库 + `npm view` 二次核验）⇒ §3 已按结果修正，**含两处前提纠正**（`examples-mcp-blocklet` 是消费方；AIGNE 的 "AFS" ≠ ARC 的 AFS）与三条产品级约束（Elastic-2.0 许可 / DID Space 靠人工凭证 / **agent 身份未说明**）。**文档明确缺失项见 §3 与下表**：跨节点发现、网络订阅、联邦/路由/注册表、agent DID 绑定与授权委托、身份化审计、ARC AFS 集成、经济与支付、多租户隔离、全局花费熔断——**均"文档未说明"，不得推断成事实**。
 - **AIHOT 的 `/api/v1/*` 实时字段未调**（只读 `/llms.txt`、`/api/v1/agent`、`/agent`、`/hot`）⇒ v1 字段名以 `/openapi-v1.json` 为准。
 - **未做任何探针**：`U10`、远端 `/mcp`、链上枚举**均未实测** ⇒ 相关结论在 §5/§7 已标【未验证】/【平台边界】。
 - **未改任何冻结正文或源码**；§6 的影响面是**基于仓库实读的估算**（PRD 条数与页面数已核），不是已批准的方案。
