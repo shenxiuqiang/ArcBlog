@@ -48,7 +48,13 @@ test('no NEW visible= condition on $state.* (measured unusable — arc-contracts
   const seen = new Set();
   const offenders = [];
 
-  for (const file of pageFiles()) {
+  // Non-vacuity floor: if the pages directory glob ever breaks, this guard would otherwise pass
+  // over zero files and silently stop protecting the ratchet (the shape that hid inside the
+  // vocabulary guard in ENG-29: a comparison over an empty set reports success).
+  const pages = pageFiles();
+  assert.ok(pages.length >= 20, `page files scanned: ${pages.length} — the pagination glob is broken`);
+
+  for (const file of pages) {
     const rel = relative(repoRoot, file).split('\\').join('/');
     readFileSync(file, 'utf8').split('\n').forEach((line, index) => {
       const trimmed = line.trim();

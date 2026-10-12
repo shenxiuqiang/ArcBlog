@@ -34,6 +34,12 @@ function rows() {
 const claimed = (r) => r.status.includes('已实现待验') || r.status.includes('已验证');
 
 test('no 已实现待验/已验证 row rests on a tautological command', () => {
+  // Non-vacuity floor (2026-10-12): every assertion in this file compares a FILTERED subset to
+  // `[]`, so a parser that found no rows at all reported success — the shape that hid inside the
+  // vocabulary guard the same day (ENG-29). The ledger's row count is asserted by
+  // arcblog-prd-ledger; this is the same fact stated where the filtering happens.
+  assert.ok(rows().length >= 56, `台账行数解析: ${rows().length} — the row parser is broken`);
+
   const bad = rows().filter((r) => claimed(r) && TAUTOLOGY.test(r.evidence)).map((r) => r.id);
   assert.deepEqual(bad, [], `rows whose evidence only proves the page file exists: ${bad.join(', ')}`);
 });
