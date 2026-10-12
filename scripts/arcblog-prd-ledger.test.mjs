@@ -105,3 +105,52 @@ test('the human checklist states the ledger tallies it claims to state', () => {
     'the checklist tallies drifted from docs/06/01',
   );
 });
+
+/**
+ * The ledger's own summary tables (ENG-32). docs/06/01 is the single authoritative status source,
+ * and its two tables are what everyone quotes — but nothing checked them, and on 2026-10-12 they
+ * were stale in EVERY cell: 六态 read 47/2/7/0 while the rows said 46/0/9/1, 阻塞 read 48/0/8/0/0
+ * while the rows said 49/5/0/0/2 (the 8 待前置 dependencies had all landed). A quoted number that
+ * nobody recomputes is the exact failure this file exists to prevent, so the tables are now
+ * re-derived here with the same normalization the ledger's own script documents.
+ */
+test('the ledger summary tables equal a recount of its rows', () => {
+  const text = readFileSync(LEDGER, 'utf8');
+  const norm = (cell) => cell.split('（')[0].replace(/[*`]/g, '').trim();
+  const rows = text.split('\n').filter((l) => /^\| `PRD-[A-Z]+-[0-9]{2}` \|/.test(l));
+  assert.ok(rows.length >= 56, `ledger rows parsed: ${rows.length}`);
+
+  const status = new Map();
+  const blocking = new Map();
+  for (const line of rows) {
+    const cells = line.split('|');
+    for (const [map, cell] of [[status, cells[3]], [blocking, cells[4]]]) {
+      const k = norm(cell);
+      map.set(k, (map.get(k) ?? 0) + 1);
+    }
+  }
+  assert.equal([...status.values()].reduce((a, b) => a + b, 0), rows.length);
+  assert.equal([...blocking.values()].reduce((a, b) => a + b, 0), rows.length);
+
+  // read the tables: `| `值` | N |` inside the section that follows each header
+  const section = (header, size) => {
+    const start = text.indexOf(header);
+    assert.ok(start >= 0, `${header} not found`);
+    const out = new Map();
+    for (const line of text.slice(start).split('\n').slice(1, size + 3)) {
+      const m = line.match(/^\| `([^`]+)` \| (\d+) \|/);
+      if (m) out.set(m[1], Number(m[2]));
+    }
+    return out;
+  };
+  const statusTable = section('| 六态 | 行数 |', 8);
+  const blockingTable = section('| 阻塞 | 行数 |', 7);
+  assert.ok(statusTable.size >= 5 && blockingTable.size >= 5, 'summary tables parsed');
+
+  const diffs = [];
+  for (const [label, map, table] of [['六态', status, statusTable], ['阻塞', blocking, blockingTable]]) {
+    for (const [k, v] of table) if ((map.get(k) ?? 0) !== v) diffs.push(`${label} ${k}: table ${v}, rows ${map.get(k) ?? 0}`);
+    for (const [k, v] of map) if (!table.has(k)) diffs.push(`${label} ${k}: rows ${v}, table omits it`);
+  }
+  assert.deepEqual(diffs, [], `the ledger's summary tables drifted from its rows:\n  ${diffs.join('\n  ')}`);
+});
