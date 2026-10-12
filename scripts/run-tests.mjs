@@ -74,6 +74,7 @@ const FAST_TESTS = new Set([
   'arcblog-fail-closed',
   'arcblog-hero-carousel',
   'arcblog-ledger-evidence',
+  'arcblog-ledger-boundaries',
   'arcblog-i18n',
   'arcblog-memory',
   'arcblog-node-factory-markers',
@@ -110,6 +111,8 @@ const GUARDS = {
   'arcblog-doc-commands': [/^CLAUDE\.md$/, /^docs\/05-开发文档\/06-/, /^scripts\/arcblog-doc-commands/, /^scripts\/arcblog-[\w-]+\.mjs$/],
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
+  // ENG-24: a 平台边界 row cites a B*/probe/contract section that must actually resolve.
+  'arcblog-ledger-boundaries': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^docs\/05-开发文档\/02-平台能力与边界\.md$/, /^docs\/05-开发文档\/07-/, /^scripts\/arcblog-ledger-boundaries/],
   // ENG-23: the ledger is the status authority; its evidence cells must not be tautologies
   // ENG-22: docs/06/01 is the authoritative status source; docs/02 re-states every PRD row.
   'arcblog-prd-ledger': [/^docs\/02-产品需求\//, /^docs\/06-功能开发列表\/01-功能台账\.md$/, /^scripts\/arcblog-prd-ledger/],
