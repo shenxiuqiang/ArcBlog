@@ -35,7 +35,7 @@ node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 
 ---
 
-## B · 一次登录，解锁 5 项（本机无钱包，自动化不了）
+## B · 一次登录，解锁 6 项（本机无钱包，自动化不了）
 
 1. 浏览器打开 `http://arcblog.localhost:4939/.well-known/service/login` 完成登录（DID Wallet 扫码 / DID Connect）。
 2. 进 `?page=compose` 写一篇（标题必填、正文一行即可）**保存为草稿**，再到 `?page=posts` 的草稿页签点一次 **Publish**。
@@ -50,12 +50,13 @@ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/posts
    - **`authorDid`** = 真 DID（`did:key:…`/`did:blocklet:…`）？若是字面量 `"$session.did"` ⇒ **探针 `U6` 判定 B**，且 **`PRD-CNT-02` 的缺口被证实**（该行判据正是"页面写入不得落字面量"）
    - **`contentHash` / `contentSignature` / `version`**：控制台发布若缺 ⇒ **`DEF-20` 成立**（与 CLI 发布不等构）
    - **`PRD-CNT-02`（已离线定案，**不需要你做实验了**）**：运行时**只在文本节点**解析 `$session.*`，`args` 词表只有 `${args.<输入名>}`/`${input.*}` ⇒ 页面提交**必然**写字面量（证据 [`arc-contracts §62`](../05-开发文档/附件/arc-contracts.md)）。**剩下的只是产品决定**：要不要让 worker/CLI **回填**页面写入的署名（见 E8）
-5. 顺手看四个页面（登录态、直连 URL 首次打开即可，**不必刷新**）：
+5. 顺手看**五个**页面（登录态、直连 URL 首次打开即可，**不必刷新**）：
    - `?page=registry`：应有「我是否在这个注册表里？」一句（与 `node scripts/arcblog-network.mjs registry show` 的 `ownState`/`ownNote` 一致）
    - `?page=operations`：健康/发现/注册表三块应有真实值
    - `?page=factory`：链事实 + marker 文案（`hasChain`/`stateNote`/`nodeNote`…）
    - `?page=general`：站点名/语言/时区/角色配置应有值
-   > 这四项即 **`DEF-22` 剩余面 + `PRD-OPS-07` 的渲染验收**。把截图或 innerText 摘要发回即可。
+   - **`?page=dashboard`（新增：异常区，`PRD-OPS-01`/`DEF-36`，2026-10-12 落地）**：应看到一行**常驻**状态句（`Anomaly zone: …`）+ 每条异常一行（含 `severity`/标题/说明）且**可点击**跳转。今日实测该句为 **`0 blocking / 2 warning`**、两行 = `registry` + `residue`（与 `node scripts/arcblog-anomalies.mjs show` 一致）。若你看到空列表而**没有**状态句 ⇒ 记缺陷；若已消除残留后重跑 `refresh`，应变成 `all four checks passed`
+   > 这五项即 **`DEF-22` 剩余面 + `PRD-OPS-07` + `PRD-OPS-01` 的渲染验收**。把截图或 innerText 摘要发回即可。
 
 **B2 · 部署前置（新实例只需一次）**
 
