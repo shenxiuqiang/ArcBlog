@@ -19,6 +19,10 @@ const FILES = [
   'docs/06-功能开发列表/02-工程与工具功能点.md',
   'docs/06-功能开发列表/03-缺陷与待修.md',
   'docs/06-功能开发列表/04-探针与前置门.md',
+  // The boundary authority and its degradation library are read positionally too (a row's
+  // last cell is the impact/degradation); a stray cell there is just as invisible.
+  'docs/05-开发文档/02-平台能力与边界.md',
+  'docs/05-开发文档/02a-平台禁止与降级模式.md',
 ];
 
 // A row need not END with a pipe (`| a | b` is valid markdown). Requiring the trailing pipe made
