@@ -337,3 +337,44 @@ test('.gitignore still covers every secret, build artefact and runtime lock', ()
   const missing = required.filter((r) => !ignore.includes(r));
   assert.deepEqual(missing, [], `.gitignore no longer covers: ${missing.join(', ')} — a plain \`git add -A\` could commit them`);
 });
+
+/**
+ * The published-artifact policy (2026-10-12): the platform copies the whole repository into
+ * dist/ and offers no exclude switch (B11), so the scrub also drops the source trees the RUNNING
+ * blocklet never reads — docs/, _research/, scripts/ (measured: 262 of 498 files, 2.9 of 5.0 MB).
+ * The fixture proves both halves: the trees are classified and removed WITH their manifest
+ * entries (a removal that leaves 262 dangling entries would be worse than shipping them), and
+ * `--check` reports them without failing, because shipping source trees is waste, not a leak.
+ */
+test('the scrub drops non-product source trees and their manifest entries, without failing --check', () => {
+  const root = mkdtempSync(join(tmpdir(), 'arcblog-nonproduct-'));
+  const dist = join(root, 'dist');
+  mkdirSync(join(dist, '.afs'), { recursive: true });
+  mkdirSync(join(dist, 'docs', '05-开发文档'), { recursive: true });
+  mkdirSync(join(dist, 'scripts'), { recursive: true });
+  mkdirSync(join(dist, '_research'), { recursive: true });
+  mkdirSync(join(dist, '.aup'), { recursive: true });
+  writeFileSync(join(dist, 'docs', '05-开发文档', '02-平台能力与边界.md'), '# internal');
+  writeFileSync(join(dist, 'scripts', 'arcblog-node.mjs'), '// cli');
+  writeFileSync(join(dist, '_research', 'notes.md'), '# notes');
+  writeFileSync(join(dist, '.aup', 'app.aup'), 'app {}');
+  const entries = ['docs/05-开发文档/02-平台能力与边界.md', 'scripts/arcblog-node.mjs', '_research/notes.md', '.aup/app.aup'];
+  writeFileSync(join(dist, '.afs', 'manifest.json'), JSON.stringify({ files: entries.map((path) => ({ path })) }, null, 2));
+
+  const check = cli(['--check', '--dir', dist]);
+  assert.equal(check.status, 0, 'a non-product tree must NOT fail the secret gate');
+  const report = check.json;
+  assert.equal(report.nonProductFiles.length, 3, `non-product files reported: ${report.nonProductFiles.length}`);
+  assert.equal(report.ok, true);
+
+  // `--dir` is a READ-ONLY probe by design (BUG-074), so the removal half is exercised through
+  // the exported scrubDist() against the same fixture.
+  scrubDist(dist);
+  assert.equal(existsSync(join(dist, 'docs')), false, 'docs/ must be gone');
+  assert.equal(existsSync(join(dist, 'scripts')), false, 'scripts/ must be gone');
+  assert.equal(existsSync(join(dist, '_research')), false, '_research/ must be gone');
+  assert.equal(existsSync(join(dist, '.aup', 'app.aup')), true, 'product files stay');
+  const manifest = JSON.parse(readFileSync(join(dist, '.afs', 'manifest.json'), 'utf8'));
+  assert.deepEqual(manifest.files.map((f) => f.path), ['.aup/app.aup'], 'manifest must not keep dangling entries');
+  rmSync(root, { recursive: true, force: true });
+});

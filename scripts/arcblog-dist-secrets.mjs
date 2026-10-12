@@ -39,6 +39,17 @@ export const SECRET_BASENAMES = new Set(['node.key', '.env.local']);
  * fail on junk (reported as `junkFiles` so the scrub can act).
  */
 export const JUNK_DIRS = ['logs', 'tmp'];
+
+/**
+ * Source material the platform copies in but the RUNNING blocklet does not need (measured
+ * 2026-10-12: docs/ 117 + scripts/ 122 + _research/ 23 = 262 of 498 files, 2.9 of 5.0 MB). Every
+ * runtime mention of these paths is a display string — a copyable CLI command or an empty-state
+ * hint — and the dangerous forms (`exec`/`action`/`src=`/`url=`) were grepped for and are absent.
+ * B11 means deleting after the build is the only mechanism the platform offers, so they join the
+ * scrub's removal set. Like junk, `--check` REPORTS them without failing: shipping them is
+ * wasteful, not a secret leak, and a foreign deployment's choices are not this guard's business.
+ */
+export const NON_PRODUCT_DIRS = ['docs', '_research', 'scripts'];
 export const JUNK_BASENAMES = new Set(['.node-pk.pem']);
 
 /** True when a dist-relative path is local junk rather than product content. */
@@ -46,6 +57,11 @@ export function isJunkPath(rel) {
   const top = String(rel).split('/')[0];
   if (JUNK_DIRS.includes(top)) return true;
   return JUNK_BASENAMES.has(basename(rel));
+}
+
+/** True when a dist-relative path is source material the running blocklet never reads. */
+export function isNonProductPath(rel) {
+  return NON_PRODUCT_DIRS.includes(String(rel).split('/')[0]);
 }
 
 /** A PEM private key header — the second line of defence for key-ish files. */
@@ -89,12 +105,13 @@ export function walkFiles(dir, base = dir) {
  * Returns `{ distExists, files, privateKeyFiles, manifestEntries }` — all arrays sorted.
  */
 export function findDistSecrets(distDir = DIST_DIR) {
-  const findings = { distExists: existsSync(distDir), files: [], privateKeyFiles: [], manifestEntries: [], junkFiles: [] };
+  const findings = { distExists: existsSync(distDir), files: [], privateKeyFiles: [], manifestEntries: [], junkFiles: [], nonProductFiles: [] };
   if (!findings.distExists) return findings;
 
   for (const rel of walkFiles(distDir)) {
     const full = join(distDir, rel);
     if (isJunkPath(rel)) findings.junkFiles.push(rel);
+    if (isNonProductPath(rel)) findings.nonProductFiles.push(rel);
     if (SECRET_BASENAMES.has(basename(rel))) {
       findings.files.push(rel);
       continue;
@@ -124,6 +141,7 @@ export function findDistSecrets(distDir = DIST_DIR) {
   findings.privateKeyFiles.sort();
   findings.manifestEntries.sort();
   findings.junkFiles.sort();
+  findings.nonProductFiles.sort();
   return findings;
 }
 
@@ -133,7 +151,7 @@ export function findDistSecrets(distDir = DIST_DIR) {
  */
 export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
   const root = resolve(distDir);
-  const report = { distDir: root, dryRun, removed: [], privateKeyRemoved: [], junkRemoved: [], manifestRemoved: [], manifestFilesBefore: null, manifestFilesAfter: null };
+  const report = { distDir: root, dryRun, removed: [], privateKeyRemoved: [], junkRemoved: [], nonProductRemoved: [], manifestRemoved: [], manifestFilesBefore: null, manifestFilesAfter: null };
   if (!existsSync(root)) return report;
 
   const findings = findDistSecrets(root);
@@ -162,6 +180,21 @@ export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
     }
   }
 
+  // Source trees the running blocklet never reads (see NON_PRODUCT_DIRS): removed as whole
+  // trees, because a partially-emptied docs/ tree is still a published docs/ tree.
+  for (const rel of findings.nonProductFiles) {
+    const target = assertInside(root, join(root, rel));
+    if (!existsSync(target)) continue;
+    if (!dryRun) rmSync(target, { force: true });
+    report.nonProductRemoved.push(rel);
+  }
+  if (!dryRun) {
+    for (const dir of NON_PRODUCT_DIRS) {
+      const target = assertInside(root, join(root, dir));
+      if (existsSync(target)) rmSync(target, { recursive: true, force: true });
+    }
+  }
+
   const manifestPath = assertInside(root, join(root, '.afs', 'manifest.json'));
   if (existsSync(manifestPath)) {
     const raw = readFileSync(manifestPath, 'utf8');
@@ -170,7 +203,10 @@ export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
     report.manifestFilesBefore = files.length;
     const kept = files.filter((entry) => {
       const p = typeof entry?.path === 'string' ? entry.path : '';
-      return !SECRET_BASENAMES.has(basename(p)) && !isJunkPath(p);
+      // secrets, junk, AND the source trees the running blocklet never reads — the manifest must
+      // not keep pointing at files this same run deletes (measured 2026-10-12: without this the
+      // scrub removed 262 files and left 262 dangling manifest entries behind).
+      return !SECRET_BASENAMES.has(basename(p)) && !isJunkPath(p) && !isNonProductPath(p);
     });
     report.manifestRemoved = files.filter((entry) => !kept.includes(entry)).map((entry) => entry.path);
     report.manifestFilesAfter = kept.length;
@@ -293,6 +329,9 @@ This script never deletes, moves or rotates anything outside <repo>/dist/.`);
         // DEF-17: informational only — junk never fails the secret gate; the scrub
         // (which runs as `npm run build`'s second half) is what removes it.
         junkFiles: findings.junkFiles,
+        // The source trees the running blocklet never reads (see NON_PRODUCT_DIRS). Also
+        // informational: their presence wastes space, it is not a leak.
+        nonProductFiles: findings.nonProductFiles,
       },
       null,
       2,
