@@ -2762,3 +2762,33 @@ non-empty children`）⇒ 字面路径 surface 必须带一个 chrome 子节点�
 这与 DEF-21/DEF-22 的失败模式同源：recipe 落后于 seed 时，页面会静默退化成原始 JSON，而 diff 上什么都看不到。
 现改为 **与 seed 不同即覆盖**（`--keep-local` 显式保留，`check` 仍是无写入的漂移检测）；
 `ui-budget` 的 `tech` 也因此把 `surface url="…"` 与 `from` / `path` / `exec` / `propBind` 一同视为**wiring**（不计数）。
+
+## 59. 主题桥 iframe 的**首次导航**发生在最终 sandbox 生效之前 ⇒ 每次加载一条 `SecurityError`（2026-10-12 实测）
+
+**现象**：`?page=index` 等任意页面加载时，控制台/`pageerror` 出现一条
+`Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.`
+栈指向 `/p/en/theme-bridge/:14`。
+
+**逐帧时间线（Playwright 新 context，只读）**：
+```
++230ms  NAV  /p/en/theme-bridge/     ← 首次导航（此时 iframe 的 sandbox 不含 allow-same-origin）
++301ms  NAV  /p/en/theme-bridge/     ← 运行时应用 props 后再次导航（这次含 allow-same-origin）
++304ms  PAGEERROR SecurityError
+```
+→ 页面上最终**只有一个** `iframe[src*=theme-bridge]`（`sandbox="allow-scripts allow-forms allow-popups allow-same-origin"`）；
+抛错的是**首次导航的那个文档**。逐帧探测证实：同一 URL 的两个 frame 中，带 `allow-same-origin` 的可读 `localStorage`，另一个**抛错**。
+
+**抛错的是平台注入的预绘脚本**（不是本仓代码）：`/p/<locale>/theme-bridge/` 的 SSR head 里有一段**未加 try/catch** 的内联脚本
+`(function(){var e=document.documentElement,t=localStorage.getItem('web-tone'),p=localStorage.getItem('web-palette'),m=localStorage.getItem('web-mode');…})()`。
+它**只出现在 `/p/` 站点页**（宿主 AUP 页 `/?page=index` 的 HTML 里 `grep web-tone` = **0**），本仓 `grep -rn "web-palette"`（除 dist/node_modules）= **0** ⇒ **平台侧**。
+
+**影响 = 无功能影响（已用决定性实验证明）**：把 `settings/arcblog/palette.json` 临时改为**与编译回退值不同**的 `electric`
+（`app.aup` 声明 `palette natural`）→ 页面 DOM 的 `data-palette` 变为 **`electric`**、随后已还原为 `natural` ⇒
+主题桥**确实把设置应用到了宿主**（桥自身代码三处 `localStorage` **都有** try/catch）。抛错的那段脚本作用在**不可见的 overlay frame 自己的 document** 上，属空操作。
+
+**试过并否掉的修法**：给 wrapper 的桥 frame 加 `sandbox=false`（同源 src，理论上去掉属性）——**实测无效**：
+服务出的 iframe 仍是 `allow-scripts allow-forms allow-popups allow-same-origin`（运行时**忽略** `false`），错误照旧 ⇒ 已**回滚**该改动，不做"看起来修了"的提交。
+
+**结论**：登记为**平台边界**（[`02` B15](02-平台能力与边界.md)），本项目侧**无需改代码**；若平台后续把最终 sandbox 提到首次导航之前，本条自然消失。
+**同时记录的正面结果**：一次 **24 个页面**（17 控制台 + 7 公开）的 guest 巡检：**全部 HTTP 200**，
+**唯一** `pageerror` 就是本条；hub/经济删页后没有残留的坏引用。
