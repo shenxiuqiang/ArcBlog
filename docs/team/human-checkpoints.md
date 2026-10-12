@@ -85,6 +85,16 @@ arc afs exec /blocklets/arcblog/.actions/delete --path /instance/app/arcblog/pos
 ```
 ⚠️ `arcblog-clean.mjs` **有意不扫 `posts/`**（"published content is never test residue"）⇒ 必须由你确认后手动删（它们是测试产物：`sign-test-`/`paid-test-` 前缀）。删除后首页 feed 只剩 `hello-arcblog`。
 
+## C2 · 真链转让一次（`ENG-06` 接线已就绪，`P-3` 待你批准执行）
+
+接线与 mock 端到端已完成（转让后 `owner` = 买家；`--confirm` 缺失即 fail-closed、零链上调用）。**真链执行一次未跑**——批下来后按此跑：
+```bash
+# 需要链三要素 + 助记词（.env.local 现已由所有链 CLI 自动加载，见 DEF-29）
+ARCBLOG_CHAIN_ENV=beta node scripts/arcblog-node-nft.mjs transfer --role studio --adapter ocap \
+  --to <买家 did|address> --confirm
+```
+⚠️ 三个**没有先例**的点会被这次真实执行检验：① `value:"0"` 是否被 beta 接受 ② tx 级 `data`（`{typeUrl:"json",value:"empty"}`）是否会被链当作资产 data 覆盖 ③ gas/fee（探针 `U8`）。失败时的备选形状已写在 `docs/05/07` 的 `P-3` 行（`TransferV2Tx` + `tokens: []`）。
+
 ## D · 环境/运维（需你拍板，agent 不擅自做）
 
 **D1 · DID Space 索引过期（`DEF-30`）**——`node scripts/arcblog-doctor.mjs` 的 `space-layout` 报 warn：

@@ -8,6 +8,8 @@
 //   node scripts/arcblog-node-nft.mjs claim    --role studio [--now 2026-11-01T00:00:00Z]
 //   node scripts/arcblog-node-nft.mjs status   [--role studio]
 //   node scripts/arcblog-node-nft.mjs describe --role studio --endpoint <url> [--region <r>] [--name <n>]
+//   node scripts/arcblog-node-nft.mjs transfer --role studio --to <did|address> [--asset <addr>] --confirm
+//                                              # ENG-06: chain write, fails closed without --confirm
 //
 // Every step writes the on-chain facts back into AFS so the rest of ArcBlog sees
 // them:
@@ -663,6 +665,128 @@ async function commandDescribe(opts, instance) {
 }
 
 /**
+ * ENG-06 / PRD-ID-05: transfer (sell) the node NFT to another owner.
+ *
+ *   transfer --role studio --to <did|address> [--asset <addr>] --confirm
+ *
+ * This is a CHAIN WRITE and it is irreversible (the NFT changes owner on chain),
+ * so two things happen BEFORE any chain client exists:
+ *   1. `--confirm` is mandatory. A bare `transfer` exits 1 with `VALIDATION`
+ *      and makes ZERO chain calls — nothing is read, signed or sent (hard
+ *      requirement, PRD-ID-05 / ENG-06's "执行前报 Lead" posture expressed as
+ *      code, not as prose);
+ *   2. `--to` and a known `--role` are validated. Same fail-closed posture.
+ * After that, `roleContext` still enforces the real-chain triple
+ * (network/chainHost/tokenId) before the ocap adapter can be opened.
+ *
+ * The wiring round NEVER runs `--adapter ocap`: ENG-06's remaining blocker is
+ * `待批准（仅真链执行）`, and a transfer is a chain write. `--adapter mock`
+ * exercises the whole path locally — the mock ledger really changes the asset's
+ * owner, which is exactly P-3's judgement
+ * (`getAssetState().owner` = the buyer).
+ */
+function validateTransferRequest(opts) {
+  const confirm = opts.confirm === true || optString(opts.confirm).trim() === 'true';
+  ensure(
+    confirm,
+    'transfer is a chain write and it is irreversible (the NFT changes owner on chain) — re-run with --confirm. ' +
+      'Nothing was read, signed or sent.',
+  );
+  const to = optString(opts.to).trim();
+  ensure(to, '--to <did|address> is required: who receives the NFT (nothing was signed or sent)');
+  const role = optString(opts.role).trim();
+  ensure(CHAIN_ROLES.includes(role), `--role must be one of: ${CHAIN_ROLES.join(', ')}`);
+  return { to, role };
+}
+
+async function commandTransfer(opts, instance) {
+  // Fail closed before ANY chain client/record is touched (see the note above):
+  // `validateTransferRequest` runs first, so the fail-closed cases below cannot
+  // reach `openChain` — not even the read-only mock ledger is opened.
+  validateTransferRequest(opts);
+  const { role, chain, clock } = await roleContext(opts, instance);
+
+  const stored = readNodeNft(instance);
+  const roleState = stored.state.roles[role] ?? {};
+  // Unknown asset = the explicit --asset does not exist on chain, or the role
+  // has no recorded asset at all — both are fail-closed (NOT_FOUND/VALIDATION).
+  const assetId = assetForRole(opts, stored.state, role);
+  const before = await chain.getAssetState(assetId);
+  if (!before) {
+    // NOT_FOUND (not VALIDATION): the address is well-formed, the chain simply
+    // does not know it — the same code `updateAsset`/`stake` fail closed with.
+    fail(
+      'NOT_FOUND',
+      `asset not found on chain: ${assetId} (the recorded ${role} asset may be stale — pass --asset <addr>)`,
+    );
+  }
+  const to = optString(opts.to).trim();
+  const from = String(before.owner ?? roleState.owner ?? '').trim();
+
+  const transferred = await chain.transfer({
+    to,
+    // P-3 verified `value` is a DECIMAL string; a node-NFT handover moves the
+    // asset, not tokens ⇒ "0". A priced sale is a product change, not a wiring
+    // detail (its fee face is probe `U8`).
+    value: '0',
+    assets: [assetId],
+    // The SDK's own `Any` shape for the tx-level data payload
+    // (`{typeUrl,value}`, node.d.ts:1029) — the exact shape `client.transfer`
+    // builds at extension.js:850. The asset's OWN `data.value` is not rewritten
+    // here (a transfer moves ownership; `describe`/`updateAsset` own the payload).
+    data: { typeUrl: 'json', value: 'empty' },
+  });
+
+  const next = {
+    ...stored.state,
+    roles: {
+      ...stored.state.roles,
+      [role]: recordRole(stored.state, role, {
+        owner: to,
+        transferredAt: clock,
+        transferredFrom: from,
+        transferTx: transferred.hash ?? '',
+      }, chain.adapter),
+    },
+  };
+  saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
+
+  // P-3's judgement read back from the chain instead of assumed: the buyer is
+  // the owner the chain reports.
+  const after = await chain.getAssetState(assetId);
+  const simulated = chain.adapter === 'mock';
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        action: 'node-nft-transfer',
+        adapter: chain.adapter,
+        network: chain.network,
+        assetId,
+        from,
+        to,
+        hash: transferred.hash ?? '',
+        // A mock hash is a local simulation and must never read as chain truth
+        // (the same three-state honesty as `nodeAdapterOf`): say which kind it is
+        // in the artifact itself, not only in prose.
+        hashKind: simulated ? 'mock-simulation' : 'chain',
+        simulated,
+        ...(simulated
+          ? { hashNote: 'SIMULATED hash — written by --adapter mock into config/mock-chain.json, NOT a chain transaction' }
+          : {}),
+        role,
+        clock,
+        verifiedOwner: String(after?.owner ?? ''),
+        ownerIsBuyer: String(after?.owner ?? '') === to,
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/**
  * Backfill per-node attribution from the record's OWN evidence (D37 / BUG-046).
  *
  * Read-only with respect to the chain: no adapter is opened, nothing is signed
@@ -720,6 +844,17 @@ Usage:
                           # D37: attribute records that predate per-node
                           # attribution, from the record's own evidence. Read
                           # only: no chain call, no signing, no invented hash.
+  node scripts/arcblog-node-nft.mjs transfer --role studio --to <did|address> [--asset <addr>] --confirm
+                          # ENG-06 / PRD-ID-05: hand the NFT to another owner
+                          # (signTransferTx → sendTransferTx on the real chain;
+                          # --adapter mock really rewrites the mock ledger's
+                          # owner). CHAIN WRITE + irreversible:
+                          #   • --confirm is MANDATORY — without it the command
+                          #     exits 1 (VALIDATION) and makes ZERO chain calls;
+                          #   • --to and a known --role are validated before
+                          #     any chain client exists;
+                          #   • real-chain execution still needs human approval
+                          #     (ENG-06 blocker: 待批准（仅真链执行）).
 
 Flow (§8.2–§8.4): acquire the role NFT from the factory, stake it to gain the
 role, revoke to start the waiting period, claim after it to get the NFT back.
@@ -751,6 +886,10 @@ Options:
   --region <r>                 describe: region written into data.value
   --name <n>                   describe: the app-name slot this factory really mints
   --app-name <n>               describe: NOT a field here — fails closed (see above)
+  --to <did|address>           transfer: the NFT's new owner (validated before any chain call)
+  --confirm                    transfer: MANDATORY acknowledgement of the irreversible chain
+                               write — without it the command exits 1 (VALIDATION) with
+                               zero chain calls
 
 Chain environment (switching chains = changing env, never code):
   ARCBLOG_CHAIN_ENV=beta|main  fills the defaults (host / network / token id);
@@ -773,8 +912,9 @@ try {
   else if (command === 'claim') await commandClaim(opts, instance);
   else if (command === 'status') await commandStatus(opts, instance);
   else if (command === 'describe') await commandDescribe(opts, instance);
+  else if (command === 'transfer') await commandTransfer(opts, instance);
   else if (command === 'backfill') commandBackfill(opts, instance);
-  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status|describe|backfill)`);
+  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status|describe|transfer|backfill)`);
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
   process.exit(1);

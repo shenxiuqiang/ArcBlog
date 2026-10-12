@@ -56,6 +56,7 @@ node scripts/arcblog-factory.mjs spec --role studio   # §8.1 factory payload (G
 node scripts/arcblog-factory.mjs create --role studio --adapter mock   # create it (mock|ocap)
 node scripts/arcblog-node-nft.mjs acquire|stake|revoke|claim|status --role studio  # §8.2-§8.4 lifecycle (hub role removed 2026-10-01)
 node scripts/arcblog-node-nft.mjs describe --role studio --endpoint <url> [--region r] [--name n]  # PRD-NET-02: read-merge-write the NFT self-description (chain write needs approval)
+node scripts/arcblog-node-nft.mjs transfer --role studio --to <did|address> --confirm   # ENG-06/P-3: two-step signTransferTx->sendTransferTx; mock verified, REAL chain write needs approval
 node scripts/arcblog-chain-worker.mjs watch|run        # the console's node-NFT buttons only write an AFS
                           # intent; this worker signs it on the chain (key stays on the node) and
                           # refreshes node/factories.json (incl. the rendered NFT SVG)

@@ -404,6 +404,115 @@ test('live: acquire → stake → revoke → waiting period → claim (spec §8.
   }
 });
 
+// --- ENG-06 / PRD-ID-05: transfer (the "转让" row) ---------------------------
+//
+// Probe P-3's judgement, exercised locally: after a transfer
+// `getAssetState().owner` IS the buyer, and the buyer can keep operating the NFT
+// (P-3 step ⑤). The mock adapter really rewrites the ledger's `owner` for exactly
+// this reason.
+//
+// The other half of the wiring — `signTransferTx` → `sendTransferTx` in the ocap
+// adapter, and the `--confirm` gate's "zero chain calls" — is the FAST suite
+// `scripts/arcblog-node-nft-transfer.test.mjs` (it must not need the instance).
+// A real-chain execution is deliberately NOT covered here: it is a chain write
+// and stays behind ENG-06's blocker `待批准（仅真链执行）`.
+
+test('live: transfer moves the NFT to the buyer — P-3 judgement (getAssetState.owner = buyer)', () => {
+  assert.equal(factory(['reset', '--adapter', 'mock']).status, 0);
+  assert.equal(factory(['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']).status, 0);
+
+  try {
+    const acquired = cli([
+      'acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xseller', '--pk', 'zMintPk',
+      '--endpoint', 'https://a.example', '--region', 'CN-BJ',
+    ]);
+    assert.equal(acquired.status, 0, acquired.stderr);
+    const assetId = json(acquired.stdout).assetId;
+    assert.equal(json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.owner, '0xseller');
+
+    // ① the transfer itself: 0xseller → 0xbuyer
+    const transferred = cli(['transfer', '--role', 'studio', '--adapter', 'mock', '--to', '0xbuyer', '--confirm']);
+    assert.equal(transferred.status, 0, transferred.stderr);
+    const info = json(transferred.stdout);
+    assert.equal(info.action, 'node-nft-transfer');
+    assert.equal(info.adapter, 'mock');
+    assert.equal(info.network, 'mock');
+    assert.equal(info.assetId, assetId);
+    assert.equal(info.from, '0xseller');
+    assert.equal(info.to, '0xbuyer');
+    assert.match(info.hash, /^0xt/);
+    // a mock hash must SAY it is a simulation (never readable as chain truth)
+    assert.equal(info.simulated, true);
+    assert.equal(info.hashKind, 'mock-simulation');
+    assert.match(info.hashNote, /SIMULATED/);
+    // P-3's judgement, read back by the command itself …
+    assert.equal(info.verifiedOwner, '0xbuyer');
+    assert.equal(info.ownerIsBuyer, true);
+
+    // … and independently through `status` (what every other reader consumes)
+    const afterState = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout);
+    assert.equal(afterState.onChain.owner, '0xbuyer', 'P-3: 转让后 getAssetState.owner = 买家');
+    assert.equal(afterState.recorded.owner, '0xbuyer');
+    assert.equal(afterState.recorded.transferTx, info.hash);
+    assert.equal(afterState.recorded.transferredFrom, '0xseller');
+    // a transfer moves OWNERSHIP; the mint payload is not silently rewritten
+    assert.equal(afterState.onChain.data.pk, 'zMintPk');
+
+    // ② P-3 step ⑤: the buyer can keep operating the NFT (describe = updateAsset)
+    const described = cli(['describe', '--role', 'studio', '--adapter', 'mock', '--endpoint', 'https://buyer.example']);
+    assert.equal(described.status, 0, described.stderr);
+    assert.equal(json(described.stdout).data.endpoint, 'https://buyer.example');
+    const finalState = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout);
+    assert.equal(finalState.onChain.owner, '0xbuyer');
+    assert.equal(finalState.onChain.data.owner, '0xseller', 'the mint-time data.owner field is a mint fact, not the live owner');
+  } finally {
+    factory(['reset', '--adapter', 'mock']);
+  }
+});
+
+test('live: transfer fails closed on a missing --confirm, an unknown asset and an unknown role', () => {
+  assert.equal(factory(['reset', '--adapter', 'mock']).status, 0);
+  assert.equal(factory(['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']).status, 0);
+
+  try {
+    const acquired = cli([
+      'acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xseller', '--pk', 'zMintPk',
+      '--endpoint', 'https://a.example', '--region', 'CN-BJ',
+    ]);
+    assert.equal(acquired.status, 0, acquired.stderr);
+    const assetId = json(acquired.stdout).assetId;
+    const ledgerTxs = () => Object.keys(readJson(statePath)?.value?.txs ?? {});
+    const before = ledgerTxs().length;
+
+    // ① missing --confirm: VALIDATION, empty stdout, and the ledger is UNTOUCHED
+    // (no new tx, still the seller's asset) ⇒ the refusal made zero chain calls
+    const refused = cli(['transfer', '--role', 'studio', '--adapter', 'mock', '--to', '0xbuyer']);
+    assert.equal(refused.status, 1);
+    assert.equal(refused.stdout.trim(), '');
+    assert.equal(json(refused.stderr).code, 'VALIDATION');
+    assert.match(json(refused.stderr).error, /--confirm/);
+    assert.equal(ledgerTxs().length, before, 'a refused transfer must not write a transaction');
+    assert.equal(readJson(statePath)?.value?.assets?.[assetId]?.owner, '0xseller');
+    assert.equal(json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.owner, '0xseller');
+
+    // ② unknown asset: NOT_FOUND, nothing written
+    const unknownAsset = cli(['transfer', '--role', 'studio', '--adapter', 'mock', '--to', '0xbuyer', '--asset', '0xdeadbeef', '--confirm']);
+    assert.equal(unknownAsset.status, 1);
+    assert.equal(json(unknownAsset.stderr).code, 'NOT_FOUND');
+    assert.match(json(unknownAsset.stderr).error, /asset not found/);
+    assert.equal(ledgerTxs().length, before);
+
+    // ③ unknown role: VALIDATION (never opens the ledger at all)
+    const unknownRole = cli(['transfer', '--role', 'hub', '--adapter', 'mock', '--to', '0xbuyer', '--confirm']);
+    assert.equal(unknownRole.status, 1);
+    assert.equal(json(unknownRole.stderr).code, 'VALIDATION');
+    assert.match(json(unknownRole.stderr).error, /--role must be one of: studio/);
+    assert.equal(ledgerTxs().length, before);
+  } finally {
+    factory(['reset', '--adapter', 'mock']);
+  }
+});
+
 // --- PRD-NET-02: node self-description (endpoint/region/appName) --------------
 //
 // The acceptance line says "可达信息写入 NFT data.value（endpoint/region/appName）".

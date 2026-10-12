@@ -20,6 +20,8 @@
 //             multiSignStakeTx(...) → signStakeTx(...) → sendStakeTx(...)
 //             revokeStake({assets, tokens, from, wallet})
 //             claimStake({from, evidence, wallet})
+//             signTransferTx({tx:{itx:{to,value,assets,data}}, wallet})
+//               → sendTransferTx({tx:<signed>, wallet})   (ENG-06, two steps)
 //           It needs the ARC libraries + a funded wallet, so it is loaded
 //           lazily: without them every command fails with CHAIN_UNAVAILABLE
 //           (never a silent success).
@@ -747,6 +749,51 @@ export function createMockChain({ instance, now } = {}) {
       return { hash, address };
     },
 
+    /**
+     * transfer (ENG-06 / probe P-3): move the asset to another owner.
+     *
+     * Same call shape as the real adapter, because P-3's judgement must be
+     * exercisable locally: after the transfer `getAssetState().owner` IS the
+     * buyer. The mock really rewrites the ledger's `owner` (it does not fake a
+     * hash and leave the state alone).
+     *
+     * `value` stays the DECIMAL string the chain declares (`TransferTx.value`,
+     * node.d.ts:2424) and this simulation only models the `"0"` handover: a
+     * priced sale needs a token leg the mock does not model, so a non-zero value
+     * FAILS CLOSED instead of reporting a transfer that charged nobody (the
+     * priced-sale question is `U8`'s cost face and belongs to the real chain).
+     */
+    transfer({ to, value = '0', assets = [], data }) {
+      const recipient = String(to ?? '').trim();
+      ensure(recipient, 'transfer needs a recipient (--to)');
+      ensure(assets.length > 0, 'transfer needs at least one asset (--asset or the recorded one)');
+      const price = String(value ?? '0').trim() || '0';
+      ensure(
+        /^\d+$/.test(price) && price === '0',
+        `the mock adapter models only a value:"0" transfer (got "${price}") — a priced sale needs the real chain (--adapter ocap)`,
+      );
+      const targets = assets.map((id) => {
+        const asset = state.assets[id];
+        if (!asset) fail('NOT_FOUND', `asset not found: ${id}`);
+        return asset;
+      });
+      const from = targets[0].owner;
+      const mixed = targets.find((asset) => asset.owner !== from);
+      if (mixed) {
+        fail('VALIDATION', `all transferred assets must share one owner: ${assets[0]} is ${from} but ${mixed.id} is ${mixed.owner}`);
+      }
+      for (const asset of targets) {
+        // The ownership move is the whole point (P-3) …
+        asset.owner = recipient;
+        // … and the chain bumps `renaissanceTime` on every state change, so the
+        // mock does too (PRD-NET-03 reads it as "last data update time").
+        asset.renaissanceTime = state.clock;
+      }
+      const hash = recordTx(state, 'sendTransferTx', { assets: [...assets], from, to: recipient, value: price, data: data ?? null });
+      persist();
+      return { hash, assets: [...assets], assetId: assets[0], from, to: recipient, value: price };
+    },
+
     revoke({ stakeAddress, assets }) {
       const stake = state.stakes[stakeAddress];
       if (!stake) fail('NOT_FOUND', `no stake at ${stakeAddress}`);
@@ -1080,6 +1127,38 @@ export async function createOcapChain(config, instance) {
     async updateAsset({ address, moniker, data }) {
       const hash = await client.updateAsset({ address, moniker, data, wallet });
       return { hash: typeof hash === 'string' ? hash : (hash?.hash ?? ''), address };
+    },
+
+    /**
+     * transfer (ENG-06 / PRD-ID-05): hand the node NFT to another owner.
+     *
+     * The two steps are the ENG-06 acceptance criterion, and they are the SDK's
+     * own high-level pair — `signTransferTx` (node.d.ts:400) then
+     * `sendTransferTx` (node.d.ts:324), used exactly the way the stake path uses
+     * `signStakeTx` → `sendStakeTx` (extension.js:897-921): the first returns the
+     * SIGNED `Transaction` (node.d.ts:2371-2385, which carries `nonce`/`pk`/
+     * `signature`), and the second takes it back as `TxParam.tx` — `TxParam.tx`
+     * is a union of `{…itx}` | `Transaction` (node.d.ts:501-515), so no
+     * nonce/signature needs to be hand-backfilled: the SDK fills them in the
+     * first call and the second consumes the result. `wallet` stays the same
+     * object in both calls (the signer and the sender).
+     *
+     * Param shape = the declared `TxParam<TransferTx>`:
+     *   `{ tx: { itx: { to, value, assets, data } }, wallet }`
+     * with `TransferTx` = `{ to, value, assets, data }` (node.d.ts:2422-2427),
+     * `value` a DECIMAL string, and `data` the SDK's `Any` =
+     * `{ typeUrl, value }` (node.d.ts:1029) — the very shape `client.transfer`
+     * itself builds (extension.js:850). No field is invented here.
+     *
+     * ⚠️ NOT EXECUTED in the wiring round: this is a real chain write and needs
+     * human approval (ENG-06 blocker: `待批准（仅真链执行）`). The path exists and
+     * is fail-closed; the first real call belongs to the approved batch.
+     */
+    async transfer({ to, value = '0', assets = [], data }) {
+      const param = { tx: { itx: { to, value: String(value ?? '0'), assets: [...assets], data } }, wallet };
+      const signed = await client.signTransferTx(param);
+      const hash = await client.sendTransferTx({ tx: signed, wallet });
+      return { hash, assets: [...assets], assetId: assets[0], to, value: String(value ?? '0') };
     },
 
     async revoke({ stakeAddress, assets }) {
