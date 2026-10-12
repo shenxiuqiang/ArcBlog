@@ -2,7 +2,7 @@
 // Fast guard: every CLI command the ENTRY DOCS tell an operator to run must still
 // exist in the CLI's source.
 //
-// WHY: the entry docs (CLAUDE.md, docs/05-开发文档/06-运维场景手册.md) are the
+// WHY: the entry docs (README.md, CLAUDE.md, docs/05-开发文档/06-运维场景手册.md) are the
 // operator's contract, and nothing else checks them. `arc dsl validate` knows
 // nothing about `node scripts/*.mjs`; the fast tier knows nothing about prose. When
 // a subcommand is renamed or a script is deleted, the docs keep advertising it and
@@ -22,7 +22,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const DOCS = ['CLAUDE.md', join('docs', '05-开发文档', '06-运维场景手册.md')];
+const DOCS = ['CLAUDE.md', 'README.md', join('docs', '05-开发文档', '06-运维场景手册.md')];
 
 /**
  * `node scripts/x.mjs a|b [--flag]` → [{script, command:'a'}, {script, command:'b'}].

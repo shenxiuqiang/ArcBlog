@@ -98,6 +98,21 @@ test('every AFS path a page reads is covered by a declared grant or the platform
   assert.deepEqual(uncovered, [], `page paths with no grant: ${uncovered.join(' | ')}`);
 });
 
+test('every granted app collection is documented in the data-model table', () => {
+  // WHY: docs/05-开发文档/01 §1 calls itself the authoritative collection list (CLAUDE.md
+  // says "don't re-enumerate here"), yet `tags/` and `page-drafts/` were missing from it
+  // while blocklet.yaml granted their prefixes and CLIs managed them (measured 2026-10-12:
+  // tags/ even held three records). A granted-but-undocumented collection is exactly how a
+  // reader ends up treating real data as stray residue.
+  const grants = declaredGrants().filter((g) => g.startsWith('/instance/app/arcblog/'));
+  const doc = readFileSync(join(REPO, 'docs', '05-开发文档', '01-数据模型与存储.md'), 'utf8');
+  const table = doc.slice(doc.indexOf('## 1.'), doc.indexOf('## 2.'));
+  const undocumented = grants
+    .map((g) => g.split('/').filter(Boolean).pop())
+    .filter((name) => !new RegExp('`' + name + '/').test(table));
+  assert.deepEqual(undocumented, [], `granted collections missing from the data-model table: ${undocumented.join(', ')}`);
+});
+
 test('the extractor and the grant parser both really see something (guard against a silent pass)', () => {
   const grants = declaredGrants();
   assert.ok(grants.includes('/instance/app/arcblog/posts'), 'networkRead posts prefix must be parsed');
