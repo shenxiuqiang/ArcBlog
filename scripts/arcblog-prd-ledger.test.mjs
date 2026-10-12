@@ -195,3 +195,47 @@ test('no 未开工 rows, and every 开发中 row names the human checkpoint it w
   assert.deepEqual(stalls, [], `in-progress rows that do not say what they wait for:\n  ${stalls.join('\n  ')}`);
   assert.ok(rows.length >= 56, `ledger rows parsed: ${rows.length}`);
 });
+
+/**
+ * Id integrity across the living ledger volumes (2026-10-12, ENG-55).
+ *
+ * A duplicated id is not cosmetic: `DEF-25`, `ENG-14` and `PRD-SET-02` are how the ledger, the
+ * boundary rows and the human checklist point at each other, so a second row with the same id makes
+ * every one of those references ambiguous — and nothing here checked for it. A gap is allowed, but
+ * only when the file explains it (ENG-08 is struck through as "merged into ENG-07"): an unexplained
+ * hole is what B21 turned out to be in the boundary table (ENG-54), where a `###` heading kept the
+ * id count looking complete.
+ */
+test('ledger ids are unique per family, and any gap is explained in the same file', () => {
+  const families = [
+    { name: 'PRD', file: LEDGER, pattern: /^\| `(PRD-[A-Z]+-\d+)` \|/gm, numeric: false },
+    { name: 'DEF', file: join(REPO, 'docs/06-功能开发列表/03-缺陷与待修.md'), pattern: /^\| \*\*`?(DEF-\d+)`?\*\* \|/gm, numeric: false },
+    // (the numeric families carry `idOf`, because the file writes `ENG-08` and `P7`, not `ENG8`)
+    // Struck-through rows still ARE ids (ENG-08 is `~~`ENG-08`~~`), so the pattern must not require
+    // the bold markers only.
+    { name: 'ENG', file: join(REPO, 'docs/06-功能开发列表/02-工程与工具功能点.md'), pattern: /^\| \*\*`?~?~?(ENG-\d+)~?~?`?\*\* \|/gm, numeric: true, idOf: (n) => `ENG-${String(n).padStart(2, '0')}` },
+    { name: 'P', file: join(REPO, 'docs/05-开发文档/02a-平台禁止与降级模式.md'), pattern: /^\|\s*\*\*`?(P\d+)`?\*\*\s*\|/gm, numeric: true, idOf: (n) => `P${n}` },
+  ];
+
+  const problems = [];
+  for (const fam of families) {
+    const text = readFileSync(fam.file, 'utf8');
+    const raw = [...text.matchAll(fam.pattern)].map((m) => m[1]);
+    assert.ok(raw.length >= 10, `${fam.name}: parsed only ${raw.length} ids`);
+
+    const seen = new Map();
+    for (const id of raw) seen.set(id, (seen.get(id) ?? 0) + 1);
+    for (const [id, n] of seen) if (n > 1) problems.push(`${fam.name}: id ${id} appears ${n} times`);
+
+    if (fam.numeric) {
+      const nums = raw.map((id) => Number(id.replace(/\D/g, ''))).sort((a, b) => a - b);
+      for (let n = 1; n <= nums[nums.length - 1]; n += 1) {
+        if (nums.includes(n)) continue;
+        const id = fam.idOf(n);
+        // an unexplained gap: the file must at least mention the missing id once
+        if (!text.includes(id)) problems.push(`${fam.name}: id ${id} is missing and never mentioned`);
+      }
+    }
+  }
+  assert.deepEqual(problems, [], `ledger id problems:\n  ${problems.join('\n  ')}`);
+});
