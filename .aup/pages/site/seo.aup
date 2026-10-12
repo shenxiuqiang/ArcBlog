@@ -72,7 +72,11 @@ page seo {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -81,27 +85,6 @@ page seo {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -135,7 +118,7 @@ page seo {
                 input type=text label=:f-og name=ogImage value="${state.profile.ogImage}"
                 input type=text label=:f-endpoint name=endpoint value="${state.profile.endpoint}"
                 row cross=start {
-                  action variant=primary label=:save onSuccessToast={intent: success, message: "$t(seo-admin.saved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/profile.json", content: {name: "${args.name}", description: "${args.description}", avatar: "${state.profile.avatar}", ogImage: "${args.ogImage}", did: "${state.profile.did}", endpoint: "${args.endpoint}", roles: "${state.profile.roles}", capabilities: "${state.profile.capabilities}", version: "${state.profile.version}", protocolVersion: "${state.profile.protocolVersion}", createdAt: "${state.profile.createdAt}", updatedAt: "${generate.timeiso}"}}}}
+                  action variant=primary label=:save onSuccessToast={intent: success, message: "$t(seo.saved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/profile.json", content: {name: "${args.name}", description: "${args.description}", avatar: "${state.profile.avatar}", ogImage: "${args.ogImage}", did: "${state.profile.did}", endpoint: "${args.endpoint}", roles: "${state.profile.roles}", capabilities: "${state.profile.capabilities}", version: "${state.profile.version}", protocolVersion: "${state.profile.protocolVersion}", createdAt: "${state.profile.createdAt}", updatedAt: "${generate.timeiso}"}}}}
                 }
               }
             }

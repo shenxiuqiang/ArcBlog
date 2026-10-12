@@ -147,8 +147,6 @@ export const TEST_RECORD_PREFIXES = [
   'cat-test-',
   // `arcblog-media.test.mjs` (media + draft fixtures deleted in `finally`).
   'media-test-',
-  // `arcblog-network.test.mjs` hub-index fixtures (publish → archive → delete).
-  'hub-idx-test-',
   // `arcblog-content-hash.test.mjs` paid-visibility fixtures.
   'paid-test-',
   // `arcblog-content-sign.test.mjs` signed/unsigned publish fixtures.

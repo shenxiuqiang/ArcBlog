@@ -105,7 +105,11 @@ page pages {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -114,27 +118,6 @@ page pages {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -165,7 +148,7 @@ page pages {
                 input type=text label=:f-summary name=summary state={value: ""}
                 input type=textarea label=:f-body name=body required=true state={value: ""}
                 row cross=start {
-                  action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages-admin.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                  action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
                 }
               }
               view gap=sm style={flexShrink: 0} {

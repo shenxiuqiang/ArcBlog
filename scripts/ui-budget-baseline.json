@@ -32,7 +32,7 @@
     "nested": 0,
     "ctrl": 14,
     "styles": 7,
-    "i18n": 20,
+    "i18n": 25,
     "tech": 0
   },
   "heroes": {
@@ -78,7 +78,7 @@
     "ctrl": 0,
     "styles": 6,
     "i18n": 9,
-    "tech": 0
+    "tech": 2
   },
   "appearance": {
     "blocks": 2,
@@ -98,14 +98,23 @@
     "i18n": 21,
     "tech": 4
   },
-  "hub": {
-    "blocks": 2,
-    "cards": 2,
+  "registry": {
+    "blocks": 1,
+    "cards": 3,
     "nested": 0,
-    "ctrl": 9,
-    "styles": 8,
-    "i18n": 25,
-    "tech": 2
+    "ctrl": 0,
+    "styles": 9,
+    "i18n": 15,
+    "tech": 1
+  },
+  "factory": {
+    "blocks": 3,
+    "cards": 6,
+    "nested": 0,
+    "ctrl": 7,
+    "styles": 26,
+    "i18n": 73,
+    "tech": 4
   },
   "media": {
     "blocks": 1,
@@ -124,51 +133,6 @@
     "styles": 19,
     "i18n": 40,
     "tech": 20
-  },
-  "orders": {
-    "blocks": 1,
-    "cards": 5,
-    "nested": 0,
-    "ctrl": 0,
-    "styles": 21,
-    "i18n": 59,
-    "tech": 14
-  },
-  "policy": {
-    "blocks": 1,
-    "cards": 5,
-    "nested": 0,
-    "ctrl": 28,
-    "styles": 43,
-    "i18n": 94,
-    "tech": 19
-  },
-  "access": {
-    "blocks": 1,
-    "cards": 2,
-    "nested": 0,
-    "ctrl": 0,
-    "styles": 8,
-    "i18n": 10,
-    "tech": 0
-  },
-  "ledger": {
-    "blocks": 1,
-    "cards": 6,
-    "nested": 0,
-    "ctrl": 0,
-    "styles": 21,
-    "i18n": 48,
-    "tech": 14
-  },
-  "factory": {
-    "blocks": 3,
-    "cards": 6,
-    "nested": 0,
-    "ctrl": 7,
-    "styles": 26,
-    "i18n": 73,
-    "tech": 4
   },
   "general": {
     "blocks": 2,
@@ -194,31 +158,27 @@
     "nested": 0,
     "ctrl": 16,
     "styles": 11,
-    "i18n": 22,
+    "i18n": 27,
     "tech": 0
   },
   "_sources": {
-    "dashboard": "80080b4243f8147a",
-    "posts": "ca73751ade8b7133",
-    "pages": "1c2c37709a26c856",
-    "compose": "a855964697e8c4c7",
-    "heroes": "fbbd0a62e2091917",
-    "categories": "3adbee267c4729a5",
-    "tags": "f82e888c912cfd0c",
-    "seo": "c3fbdfa717f76f49",
-    "feeds": "8ac6ee1caf34296d",
-    "appearance": "3145c23eb34c25c1",
-    "operations": "cd603609333de2b5",
-    "hub": "13064acba1d9ed7a",
-    "media": "3816ccfc23027ffb",
-    "agents": "303c134599de55e9",
-    "orders": "c668134478dd3e67",
-    "policy": "2e68bb3138ac9063",
-    "access": "daebe1a82c3d4504",
-    "ledger": "aefd253c51bc22f7",
-    "factory": "f337328336a0e092",
-    "general": "52ecec7d2291aa0e",
-    "diagnostics": "94e2a9e8ba275eaf",
-    "compose-edit": "0ee198cc0a01a49a"
+    "dashboard": "009d1ef49aa3a3c3",
+    "posts": "6ec126d230795808",
+    "pages": "efdf9f1a40f457c2",
+    "compose": "373a644dcc2d78c6",
+    "heroes": "87bf9de9b0b52d12",
+    "categories": "8d8c902a8134e09a",
+    "tags": "9d3c00223244d54e",
+    "seo": "e7587f65ff86dbd6",
+    "feeds": "a840c3cd38e7869e",
+    "appearance": "93b80c1873251269",
+    "operations": "228971e129aac8ea",
+    "registry": "f7fccb8a2a14c923",
+    "factory": "3dba3e286f60a9f5",
+    "media": "22bf414d4dc13b8b",
+    "agents": "5e89db5b1463afbf",
+    "general": "cd6b60ffadbdb14a",
+    "diagnostics": "39f4ed9684fe1c9b",
+    "compose-edit": "3384303dfd7fbb9b"
   }
 }

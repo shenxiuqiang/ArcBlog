@@ -2,7 +2,7 @@ page feeds {
   i18n {
     desc { en "Subscription and index surfaces generated from published content." zh "由已发布内容生成的订阅与索引入口。" }
     feeds-agent { en "Agent access (llms.txt / MCP) is declared by the runtime." zh "Agent 访问（llms.txt / MCP）由运行时声明。" }
-    feeds-desc { en "These surfaces are always on and generated from published content — nothing to configure." zh "以下分发面由已发布内容自动生成，无需配置。" }
+    feeds-desc { en "These surfaces are built by the CLI, not by the runtime: run node scripts/arcblog-rss.mjs to generate the RSS artifact — until it has run, /p/rss.xml does not exist." zh "以下分发面由 CLI 生成、而非运行时自动产出：需运行 node scripts/arcblog-rss.mjs 生成 RSS 产物——未生成时 /p/rss.xml 不存在。" }
     feeds-posts { en "Article index" zh "文章索引" }
     feeds-rss { en "RSS feed" zh "RSS 订阅" }
     gate-desc { en "Sign in with DID Wallet to view the distribution surfaces." zh "使用 DID Wallet 登录后查看分发面。" }
@@ -68,7 +68,11 @@ page feeds {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -77,27 +81,6 @@ page feeds {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

@@ -70,12 +70,12 @@ sites:
         afs: "/instance/app/arcblog/node/profile.json"
         page: seo   # the console used to be one page per section; this route now
                     # lands on the standalone `seo` page directly (no bridge).
-      # spec §39: the public creator storefront — the product catalogue
-      # (guest-readable, §50) rendered as its own page.
-      - id: store
-        path: "/store"
-        afs: "/instance/app/arcblog/economy/products"
-        page: store
+
+# The `store` binding and its page were removed (ENG-07, storefront off the
+# product surface). The economy/* networkRead + replicated declarations below
+# are KEPT on purpose: they gate the AFS collections that the retained CLI
+# `scripts/arcblog-economy.mjs` reads and writes — they are record-level
+# permissions, not pointers to the deleted pages.
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).
@@ -146,11 +146,6 @@ networkRead:
   - path: /instance/app/arcblog/pages
     role: guest
   - path: /instance/app/arcblog/page-drafts
-    role: admin
-  # spec §71: Studio→Hub registrations are this node's own bookkeeping (DID +
-  # endpoint + sync state). The public discovery surface is node/discovery.json,
-  # so the registrations stay admin (nothing guest-facing reads them).
-  - path: /instance/app/arcblog/hub
     role: admin
 
 # Collection declarations authorize admin writes from the UI (the compose
@@ -273,14 +268,6 @@ replicated:
     readRole: guest
   page-drafts:
     canonical: instance/app/arcblog/page-drafts/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §70–§74: this node's Hub bookkeeping — Studio→Hub registrations and the
-  # Hub's derived content index (metadata only: Studio = source, Hub = index).
-  # One admin-only collection for the tree.
-  hub:
-    canonical: instance/app/arcblog/hub/*
     copy: none
     minRole: admin
     readRole: admin

@@ -46,25 +46,17 @@ export const CONSOLE_MENU = [
     group: 'nav-group-ops',
     items: [
       { label: 'nav-operations', page: 'operations' },
-      { label: 'nav-hub', page: 'hub' },
+      // ENG-10/DEF-07: the node registry page — currently the honest
+      // "not connected" state (BD-04), data fill-in waits on ENG-02/ENG-03.
+      { label: 'nav-registry', page: 'registry' },
+      // ENG-07 (2026-10-01): the economy console pages (orders/policy/access/
+      // ledger) were deleted; the AFS collections behind them stay managed by
+      // scripts/arcblog-economy.mjs. The node-NFT factory console is node
+      // infrastructure, so it lives in the ops group (Lead ruling: the
+      // one-row "Economy" group header was retired with the pages).
+      { label: 'nav-factory', page: 'factory' },
       { label: 'nav-media', page: 'media' },
       { label: 'nav-agents', page: 'agents' },
-    ],
-  },
-  {
-    group: 'nav-group-economy',
-    items: [
-      // spec §15.7 lists 订单 before the policy/access objects, and an order is
-      // the entry fact of the economy; §15.7's 结算与账本 is the record pair
-      // behind every split, so it sits with the orders it explains. Page ids are
-      // `orders` / `ledger` — both probed against `arc dsl validate --json`
-      // (issues []) in Round 14; neither is a reserved AUP keyword (unlike
-      // `settings`, see below).
-      { label: 'nav-orders', page: 'orders' },
-      { label: 'nav-policy', page: 'policy' },
-      { label: 'nav-access', page: 'access' },
-      { label: 'nav-ledger', page: 'ledger' },
-      { label: 'nav-factory', page: 'factory' },
     ],
   },
   // spec §15.10 lists 设置 as a top-level menu next to 内容 / 站点 / 经济, so it

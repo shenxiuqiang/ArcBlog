@@ -5,6 +5,11 @@ page compose-edit {
     desc { en "Edit this draft, then save it back to the private drafts or publish it to the site." zh "编辑此草稿，然后存回私有草稿或直接发布到站点。" }
     f-body { en "Body (Markdown)" zh "正文（Markdown）" }
     f-cover { en "Cover image URL" zh "封面图 URL" }
+    f-og-desc { en "OG Description" zh "OG 描述" }
+    f-og-image { en "OG Image" zh "OG 图" }
+    f-og-title { en "OG Title" zh "OG 标题" }
+    f-seo-desc { en "SEO Description" zh "SEO 描述" }
+    f-seo-title { en "SEO Title" zh "SEO 标题" }
     f-slug { en "Slug (lowercase letters, numbers, dashes)" zh "Slug（小写字母、数字、连字符）" }
     f-summary { en "Summary" zh "摘要" }
     f-title { en "Title" zh "标题" }
@@ -67,11 +72,11 @@ page compose-edit {
                 }
                 view compose-edit-advanced label=:tab-advanced {
                   view gap=sm {
-                    input type=text label="SEO Title" name=seoTitle value="${state.post.seoTitle}"
-                    input type=text label="SEO Description" name=seoDescription value="${state.post.seoDescription}"
-                    input type=text label="OG Title" name=ogTitle value="${state.post.ogTitle}"
-                    input type=text label="OG Description" name=ogDescription value="${state.post.ogDescription}"
-                    input type=text label="OG Image" name=ogImage value="${state.post.ogImage}"
+                    input type=text label=:f-seo-title name=seoTitle value="${state.post.seoTitle}"
+                    input type=text label=:f-seo-desc name=seoDescription value="${state.post.seoDescription}"
+                    input type=text label=:f-og-title name=ogTitle value="${state.post.ogTitle}"
+                    input type=text label=:f-og-desc name=ogDescription value="${state.post.ogDescription}"
+                    input type=text label=:f-og-image name=ogImage value="${state.post.ogImage}"
                   }
                   afs-dropzone
                 }

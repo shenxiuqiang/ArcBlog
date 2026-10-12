@@ -1,15 +1,20 @@
-page access {
+page registry {
   i18n {
-    admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-    desc { en "Reading rights created when a paid order settles." zh "付费订单结算后生成的阅读权限。" }
-    gate-desc { en "Sign in with DID Wallet to view the economy and grants." zh "使用 DID Wallet 登录后查看经济与授权。" }
-    gate-title { en "Access grants" zh "访问授权" }
-    grant-reader { en "Reader" zh "读者" }
-    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
-    grants-empty { en "Created automatically when a paid reading order settles." zh "付费阅读订单结算后自动生成。" }
+    check-chain-label { en "On-chain stakes" zh "链上质押" }
+    check-chain-value { en "Chain explorer / general SDK: list stakes where receiver = the factory address (the public projection is on ?page=factory, record node/factories.json)" zh "链上浏览器 / 通用 SDK：查询 receiver = 工厂地址的质押列表（公开投影见 ?page=factory，记录 node/factories.json）" }
+    check-cli-label { en "Discovery document (CLI)" zh "Discovery 文档（CLI）" }
+    check-desc { en "This node's own discovery document is local; the stake list lives on chain. Verify the factory address with a chain explorer or a general SDK — never trust a number this page cannot source." zh "本节点自己的 Discovery 文档在本地；质押列表在链上。请用链上浏览器或通用 SDK 按工厂地址核对——不要信任何本页无法给出出处的数字。" }
+    check-title { en "How to verify" zh "核对入口" }
+    desc { en "Which nodes are staked to this factory — the on-chain registry view. The chain query exists and is verified; this page's list rendering is not wired yet, so the page states that honestly instead of rendering an empty list." zh "质押到本工厂的节点列表——链上注册表面。链上查询已实现并通过探针验证；本页的列表渲染尚未接线，因此如实说明，而不是渲染一个空列表。" }
+    gate-desc { en "Sign in with DID Wallet to view the registry status." zh "使用 DID Wallet 登录后查看注册表状态。" }
+    gate-title { en "Node registry" zh "节点注册表" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    status-note { en "This page has no per-row status: a grant record exists only while the reader holds it and carries no status field." zh "该页没有逐行状态：授权记录只在读者持有期间存在，本身不含状态字段。" }
-    title { en "Access grants" zh "访问授权" }
+    no-list-note { en "Deliberately no node list here: an empty list would claim 'zero nodes on chain', which this page cannot know until it is wired to listStakes (a follow-up ENG item)." zh "本页故意不渲染节点列表：空列表等于声称'链上没有节点'，而本页面对接 listStakes（后续 ENG 项）之前无法知道这一点。" }
+    probe-p1-label { en "Probe P-1 (mock-chain enumeration)" zh "探针 P-1（mock 链枚举）" }
+    probe-p1-value { en "Verified (2026-10-01, mock adapter): returned count = staked count, unstaked nodes absent, cursor pagination continues (docs/05-开发文档/07 §1)." zh "已验证通过（2026-10-01，mock 适配器）：返回条数 = 质押数、未质押的不出现、分页游标可续（docs/05-开发文档/07 §1）。" }
+    status-current { en "Enumeration is wired at the adapter layer — both the mock and the ocap adapter implement listStakes (P-1 / P-2 verified). What is currently not connected is THIS page's list rendering: until the page talks to the chain query, no node list is rendered here." zh "枚举能力已在适配器层接通——mock 与 ocap 适配器均实现了 listStakes（P-1 / P-2 已验证）。当前未接的是本页的列表渲染：在页面对接链上查询之前，这里不渲染节点列表。" }
+    status-title { en "Connection status" zh "接入状态" }
+    title { en "Node registry" zh "节点注册表" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -17,7 +22,7 @@ page access {
         h2 :gate-title level=2 style={fontSize: "var(--type-body)"}
         p :gate-desc intent=muted
         row cross=start {
-          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Daccess&cancel_to=%2F%3Fpage%3Daccess" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
+          action -> navigate "/.well-known/service/login?return_to=%2F%3Fpage%3Dregistry&cancel_to=%2F%3Fpage%3Dregistry" variant=primary label=:login style={borderRadius: "var(--radius-md, 8px)"}
         }
       }
       row gap=lg cross=stretch style={width: "100vw", marginLeft: "calc(50% - 50vw)", height: "calc(100vh - 48px)", marginBottom: "-52px", padding: "0 32px 0 0"} visible=$session.authenticated {
@@ -69,7 +74,11 @@ page access {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -78,27 +87,6 @@ page access {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access active=true style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -117,28 +105,21 @@ page access {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
               p :desc intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                p :admin-only scale=sm intent=muted visible="!$session.authenticated"
-                view visible=$session.authenticated {
-                  p :pagesize-note scale=caption intent=muted
-                  afs-list access-grants-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:grants-empty pagination=manual pageSize=20 from "/instance/app/arcblog/economy/access-grants" {
-                    row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                      p "${entry.content.contentId}" scale=sm
-                      p :grant-reader scale=sm intent=muted
-                      p "${entry.content.readerDid}" scale=sm format=did title="${entry.content.readerDid}"
-                      view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                        time mode=display value="${entry.content.grantedAt}" timeMode=relative
-                      }
-                    }
-                  }
-                }
-                p :grants-empty scale=sm intent=muted
-                p :status-note scale=sm intent=muted
+                h3 :status-title level=3 style={fontSize: "var(--type-body)"}
+                p :status-current intent=muted
+                key-value-list dense=true fields=[{label: "$t(registry.probe-p1-label)", value: "$t(registry.probe-p1-value)"}]
+                p :no-list-note scale=sm intent=muted
+              }
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :check-title level=3 style={fontSize: "var(--type-body)"}
+                p :check-desc intent=muted
+                key-value-list dense=true fields=[{label: "$t(registry.check-cli-label)", value: "node scripts/arcblog-network.mjs discovery show", monospace: true, copyable: true}, {label: "$t(registry.check-chain-label)", value: "$t(registry.check-chain-value)"}]
               }
             }
           }

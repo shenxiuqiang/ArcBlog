@@ -37,12 +37,11 @@ export const SENSITIVE_PATH_PREFIXES = [
   '/instance/app/arcblog/economy/attributions',
   '/instance/app/arcblog/economy/access-grants',
   '/instance/app/arcblog/economy/refunds',
-  '/instance/app/arcblog/config/trusted-hubs',
   '/blocklets',
 ];
 
 /** Capabilities an agent can hold (spec §61). */
-export const AGENT_CAPABILITIES = ['agent.read', 'agent.write', 'agent.publish', 'agent.economy', 'agent.admin'];
+export const AGENT_CAPABILITIES = ['agent.read', 'agent.write', 'agent.publish', 'agent.admin'];
 
 /**
  * Tool catalogue (spec §130).
@@ -65,8 +64,6 @@ export const AGENT_TOOLS = [
   { name: 'get_post', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'get' }, params: ['slug'] },
   { name: 'list_categories', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/categories', op: 'list' } },
   { name: 'get_node_profile', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/node', op: 'get' } },
-  { name: 'list_products', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/economy/products', op: 'list' } },
-  { name: 'get_policy', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/economy/policies', op: 'get' } },
   // Aggregate counts over public surfaces only — economy analytics stay closed
   // because orders name buyers (privacy, spec §62).
   { name: 'get_analytics', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'list' } },
@@ -77,11 +74,6 @@ export const AGENT_TOOLS = [
   { name: 'create_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'update_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'publish_post', capability: 'agent.publish', kind: 'write', command: 'lifecycle-publish' },
-  { name: 'create_product', capability: 'agent.economy', kind: 'write', command: 'economy-product-add' },
-  // --- never exposed: they name buyers/readers -------------------------------
-  { name: 'get_orders', capability: 'agent.economy', kind: 'closed', reason: 'orders name buyers — admin-only (privacy)' },
-  { name: 'get_settlements', capability: 'agent.economy', kind: 'closed', reason: 'settlements name buyers — admin-only (privacy)' },
-  { name: 'get_sales', capability: 'agent.economy', kind: 'closed', reason: 'derived from orders/settlements — admin-only (privacy)' },
   // --- default-closed admin operations (spec §130) ---------------------------
   { name: 'settle_payment', capability: 'agent.admin', kind: 'closed', defaultClosed: true, reason: 'default-closed (spec §130) — requires human authorization outside the agent surface' },
   { name: 'change_wallet', capability: 'agent.admin', kind: 'closed', defaultClosed: true, reason: 'default-closed (spec §130) — requires human authorization outside the agent surface' },

@@ -42,7 +42,6 @@ import {
   runPendingRoleVerifyIntents,
   scanRoleVerifyQueue,
 } from './lib/role-verify.mjs';
-import { listHubRegistrations, tombstoneHubRelations } from './lib/network.mjs';
 
 
 const NODE_PROFILE_PATH = `${INSTANCE_ROOT}/node/profile.json`;
@@ -130,16 +129,16 @@ const IN_FLIGHT_ORDER_STATUSES = ['pending', 'paid'];
 /**
  * Spec §8.6 — the data promise when a role leaves. Run with `--link-exit`:
  *
- *   1. every live Hub relation is Tombstoned (Hubs stop believing this node
- *      still publishes; history and content stay),
- *   2. in-flight orders are *reported*, never rewritten: they settle under the
- *      split policy in force at settlement time (§29 keeps policy versions), so
- *      the operator gets the list + the policy version that will govern them,
- *      and a warning when a recorded version no longer resolves.
+ *   in-flight orders are *reported*, never rewritten: they settle under the
+ *   split policy in force at settlement time (§29 keeps policy versions), so
+ *   the operator gets the list + the policy version that will govern them,
+ *   and a warning when a recorded version no longer resolves.
+ *
+ * (ENG-12/DEF-11: the Studio↔Hub relation Tombstone step is gone with the hub
+ * surface itself — there are no hub registrations left to terminate.)
  */
 function linkRoleExit(opts, instance) {
   const reason = optString(opts.reason) || `role exit: ${optString(opts.role) || 'unknown role'}`;
-  const hubs = tombstoneHubRelations(reason, instance);
 
   const policy = readJson(`${POLICIES_DIR}/active.json`, instance)?.value ?? null;
   const orders = list(ORDERS_DIR, instance)
@@ -159,8 +158,6 @@ function linkRoleExit(opts, instance) {
   return {
     role: optString(opts.role),
     reason,
-    hubsTombstoned: hubs.tombstoned,
-    hubsStillLive: hubs.live,
     activePolicyVersion: policy?.version ?? null,
     ordersInFlight: orders,
     // §8.6: content is never deleted by an exit — nothing here touches posts/.
@@ -367,7 +364,7 @@ Usage:
   node scripts/arcblog-roles.mjs check
   node scripts/arcblog-roles.mjs state set --role studio --state <${STAKE_STATES.join('|')}>
   node scripts/arcblog-roles.mjs state set --role studio --state revoking --link-exit [--reason "…"]
-      §8.6: Tombstone live Hub relations + report in-flight orders (content is kept)
+      §8.6: report in-flight orders (content is kept)
                                           [--asset-id <id>] [--stake-id <id>] [--claimable-at <iso>]
   node scripts/arcblog-roles.mjs verify request [--intent-id <id>] [--by <did>]
       Queue ONE verification intent (the console button writes the same record)

@@ -31,9 +31,6 @@
     "saved": {
       "tree": "pages/saved.aup"
     },
-    "store": {
-      "tree": "pages/store.aup"
-    },
     "appearance": {
       "tree": "pages/admin/appearance.aup"
     },
@@ -79,26 +76,14 @@
     "factory": {
       "tree": "pages/ops/factory.aup"
     },
-    "hub": {
-      "tree": "pages/ops/hub.aup"
-    },
     "media": {
       "tree": "pages/ops/media.aup"
     },
     "operations": {
       "tree": "pages/ops/operations.aup"
     },
-    "access": {
-      "tree": "pages/economy/access.aup"
-    },
-    "ledger": {
-      "tree": "pages/economy/ledger.aup"
-    },
-    "orders": {
-      "tree": "pages/economy/orders.aup"
-    },
-    "policy": {
-      "tree": "pages/economy/policy.aup"
+    "registry": {
+      "tree": "pages/ops/registry.aup"
     }
   }
 }

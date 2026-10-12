@@ -10,8 +10,6 @@ What you can read:
   an admin-only directory and are deliberately out of scope).
 - `categories/` — the taxonomy used by the public feed.
 - `node/` — this node's public profile and identity record.
-- `economy/policies/` and `economy/products/` — the public split policy and
-  products (prices), for questions about paid reading.
 
 What you must never attempt (default-closed, spec §61/§130):
 

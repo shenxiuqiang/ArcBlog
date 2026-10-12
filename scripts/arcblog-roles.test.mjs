@@ -235,19 +235,17 @@ test('live: roles state set records the lifecycle and never activates the role',
   }
 });
 
-// §8.6: a role exit keeps the content, Tombstones live Hub relations and
-// reports the in-flight orders with the policy version that will govern them.
-test('live: --link-exit tombstones Hub relations and reports in-flight orders (spec §8.6)', () => {
-  const network = join(repoRoot, 'scripts', 'arcblog-network.mjs');
+// §8.6: a role exit keeps the content and reports the in-flight orders with the
+// policy version that will govern them. (ENG-12/DEF-11: the Hub-relation
+// Tombstone step went away with the hub surface itself.)
+test('live: --link-exit reports in-flight orders (spec §8.6)', () => {
   const economy = join(repoRoot, 'scripts', 'arcblog-economy.mjs');
   const stamp = Date.now();
-  const hubDid = `did:key:zExitTest${stamp}`;
   const productId = `exit-test-product-${stamp}`;
   const orderId = `exit-test-order-${stamp}`;
   const run2 = (script, args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: repoRoot, env: { ...process.env } });
   try {
-    // a live Hub relation and an in-flight (paid, unsettled) order
-    assert.equal(run2(network, ['hub', 'register', '--hub-did', hubDid, '--endpoint', 'https://hub.example.com']).status, 0);
+    // an in-flight (paid, unsettled) order
     assert.equal(run2(economy, ['product', 'add', '--id', productId, '--creator-did', 'did:key:zTest', '--price-amount', '3']).status, 0);
     assert.equal(run2(economy, ['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zBuyer']).status, 0);
     assert.equal(run2(economy, ['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
@@ -257,31 +255,18 @@ test('live: --link-exit tombstones Hub relations and reports in-flight orders (s
     const linkage = json(res.stdout).exitLinkage;
     assert.ok(linkage, 'exitLinkage is reported');
     assert.equal(linkage.contentKept, true);
-    assert.ok(linkage.hubsTombstoned.some((h) => h.hubDid === hubDid), 'the live relation is Tombstoned');
-    assert.equal(linkage.hubsTombstoned.find((h) => h.hubDid === hubDid).removedReason, 'studio exit test');
     assert.ok(linkage.ordersInFlight.some((o) => o.id === orderId), 'the paid, unsettled order is listed');
     assert.ok(linkage.ordersInFlight.find((o) => o.id === orderId).settlesUnder.length > 0);
 
-    // the relation really is a Tombstone now, and the order is untouched
-    const listed = run2(network, ['hub', 'show', '--hub-did', hubDid]);
-    assert.equal(listed.status, 0, listed.stderr);
-    const record = json(listed.stdout).registration;
-    assert.equal(record.relation, 'removed');
-    assert.equal(record.removedReason, 'studio exit test');
-    assert.ok(record.removedAt);
+    // the order itself is untouched
     const order = json(run2(economy, ['order', 'show', '--id', orderId]).stdout).order;
     assert.equal(order.status, 'paid');
 
     // without the flag nothing is touched (the linkage is explicit, never a side effect)
-    const quietHub = `did:key:zQuietTest${stamp}`;
-    assert.equal(run2(network, ['hub', 'register', '--hub-did', quietHub, '--endpoint', 'https://hub.example.com']).status, 0);
     const plain = run(['state', 'set', '--role', 'studio', '--state', 'revoking']);
     assert.equal(plain.status, 0, plain.stderr);
     assert.equal(json(plain.stdout).exitLinkage, null);
-    assert.equal(json(run2(network, ['hub', 'show', '--hub-did', quietHub]).stdout).registration.relation, 'applied');
   } finally {
     run(['state', 'set', '--role', 'studio', '--state', 'none']);
-    run2(network, ['hub', 'remove', '--hub-did', hubDid, '--purge']);
-    run2(network, ['hub', 'remove', '--hub-did', `did:key:zQuietTest${stamp}`, '--purge']);
   }
 });

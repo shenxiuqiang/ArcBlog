@@ -551,6 +551,56 @@ export function createMockChain({ instance, now } = {}) {
       return stake;
     },
 
+    /**
+     * Registry enumeration (ENG-03 / probe P-1): every LIVE stake whose receiver
+     * is the given factory address. Mirrors the real chain's ResponseListStakes
+     * shape (`{code, page, stakes}`) and its offset cursor ("5" → next page from
+     * index 5, verified on beta 2026-10-01). A stake is live while it still
+     * holds at least one non-revoked asset — a node that revoked+claimed drops
+     * off the registry, an unstaked owner never appears.
+     */
+    listStakes({ addressFilter = {}, paging = {} } = {}) {
+      const receiver = addressFilter.receiver ?? '';
+      const size = Number(paging.size) || 20;
+      const start = Number(paging.cursor) || 0;
+      const live = Object.values(state.stakes)
+        .filter((s) => (!receiver || s.factory === receiver))
+        .filter((s) => s.assets.some((id) => !s.revokedAssets.includes(id)));
+      const total = live.length;
+      const slice = live.slice(start, start + size);
+      return {
+        code: 'OK',
+        page: { cursor: String(start + slice.length), next: start + slice.length < total, total },
+        stakes: slice.map((s) => ({
+          address: s.address,
+          sender: s.owner,
+          receiver: s.factory,
+          assets: s.assets.filter((id) => !s.revokedAssets.includes(id)),
+          message: s.message ?? '',
+          nonce: '',
+        })),
+      };
+    },
+
+    /**
+     * updateAsset (ENG-05 / probe P-4): REPLACE the asset's data payload.
+     * Callers that only clear some fields must read-merge-write (fetch the
+     * current data, blank the node fields, write the merged object back) —
+     * that is what keeps mint-time fields like owner/pk intact while
+     * endpoint/region/appName are cleared.
+     */
+    updateAsset({ address, moniker, data }) {
+      const asset = state.assets[address];
+      if (!asset) fail('NOT_FOUND', `asset not found: ${address}`);
+      if (moniker) asset.moniker = moniker;
+      if (data !== undefined) {
+        asset.data = { type: 'json', value: typeof data === 'string' ? data : JSON.stringify(data) };
+      }
+      const hash = recordTx(state, 'updateAsset', { asset: address });
+      persist();
+      return { hash, address };
+    },
+
     revoke({ stakeAddress, assets }) {
       const stake = state.stakes[stakeAddress];
       if (!stake) fail('NOT_FOUND', `no stake at ${stakeAddress}`);
@@ -780,8 +830,11 @@ export async function createOcapChain(config, instance) {
       // hubNFTFactory})`); the chain derives a separate stake address, so a
       // recorded stake address must never be reused as `to` (that yields
       // `Invalid itx: "address" Expected DID type info to match`).
-      const factory = (await this.factoryFor('studio')) || (await this.factoryFor('hub'));
-      ensure(factory?.address, 'no factory recorded to stake into');
+      // Stake targets the studio factory only — no hub fallback (DEF-08): the
+      // "one address ⇒ all nodes" premise breaks if a missing studio factory
+      // silently resolves to the hub one, so this fails closed instead.
+      const factory = await this.factoryFor('studio');
+      ensure(factory?.address, 'no studio factory recorded to stake into — run arcblog-factory.mjs create --role studio first');
       const to = factory.address;
       const address = stakeAddress || to;
       const asset = await this.getAssetState(assetId);
@@ -830,8 +883,9 @@ export async function createOcapChain(config, instance) {
      */
     stakeAddressFor() {
       const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? null;
-      const factory =
-        registry?.factories?.studio?.address || registry?.factories?.hub?.address || this.__factoryAddress || '';
+      // Studio factory only — the hub fallback was removed with DEF-08 (a missing
+      // studio factory must fail closed, never silently resolve to the hub one).
+      const factory = registry?.factories?.studio?.address || this.__factoryAddress || '';
       if (!factory || typeof toStakeAddress !== 'function') return '';
       try {
         return toStakeAddress(ownerAddress, factory, '');
@@ -843,6 +897,30 @@ export async function createOcapChain(config, instance) {
     async stakeState(stakeAddress) {
       const state = await client.getStakeState?.({ address: stakeAddress });
       return state ?? null;
+    },
+
+    /**
+     * Registry enumeration (ENG-02). Probe P-2 (2026-10-01, beta) verified the
+     * minimal shape: only `addressFilter.receiver` + `paging.{size,cursor}` are
+     * needed — `assetFilter`/`timeFilter` stay omitted (the type declarations
+     * mark them required; the runtime accepts their absence).
+     */
+    async listStakes({ addressFilter = {}, paging = {} } = {}) {
+      const response = await client.listStakes({
+        addressFilter: { receiver: addressFilter.receiver ?? '' },
+        paging: { size: paging.size ?? 20, ...(paging.cursor ? { cursor: paging.cursor } : {}) },
+      });
+      return { code: response?.code ?? '', page: response?.page ?? null, stakes: response?.stakes ?? [] };
+    },
+
+    /**
+     * updateAsset (ENG-05): high-level sign+send (extension.js `updateAsset`
+     * wraps `sendUpdateAssetTx`). Same replace-semantics caveat as the mock:
+     * callers clearing node fields must read-merge-write to keep mint fields.
+     */
+    async updateAsset({ address, moniker, data }) {
+      const hash = await client.updateAsset({ address, moniker, data, wallet });
+      return { hash: typeof hash === 'string' ? hash : (hash?.hash ?? ''), address };
     },
 
     async revoke({ stakeAddress, assets }) {

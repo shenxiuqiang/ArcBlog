@@ -38,7 +38,7 @@ page preview {
         view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
           p :notice intent=info
         }
-        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 12px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible=$state.post.coverImage {
+        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 10px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible=$state.post.coverImage {
           p " "
         }
         h1 "${state.post.title}" scale=display
@@ -50,6 +50,6 @@ page preview {
         p "${state.post.body}" format=markdown
       }
     }
-    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-store)", href: "/store"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
   }
 }

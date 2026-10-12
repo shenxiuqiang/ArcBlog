@@ -41,7 +41,6 @@ export const CLEAN_DIRS = [
   'economy/attributions',
   'economy/refunds',
   'config/agent-grants',
-  'config/trusted-hubs',
   // §67: public keys registered by `publish --sign-key` — test DIDs leave residue here.
   'config/signing-keys',
   // per-test mock-chain ledgers live directly under config/ (id-prefixed).
@@ -57,8 +56,6 @@ export const CLEAN_DIRS = [
   // Real records there (`factories.json`, `profile.json`, `identity.json`, …)
   // never match a test prefix.
   'node',
-  'hub/registrations',
-  'hub/index',
   'drafts',
   'page-drafts',
   'paid',
@@ -73,8 +70,6 @@ export const CLEAN_DIRS = [
 export const CONTENT_MATCH_DIRS = [
   'config/signing-keys',
   'config/agent-grants',
-  'config/trusted-hubs',
-  'hub/registrations',
 ];
 
 /** Identity fields a content-matched record may carry. */

@@ -6,7 +6,5 @@ agent "arcblog-agent" {
   tool "/instance/app/arcblog/posts/**" ops read,list,stat maxDepth 2
   tool "/instance/app/arcblog/categories/**" ops read,list,stat maxDepth 2
   tool "/instance/app/arcblog/node/**" ops read,list,stat maxDepth 2
-  tool "/instance/app/arcblog/economy/policies/**" ops read,list,stat maxDepth 2
-  tool "/instance/app/arcblog/economy/products/**" ops read,list,stat maxDepth 2
   budget maxRounds 6 totalTokens 64000
 }

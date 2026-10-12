@@ -198,9 +198,9 @@ test('every catalogue entry declares how it would act', () => {
       assert.ok(tool.reason, `${tool.name} needs a reason`);
     }
   }
-  assert.equal(executableReadTools().length, 7);
-  assert.equal(writeTools().length, 4);
-  assert.equal(closedTools().length, 6);
+  assert.equal(executableReadTools().length, 5);
+  assert.equal(writeTools().length, 3);
+  assert.equal(closedTools().length, 3);
 });
 
 test('scopeCoversResource matches a directory scope and its children', () => {
@@ -256,10 +256,10 @@ test('run refuses closed and unavailable tools with distinct codes', () => {
   assert.equal(json(closed.stderr).code, 'FORBIDDEN');
   assert.match(json(closed.stderr).error, /default-closed/);
 
-  const privacy = run(['run', '--tool', 'get_orders']);
-  assert.equal(privacy.status, 1);
-  assert.equal(json(privacy.stderr).code, 'FORBIDDEN');
-  assert.match(json(privacy.stderr).error, /admin-only/);
+  // ENG-01: the economy/buyer-data tools are gone from the catalogue entirely
+  const removed = run(['run', '--tool', 'get_orders']);
+  assert.equal(removed.status, 1);
+  assert.equal(json(removed.stderr).code, 'NOT_FOUND');
 
   const unavailable = run(['run', '--tool', 'list_studios']);
   assert.equal(unavailable.status, 1);

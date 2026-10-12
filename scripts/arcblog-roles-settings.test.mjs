@@ -31,7 +31,10 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(join(repoRoot, rel), 'utf8');
 
 const GENERAL = '.aup/pages/admin/general.aup';
-const POLICY = '.aup/pages/economy/policy.aup';
+// retired by ENG-07 (page removed): .aup/pages/economy/policy.aup was deleted, so
+// the POLICY-based guards below were retired with it (BUG-072's page assertions,
+// BUG-073's legend row). BUG-073's CLI-side assertions (scripts/arcblog-economy.mjs,
+// still present) stay.
 const ECONOMY = 'scripts/arcblog-economy.mjs';
 const LOCALES = ['.aup/locales/en.json', '.aup/locales/zh.json'];
 const VERIFY_QUEUE_DIR = '/instance/app/arcblog/config/role-verify-intents';
@@ -76,22 +79,9 @@ test('no positive "chain verified" claim in the settings page or its locales', (
   assert.match(read(GENERAL), /NOT a chain verification|不是\*\*链上验证/, 'the re-verify honesty note is gone');
 });
 
-test('BUG-072: the policy queue no longer claims to be empty unconditionally', () => {
-  const policy = read(POLICY);
-  assert.ok(!policy.includes('queue-empty'), 'BUG-072: the unconditional empty-state key/element is back');
-  assert.ok(!/Nothing queued yet/.test(policy), 'BUG-072: the unconditional empty-state sentence is back');
-  assert.match(policy, /p :queue-standing-note scale=caption intent=muted/, 'the standing note must stay');
-  const emptyLines = policy
-    .split('\n')
-    .filter((line) => /queue-standing-note/.test(line) && /^\s*p\b/.test(line) && /visible=/.test(line));
-  assert.deepEqual(emptyLines, [], 'BUG-072: the standing note must not grow a fabricated `visible` condition');
-  // the record-shaped second empty claim (policy-empty) is a standing note now too
-  assert.ok(!policy.includes('policy-empty'), 'BUG-072: the second unconditional empty claim is back');
-  for (const rel of LOCALES) {
-    assert.ok(!/"policy\.(queue-empty|policy-empty)"/.test(read(rel)), `${rel}: the retired keys must be pruned`);
-    assert.match(read(rel), /"policy\.policy-standing-note"/, `${rel}: the replacement standing note is missing`);
-  }
-});
+// retired by ENG-07 (page removed): the BUG-072 guard read the deleted
+// economy/policy.aup; its page-level empty-state assertions no longer have a
+// subject. The retired locale keys stay prunable by `arc dsl lint`.
 
 test('BUG-073: the policy worker really writes the `running` claim it advertises', () => {
   const economy = read(ECONOMY);
@@ -103,8 +93,8 @@ test('BUG-073: the policy worker really writes the `running` claim it advertises
   const claimAt = economy.indexOf('next.status = INTENT_STATUS.running;');
   const dataWriteAt = economy.indexOf('writeJson(POLICY_PATH, policy, instance', claimAt);
   assert.ok(claimAt > 0 && dataWriteAt > claimAt, 'the claim must be written before the policy data write');
-  // and the legend must describe a state that now occurs
-  assert.match(read(POLICY), /running = claimed by the worker/, 'the queue legend lost its running row');
+  // retired by ENG-07 (page removed): the legend row lived in the deleted
+  // economy/policy.aup ("running = claimed by the worker" assertion dropped).
 });
 
 test('the re-verify control is a queued intent + worker, never a second buy path', () => {
@@ -117,6 +107,8 @@ test('the re-verify control is a queued intent + worker, never a second buy path
   // L-R26-1/L-R26-2: purchase/staking stay on ?page=factory only
   assert.equal((general.match(/chain-intents/g) || []).length, 0, 'the settings page must not queue chain intents');
   assert.match(general, /href="\/\?page=factory"/, 'the page must link to the Node NFT page');
-  // the pages/addresses surface must not grow: still 21 console pages
-  assert.equal(CONSOLE_SECTIONS.length, 21, 'the console page count moved — REQ-034 must not add a page');
+  // the pages/addresses surface must not grow without a ledger entry: ENG-07
+  // removed 5 console pages (hub + economy orders/policy/access/ledger) and
+  // ENG-10 added registry, so the count is now 17 — same guard, updated constant.
+  assert.equal(CONSOLE_SECTIONS.length, 17, 'the console page count moved — update this constant only with a ledger entry');
 });

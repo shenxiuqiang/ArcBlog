@@ -24,7 +24,7 @@ page diagnostics {
     intents-title { en "Background work (intent queue)" zh "后台任务（意图队列）" }
     intents-status { en "status" zh "状态" }
     faq-title { en "First-line troubleshooting (symptom → check)" zh "常见问题自助定位（症状 → 判据）" }
-    faq { en "A save looked accepted but the record is unchanged: the toast is not evidence — read the record back with arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json (arc-contracts §29.4). A write was refused: conditional, not absolute — it depends on the record's origin, the write mode and the daemon process (§29.2); probe before deleting, because delete + recreate loses createdAt. A record disappeared from a filtered list: filter / serverFilters push a query to the index and an edit leaves its index entry stale (§15) — re-check through arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json. ?page=<id> silently lands on the public home: that id is not a registered page — the authoritative page set is the sidebar model, guarded in the fast tier (npm test). A read is denied for a signed-in session: the record's directory prefix decides (blocklet.yaml replicated.readRole / minRole, §13); there is no third role to grant. Storage keeps growing: audit read-only first, then rebuild one folder's ledger (both commands above); dev-instance test residue is swept by arcblog-clean.mjs, dry-run by default. A publish never reached the public site: record a self-check (command above) and read the space-layout / resources rows; Hub state is refreshed on ?page=hub." zh "保存看似成功但记录没变：toast 不是证据——回读记录：arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs 路径>\"}' --json（arc-contracts §29.4）。写入被拒：条件性而非绝对——与记录来源、写入模式和当时的 daemon 进程相关（§29.2）；先探针再动手，删除重建会丢掉 createdAt。记录在筛选列表里消失：filter / serverFilters 会下推为服务端索引查询，而编辑记录会留下陈旧索引（§15）——改用目录列表复核：arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<目录>\"}' --json。?page=<id> 静默回落公开首页：该 id 不是已注册页面——权威页面集合就是侧栏模型，由快层（npm test）守卫。已登录会话读取被拒：取决于记录所在目录前缀（blocklet.yaml 的 replicated.readRole / minRole，§13），没有第三档角色可授。存储持续膨胀：先只读审计，再重建某个目录的账本（两条命令见上）；开发实例的测试残留由 arcblog-clean.mjs 清理（默认 dry-run）。发布没有到达公开站点：记录一次自检（命令见上）并查看 space-layout / resources 两行；Hub 状态到 ?page=hub 刷新。" }
+    faq { en "A save looked accepted but the record is unchanged: the toast is not evidence — read the record back with arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs path>\"}' --json (arc-contracts §29.4). A write was refused: conditional, not absolute — it depends on the record's origin, the write mode and the daemon process (§29.2); probe before deleting, because delete + recreate loses createdAt. A record disappeared from a filtered list: filter / serverFilters push a query to the index and an edit leaves its index entry stale (§15) — re-check through arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<dir>\"}' --json. ?page=<id> silently lands on the public home: that id is not a registered page — the authoritative page set is the sidebar model, guarded in the fast tier (npm test). A read is denied for a signed-in session: the record's directory prefix decides (blocklet.yaml replicated.readRole / minRole, §13); there is no third role to grant. Storage keeps growing: audit read-only first, then rebuild one folder's ledger (both commands above); dev-instance test residue is swept by arcblog-clean.mjs, dry-run by default. A publish never reached the public site: record a self-check (command above) and read the space-layout / resources rows; Node registry state lives on ?page=registry." zh "保存看似成功但记录没变：toast 不是证据——回读记录：arc afs exec /blocklets/arcblog/.actions/read --args '{\"path\":\"<afs 路径>\"}' --json（arc-contracts §29.4）。写入被拒：条件性而非绝对——与记录来源、写入模式和当时的 daemon 进程相关（§29.2）；先探针再动手，删除重建会丢掉 createdAt。记录在筛选列表里消失：filter / serverFilters 会下推为服务端索引查询，而编辑记录会留下陈旧索引（§15）——改用目录列表复核：arc afs exec /blocklets/arcblog/.actions/list --args '{\"path\":\"<目录>\"}' --json。?page=<id> 静默回落公开首页：该 id 不是已注册页面——权威页面集合就是侧栏模型，由快层（npm test）守卫。已登录会话读取被拒：取决于记录所在目录前缀（blocklet.yaml 的 replicated.readRole / minRole，§13），没有第三档角色可授。存储持续膨胀：先只读审计，再重建某个目录的账本（两条命令见上）；开发实例的测试残留由 arcblog-clean.mjs 清理（默认 dry-run）。发布没有到达公开站点：记录一次自检（命令见上）并查看 space-layout / resources 两行；节点注册表状态见 ?page=registry。" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
     view style={gap: "0"} {
@@ -84,7 +84,11 @@ page diagnostics {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -93,27 +97,6 @@ page diagnostics {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

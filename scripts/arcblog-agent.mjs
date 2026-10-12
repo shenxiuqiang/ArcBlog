@@ -125,15 +125,6 @@ const READ_RUNNERS = {
     if (!record) fail('NOT_FOUND', 'node profile not found');
     return record.value;
   },
-  list_products(opts, instance) {
-    const products = recordsIn(`${INSTANCE_ROOT}/economy/products`, instance);
-    return { count: products.length, products };
-  },
-  get_policy(opts, instance) {
-    const record = readJson(`${INSTANCE_ROOT}/economy/policies/active.json`, instance);
-    if (!record) fail('NOT_FOUND', 'settlement policy not found');
-    return record.value;
-  },
   // Aggregate counts over public surfaces only (spec §60). Economy analytics
   // stay closed: orders name buyers (privacy, spec §62).
   get_analytics(opts, instance) {
@@ -179,20 +170,6 @@ const WRITE_RUNNERS = {
     runCli(
       'arcblog-lifecycle.mjs',
       ['publish', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), '--body', optString(opts.body), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
-      instance,
-    ),
-  'economy-product-add': (opts, instance) =>
-    runCli(
-      'arcblog-economy.mjs',
-      [
-        'product', 'add',
-        '--id', required(opts, 'id'),
-        '--creator-did', required(opts, 'creator-did'),
-        '--price-amount', required(opts, 'price-amount'),
-        ...(opts['price-asset'] ? ['--price-asset', optString(opts['price-asset'])] : []),
-        ...(opts['content-id'] ? ['--content-id', optString(opts['content-id'])] : []),
-        '--update',
-      ],
       instance,
     ),
 };
@@ -343,7 +320,7 @@ Usage:
   node scripts/arcblog-agent.mjs check         # enforce the agent policy
   node scripts/arcblog-agent.mjs tools [--tool <name>]
   node scripts/arcblog-agent.mjs run --tool <name> [--slug <s>] [--query <q>] [--category <c>]
-                                       [--agent <did>] [--title <t>] [--body <markdown>] [--id <id>] [...]
+                                       [--agent <did>] [--title <t>] [--body <markdown>]
   node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write[,agent.publish] [--ttl <minutes>]
   node scripts/arcblog-agent.mjs revoke --agent <did>
   node scripts/arcblog-agent.mjs grants

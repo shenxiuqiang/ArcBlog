@@ -95,7 +95,7 @@ page general {
     roles-k-hub-reason { en "hub.reason (verbatim)" zh "Hub 角色·扣留原因（逐字）" }
     roles-k-hub-consistency { en "hub config ↔ projection" zh "Hub 配置 ↔ 公开投影" }
     roles-reason-note { en "How to read these rows: the label is this console's own field name and the value is the role engine's own text, rendered verbatim. Why verbatim: a `$t()` key must be a compile-time constant (arc-contracts §28.8) and `visible` only supports synchronous `$session.*` expressions (arc-contracts §28.1), so this console has no mechanism to switch a value's wording from a record value — the engine vocabulary is therefore glossed here: `granted` = the capability is granted; `withheld` = it is withheld (fail closed); `yes` / `no` = the boolean the engine derived; `(none)` = nothing is withheld (not a missing value). A granted role has nothing withheld — for `basic` the `reason` explains why the capability is implicit, not why it is withheld; a withheld capability carries its cause in the same row." zh "如何读这些行：标签是本控制台自己的字段名，取值是角色引擎自己的原文。为何逐字：`$t()` 的 key 必须是编译期常量（arc-contracts §28.8），`visible` 只支持同步的 `$session.*` 表达式（arc-contracts §28.1），因此本控制台没有「按运行期取值切换文案」的机制——引擎词表在此对照：`granted` = 能力已授予；`withheld` = 能力被扣留（fail closed）；`yes` / `no` = 引擎派生的布尔取值；`(none)` = 无 withheld（不是取值缺失）。能力已授予的角色没有被扣留的东西——`basic` 那行的 `reason` 说明的是「为什么它是隐式授予」，不是「为什么被扣留」；能力被扣留的角色在同一行给出扣留原因。" }
-    title { en "General" zh "通用" }
+    title { en "Settings" zh "设置" }
   }
   view gap=lg style={height: "100vh", overflow: visible} {
     view style={gap: "0"} {
@@ -155,7 +155,11 @@ page general {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-hub)" -> page hub style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          action "$t(wrapper.nav-registry)" -> page registry style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
+          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
+            p " "
+          }
+          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -164,27 +168,6 @@ page general {
             p " "
           }
           action "$t(wrapper.nav-agents)" -> page agents style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          p "$t(wrapper.nav-group-economy)" intent=muted scale=caption style={padding: "10px 20px 4px", background: "var(--color-bg)", flexShrink: 0}
-          action "$t(wrapper.nav-orders)" -> page orders style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-policy)" -> page policy style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-access)" -> page access style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-ledger)" -> page ledger style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
