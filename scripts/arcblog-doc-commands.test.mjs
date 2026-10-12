@@ -111,3 +111,47 @@ test('every CLI script is documented (or exempt with a reason)', () => {
   const stale = Object.keys(CLI_EXEMPTIONS).filter((f) => !scripts.includes(f));
   assert.deepEqual(stale, [], `exempted CLIs that no longer exist: ${stale.join(', ')}`);
 });
+
+/**
+ * Same reverse direction, one level up: the package scripts are the operator's other
+ * entry point. `verify:artifacts` (the dist secret gate that runs inside the deploy
+ * pipeline) and `test:unit` (the legacy alias of `test`) were named nowhere, while
+ * every other script was. Exemptions are documented; anything new fails until it is
+ * either documented or exempted with a reason.
+ */
+const NPM_EXEMPTIONS = {
+  'scrub:dist-secrets': 'internal half of `npm run build` (documented as that build step)',
+  'test:file': 'documented as the `npm run test:file -- <path>` pattern, which the literal check cannot match',
+};
+
+test('every package.json script is documented (or exempt with a reason)', () => {
+  const pkg = JSON.parse(readFileSync(join(REPO, 'package.json'), 'utf8'));
+  const docsText = DOCS.filter((d) => existsSync(join(REPO, d)))
+    .map((d) => readFileSync(join(REPO, d), 'utf8'))
+    .join('\n');
+  const names = Object.keys(pkg.scripts);
+  const undocumented = names.filter((n) => !docsText.includes(n) && !(n in NPM_EXEMPTIONS));
+  assert.deepEqual(undocumented, [], `package scripts nobody documents: ${undocumented.join(', ')}`);
+
+  const stale = Object.keys(NPM_EXEMPTIONS).filter((n) => !names.includes(n));
+  assert.deepEqual(stale, [], `exempted scripts that no longer exist: ${stale.join(', ')}`);
+
+  // the schema table is the other half of this contract: world/ files and §2 rows must agree
+  const schemas = readdirSync(join(REPO, 'world')).filter((f) => f.endsWith('.yaml')).map((f) => f.replace(/\.yaml$/, ''));
+  const doc = readFileSync(join(REPO, 'docs', '05-开发文档', '01-数据模型与存储.md'), 'utf8');
+  const section = doc.split('## 2. `world/*.yaml` schema 总表')[1]?.split('\n---')[0] ?? '';
+  // Read the schema COLUMN of the table rows only. Extracting every backticked token in the
+  // section also picks up prose spans (a commit hash, `reason`/`cited`/`total` inside a cell),
+  // which the first version reported as schemas that do not exist.
+  const listed = [];
+  for (const row of section.split('\n')) {
+    if (!row.startsWith('|')) continue;
+    const cells = row.split('|').map((c) => c.trim());
+    if (cells.length < 4 || cells[1].startsWith('---') || cells[1].includes('分组')) continue;
+    listed.push(...[...cells[2].matchAll(/`([a-z][a-z0-9-]*)`/g)].map((m) => m[1]));
+  }
+  const missing = schemas.filter((x) => !listed.includes(x));
+  const extra = [...new Set(listed)].filter((x) => !schemas.includes(x) && x !== 'world' && x !== 'yaml');
+  assert.deepEqual(missing, [], `world schemas missing from docs/05/01 §2: ${missing.join(', ')}`);
+  assert.deepEqual(extra, [], `docs/05/01 §2 lists schemas that do not exist: ${extra.join(', ')}`);
+});

@@ -33,6 +33,7 @@ npm test                  # THE gate (~1s): the fast suites that never write to 
                           # and `arc dsl generate --check` is NOT wired into any test today (a `--check`
                           # drift gate is still an open item: see docs/06-功能开发列表/02 ENG-07)
                           # (artifact-drift claim removed 2026-09-30: grep "'generate'" scripts/*.test.mjs = 0)
+npm run test:unit             # legacy alias of `npm test` (identical command); kept for older tooling
 npm run test:live         # the live suites (serial, ~21 min measured in Round 7 2026-09-27): they
                           # mutate the dev instance and are cleaned up after a passing run
                           # (ARCBLOG_NO_CLEAN=1 keeps the residue; npm run test:clean sweeps
