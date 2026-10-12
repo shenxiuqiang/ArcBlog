@@ -16,7 +16,7 @@
 
 ## 0. 发现机制：链上注册表
 
-**所有节点把 studio NFT 质押到同一个 factory 地址**，因此"有哪些节点在运行"= **查该地址的质押列表**（`listStakes({addressFilter:{receiver:factory}})`）——**质押即注册**，不需要任何中心登记动作。节点的可达信息写在 **NFT 的 `data.value`**（`endpoint`/`region`/`appName`）。
+**所有节点把 studio NFT 质押到同一个 factory 地址**，因此"有哪些节点在运行"= **查该地址的质押列表**（`listStakes({addressFilter:{receiver:factory}})`）——**质押即注册**，不需要任何中心登记动作。节点的可达信息写在 **NFT 的 `data.value`**（`endpoint`/`region`/`name`——**2026-10-12 受控修订**：原文写 `appName`，但工厂模板实际 mint 的键是 `name`（键集 = `name/description/endpoint/region/stake/pk/owner/roles/capabilities/protocolVersion/nodeVersion`，实测）⇒ 以 `name` 作为「应用名」槽位，**不新增冗余键**）。
 
 | 面 | 内容 | 归属 |
 | --- | --- | --- |
@@ -32,7 +32,7 @@
 | # | 能力组 | 一句话 |
 | :-: | --- | --- |
 | N1 | **链上注册表** | 质押即目录：一个地址 ⇒ 全部节点 |
-| N2 | **节点自描述** | 可达信息（`endpoint`/`region`/`appName`）写在 NFT `data.value` |
+| N2 | **节点自描述** | 可达信息（`endpoint`/`region`/`name`，原写 `appName`，2026-10-12 受控修订）写在 NFT `data.value` |
 | N3 | **可达性与时效** | 节点可达性如何表达（含未知/离线） |
 | N4 | **被 agent 发现的数据面** | 节点对外可读面（供 `05-AGT` 消费，**不重复定义读取逻辑**） |
 | N5 | **跨节点分发前置** | 订阅式同步的通道与其**前置探针**（`U10`） |
@@ -45,7 +45,7 @@
 | PRD-ID | 一句话需求 | 概念条款 | 旅程/落点 | 现状标签 | 阻塞 | 优先级 | 验收 | 证据 | 验证者 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PRD-NET-01` | **能枚举全部在运行节点**：按 factory 地址查质押列表 | `01 §0④`、`01 §6`、`04 §1` 链上注册表 | `03 §J3` 步 5、`03 §J4` 步 2 | 机制【已实现】；**本项目【规划中】** | 无 | P0 | **前置探针 P-1（mock）**：两个"节点"各质押一个资产 → `listStakes({addressFilter:{receiver:factory}})`；**判定式**：返回条数 = 质押数，未质押者不出现 | 生产代码有按 receiver 索引的质押查询（SDK：`node_modules/@ocap/client/lib/node.d.ts`）；本项目 `scripts/lib/chain.mjs:778-786`（`:785` 为 `const to = factory.address`，已按此质押）——**但适配器无 `listStakes`**（`grep` = 0） | 待定（独立方） |
-| `PRD-NET-02` | **节点自描述**：可达信息写入 NFT `data.value`（`endpoint`/`region`/`appName`） | `04 §1` 节点 data | `03 §J3` 步 4 | 【已实现】 | 无 | P0 | `node scripts/arcblog-node-nft.mjs status --role studio` 显示 `assetId`/`stakeAddress`/`owner`/`endpoint`/`region`；链侧接口 = `updateAsset` | `scripts/arcblog-node-nft.mjs:82-86`（`endpoint`/`region` 记录） | 独立方（Stage 6 指派） |
+| `PRD-NET-02` | **节点自描述**：可达信息写入 NFT `data.value`（`endpoint`/`region`/`name`——原写 `appName`，2026-10-12 受控修订为模板实有的 `name`） | `04 §1` 节点 data | `03 §J3` 步 4 | 【已实现】 | 无 | P0 | `node scripts/arcblog-node-nft.mjs status --role studio` 显示 `assetId`/`stakeAddress`/`owner`/`endpoint`/`region`；链侧接口 = `updateAsset` | `scripts/arcblog-node-nft.mjs:82-86`（`endpoint`/`region` 记录） | 独立方（Stage 6 指派） |
 | `PRD-NET-03` | **可达性时效**：区分"可达 / 陈旧 / 从未可达 / 离线"并如实展示 | `01 §4.2` 缺陷 3、`04 §1` 公开面 | `03 §J3` 步 6、`03 §J5b` 步 2 | 【规划中】 | 无 | P1 | 由 stake 记录 + 最近一次 `data` 更新时间为输入，输出四态之一；**判定式**：无 stake ⇒ `never`；有 stake 但 `data` 无 `endpoint` ⇒ `stale` | 分页/延迟/上限**未核验**；四态判定式已内联在本行验收列 | 待定（独立方） |
 | `PRD-NET-04` | **被 agent 发现的数据面**：节点公开读取面可由任意 agent 匿名读取 | `04 §1` 公开面、`04 §1` agent 聚合 | `03 §J4` 步 3 | 【已实现】（通道） | 无 | P0 | `curl -s /p/llms.txt` **200**（`text/plain`）；无 Key、无 cookie 可读；跨节点读取不走平台中继 | `/p/llms.txt` 实测 200 的原始输出在册；读取与汇总的**定义归 `05-AGT`** | 独立方（Stage 6 指派） |
 | `PRD-NET-05` | **节点下线的可见性**：撤销后该节点不再出现在注册表消费结果里 | `04 §1` 撤销清空、`03 §J5` | `03 §J5` 步 1–3、`03 §J5b` | 【规划中】 | 无 | P1 | 撤销后重跑枚举：**判定式 = 以 stake 记录为准**（该资产移出 `assets`/进入 `revokedAssets`）；**不靠** "`data` 解析失败" | 撤销判定写法 = 链上 `updateAsset` + stake 记录；生命周期归 [`04-ID`](04-ID-身份与角色.md)（`00 §5 S2-A`） | 待定（独立方） |
