@@ -53,7 +53,7 @@ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/posts
 ```bash
 node scripts/arcblog-recipes.mjs install   # 幂等；check 验证
 ```
-不装 ⇒ `?page=reader` / `?page=page-view` 会渲染**原始 JSON**（DEF-21/B14）；已装的实例无需重复。
+不装 ⇒ **绑定路径页**（`/posts/<slug>`、`/pages/<slug>`、`/preview/<slug>`）会渲染**原始 JSON**（DEF-21/B14）；`?page=reader`/`?page=page-view` 则显示 `⚠ Surface: set src (url)` 告警。已装的实例无需重复。
 
 ## C. 待裁决（不阻塞，已按推荐默认继续）
 

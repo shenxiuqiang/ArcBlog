@@ -2686,7 +2686,7 @@ surface reader-record url=$state.loc editable=false { p :note }
 
 | 页面 | 首访 DOM | 关键节点 | 首访 rpc（与记录有关的部分） |
 | --- | --- | --- | --- |
-| `/posts/hello-arcblog` | **3960** 字符（改前 265） | `h1 = Hello ArcBlog`；最长文本节点 **3557** 字符；无 `"slug":"` JSON 残渣 | `stat` + `read` 记录 + `read posts/.aup/item.json` |
+| `/posts/hello-arcblog` | **3960** 字符（改前 265） | `h1 = Hello ArcBlog`；**最长可见文本节点 204**、正文整体 3557 字符（早前表里把"正文长度"写成"最长文本节点"——2026-10-12 QA R9–R10 更正）；无 `"slug":"` JSON 残渣 | `stat` + `read` 记录 + `read posts/.aup/item.json` |
 | `/pages/<slug>`（探针记录 `probe-coldtest`，测后删除） | **439** 字符 | `h1 = Probe cold test`，正文在 | `stat` + `read` 记录 + `read pages/.aup/item.json` |
 | `/preview/<draft>`（guest） | **504** 字符 | surface 内为平台真话 `Sign in to view this content.`（不是假 not-found） | `stat`（guest 无 `read`） |
 | `/pages/does-not-exist` | 444 字符 | 常驻说明 + 平台真话 `Failed to resolve: … Path not found` | `stat` 失败 |

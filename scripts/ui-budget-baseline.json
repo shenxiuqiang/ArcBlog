@@ -95,7 +95,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 10,
-    "i18n": 16,
+    "i18n": 10,
     "tech": 2
   },
   "registry": {
@@ -104,7 +104,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 12,
-    "i18n": 39,
+    "i18n": 27,
     "tech": 2
   },
   "factory": {
@@ -172,8 +172,8 @@
     "seo": "9ca4d0e4576db911",
     "feeds": "a840c3cd38e7869e",
     "appearance": "93b80c1873251269",
-    "operations": "6a8c1b00d12dc972",
-    "registry": "ca539e48c8faf4fe",
+    "operations": "4abd7287a5f36064",
+    "registry": "0d4b406d6640cde0",
     "factory": "7c0f0ffa50cf1d11",
     "media": "22bf414d4dc13b8b",
     "agents": "6ca5988f016b8c94",

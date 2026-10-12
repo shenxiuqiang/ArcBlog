@@ -8,7 +8,7 @@ description: "当人类说「重新部署」「部署 ArcBlog」「redeploy」�
 第一方项目技能（不是从 `ArcBlock/agent-skills` 装的），与本仓库的实现事实同步维护。
 **引擎**：[`scripts/arcblog-deploy.mjs`](../../../scripts/arcblog-deploy.mjs) —— 技能只负责“什么时候跑、跑完怎么判”。
 
-> ⚠️ **配方步骤（2b）已内置**：脚本在密钥门之后自动跑 `arcblog-recipes.mjs install`（幂等）。若手工部署（不经过脚本），**必须**自己补这一步，否则 `?page=reader` / `?page=page-view` 会渲染原始 JSON。
+> ⚠️ **配方步骤（2b）已内置**：脚本在密钥门之后自动跑 `arcblog-recipes.mjs install`（幂等）。若手工部署（不经过脚本），**必须**自己补这一步，否则**绑定路径页**（`/posts/<slug>`、`/pages/<slug>`、`/preview/<slug>`）会渲染原始 JSON（`?page=reader` 类无 `$state.loc` 的页则报 `Surface: set src (url)`）。
 
 ## 触发
 
