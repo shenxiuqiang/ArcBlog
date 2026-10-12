@@ -23,7 +23,7 @@
 //      channel — or reintroduces a bare `propBind` body — fails here).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -275,4 +275,39 @@ test('install overwrites a recipe that drifted from the seed (no silent stalenes
     'install must not keep a drifted recipe unless --keep-local was asked for',
   );
   assert.match(cli, /args\.keepLocal === true/);
+});
+
+/**
+ * The FRESH-INSTALL path (2026-10-12): `seed/settings/arcblog/*.json` seeds the platform settings
+ * mount that ?page=appearance edits (auto-surface from /instance/settings/arcblog) and the theme
+ * bridge reads, and `seed/recipes/<source>/item.json` is what `arcblog-recipes.mjs install` copies
+ * into each bound record directory. Nothing tested either, and a seed whose default is outside its
+ * own `options` is the quiet failure mode: the readers coerce out-of-options values back to the
+ * documented default, so a fresh instance would come up with a different appearance than the seed
+ * says, with no error anywhere.
+ */
+test('the settings seeds are well formed and their defaults are inside their own options', () => {
+  const dir = join(repoRoot, 'seed', 'settings', 'arcblog');
+  const files = readdirSync(dir).filter((f) => f.endsWith('.json'));
+  assert.ok(files.length >= 4, `settings seeds: ${files.length}`);
+  const problems = [];
+  for (const f of files) {
+    const d = JSON.parse(readFileSync(join(dir, f), 'utf8'));
+    for (const k of ['label', 'description', 'value', 'scope', 'type']) {
+      if (typeof d[k] !== 'string' || !d[k]) problems.push(`${f}: missing/blank ${k}`);
+    }
+    if (d.type === 'select') {
+      if (!Array.isArray(d.options) || d.options.length === 0) problems.push(`${f}: select without options`);
+      else if (!d.options.includes(d.value)) problems.push(`${f}: default '${d.value}' is not one of ${JSON.stringify(d.options)}`);
+    }
+  }
+  assert.deepEqual(problems, [], `settings seeds that would misconfigure a fresh instance:\n  ${problems.join('\n  ')}`);
+});
+
+test('every RECIPES source has a seed recipe, and no seed recipe is orphaned', () => {
+  const seeds = readdirSync(join(repoRoot, 'seed', 'recipes'));
+  const missing = RECIPES.filter((r) => !seeds.includes(r.source)).map((r) => r.source);
+  assert.deepEqual(missing, [], `RECIPES entries with no seed/recipes/<source>/item.json: ${missing.join(', ')}`);
+  const orphan = seeds.filter((s) => !RECIPES.some((r) => r.source === s));
+  assert.deepEqual(orphan, [], `seed/recipes dirs that no RECIPES entry installs: ${orphan.join(', ')}`);
 });
