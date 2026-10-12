@@ -143,3 +143,21 @@ test('every relative link in the human checklist resolves', () => {
   const broken = links.filter((l) => !existsSync(join(repoRoot, 'docs', 'team', l)));
   assert.deepEqual(broken, [], `dead links in the human checklist: ${broken.join(', ')}`);
 });
+
+/**
+ * A fast suite must be IN GIT (2026-10-12). `arcblog-retired-surfaces.test.mjs` was created and
+ * registered in FAST_TESTS but never committed: the gate ran it for fifteen rounds from a working-tree
+ * file that no other checkout would have. A gate whose membership is not versioned cannot be
+ * reproduced, and the failure is invisible precisely because the file exists locally.
+ */
+test('every FAST_TESTS entry is a file tracked by git', () => {
+  const runner = readFileSync(join(repoRoot, 'scripts', 'run-tests.mjs'), 'utf8');
+  const names = [...runner.match(/const FAST_TESTS = new Set\(\[([\s\S]*?)\]\);/)[1].matchAll(/'(\w[\w-]*)'/g)].map((m) => m[1]);
+  assert.ok(names.length >= 25, `FAST_TESTS entries parsed: ${names.length}`);
+
+  const untracked = names.filter((n) => {
+    const res = spawnSync('git', ['ls-files', '--error-unmatch', `scripts/${n}.test.mjs`], { cwd: repoRoot, encoding: 'utf8' });
+    return res.status !== 0;
+  });
+  assert.deepEqual(untracked, [], `fast suites that are NOT tracked by git: ${untracked.join(', ')}`);
+});
