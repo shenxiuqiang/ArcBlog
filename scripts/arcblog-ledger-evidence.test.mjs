@@ -13,6 +13,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
@@ -107,4 +108,38 @@ test('every evidence command names a path that exists, and no grep relies on a b
 
   assert.ok(commands >= 35, `evidence commands parsed: ${commands}`);
   assert.deepEqual(problems, [], `unreproducible evidence commands:\n  ${problems.join('\n  ')}`);
+});
+
+/**
+ * The last link: the number a row RECORDS must be the number its command prints (ENG-35 continued).
+ * Only commands on a read-only allowlist are executed — plain `grep` and a `grep … | sort -u | wc -l`
+ * pipeline — so the fast tier still never writes to the instance. Every other evidence command is
+ * covered by the two cheaper assertions above (path exists, no BRE-pipe trap) or is a live suite /
+ * chain write that a documentation round must not run.
+ */
+test('the recorded output of a count-style command is what the command prints', () => {
+  const text = readFileSync(LEDGER, 'utf8');
+  const SAFE = /^grep\s/;
+  const checked = [];
+  const mismatches = [];
+
+  for (const line of text.split('\n')) {
+    if (!/^\| `PRD-[A-Z]+-\d{2}` \|/.test(line)) continue;
+    const id = /^\| `(PRD-[A-Z]+-\d{2})` \|/.exec(line)[1];
+    const cells = line.replace(/\\\|/g, '\u0000').split('|').map((c) => c.replace(/\u0000/g, '|').trim());
+    if (cells.length < 7) continue;
+    const evidence = cells[5];
+    const cmd = /命令:\s*`([^`]+)`/.exec(evidence)?.[1]?.trim();
+    if (!cmd || !SAFE.test(cmd)) continue;
+    const recorded = /输出:\s*\*\*([0-9]+)\*\*/.exec(evidence)?.[1] ?? /输出:\s*([0-9]+)\b/.exec(evidence)?.[1];
+    if (recorded === undefined) continue;
+
+    const res = spawnSync('bash', ['-c', cmd], { cwd: REPO, encoding: 'utf8' });
+    const printed = String(res.stdout ?? '').trim().split('\n').pop().trim();
+    checked.push(id);
+    if (printed !== recorded) mismatches.push(`${id}: recorded ${recorded}, command printed ${printed} (${cmd.slice(0, 60)})`);
+  }
+
+  assert.ok(checked.length >= 3, `count-style commands executed: ${checked.length} (${checked.join(', ')})`);
+  assert.deepEqual(mismatches, [], `recorded outputs that no longer match:\n  ${mismatches.join('\n  ')}`);
 });
