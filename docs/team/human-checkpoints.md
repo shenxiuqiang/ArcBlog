@@ -31,6 +31,8 @@ node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 ## B. 需要**人在浏览器里做一次**（本机无钱包连接能力，自动化不了）
 
 > 一次登录可解锁 **4 项**验证（B1 的四步做完即可同时收口 U6 / DEF-20 / OPS-07 渲染面 / DEF-22 剩余两页）。
+>
+> **验证前请确认部署版本**：2026-10-12 已重新部署到 `deploy-1791815657251-nlaud3`（`npm run build` → 部署 → 重启，含 DEF-13/17/19/21/22 全部修复；`.aup/pages/ops/factory.aup`、`agents.aup`、`scripts/lib/chain.mjs` 与 `dist/` **逐字节一致**；公开页冷启动复测 `/posts/hello-arcblog` 3960 字符、`/?page=author` 479 字符）。若你看到的是旧界面，先问我重新部署。
 
 **B1 · 一次登录 + 四步验证**
 1. 浏览器打开 `http://arcblog.localhost:4939/.well-known/service/login` 完成登录（DID Wallet 扫码 / DID Connect）；
