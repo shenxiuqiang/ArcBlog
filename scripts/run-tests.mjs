@@ -68,6 +68,7 @@ const FAST_TESTS = new Set([
   // instance writes, no chain, no network.
   'arcblog-anomalies',
   'arcblog-console-nav',
+  'arcblog-deps',
   'arcblog-dist-secrets',
   'arcblog-doc-commands',
   'arcblog-error-codes',
@@ -114,6 +115,8 @@ const GUARDS = {
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   // ENG-24: a 平台边界 row cites a B*/probe/contract section that must actually resolve.
   // ENG-25: the goal's criterion ② — every probe has an explicit verdict, tally pinned.
+  // ENG-26: the lazily loaded chain packages must be declared (clean-install break) and vice versa.
+  'arcblog-deps': [/^package\.json$/, /^scripts\/lib\/chain\.mjs$/, /^scripts\/arcblog-deps/],
   'arcblog-probe-verdicts': [/^docs\/05-开发文档\/07-/, /^docs\/team\/human-checkpoints\.md$/, /^scripts\/arcblog-probe-verdicts/],
   'arcblog-ledger-boundaries': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^docs\/05-开发文档\/02-平台能力与边界\.md$/, /^docs\/05-开发文档\/07-/, /^scripts\/arcblog-ledger-boundaries/],
   // ENG-23: the ledger is the status authority; its evidence cells must not be tautologies
