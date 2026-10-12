@@ -83,7 +83,12 @@ export const THRESHOLDS = {
 const EXEMPTIONS = {
   compose: { ctrl: 16, styles: 12 },
   'compose-edit': { ctrl: 16, styles: 12 },
-  dashboard: { cards: 3 },
+  // dashboard is the P2 exception page. cards 3 = three summary cards; styles 9 was granted
+  // 2026-10-12 when PRD-OPS-01's anomaly zone landed as its own card (the PRD asks for an
+  // anomaly ZONE, not two bare lists, so folding it into an existing card was rejected). The
+  // grant is deliberate and disclosed in docs/04's N8 row + the commit that recorded it —
+  // never let a threshold rise silently through --write-baseline.
+  dashboard: { cards: 3, styles: 9 },
 };
 
 const NODE_START = /^\s*(view|row|grid|stack|h1|h2|h3|p|text|action|input|afs-list|afs-dropzone|key-value-list|chip|breadcrumb|frame|time|tooltip|entity-overview|table|pagination|searchable-dropdown|image|hero-widget)\b/;

@@ -52,9 +52,9 @@
 | 关联 | 未验证什么 | 验证步骤 | 判定式 | 阻塞 |
 | :-: | --- | --- | --- | --- |
 | `PRD-OPS-07` | ~~链上枚举在本项目可用（mock 与真链）~~ **已跑（2026-10-12）** | ① mock 侧"按 receiver 索引的 stake 注册表" ② 本节点质押 ③ 查询并比对 | 本节点 stake 的"在位/不在位"与链上一致（本轮 `ownState: "not-in-registry"`，与该 stake 已被撤销一致）；未质押节点不出现 | **无**（`P-1`/`P-2` 已过） |
-| `PRD-OPS-01` | 四类异常的**检测信号**是否都能在应用内取到（不依赖链上浏览器） | 逐类构造异常并记录页面能否判定 | "注册表在位"一类**已可取到**（`registry show` 的 `ownState`/`ownNote`）；但**四类异常的落点页（异常区）判据未达** ⇒ 台账 `PRD-OPS-01` = `开发中`，缺口 = `DEF-36` | `PRD-OPS-07` 已解锁 |
+| `PRD-OPS-01` | 四类异常的**检测信号**是否都能在应用内取到（不依赖链上浏览器） | 逐类构造异常并记录页面能否判定 | **已闭合（2026-10-12）**：四类信号都能在应用内取到 —— 身份（`node/identity.json`）、只读出口（`/p/rss.xml` 或本地产物）、注册表（`registry show` 的 `ownState`/`ownNote`）、残留（`arcblog-clean` 的扫描口径）；**异常区已落地**（`PRD-OPS-01` = `已实现待验`，`DEF-36` 已修，`node scripts/arcblog-anomalies.mjs refresh` + `?page=dashboard`） | `PRD-OPS-07` 已解锁 |
 
-> **状态（2026-10-12 同步）**：上表 `PRD-OPS-07` 的枚举面**已跑过**（`P-1`/`P-2`）；**唯一仍未落的是 `PRD-OPS-01` 的"异常区"本体**（台账 = `开发中`，缺口 = `DEF-36`）——它的检测信号面已解锁，落点页待实现。
+> **状态（2026-10-12 同步）**：上表 `PRD-OPS-07` 的枚举面**已跑过**（`P-1`/`P-2`）；`PRD-OPS-01` 的**异常区本体已落地**（台账 = `已实现待验`，`DEF-36` 已修）——`node scripts/arcblog-anomalies.mjs refresh\|show` + `?page=dashboard` 的常驻状态句与逐类可点击行；**登录态渲染**验收归人类（[human-checkpoints B](../team/human-checkpoints.md)）。
 
 ---
 
