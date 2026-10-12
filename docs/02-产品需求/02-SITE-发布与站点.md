@@ -6,7 +6,7 @@
 | 版本 | v1.0 ｜ 2026-10-01 ｜ 主笔 `doc-owner` |
 | 上游 | [`00`](00-需求地图与规范.md)、[`00a`](00a-需求模板与验收规范.md)；**已冻结** [`docs/01-产品概念/`](../01-产品概念/00-导读.md)（`/p/` 通道口径） |
 | 下游 | Stage 3 页面设计（公开面 7 页）；Stage 6 台账（`FP-SITE-*`） |
-| 证据基线 | `/p/llms.txt` 实测 **200**；`/p/rss.xml` 需生成（`arcblog-rss.mjs`）；根级 HTTP 端点被应用壳吞掉（平台事实） |
+| 证据基线 | `/p/llms.txt` 实测 **200**；`/p/rss.xml`【已实现】——由**部署管线步骤 3b** 生成（顺序 `build → deploy → rss → verify`），部署后存活校验含它（2026-10-12 同步，依据 `DEF-28`）；站点级 meta **只在 SSR `pages/` 面注入**（AUP 面不注入 ⇒ `B19`）；根级 HTTP 端点被应用壳吞掉（平台事实） |
 | 事实标签 | 五类（门槛 = 总纲 §3.1）；**本目录不写六态** |
 
 > **领域范围**：公开页与稳定 URL、首页推荐位、站点级分发元数据、**只读出口作为被 agent 读取的契约**、主题面与站内导航、公开面匿名只读。
@@ -33,9 +33,9 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PRD-SITE-01` | 每篇已发布内容在稳定 URL 可匿名读取 | `01 §2 P1`、`04 §1` 公开面 | `03 §J2` 步 1–2；`/posts`、`/posts/{slug}`、`/pages/{slug}` | 【已实现】 | 无 | P0 | `npm test` 的 guest 权限矩阵通过；无 cookie 请求公开 URL 返回正文（非登录门） | `scripts/arcblog-permissions.test.mjs` | 独立方（Stage 6 指派） |
 | `PRD-SITE-02` | 首页落地页给出 Hero 与最新内容入口 | `01 §4.1` | `03 §J2` 步 1；`/posts`、`?page=heroes` | 【已实现】 | 无 | P1 | 落地页渲染 Hero 与列表；Hero 无数据时**给默认卡**（不空白） | `.web/components/hero-carousel/`；`scripts/arcblog-hero-carousel.mjs` | 独立方（Stage 6 指派） |
-| `PRD-SITE-03` | 站点级分发元数据一次配置、全站继承 | `01 §2 P3` | `03 §J2`；`?page=seo` | 【已实现】 | 无 | P2 | 配置后抓取任一公开页源码，含站点级 meta 值 | `?page=seo` 页；`scripts/arcblog-node.mjs`（身份字段） | 独立方（Stage 6 指派） |
-| `PRD-SITE-04` | **文章级分享卡（OG）可被爬虫/分享器读到** | `01 §4.2` 缺陷 2 | `03 §J1` 卡点 2 | 【未验证】 | **无**（只读 HTTP 探针即可；**探针失败再改判**） | P2 | **探针**：① 抓阅读页源串 ② 分享器预览（或等价 UA）；**判定式**：响应体含 `og:title`/`og:image` 且值来自记录字段；**失败降级** = 只输出站点级 meta + 页面给"分享卡指引" | `docs/05-开发文档/附件/arc-contracts.md` §7（**原始证据**：根级端点被吞）；探针归 Stage 5 [`07`](../05-开发文档/07-未决技术问题与探针计划.md) `U20` | 待定（独立方） |
-| `PRD-SITE-05` | **只读出口作为 agent 读取契约**：`/p/llms.txt` 可用；`/p/rss.xml` 可生成 | `01 §1`（为什么现在②）、`04 §1` 公开面 | `03 §J2` 步 3、`03 §J4` 步 3 | `/p/llms.txt`：【已实现】；`/p/rss.xml`：【规划中】（待生成） | 无 | P0 | `curl -s -o /dev/null -w '%{http_code}' "$BASE/p/llms.txt"` → **200**；RSS：`node scripts/arcblog-rss.mjs --feed-link "$BASE" > .web-cache/rss.xml` 后 `test -f .web-cache/rss.xml` 且 XML 合法、条目数 = 已发布篇数。**`$BASE` 取值来源 = 节点公开基址**（`?page=general` 的站点地址；`--feed-link` 即传它） | `scripts/arcblog-rss.mjs`；`/p/llms.txt` 实测 **200**（`text/plain`） | 独立方（Stage 6 指派） |
+| `PRD-SITE-03` | 站点级分发元数据一次配置、全站继承 | `01 §2 P3` | `03 §J2`；`?page=seo` | **【平台边界】**（2026-10-12 同步：**存储**已实现；**"继承进页面源码"不可能**） | 待平台能力 | P2 | **实测**：`curl /posts/hello-arcblog` 的 `<head>` 3613 B，meta **只有** charset+viewport、`<title>` = `AFS`；对照 SSR 页 `/p/en/theme-bridge/` 有 **12** 个 meta（含 `og:title`）⇒ 平台**只在 SSR `pages/` 面**注入 meta，AUP 面不注入（AUP 原语清单**无 meta 原语**、`app.aup` 无 meta 块）。**降级（已实现）** = 记录编辑器（存起来）+ 分享卡指引 + `/p/` 面可用；**不得**宣称"全站继承" | 结论层 = [`05/02 B19`](../05-开发文档/02-平台能力与边界.md)（与 `U20` 同根因）；原始证据 = [`05/07 U20`](../05-开发文档/07-未决技术问题与探针计划.md)；台账 [`06/01` `PRD-SITE-03`](../06-功能开发列表/01-功能台账.md) | 待定（独立方） |
+| `PRD-SITE-04` | **文章级分享卡（OG）可被爬虫/分享器读到** | `01 §4.2` 缺陷 2 | `03 §J1` 卡点 2 | **【平台边界】**（2026-10-12 同步：探针 `U20` = **判定 B**，已结论） | 无 | P2 | **结论**：无 JS 时拿不到文章级 meta（`og:*`/`twitter:card` 全缺，平台无 SSR meta 注入面）⇒ **降级（已实现）** = 站点级 meta + 页面给"分享卡指引"；**不得**宣称可分享 | 结论层 = [`05/02`](../05-开发文档/02-平台能力与边界.md)；原始证据 = [`05/07 U20`](../05-开发文档/07-未决技术问题与探针计划.md)；台账 [`06/01` `PRD-SITE-04`](../06-功能开发列表/01-功能台账.md) | 待定（独立方） |
+| `PRD-SITE-05` | **只读出口作为 agent 读取契约**：`/p/llms.txt` 可用；`/p/rss.xml` 可生成 | `01 §1`（为什么现在②）、`04 §1` 公开面 | `03 §J2` 步 3、`03 §J4` 步 3 | `/p/llms.txt`：【已实现】；`/p/rss.xml`：**【已实现】**（2026-10-12 同步：由**部署管线步骤 3b** 生成） | 无 | P0 | `curl -s -o /dev/null -w '%{http_code}' "$BASE/p/llms.txt"` → **200**；RSS：**由部署管线生成**（`node scripts/arcblog-deploy.mjs` 步骤 3b 落 `.web-cache/rss.xml`，部署后校验含 `/p/rss.xml`）⇒ 生成后 `curl "$BASE/p/rss.xml"` → **200 `application/xml`**；⚠️ **裸 `arc blocklet build` 会重建 `.web-cache/` 把它抹掉** ⇒ 必须走 deploy | `scripts/arcblog-deploy.mjs` 步骤 3b + 部署后校验；`DEF-28`（[`06/03`](../06-功能开发列表/03-缺陷与待修.md)）；`/p/llms.txt` 实测 **200**（正文仅 `(no content yet)`，见 [`05/02 B17 补`](../05-开发文档/02-平台能力与边界.md)） | 独立方（Stage 6 指派） |
 | `PRD-SITE-06` | 主题面与站内导航：分类/标签入口可用，改主题不闪错主题 | `01 §2 P1` | `03 §J2`；`?page=appearance` | 【已实现】 | 无 | P2 | `npm test` 的主题契约通过；切换主题后**导航不闪**（`app.aup` 的 `mode` 与解析后默认外观一致） | `scripts/arcblog-theme.test.mjs` | 独立方（Stage 6 指派） |
 | `PRD-SITE-07` | 公开面**零泄漏**：未发布内容（草稿/归档/软删）任何入口都读不到 | `01 §2 P1`、`02 §2 R` | `03 §J2` | 【已实现】 | 无 | P0 | `npm test` 的 guest 权限矩阵；`drafts/` 前缀无 cookie 请求被拒（403/404） | `scripts/arcblog-permissions.test.mjs` | 独立方（Stage 6 指派） |
 | `PRD-SITE-08` | **根级自定义 HTTP 端点不做**（明确不含 `/.well-known`、`/api/*`、`/rss.xml`、`/sitemap.xml`） | `01 §7` 平台强制层 | `03 §J2` | 【平台边界】 | 待平台能力 | P2 | 复现：`curl /rss.xml` → 返回应用壳（`text/html`）**而非** RSS；**降级** = 一律走 `/p/` 路径 | 通道实测：`/p/llms.txt` 200（`text/plain`）；根级端点被应用壳吞掉；结论层归 [`docs/05-开发文档/02`](../05-开发文档/02-平台能力与边界.md) | 待定（独立方） |
@@ -46,8 +46,8 @@
 
 | 关联 | 未验证什么 | 验证步骤 | 判定式 | 阻塞 |
 | :-: | --- | --- | --- | --- |
-| `PRD-SITE-04` | 文章级 OG 是否可被爬虫读到 | 抓阅读页源串 + 分享器/UA 预览 | 响应体含 `og:*` 且值来自记录字段 | **无**（只读 HTTP 即可；**失败则改为【平台边界】+ 待平台能力**） |
-| `PRD-SITE-05` | RSS 的**真实生成产物**（不是通道） | 跑 `arcblog-rss.mjs` 后 `test -f .web-cache/rss.xml` | 文件存在 + XML 合法 + 条目数 = 已发布篇数 | 无（本机可跑） |
+| `PRD-SITE-04` | ~~文章级 OG 是否可被爬虫读到~~ **已结论（`U20` = 判定 B）** | ~~抓阅读页源串 + 分享器/UA 预览~~（已执行无 JS HTTP 复读） | 无 JS 时 `og:*` 全缺 ⇒ **【平台边界】**；降级 = 站点级 meta + 分享卡指引（已实现） | **无**（只读 HTTP 即可；结论层 = [`05/07 U20`](../05-开发文档/07-未决技术问题与探针计划.md)） |
+| `PRD-SITE-05` | ~~RSS 的**真实生成产物**（不是通道）~~ **已实现（入部署管线）** | `node scripts/arcblog-deploy.mjs`（步骤 3b 生成 + 部署后校验 `/p/rss.xml`） | 部署后 `/p/rss.xml` = **200 `application/xml`**（实测 1362 B / 3 items）；⚠️ 裸 build 会抹掉 ⇒ 用 deploy | 无（本机可跑；依据 `DEF-28`） |
 
 > **⚠️ 区分"通道"与"产物"**：`/p/rss.xml` 的**通道**【已实现】，但**仓库根 `.web-cache/rss.xml` 当前不存在** ⇒ 按 `00 §3.1` 要求 3，本域标【规划中】（待生成：`node scripts/arcblog-rss.mjs --feed-link "<canonical>" > .web-cache/rss.xml`）并给前置命令，**不得**标【已实现】。
 

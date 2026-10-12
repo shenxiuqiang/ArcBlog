@@ -76,6 +76,7 @@ const FAST_TESTS = new Set([
   'arcblog-node-nft-transfer',
   'arcblog-page-grants',
   'arcblog-permissions',
+  'arcblog-prd-ledger',
   'arcblog-recipes',
   'arcblog-roles-settings',
   'arcblog-run-tests',
@@ -98,6 +99,8 @@ const GUARDS = {
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   // ENG-23: the ledger is the status authority; its evidence cells must not be tautologies
+  // ENG-22: docs/06/01 is the authoritative status source; docs/02 re-states every PRD row.
+  'arcblog-prd-ledger': [/^docs\/02-产品需求\//, /^docs\/06-功能开发列表\/01-功能台账\.md$/, /^scripts\/arcblog-prd-ledger/],
   // and its '输出: 待补' debt must not grow (scripts/ledger-evidence-debt.json pins it).
   'arcblog-ledger-evidence': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^scripts\/arcblog-ledger-evidence/, /^scripts\/ledger-evidence-debt\.json$/],
   'arcblog-i18n': [/^\.aup\//, /^scripts\/arcblog-i18n/],
