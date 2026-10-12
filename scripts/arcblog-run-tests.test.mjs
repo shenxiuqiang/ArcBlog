@@ -113,7 +113,10 @@ test('docs that state the FAST_TESTS size state the current one', () => {
   const count = [...block[1].matchAll(/'[\w-]+'/g)].length;
   assert.ok(count >= 20, `parsed FAST_TESTS entries: ${count}`);
 
-  const docs = ['docs/07-团队与开发规范/03-质量门与命令手册.md'];
+  // The human checklist is the interface a person reads before acting, and it stated a stale size
+  // (20 files while the runner had 27) until 2026-10-12: include it, and keep ONE phrasing
+  // (`FAST_TESTS` 项数 = **N**) in every doc so the check has something to match.
+  const docs = ['docs/07-团队与开发规范/03-质量门与命令手册.md', 'docs/team/human-checkpoints.md'];
   const claims = [];
   for (const rel of docs) {
     for (const line of readFileSync(join(repoRoot, rel), 'utf8').split('\n')) {

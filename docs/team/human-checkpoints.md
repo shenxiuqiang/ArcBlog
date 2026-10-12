@@ -4,8 +4,8 @@
 > 用法：**按 A → B → C → D 顺序走一遍即可**；每段末尾写"做完能闭环什么"。E 段是不阻塞的待裁决项，F 段是备查。
 > 口径：`暂停并报人类` 的判定见 [`docs/07-团队与开发规范/04-交接·记录·提交.md` §6](../07-团队与开发规范/04-交接·记录·提交.md)。
 
-**当前部署**：`deploy-1791817465810-nrnbgx`（与工作区逐字节一致）。若你看到旧界面，先让 Lead 重新部署再验证。
-**当前台账**：PRD `已实现待验` **44** ｜ `未开工` **0** ｜ `开发中` **0** ｜ `平台边界` **8**（`CNT-02` 已由 `U6` 离线定案改判）；ENG **20/20 已实现待验**。
+**当前部署**：`deploy-1791824269534-hrggxl`（2026-10-12T16:57Z 实测）。取法 = `arc blocklet instance list` 的 `latest:` —— **每次部署都会变，以命令为准**；若你看到旧界面，先让 Lead 重新部署再验证。
+**当前台账**（唯一出处 = [`docs/06-功能开发列表/01-功能台账.md`](../06-功能开发列表/01-功能台账.md)；下面四个数是**守卫核对过的**，见 `ENG-22`）：`已实现待验` **46** ｜ `未开工` **0** ｜ `开发中` **1**（`PRD-SET-02`，**等 E9 裁决**）｜ `平台边界` **9**；ENG 台账见 [`docs/06-功能开发列表/02`](../06-功能开发列表/02-工程与工具功能点.md)（**不在此处写死条数**——它按轮增长）。
 **探针**：**10 项中 8 项已有结论**（`P-1` `P-2` `P-4` `U18` `U19` ✅ 判定；`U20`/`U6` ❌ 判定 B；`U10` 决策型＝维持只读聚合 ⇒ 7 判定 + 1 决策 = 8），**仅剩 `P-3`+`U8`**（C2 一次链写批准即可收口）。
 
 ---
@@ -29,8 +29,9 @@ node scripts/arcblog-clean.mjs            # 先看清单
 node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 ```
 
-> **现有 29 条**（2026-10-12 实测 `node scripts/arcblog-clean.mjs`）：`config/signing-keys` **3**（合成签名密钥，`BUG-075` 已修 ⇒ 不再新增）· `node` **6**（`reg-repro-*`×3、`reg-dbg*`×2、`factories-dbg*`×1）· `drafts` **20**（**Lead 本轮 live 层定向全审计（27 文件）留下的测试草稿** —— 审计的副作用，已如实登记）。
-> ⚠️ 草稿数会随测试继续增长；`--confirm` 一次清掉全部（不碰 `posts/`）。
+> **数字以命令为准**：`node scripts/arcblog-clean.mjs` 的 `found` 字段（**每次跑 live 套件都会增长**：2026-10-12 实测 **46**，上一版清单写 29，差值全部来自后续的 live 全量复跑）。
+> 构成：`config/signing-keys`（合成签名密钥，`BUG-075` 已修 ⇒ 不再新增）· `node`（`reg-repro-*`/`reg-dbg*`/`factories-dbg*`）· `drafts`（各套件留下的 `*-test-*` 草稿）。
+> ⚠️ `--confirm` 一次清掉全部（**不碰 `posts/`**）；草稿数随测试继续增长属预期，不是缺陷。
 > 另需你决定的两项**不在 cleaner 扫描面**：`drafts/` 的 3 个 `hub-idx-test-*`（pre-Round-2）；`config/nft-factories.json` 里陈旧的 `hub` 工厂记录（投影层已不再输出，见 `DEF-13`）。
 > 闭环：`arcblog-clean` dry-run 归零。
 
@@ -103,7 +104,7 @@ node scripts/arcblog-node-nft.mjs transfer --role studio --adapter ocap \
 **D1 · DID Space 索引过期**（`DEF-30`；`arcblog-doctor` 的 `space-layout` 报 warn）
 
 ```bash
-arc space check            # 只读审计：2/6 空间 drifted（含 /blocklets 条目）
+arc space check            # 只读审计：输出 drifted 空间清单（含 /blocklets 条目；条数每次读它，别引用本文）
 arc space repair --index   # 平台给出的修法（重建索引以匹配磁盘）
 ```
 
@@ -136,6 +137,6 @@ arc space repair --index   # 平台给出的修法（重建索引以匹配磁盘
 
 - **探针 8/10 已有结论**：`P-1` `P-2` `P-4` `U18` `U19` ✅；`U20` ❌ 判定 B（平台无 SSR meta）；`U6` ❌ 判定 B（`$session.*` 只在文本节点解析，离线定案 §62）；`U10` **决策型结论**＝维持只读聚合（E5，机制未验证）
 - **仅剩 `P-3` + `U8`**（同一次链写批准即可一并收口，C2）
-- **ENG 20/20 已实现待验**（含 `ENG-06` 转让接线：mock 端到端已验、真链待 C2）
-- **缺陷台账 32 条 → 25 条已闭**；其余：`DEF-20`（B 段）、`DEF-25`/`DEF-26` 部分 + `DEF-27`（E 段）、`DEF-30`（D 段）、`DEF-32`（A 段）
-- **每轮门全绿**：`arc dsl validate` `issues:[]` + `npm test` 快层（20 文件、~1.0s）+ 六个文档卷门
+- **ENG 台账**：见 [`docs/06-功能开发列表/02`](../06-功能开发列表/02-工程与工具功能点.md)（含 `ENG-06` 转让接线：mock 端到端已验、真链待 C2）——**不在此处写死条数**
+- **缺陷台账**：见 [`docs/06-功能开发列表/03`](../06-功能开发列表/03-缺陷与待修.md)（**不在此处写死条数**）；仍待人处理的：`DEF-20`（B 段）、`DEF-25`/`DEF-26` 部分 + `DEF-27`（E 段）、`DEF-30`（D 段）、`DEF-32`（A 段）
+- **每轮门全绿**：`arc dsl validate` `issues:[]` + `npm test` 快层（`FAST_TESTS` 项数 = **27**、~1.5s）+ 六个文档卷门

@@ -75,3 +75,33 @@ test('every PRD row in docs/02 carries the coarse fact label its ledger status r
   }
   assert.deepEqual(drift, [], `PRD status drift vs docs/06/01 (the authoritative source):\n  ${drift.join('\n  ')}`);
 });
+
+/**
+ * The human checklist restates the ledger's tallies. That is the interface a person acts on, so a
+ * drift there is worse than a drift in a report — and it had drifted (44/0/0/8 while the ledger
+ * held 46/0/1/9, with the single 开发中 row being the very item the checklist asks a human to
+ * decide). The four numbers on that line are now checked against this parse.
+ */
+test('the human checklist states the ledger tallies it claims to state', () => {
+  const checklist = readFileSync(join(REPO, 'docs/team/human-checkpoints.md'), 'utf8');
+  const line = checklist.split('\n').find((l) => l.includes('当前台账'));
+  assert.ok(line, 'the checklist must carry a 当前台账 line');
+
+  // Count the RAW six-state vocabulary (requiredLabel() maps to docs/02's coarse label, which is a
+  // different vocabulary — using it here reported every class as 0).
+  const counts = new Map();
+  for (const [, status] of ledgerStatuses()) counts.set(status, (counts.get(status) ?? 0) + 1);
+  const stated = {};
+  for (const m of line.matchAll(/`(已实现待验|已验证|未开工|开发中|平台边界|待平台能力|已废弃)`\s*\*\*(\d+)\*\*/g)) {
+    stated[m[1]] = Number(m[2]);
+  }
+  const parsed = Object.fromEntries(counts);
+  assert.ok(Object.keys(stated).length >= 3, `tallies parsed from the checklist line: ${JSON.stringify(stated)}`);
+
+  const mismatched = Object.entries(stated).filter(([k, v]) => (parsed[k] ?? 0) !== v);
+  assert.deepEqual(
+    mismatched.map(([k, v]) => `${k}: checklist says ${v}, ledger has ${parsed[k] ?? 0}`),
+    [],
+    'the checklist tallies drifted from docs/06/01',
+  );
+});
