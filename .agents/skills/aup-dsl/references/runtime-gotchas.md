@@ -89,6 +89,25 @@ All of these were reproduced on the live daemon; "symptom → cause → fix".
    The select-event payload merges the entry over `args`, so a `navigate` target is
    inert. Use `view href="…"` links (which also work inside item templates).
 
+6b. **`$session.*` resolves in text nodes and `visible=` — nowhere else**
+   (measured 2026-10-12 against the served client bundle, 802 KB: the session map is
+   referenced **once**; evidence `arc-contracts` §62 / `docs/05-开发文档/02` B18)
+
+   | Where | Session substituted? |
+   | --- | --- |
+   | text node whose **whole** string is `$session.<field>` | **yes** (composite text is untouched) |
+   | `visible=<cond>` | **yes** (its own helper) |
+   | action `content` / `args` templates | **no** — vocabulary is `${args.<inputName>}` / `${input.*}` |
+   | form `input value=` / `state={value:}` | **no** |
+   | `${entry.*}` inside an `afs-list` row | separate vocabulary, still no session |
+
+   The click path makes it concrete: args = `path`/`label`/`selectionKey` plus
+   `B[inputName] = el.value` read from the DOM, then `window.afs.exec(path, B)`. Because a form
+   value cannot hold a session lookup either, **no page-driven write can carry a session value**.
+   So `exec "/.actions/write" { content: {authorDid: "$session.did"} }` stores the literal
+   `"$session.did"`. Write such fields from the CLI, or accept a server-side backfill; never
+   promise "the page signs as you".
+
 ## Layout / style
 
 10. **The `100vw` header is cropped / a full-bleed shell is clipped**
