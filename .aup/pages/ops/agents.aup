@@ -32,14 +32,14 @@ page agents {
     status-unavailable { en "unavailable" zh "不可用" }
     studio-registry { en "no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)" zh "本平台版本没有跨节点 Studio 注册表（spec §71 属 POST-MVP 传输）" }
     title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
-    tools-closed { en "Closed tools (6) — never exposed (spec §130)" zh "关闭工具（6）——永不暴露（spec §130）" }
-    tools-closed-note { en "Closed tools never run from the agent surface: orders / settlements / sales name buyers (admin-only, privacy); settle_payment, change_wallet and change_role are default-closed." zh "关闭工具永不从 Agent 面执行：订单 / 结算 / 销售会暴露买家（仅管理员，隐私）；settle_payment、change_wallet、change_role 默认关闭。" }
+    tools-closed { en "Closed tools (3) — never exposed (spec §130)" zh "关闭工具（3）——永不暴露（spec §130）" }
+    tools-closed-note { en "Closed tools never run from the agent surface: settle_payment, change_wallet and change_role are agent.admin and default-closed. The four economy tools (create_product, get_orders, get_settlements, get_sales) are gone from the catalogue entirely, not merely closed." zh "关闭工具永不从 Agent 面执行：settle_payment、change_wallet、change_role 属 agent.admin 且默认关闭。四个经济工具（create_product、get_orders、get_settlements、get_sales）已从目录整体移除，而非仅关闭。" }
     tools-desc { en "Every tool the agent surface declares, with the capability it needs and whether it can run today. Read tools are always on; write tools need a time-boxed grant; closed tools never run." zh "Agent 面声明的每个工具，含所需能力与当前可用状态。只读工具始终可用；写工具需要限时授权；关闭工具永不执行。" }
     tools-legend { en "Status: available = runs today; unavailable = declared but the platform cannot serve it (reason inline)." zh "状态：可用 = 当前可执行；不可用 = 已声明但平台无法提供（原因见行内）。" }
-    tools-read { en "Read tools (9)" zh "只读工具（9）" }
-    tools-source { en "Source: node scripts/arcblog-agent.mjs tools — 19 tools (read 9 / write 4 / closed 6). Re-run the CLI to re-verify." zh "来源：node scripts/arcblog-agent.mjs tools —— 19 个工具（read 9 / write 4 / closed 6）。可重跑 CLI 复核。" }
+    tools-read { en "Read tools (7)" zh "只读工具（7）" }
+    tools-source { en "Source: node scripts/arcblog-agent.mjs tools — 13 tools (read 7 / write 3 / closed 3). Re-run the CLI to re-verify." zh "来源：node scripts/arcblog-agent.mjs tools —— 13 个工具（read 7 / write 3 / closed 3）。可重跑 CLI 复核。" }
     tools-title { en "Declared tools (spec §130)" zh "已声明工具（spec §130）" }
-    tools-write { en "Write tools (4) — require a time-boxed grant" zh "写工具（4）——需要限时授权" }
+    tools-write { en "Write tools (3) — require a time-boxed grant" zh "写工具（3）——需要限时授权" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -165,11 +165,11 @@ page agents {
                 h3 :tools-title level=3 style={fontSize: "var(--type-body)"}
                 p :tools-desc intent=muted
                 h3 :tools-read level=3 style={fontSize: "var(--type-body)"}
-                key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: list_products, value: "$t(agents.status-available) · agent.read"}, {label: get_policy, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}, {label: get_studio, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}]
+                key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}, {label: get_studio, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}]
                 h3 :tools-write level=3 style={fontSize: "var(--type-body)"}
-                key-value-list agent-tools-write dense=true fields=[{label: create_draft, value: "$t(agents.status-available) · agent.write"}, {label: update_draft, value: "$t(agents.status-available) · agent.write"}, {label: publish_post, value: "$t(agents.status-available) · agent.publish"}, {label: create_product, value: "$t(agents.status-available) · agent.economy"}]
+                key-value-list agent-tools-write dense=true fields=[{label: create_draft, value: "$t(agents.status-available) · agent.write"}, {label: update_draft, value: "$t(agents.status-available) · agent.write"}, {label: publish_post, value: "$t(agents.status-available) · agent.publish"}]
                 h3 :tools-closed level=3 style={fontSize: "var(--type-body)"}
-                key-value-list agent-tools-closed dense=true fields=[{label: get_orders, value: "$t(agents.status-closed) · agent.economy"}, {label: get_settlements, value: "$t(agents.status-closed) · agent.economy"}, {label: get_sales, value: "$t(agents.status-closed) · agent.economy"}, {label: settle_payment, value: "$t(agents.status-closed) · agent.admin"}, {label: change_wallet, value: "$t(agents.status-closed) · agent.admin"}, {label: change_role, value: "$t(agents.status-closed) · agent.admin"}]
+                key-value-list agent-tools-closed dense=true fields=[{label: settle_payment, value: "$t(agents.status-closed) · agent.admin"}, {label: change_wallet, value: "$t(agents.status-closed) · agent.admin"}, {label: change_role, value: "$t(agents.status-closed) · agent.admin"}]
                 p :tools-legend scale=caption intent=muted
                 p :tools-closed-note scale=caption intent=muted
                 p :tools-source scale=caption intent=muted
