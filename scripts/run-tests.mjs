@@ -89,6 +89,7 @@ const FAST_TESTS = new Set([
   'arcblog-recipes',
   'arcblog-roles-settings',
   'arcblog-run-tests',
+  'arcblog-routes',
   'arcblog-runtime-ids',
   'arcblog-theme',
   'arcblog-ui-budget',
