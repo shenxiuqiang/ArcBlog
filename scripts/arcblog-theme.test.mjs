@@ -31,12 +31,24 @@ test('the app declares an explicit theme mode', () => {
   );
 });
 
-test('a fixed site default theme matches the compiled mode', () => {
+test('a fixed site default theme matches the compiled mode (adaptive default: boundary declared)', (t) => {
   const seed = JSON.parse(readFileSync(seedThemePath, 'utf8'));
-  // An adaptive default (`system`) cannot match every visitor by construction —
-  // the bridge resolves it, and the flash window is the cost documented in
-  // docs/05-开发文档/附件/arc-contracts.md §17.
-  if (seed.value === 'system') return;
+  // U19 (probe close, 2026-10-12): an adaptive default (`system`) cannot be
+  // compared against one compiled mode by construction — the bridge resolves it
+  // per visitor, and the flash window is the documented cost (arc-contracts §17).
+  // The probe's judgement forbids a SILENT return, so this branch declares the
+  // boundary explicitly AND still asserts what is decidable under `system`.
+  if (seed.value === 'system') {
+    assert.equal(seed.value, 'system');
+    assert.ok(
+      appMode(),
+      'even under an adaptive site default the compiled fallback must be explicit (mode light|dark) — otherwise the runtime paints its dark default first on every navigation',
+    );
+    t.diagnostic(
+      'U19 boundary declared: seed theme is "system" (adaptive) — per-visitor mode consistency is resolved by the theme bridge and is NOT asserted here; the compiled fallback asserted above is what this test guards.',
+    );
+    return;
+  }
   assert.equal(
     appMode(),
     seed.value,
