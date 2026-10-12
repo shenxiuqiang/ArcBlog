@@ -1,4 +1,5 @@
 import test, { after, before } from 'node:test';
+import { QUERY_MODES } from './arcblog-query-posts.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
@@ -83,7 +84,8 @@ test('query works via action or fallback for any status', () => {
   // DEF-31 added a third path: the provider query can succeed yet be INCOMPLETE, in which case the
   // CLI repairs it from the directory listing and says so. This allowlist predated that change and
   // is why this live suite went red ~40 rounds later on a stale index (R9).
-  assert.ok(['query-action', 'ls-read-fallback', 'query-action+list-recovered'].includes(out.mode));
+  // Derived from the CLI's own exported vocabulary: a hand-copied list is what went stale here.
+  assert.ok(QUERY_MODES.includes(out.mode), `mode ${out.mode} is not in QUERY_MODES`);
   if (out.mode === 'query-action+list-recovered') {
     assert.ok(Array.isArray(out.staleIndex) && out.staleIndex.length > 0, 'recovered mode must name the stale records');
     assert.ok(String(out.staleIndexNote ?? '').length > 0, 'recovered mode must explain itself');

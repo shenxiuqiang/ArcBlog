@@ -150,6 +150,10 @@ function dirsForStatus(status) {
   return [PUBLIC_DIR, PRIVATE_DIR];
 }
 
+/** The modes this CLI can report — the single source for the help text and for the live suite.
+ *  A third mode (DEF-31) was missing from both for ~40 rounds because each kept its own copy. */
+export const QUERY_MODES = Object.freeze(['query-action', 'ls-read-fallback', 'query-action+list-recovered']);
+
 function help() {
   console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog post query (spec §15.4) — read-only listing over both storage halves
@@ -166,8 +170,8 @@ The positional status picks the directory (the draft boundary IS the storage spl
 --limit (default 20) caps the returned records. Filtering is server-side through the
 provider's query action when available; when it is not, the CLI falls back to
 list + read. "mode" names which path ran AND whether the directory listing had to
-repair it (DEF-31): query-action | ls-read-fallback | query-action+list-recovered.
-The third means the provider index was missing records that exist on disk; those
+repair it (DEF-31): ${QUERY_MODES.join(' | ')}.
+The recovered mode means the provider index was missing records that exist on disk; those
 records are appended, "staleIndex" lists them and "staleIndexNote" says why.
 
 Exit codes: 0 = a report was produced (stdout is JSON: { ok, status, mode, result });

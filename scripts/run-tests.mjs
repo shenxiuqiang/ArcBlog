@@ -90,6 +90,7 @@ const FAST_TESTS = new Set([
   'arcblog-runtime-ids',
   'arcblog-theme',
   'arcblog-ui-budget',
+  'arcblog-vocabularies',
   'arcblog-visible-conditions',
 ]);
 
@@ -116,6 +117,8 @@ const GUARDS = {
   // ENG-24: a 平台边界 row cites a B*/probe/contract section that must actually resolve.
   // ENG-25: the goal's criterion ② — every probe has an explicit verdict, tally pinned.
   // ENG-26: the lazily loaded chain packages must be declared (clean-install break) and vice versa.
+  // ENG-29: a module exporting a *_MODES/*_STATES/*_STATUSES list must only assign members.
+  'arcblog-vocabularies': [/^scripts\/.*\.mjs$/, /^scripts\/arcblog-vocabularies/],
   'arcblog-deps': [/^package\.json$/, /^scripts\/lib\/chain\.mjs$/, /^scripts\/arcblog-deps/],
   'arcblog-probe-verdicts': [/^docs\/05-开发文档\/07-/, /^docs\/team\/human-checkpoints\.md$/, /^scripts\/arcblog-probe-verdicts/],
   'arcblog-ledger-boundaries': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^docs\/05-开发文档\/02-平台能力与边界\.md$/, /^docs\/05-开发文档\/07-/, /^scripts\/arcblog-ledger-boundaries/],
