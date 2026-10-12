@@ -24,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { DIST_DIR, SECRET_BASENAMES, JUNK_BASENAMES, JUNK_DIRS, assertInside, findDistSecrets, isJunkPath, scrubDist } from './arcblog-dist-secrets.mjs';
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'arcblog-dist-secrets.mjs');
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Run the CLI, returning `{ status, json }` (stdout is JSON in every mode). */
 function cli(args) {
@@ -287,4 +288,27 @@ test('the artifact gate is an executable entry and never touches ~/.arc (BUG-074
   assert.match(help.stdout, /--dir/, '--dir must be documented');
   assert.match(help.stdout, /--pages/, '--pages must be documented');
   assert.match(help.stdout, /READ-ONLY/, 'the read-only contract must be documented');
+});
+
+/**
+ * What a publish must carry (added 2026-10-12). The manifest's publishable group is what the
+ * registry shows and what the platform needs at publish time; every key is present today and
+ * nothing checked them, so a refactor could drop one silently and only a publish would notice.
+ */
+test('blocklet.yaml keeps its identity and publishable metadata', () => {
+  const manifest = readFileSync(join(REPO_ROOT, 'blocklet.yaml'), 'utf8');
+  const required = [
+    'specVersion', 'id', 'name', 'did', 'version', 'description',
+    'logo', 'keywords', 'author', 'license', 'repository', 'scope',
+  ];
+  const missing = required.filter((k) => !new RegExp(`^${k}:`, 'm').test(manifest));
+  assert.deepEqual(missing, [], `manifest keys missing (a publish would lose them): ${missing.join(', ')}`);
+
+  // the license is a deliberate project decision; changing it is an edit of this expectation
+  assert.match(manifest, /^license:\s*UNLICENSED$/m, 'license must stay UNLICENSED');
+
+  // a referenced logo that does not exist publishes a broken image
+  const logo = /^logo:\s*(\S+)\s*$/m.exec(manifest)?.[1];
+  assert.ok(logo, 'manifest declares no logo');
+  assert.ok(existsSync(join(REPO_ROOT, logo)), `manifest logo '${logo}' does not exist`);
 });
