@@ -107,7 +107,9 @@ node scripts/arcblog-doc-arc-commands.mjs    # A7 of docs/05's volume gate (run 
                           # every `arc <group> <sub>` the living docs tell you to run must appear in
                           # that group's own `--help` subcommand table (~2 s; a typo fails)
 node scripts/arcblog-dist-secrets.mjs --check # dist/ secret + junk gate (part of `npm run build`'s scrub step)
-node scripts/arcblog-deploy.mjs [--origin <url>]   # THE deploy pipeline: build → verify:artifacts → recipes install
+node scripts/arcblog-deploy.mjs [--dry-run]   # THE deploy pipeline: build → verify:artifacts → recipes install
+                          # (there is NO --origin: the origin is derived from the instance; an unknown
+                          #  flag is refused — measured 2026-10-12, this file was wrong)
                           # → deploy → rss (step 3b, AFTER the deploy) → dist-secrets; then liveness checks
 node scripts/arcblog-console-nav.mjs         # regenerate the console sidebar from scripts/console-nav.mjs
 node scripts/arcblog-console-nav.mjs --check # verify the console page carries that menu (part of npm test)

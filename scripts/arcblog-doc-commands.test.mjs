@@ -190,3 +190,41 @@ test('every `npm run X` a living doc tells you to run is declared in package.jso
   assert.ok(seen >= 40, `npm run mentions scanned: ${seen}`);
   assert.deepEqual(missing, [], `docs pointing at undeclared npm scripts:\n  ${missing.join('\n  ')}`);
 });
+
+/**
+ * A flag the docs hand to an operator must exist in the tool (2026-10-12, ENG-59). The existing rule
+ * checks the subcommand literal; nothing checked the FLAGS, and CLAUDE.md documented
+ * `arcblog-deploy.mjs [--origin <url>]` while the script refuses any flag but `--dry-run`
+ * ("unknown flag --origin — this tool really deploys with no flag"). 114 documented flags were
+ * audited; `--help`/`-h` are conventions every CLI answers without naming them, so they are exempt.
+ */
+test('every documented flag of a repo CLI appears in that CLI', () => {
+  const files = [
+    ...readdirSync(join(REPO, 'docs/05-开发文档')).map((f) => `docs/05-开发文档/${f}`),
+    ...readdirSync(join(REPO, 'docs/06-功能开发列表')).map((f) => `docs/06-功能开发列表/${f}`),
+    ...readdirSync(join(REPO, 'docs/07-团队与开发规范')).map((f) => `docs/07-团队与开发规范/${f}`),
+    ...readdirSync(join(REPO, 'docs/08-其他')).map((f) => `docs/08-其他/${f}`),
+    'CLAUDE.md',
+    'README.md',
+    'AGENTS.md',
+  ].filter((f) => f.endsWith('.md') && !f.includes('_提纲'));
+
+  const problems = [];
+  let checked = 0;
+  for (const rel of files) {
+    for (const [i, line] of readFileSync(join(REPO, rel), 'utf8').split('\n').entries()) {
+      const m = /node (scripts\/[\w.-]+\.mjs)([^`]*)/.exec(line);
+      if (!m) continue;
+      const script = m[1];
+      if (!existsSync(join(REPO, script))) continue;
+      const body = readFileSync(join(REPO, script), 'utf8');
+      for (const flag of m[2].matchAll(/(--[a-z][\w-]*)/g)) {
+        if (['--help', '--version'].includes(flag[1])) continue;
+        checked += 1;
+        if (!body.includes(flag[1])) problems.push(`${rel}:${i + 1} documents ${script} ${flag[1]}, which the script never mentions`);
+      }
+    }
+  }
+  assert.ok(checked >= 50, `documented flags checked: ${checked}`);
+  assert.deepEqual(problems, [], `documented flags the CLI does not have:\n  ${problems.join('\n  ')}`);
+});
