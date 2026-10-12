@@ -103,6 +103,9 @@ node scripts/arcblog-bookmarks.mjs where --user <did>   # the CLI half of ?page=
                           # records live in the USER's space (/user/<did>/arcblog/bookmarks/…), never platform-side
 node scripts/arcblog-ui-budget.mjs [--strict] # the console content-column budget ratchet (UI standard §2.7.2);
                           # --write-baseline re-records it — a deliberate, disclosed act (never a silent bump)
+node scripts/arcblog-open-questions.mjs    # the open-question lister (read-only): every living volume's
+                          # 开放问题/未决 section, rows with no resolution marker; take the count
+                          # from THIS command, never from prose (docs/08/01 U3 cites it)
 node scripts/arcblog-doc-arc-commands.mjs    # A7 of docs/05's volume gate (run by `npm run gate:docs`):
                           # every `arc <group> <sub>` the living docs tell you to run must appear in
                           # that group's own `--help` subcommand table (~2 s; a typo fails)

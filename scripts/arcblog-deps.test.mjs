@@ -78,6 +78,12 @@ test('no script module is orphaned (referenced from outside itself)', () => {
       .map((d) => join(REPO, 'docs', d, '_gate.sh'))
       .filter((f) => existsSync(f))
       .map((f) => readFileSync(f, 'utf8')),
+    // The entry documents are where an OPERATOR tool is wired (measured again 2026-10-12:
+    // `arcblog-open-questions.mjs` is documented in CLAUDE.md and nowhere else).
+    ...['CLAUDE.md', 'README.md', 'AGENTS.md']
+      .map((f) => join(REPO, f))
+      .filter((f) => existsSync(f))
+      .map((f) => readFileSync(f, 'utf8')),
   ].join('\n');
 
   const orphans = [];
