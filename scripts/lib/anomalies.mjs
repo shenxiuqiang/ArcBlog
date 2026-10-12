@@ -415,5 +415,3 @@ export function validateAnomalyItem(item) {
   return issues;
 }
 
-/** The cleaner directories the residue signal is scanned over (for the CLI's report). */
-export const RESIDUE_DIRS = Object.freeze([...CLEAN_DIRS]);

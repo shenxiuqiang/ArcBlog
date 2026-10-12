@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-function walk(dir) {
+function walk(dir, includeTests = false) {
   const out = [];
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -19,7 +19,7 @@ function walk(dir) {
     // production loaders only: a test may legitimately import a dev-only package, and this
     // guard's own comment shows the loader forms (the first version scanned itself and parsed
     // the placeholder in that comment as an undeclared package).
-    else if (entry.endsWith('.mjs') && !entry.endsWith('.test.mjs')) out.push(full);
+    else if (entry.endsWith('.mjs') && (includeTests || !entry.endsWith('.test.mjs'))) out.push(full);
   }
   return out;
 }
@@ -88,4 +88,42 @@ test('no script module is orphaned (referenced from outside itself)', () => {
 
   const stale = Object.keys(HAND_RUN).filter((f) => !files.some((x) => x.endsWith('/' + f)));
   assert.deepEqual(stale, [], `hand-run exemptions that no longer exist: ${stale.join(', ')}`);
+});
+
+/**
+ * Dead exports (added 2026-10-12, same walk). Goal ③ is about leftover implementations, and the
+ * leftover inside a live module is an export nobody uses. The metric needs both halves: a symbol
+ * used only BY ITS OWN MODULE is over-exported (harmless), while a symbol used nowhere — not even
+ * internally — is dead code. Measured before the first cleanup: 87 names looked unused, of which
+ * 10 were genuinely dead (the other 77 were internal-only and are fine); those 10 were deleted and
+ * the four live suites of the touched modules re-run (node-nft 22, roles 19, chain-worker 8,
+ * category 17 — all green).
+ *
+ * Blind spot, stated rather than hidden: usage through a computed string (a name built at runtime)
+ * is invisible here, and so is use by a consumer outside this repository.
+ */
+test('no exported symbol is dead (used nowhere, not even in its own module)', () => {
+  // Candidates are production modules, but a symbol exercised by a TEST is alive: eight names
+  // (writeTools, closedTools, ANOMALY_*_FIELDS, whereContains, NODE_ADAPTER_STATES,
+  // INTENT_STATUSES, storeSize) are imported by their module's suite to assert invariants, and a
+  // first version that ignored test files reported all eight as dead.
+  const files = walk(join(REPO, 'scripts'));
+  const all = walk(join(REPO, 'scripts'), true);
+  const texts = new Map(all.map((f) => [f, readFileSync(f, 'utf8')]));
+  const extras = walk(join(REPO, '.aup')).map((f) => readFileSync(f, 'utf8')).join('\n');
+
+  const dead = [];
+  for (const file of files) {
+    const text = texts.get(file);
+    const names = [...text.matchAll(/^export\s+(?:async\s+)?(?:function|const|let|class)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
+    for (const name of names) {
+      const re = new RegExp(`\\b${name}\\b`, 'g');
+      let external = 0;
+      for (const [other, otherText] of texts) if (other !== file) external += (otherText.match(re) ?? []).length;
+      external += (extras.match(re) ?? []).length;
+      const internal = (text.match(re) ?? []).length - 1; // minus the declaration itself
+      if (external === 0 && internal <= 0) dead.push(`${file.replace(REPO + '/', '')}::${name}`);
+    }
+  }
+  assert.deepEqual(dead, [], `dead exports (delete them, or wire them): ${dead.join(', ')}`);
 });

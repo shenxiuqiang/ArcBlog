@@ -145,8 +145,6 @@ export const GENERAL_FIELDS = {
 };
 
 export const GENERAL_KEYS = Object.keys(GENERAL_FIELDS);
-export const GENERAL_BASIC_KEYS = GENERAL_KEYS.filter((k) => GENERAL_FIELDS[k].dir === GENERAL_DIR);
-export const GENERAL_SWITCH_KEYS = GENERAL_KEYS.filter((k) => GENERAL_FIELDS[k].dir === SWITCH_DIR);
 
 export const generalPath = (key) => `${GENERAL_FIELDS[key].dir}/${key}.json`;
 

@@ -70,10 +70,6 @@ export function canonicalStatus(value) {
   return LEGACY_STATUS_ALIASES[raw] ?? raw;
 }
 
-/** True when `value` is a status the canonical vocabulary retired. */
-export function isLegacyStatus(value) {
-  return Object.prototype.hasOwnProperty.call(LEGACY_STATUS_ALIASES, String(value ?? '').trim());
-}
 
 /** True when `value` (canonical OR legacy) means "finished, do not re-run". */
 export function isTerminalStatus(value) {

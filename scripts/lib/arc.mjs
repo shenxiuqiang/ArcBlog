@@ -228,25 +228,6 @@ export function arcCapture(argv, instance) {
   };
 }
 
-/** `arc <argv> --json` -> parsed JSON (tolerates leading log/ANSI noise). */
-export function arcJson(argv, instance) {
-  const { stdout, stderr, status } = arcCapture([...argv, '--json'], instance);
-  const text = String(stdout ?? '').trim();
-  if (!text) fail('RUNTIME_ERROR', stderr.trim() || `no output from: arc ${argv.join(' ')}`);
-  try {
-    return JSON.parse(text);
-  } catch {
-    const start = text.indexOf('{');
-    if (start >= 0) {
-      try {
-        return JSON.parse(text.slice(start));
-      } catch {
-        /* fall through */
-      }
-    }
-  }
-  fail('RUNTIME_ERROR', `expected JSON from: arc ${argv.join(' ')} (status ${status})`);
-}
 
 /**
  * Best-effort JSON parse of already-captured stdout: never throws.

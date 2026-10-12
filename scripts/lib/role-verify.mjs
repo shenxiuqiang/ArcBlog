@@ -110,10 +110,6 @@ export function scanRoleVerifyQueue(instance) {
   return { intents, ignored };
 }
 
-/** The queue without diagnostics. */
-export function listRoleVerifyIntents(instance) {
-  return scanRoleVerifyQueue(instance).intents;
-}
 
 /**
  * Queue one verification intent — the same record shape the console button
@@ -356,7 +352,3 @@ export function runPendingRoleVerifyIntents(instance) {
   return { applied: applied.length, intents: applied, queueEntryIgnored: ignored.length, ignored };
 }
 
-/** Where a role's projection record lives (used by the CLI report). */
-export function roleStatusPath(role) {
-  return `${ROLE_STATUS_DIR}/${role}.json`;
-}

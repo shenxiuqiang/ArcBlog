@@ -86,10 +86,6 @@ export function allowedCategorySlugs(instance) {
   return allowed;
 }
 
-/** Reset the memoized category set (used by tests). */
-export function resetCategoryCache() {
-  allowedCache.clear();
-}
 
 /**
  * Validate an operator-supplied category against the allowed set.

@@ -145,8 +145,6 @@ export function parseAssetDataValue(raw) {
   }
 }
 
-/** The three mutable self-description fields, in the order the report lists them. */
-export const SELF_DESCRIPTION_FIELDS = ['endpoint', 'region', 'appName'];
 
 /**
  * `PRD-NET-02`'s acceptance line names `endpoint`/`region`/`appName`, but the

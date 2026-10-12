@@ -100,7 +100,6 @@ export const CONSOLE_PAGES = CONSOLE_SECTIONS;
  * Ambient page names that are NOT menu items but still belong to the console
  * surface (a page can be reachable without a sidebar row).
  */
-export const CONSOLE_EXTRA_PAGES = [];
 
 /**
  * The canonical sidebar lines for ONE page.
