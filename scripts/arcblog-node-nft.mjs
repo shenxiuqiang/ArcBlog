@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-// ArcBlog node NFT lifecycle (spec §8.2–§8.4) — acquire, stake, revoke, claim.
+// ArcBlog node NFT lifecycle (spec §8.2–§8.4) — acquire, stake, revoke, claim —
+// plus node self-description (PRD-NET-02) — describe.
 //
-//   node scripts/arcblog-node-nft.mjs acquire --role studio [--stake 1] [--endpoint ...]
-//   node scripts/arcblog-node-nft.mjs stake   --role studio [--asset 0x..] [--waiting-period 30]
-//   node scripts/arcblog-node-nft.mjs revoke  --role studio [--now 2026-10-01T00:00:00Z]
-//   node scripts/arcblog-node-nft.mjs claim   --role studio [--now 2026-11-01T00:00:00Z]
-//   node scripts/arcblog-node-nft.mjs status  [--role studio]
+//   node scripts/arcblog-node-nft.mjs acquire  --role studio [--stake 1] [--endpoint ...]
+//   node scripts/arcblog-node-nft.mjs stake    --role studio [--asset 0x..] [--waiting-period 30]
+//   node scripts/arcblog-node-nft.mjs revoke   --role studio [--now 2026-10-01T00:00:00Z]
+//   node scripts/arcblog-node-nft.mjs claim    --role studio [--now 2026-11-01T00:00:00Z]
+//   node scripts/arcblog-node-nft.mjs status   [--role studio]
+//   node scripts/arcblog-node-nft.mjs describe --role studio --endpoint <url> [--region <r>] [--name <n>]
 //
 // Every step writes the on-chain facts back into AFS so the rest of ArcBlog sees
 // them:
@@ -114,6 +116,78 @@ function readNodeNft(instance) {
 
 function saveNodeNft(state, instance, ifMatch) {
   writeJson(NODE_NFT_STATE_PATH, { ...state, updatedAt: nowIso() }, instance, ifMatch ?? undefined);
+}
+
+// --- PRD-NET-02: node self-description (endpoint/region/appName) --------------
+//
+// `describe` writes the node's reachability information into the NFT's
+// `data.value` — that is the on-chain node registry read (spec §69; PRD-NET-02).
+//
+// WHY read-merge-write is mandatory: both adapters implement `updateAsset` with
+// REPLACE semantics (`scripts/lib/chain.mjs` — ENG-05 / probe P-4). Sending only
+// the three self-description fields would erase the mint-time identity fields
+// (`owner`/`pk`/`stake`/`roles`/…), which the P-4 ruling says must survive. So the
+// command reads the current `data.value`, changes ONLY the fields the operator
+// asked for, and writes the whole object back.
+//
+// `data.value` on both adapters is a JSON TEXT string, but a mocked/backfilled
+// record can carry an object — `parseAssetDataValue` accepts both.
+export function parseAssetDataValue(raw) {
+  if (raw === undefined || raw === null || raw === '') return {};
+  if (typeof raw === 'object') return raw;
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+/** The three mutable self-description fields, in the order the report lists them. */
+export const SELF_DESCRIPTION_FIELDS = ['endpoint', 'region', 'appName'];
+
+/**
+ * `PRD-NET-02`'s acceptance line names `endpoint`/`region`/`appName`, but the
+ * factory template this project mints with has NO `appName` key.
+ *
+ * `buildNodeFactory` (`scripts/lib/nft-factory.mjs`) writes exactly
+ * `name/description/endpoint/region/stake/pk/owner/roles/capabilities/
+ * protocolVersion/nodeVersion`. The GLofter-derived vocabulary the concept docs
+ * quote (`endpoint`/`region`/`appName`/`appDescription`) is NOT what this factory
+ * mints: here the app-name-like value is `name` (`{{input.name}}` ← the node
+ * profile's `name`).
+ *
+ * So the field is declared here as UNSUPPORTED: the flag fails closed with the
+ * exact remedy instead of silently inventing an on-chain key that no reader in
+ * this repo consumes (inventing a field = inventing an API, AGENTS.md 铁律 1).
+ * Reclassified to a supported field the day the factory template gains the key
+ * — that is a product-口径 change, not a code decision.
+ */
+export const UNSUPPORTED_SELF_DESCRIPTION_FIELDS = {
+  appName: {
+    equivalent: 'name',
+    note:
+      'the factory template has no appName key — it mints name/description/endpoint/region/stake/pk/owner/roles/capabilities/protocolVersion/nodeVersion; the app-name-like value is `name`',
+  },
+};
+
+/**
+ * Merge the operator's changes into the current `data.value`.
+ *
+ * Only keys that were actually asked for are touched (`undefined` = "not this
+ * flag"), and every other key is carried over verbatim — that is the whole
+ * point of the read-merge-write (mint fields must not be lost).
+ */
+export function mergeSelfDescription(current, changes = {}) {
+  const base = current && typeof current === 'object' ? current : {};
+  const merged = { ...base };
+  const applied = [];
+  for (const [field, value] of Object.entries(changes)) {
+    if (value === undefined) continue;
+    merged[field] = String(value);
+    applied.push(field);
+  }
+  return { merged, applied, added: applied.filter((field) => !Object.prototype.hasOwnProperty.call(base, field)) };
 }
 
 /**
@@ -455,6 +529,119 @@ async function commandStatus(opts, instance) {
 }
 
 /**
+ * PRD-NET-02: write the node's self-description into the NFT's `data.value`.
+ *
+ *   describe --role studio --endpoint <url> [--region <r>] [--name <n>] [--asset <addr>]
+ *
+ * Read-merge-write (see the header note above): the current `data.value` is read
+ * from the asset, ONLY the supplied fields are changed, and the merged object is
+ * written back — so no mint field (`owner`/`pk`/`stake`/`roles`/…) can be lost.
+ * The committed facts are mirrored into `config/node-nft.json` (`endpoint` /
+ * `region`, plus `describedAt` / `describeTx`) so `status` and the roles record
+ * keep agreeing with the chain.
+ */
+async function commandDescribe(opts, instance) {
+  const { role, chain, clock } = await roleContext(opts, instance);
+
+  // `--app-name` is a documented gap, not a supported flag: fail closed BEFORE any
+  // chain write, with the field that actually exists. See UNSUPPORTED_... above.
+  const requestedAppName = optString(opts['app-name']).trim();
+  if (requestedAppName) {
+    const gap = UNSUPPORTED_SELF_DESCRIPTION_FIELDS.appName;
+    fail(
+      'VALIDATION',
+      `--app-name is not a field in this project's node factory template: ${gap.note}. ` +
+        `Use --name <value> (that key is what the factory mints), or land appName as a product-口径 change ` +
+        `(factory template revision) before it is written on chain. Nothing was written.`,
+    );
+  }
+
+  const stored = readNodeNft(instance);
+  const roleState = stored.state.roles[role] ?? {};
+  const assetId = assetForRole(opts, stored.state, role);
+  const before = await chain.getAssetState(assetId);
+  ensure(before, `asset not found on chain: ${assetId} (recorded ${role} asset may be stale — pass --asset)`);
+  const current = parseAssetDataValue(before.data?.value);
+  ensure(
+    Object.keys(current).length > 0,
+    `the NFT ${assetId} carries no readable data.value object — refusing to write (that would erase fields a reader cannot see)`,
+  );
+
+  // Only flags the operator actually passed become changes; everything else in
+  // `current` is carried over untouched.
+  const changes = {};
+  if (opts.endpoint !== undefined) changes.endpoint = optString(opts.endpoint).trim();
+  if (opts.region !== undefined) changes.region = optString(opts.region).trim();
+  // PRD-NET-02's "appName" slot: the field the factory actually mints is `name`.
+  if (opts.name !== undefined) changes.name = optString(opts.name).trim();
+
+  const { merged, applied, added } = mergeSelfDescription(current, changes);
+  ensure(applied.length > 0, 'nothing to describe: pass --endpoint <url> and/or --region <r> (and/or --name <n>)');
+
+  const updated = await chain.updateAsset({ address: assetId, moniker: before.moniker, data: merged });
+
+  // Mirror the committed facts locally. `endpoint`/`region` are only overwritten
+  // when the operator supplied them; nothing else in the record is touched.
+  const next = {
+    ...stored.state,
+    roles: {
+      ...stored.state.roles,
+      [role]: recordRole(stored.state, role, {
+        assetId,
+        ...(changes.endpoint === undefined ? {} : { endpoint: merged.endpoint }),
+        ...(changes.region === undefined ? {} : { region: merged.region }),
+        describedAt: clock,
+        describeTx: updated.hash ?? '',
+      }, chain.adapter),
+    },
+  };
+  saveNodeNft(next, instance, stored.ifMatch);
+  publishNodeSummary(next, instance);
+
+  const after = await chain.getAssetState(assetId);
+  const value = parseAssetDataValue(after?.data?.value);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        action: 'node-nft-describe',
+        adapter: chain.adapter,
+        network: chain.network,
+        role,
+        assetId,
+        clock,
+        // Which self-description fields this write changed (the three PRD-NET-02
+        // names, minus appName — see unsupported/ below).
+        applied,
+        ...(added.length ? { added } : {}),
+        // The honest gap, restated in the artifact itself: PRD-NET-02 asks for
+        // `appName`, this factory template has no such key, and `name` is the
+        // equivalent it does mint. Only a product-口径 change adds the key.
+        unsupported: Object.fromEntries(
+          Object.entries(UNSUPPORTED_SELF_DESCRIPTION_FIELDS).map(([field, gap]) => [field, { ...gap, present: Object.prototype.hasOwnProperty.call(value, field) }]),
+        ),
+        before: { endpoint: String(current.endpoint ?? ''), region: String(current.region ?? ''), name: String(current.name ?? '') },
+        data: {
+          endpoint: String(value.endpoint ?? ''),
+          region: String(value.region ?? ''),
+          name: String(value.name ?? ''),
+        },
+        // The read-merge-write proof: these are the mint-time fields the write had
+        // to carry over, reported so a caller can assert them without a second read.
+        preserved: Object.fromEntries(
+          ['owner', 'pk', 'stake', 'roles', 'description', 'capabilities', 'protocolVersion', 'nodeVersion']
+            .filter((field) => Object.prototype.hasOwnProperty.call(value, field))
+            .map((field) => [field, String(value[field] ?? '')]),
+        ),
+        hash: updated.hash ?? '',
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/**
  * Backfill per-node attribution from the record's OWN evidence (D37 / BUG-046).
  *
  * Read-only with respect to the chain: no adapter is opened, nothing is signed
@@ -493,14 +680,21 @@ function commandBackfill(opts, instance) {
 
 function help() {
   console.log(FLAG_SYNTAX_NOTE);
-  console.log(`ArcBlog node NFT lifecycle (spec §8.2–§8.4)
+  console.log(`ArcBlog node NFT lifecycle (spec §8.2–§8.4) + node self-description (PRD-NET-02)
 
 Usage:
-  node scripts/arcblog-node-nft.mjs acquire --role studio [--stake 1] [--endpoint <url>] [--region <r>] [--owner <addr>]
-  node scripts/arcblog-node-nft.mjs stake   --role studio [--asset <addr>] [--waiting-period 30] [--owner <addr>]
-  node scripts/arcblog-node-nft.mjs revoke  --role studio [--now <iso>]
-  node scripts/arcblog-node-nft.mjs claim   --role studio [--now <iso>]
-  node scripts/arcblog-node-nft.mjs status  [--role studio]
+  node scripts/arcblog-node-nft.mjs acquire  --role studio [--stake 1] [--endpoint <url>] [--region <r>] [--owner <addr>]
+  node scripts/arcblog-node-nft.mjs stake    --role studio [--asset <addr>] [--waiting-period 30] [--owner <addr>]
+  node scripts/arcblog-node-nft.mjs revoke   --role studio [--now <iso>]
+  node scripts/arcblog-node-nft.mjs claim    --role studio [--now <iso>]
+  node scripts/arcblog-node-nft.mjs status   [--role studio]
+  node scripts/arcblog-node-nft.mjs describe --role studio [--endpoint <url>] [--region <r>] [--name <n>] [--asset <addr>]
+                          # PRD-NET-02: write the node's reachability information
+                          # into the NFT's data.value (the on-chain node registry
+                          # read). READ-MERGE-WRITE: only the fields you pass are
+                          # changed, every mint field (owner/pk/stake/roles/…) is
+                          # carried over — updateAsset REPLACES the whole payload
+                          # (probe P-4 / ENG-05, scripts/lib/chain.mjs).
   node scripts/arcblog-node-nft.mjs backfill [--role studio] [--dry-run]
                           # D37: attribute records that predate per-node
                           # attribution, from the record's own evidence. Read
@@ -509,6 +703,18 @@ Usage:
 Flow (§8.2–§8.4): acquire the role NFT from the factory, stake it to gain the
 role, revoke to start the waiting period, claim after it to get the NFT back.
 Every step syncs config/node-nft.json and the §8.5 lifecycle in config/roles.json.
+
+describe and the app-name gap (read this before expecting --app-name):
+  PRD-NET-02's acceptance line names \`endpoint\`/\`region\`/\`appName\`, but this
+  project's factory template mints no \`appName\` key — it writes exactly
+  name/description/endpoint/region/stake/pk/owner/roles/capabilities/
+  protocolVersion/nodeVersion (scripts/lib/nft-factory.mjs). The app-name-like
+  value here is \`name\`, so \`describe --name <n>\` is the supported equivalent and
+  \`--app-name\` FAILS CLOSED (VALIDATION, nothing written) instead of inventing an
+  on-chain key no reader consumes. Landing a real \`appName\` is a product-口径
+  change (factory template revision), not a CLI flag.
+  describe does NOT rewrite node/profile.json: the requirement is the NFT's
+  data.value, and profile.json is AFS (a separate surface with its own CLI).
 
 Options:
   --instance <name>            Arc instance (optional)
@@ -520,11 +726,15 @@ Options:
   --pk <pem|file>              public key bound into the NFT (default: §67 signing key)
   --waiting-period <days>      revoke waiting period (default 30)
   --now <iso>                  mock only: move the clock to test the waiting period
+  --endpoint <url>             describe: reachability endpoint written into data.value
+  --region <r>                 describe: region written into data.value
+  --name <n>                   describe: the app-name slot this factory really mints
+  --app-name <n>               describe: NOT a field here — fails closed (see above)
 
 Chain environment (switching chains = changing env, never code):
   ARCBLOG_CHAIN_ENV=beta|main  fills the defaults (host / network / token id);
   explicit ARCBLOG_CHAIN_* / flags always win; --adapter ocap fails closed
-  unless network + chain-host + token-id resolve. See docs/operations-runbook.md
+  unless network + chain-host + token-id resolve. See docs/05-开发文档/06-运维场景手册.md §3
   "Chain environment".
 `);
 }
@@ -541,8 +751,9 @@ try {
   else if (command === 'revoke') await commandRevoke(opts, instance);
   else if (command === 'claim') await commandClaim(opts, instance);
   else if (command === 'status') await commandStatus(opts, instance);
+  else if (command === 'describe') await commandDescribe(opts, instance);
   else if (command === 'backfill') commandBackfill(opts, instance);
-  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status|backfill)`);
+  else fail('VALIDATION', `unknown command: ${command} (use acquire|stake|revoke|claim|status|describe|backfill)`);
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
   process.exit(1);

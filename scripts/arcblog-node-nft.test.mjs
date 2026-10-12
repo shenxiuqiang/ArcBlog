@@ -23,7 +23,7 @@ const __dirname = dirname(__filename);
 const repoRoot = join(__dirname, '..');
 const factoryCli = join(repoRoot, 'scripts', 'arcblog-factory.mjs');
 const nftCli = join(repoRoot, 'scripts', 'arcblog-node-nft.mjs');
-const stamp = Date.now();
+const stamp = `${Date.now()}`;
 const statePath = `/instance/app/arcblog/config/mock-chain-test-${stamp}.json`;
 // The registry and the node-NFT state are production AFS paths by default: a mock
 // run once wiped the real beta registry, so every test run gets its own files.
@@ -399,6 +399,119 @@ test('live: acquire → stake → revoke → waiting period → claim (spec §8.
     assert.equal(finalStatus.recorded.state, 'acquired');
     assert.equal(finalStatus.stake.revokedAssets.length, 0);
     assert.ok(finalStatus.recorded.claimedAt);
+  } finally {
+    factory(['reset', '--adapter', 'mock']);
+  }
+});
+
+// --- PRD-NET-02: node self-description (endpoint/region/appName) --------------
+//
+// The acceptance line says "可达信息写入 NFT data.value（endpoint/region/appName）".
+// `describe` is the CLI path that writes it, and it MUST be read-merge-write:
+// `updateAsset` REPLACES the whole `data.value` on both adapters (ENG-05 / probe
+// P-4), so a naive write of only the three fields would erase the mint-time
+// identity fields (owner/pk/stake/roles/…) that the P-4 ruling keeps.
+
+test('live: `node-nft describe` is read-merge-write — the three fields land, every mint field survives', () => {
+  assert.equal(factory(['reset', '--adapter', 'mock']).status, 0);
+  assert.equal(factory(['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']).status, 0);
+
+  try {
+    const acquired = cli([
+      'acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xbuyer', '--pk', 'zMintPk',
+      '--endpoint', 'https://mint.example.com', '--region', 'CN-BJ',
+    ]);
+    assert.equal(acquired.status, 0, acquired.stderr);
+    const assetId = json(acquired.stdout).assetId;
+
+    // what the mint wrote, before describe touches anything
+    const minted = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.data;
+    assert.equal(minted.endpoint, 'https://mint.example.com');
+    assert.equal(minted.region, 'CN-BJ');
+    assert.equal(minted.owner, '0xbuyer');
+    assert.equal(minted.pk, 'zMintPk');
+    // PRD-NET-02 names `appName`; the factory template has no such key (see the
+    // CLI help + the parent report) — the app-name-like value the factory mints
+    // is `name`, and `replace-all` of the described fields must not invent one.
+    assert.equal(Object.prototype.hasOwnProperty.call(minted, 'appName'), false, 'no appName key is minted');
+    assert.equal(minted.name, 'ArcBlog');
+
+    const described = cli([
+      'describe', '--role', 'studio', '--adapter', 'mock',
+      '--endpoint', 'https://self.example.com', '--region', 'EU-DE', '--name', 'ArcBlogNode',
+    ]);
+    assert.equal(described.status, 0, described.stderr);
+    const result = json(described.stdout);
+    assert.equal(result.action, 'node-nft-describe');
+    assert.equal(result.assetId, assetId);
+    assert.deepEqual(result.applied, ['endpoint', 'region', 'name']);
+
+    // 1. the three self-description fields are in place on the ASSET (read back)
+    const status = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout);
+    const value = status.onChain.data;
+    assert.equal(value.endpoint, 'https://self.example.com');
+    assert.equal(value.region, 'EU-DE');
+    assert.equal(value.name, 'ArcBlogNode');
+    // the mint fields are byte-for-byte the ones the mint wrote
+    assert.equal(value.owner, '0xbuyer', 'the mint-time owner must survive updateAsset');
+    assert.equal(value.pk, 'zMintPk', 'the mint-time pk must survive updateAsset');
+    assert.equal(value.stake, minted.stake);
+    assert.equal(value.roles, minted.roles);
+    assert.equal(value.description, minted.description);
+    assert.equal(value.capabilities, minted.capabilities);
+    assert.equal(value.protocolVersion, minted.protocolVersion);
+    assert.equal(value.nodeVersion, minted.nodeVersion);
+    assert.deepEqual(Object.keys(value).sort(), Object.keys(minted).sort(), 'describe must not add or drop a key');
+    // the command reports the preserved set itself (callers need no second read)
+    assert.equal(result.preserved.owner, '0xbuyer');
+    assert.equal(result.preserved.pk, 'zMintPk');
+    assert.equal(result.unsupported.appName.present, false);
+    assert.equal(result.unsupported.appName.equivalent, 'name');
+    // the asset's own owner field is untouched, and the local record mirrors the write
+    assert.equal(status.onChain.owner, '0xbuyer');
+    assert.ok(result.hash, 'an updateAsset hash must be reported');
+    assert.equal(status.recorded.endpoint, 'https://self.example.com');
+    assert.equal(status.recorded.region, 'EU-DE');
+    assert.equal(status.recorded.describeTx, result.hash);
+    assert.ok(status.recorded.describedAt);
+
+    // 2. a second describe that supplies ONLY one field keeps the other two
+    const partial = json(cli(['describe', '--role', 'studio', '--adapter', 'mock', '--region', 'US-CA']).stdout);
+    assert.deepEqual(partial.applied, ['region']);
+    const afterPartial = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.data;
+    assert.equal(afterPartial.region, 'US-CA');
+    assert.equal(afterPartial.endpoint, 'https://self.example.com', 'an unmentioned field must not be cleared');
+    assert.equal(afterPartial.name, 'ArcBlogNode');
+    assert.equal(afterPartial.pk, 'zMintPk');
+  } finally {
+    factory(['reset', '--adapter', 'mock']);
+  }
+});
+
+test('live: `describe --app-name` fails closed — this factory template has no appName key', () => {
+  assert.equal(factory(['reset', '--adapter', 'mock']).status, 0);
+  assert.equal(factory(['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']).status, 0);
+  try {
+    assert.equal(
+      cli(['acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xbuyer', '--pk', 'zMintPk', '--endpoint', 'https://a.example']).status,
+      0,
+    );
+    const before = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.data;
+    const refused = cli(['describe', '--role', 'studio', '--adapter', 'mock', '--app-name', 'MyApp']);
+    assert.equal(refused.status, 1, 'an invented on-chain key must be refused, never written');
+    const out = json(refused.stderr);
+    assert.equal(out.code, 'VALIDATION');
+    assert.match(out.error, /appName/);
+    assert.match(out.error, /--name/);
+    // fail closed = nothing changed on the asset
+    const after = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.data;
+    assert.deepEqual(after, before);
+
+    // …and a describe with no field at all is refused too (never a no-op write)
+    const empty = cli(['describe', '--role', 'studio', '--adapter', 'mock']);
+    assert.equal(empty.status, 1);
+    assert.equal(json(empty.stderr).code, 'VALIDATION');
+    assert.match(json(empty.stderr).error, /nothing to describe/);
   } finally {
     factory(['reset', '--adapter', 'mock']);
   }

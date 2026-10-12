@@ -351,7 +351,7 @@ Chain environment (switching chains = changing env, never code):
   ARCBLOG_CHAIN_HOST|NETWORK|CHAIN_ID|TOKEN_ID|TOKEN_DECIMALS|MNEMONIC
                                 explicit values always win over the preset
   --adapter ocap fails closed unless network + chain-host + token-id resolve.
-  See docs/operations-runbook.md "Chain environment".
+  See docs/05-开发文档/06-运维场景手册.md §3 "链环境".
 `);
 }
 

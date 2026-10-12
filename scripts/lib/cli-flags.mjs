@@ -60,7 +60,7 @@ export const SCRIPT_FLAGS = {
   "arcblog-media.mjs": ["action", "alt", "by", "force", "height", "help", "id", "ids", "instance", "intent-id", "interval", "mime", "path", "size", "title", "update", "uploader-did", "width"],
   "arcblog-memory.mjs": ["actor", "help", "json", "key", "session", "value"],
   "arcblog-network.mjs": ["base-url", "help", "instance", "max-assets", "probe", "probe-limit", "probe-timeout", "publish", "update"],
-  "arcblog-node-nft.mjs": ["adapter", "asset", "description", "dry-run", "endpoint", "evidence", "help", "instance", "message", "name", "now", "owner", "pk", "region", "role", "sign-key", "stake", "stake-address", "waiting-period"],
+  "arcblog-node-nft.mjs": ["adapter", "app-name", "asset", "description", "dry-run", "endpoint", "evidence", "help", "instance", "message", "name", "now", "owner", "pk", "region", "role", "sign-key", "stake", "stake-address", "waiting-period"],
   "arcblog-node.mjs": ["auth-method", "caller", "capabilities", "description", "did", "endpoint", "help", "instance", "json", "name", "roles", "update"],
   "arcblog-pages.mjs": ["action", "actor", "author-did", "body", "body-file", "help", "instance", "online", "push", "slug", "summary", "title"],
   "arcblog-query-posts.mjs": ["args", "category", "instance", "json", "limit", "tag"],

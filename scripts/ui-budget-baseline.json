@@ -104,7 +104,7 @@
     "nested": 0,
     "ctrl": 0,
     "styles": 12,
-    "i18n": 38,
+    "i18n": 39,
     "tech": 2
   },
   "factory": {
@@ -173,7 +173,7 @@
     "feeds": "a840c3cd38e7869e",
     "appearance": "93b80c1873251269",
     "operations": "6a8c1b00d12dc972",
-    "registry": "99be2b6846a16374",
+    "registry": "ca539e48c8faf4fe",
     "factory": "241d58ad82bb07eb",
     "media": "22bf414d4dc13b8b",
     "agents": "6ca5988f016b8c94",

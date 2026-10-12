@@ -181,6 +181,9 @@ export function currentBlockletVersion() {
 // liveness unverified" instead of a claim it cannot source.
 export const REACHABILITY_STATES = ['reachable', 'stale', 'never', 'offline'];
 
+/** PRD-OPS-07: the closed set of "am I in the registry?" answers. */
+export const OWN_REGISTRY_STATES = ['in-registry', 'not-in-registry', 'unknown'];
+
 /** Bilingual state labels (the page has no comparison/string ops — see below). */
 export const REACHABILITY_LABELS = {
   reachable: { en: 'Reachable', zh: '可达' },
@@ -353,6 +356,8 @@ export function buildRegistryProjection({
   probeTimeoutMs = 0,
   now = nowIso(),
   offlineNeedsProbe = !probed,
+  ownStakeAddress = '',
+  ownOwner = '',
 } = {}) {
   // A2: dead rows never reach the projection — the registry lists live nodes
   // (PRD-NET-05: the stake record is the criterion, and a fully revoked record is
@@ -398,6 +403,26 @@ export function buildRegistryProjection({
   const empty = nodes.length === 0 ? 'true' : '';
   const hasNodes = nodes.length ? 'true' : '';
   const needsProbe = nodes.length && offlineNeedsProbe ? 'true' : '';
+  // PRD-OPS-07 ("am I in the registry?"): the page cannot compare an address to
+  // the list (no string ops in AUP), so the CLI answers it here as a closed-set
+  // state plus one standing sentence. `unknown` is a first-class answer: an
+  // adapter that does not expose a local identity must not be guessed at.
+  const ownStake = str(ownStakeAddress);
+  const ownWallet = str(ownOwner);
+  const ownNode =
+    (ownStake ? nodes.find((node) => node.stakeAddress === ownStake) : undefined) ??
+    (ownWallet ? nodes.find((node) => node.owner === ownWallet) : undefined);
+  const ownState = ownNode ? 'in-registry' : ownStake || ownWallet ? 'not-in-registry' : 'unknown';
+  const ownNote =
+    ownState === 'in-registry'
+      ? `You are in the registry: this node's stake ${ownNode.stakeAddress} is in the list below ` +
+        `(endpoint ${ownNode.endpoint || '(none declared)'}, reachability ${ownNode.reachability}).`
+      : ownState === 'not-in-registry'
+        ? `You are NOT in this registry: ${ownStake ? `stake ${ownStake}` : `owner ${ownWallet}`} does not ` +
+          'appear among the live stake rows of the factory above — either it was never staked, or it was ' +
+          'revoked (a fully revoked row is dead and is filtered out of this list).'
+        : 'Cannot answer "am I in the registry?" on this adapter: it does not expose a local identity ' +
+          '(no stake address and no owner wallet), so no comparison was made — nothing is guessed here.';
   return {
     refreshedAt: now,
     adapter: str(adapter),
@@ -421,6 +446,11 @@ export function buildRegistryProjection({
     // PRD-NET-03: `offline` needs a probe input to be decidable — the ledger
     // carries no liveness signal. This marker says so in the artifact itself.
     probe: summary,
+    // PRD-OPS-07: the precomputed answer to "am I in the registry?" (closed set
+    // in-registry | not-in-registry | unknown) plus the sentence the page prints.
+    ownStakeAddress: ownNode ? ownNode.stakeAddress : ownStake,
+    ownState,
+    ownNote,
     nodes,
   };
 }
@@ -440,6 +470,15 @@ export function validateRegistryProjection(record) {
     if (!isMarker(record[marker])) issues.push(`${marker} must be 'true' or ''`);
   }
   if (!str(record.stateNote)) issues.push('stateNote is required (the page cannot build it — no string ops in AUP)');
+  // PRD-OPS-07: the own-membership answer is a closed set; an unknown value or a
+  // missing sentence must fail here (the page cannot validate anything).
+  if (!OWN_REGISTRY_STATES.includes(str(record.ownState))) {
+    issues.push(`ownState must be one of ${OWN_REGISTRY_STATES.join('|')} (got "${str(record.ownState)}")`);
+  }
+  if (!str(record.ownNote)) issues.push('ownNote is required (the standing "am I in the registry?" sentence)');
+  if (str(record.ownState) === 'in-registry' && !str(record.ownStakeAddress)) {
+    issues.push('ownState in-registry requires an ownStakeAddress');
+  }
   for (const node of record.nodes ?? []) {
     const id = str(node?.stakeAddress) || '?';
     if (!str(node?.stakeAddress)) issues.push('every node needs a stakeAddress');

@@ -652,5 +652,6 @@
   "preview.runtime-note": "This page binds the draft record after the first load. If the draft does not appear, reload once — or open the studio and pick an existing draft.",
   "reader.runtime-note": "This page binds its record after the first load. If the article body is empty — or a shared link opens blank — reload once.",
   "agents.summaries-note": "Aggregated summaries: the read-only projections under node/summaries/ written by the operator CLI below (an empty list means none has been built yet — this page neither builds nor scores one). Every figure a row shows is that record's own totalNote/stateNote; this page must not recompute a total (B5).",
-  "agents.summaries-title": "Aggregated summaries (node/summaries/)"
+  "agents.summaries-title": "Aggregated summaries (node/summaries/)",
+  "registry.own-note": "Am I in this registry? (computed by the CLI)"
 }

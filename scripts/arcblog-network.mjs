@@ -249,6 +249,10 @@ async function commandRegistryRefresh(opts, instance) {
     probes,
     probed,
     probeTimeoutMs: probed ? probeTimeoutMs : 0,
+    // PRD-OPS-07: the local identity, when the adapter exposes one. Both are
+    // best-effort strings; the builder answers 'unknown' rather than guessing.
+    ownStakeAddress: typeof chain.stakeAddressFor === 'function' ? chain.stakeAddressFor() || '' : '',
+    ownOwner: chain.ownerAddress || '',
   });
   const issues = validateRegistryProjection(projection);
   if (issues.length) fail('VALIDATION', issues.join('; '));

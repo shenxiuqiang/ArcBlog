@@ -652,5 +652,6 @@
   "preview.runtime-note": "本页在首次加载之后才绑定草稿记录。若草稿没有出现，刷新一次即可；也可以回工作室挑选一个已有草稿。",
   "reader.runtime-note": "本页在首次加载之后才绑定记录。若正文为空（或分享链接打开时是空白），刷新一次即可。",
   "agents.summaries-note": "汇总记录：node/summaries/ 下的只读投影，由下方运营者 CLI 写入（列表为空表示尚未 build——本页既不生成也不评分）。每行显示的数字全部取自该记录自带的 totalNote/stateNote；本页不得自算总数（B5）。",
-  "agents.summaries-title": "汇总记录（node/summaries/）"
+  "agents.summaries-title": "汇总记录（node/summaries/）",
+  "registry.own-note": "我是否在这个注册表里？（由 CLI 计算）"
 }

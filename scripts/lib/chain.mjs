@@ -394,7 +394,7 @@ export function realChainHint(config) {
     `--adapter ocap needs the chain triple (${REAL_CHAIN_REQUIRED.join('/')}): ${issues.join('; ')}. ` +
     'Set ARCBLOG_CHAIN_ENV=beta|main to fill the defaults, or pass --network / --chain-host / ' +
     '--token-id (or the matching ARCBLOG_CHAIN_* env) explicitly — ' +
-    'see docs/operations-runbook.md "Chain environment".'
+    'see docs/05-开发文档/06-运维场景手册.md §3 (chain environment).'
   );
 }
 
