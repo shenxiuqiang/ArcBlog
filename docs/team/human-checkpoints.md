@@ -128,6 +128,7 @@ arc space repair --index   # 平台给出的修法（重建索引以匹配磁盘
 | E5 | `U10`：`arc space sync` 远端端点 | **暂不提供**（停在"平台边界 + 未验证"，不阻塞主干） |
 | E6 | 入口三文件是否重写 | **已事实同步 `CLAUDE.md` v1.1**（结构未重写；要重写请明示） |
 | E7 | `DEF-27`：首页封面瓦片"空链接"如何修 | 两条候选都改交互/视觉（去 `href` 变装饰图 / 放可见文案）⇒ **等你选** |
+| E10 | `DEF-38`：`docs/04 §2.7.2` 的 UI 预算债（**10/18 控制台页**超标，`general` 需 i18n 90→25、styles 38→8、cards 5→2）| **两条路，选一**：**(A) 删/并控制台分区或压缩文案达标**（要动产品结构与界面，须你点头；`?page=general` 等页会明显改观）；**(B) 正式接受该债**，明确 `--strict` 永不作门，仅保留棘轮防"变差"。现状：棘轮实测 `regressions vs baseline: 0` ⇒ 债**未增长** |
 | E9 | `DEF-37`：`node/profile.json`（`name`/`description`/`ogImage`/`endpoint`）**归谁写** | **依据指向同一方向**：`docs/02/07-SET` 的判定式 = "`?page=seo` **不再**写 `node/profile.json` 的身份字段"；`docs/03/01` 的页面族 = `seo`「站点级分发元数据」、`general`「**实例身份**」。**推荐**：`?page=seo` 改写自己的分发记录（如 `config/seo.json`，其字段受 `B19` 约束**无法注入源码**、属声明性数据），身份字段改为**只读展示**并指向 `?page=general`；`node/profile.json` 的写入口收敛为 general/CLI。⚠️ 这会**改动 `?page=seo` 的交互**（去掉身份字段的保存）⇒ 按铁律 8"产品口径追认"**等你点头**（或指定另两条候选之一：CLI 唯一 / 字段迁独立记录） |
 | E8 | `CNT-02`：页面写入的署名（平台不插值 `$session.*`） | **现状 = 页面写占位、署名靠 CLI**（`arcblog-lifecycle publish`）；可选：加 worker/CLI **回填**页面写入的记录（产品口径变更）⇒ **等你定** |
 
