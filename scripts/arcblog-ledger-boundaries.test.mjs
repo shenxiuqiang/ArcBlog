@@ -142,3 +142,23 @@ test('every file:line citation in the boundary files resolves to real content', 
   assert.ok(checked >= 50, `citations checked: ${checked} — the citation scan found almost nothing`);
   assert.deepEqual(problems, [], `unresolvable citations in the boundary authority:\n  ${problems.join('\n  ')}`);
 });
+
+/**
+ * The boundary ids must be a GAPLESS 1..N table (2026-10-12, ENG-54). `B21` existed only as a
+ * `### B21 细节` section while B1-B20 and B22 were table rows, so a reader scanning the table saw a
+ * hole — and the ledger's own evidence line claimed the family was "编号不跳号" because a grep for
+ * `\bB[0-9]+\b` counted the SECTION HEADING as the twenty-first id. Three rows (B2/B4/B17) also
+ * carried their id twice at the head of the description cell, which is how a row loses a real cell
+ * without any shape check noticing.
+ */
+test('the boundary table enumerates a gapless B1..BN, one row per id', () => {
+  const text = readFileSync(join(REPO, 'docs', '05-开发文档', '02-平台能力与边界.md'), 'utf8');
+  const ids = [...text.matchAll(/^\| \*\*B(\d+)\*\* \|/gm)].map((m) => Number(m[1]));
+  assert.ok(ids.length >= 20, `boundary rows with an id cell: ${ids.length}`);
+  const expected = Array.from({ length: ids.length }, (_, i) => i + 1);
+  assert.deepEqual(ids, expected, `boundary ids are not a gapless 1..${ids.length}: ${ids.join(', ')}`);
+
+  // The id must not be repeated inside the row (the B2/B4/B17 defect).
+  const doubled = [...text.matchAll(/^\| \*\*(B\d+)\*\* \| \*\*\1\*\*/gm)].map((m) => m[1]);
+  assert.deepEqual(doubled, [], `rows that repeat their own id in the description cell: ${doubled.join(', ')}`);
+});
