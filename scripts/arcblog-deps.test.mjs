@@ -49,3 +49,43 @@ test('every lazily loaded package is declared, and every declared package is loa
   const stale = [...declared].filter((p) => !loaded.has(p)).sort();
   assert.deepEqual(stale, [], `declared but never loaded (stale declaration): ${stale.join(', ')}`);
 });
+
+/**
+ * Orphan modules (added 2026-10-12, same walk): a script nobody references is the shape goal ③
+ * ("clean up historical implementations") keeps finding. Measured now: all 65 non-test modules are
+ * referenced from outside themselves — zero orphans. The check needs care in two ways that fooled
+ * my first two attempts: the glob must be recursive (otherwise top-level CLIs are invisible), and
+ * a module referenced EXACTLY ONCE (its import line, when the file never names itself) is alive,
+ * not dead.
+ */
+test('no script module is orphaned (referenced from outside itself)', () => {
+  // Hand-run diagnostics: nothing imports them and the entry docs do not advertise them (the
+  // doc-commands guard exempts the same two from documentation). Anything else must be wired.
+  const HAND_RUN = {
+    'arcblog-browser-probe.mjs': 'manual browser probe (needs a live logged-in browser)',
+    'arcblog-roles-probe.mjs': 'manual DOM probe for the roles evidence',
+  };
+  const files = walk(join(REPO, 'scripts'));
+  assert.ok(files.length >= 60, `modules walked: ${files.length}`);
+  const texts = new Map(files.map((f) => [f, readFileSync(f, 'utf8')]));
+  const extras = [
+    ...walk(join(REPO, '.aup')).map((f) => readFileSync(f, 'utf8')),
+    readFileSync(join(REPO, 'package.json'), 'utf8'),
+  ].join('\n');
+
+  const orphans = [];
+  for (const file of files) {
+    const base = file.split('/').pop();
+    let refs = 0;
+    for (const [other, text] of texts) {
+      if (other === file) continue;
+      refs += text.split(base).length - 1;
+    }
+    refs += extras.split(base).length - 1;
+    if (refs === 0 && !(base in HAND_RUN)) orphans.push(file.replace(REPO + '/', ''));
+  }
+  assert.deepEqual(orphans, [], `modules nobody references (delete or wire them): ${orphans.join(', ')}`);
+
+  const stale = Object.keys(HAND_RUN).filter((f) => !files.some((x) => x.endsWith('/' + f)));
+  assert.deepEqual(stale, [], `hand-run exemptions that no longer exist: ${stale.join(', ')}`);
+});
