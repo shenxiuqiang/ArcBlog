@@ -75,3 +75,31 @@ test('every platform-boundary row cites an anchor that actually resolves', () =>
   // implementation and are cited in docs/05 or code comments, not reasons for a ledger row
   // to be 平台边界. Asserting coverage there produced an arbitrary threshold, not a contract.
 });
+
+/**
+ * A boundary RANGE is not a stable identifier (ENG-24 extension, 2026-10-12). docs/06/00 and 01
+ * cited "docs/05/02 的 B1–B12" long after the file had grown to B21, and every such sentence drifts
+ * the moment a boundary is added. The living volumes therefore cite the FILE, not a range; the
+ * frozen volumes (docs/01–04) keep their stage-record ranges, and 02a's deliberate subset list
+ * (`B1–B5、B9、B11、B12`) does not claim to be the file's extent.
+ */
+test('no living doc states the boundary range (cite the file instead)', () => {
+  const files = [
+    'docs/05-开发文档/00-架构总览.md', 'docs/05-开发文档/04-构建·部署·运行.md',
+    'docs/05-开发文档/05-测试分层与质量门.md', 'docs/05-开发文档/06-运维场景手册.md',
+    'docs/05-开发文档/07-未决技术问题与探针计划.md',
+    'docs/06-功能开发列表/00-台账总览与规范.md', 'docs/06-功能开发列表/01-功能台账.md',
+    'docs/06-功能开发列表/02-工程与工具功能点.md', 'docs/06-功能开发列表/03-缺陷与待修.md',
+    'docs/06-功能开发列表/04-探针与前置门.md',
+    'CLAUDE.md', 'README.md',
+  ];
+  const offenders = [];
+  for (const rel of files) {
+    for (const [i, line] of readFileSync(join(REPO, rel), 'utf8').split('\n').entries()) {
+      if (!/(05[-/]开发文档\/02|05\/02)/.test(line)) continue;
+      const range = /B\d+\s*[–~-]\s*B\d+/.exec(line);
+      if (range) offenders.push(`${rel}:${i + 1}: ${range[0]}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `stale boundary ranges (cite docs/05/02 without a range):\n  ${offenders.join('\n  ')}`);
+});
