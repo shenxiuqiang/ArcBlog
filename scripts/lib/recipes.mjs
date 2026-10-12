@@ -33,6 +33,8 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { REGISTRY_PROJECTION_FIELDS } from './network.mjs';
+
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 /** The recipe file name the runtime looks for (`cw()`'s `item` candidate). */
@@ -43,22 +45,51 @@ export const RECIPE_FILE = 'item.json';
  * `seed/recipes/<source>/item.json` source that is installed into them.
  *
  * `schemas` is a LIST because one directory can hold more than one kind of
- * record: `node/` carries both `profile.json` (world/node.yaml) and
- * `identity.json` (world/node-identity.yaml), and one recipe has to interpolate
- * fields from both (a field missing from a record interpolates to the empty
- * string — measured in the served bundle: `xh()` returns null and `Zd()` prints
- * "" — so a merged field list is safe, and `hideWhenEmpty` drops the empty row).
+ * record, and the runtime resolves the recipe from the RECORD'S DIRECTORY
+ * (`<record-dir>/.aup/item.json`, arc-contracts §57.4/§58.2) — there is exactly
+ * ONE recipe per directory, so every kind that lands there must be registered
+ * here or its fields are rejected as unknown.
+ *
+ * `extraFields` carries the field set of records in the directory that have
+ * **no `world/*.yaml` schema** (the projections). Those lists must be DERIVED
+ * from the writer, never hand-copied — see `REGISTRY_PROJECTION_FIELDS`.
  */
 export const RECIPES = [
   { collection: 'posts', dir: '/instance/app/arcblog/posts', source: 'posts', schemas: ['post'] },
   { collection: 'drafts', dir: '/instance/app/arcblog/drafts', source: 'drafts', schemas: ['post'] },
   { collection: 'pages', dir: '/instance/app/arcblog/pages', source: 'pages', schemas: ['page'] },
-  // DEF-22: the node's own metadata records (profile + identity) are read by the
-  // public author page through a LITERAL `surface url=` — `?page=author` is not an
-  // `afs:`-bound path, so `$state.loc` does not exist there and the surface must be
-  // given the record path directly. `node/` is guest-readable (blocklet.yaml
-  // networkRead), so this recipe only ever renders public node metadata.
-  { collection: 'node', dir: '/instance/app/arcblog/node', source: 'node', schemas: ['node', 'node-identity'] },
+  // DEF-22 / §58.2: the node's own records are read by pages that have no
+  // `afs:`-bound path (`?page=author`, `?page=operations`, `?page=registry`), so
+  // they use a LITERAL `surface url=` and the recipe is the one of the `node/`
+  // DIRECTORY. `node/` is guest-readable (blocklet.yaml networkRead), so this
+  // recipe only ever renders public node metadata.
+  //
+  // One directory = one recipe ⇒ the accepted field set is the UNION of every
+  // record kind in it. Registered kinds (the field list of each is owned by its
+  // own file, so a rename there cannot go unnoticed — that is why this is a
+  // list of SCHEMAS and not a hand-copied superset in `world/node.yaml`):
+  //   profile.json   -> world/node.yaml              (NodeProfile)
+  //   identity.json  -> world/node-identity.yaml     (NodeIdentity)
+  //   health.json    -> world/node-health.yaml       (NodeHealth)
+  //   discovery.json -> world/discovery-document.yaml (DiscoveryDocument)
+  // plus the schema-less projection this same recipe also renders:
+  //   registry.json  -> REGISTRY_PROJECTION_FIELDS   (derived from lib/network.mjs)
+  //
+  // Deliberately NOT members of this recipe (a different read channel, so their
+  // fields are NOT this recipe's contract):
+  //   factories.json, role-verification.json — read with `propBind` in
+  //     `factory.aup` / `admin/general.aup`, never through `<dir>/.aup/item.json`;
+  //   registry/<stake>.json, role-status/<role>.json, summaries/<id>.json —
+  //     they live in their OWN subdirectory, so the runtime looks for
+  //     `<subdir>/.aup/item.json`; the registry rows are rendered from the
+  //     `afs-list` `$entry.*` row template instead.
+  {
+    collection: 'node',
+    dir: '/instance/app/arcblog/node',
+    source: 'node',
+    schemas: ['node', 'node-identity', 'node-health', 'discovery-document'],
+    extraFields: REGISTRY_PROJECTION_FIELDS,
+  },
 ];
 
 /** `/instance/app/arcblog/posts` → `/instance/app/arcblog/posts/.aup/item.json`. */
@@ -116,6 +147,24 @@ export function schemaFields(schema, root = repoRoot) {
     if (match) out.push(match[1]);
   }
   return out;
+}
+
+/**
+ * Every field name a recipe may interpolate for its directory: the union of the
+ * `world/*.yaml` schemas the directory is registered with **and** the derived
+ * field sets of the schema-less records written into it (`extraFields`).
+ *
+ * This is THE union the recipe validator and the fast guard both read — so the
+ * guard cannot accidentally certify a different list than the gate enforces.
+ */
+export function declaredFields(recipe, root = repoRoot) {
+  const schemas = recipe.schemas ?? [recipe.schema];
+  return [
+    ...new Set([
+      ...schemas.flatMap((schema) => schemaFields(schema, root)),
+      ...(recipe.extraFields ?? []),
+    ]),
+  ];
 }
 
 /** Average DOM budget bookkeeping is elsewhere; this is the install-time shape check. */

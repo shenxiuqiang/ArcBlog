@@ -1,15 +1,40 @@
-# The records under /instance/app/arcblog/node — one SUPERSET schema.
+# NodeProfile — `node/profile.json` (spec §107–§109). The field list below is
+# OWNED HERE and must stay equal to what `scripts/lib/node-profile.mjs`
+# `buildNodeProfile()` returns (asserted by `scripts/arcblog-recipes.test.mjs`).
 #
-# `node/` is a directory of RELATED record kinds, not one kind: `profile.json`
-# (NodeProfile), `identity.json` (NodeIdentity — see world/node-identity.yaml),
-# `health.json` (NodeHealth — world/node-health.yaml), `discovery.json`
-# (DiscoveryDocument — world/discovery-document.yaml), plus the registry /
-# factories projections. The union below exists because ONE item recipe
-# (`node/.aup/item.json`, DEF-22) has to render any of them, and the recipe
-# validator (`scripts/lib/recipes.mjs` → `schemaFields`) checks every
-# `${content.<field>}` against the schemas a directory is registered with.
-# Fields that a given record does not carry interpolate to the empty string, and
-# that recipe marks them `hideWhenEmpty` — so a superset is safe.
+# ONE DIRECTORY = ONE RECIPE (arc-contracts §58.2 / `05-开发文档 02` B14).
+# `node/` is a directory of RELATED record kinds, not one kind, and the runtime
+# resolves an item recipe from the RECORD'S DIRECTORY (`<dir>/.aup/item.json`).
+# So the accepted field set of `node/` is the UNION of every kind registered for
+# that directory in `scripts/lib/recipes.mjs` (RECIPES → `collection: 'node'`):
+#
+#   profile.json   -> world/node.yaml                (this file, NodeProfile)
+#   identity.json  -> world/node-identity.yaml       (NodeIdentity)
+#   health.json    -> world/node-health.yaml         (NodeHealth)
+#   discovery.json -> world/discovery-document.yaml  (DiscoveryDocument)
+#   registry.json  -> REGISTRY_PROJECTION_FIELDS     (lib/network.mjs; no schema)
+#
+# This file used to hand-copy the fields of those other kinds as a "superset".
+# That is exactly how a rename in `node-identity.yaml` stayed green: the stale
+# copy here kept the OLD name in the accepted set, the recipe interpolated the
+# renamed field to the empty string, `hideWhenEmpty` dropped the row — and the
+# block silently disappeared while all four gates passed. The union is DERIVED
+# from the member schemas now; no kind's fields are copied into another kind's
+# schema. A missing/removed field interpolates to "" (`xh()` → `Zd()`), so the
+# one recipe can still render any record of the directory.
+#
+# CAPABILITY BOUNDARY (do not over-promise): one recipe per directory means a
+# field of ANY kind registered for `node/` is accepted here — including a field
+# a given record does not carry (`${content.checkedAt}`, a health field, is legal
+# in this directory's recipe even though `profile.json` never carries it). This
+# gate guarantees **field existence only**; it does NOT guarantee that a given
+# record kind actually carries the field, and it cannot: the recipe is per
+# directory, and a page's `surface` is not bound to a kind. (The runtime's recipe
+# candidates are `item.<kind>` → `item` → `item/default`, arc-contracts §57.4 —
+# but NO record directly under `node/` carries a `kind` field today, so the
+# per-directory `item.json` is what serves them all; per-kind recipes would need
+# the writers to start emitting `kind`.) Anything that must not render an empty
+# row has to decide in the CLI/record (B13) or use `hideWhenEmpty`.
 kind: NodeProfile
 fields:
   name: string
@@ -24,22 +49,3 @@ fields:
   protocolVersion: string
   createdAt: datetime
   updatedAt: datetime
-  # --- node/health.json (NodeHealth; authoritative schema = world/node-health.yaml)
-  status: string # ok | degraded | down (spec §110)
-  checkedAt: datetime
-  # --- node/identity.json (NodeIdentity; world/node-identity.yaml)
-  authMethod: string # developer | provider | blocklet | did-connect
-  blockletDid: string
-  # --- node/registry.json (the chain-registry projection, ENG-15 / NET-03)
-  factory: string # stake receiver (public address)
-  network: string
-  adapter: string # ocap | mock
-  total: number # live staked nodes in the projection
-  refreshedAt: datetime
-  stateNote: string # precomputed by the CLI: the projection's own state sentence
-  ownNote: string # precomputed by the CLI: "am I in this registry?"
-  # --- node/discovery.json (DiscoveryDocument; world/discovery-document.yaml)
-  protocol: string
-  transport: json # ["afs", "mcp"]
-  generatedAt: datetime
-  blockletVersion: string

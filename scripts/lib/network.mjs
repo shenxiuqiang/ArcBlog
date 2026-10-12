@@ -455,6 +455,25 @@ export function buildRegistryProjection({
   };
 }
 
+/**
+ * The field set of the `node/registry.json` projection, **derived from the
+ * builder above** — never hand-copied.
+ *
+ * WHY IT IS EXPORTED: `node/` holds records of several kinds but exactly ONE
+ * item recipe (`node/.aup/item.json`, arc-contracts §58.2 / `05-开发文档 02` B14),
+ * so the recipe gate (`scripts/lib/recipes.mjs` → `declaredFields`) has to know
+ * every field the directory's records can carry. `registry.json` (and the
+ * per-node `registry/<stake>.json`) has **no `world/*.yaml` schema** — the
+ * writer is the builder above. Declaring the list by hand is what let
+ * `ownState` / `hasNodes` / `empty` / `nodes` / `generated` /
+ * `offlineNeedsProbe` / `probe` / `ownStakeAddress` be *missing* from the
+ * directory's accepted set (a recipe rendering `ownState` was rejected), so the
+ * list is computed from the builder itself.
+ */
+export const REGISTRY_PROJECTION_FIELDS = Object.freeze(
+  Object.keys(buildRegistryProjection({ adapter: 'mock', network: 'mock', factory: 'mock' })),
+);
+
 /** Validate a registry projection; returns issues (empty = ok). */
 export function validateRegistryProjection(record) {
   const issues = [];

@@ -37,10 +37,10 @@ import {
   RECIPES,
   assertRecipeShape,
   contentFields,
+  declaredFields,
   readRecipeSource,
   readRecipeTree,
   recipePath,
-  schemaFields,
 } from './lib/recipes.mjs';
 
 /** Normalize a recipe (text or parsed record) so comparisons ignore whitespace/key order. */
@@ -59,6 +59,46 @@ function normalize(value) {
   }
 }
 
+/** A recipe record value (an object, or a JSON object string) → tree, else null. */
+export function parseTree(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * `${content.<field>}` references a directory's recipe may NOT interpolate —
+ * i.e. the field is declared by none of the record kinds registered for that
+ * directory (`declaredFields`: its `world/*.yaml` schemas plus the derived
+ * field sets of its schema-less projections).
+ *
+ * `label` says which copy was checked: `seed/recipes/<dir>/item.json`, or an
+ * instance-side record (the instance recipe is what the runtime actually
+ * interpolates, so a stale field name there is the same defect). Exported so the
+ * fast guard can exercise this judgment without writing to an instance.
+ */
+export function unknownFieldProblems(tree, recipe, label) {
+  const schemas = recipe.schemas ?? [recipe.schema];
+  const declared = new Set(declaredFields(recipe));
+  const problems = [];
+  for (const field of contentFields(tree)) {
+    const root = field.split('.')[0];
+    if (declared.has(root)) continue;
+    problems.push(
+      `${label}: \${content.${field}} is not a field of ${schemas.map((s) => `world/${s}.yaml`).join(' or ')}` +
+        (recipe.extraFields?.length ? `, nor of the ${recipe.collection} projection` : ''),
+    );
+  }
+  return problems;
+}
+
 /** The install plan: shape + `${content.*}` keys must exist in the world schema. */
 function plan() {
   const entries = [];
@@ -68,16 +108,7 @@ function plan() {
     const path = recipePath(recipe.dir);
     entries.push({ ...recipe, path, tree });
     problems.push(...assertRecipeShape(tree, `${recipe.source}/item.json`));
-    const schemas = recipe.schemas ?? [recipe.schema];
-    const declared = new Set(schemas.flatMap((schema) => schemaFields(schema)));
-    for (const field of contentFields(tree)) {
-      const root = field.split('.')[0];
-      if (!declared.has(root)) {
-        problems.push(
-          `${recipe.source}/item.json: \${content.${field}} is not a field of ${schemas.map((s) => `world/${s}.yaml`).join(' or ')}`,
-        );
-      }
-    }
+    problems.push(...unknownFieldProblems(tree, recipe, `${recipe.source}/item.json`));
   }
   return { entries, problems };
 }
@@ -94,6 +125,8 @@ function commandList() {
           path: e.path,
           source: `seed/recipes/${e.source}/item.json`,
           schema: e.schema,
+          schemas: e.schemas ?? [e.schema].filter(Boolean),
+          extraFields: e.extraFields,
           fields: contentFields(e.tree),
         })),
         problems,
@@ -155,6 +188,17 @@ function commandCheck(instance) {
       missing.push({ collection: entry.collection, path: entry.path });
       continue;
     }
+    // The INSTANCE copy is what the runtime interpolates, and `check` used to
+    // compare bytes only — a field renamed on the instance side was reported as
+    // a plain `mismatched` with `problems: []`, i.e. the actual cause (a field no
+    // registered kind of the directory declares) stayed invisible. Validate the
+    // instance tree with the same gate; report, never write.
+    const instanceTree = parseTree(existing.value);
+    if (instanceTree) {
+      problems.push(...unknownFieldProblems(instanceTree, entry, `instance ${entry.path}`));
+    } else {
+      problems.push(`instance ${entry.path}: not a recipe node tree (neither an object nor a JSON object string)`);
+    }
     if (normalize(existing.value) !== normalize(source)) {
       mismatched.push({ collection: entry.collection, path: entry.path });
       continue;
@@ -186,7 +230,10 @@ function help() {
 
   node scripts/arcblog-recipes.mjs list                  # the install plan + validation (no instance access)
   node scripts/arcblog-recipes.mjs install [--keep-local] # write <dir>/.aup/item.json for posts/drafts/pages/node
-  node scripts/arcblog-recipes.mjs check                 # verify the instance has them, byte-equal to seed/
+  node scripts/arcblog-recipes.mjs check                 # per-directory status: missing / mismatched / problems
+                                                         # (problems = a \${content.<field>} that no record kind
+                                                         #  registered for that directory declares — checked on the
+                                                         #  seed AND on the instance copy; check never writes)
 
 Why: a cold entry on a single-record page (/posts/<slug>, /preview/<slug>, /pages/<slug>,
 ?page=author) renders nothing through \`propBind\` — the daemon binds the record into the session
