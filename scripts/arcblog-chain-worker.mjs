@@ -18,12 +18,13 @@
  * Env: ARCBLOG_CHAIN_* from the environment or `.env.local` (gitignored).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
+import { loadLocalEnv } from './lib/local-env.mjs';
 import {
   NODE_NFT_STATE_PATH,
   decorateNodeFactorySummary,
@@ -46,19 +47,8 @@ const REGISTRY_PATH = process.env.ARCBLOG_FACTORY_REGISTRY_PATH || '/instance/ap
 const ACTIONS = ['acquire', 'stake', 'revoke', 'claim'];
 const ROLES = ['studio'];
 
-/** `.env.local` (gitignored) so `watch` works without exporting anything by hand. */
-function loadLocalEnv() {
-  const path = join(repoRoot, '.env.local');
-  if (!existsSync(path)) return;
-  for (const line of readFileSync(path, 'utf8').split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) continue;
-    const i = trimmed.indexOf('=');
-    const key = trimmed.slice(0, i).trim();
-    const value = trimmed.slice(i + 1).trim().replace(/^'|'$/g, '');
-    if (!process.env[key]) process.env[key] = value;
-  }
-}
+// `.env.local` (gitignored) is loaded by the shared helper so this CLI and
+// `arcblog-network.mjs` cannot drift apart again (DEF-29).
 
 /**
  * Read the intent queue, keeping the `<id>.json` convention explicit (D38).

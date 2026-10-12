@@ -26,6 +26,7 @@
 import { ensure, fail, list, optString, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
+import { loadLocalEnv } from './lib/local-env.mjs';
 import {
   openChain,
   realChainHint,
@@ -360,6 +361,12 @@ per-node reachabilityExact marker. A probe failure changes no chain fact.
 }
 
 async function main() {
+  // DEF-29: the documented chain commands must work as written — the operator's
+  // credentials live in the gitignored .env.local, and the chain worker already loads
+  // them (see lib/local-env.mjs). A missing file stays a no-op, so nothing changes for
+  // mock-only runs.
+  loadLocalEnv();
+
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd, sub] = args._;
   const instance = resolveInstance(args);
