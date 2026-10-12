@@ -164,3 +164,35 @@ test('every site binding names an existing page and a granted AFS path', () => {
   }
   assert.deepEqual(problems, [], `site bindings that would 404 or deny:\n  ${problems.join('\n  ')}`);
 });
+
+/**
+ * The WRITE side of the same contract (2026-10-12, ENG-49). The first test in this file checks the
+ * paths PAGES read; nothing checked the collections the CLIs touch, and the platform is fail-closed
+ * on undeclared paths — so a new CLI writing to an ungranted collection fails only when that code
+ * path happens to run. Measured when this was added: every collection the production scripts mention
+ * is granted (categories/drafts/posts/tags/node/config/page-drafts/pages/media), with ONE deliberate
+ * exception, the local-first memory store's PRIVATE_DATA_PREFIXES denylist, which lists the retired
+ * economy paths precisely so the store REFUSES to record them.
+ */
+test('every collection a production script touches is granted (the memory denylist excepted)', () => {
+  const DENYLIST_ONLY = new Set(['economy', 'ledger', 'orders', 'settlements', 'policies', 'access-grants']);
+  const manifest = readFileSync(join(REPO, 'blocklet.yaml'), 'utf8');
+  const granted = new Set([...manifest.matchAll(/path:\s*\/instance\/app\/arcblog\/([a-z-]+)/g)].map((m) => m[1]));
+  assert.ok(granted.size >= 8, `granted collections parsed: ${granted.size}`);
+
+  const referenced = new Set();
+  const scan = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) scan(full);
+      else if (entry.name.endsWith('.mjs') && !entry.name.endsWith('.test.mjs')) {
+        for (const m of readFileSync(full, 'utf8').matchAll(/\/instance\/app\/arcblog\/([a-z-]+)/g)) referenced.add(m[1]);
+      }
+    }
+  };
+  scan(join(REPO, 'scripts'));
+  assert.ok(referenced.size >= 8, `collections referenced by scripts: ${referenced.size}`);
+
+  const ungranted = [...referenced].filter((c) => !granted.has(c) && !DENYLIST_ONLY.has(c)).sort();
+  assert.deepEqual(ungranted, [], `collections a script touches without a manifest grant: ${ungranted.join(', ')}`);
+});
