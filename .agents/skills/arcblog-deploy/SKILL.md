@@ -30,11 +30,12 @@ node scripts/arcblog-deploy.mjs --domain blog.example.com --project arcblog
 **部署前先确认要发布什么**：脚本会打印 `HEAD` 与未提交路径清单。未提交的改动**会被原样打进这次部署** ——
 如果那些改动不属于本次要发的范围（例如还有别人在途的半成品），先停下来问人类，或先提交/暂存。
 
-## 五步门（顺序不可换、不可跳）
+## 六步门（顺序不可换、不可跳）
 
 | 步 | 命令 | 为什么不能跳 |
 | --- | --- | --- |
 | 1 | `npm run build` | = `arc blocklet build` + `npm run scrub:dist-secrets`。**裸 `arc blocklet build` 会把仓库根的 `node.key`/`.env.local` 复制进 `dist/`**（BUG-067，平台无排除开关） |
+| 1b | `node scripts/arcblog-rss.mjs --feed-link http://<domain>:4939 > .web-cache/rss.xml` | **DEF-28**：`arc blocklet build` 会**重建** `.web-cache/`（llms/robots/sitemaps），把人工生成的 `rss.xml` **抹掉**（实测：生成后 `/p/rss.xml` 200，下一次 build 后静默 404，而页脚就链着它）⇒ 在 build 之后重生成；部署后校验已把 `/p/rss.xml` 纳入存活检查 |
 | 2 | `npm run verify:artifacts` | 部署前密钥门：扫 `dist/` **和** Pages 部署通道。历史实测：**17 个部署副本带着仓库那把真 `node.key`**（sha256 一致），18 个带 `.env.local`（BUG-074）。此门 exit≠0 时**必须停下** |
 | 2b | `node scripts/arcblog-recipes.mjs install --json` | **单记录页的渲染配件**（DEF-21/B14）：`surface url=$state.loc` 用 `<记录目录>/.aup/item.json` 渲染记录，而这些配方是 **AFS 记录、不是构建产物** ⇒ 新实例不装会退化为**原始 JSON**。幂等，每次部署都跑 |
 | 3 | `arc blocklet instance deploy . --domain arcblog.localhost` | 把已发布 blocklet 的 `dist/` 部署到本地 Pages 并绑定域名（会新增一个 `deploy-*`，历史不清） |

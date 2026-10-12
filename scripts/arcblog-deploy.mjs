@@ -26,8 +26,8 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { knownFlagsFor } from './lib/cli-flags.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -91,6 +91,30 @@ function run(cmd, cmdArgs, { allowFail = false } = {}) {
   return { code, out };
 }
 
+/**
+ * Run a command and write its STDOUT to a file (the RSS generator prints the feed).
+ * Fail closed like `run`: a deploy without the artifact it promises is a broken deploy.
+ */
+function runToFile(label, cmd, cmdArgs, outFile) {
+  say(`\n$ ${[cmd, ...cmdArgs].join(' ')} > ${relative(repoRoot, outFile)}`);
+  if (DRY) {
+    steps.push({ label, code: 0, dryRun: true });
+    return;
+  }
+  const res = spawnSync(cmd, cmdArgs, { cwd: repoRoot, encoding: 'utf8' });
+  const code = res.status ?? 1;
+  if (code !== 0) {
+    say((res.stderr || '').trim().split('\n').slice(-4).join('\n'));
+    steps.push({ label, code, dryRun: false });
+    say(`\nABORT: \`${label}\` exited ${code}`);
+    finish(code);
+  }
+  writeFileSync(outFile, res.stdout ?? '');
+  const size = Buffer.byteLength(res.stdout ?? '');
+  say(`  wrote ${relative(repoRoot, outFile)} (${size} B)`);
+  steps.push({ label, code, dryRun: false, bytes: size });
+}
+
 function finish(code, extra = {}) {
   const result = {
     ok: code === 0,
@@ -123,6 +147,14 @@ if (existsSync(join(repoRoot, 'docs', 'team', '.gate-lock'))) {
 
 // ------------------------------------------------------- 1. safe build ------
 run('npm', ['run', 'build']);
+
+// ------------------------------- 1b. RSS feed (build wipes it) -------------
+// `arc blocklet build` REGENERATES `.web-cache/` (llms.txt, robots.txt, sitemaps) and
+// therefore deletes a previously generated rss.xml — measured 2026-10-12: the ops manual's
+// O8 produced a 200/application/xml feed, the next build silently turned /p/rss.xml back
+// into a 404, and the footer link (and PRD-SITE-08) pointed at nothing. Generating it here,
+// after the build and before the deploy, keeps the promise.
+runToFile('rss', process.execPath, ['scripts/arcblog-rss.mjs', '--feed-link', `http://${DOMAIN}:4939`], join(repoRoot, '.web-cache', 'rss.xml'));
 
 // --------------------------------------------- 2. pre-deploy secret gate ----
 run('npm', ['run', 'verify:artifacts']);
@@ -159,7 +191,10 @@ say(`\nnewest deployment: ${newest?.name ?? '(none)'} — secret basenames at to
 const gate = run('node', ['scripts/arcblog-dist-secrets.mjs', '--check', '--pages', '--project', PROJECT]);
 
 // HTTP liveness on the local daemon surface
-const urls = [`http://${DOMAIN}:4939/`, `http://${DOMAIN}:4939/?page=dashboard`];
+// DEF-28: /p/rss.xml is part of the promise (the footer links it, PRD-SITE-08) and it
+// is the one artifact a bare `arc blocklet build` silently deletes — so the deploy
+// verifies it instead of trusting step 1b.
+const urls = [`http://${DOMAIN}:4939/`, `http://${DOMAIN}:4939/?page=dashboard`, `http://${DOMAIN}:4939/p/rss.xml`];
 const http = [];
 for (const url of urls) {
   try {
