@@ -222,9 +222,18 @@ const bad = leaked.length > 0 || gate.code !== 0 || http.some((r) => r.status !=
 say(
   bad
     ? '\n❌ 部署后校验未通过 —— 见上面的失败项（密钥/HTTP/内容一致性）。'
-    : `\n✅ 部署完成：${newest?.name} → http://${DOMAIN}/（本地 Pages 服务）`,
+    // Print the URL this script ACTUALLY verified (the post-verify block probes :4939). The old
+    // message said `http://${DOMAIN}/`, where nothing listens in this setup (measured
+    // 2026-10-12: `curl http://arcblog.localhost/` → exit 000, only 127.0.0.1:4939 is bound),
+    // so a successful deploy read as a broken one.
+    : `\n✅ 部署完成：${newest?.name} → http://${DOMAIN}:4939/（本机 daemon 提供的站点面；上面三次存活检查打的就是它）`,
 );
 if (!bad) {
+  // Measured 2026-10-12 on the daemon mount: the platform injects two dev assets that it does
+  // not serve here (`aup-ssr.<hash>.js`, `aup-inspect-bridge.<hash>.js`) — both answer with the
+  // app shell (text/html) and the browser refuses them (ORB). It is platform-side noise, NOT an
+  // app defect: the pages render and the client bundle (`aup.<hash>.js`) is served as JS.
+  say('注：daemon 挂载面控制台会出现 2 条 “Refused to execute … (MIME text/html)” —— 平台注入的\n     两个开发资产（aup-ssr / aup-inspect-bridge）在本模式下不由平台提供，属平台侧噪音。');
   say(
     '提示：若浏览器看的是 daemon 上「挂载的源码树」（arc service url 显示 :4939），\n' +
       '     源码改动仍需 `arc service restart -i ' +
