@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-> 版本：**v1.0** ｜ 2026-10-01 ｜ Lead
+> 版本：**v1.1** ｜ 2026-10-12 ｜ Lead（**v1.1 = 事实同步**：去 hub/去经济后的命令与存储面、`visible` 处方、world/页面计数、dist 不再入库；结构未重写）
 
 
 > **本文件 = 实现事实与命令入口**（今天的代码怎么跑）。文档体系与协作规则见 [`docs/README.md`](docs/README.md) 与 [`AGENTS.md`](AGENTS.md)。
@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ArcBlog is a DID-native, Markdown-first publishing **Blocklet** built with the Arc/AUP stack — not a conventional Node app. There is no bundler and no dev server (and the AUP app itself has **no runtime
 dependencies**); `package.json` carries the npm packages the **chain scripts**
 need (`@ocap/client`, `@ocap/wallet`, `@arcblock/did-ext`, `@arcblock/did-util`, `bip39` — install with
-`npm install`, only required for `--adapter ocap`): the app is authored in AUP DSL (`.aup/*.aup`, `.aup/man/*.yaml`, `.aup/pages/*.json`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
+`npm install`, only required for `--adapter ocap`): the app is authored in AUP DSL (`.aup/app.aup`, `.aup/man/*.yaml`, `.aup/pages/**/*.aup`) plus a small set of operational Node.js CLI scripts. Content lives in the blocklet's AFS instance space, manipulated through the `arc` CLI and the AUP runtime's `/.actions/write` exec.
 
 > This file describes **today's implementation**. The product & technical direction：**聚合由 agent 承担**、**节点发现基于链上注册表**（质押到同一 factory 地址，查该地址的质押列表即全部节点）、**记忆先本地** —— 见 [`docs/01-产品概念/`](docs/01-产品概念/00-导读.md) → [`docs/02-产品需求/`](docs/02-产品需求/00-需求地图与规范.md)。⚠️ **下文描述的是今天的代码**（含尚未清理的历史实现）；**产品与技术的方向以 [`docs/01`](docs/01-产品概念/00-导读.md)–[`docs/05`](docs/05-开发文档/00-架构总览.md) 为准**。
 
@@ -21,8 +21,10 @@ need (`@ocap/client`, `@ocap/wallet`, `@arcblock/did-ext`, `@arcblock/did-util`,
 
 ```bash
 arc dsl validate --json   # validate all AUP DSL — must pass (primary quality gate)
-arc dsl generate --write  # regenerate app.json / pages/*.json / wrapper.json / locales from .aup sources
-                          # (generate defaults to DRY-RUN — without --write nothing is written)
+arc dsl generate --write  # regenerate app.json / wrapper.json / locales / agent.json from the .aup sources
+                          # (generate defaults to DRY-RUN — without --write nothing is written).
+                          # Per-page *.json fossils are NOT emitted any more (deleted 2026-10-01):
+                          # `.aup/pages/**/*.aup` is the source of truth for every page.
 npm test                  # THE gate (~1s): the fast suites that never write to the instance. The
                           # whitelist of fast suites is `FAST_TESTS` in scripts/run-tests.mjs — read it
                           # there, never from prose; it covers generated sidebar, dead locale keys,
@@ -52,7 +54,8 @@ node scripts/arcblog-audit.mjs ...
 node scripts/arcblog-daily-report.mjs ...
 node scripts/arcblog-factory.mjs spec --role studio   # §8.1 factory payload (GLofter-compatible)
 node scripts/arcblog-factory.mjs create --role studio --adapter mock   # create it (mock|ocap)
-node scripts/arcblog-node-nft.mjs acquire|stake|revoke|claim|status --role studio|hub  # §8.2-§8.4 lifecycle
+node scripts/arcblog-node-nft.mjs acquire|stake|revoke|claim|status --role studio  # §8.2-§8.4 lifecycle (hub role removed 2026-10-01)
+node scripts/arcblog-node-nft.mjs describe --role studio --endpoint <url> [--region r] [--name n]  # PRD-NET-02: read-merge-write the NFT self-description (chain write needs approval)
 node scripts/arcblog-chain-worker.mjs watch|run        # the console's node-NFT buttons only write an AFS
                           # intent; this worker signs it on the chain (key stays on the node) and
                           # refreshes node/factories.json (incl. the rendered NFT SVG)
@@ -63,19 +66,20 @@ node scripts/arcblog-pages.mjs list          # static pages: online/offline only
 node scripts/arcblog-media.mjs list          # upload index; refs/orphans/remove --force (§15.4)
 node scripts/arcblog-roles.mjs status        # RoleStatus + withheld capabilities (spec §9-11)
 node scripts/arcblog-roles.mjs state set --role studio --state staked   # §8.5 lifecycle (operator-declared, fail closed)
-node scripts/arcblog-roles.mjs state set --role studio --state revoking --link-exit  # §8.6: Tombstone Hub relations + report in-flight orders
-node scripts/arcblog-economy.mjs policy show # versioned split policy (spec §29)
-node scripts/arcblog-economy.mjs order refund --id <id>  # refund event + settlement reversal (spec §90)
-node scripts/arcblog-economy.mjs access read --content <slug> --reader <did>  # gated paid full text (§86)
-node scripts/arcblog-attribution.mjs trusted    # hub public keys (spec §30-33)
+node scripts/arcblog-roles.mjs state set --role studio --state revoking --link-exit  # §8.6: role-exit bookkeeping (hub relations retired 2026-10-01)
 node scripts/arcblog-attribution.mjs keygen --out node.key   # Ed25519 key for content signing (§67)
 node scripts/arcblog-agent.mjs check         # agent policy: read-only, default-closed tools (spec §59-62)
-node scripts/arcblog-agent.mjs run --tool search_posts --query x   # execute a read tool
+node scripts/arcblog-agent.mjs run --tool search_posts --query x   # execute a read tool (12 tools: read 8 / write 3 / closed 1)
+node scripts/arcblog-agent.mjs run --tool list_studios            # PRD-AGT-12: discover nodes from the chain registry projection
+node scripts/arcblog-agent.mjs run --tool get_studio --stake-address <a> --content --endpoint <origin>  # PRD-AGT-06: read a remote node read-only
 node scripts/arcblog-agent.mjs authorize --agent did:key:z... --capability agent.write --ttl 30
 node scripts/arcblog-network.mjs health      # node health (spec §110)
-node scripts/arcblog-network.mjs hub list    # Studio -> Hub registrations (spec §70/§71)
-node scripts/arcblog-network.mjs hub refresh # §75/§76: derive fresh/stale/never/offline per Hub
-node scripts/arcblog-network.mjs hub index rebuild  # Hub derived index + tombstones (§73/§119/§120)
+node scripts/arcblog-network.mjs registry refresh [--probe]  # ENG-15/NET-03: chain registry -> public projection node/registry.json (four reachability states)
+node scripts/arcblog-network.mjs registry show      # read that projection, incl. "am I in the registry?" (PRD-OPS-07)
+node scripts/arcblog-summarize.mjs build --from-registry --id s1 [--limit N]  # PRD-AGT-07 aggregation (deterministic picks + reason + cited[])
+node scripts/arcblog-summarize.mjs show s1          # read the summary record (node/summaries/<id>.json)
+node scripts/arcblog-summarize.mjs ask --id s1 --question "why this one" --json  # PRD-AGT-08 deterministic answer, cited[] traceable
+node scripts/arcblog-memory.mjs remember|recall|list --session <id>  # PRD-AGT-11 local-first memory (OUTSIDE AFS: <repo>/.arcblog/memory)
 node scripts/arcblog-verify.mjs content --slug x  # §65–§67: content hash + Ed25519 signature check
 node scripts/arcblog-verify.mjs keys         # registered content-signing public keys (never private)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
@@ -145,11 +149,11 @@ counts as **live** unless it is added to `FAST_TESTS` in `scripts/run-tests.mjs`
 ## Repository layout
 
 - `blocklet.yaml` — blocklet metadata: identity + publishable metadata (`logo`/`keywords`/`author`/`license: UNLICENSED`/`repository`, per the official manifest groups), `sites[].bindings` map pretty URLs like `/posts/{slug}` to AUP pages + AFS records, `scope: app`, and the **permission tables** (`networkRead` prefix grants + `replicated` collections — the latter are the authoritative gates, and undeclared paths are denied). Only `replicated.<collection>.readRole` / `minRole` is authoritative; `networkRead` is a *prefix* allowance that cannot take a grant away (see `docs/05-开发文档/附件/arc-contracts.md` §13). Bindings and top-level keys carry **no** role field, so page/menu authorization is done in AUP (`visible=$session.authenticated` + a login card).
-- `.aup/` — the app itself: `app.aup` (a 14-line manifest only), `man/*.yaml` (management docs), `pages/**/*.aup` (**every** page, grouped by function), `wrapper.json/.aup` (app chrome), `locales/`. **Pages live in external files, not in `app.aup`**: the app declares one `pages from "pages/**/*.aup"` glob **per directory** (nested globs do not work — see `docs/05-开发文档/附件/arc-contracts.md` §22), and the loader registers each as `"tree": "pages/<dir>/<name>.aup"`. An external page file must hold **exactly one root node** (wrap siblings in a `view`), uses the untitled header `page <name> {` — adding a title fails with `text node missing required content` — and its i18n keys still merge into the shared `.aup/locales/*.json`. The pages are grouped by function (**30 `.aup` page files**): `pages/admin/` (appearance, compose, compose-edit, dashboard, diagnostics, general, pages, posts), `pages/site/` (categories, feeds, heroes, seo, tags), `pages/ops/` (agents, factory, hub, media, operations), `pages/economy/` (access, ledger, orders, policy), and the top-level public pages (about, author, index, page-view, preview, reader, saved, store). Per-directory file counts and the console row count = [`docs/05-开发文档/00` §4](docs/05-开发文档/00-架构总览.md)。
+- `.aup/` — the app itself: `app.aup` (a 14-line manifest only), `man/*.yaml` (management docs), `pages/**/*.aup` (**every** page, grouped by function), `wrapper.json/.aup` (app chrome), `locales/`. **Pages live in external files, not in `app.aup`**: the app declares one `pages from "pages/**/*.aup"` glob **per directory** (nested globs do not work — see `docs/05-开发文档/附件/arc-contracts.md` §22), and the loader registers each as `"tree": "pages/<dir>/<name>.aup"`. An external page file must hold **exactly one root node** (wrap siblings in a `view`), uses the untitled header `page <name> {` — adding a title fails with `text node missing required content` — and its i18n keys still merge into the shared `.aup/locales/*.json`. The pages are grouped by function (**17 console pages + the top-level public pages**, 2026-10-12): `pages/admin/` (appearance, compose, compose-edit, dashboard, diagnostics, general, pages, posts), `pages/site/` (categories, feeds, heroes, seo, tags), `pages/ops/` (agents, factory, media, operations, registry), and the top-level public pages (about, author, index, page-view, preview, reader, saved). `pages/economy/*`, `pages/ops/hub.aup` and `pages/store.aup` were **deleted** with the hub/economy teardown (2026-10-01); `?page=registry` is new. Per-directory file counts and the console row count = [`docs/05-开发文档/00` §4](docs/05-开发文档/00-架构总览.md)。
 
   **The console is one page per section**, not one page with tabs: every section in `scripts/console-nav.mjs` (`CONSOLE_SECTIONS.length` — take it from the module `scripts/console-nav.mjs`, never hard-code the number here) is a real page reached by `?page=<name>`, and the `#hash` router, the `console-bridge` component and the legacy alias stubs are all **gone** (B′). The left sidebar is repeated in each of those pages (generated by `node scripts/arcblog-console-nav.mjs` from `scripts/console-nav.mjs`; `scripts/arcblog-console-nav.test.mjs` fails on drift) and each row is a plain page switch — `action "$t(wrapper.nav-*)" -> page <page>`. **No explicit ids**: `arc dsl lint --fix` strips an id nothing references, so the generator emits id-less markup and locates its own block by the sidebar's `size={width: "clamp(200px, 15vw, 280px)"}` marker (`docs/05-开发文档/附件/arc-contracts.md` §25.3). The **current** row is marked with the platform's own `active=true` prop, which the runtime renders as `data-active="true"` + `aria-current="page"` and paints with the accent tokens (see `docs/05-开发文档/附件/arc-contracts.md` §23) — no bridge and no hand-written colours. Because the sidebar is copied into every console page, its i18n keys are `$t(wrapper.nav-*)` keys declared once in `wrapper.aup`; page i18n keys are otherwise **page-scoped** (`<page>.<key>`). Console pages wrap their content in a root `view … style={height: "100vh", overflow: visible}` — `overflow` **must not** be `hidden`, or the `100vw` full-bleed header and sidebar get cropped by the `--aup-content-max` cap (`docs/05-开发文档/附件/arc-contracts.md` §24).
 
-- `world/*.yaml` — AFS record schemas (**22** files; the authoritative list is [`docs/05-开发文档/01` §1](docs/05-开发文档/01-数据模型与存储.md) 的集合与 schema 总表 — don't re-enumerate here).
+- `world/*.yaml` — AFS record schemas (**12** files; the authoritative list is [`docs/05-开发文档/01` §1](docs/05-开发文档/01-数据模型与存储.md) 的集合与 schema 总表 — don't re-enumerate here).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
 - `.web/components/hero-carousel/` — the home hero carousel (custom Web Device component). `script.js` is **generated** = vendored ARC `photo-story` engine + `init.js`; regenerate with `scripts/arcblog-hero-carousel.mjs`. Component `script.js`/`style.css` are inlined into the SSR page, so a root-relative asset URL cannot be used (the AUP handler swallows it) — see `docs/05-开发文档/附件/arc-contracts.md` §14.
@@ -157,7 +161,7 @@ counts as **live** unless it is added to `FAST_TESTS` in `scripts/run-tests.mjs`
 - `agents/` — Agent Access declarations (`<name>/agent.dsl`, `agent.json`, `system.md`); the runtime provides `/mcp`, AFS RPC and `/p/llms.txt`, ArcBlog only declares and audits (spec §129).
 - `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.
 - `seed/settings/arcblog/` — default settings records (tone/palette/theme).
-- `dist/` — synchronized build artifacts; update alongside source changes.
+- `dist/` — build output, **not tracked by git** (removed 2026-10-01; `.gitignore`). Regenerate with `npm run build`; it is what `arc blocklet instance deploy` publishes, and it must never carry `node.key`/`.env.local` (BUG-067 → the scrub step).
 
 ## Content model and storage split (the core architectural idea)
 
@@ -169,16 +173,18 @@ There is one Post schema, but **two AFS directories enforce the draft boundary**
 - `/instance/app/arcblog/node/{profile,identity}.json` — public node metadata (name, DID, roles, capabilities) and how the identity was established; guest-readable, admin-writable. Managed by `scripts/arcblog-node.mjs` (`init`/`show`/`set`/`check`, plus `identity init|show|check`).
 - `/instance/app/arcblog/categories/<slug>.json` — the category taxonomy; guest-readable, admin-writable, and read by the lifecycle validator (falls back to `technology|design|life` while empty). Managed by `scripts/arcblog-category.mjs`.
 - `/instance/app/arcblog/media/<id>.json` — upload index; **admin-only** reads (it exposes upload paths). Managed by `scripts/arcblog-media.mjs`.
-- `/instance/app/arcblog/config/roles.json` — externalized role/NFT configuration (`studio`/`hub` collection + network + `chainVerification`); **admin-only** (the whole `config` prefix is gated so nested admin collections cannot be enumerated). Managed by `scripts/arcblog-roles.mjs`. Addresses are never hard-coded, and a role grants no capability until verified (fail closed).
-- `/instance/app/arcblog/economy/{policies,products,orders,settlements,ledger,access-grants}/` — the economy (spec §41–§43/§91/§37). The policy is public; products are guest-readable; orders, settlements, ledger entries and access grants are **admin-only**. Ledger ids are deterministic (`<orderId>:<type>`), so per-order reads are O(1) while an unscoped `ledger list` is paged (`--limit 20`, `--all`) — the ledger only grows (spec §92). Managed by `scripts/arcblog-economy.mjs`; payment and settlement are separate steps, the ledger is append-only with deterministic ids, tips (`kind: tip`) never grant access while a paid purchase of content does. A hub share is paid only with a **verified** attribution (`config/trusted-hubs/` + `economy/attributions/`, spec §30/§33), otherwise it folds into the creator.
+- `/instance/app/arcblog/config/roles.json` — externalized role/NFT configuration (`studio` collection + network + `chainVerification`; the `hub` role was removed 2026-10-01); **admin-only** (the whole `config` prefix is gated so nested admin collections cannot be enumerated). Managed by `scripts/arcblog-roles.mjs`. Addresses are never hard-coded, and a role grants no capability until verified (fail closed).
+- `/instance/app/arcblog/node/summaries/<id>.json` — the aggregation projection (`PRD-AGT-07`): deterministic picks with `reason`/`score.terms`/`cited[]` and its own `total` scope note; guest-readable, written by `scripts/arcblog-summarize.mjs`. The economy directories (`economy/{policies,products,orders,settlements,ledger,access-grants}`) and the Hub registration tree were **removed** with the economy/hub teardown (2026-10-01) — do not reintroduce them.
 - `/instance/app/arcblog/node/factories.json` — **public projection** of the node-NFT facts: the chain
-  (adapter/network/host/token), both factories (address/moniker/issuer/stake/capacity) and each role's
-  lifecycle + tx hashes. Written by the chain CLIs after every step; **addresses and hashes only, never
+  (adapter/network/host/token), the studio factory (address/moniker/issuer/stake/capacity) and the
+  studio node's lifecycle + tx hashes. It also carries CLI-precomputed markers
+  (`hasChain`/`stateNote`/`hasNode`/`hasCard`/`hasTxs` + per-node notes) because a page cannot
+  branch on `$state.*` (see the `visible` bullet below and `docs/05-开发文档/02` B13). Written by the chain CLIs after every step; **addresses and hashes only, never
   key material**. It exists so the console's `?page=factory` works for any signed-in session — the
   authoritative records stay in `config/` (admin-only).
 - `/instance/app/arcblog/node/{discovery,health}.json` — Discovery Document (spec §69) and Node Health (spec §110); guest-readable. HTTP discovery endpoints (`/.well-known/arcblog`, `/api/*`) are impossible on this platform (the AUP handler owns `/`), so the network layer is AFS-native — see `docs/05-开发文档/附件/arc-contracts.md` §7.
 - `/instance/app/arcblog/config/agent-grants/<didHash>.json` — time-boxed agent capability grants (spec §61); **admin-only**. A write tool only runs with an unexpired grant; `agent.admin` cannot be granted (those tools never run from the agent surface, spec §130).
-- `/instance/app/arcblog/hub/registrations/<didHash>.json` — Studio→Hub registrations and their sync state (spec §70/§71/§112); **admin-only** (the public discovery surface is `node/discovery.json`).
+- `/instance/app/arcblog/node/registry.json` + `node/registry/<stakeAddress>.json` — the chain-registry projection (`ENG-15`/`NET-03`/`OPS-07`): live staked nodes with endpoint provenance, four reachability states and the precomputed "am I in it?" sentence; guest-readable, written by `scripts/arcblog-network.mjs registry refresh`.
 - `/instance/settings/arcblog/` — appearance settings (`tone`, `palette`, `theme`) driving the theme bridge.
 
 Lifecycle transitions: `draft → published → archived → published`, plus `draft|archived → deleted` (soft). Validation: required `title`/`slug`/`author-did`; category whitelist read from the categories resource (built-in `technology|design|life` as fallback); tags are lowercase underscore tokens, max 10; `coverImage`/`ogImage` must be http(s). The compose form writes `authorDid: "$session.did"` / `authorName: "$session.displayName"` best-effort (measured 2026-09-27: `$session.*` is **not** interpolated inside an `exec`'s `content` — it lands as the literal string, while `${generate.*}` does interpolate; see `docs/05-开发文档/附件/arc-contracts.md` §28.7. `args` templates are still unverified) and stores `tags` as a raw string (args templates can't split arrays); the CLI always sets authorship and normalizes tags — use the CLI when it matters, and run `node scripts/arcblog-doctor.mjs` to find records with an empty `authorDid`.
@@ -193,7 +199,7 @@ Lifecycle transitions: `draft → published → archived → published`, plus `d
 - **List filters are index-backed**: `afs-list` `filter`/`serverFilters` push a `where` down to `/.actions/query`, which only sees indexed records — and **editing a record leaves its index entry stale**, so it silently vanishes from filtered lists. The feed relies on the `posts/` directory boundary instead, the operations page uses `propBind` for single records, and the category chips were removed (`docs/05-开发文档/附件/arc-contracts.md` §15). Read instance paths with `arc afs exec /blocklets/arcblog/.actions/{list,read,write,delete}` — root-scope `arc afs ls` cannot see `/instance/...`.
 - **`frame` sandbox**: the primitive sandboxes iframes by default (`allow-scripts allow-forms allow-popups allow-same-origin`), which **silently blocks** a component's `target="_parent"` link — a hero CTA that looks fine but does nothing. Pass a string to add tokens: `sandbox="allow-top-navigation-by-user-activation"` (the runtime keeps its base list and appends valid tokens), or `sandbox=false` for a same-origin src to drop the attribute entirely.
 - **`app-header` brand**: `logo` is the image field; **`src` is the click target**, and the runtime renders a button that emits `nav-click` (payload `{id, src, href}`) — so a brand with `src` but no `events={nav-click: …}` handler errors with `Node '<id>' has no 'nav-click' event` on every click. Either declare the handler (`nav-click: {target: _root, set: {page: $args.src}}`) or use `href` for a plain link.
-- **`visible` on async data**: with `propBind`, use the interpolation form (`visible="${state.post.coverImage}"`). The expression form (`visible="$state.post.coverImage"`) is evaluated once and never recovers, so the element never appears.
+- **`visible` on async data: none of the three spellings is a condition** (measured 2026-10-12, `arc-contracts` §28.1 / `docs/05-开发文档/02` B13): `visible="${state.x}"` is **always true**, `visible="!${state.x}"` is **always hidden**, and the bare form `visible=$state.x` is **frozen at first paint** (so `!$state.record` fakes "not found" for a valid record on the first load — DEF-18). Only `$entry.*` **inside an `afs-list` row** branches correctly, and only synchronous `$session.*` conditions are reliable. Compute the decision in the CLI/record and print precomputed strings/markers as standing text (reference: `?page=registry`, `decorateNodeFactorySummary()`). A body block must be unconditional.
 - **`afs-list` row children** get `flex: 1 1 0%`; a fixed-size thumbnail needs `flexGrow: 0` + `flexBasis` (not just `flexShrink: 0`). `autoSelect=false` keeps the first row from rendering as selected.
 - **No cross-page fragments**: `component name(args) { … }` + `use name(values)` + `for x in [a, b] { … }` DO work (verified end-to-end; `$arg` interpolates in ids, props and text; ids must be omitted or parameterised, or a second `use` duplicates them). `include` does not: it parses and inlines at validation time, but the daemon refuses to render it (`SESSION INIT FAILED — AUP INCLUDE REQUIRES RESOLVEINCLUDE`), and a component declared in an included file is invisible to the includer. So a shell that differs per page (or an "active" nav item) must still be repeated/generated per page — which is why the console sidebar is *generated into every console page* by `scripts/arcblog-console-nav.mjs` from `scripts/console-nav.mjs`, with `--check` in the test suite (`docs/05-开发文档/附件/arc-contracts.md` §16, capability map in §25). The current row is the platform's own `active=true` prop, baked in per page by the generator (§23).
 - **Locale files use FLAT dotted keys**: `.aup/locales/*.json` stores `"wrapper.nav-console"`, **not** `{"wrapper": {"nav-console": …}}`. `arc dsl generate` preserves hand-added keys but will not read a nested object, and the runtime then renders the label as the literal `$t(wrapper.…)`.
