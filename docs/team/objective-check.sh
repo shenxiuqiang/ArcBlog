@@ -47,25 +47,45 @@ for d in sorted(glob.glob('docs/0[1-8]-*')):
     ms = files(d + '/*.md')
     sub = files(d + '/*/*.md')
     print(f'      {d:26s} 顶层 {len(ms):2d} 篇 ｜ 子目录 {len(sub):2d} 篇')
-print(f'      {"入口三文件横幅":26s} README/AGENTS/CLAUDE = '
-      f'{sum(1 for f in ["README.md","AGENTS.md","CLAUDE.md"] if os.path.exists(f) and "文档体系 v2 重建中" in open(f,encoding="utf-8").read())}/3 已加临时横幅')
 
 print()
-print('⑦ 全程 arc dsl validate + npm test 不红')
-for cmd in [['arc', 'dsl', 'validate', '--json']]:
+print('⑦ 完成判据三门（**真的跑**，不只报标题）')
+def run(cmd, ok_when):
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        ok = '"issues":[]' in r.stdout.replace(' ', '') or '"ok":true' in r.stdout
-        print(f'      {" ".join(cmd)} → {"PASS" if ok else "见输出"}')
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
+        out = (r.stdout or '') + (r.stderr or '')
+        return ('PASS' if ok_when(r.returncode, out) else 'FAIL')
     except Exception as e:
-        print(f'      {" ".join(cmd)} → 未能运行（{e}）')
+        return f'未能运行（{e}）'
+print(f'      arc dsl validate --json          → {run(["arc", "dsl", "validate", "--json"], lambda rc, out: chr(34) + "issues" + chr(34) + ":[]" in out.replace(" ", "") or chr(34) + "ok" + chr(34) + ":true" in out)}')
+print(f'      npm test（快层）                 → {run(["npm", "test"], lambda rc, out: rc == 0 and "fast tier passed" in out)}')
+print(f'      npm run gate:docs（六卷交付门）   → {run(["npm", "run", "gate:docs", "--silent", "--", "--quiet"], lambda rc, out: rc == 0 and "6/6 volume gates PASS" in out)}')
 
 print()
-print('⑧ 期间不 git commit')
+print('⑧ 台账 / 开放问题 / 工作区（完成判据的另三面）')
+try:
+    led = open('docs/06-功能开发列表/01-功能台账.md', encoding='utf-8').read()
+    rows = re.findall(r'^\| `(PRD-[A-Z]+-\d+)` \|', led, re.M)
+    states = {}
+    for line in led.split('\n'):
+        if re.match(r'^\| `PRD-[A-Z]+-\d+` \|', line):
+            c = [re.sub(r'[*`]', '', x).strip() for x in line.split('|')]
+            if len(c) > 4 and c[3]:
+                key = c[3].split('（')[0].strip()
+                states[key] = states.get(key, 0) + 1
+    print(f'      PRD 台账：{len(rows)} 行 ｜ 六态 = ' + '，'.join(f'{k} {v}' for k, v in sorted(states.items())))
+except Exception as e:
+    print(f'      台账读取失败（{e}）')
+try:
+    first = subprocess.run(['node', 'scripts/arcblog-open-questions.mjs'], capture_output=True, text=True, timeout=120).stdout.strip().split('\n')[0]
+    print(f'      {first}')
+except Exception as e:
+    print(f'      开放问题统计失败（{e}）')
 try:
     head = subprocess.run(['git', 'log', '--oneline', '-1'], capture_output=True, text=True).stdout.strip()
+    dirty = [x for x in subprocess.run(['git', 'status', '--short'], capture_output=True, text=True).stdout.strip().split('\n') if x.strip()]
     print(f'      HEAD = {head}')
-    print('      基线 = 4597ba2（本会话 v2 工作全部在工作区，未提交）' if head.startswith('4597ba2') else '      ⚠️ HEAD 已变，请核对')
+    print(f'      工作区 = {"干净（无未提交的改动）" if not dirty else str(len(dirty)) + " 项未提交"}')
 except Exception as e:
     print(f'      未能读取（{e}）')
 
