@@ -23,7 +23,9 @@ function rows() {
   for (const line of readFileSync(LEDGER, 'utf8').split('\n')) {
     // The table header also starts with `| `PRD-` (the role code) — require a real id.
     if (!/^\| `PRD-[A-Z]+-\d+` \|/.test(line)) continue;
-    const c = line.split('|').map((x) => x.trim());
+    // `\|` is an escaped literal pipe inside a cell (shell pipelines in the evidence column).
+    // A naive split truncates that cell, which could hide — or invent — an anchor citation.
+    const c = line.replace(/\\\|/g, '\u0000').split('|').map((x) => x.replace(/\u0000/g, '|').trim());
     if (c.length < 7) continue;
     out.push({ id: c[1].replace(/`/g, ''), status: c[3], blocking: c[4], evidence: c[5], line });
   }

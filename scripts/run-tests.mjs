@@ -76,6 +76,7 @@ const FAST_TESTS = new Set([
   'arcblog-hero-carousel',
   'arcblog-ledger-evidence',
   'arcblog-ledger-boundaries',
+  'arcblog-ledger-tables',
   'arcblog-i18n',
   'arcblog-memory',
   'arcblog-node-factory-markers',
@@ -84,6 +85,7 @@ const FAST_TESTS = new Set([
   'arcblog-permissions',
   'arcblog-prd-ledger',
   'arcblog-probe-verdicts',
+  'arcblog-retired-surfaces',
   'arcblog-recipes',
   'arcblog-roles-settings',
   'arcblog-run-tests',
@@ -118,6 +120,10 @@ const GUARDS = {
   // ENG-25: the goal's criterion ② — every probe has an explicit verdict, tally pinned.
   // ENG-26: the lazily loaded chain packages must be declared (clean-install break) and vice versa.
   // ENG-29: a module exporting a *_MODES/*_STATES/*_STATUSES list must only assign members.
+  // ENG-33: the torn-down economy/hub surfaces must not become routable or declarable again.
+  // ENG-34: every row of the ledger volume's tables must match its header's column count.
+  'arcblog-ledger-tables': [/^docs\/06-功能开发列表\//, /^scripts\/arcblog-ledger-tables/],
+  'arcblog-retired-surfaces': [/^\.aup\/pages\//, /^blocklet\.yaml$/, /^world\//, /^scripts\/console-nav\.mjs$/, /^scripts\/arcblog-retired-surfaces/],
   'arcblog-vocabularies': [/^scripts\/.*\.mjs$/, /^scripts\/arcblog-vocabularies/],
   'arcblog-deps': [/^package\.json$/, /^scripts\/lib\/chain\.mjs$/, /^scripts\/arcblog-deps/],
   'arcblog-probe-verdicts': [/^docs\/05-开发文档\/07-/, /^docs\/team\/human-checkpoints\.md$/, /^scripts\/arcblog-probe-verdicts/],

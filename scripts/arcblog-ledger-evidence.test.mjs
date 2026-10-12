@@ -23,8 +23,13 @@ const TAUTOLOGY = /grep -n\s+"page [\w-]+"/;
 function rows() {
   const out = [];
   for (const line of readFileSync(LEDGER, 'utf8').split('\n')) {
-    if (!/^\| `PRD-/.test(line)) continue;
-    const cells = line.split('|').map((c) => c.trim());
+    // `\|` is an ESCAPED literal pipe inside a cell (the ledger uses it for shell pipelines in a
+    // command). A naive split() ignores the escape and truncates the cell: two rows whose evidence
+    // carries `grep … \| head · 输出: 待补` were read as "no 待补 at all", i.e. the ratchet was blind
+    // to exactly the rows it exists to watch. The id pattern also excluded the `| \`PRD-\` | 主键…`
+    // header row, which a `^\| \`PRD-` prefix otherwise matches (it made the row count 57, not 56).
+    if (!/^\| `PRD-[A-Z]+-\d{2}` \|/.test(line)) continue;
+    const cells = line.replace(/\\\|/g, '\u0000').split('|').map((c) => c.replace(/\u0000/g, '|').trim());
     if (cells.length < 7) continue;
     out.push({ id: cells[1].replace(/`/g, ''), status: cells[3], evidence: cells[5] });
   }
