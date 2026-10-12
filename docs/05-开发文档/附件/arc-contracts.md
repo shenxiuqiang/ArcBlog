@@ -2710,6 +2710,15 @@ surface reader-record url=$state.loc editable=false { p :note }
 **但 validator 要求 `surface` 必须有 `src` 或非空 children**（否则 `invalid_page_dsl: Surface must have src or
 non-empty children`）⇒ 字面路径 surface 必须带一个 chrome 子节点（本仓用它放该卡片的 `h2`）。
 
+### 58.1b 未匹配的路径会**静默回落**到 `page=index`，不是 404
+
+实测（2026-10-12，QA R9–R10）：`GET /author`（**没有** `?page=`）与 `GET /?page=index` 的 `innerText`
+与锚点集合**逐字节相同** ⇒ 该 URL 未命中任何绑定时，AUP handler 用默认页（index）渲染，**返回 200**。
+排障含义：看到"页面内容像首页"时先确认 **是否 `?page=<name>`**——`/author`、`/about` 这类裸路径
+**不是**对应页面的地址（本仓公开页地址形如 `/?page=author`，文章/静态页才有绑定路径
+`/posts/{slug}`、`/pages/{slug}`）。`/pages/does-not-exist` 这类**有绑定的路径**才会报平台真话
+`Failed to resolve: … (Path not found: …)`（§57.4）。
+
 ### 58.2 一份 recipe 服务一个目录 ⇒ 字段是**并集**，缺字段渲染成空串
 
 `surface` 只按 `<记录目录>/.aup/item.json` 找模板（§57.4），**一个目录 = 一份 recipe**。
