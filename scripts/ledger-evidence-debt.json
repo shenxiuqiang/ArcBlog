@@ -1,29 +1,14 @@
 {
-  "_comment": "ENG-23: ledger evidence debt. Rows here claim 已实现待验 while their evidence cell still says '输出: 待补' — allowed by 00 §2.1 (which only demands a call site + runnable command for that state) but it is DEBT: PRD-OPS-01 proved a 待补 row can hide a criterion that was never met. The guard forbids new debt and asks the list to shrink as rows are filled in. Never add an id without filling in a real output instead.",
-  "baseline": 23,
+  "_comment": "ENG-23: ledger evidence debt. Rows here claim 已实现待验 while their evidence cell still says '输出: 待补' — allowed by 00 §2.1 (call site + runnable command) but it is DEBT: PRD-OPS-01 proved a 待补 row can hide a criterion that was never met. The guard forbids new debt and requires the list to shrink. 2026-10-12: 30 -> 23 (three tautologies rewritten) -> 8 (fifteen rows filled with outputs measured this round).",
+  "baseline": 8,
   "rows": [
-    "PRD-CNT-01",
-    "PRD-CNT-03",
-    "PRD-CNT-04",
-    "PRD-CNT-06",
     "PRD-SITE-01",
     "PRD-SITE-02",
     "PRD-SITE-06",
     "PRD-SITE-07",
     "PRD-NET-04",
     "PRD-ID-01",
-    "PRD-ID-02",
-    "PRD-ID-03",
-    "PRD-ID-04",
-    "PRD-AGT-01",
-    "PRD-AGT-02",
     "PRD-AGT-03",
-    "PRD-AGT-04",
-    "PRD-AGT-05",
-    "PRD-OPS-02",
-    "PRD-OPS-03",
-    "PRD-OPS-06",
-    "PRD-SET-01",
-    "PRD-SET-05"
+    "PRD-SET-01"
   ]
 }
