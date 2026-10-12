@@ -18,6 +18,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -101,3 +102,26 @@ test('the timeout/budget defaults are the measured ones, and env overrides win',
   }
 });
 
+// A doc that states the fast-tier size is stating a number the runner owns. I broke this twice
+// (the gate manual said 10 while the tier had 20, then said 20 while it had 25) because adding a
+// guard changes the count and nothing re-derived the prose. The manual's own rule is "read it
+// from run-tests.mjs, never hard-code it" — this asserts that any inline number still matches.
+test('docs that state the FAST_TESTS size state the current one', () => {
+  const runner = readFileSync(join(repoRoot, 'scripts', 'run-tests.mjs'), 'utf8');
+  const block = runner.match(/const FAST_TESTS = new Set\(\[([\s\S]*?)\]\);/);
+  assert.ok(block, 'FAST_TESTS block not found in run-tests.mjs');
+  const count = [...block[1].matchAll(/'[\w-]+'/g)].length;
+  assert.ok(count >= 20, `parsed FAST_TESTS entries: ${count}`);
+
+  const docs = ['docs/07-团队与开发规范/03-质量门与命令手册.md'];
+  const claims = [];
+  for (const rel of docs) {
+    for (const line of readFileSync(join(repoRoot, rel), 'utf8').split('\n')) {
+      const m = line.match(/FAST_TESTS[^|\n]*?项数 = \*\*(\d+)\*\*/) || line.match(/复测：(\d+) 项/);
+      if (m) claims.push({ rel, value: Number(m[1]), line: line.trim().slice(0, 80) });
+    }
+  }
+  assert.ok(claims.length >= 1, 'expected at least one in-doc FAST_TESTS count to check');
+  const stale = claims.filter((c) => c.value !== count);
+  assert.deepEqual(stale, [], `stale FAST_TESTS counts (runner has ${count}):\n  ${stale.map((c) => `${c.rel}: ${c.value} :: ${c.line}`).join('\n  ')}`);
+});
