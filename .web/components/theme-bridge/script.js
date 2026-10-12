@@ -78,6 +78,13 @@
     '.aup-action[data-variant="destructive"]{color:var(--color-text)}',
     '.aup-action[data-variant="destructive"]:not(:hover) .aup-icon-svg{color:var(--color-error)}',
     '.aup-action[data-variant="destructive"]:hover{color:var(--color-surface)}',
+    // V05 / WCAG 2.5.8 (AA): clickable targets need a >=24x24 CSS-px hit area. Measured
+    // 2026-10-12 on the served pages: the header brand link computes 67x19 (every page) and
+    // the reader breadcrumb's "back" link 136x20 — both are STANDALONE links (not inline in a
+    // sentence), so neither qualifies for the inline exception. min-height + inline-flex
+    // raises the target without moving the visual box. REVERT = delete these two rules.
+    '.aup-app-header-brand-link{min-height:24px}',
+    '.aup-breadcrumb-item a{display:inline-flex;align-items:center;min-height:24px}',
     // Button radius is a THEME-LAYER concern (standard V1.10 §4.3; UI-019 candidate A,
     // task-24). The `editorial` tone paints EVERY `.aup-action` with `border-radius:2rem`
     // — `[data-tone=editorial] .aup-action` in the served aup-core.css — so all of
