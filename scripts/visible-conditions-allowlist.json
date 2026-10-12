@@ -1,0 +1,40 @@
+{
+  "note": "Known occurrences of visible= on $state.* — measured unusable for BOUND data (arc-contracts §28.1). Each entry is a deliberate, reviewed exception; the guard fails on anything not listed and on stale entries.",
+  "exceptions": [
+    {
+      "path": ".aup/pages/preview.aup",
+      "text": "view layout=inline href=\"/edit/${state.post.slug}\" style={cursor: pointer, color: \"var(--color-dim)\"} visible=$state.post {",
+      "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
+    },
+    {
+      "path": ".aup/pages/preview.aup",
+      "text": "view gap=md visible=$state.post {",
+      "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
+    },
+    {
+      "path": ".aup/pages/preview.aup",
+      "text": "view style={minHeight: \"280px\", borderRadius: \"var(--radius-lg, 10px)\", background: \"var(--color-border) url(${state.post.coverImage}) center / cover no-repeat\"} visible=$state.post.coverImage {",
+      "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
+    },
+    {
+      "path": ".aup/pages/admin/compose-edit.aup",
+      "text": "view gap=lg size={flex: 1} visible=$state.post {",
+      "reason": "DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state save control"
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "view gap=sm visible=$state.open {",
+      "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
+    },
+    {
+      "path": ".aup/pages/site/categories.aup",
+      "text": "view gap=sm visible=$state.open {",
+      "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
+    },
+    {
+      "path": ".aup/pages/ops/factory.aup",
+      "text": "view gap=sm visible=$state.open {",
+      "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
+    }
+  ]
+}

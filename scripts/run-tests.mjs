@@ -74,6 +74,7 @@ const FAST_TESTS = new Set([
   'arcblog-runtime-ids',
   'arcblog-theme',
   'arcblog-ui-budget',
+  'arcblog-visible-conditions',
 ]);
 
 /**
@@ -95,6 +96,7 @@ const GUARDS = {
   'arcblog-run-tests': [/^scripts\/run-tests\.mjs$/, /^scripts\/arcblog-run-tests/, /^package\.json$/],
   'arcblog-runtime-ids': [/^\.aup\/wrapper\.aup$/, /^\.aup\/pages\//, /^scripts\/arcblog-runtime-ids/],
   'arcblog-theme': [/^\.aup\/app\.aup$/, /^\.aup\/wrapper\.aup$/, /^\.web\//, /^scripts\/arcblog-theme/],
+  'arcblog-visible-conditions': [/^\.aup\/pages\//, /^scripts\/arcblog-visible-conditions/, /^scripts\/visible-conditions-allowlist\.json$/],
   'arcblog-ui-budget': [/^scripts\/arcblog-ui-budget/, /^scripts\/ui-budget-baseline\.json$/, /^\.aup\/pages\//],
 };
 
