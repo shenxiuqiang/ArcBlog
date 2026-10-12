@@ -91,6 +91,15 @@ node scripts/arcblog-anomalies.mjs refresh|show  # PRD-OPS-01 anomaly zone: the 
                                              # + node/anomalies.json (stateNote) for ?page=dashboard
                                              # (refresh [--origin <url>] [--adapter mock|ocap]; show is read-only;
                                              # the page cannot branch on $state.* — B13)
+node scripts/arcblog-settings.mjs show         # instance settings records (spec §15.5 appearance / §15.9 general)
+                          # (set/rollback subcommands; the console writes the same config/general/* records)
+node scripts/arcblog-bookmarks.mjs where --user <did>   # the CLI half of ?page=saved: per-user reading list
+                          # records live in the USER's space (/user/<did>/arcblog/bookmarks/…), never platform-side
+node scripts/arcblog-ui-budget.mjs [--strict] # the console content-column budget ratchet (UI standard §2.7.2);
+                          # --write-baseline re-records it — a deliberate, disclosed act (never a silent bump)
+node scripts/arcblog-dist-secrets.mjs --check # dist/ secret + junk gate (part of `npm run build`'s scrub step)
+node scripts/arcblog-deploy.mjs [--origin <url>]   # THE deploy pipeline: build → verify:artifacts → recipes install
+                          # → deploy → rss (step 3b, AFTER the deploy) → dist-secrets; then liveness checks
 node scripts/arcblog-console-nav.mjs         # regenerate the console sidebar from scripts/console-nav.mjs
 node scripts/arcblog-console-nav.mjs --check # verify the console page carries that menu (part of npm test)
 arc dsl lint                                 # dead locale keys + DSL formatting. NEVER run `--fix`
@@ -253,8 +262,9 @@ Project-level skills live in `.agents/skills/`:
   `npx skills update -p` will not touch it). It is the condensed, measured
   knowledge of this language: the verified primitive inventory (54 usable, 9 that
   must never be written), renderer-read prop contracts, `component`/`use`/`for`
-  semantics versus the unusable `include`, id/i18n/interpolation rules, 23 runtime
-  gotchas and the verification recipes. **Read it before touching `.aup` files**
+  semantics versus the unusable `include`, id/i18n/interpolation rules, the numbered
+  runtime gotchas (take the count from `references/runtime-gotchas.md` — prose
+  counts drift) and the verification recipes. **Read it before touching `.aup` files**
   instead of re-deriving platform behaviour; when a new measurement contradicts
   it, update the skill in the same change (see `references/verification.md` §6).
 

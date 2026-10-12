@@ -15,7 +15,7 @@
 // appear in the script body. That catches a removed/renamed command or a deleted
 // script; it cannot catch a command that is present but misrouted. The behavioural
 // coverage lives in each CLI's own live suite.
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
@@ -84,4 +84,30 @@ test('the doc parser actually finds commands (guard against a silently empty che
     found.map((f) => `${f.script} ${f.command}`.trim()).sort(),
     ['scripts/arcblog-doctor.mjs', 'scripts/arcblog-recipes.mjs check', 'scripts/arcblog-recipes.mjs install', 'scripts/arcblog-recipes.mjs list', 'scripts/arcblog-rss.mjs'],
   );
+});
+
+/**
+ * The REVERSE direction (added 2026-10-12): the guard above proves every documented
+ * command exists; nothing proved that every CLI is documented. Seven were not — the
+ * deploy pipeline and the settings/bookmarks/budget/dist-secrets tools among them —
+ * so an operator reading the entry doc could not know they existed. Exemptions are
+ * deliberate and carry a reason; anything else must be named in one of DOCS.
+ */
+const CLI_EXEMPTIONS = {
+  'arcblog-browser-probe.mjs': 'diagnostic probe (needs a live browser + session cookie); not an operator command',
+  'arcblog-roles-probe.mjs': 'diagnostic probe (DOM half of the roles evidence; needs an already-logged-in browser)',
+};
+
+test('every CLI script is documented (or exempt with a reason)', () => {
+  const docsText = DOCS.filter((d) => existsSync(join(REPO, d)))
+    .map((d) => readFileSync(join(REPO, d), 'utf8'))
+    .join('\n');
+  const scripts = readdirSync(join(REPO, 'scripts'))
+    .filter((f) => f.startsWith('arcblog-') && f.endsWith('.mjs') && !f.endsWith('.test.mjs'));
+
+  const undocumented = scripts.filter((f) => !docsText.includes(f) && !(f in CLI_EXEMPTIONS));
+  assert.deepEqual(undocumented, [], `CLI scripts nobody documents (add a line to CLAUDE.md or exempt with a reason): ${undocumented.join(', ')}`);
+
+  const stale = Object.keys(CLI_EXEMPTIONS).filter((f) => !scripts.includes(f));
+  assert.deepEqual(stale, [], `exempted CLIs that no longer exist: ${stale.join(', ')}`);
 });
