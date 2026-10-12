@@ -64,6 +64,7 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FAST_TESTS = new Set([
   'arcblog-console-nav',
   'arcblog-dist-secrets',
+  'arcblog-doc-commands',
   'arcblog-hero-carousel',
   'arcblog-i18n',
   'arcblog-memory',
@@ -84,6 +85,7 @@ const FAST_TESTS = new Set([
  */
 const GUARDS = {
   'arcblog-console-nav': [/^scripts\/console-nav\.mjs$/, /^scripts\/arcblog-console-nav/, /^\.aup\/pages\//],
+  'arcblog-doc-commands': [/^CLAUDE\.md$/, /^docs\/05-开发文档\/06-/, /^scripts\/arcblog-doc-commands/, /^scripts\/arcblog-[\w-]+\.mjs$/],
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   'arcblog-i18n': [/^\.aup\//, /^scripts\/arcblog-i18n/],
