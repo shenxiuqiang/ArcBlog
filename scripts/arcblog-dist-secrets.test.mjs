@@ -57,7 +57,7 @@ test('dist/ carries no key material, and the scrub removes only the dist copies 
   assert.deepEqual(
     dist.nonProductFiles,
     [],
-    `source trees inside dist/ (run \`npm run build\` — the running blocklet never reads docs/, _research/ or scripts/): ${dist.nonProductFiles.slice(0, 5).join(', ')}${dist.nonProductFiles.length > 5 ? ` … +${dist.nonProductFiles.length - 5}` : ''}`,
+    `non-product material inside dist/ (run \`npm run build\` — the running blocklet never reads docs/, _research/, scripts/, nor the root dev files AGENTS.md / CLAUDE.md / README.md / skills-lock.json / package-lock.json / .gitignore): ${dist.nonProductFiles.slice(0, 5).join(', ')}${dist.nonProductFiles.length > 5 ? ` … +${dist.nonProductFiles.length - 5}` : ''}`,
   );
 
   // ---- 2. detector + scrub, against a throwaway fixture -------------------

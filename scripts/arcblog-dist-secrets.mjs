@@ -50,6 +50,21 @@ export const JUNK_DIRS = ['logs', 'tmp'];
  * wasteful, not a secret leak, and a foreign deployment's choices are not this guard's business.
  */
 export const NON_PRODUCT_DIRS = ['docs', '_research', 'scripts'];
+/**
+ * Dev-instruction and dev-metadata FILES at the repo root (2026-10-12, ruled as part of ENG-38's
+ * "dist ships what runs"): none of them is read at runtime, and none is even addressable — the AUP
+ * handler owns `/`, so `/CLAUDE.md`, `/README.md`, `/skills-lock.json` all answer with the app shell
+ * (measured: 200 text/html 4731 B). Keeping them also created a silent staleness class: the deployed
+ * copy of CLAUDE.md lagged the source by ten rounds with nothing to notice it.
+ */
+export const NON_PRODUCT_FILES = new Set([
+  'AGENTS.md',
+  'CLAUDE.md',
+  'README.md',
+  'skills-lock.json',
+  'package-lock.json',
+  '.gitignore',
+]);
 export const JUNK_BASENAMES = new Set(['.node-pk.pem']);
 
 /** True when a dist-relative path is local junk rather than product content. */
@@ -61,7 +76,9 @@ export function isJunkPath(rel) {
 
 /** True when a dist-relative path is source material the running blocklet never reads. */
 export function isNonProductPath(rel) {
-  return NON_PRODUCT_DIRS.includes(String(rel).split('/')[0]);
+  const p = String(rel);
+  if (NON_PRODUCT_DIRS.includes(p.split('/')[0])) return true;
+  return NON_PRODUCT_FILES.has(p); // root-level files only
 }
 
 /** A PEM private key header — the second line of defence for key-ish files. */
