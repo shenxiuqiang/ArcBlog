@@ -12,7 +12,7 @@
 //    that file so the list can only shrink.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
@@ -153,23 +153,80 @@ test('the recorded output of a count-style command is what the command prints', 
  * so the cheapest honest gate is to run exactly those commands and compare, which is also how the
  * ledger's recorded-output rule (ENG-36) works.
  */
-test('every row of the architecture inventory table equals what its own command prints', () => {
-  const text = readFileSync(join(REPO, 'docs/05-开发文档/00-架构总览.md'), 'utf8');
-  const rows = [...text.matchAll(/^\| ([^|]+?) \| \*\*(\d+)\*\* \| `([^`]+)`/gm)].map((m) => ({
-    fact: m[1].trim(),
-    stated: Number(m[2]),
-    command: m[3].replace(/\\\|/g, '|').trim(),
-  }));
-  assert.ok(rows.length >= 3, `inventory rows parsed: ${rows.length}`);
+test('every living volume\'s count row equals what its own command prints', () => {
+  const files = [
+    ...readdirSync(join(REPO, 'docs/05-开发文档')).map((f) => `docs/05-开发文档/${f}`),
+    ...readdirSync(join(REPO, 'docs/06-功能开发列表')).map((f) => `docs/06-功能开发列表/${f}`),
+    ...readdirSync(join(REPO, 'docs/07-团队与开发规范')).map((f) => `docs/07-团队与开发规范/${f}`),
+    ...readdirSync(join(REPO, 'docs/08-其他')).map((f) => `docs/08-其他/${f}`),
+  ].filter((f) => f.endsWith('.md') && !f.includes('_提纲') && !f.includes('附件'));
 
+  // A row is verifiable when it carries EXACTLY ONE bold number and EXACTLY ONE count command — the
+  // shape of a table that states a measured value next to its recompute command. Rows with several
+  // numbers are history rows (`world/ 22 → 20`, `原判据 … → 0`) and are deliberately out of scope.
+  const COUNT = /(wc -l|grep -c|CONSOLE_SECTIONS\.length)/;
   const problems = [];
-  for (const row of rows) {
-    const res = spawnSync('bash', ['-c', row.command], { cwd: REPO, encoding: 'utf8' });
-    const printed = /(\d+)\s*$/.exec((res.stdout ?? '').trim());
-    if (!printed) { problems.push(`${row.fact}: the command printed no number (${row.command})`); continue; }
-    if (Number(printed[1]) !== row.stated) {
-      problems.push(`${row.fact}: table says ${row.stated}, the command prints ${printed[1]} — ${row.command}`);
+  let checked = 0;
+  for (const rel of files) {
+    for (const [i, line] of readFileSync(join(REPO, rel), 'utf8').split('\n').entries()) {
+      if (!line.startsWith('|')) continue;
+      const numbers = [...line.matchAll(/\*\*(\d+)\*\*/g)].map((m) => Number(m[1]));
+      const commands = [...line.matchAll(/`([^`]{8,160})`/g)]
+        .map((m) => m[1].replace(/\\\|/g, '|').trim())
+        .filter((c) => COUNT.test(c) && /^(ls|grep|find|node|wc)\b/.test(c) && !c.includes('<'));
+      if (numbers.length !== 1 || commands.length !== 1) continue;
+      // A row that DECLARES its measurement date (`证据基线 …（2026-10-01）`) is a historical
+      // record, exactly like DEF-10's "world/ 22 → 20": rewriting it would be fabricating
+      // history, so it is out of scope here. A current claim carries no such date.
+      if (/\d{4}-\d{2}-\d{2}/.test(line) && /基线|历史|当时|原判据/.test(line)) continue;
+      checked += 1;
+      const command = commands[0];
+      const res = spawnSync('bash', ['-c', command], { cwd: REPO, encoding: 'utf8', timeout: 60000 });
+      const printed = /(\d+)\s*$/.exec((res.stdout ?? '').trim());
+      if (!printed) problems.push(`${rel}:${i + 1}: the command printed no number (${command})`);
+      else if (Number(printed[1]) !== numbers[0]) {
+        problems.push(`${rel}:${i + 1}: the table says ${numbers[0]}, the command prints ${printed[1]} — ${command}`);
+      }
     }
   }
-  assert.deepEqual(problems, [], `inventory rows whose stated value is stale:\n  ${problems.join('\n  ')}`);
+  assert.ok(checked >= 5, `count rows verified across the living volumes: ${checked}`);
+  assert.deepEqual(problems, [], `count rows whose stated value is stale:\n  ${problems.join('\n  ')}`);
+});
+
+test('every count-style command in a living doc actually runs and prints a number', () => {
+  const files = [
+    ...readdirSync(join(REPO, 'docs/05-开发文档')).map((f) => `docs/05-开发文档/${f}`),
+    ...readdirSync(join(REPO, 'docs/06-功能开发列表')).map((f) => `docs/06-功能开发列表/${f}`),
+    ...readdirSync(join(REPO, 'docs/07-团队与开发规范')).map((f) => `docs/07-团队与开发规范/${f}`),
+    ...readdirSync(join(REPO, 'docs/08-其他')).map((f) => `docs/08-其他/${f}`),
+  ].filter((f) => f.endsWith('.md') && !f.includes('_提纲') && !f.includes('附件'));
+
+  // `grep -c A\|B` is markdown-safe inside a table but a SHELL PIPELINE when copied — it pipes into a
+  // command called B. Nine such commands were in the living volumes; the fix is multiple -e flags.
+  const COUNT = /(wc -l|grep -c|CONSOLE_SECTIONS\.length)/;
+  const problems = [];
+  let checked = 0;
+  for (const rel of files) {
+    const text = readFileSync(join(REPO, rel), 'utf8');
+    for (const m of text.matchAll(/`([^`]{10,160})`/g)) {
+      const command = m[1].replace(/\\\|/g, '|').trim();
+      if (!COUNT.test(command)) continue;
+      if (!/^(grep|ls|find|node -e|wc)\b/.test(command)) continue;
+      if (command.includes('<')) continue; // usage templates like `wc -l <file>` are illustrations, not commands
+      checked += 1;
+      const res = spawnSync('bash', ['-c', command], { cwd: REPO, encoding: 'utf8', timeout: 60000 });
+      // `grep -c` exits 1 when nothing matches and still prints a legitimate 0, so rc=1 is fine
+      // ONLY when the output is a zero count; anything else (127, a pipeline into a missing command,
+      // a command reading stdin) is the defect this rule exists for.
+      const out = (res.stdout ?? '').trim();
+      const zeroOnly = /^0$/.test(out.split('\n').pop()?.trim() ?? '');
+      if (res.status !== 0 && !(res.status === 1 && zeroOnly)) {
+        problems.push(`${rel}: the command exits ${res.status} — ${command}`);
+        continue;
+      }
+      if (!/\d/.test(out)) problems.push(`${rel}: the command prints no number — ${command}`);
+    }
+  }
+  assert.ok(checked >= 15, `count-style commands executed: ${checked}`);
+  assert.deepEqual(problems, [], `count commands that do not run as written:\n  ${problems.join('\n  ')}`);
 });
