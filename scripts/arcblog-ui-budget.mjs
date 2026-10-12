@@ -290,11 +290,13 @@ export function measure(source, file, hasSidebar = true) {
   const whole = withoutSidebar.join('\n');
   // `tech` counts what the operator can SEE, not the wiring. AFS paths and record
   // ids also live inside prop values (`from "…"`, `path="…"`, `propBind={…}`,
-  // `exec "…"`), where they are structural and invisible; counting those punished
-  // every data page for having two lists (measured 2026-09-29: a P1 page needs
-  // ~4 of them before it renders anything — dev-posts, task-15). Wiring is
-  // stripped first; a rendered path/DID/hash still counts.
-  const WIRING = /(?:\bfrom\s+"[^"]*"|\bpath\s*=\s*"[^"]*"|\bpath\s*:\s*"[^"]*"|\bexec\s+"[^"]*"|propBind=\{[^}]*\})/g;
+  // `exec "…"`, `surface url="…"`), where they are structural and invisible;
+  // counting those punished every data page for having two lists (measured
+  // 2026-09-29: a P1 page needs ~4 of them before it renders anything — dev-posts,
+  // task-15) and, later, for moving a single-record read from `propBind` to the
+  // cold-start `surface url=` channel (DEF-22). Wiring is stripped first; a
+  // rendered path/DID/hash still counts.
+  const WIRING = /(?:\bfrom\s+"[^"]*"|\bpath\s*=\s*"[^"]*"|\bpath\s*:\s*"[^"]*"|\bexec\s+"[^"]*"|propBind=\{[^}]*\}|\bsurface\s+url\s*=\s*"[^"]*")/g;
   const rendered = whole.replace(WIRING, ' ');
   const tech =
     (rendered.match(/\bdid:(key|blocklet|abt):[A-Za-z0-9]+/g) || []).length +

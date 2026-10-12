@@ -2693,3 +2693,63 @@ surface reader-record url=$state.loc editable=false { p :note }
 
 `preview` 的**写入**按钮（发布/删除）仍依赖 `propBind` 的 `state.post.*` 作为 exec args ⇒ 保留 `visible=$state.post`
 的 fail-closed 闸门（allowlist 项），页面常驻说明写明"写入前刷新一次"；**未**在登录态复核（无 DID 会话）。
+
+## 58. `?page=` 面上没有 `$state.loc`：字面路径 `surface url=` + 该目录的 recipe 仍然首访取数（DEF-22，2026-10-12 实测）
+
+**结论层 = [`docs/05-开发文档/02` §2 B14](../02-平台能力与边界.md)（本次扩写）。** 本节是原始证据。
+
+### 58.1 `/?page=author` 是**没有 afs 绑定**的路径
+
+`$state.loc` 只在 `blocklet.yaml: sites[].bindings[]` 里带 `afs:` 且 `path` 与 `location.pathname`
+匹配时才有值（§57.3 的 `Un()`）。控制台/公开页走 `/?page=<name>` ⇒ `pathname = "/"`，而本仓只有六条
+绑定带 `afs`（`/posts`、`/posts/{slug}`、`/preview/{slug}`、`/edit/{slug}`、`/pages/{slug}`、`/manage/seo`）
+⇒ **这些页面上 `surface url=$state.loc` 拿不到记录路径**（不是失败，而是根本没有这个 state 值）。
+
+可用的替代通道 = **字面路径**：`surface url="/instance/app/arcblog/node/profile.json" editable=false`。
+`D1()` 读 `r.url || r.src`，节点级 `src` 本来就是字面量（§57.3 的范围/反例①），所以这里"不插值"正是需要的性质。
+**但 validator 要求 `surface` 必须有 `src` 或非空 children**（否则 `invalid_page_dsl: Surface must have src or
+non-empty children`）⇒ 字面路径 surface 必须带一个 chrome 子节点（本仓用它放该卡片的 `h2`）。
+
+### 58.2 一份 recipe 服务一个目录 ⇒ 字段是**并集**，缺字段渲染成空串
+
+`surface` 只按 `<记录目录>/.aup/item.json` 找模板（§57.4），**一个目录 = 一份 recipe**。
+`/instance/app/arcblog/node/` 同时存放 `profile.json` / `identity.json` / `health.json` / `discovery.json` /
+`registry.json` / `factories.json` ⇒ 这份 recipe 必须同时容纳多种记录的字段。实测（served bundle）：
+
+* 缺字段**不会**打出 `undefined`：`Zd()` 走 `xh()` 取不到值时 `p == null` ⇒ 拼 **空串**；
+* `key-value-list` 的 `hideWhenEmpty` 判据 = `Id()`：`null | "" | [].length===0`（**数组非空不算空**，
+  `roles: ["basic"]` 会经 `String(...)` 渲染成 `basic`）；
+* recipe 里整串 `"${content.x}"` 若命中**对象**，`Qd()` 直接把它当对象写进 prop（不是字符串）。
+
+⇒ 处方：**一份并集 recipe + 全部 `hideWhenEmpty: true`**；字段标签用**语言中立的技术名**
+（`DID` / `roles` / `version` / `factory` / `stateNote` …），因为 recipe 是 AFS 记录、取不到 `$t()`。
+
+### 58.3 实测：`?page=author` 首访
+
+新 context（`--user-data-dir` 每次新建，无 cookie、无 reload），等 `.splash` 的
+"server is preparing this page" 消失后读 DOM：
+
+| 指标 | 改前（`propBind`） | 改后（两个字面 `surface url=`） |
+| --- | --- | --- |
+| `document.body.innerText` | **265** 字符 | **437** 字符（标题文案定为「节点信息」后复测；此前标题写作 Node 时为 470） |
+| `[data-aup-surface-src]` | `[]` | `["/instance/app/arcblog/node/profile.json","/instance/app/arcblog/node/identity.json"]` |
+| 记录字段 | h1 空、DID/认证方式/角色标签下**无值** | `H1:ArcBlog`、`A DID-native publishing space…`、`DID: did:blocklet:arcblog`、`roles: basic`、`version: 0.3.7`、`authMethod: blocklet` |
+| 首访 rpc | 只有 theme bridge 的 3 条 settings 读 | `stat`×2 → `read profile.json` / `read identity.json` → `read node/.aup/item.json`（可选） |
+
+同一页上**同一份 recipe 渲染 `node/registry.json`**的实测（临时探针页，测后还原）：
+`factory / network=beta / adapter=ocap / total=0 / refreshedAt / stateNote / ownNote` 全部取到，
+即"一份并集 recipe 服务多记录"在真实记录上可用。
+
+### 58.4 权限边界（不得为读记录而提权）
+
+`node/` 是 **guest 可读**（`blocklet.yaml networkRead`），所以公开页可以读 `profile.json` / `identity.json`；
+`config/`（`config/roles.json`、`config/general/*`）是 **admin-only** ⇒ 若把控制台页改成字面 surface 读这些记录，
+**只有 admin 会话**能读到，配方记录也不例外；**不得**为了让页面能读而给 admin 记录加 guest 绑定（提权）。
+未登录时这些页只渲染登录卡（实测 `?page=operations|registry|factory|general` 冷启动 innerText = 55–61 字符，全是门文案）。
+
+### 58.5 recipe `install` 的语义已收紧（同一轮）
+
+`install` 以前对"instance 上已有、但与 seed 不同"的 recipe **默认保留**（要 `--force` 才覆盖）。
+这与 DEF-21/DEF-22 的失败模式同源：recipe 落后于 seed 时，页面会静默退化成原始 JSON，而 diff 上什么都看不到。
+现改为 **与 seed 不同即覆盖**（`--keep-local` 显式保留，`check` 仍是无写入的漂移检测）；
+`ui-budget` 的 `tech` 也因此把 `surface url="…"` 与 `from` / `path` / `exec` / `propBind` 一同视为**wiring**（不计数）。

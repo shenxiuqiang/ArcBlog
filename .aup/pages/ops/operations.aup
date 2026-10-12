@@ -1,19 +1,13 @@
 page operations {
   i18n {
     desc { en "Live state of this node: health, discovery, media and agent grants." zh "本节点实时状态：健康、发现、媒体与 Agent 授权。" }
-    render-timing { en "First-load note: on this platform the health / discovery projections are bound AFTER the first render, so a cold visit can show the empty placeholder for every field below — read that as \"not bound yet / unavailable\", never as \"the record is empty\". Reload once to bind it (measured 2026-09-28)." zh "首屏提示：本平台在首次渲染之后才完成健康 / 发现投影的绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。刷新一次即可绑定（2026-09-28 实测）。" }
+    render-timing { en "First-load note: the health and discovery projections are read through a surface pointed straight at their record files, so they are here on the first load — no reload needed (DEF-22 / arc-contracts §57; the older propBind channel only bound after the first render). A field rendered as — means the record does not carry that field, not that the node is unhealthy." zh "首屏提示：健康与发现投影由一个直接指向记录文件的 surface 读取，首次打开即已取到，无需刷新（DEF-22 / arc-contracts §57；旧的 propBind 通道要到首次渲染之后才绑定）。显示为「—」的字段表示该记录里没有这个字段，不代表节点异常。" }
     discovery { en "Discovery document" zh "发现文档" }
     discovery-empty { en "How to publish it: node scripts/arcblog-network.mjs discovery publish" zh "如何发布：node scripts/arcblog-network.mjs discovery publish" }
-    discovery-generated { en "Generated" zh "生成于" }
-    discovery-protocol { en "Protocol" zh "协议" }
-    discovery-transport { en "Transport" zh "传输" }
     gate-desc { en "Sign in with DID Wallet to view node health and discovery." zh "使用 DID Wallet 登录后查看节点健康与发现。" }
     gate-title { en "Operations" zh "运维" }
     health { en "Node health" zh "节点健康" }
     health-checked { en "Checked" zh "检查于" }
-    health-did { en "DID" zh "DID" }
-    health-status { en "Status" zh "状态" }
-    health-version { en "Blocklet version" zh "Blocklet 版本" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     title { en "Operations" zh "运维" }
   }
@@ -113,20 +107,29 @@ page operations {
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={health: "/instance/app/arcblog/node/health.json"} {
+                // DEF-22 / B14: this console page is `/?page=operations` (pathname
+                // `/`), which matches no `afs:` binding — `$state.loc` does not exist
+                // here, so the two node projections are read through LITERAL
+                // `surface url`s. `propBind` would only bind after the first render
+                // (cold visit = empty card). The markup is `node/.aup/item.json`;
+                // the projection's own precomputed strings are printed, never
+                // re-derived on the page.
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   h2 :health level=2 style={fontSize: "var(--type-body)"}
-                  key-value-list dense=true fields=[{label: "$t(operations.health-status)", value: "${state.health.status}"}, {label: "$t(operations.health-version)", value: "${state.health.version}"}, {label: "$t(operations.health-did)", value: "${state.health.did}", monospace: true, copyable: true}]
                   p :health-checked scale=sm intent=muted
-                  time mode=display value="${state.health.checkedAt}" timeMode=relative
-                }
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={discovery: "/instance/app/arcblog/node/discovery.json"} {
-                  h2 :discovery level=2 style={fontSize: "var(--type-body)"}
-                  key-value-list dense=true fields=[{label: "$t(operations.discovery-protocol)", value: "${state.discovery.protocol}"}, {label: "$t(operations.discovery-transport)", value: "${state.discovery.transport}"}]
-                  row gap=xs cross=center {
-                    p :discovery-generated scale=sm intent=muted
-                    time mode=display value="${state.discovery.generatedAt}" timeMode=relative
+                  surface url="/instance/app/arcblog/node/health.json" editable=false {
+                    // A record value is printed VERBATIM: `time mode=display` falls
+                    // back to `now()` for an empty value (B13), which would print a
+                    // fake timestamp on a record that has no checkedAt.
+                    p "${content.checkedAt}" scale=sm intent=muted
                   }
+                }
+                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                  h2 :discovery level=2 style={fontSize: "var(--type-body)"}
                   p :discovery-empty scale=sm intent=muted
+                  surface url="/instance/app/arcblog/node/discovery.json" editable=false {
+                    p "${content.generatedAt}" scale=sm intent=muted
+                  }
                 }
               }
             }

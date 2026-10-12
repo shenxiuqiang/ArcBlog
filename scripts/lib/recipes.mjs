@@ -41,11 +41,24 @@ export const RECIPE_FILE = 'item.json';
 /**
  * The record directories whose `surface` needs an item recipe, with the
  * `seed/recipes/<source>/item.json` source that is installed into them.
+ *
+ * `schemas` is a LIST because one directory can hold more than one kind of
+ * record: `node/` carries both `profile.json` (world/node.yaml) and
+ * `identity.json` (world/node-identity.yaml), and one recipe has to interpolate
+ * fields from both (a field missing from a record interpolates to the empty
+ * string — measured in the served bundle: `xh()` returns null and `Zd()` prints
+ * "" — so a merged field list is safe, and `hideWhenEmpty` drops the empty row).
  */
 export const RECIPES = [
-  { collection: 'posts', dir: '/instance/app/arcblog/posts', source: 'posts', schema: 'post' },
-  { collection: 'drafts', dir: '/instance/app/arcblog/drafts', source: 'drafts', schema: 'post' },
-  { collection: 'pages', dir: '/instance/app/arcblog/pages', source: 'pages', schema: 'page' },
+  { collection: 'posts', dir: '/instance/app/arcblog/posts', source: 'posts', schemas: ['post'] },
+  { collection: 'drafts', dir: '/instance/app/arcblog/drafts', source: 'drafts', schemas: ['post'] },
+  { collection: 'pages', dir: '/instance/app/arcblog/pages', source: 'pages', schemas: ['page'] },
+  // DEF-22: the node's own metadata records (profile + identity) are read by the
+  // public author page through a LITERAL `surface url=` — `?page=author` is not an
+  // `afs:`-bound path, so `$state.loc` does not exist there and the surface must be
+  // given the record path directly. `node/` is guest-readable (blocklet.yaml
+  // networkRead), so this recipe only ever renders public node metadata.
+  { collection: 'node', dir: '/instance/app/arcblog/node', source: 'node', schemas: ['node', 'node-identity'] },
 ];
 
 /** `/instance/app/arcblog/posts` → `/instance/app/arcblog/posts/.aup/item.json`. */

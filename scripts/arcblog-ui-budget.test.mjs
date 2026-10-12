@@ -98,6 +98,13 @@ test('tech counts rendered identifiers, not prop wiring', () => {
   const wiring =
     'page x {\n  view {\n    afs-list from "/instance/app/arcblog/posts" {\n      action -> exec "/.actions/write" path="/instance/app/arcblog/drafts/${args.slug}.json"\n    }\n    afs-list propBind={drafts: "/instance/app/arcblog/drafts"} from "/instance/app/arcblog/drafts" {\n      p "row"\n    }\n  }\n}\n';
   assert.equal(measure(wiring, 'synthetic.aup', false).tech, 0, 'wiring must not count');
+  // DEF-22: a single-record read moved from `propBind` to a LITERAL
+  // `surface url=` (console pages have no `afs:` binding, so `$state.loc` cannot
+  // be used). The record path is still structural wiring, invisible to the
+  // operator — charging it would make the cold-start fix a budget regression.
+  const surfaceWiring =
+    'page x {\n  view {\n    surface url="/instance/app/arcblog/node/registry.json" editable=false {\n      p "note"\n    }\n  }\n}\n';
+  assert.equal(measure(surfaceWiring, 'synthetic.aup', false).tech, 0, 'surface url wiring must not count');
   const rendered = 'page x {\n  view {\n    key-value-list fields=[{label: "DID", value: "did:key:zABC123"}]\n    p "hash sha256:0123456789abcdef"\n  }\n}\n';
   assert.equal(measure(rendered, 'synthetic.aup', false).tech, 2, 'rendered identifiers must still count');
 });

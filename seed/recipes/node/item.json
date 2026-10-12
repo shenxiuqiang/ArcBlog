@@ -1,0 +1,68 @@
+{
+  "id": "node-record-card",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "md"
+    },
+    "style": {
+      "background": "var(--card-bg)",
+      "border": "var(--card-border)",
+      "borderRadius": "var(--radius-lg, 10px)",
+      "padding": "var(--space-block, 16px)"
+    }
+  },
+  "children": [
+    {
+      "id": "node-record-name",
+      "type": "text",
+      "props": {
+        "content": "${content.name}",
+        "level": 1
+      }
+    },
+    {
+      "id": "node-record-description",
+      "type": "text",
+      "props": {
+        "content": "${content.description}",
+        "intent": "muted"
+      }
+    },
+    {
+      "id": "node-record-core",
+      "type": "key-value-list",
+      "props": {
+        "dense": true,
+        "fields": [
+          { "label": "DID", "value": "${content.did}", "monospace": true, "copyable": true, "hideWhenEmpty": true },
+          { "label": "status", "value": "${content.status}", "hideWhenEmpty": true },
+          { "label": "authMethod", "value": "${content.authMethod}", "hideWhenEmpty": true },
+          { "label": "roles", "value": "${content.roles}", "hideWhenEmpty": true },
+          { "label": "version", "value": "${content.version}", "hideWhenEmpty": true },
+          { "label": "checkedAt", "value": "${content.checkedAt}", "monospace": true, "copyable": true, "hideWhenEmpty": true }
+        ]
+      }
+    },
+    {
+      "id": "node-record-registry",
+      "type": "key-value-list",
+      "props": {
+        "dense": true,
+        "fields": [
+          { "label": "factory", "value": "${content.factory}", "monospace": true, "copyable": true, "hideWhenEmpty": true },
+          { "label": "network", "value": "${content.network}", "hideWhenEmpty": true },
+          { "label": "adapter", "value": "${content.adapter}", "hideWhenEmpty": true },
+          { "label": "total", "value": "${content.total}", "hideWhenEmpty": true },
+          { "label": "refreshedAt", "value": "${content.refreshedAt}", "monospace": true, "copyable": true, "hideWhenEmpty": true },
+          { "label": "stateNote", "value": "${content.stateNote}", "hideWhenEmpty": true },
+          { "label": "ownNote", "value": "${content.ownNote}", "hideWhenEmpty": true },
+          { "label": "protocol", "value": "${content.protocol}", "hideWhenEmpty": true },
+          { "label": "transport", "value": "${content.transport}", "hideWhenEmpty": true },
+          { "label": "generatedAt", "value": "${content.generatedAt}", "monospace": true, "copyable": true, "hideWhenEmpty": true },
+          { "label": "blockletVersion", "value": "${content.blockletVersion}", "hideWhenEmpty": true }
+        ]
+      }
+    }
+  ]
+}

@@ -24,20 +24,8 @@ page registry {
     probe-p2-label { en "Probe P-2 (beta real-chain enumeration)" zh "探针 P-2（beta 真链枚举）" }
     probe-p2-value { en "Verified (2026-10-01, ocap adapter on beta): the minimal query shape addressFilter.receiver + paging.{size,cursor} is accepted and the cursor paginates (docs/05-开发文档/07 §1)." zh "已验证通过（2026-10-01，ocap 适配器，beta 真链）：最小查询形参 addressFilter.receiver + paging.{size,cursor} 被接受、游标可分页（docs/05-开发文档/07 §1）。" }
     reach-labels { en "Four reachability states (PRD-NET-03): reachable / stale / never / offline — fixed names, never renamed." zh "可达性四态（PRD-NET-03）：可达 / 陈旧 / 从未可达 / 离线——固定命名，不得新造词。" }
-    state-note { en "Projection state (computed by the CLI)" zh "投影状态（由 CLI 计算）" }
-    own-note { en "Am I in this registry? (computed by the CLI)" zh "我是否在这个注册表里？（由 CLI 计算）" }
     status-title { en "Connection status" zh "接入状态" }
     status-wired { en "Wired end to end: the adapters enumerate the chain registry (listStakes — P-1 mock / P-2 ocap, both verified 2026-10-01), the CLI's registry refresh writes the projection, and this page renders it. The chain remains the source of truth — a refresh re-reads it." zh "已端到端接通：适配器层枚举链上注册表（listStakes——P-1 mock / P-2 ocap，均于 2026-10-01 验证），CLI 的 registry refresh 写入投影，本页渲染投影。链上仍是事实来源——刷新即重新读取。" }
-    sum-adapter { en "Adapter" zh "适配器" }
-    sum-probe-answered { en "Endpoints answered" zh "探测应答数" }
-    sum-probe-enabled { en "Probe" zh "探测" }
-    sum-probe-at { en "Probe run at" zh "探测时间" }
-    sum-probe-checked { en "Endpoints probed" zh "已探测端点数" }
-    sum-probe-timeout { en "Probe timeout (ms)" zh "探测超时（ms）" }
-    sum-factory { en "Factory (stake receiver)" zh "工厂地址（质押 receiver）" }
-    sum-network { en "Network" zh "网络" }
-    sum-refreshed { en "Projection refreshed at" zh "投影刷新时间" }
-    sum-total { en "Staked nodes" zh "质押节点数" }
     title { en "Node registry" zh "节点注册表" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -127,7 +115,7 @@ page registry {
             p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
           }
         }
-        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} propBind={registry: "/instance/app/arcblog/node/registry.json"} {
+        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h2 :title level=2 style={fontSize: "var(--type-subheading)"}
@@ -138,16 +126,21 @@ page registry {
                 h3 :status-title level=3 style={fontSize: "var(--type-body)"}
                 p :status-wired intent=muted
                 p :reach-labels intent=muted scale=sm
-                key-value-list dense=true fields=[{label: "$t(registry.sum-probe-enabled)", value: "${state.registry.probe.enabled}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-timeout)", value: "${state.registry.probe.timeoutMs}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-checked)", value: "${state.registry.probe.checked}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-answered)", value: "${state.registry.probe.answered}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-at)", value: "${state.registry.probe.checkedAt}", hideWhenEmpty: true}]
                 key-value-list dense=true fields=[{label: "$t(registry.probe-p1-label)", value: "$t(registry.probe-p1-value)"}, {label: "$t(registry.probe-p2-label)", value: "$t(registry.probe-p2-value)"}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
                 p :pending-note intent=info scale=sm
                 key-value-list dense=true fields=[{label: "$t(registry.pending-cli-label)", value: "node scripts/arcblog-network.mjs registry refresh", monospace: true, copyable: true}]
-                key-value-list dense=true fields=[{label: "$t(registry.sum-factory)", value: "${state.registry.factory}", monospace: true, copyable: true}, {label: "$t(registry.sum-network)", value: "${state.registry.network}"}, {label: "$t(registry.sum-adapter)", value: "${state.registry.adapter}"}, {label: "$t(registry.sum-total)", value: "${state.registry.total}"}, {label: "$t(registry.sum-refreshed)", value: "${state.registry.refreshedAt}"}]
-                key-value-list dense=true fields=[{label: "$t(registry.state-note)", value: "${state.registry.stateNote}"}]
-                key-value-list dense=true fields=[{label: "$t(registry.own-note)", value: "${state.registry.ownNote}"}]
+                // DEF-22 / B14: this console page lives at `/?page=registry`
+                // (pathname `/`), so no `afs:` binding matches and `$state.loc` does
+                // not exist — the projection is read through a LITERAL `surface url`
+                // instead of `propBind`, which only binds after the first render.
+                // The projection's own precomputed strings (`stateNote` / `ownNote`)
+                // are printed by the recipe, never re-derived here.
+                surface url="/instance/app/arcblog/node/registry.json" editable=false {
+                  p :reach-labels scale=sm intent=muted
+                }
                 view gap=sm {
                   afs-list registry-nodes layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/registry" {
                     row gap=sm cross=center role=item {

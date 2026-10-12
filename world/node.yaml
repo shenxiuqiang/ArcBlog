@@ -1,3 +1,15 @@
+# The records under /instance/app/arcblog/node — one SUPERSET schema.
+#
+# `node/` is a directory of RELATED record kinds, not one kind: `profile.json`
+# (NodeProfile), `identity.json` (NodeIdentity — see world/node-identity.yaml),
+# `health.json` (NodeHealth — world/node-health.yaml), `discovery.json`
+# (DiscoveryDocument — world/discovery-document.yaml), plus the registry /
+# factories projections. The union below exists because ONE item recipe
+# (`node/.aup/item.json`, DEF-22) has to render any of them, and the recipe
+# validator (`scripts/lib/recipes.mjs` → `schemaFields`) checks every
+# `${content.<field>}` against the schemas a directory is registered with.
+# Fields that a given record does not carry interpolate to the empty string, and
+# that recipe marks them `hideWhenEmpty` — so a superset is safe.
 kind: NodeProfile
 fields:
   name: string
@@ -12,3 +24,22 @@ fields:
   protocolVersion: string
   createdAt: datetime
   updatedAt: datetime
+  # --- node/health.json (NodeHealth; authoritative schema = world/node-health.yaml)
+  status: string # ok | degraded | down (spec §110)
+  checkedAt: datetime
+  # --- node/identity.json (NodeIdentity; world/node-identity.yaml)
+  authMethod: string # developer | provider | blocklet | did-connect
+  blockletDid: string
+  # --- node/registry.json (the chain-registry projection, ENG-15 / NET-03)
+  factory: string # stake receiver (public address)
+  network: string
+  adapter: string # ocap | mock
+  total: number # live staked nodes in the projection
+  refreshedAt: datetime
+  stateNote: string # precomputed by the CLI: the projection's own state sentence
+  ownNote: string # precomputed by the CLI: "am I in this registry?"
+  # --- node/discovery.json (DiscoveryDocument; world/discovery-document.yaml)
+  protocol: string
+  transport: json # ["afs", "mcp"]
+  generatedAt: datetime
+  blockletVersion: string

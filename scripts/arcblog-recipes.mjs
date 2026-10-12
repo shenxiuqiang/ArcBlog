@@ -3,7 +3,7 @@
 // `.aup/item.json` records that let a `surface` render ONE AFS record with real
 // markup instead of the generic raw-JSON fallback.
 //
-//   node scripts/arcblog-recipes.mjs install [--force]
+//   node scripts/arcblog-recipes.mjs install [--keep-local]
 //   node scripts/arcblog-recipes.mjs check
 //   node scripts/arcblog-recipes.mjs list
 //
@@ -24,9 +24,12 @@
 //
 // The records are created here (not by a page) because a browser page may only
 // write a record that already exists — the same reason `arcblog-settings.mjs`
-// installs the appearance records. `install` is idempotent: an existing recipe is
-// kept unless `--force` is passed (recipes are shared by every record in the
-// directory, so a hand-tuned one must not be clobbered by a deploy step).
+// installs the appearance records. `install` is idempotent (byte-equal ⇒ nothing
+// is written) and **overwrites a recipe that differs from the seed**: the seed is
+// the upstream source of the reader's markup, and a recipe that silently lags
+// behind the repo is how DEF-21's raw-JSON regression returns. `--keep-local`
+// keeps an instance recipe that differs, and `check` reports drift without
+// writing.
 
 import { fail, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
@@ -65,11 +68,14 @@ function plan() {
     const path = recipePath(recipe.dir);
     entries.push({ ...recipe, path, tree });
     problems.push(...assertRecipeShape(tree, `${recipe.source}/item.json`));
-    const declared = new Set(schemaFields(recipe.schema));
+    const schemas = recipe.schemas ?? [recipe.schema];
+    const declared = new Set(schemas.flatMap((schema) => schemaFields(schema)));
     for (const field of contentFields(tree)) {
       const root = field.split('.')[0];
       if (!declared.has(root)) {
-        problems.push(`${recipe.source}/item.json: \${content.${field}} is not a world/${recipe.schema}.yaml field`);
+        problems.push(
+          `${recipe.source}/item.json: \${content.${field}} is not a field of ${schemas.map((s) => `world/${s}.yaml`).join(' or ')}`,
+        );
       }
     }
   }
@@ -118,8 +124,15 @@ function commandInstall(args, instance) {
       kept.push({ collection: entry.collection, path: entry.path });
       continue;
     }
-    if (!force) {
-      kept.push({ collection: entry.collection, path: entry.path, note: 'differs from seed (use --force to overwrite)' });
+    // DIFFERS FROM THE SEED ⇒ OVERWRITE. `seed/recipes/**` is the upstream source
+    // of these records (they are the reader's markup, not user content), and a
+    // recipe that silently lags behind the repo is exactly how DEF-21's raw-JSON
+    // regression comes back — `install` runs from the deploy path, which cannot
+    // answer a prompt. The old behaviour (keep unless `--force`) made a stale
+    // recipe indistinguishable from a current one. `--force` is now accepted but
+    // redundant, and `check` stays the way to detect drift without writing.
+    if (!force && args.keepLocal === true) {
+      kept.push({ collection: entry.collection, path: entry.path, note: 'differs from seed (--keep-local)' });
       continue;
     }
     writeJson(entry.path, JSON.parse(source), instance, existing.ifMatch ?? undefined);
@@ -171,15 +184,19 @@ function commandCheck(instance) {
 function help() {
   console.log(`ArcBlog item recipes — the .aup/item.json records that render one AFS record on a page.
 
-  node scripts/arcblog-recipes.mjs list              # the install plan + validation (no instance access)
-  node scripts/arcblog-recipes.mjs install [--force] # write <dir>/.aup/item.json for posts/drafts/pages
-  node scripts/arcblog-recipes.mjs check             # verify the instance has them, byte-equal to seed/
+  node scripts/arcblog-recipes.mjs list                  # the install plan + validation (no instance access)
+  node scripts/arcblog-recipes.mjs install [--keep-local] # write <dir>/.aup/item.json for posts/drafts/pages/node
+  node scripts/arcblog-recipes.mjs check                 # verify the instance has them, byte-equal to seed/
 
-Why: a cold entry on a single-record page (/posts/<slug>, /preview/<slug>, /pages/<slug>)
-renders nothing through \`propBind\` — the daemon binds the record into the session state only
-after the first render, and the client has no \`propBind\` handler (DEF-21 / B14). Those pages
-use \`surface url="$state.loc"\` instead, and a \`surface\` renders a record through that
+Why: a cold entry on a single-record page (/posts/<slug>, /preview/<slug>, /pages/<slug>,
+?page=author) renders nothing through \`propBind\` — the daemon binds the record into the session
+state only after the first render, and the client has no \`propBind\` handler (DEF-21 / DEF-22 /
+B14). Those pages use \`surface url=...\` instead (the binding-derived \`$state.loc\` where one
+exists, a literal record path where it does not), and a \`surface\` renders a record through that
 directory's item recipe. Missing recipe = the record prints as raw JSON.
+
+\`install\` is idempotent and overwrites a recipe that differs from seed/ (the seed is upstream);
+--keep-local skips those so an instance-local hand-tune survives.
 
 Add --instance <name> to target a named Arc instance.
 ${FLAG_SYNTAX_NOTE}`);

@@ -1,32 +1,46 @@
 page author {
   i18n {
-    did { en "DID" zh "DID" }
+    about { en "Node" zh "节点信息" }
     auth { en "Auth method" zh "认证方式" }
-    roles { en "Roles" zh "角色" }
     stories { en "Stories" zh "文章" }
     stories-empty { en "No published stories yet." zh "还没有已发布的文章。" }
   }
   view gap=lg {
-    view gap=lg propBind={profile: "/instance/app/arcblog/node/profile.json", identity: "/instance/app/arcblog/node/identity.json"} {
-      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
-        h1 "${state.profile.name}"
-        p "${state.profile.description}" intent=muted
-        p :did scale=sm intent=muted
-        p "${state.profile.did}" scale=sm
-        p :auth scale=sm intent=muted
-        p "${state.identity.authMethod}" scale=sm
-        p :roles scale=sm intent=muted
-        p "${state.profile.roles}" scale=sm
+    // DEF-22 / B14: `propBind` does NOT bind on the first visit of a browser
+    // session — the daemon resolves it into the session state only AFTER the first
+    // render and the served client bundle has no `propBind` handler, so this card
+    // used to paint empty on a cold load and only filled in after a reload.
+    // `?page=author` is NOT an `afs:`-bound path (pathname = `/`), so `$state.loc`
+    // does not exist here and `surface url=$state.loc` cannot be used; the
+    // cold-start channel for this page is a LITERAL `surface url=` per record —
+    // a node-level `src`/`url` is not state-interpolated, which is exactly what
+    // this page needs.
+    //
+    // Two records are needed — profile.json (name/description/DID/roles) and
+    // identity.json (auth method) — and the record→markup mapping is the
+    // directory's item recipe, so each record gets its own surface. The markup is
+    // `node/.aup/item.json`, installed by `node scripts/arcblog-recipes.mjs install`
+    // (`node/` is guest-readable, so nothing private can be rendered here).
+    //
+    // A `surface` must carry `src` or a non-empty child (validator), and the chrome
+    // child is also the only place a page can head a record whose fields it does
+    // not interpolate.
+    view gap=lg {
+      surface url="/instance/app/arcblog/node/profile.json" editable=false {
+        h2 :about level=2
       }
-      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
-        h2 :stories level=2
-        afs-list author-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
-          row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-            view layout=inline href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
-              h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
-            }
-            p "${entry.content.summary}" scale=sm intent=muted
+      surface url="/instance/app/arcblog/node/identity.json" editable=false {
+        h2 :auth level=2
+      }
+    }
+    view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
+      h2 :stories level=2
+      afs-list author-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:stories-empty pagination=manual pageSize=10 from "/instance/app/arcblog/posts" {
+        row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+          view layout=inline href="/posts/${entry.content.slug}" style={display: block, textDecoration: none, color: inherit} {
+            h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
           }
+          p "${entry.content.summary}" scale=sm intent=muted
         }
       }
     }
