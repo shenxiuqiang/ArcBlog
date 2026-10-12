@@ -143,3 +143,33 @@ test('the recorded output of a count-style command is what the command prints', 
   assert.ok(checked.length >= 3, `count-style commands executed: ${checked.length} (${checked.join(', ')})`);
   assert.deepEqual(mismatches, [], `recorded outputs that no longer match:\n  ${mismatches.join('\n  ')}`);
 });
+
+/**
+ * The inventory table in the architecture overview VERIFIES ITSELF (2026-10-12, ENG-56).
+ *
+ * Each row states a measured value next to the command that measures it, and all three were stale:
+ * 30 pages (actual 25), 21 console rows (actual 17), 22 schemas (actual 12) — the numbers survived
+ * the economy teardown while their own recompute commands did not lie. The rows say "只写实测值",
+ * so the cheapest honest gate is to run exactly those commands and compare, which is also how the
+ * ledger's recorded-output rule (ENG-36) works.
+ */
+test('every row of the architecture inventory table equals what its own command prints', () => {
+  const text = readFileSync(join(REPO, 'docs/05-开发文档/00-架构总览.md'), 'utf8');
+  const rows = [...text.matchAll(/^\| ([^|]+?) \| \*\*(\d+)\*\* \| `([^`]+)`/gm)].map((m) => ({
+    fact: m[1].trim(),
+    stated: Number(m[2]),
+    command: m[3].replace(/\\\|/g, '|').trim(),
+  }));
+  assert.ok(rows.length >= 3, `inventory rows parsed: ${rows.length}`);
+
+  const problems = [];
+  for (const row of rows) {
+    const res = spawnSync('bash', ['-c', row.command], { cwd: REPO, encoding: 'utf8' });
+    const printed = /(\d+)\s*$/.exec((res.stdout ?? '').trim());
+    if (!printed) { problems.push(`${row.fact}: the command printed no number (${row.command})`); continue; }
+    if (Number(printed[1]) !== row.stated) {
+      problems.push(`${row.fact}: table says ${row.stated}, the command prints ${printed[1]} — ${row.command}`);
+    }
+  }
+  assert.deepEqual(problems, [], `inventory rows whose stated value is stale:\n  ${problems.join('\n  ')}`);
+});
