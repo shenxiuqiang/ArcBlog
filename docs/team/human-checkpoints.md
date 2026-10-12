@@ -41,6 +41,12 @@ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/draft
 # 控制台发布路径：看是否有 contentHash / contentSignature / version（DEF-20）
 ```
 
+## B2 · 部署前置（新实例一次）
+```bash
+node scripts/arcblog-recipes.mjs install   # 幂等；check 验证
+```
+不装 ⇒ `?page=reader` / `?page=page-view` 会渲染**原始 JSON**（DEF-21/B14）；已装的实例无需重复。
+
 ## C. 待裁决（不阻塞，已按推荐默认继续）
 
 | # | 事项 | 推荐默认（已按此执行） |
