@@ -62,6 +62,7 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
  * silently grow a daemon dependency.
  */
 const FAST_TESTS = new Set([
+  'arcblog-agent-tools',
   'arcblog-console-nav',
   'arcblog-dist-secrets',
   'arcblog-doc-commands',
@@ -87,6 +88,7 @@ const FAST_TESTS = new Set([
  * Keep this next to FAST_TESTS: a suite with no entry here is always selected.
  */
 const GUARDS = {
+  'arcblog-agent-tools': [/^scripts\/lib\/agents\.mjs$/, /^scripts\/arcblog-agent\.mjs$/, /^scripts\/arcblog-agent-tools/],
   'arcblog-console-nav': [/^scripts\/console-nav\.mjs$/, /^scripts\/arcblog-console-nav/, /^\.aup\/pages\//],
   'arcblog-error-codes': [/^scripts\/.*\.mjs$/, /^docs\/08-其他\/05-错误码索引\.md$/],
   'arcblog-fail-closed': [/^scripts\/arcblog-fail-closed/, /^scripts\/arcblog-deploy\.mjs$/, /^scripts\/arcblog-dist-secrets\.mjs$/, /^scripts\/lib\/cli-flags\.mjs$/],

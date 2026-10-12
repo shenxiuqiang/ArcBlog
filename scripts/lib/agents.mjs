@@ -76,7 +76,7 @@ export const SUMMARY_SOURCE =
  */
 export const AGENT_TOOLS = [
   // --- reads backed by real AFS paths ---------------------------------------
-  { name: 'search_posts', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'search' } },
+  { name: 'search_posts', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'search' }, params: ['query', 'category', 'limit'] },
   { name: 'get_post', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'get' }, params: ['slug'] },
   { name: 'list_categories', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/categories', op: 'list' } },
   { name: 'get_node_profile', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/node', op: 'get' } },
@@ -90,7 +90,7 @@ export const AGENT_TOOLS = [
   // tool never talks to a chain itself. `get_studio --content` then reads the
   // named node's public surface over its endpoint (read-only, no key material).
   { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'list' }, source: REGISTRY_SOURCE },
-  { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'get' }, params: ['stakeAddress'], source: REGISTRY_SOURCE },
+  { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'get' }, params: ['stakeAddress', 'content', 'afs', 'afsOp', 'path', 'endpoint'], source: REGISTRY_SOURCE },
   // --- read backed by the aggregation projection (PRD-AGT-07/AGT-08) ---------
   // One record per summary id under `node/summaries/`, written by
   // `arcblog-summarize.mjs build`. It sits under the `node/**` prefix the declared
