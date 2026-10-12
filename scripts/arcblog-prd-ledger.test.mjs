@@ -239,3 +239,23 @@ test('ledger ids are unique per family, and any gap is explained in the same fil
   }
   assert.deepEqual(problems, [], `ledger id problems:\n  ${problems.join('\n  ')}`);
 });
+
+/**
+ * The DEF half of the completion criterion (ENG-69). The PRD ledger has structured 六态/阻塞 columns
+ * and a guard that every `开发中` row owns a blocker; the DEFECT volume has no such column — ownership
+ * lives in the 修法落点 prose, so "is this defect owned?" was not machine-checkable at all. Measured:
+ * 39 rows, all but one already name an owner (`已修`, `已闭`, a boundary, or a checklist id), and the
+ * one that did not (DEF-27, "待裁决" with no id) now cites E7.
+ *
+ * The accepted vocabulary is taken from the rows themselves, so a new row has to pick one of the
+ * forms a reader can act on.
+ */
+test('every defect row names who owns the remaining work', () => {
+  const text = readFileSync(join(REPO, 'docs/06-功能开发列表/03-缺陷与待修.md'), 'utf8');
+  const OWNER = /已修|已闭|已关闭|已裁|平台边界|覆盖边界|human-checkpoints|检查点[^。|]{0,12}`?[A-E]\d|`[A-E]\d+`|\b[A-E]\d+\b|`B\d+`|\bDEF-\d+\b/;
+  const rows = [...text.matchAll(/^\| \*\*`(DEF-\d+)`\*\* \|(.+)$/gm)];
+  assert.ok(rows.length >= 30, `defect rows parsed: ${rows.length}`);
+
+  const unowned = rows.filter(([, , body]) => !OWNER.test(body)).map(([, id]) => id);
+  assert.deepEqual(unowned, [], `defect rows that nobody owns (add 已修 / a boundary / a checklist id): ${unowned.join(', ')}`);
+});
