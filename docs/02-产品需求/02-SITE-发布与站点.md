@@ -38,7 +38,7 @@
 | `PRD-SITE-05` | **只读出口作为 agent 读取契约**：`/p/llms.txt` 可用；`/p/rss.xml` 可生成 | `01 §1`（为什么现在②）、`04 §1` 公开面 | `03 §J2` 步 3、`03 §J4` 步 3 | `/p/llms.txt`：【已实现】；`/p/rss.xml`：**【已实现】**（2026-10-12 同步：由**部署管线步骤 3b** 生成） | 无 | P0 | `curl -s -o /dev/null -w '%{http_code}' "$BASE/p/llms.txt"` → **200**；RSS：**由部署管线生成**（`node scripts/arcblog-deploy.mjs` 步骤 3b 落 `.web-cache/rss.xml`，部署后校验含 `/p/rss.xml`）⇒ 生成后 `curl "$BASE/p/rss.xml"` → **200 `application/xml`**；⚠️ **裸 `arc blocklet build` 会重建 `.web-cache/` 把它抹掉** ⇒ 必须走 deploy | `scripts/arcblog-deploy.mjs` 步骤 3b + 部署后校验；`DEF-28`（[`06/03`](../06-功能开发列表/03-缺陷与待修.md)）；`/p/llms.txt` 实测 **200**（正文仅 `(no content yet)`，见 [`05/02 B17 补`](../05-开发文档/02-平台能力与边界.md)） | 独立方（Stage 6 指派） |
 | `PRD-SITE-06` | 主题面与站内导航：分类/标签入口可用，改主题不闪错主题 | `01 §2 P1` | `03 §J2`；`?page=appearance` | 【已实现】 | 无 | P2 | `npm test` 的主题契约通过；切换主题后**导航不闪**（`app.aup` 的 `mode` 与解析后默认外观一致） | `scripts/arcblog-theme.test.mjs` | 独立方（Stage 6 指派） |
 | `PRD-SITE-07` | 公开面**零泄漏**：未发布内容（草稿/归档/软删）任何入口都读不到 | `01 §2 P1`、`02 §2 R` | `03 §J2` | 【已实现】 | 无 | P0 | `npm test` 的 guest 权限矩阵；`drafts/` 前缀无 cookie 请求被拒（403/404） | `scripts/arcblog-permissions.test.mjs` | 独立方（Stage 6 指派） |
-| `PRD-SITE-08` | **根级自定义 HTTP 端点不做**（明确不含 `/.well-known`、`/api/*`、`/rss.xml`、`/sitemap.xml`） | `01 §7` 平台强制层 | `03 §J2` | 【平台边界】 | 待平台能力 | P2 | 复现：`curl /rss.xml` → 返回应用壳（`text/html`）**而非** RSS；**降级** = 一律走 `/p/` 路径 | 通道实测：`/p/llms.txt` 200（`text/plain`）；根级端点被应用壳吞掉；结论层归 [`docs/05-开发文档/02`](../05-开发文档/02-平台能力与边界.md) | 待定（独立方） |
+| `PRD-SITE-08` | **根级自定义 HTTP 端点不做**（明确不含 `/.well-known`、`/api/*`、`/rss.xml`、`/sitemap.xml`） | `01 §7` 平台强制层 | `03 §J2` | 【平台边界】 | 待平台能力（`B1`） | P2 | 复现：`curl /rss.xml` → 返回应用壳（`text/html`）**而非** RSS；**降级** = 一律走 `/p/` 路径 | 通道实测：`/p/llms.txt` 200（`text/plain`）；根级端点被应用壳吞掉；结论层归 [`docs/05-开发文档/02`](../05-开发文档/02-平台能力与边界.md) | 待定（独立方） |
 
 ---
 
@@ -49,7 +49,7 @@
 | `PRD-SITE-04` | ~~文章级 OG 是否可被爬虫读到~~ **已结论（`U20` = 判定 B）** | ~~抓阅读页源串 + 分享器/UA 预览~~（已执行无 JS HTTP 复读） | 无 JS 时 `og:*` 全缺 ⇒ **【平台边界】**；降级 = 站点级 meta + 分享卡指引（已实现） | **无**（只读 HTTP 即可；结论层 = [`05/07 U20`](../05-开发文档/07-未决技术问题与探针计划.md)） |
 | `PRD-SITE-05` | ~~RSS 的**真实生成产物**（不是通道）~~ **已实现（入部署管线）** | `node scripts/arcblog-deploy.mjs`（步骤 3b 生成 + 部署后校验 `/p/rss.xml`） | 部署后 `/p/rss.xml` = **200 `application/xml`**（实测 1362 B / 3 items）；⚠️ 裸 build 会抹掉 ⇒ 用 deploy | 无（本机可跑；依据 `DEF-28`） |
 
-> **⚠️ 区分"通道"与"产物"**：`/p/rss.xml` 的**通道**【已实现】，但**仓库根 `.web-cache/rss.xml` 当前不存在** ⇒ 按 `00 §3.1` 要求 3，本域标【规划中】（待生成：`node scripts/arcblog-rss.mjs --feed-link "<canonical>" > .web-cache/rss.xml`）并给前置命令，**不得**标【已实现】。
+> **⚠️ "通道"与"产物"（2026-10-12 同步）**：`/p/rss.xml` 的**通道**【已实现】，**产物也已就绪** —— RSS 生成并入**部署管线步骤 3b**（`node scripts/arcblog-deploy.mjs`：`build → deploy → rss → verify`），部署后存活校验含 `/p/rss.xml`（`DEF-28`）⇒ 本域标【已实现】。⚠️ **残留**：**裸 `arc blocklet build` 会重建 `.web-cache/` 把 `.web-cache/rss.xml` 抹掉**（`arc service restart` 不会）⇒ **必须走 deploy 管线**；绕过管线的单独 build/deploy 仍会抹掉。
 
 ---
 
