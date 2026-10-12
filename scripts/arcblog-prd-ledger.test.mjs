@@ -154,3 +154,44 @@ test('the ledger summary tables equal a recount of its rows', () => {
   }
   assert.deepEqual(diffs, [], `the ledger's summary tables drifted from its rows:\n  ${diffs.join('\n  ')}`);
 });
+
+/**
+ * The goal's own completion criterion, machine-checked (2026-10-12): "台账全部落定（无 未开工 /
+ * 开发中）". `未开工` is enforceable today and must be zero. `开发中` cannot be forbidden — one row
+ * legitimately waits on a human — so the rule is that it must SAY so: a blocking value other than
+ * `无` AND a pointer to a checklist item. A row that is neither finished nor blocked is a silent
+ * stall, which is the state this repository keeps treating as a defect (PRD-SET-02 was exactly
+ * that: 开发中 with blocking `无` while it waited on the E9 ruling).
+ */
+test('no 未开工 rows, and every 开发中 row names the human checkpoint it waits on', () => {
+  const rows = [...ledgerStatuses()].map(([id, status]) => ({ id, status }));
+  // blocking lives in cell 4; re-read it here rather than widening ledgerStatuses()
+  const blocking = new Map();
+  const rawBlocking = new Map();
+  const evidence = new Map();
+  for (const line of readFileSync(LEDGER, 'utf8').split('\n')) {
+    const m = /^\| `(PRD-[A-Z]+-\d{2})` \|/.exec(line);
+    if (!m) continue;
+    const c = line.replace(/\\\|/g, '\u0000').split('|').map((x) => x.replace(/\u0000/g, '|').trim());
+    if (c.length < 7) continue;
+    blocking.set(m[1], c[4].replace(/[*`]/g, '').split('（')[0].trim());
+    rawBlocking.set(m[1], c[4]);
+    evidence.set(m[1], c[5]);
+  }
+
+  const notStarted = rows.filter((r) => r.status === '未开工').map((r) => r.id);
+  assert.deepEqual(notStarted, [], `未开工 rows (the completion criterion requires none): ${notStarted.join(', ')}`);
+
+  const inProgress = rows.filter((r) => r.status === '开发中');
+  const stalls = [];
+  for (const r of inProgress) {
+    const b = blocking.get(r.id) ?? '';
+    // the pointer may sit in the blocking cell's parenthetical (`待决策（等 E9…）`), so search
+    // the RAW cell as well as the evidence — the rule is that the row SAYS what it waits for.
+    const citesCheckpoint = /\b(E\d+|A\d|B\d?|C\d|D\d)\b/.test(`${rawBlocking.get(r.id) ?? ''} ${evidence.get(r.id) ?? ''}`);
+    if (b === '无' || b === '') stalls.push(`${r.id}: 开发中 but blocking is '${b}'`);
+    else if (!citesCheckpoint) stalls.push(`${r.id}: 开发中 (blocking '${b}') without a human-checkpoint pointer`);
+  }
+  assert.deepEqual(stalls, [], `in-progress rows that do not say what they wait for:\n  ${stalls.join('\n  ')}`);
+  assert.ok(rows.length >= 56, `ledger rows parsed: ${rows.length}`);
+});
