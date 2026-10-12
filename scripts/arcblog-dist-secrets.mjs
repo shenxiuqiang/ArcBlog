@@ -64,6 +64,10 @@ export const NON_PRODUCT_FILES = new Set([
   'skills-lock.json',
   'package-lock.json',
   '.gitignore',
+  // A developer template (copy to the gitignored .env.local), not a running requirement — and it
+  // carries the beta token id, a chain fact the app surface is forbidden to ship (ENG-52) and the
+  // published artifact has no reason to expose.
+  '.env.example',
 ]);
 export const JUNK_BASENAMES = new Set(['.node-pk.pem']);
 

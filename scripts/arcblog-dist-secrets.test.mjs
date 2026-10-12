@@ -386,3 +386,22 @@ test('the scrub drops non-product source trees and their manifest entries, witho
   assert.deepEqual(manifest.files.map((f) => f.path), ['.aup/app.aup'], 'manifest must not keep dangling entries');
   rmSync(root, { recursive: true, force: true });
 });
+
+/**
+ * `.env.example` documents the chain env by COPYING the beta preset's values (ENG-66): the token id
+ * and the GraphQL host appear there as literals. A duplicated fact drifts, and this one is a chain
+ * fact — so it is checked against the writer (`CHAIN_PRESETS`) rather than trusted. The file itself
+ * never ships (it is in NON_PRODUCT_FILES): the published artifact has no reason to carry a token id.
+ */
+test('the .env.example template still matches the beta preset it documents', async () => {
+  const { CHAIN_PRESETS } = await import('./lib/chain.mjs');
+  const beta = CHAIN_PRESETS.beta;
+  const text = readFileSync(join(REPO_ROOT, '.env.example'), 'utf8');
+  const problems = [];
+  if (!text.includes(beta.tokenId)) problems.push(`token id ${beta.tokenId} is not the one documented`);
+  const host = /^https?:\/\/([^/]+)/.exec(beta.chainHost)?.[1];
+  if (host && !text.includes(host)) problems.push(`chain host ${host} is not the one documented`);
+  // and it must never carry a real mnemonic value
+  if (/^ARCBLOG_CHAIN_MNEMONIC=(?!'twelve words)/m.test(text)) problems.push('the template appears to contain a real mnemonic');
+  assert.deepEqual(problems, [], `.env.example drifted from CHAIN_PRESETS.beta:\n  ${problems.join('\n  ')}`);
+});
