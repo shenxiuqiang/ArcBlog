@@ -24,6 +24,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = join(__dirname, '..');
 const script = join(repoRoot, 'scripts', 'arcblog-network.mjs');
+// PRD-NET-02: the self-description write and the registry read are SEPARATE
+// processes (an operator runs each one), so the test spawns both entry points.
+const nftCli = join(repoRoot, 'scripts', 'arcblog-node-nft.mjs');
+const factoryCli = join(repoRoot, 'scripts', 'arcblog-factory.mjs');
 
 const PROFILE = {
   did: 'did:blocklet:arcblog',
@@ -512,6 +516,101 @@ test('live: registry refresh projects the mock chain stakes, then cleans up', as
     } catch {
       /* absent — nothing to clean */
     }
+  }
+});
+
+// PRD-NET-02 + PRD-NET-03: the endpoint the projection carries must come from the
+// NFT's own `data.value` (the node self-description `node-nft describe` writes),
+// NOT from the stake row's `message`. `endpointSource` records which channel won,
+// so this test is the proof that the self-description channel is live — the same
+// endpoint is carried by BOTH channels and the asset must still win.
+test('live: registry refresh takes endpointSource from asset.data after `node-nft describe` (PRD-NET-02)', async () => {
+  const stamp = Date.now();
+  const mockStatePath = `/instance/app/arcblog/config/mock-chain-test-describe-${stamp}.json`;
+  const registryPath = `/instance/app/arcblog/node/registry-test-describe-${stamp}.json`;
+  const registryDir = `/instance/app/arcblog/node/registry-test-describe-${stamp}`;
+  const factoryPath = `/instance/app/arcblog/config/nft-factories-test-describe-${stamp}.json`;
+  const nftStatePath = `/instance/app/arcblog/config/node-nft-test-describe-${stamp}.json`;
+  const summaryPath = `/instance/app/arcblog/node/factories-test-describe-${stamp}.json`;
+  const rolesPath = `/instance/app/arcblog/config/roles-test-describe-${stamp}.json`;
+  const env = {
+    ARCBLOG_MOCK_STATE_PATH: mockStatePath,
+    ARCBLOG_REGISTRY_PATH: registryPath,
+    ARCBLOG_REGISTRY_DIR: registryDir,
+    ARCBLOG_FACTORY_REGISTRY_PATH: factoryPath,
+    ARCBLOG_NODE_NFT_STATE_PATH: nftStatePath,
+    ARCBLOG_NODE_FACTORY_SUMMARY_PATH: summaryPath,
+    ARCBLOG_ROLES_PATH: rolesPath,
+  };
+  // The PUBLIC command, spawned exactly as an operator runs it — that is the point:
+  // `describe` and `registry refresh` are two separate processes sharing one ledger.
+  const runIsolated = (scriptPath, args) =>
+    spawnSync(process.execPath, [scriptPath, ...args], { encoding: 'utf8', cwd: repoRoot, env: { ...process.env, ...env } });
+  const { readJson, remove } = await import('./lib/arc.mjs');
+
+  try {
+    const created = runIsolated(factoryCli, ['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']);
+    assert.equal(created.status, 0, created.stderr);
+    const acquired = runIsolated(nftCli, [
+      'acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xdescribe-owner', '--pk', 'zDescribePk',
+      '--endpoint', 'https://mint-only.example.com', '--region', 'CN-BJ',
+    ]);
+    assert.equal(acquired.status, 0, acquired.stderr);
+    const assetId = json(acquired.stdout).assetId;
+    // the stake row carries the SAME endpoint in `message`, so a projection that
+    // fell back to the message would look identical in `endpoint` and only
+    // `endpointSource` would tell the two channels apart
+    const staked = runIsolated(nftCli, ['stake', '--role', 'studio', '--adapter', 'mock', '--owner', '0xdescribe-owner']);
+    assert.equal(staked.status, 0, staked.stderr);
+
+    // BEFORE: no self-description write yet ⇒ the projection is sourced from the
+    // asset data, because the mint already wrote `endpoint` into data.value
+    const first = runIsolated(script, ['registry', 'refresh', '--adapter', 'mock']);
+    assert.equal(first.status, 0, first.stderr);
+    const beforeNode = json(first.stdout).projection.nodes[0];
+    assert.equal(beforeNode.endpoint, 'https://mint-only.example.com');
+    assert.equal(beforeNode.endpointSource, 'asset.data');
+
+    // the operator writes the node self-description through the public CLI
+    const described = runIsolated(nftCli, [
+      'describe', '--role', 'studio', '--adapter', 'mock',
+      '--endpoint', 'https://self-described.example.com', '--region', 'EU-DE',
+    ]);
+    assert.equal(described.status, 0, described.stderr);
+    assert.equal(json(described.stdout).assetId, assetId);
+
+    // AFTER: the projection reads the NFT's data.value — `asset.data`, never
+    // `stake.message` — and the region travels with it
+    const second = runIsolated(script, ['registry', 'refresh', '--adapter', 'mock']);
+    assert.equal(second.status, 0, second.stderr);
+    const node = json(second.stdout).projection.nodes[0];
+    assert.equal(node.endpoint, 'https://self-described.example.com');
+    assert.equal(node.endpointSource, 'asset.data', 'the self-description channel must win over stake.message');
+    assert.equal(node.region, 'EU-DE');
+    assert.equal(node.assets.length, 1);
+
+    // …and it is on disk in the projection the console page renders
+    const stored = readJson(registryPath)?.value;
+    assert.equal(stored.nodes[0].endpointSource, 'asset.data');
+    assert.equal(stored.nodes[0].endpoint, 'https://self-described.example.com');
+
+    // the write is read-merge-write: the mint fields are still on the asset
+    const status = runIsolated(nftCli, ['status', '--role', 'studio', '--adapter', 'mock']);
+    assert.equal(status.status, 0, status.stderr);
+    const value = json(status.stdout).onChain.data;
+    assert.equal(value.pk, 'zDescribePk');
+    assert.equal(value.owner, '0xdescribe-owner');
+    assert.equal(value.region, 'EU-DE');
+  } finally {
+    for (const path of [registryPath, mockStatePath, factoryPath, nftStatePath, summaryPath, rolesPath]) {
+      try {
+        remove(path);
+      } catch {
+        /* absent — nothing to clean */
+      }
+    }
+    const { list } = await import('./lib/arc.mjs');
+    for (const entry of list(registryDir)) remove(`${registryDir}/${entry.id}`);
   }
 });
 

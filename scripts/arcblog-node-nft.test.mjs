@@ -493,7 +493,7 @@ test('live: `describe --app-name` fails closed — this factory template has no 
   assert.equal(factory(['create', '--role', 'studio', '--adapter', 'mock', '--stake', '1']).status, 0);
   try {
     assert.equal(
-      cli(['acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xbuyer', '--pk', 'zMintPk', '--endpoint', 'https://a.example']).status,
+      cli(['acquire', '--role', 'studio', '--adapter', 'mock', '--owner', '0xbuyer', '--pk', 'zMintPk', '--endpoint', 'https://a.example', '--region', 'CN-BJ']).status,
       0,
     );
     const before = json(cli(['status', '--role', 'studio', '--adapter', 'mock']).stdout).onChain.data;
@@ -512,6 +512,19 @@ test('live: `describe --app-name` fails closed — this factory template has no 
     assert.equal(empty.status, 1);
     assert.equal(json(empty.stderr).code, 'VALIDATION');
     assert.match(json(empty.stderr).error, /nothing to describe/);
+
+    // The REAL-CHAIN branch (`--adapter ocap`) is a human checkpoint: no chain
+    // write is executed here. What IS asserted is the fail-closed gate in front of
+    // it — without the chain triple the command refuses before contacting a chain.
+    const ocap = cli(['describe', '--role', 'studio', '--adapter', 'ocap', '--endpoint', 'https://a.example'], {
+      ARCBLOG_CHAIN_ENV: '',
+      ARCBLOG_CHAIN_HOST: '',
+      ARCBLOG_CHAIN_NETWORK: '',
+      ARCBLOG_CHAIN_TOKEN_ID: '',
+    });
+    assert.equal(ocap.status, 1, 'a real-chain describe without the triple must not run');
+    assert.equal(json(ocap.stderr).code, 'VALIDATION');
+    assert.match(json(ocap.stderr).error, /chain triple/);
   } finally {
     factory(['reset', '--adapter', 'mock']);
   }
