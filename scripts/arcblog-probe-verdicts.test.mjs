@@ -75,3 +75,25 @@ test('the human checklist states the same probe tally this guard computes', () =
     `the checklist must state '${needle}' (it is the human's interface; a stale tally wastes their pass)`,
   );
 });
+
+/**
+ * The probe plan's own decision table (docs/05/07 §5). It was an "open questions" list for months;
+ * all five are now ruled on, and a section that quietly reverts to "open" (or gains a row without a
+ * ruling) would re-open work nobody is tracking. Cheap to assert, and it keeps the tally honest:
+ * the plan says 8/10 probes are concluded, and Q5 explains where the remaining two are scheduled.
+ */
+test('the probe plan carries no open questions left (docs/05/07 §5)', () => {
+  const plan = readFileSync(join(REPO, 'docs', '05-开发文档', '07-未决技术问题与探针计划.md'), 'utf8');
+  const section = plan.split('## 5. ')[1]?.split('\n## ')[0] ?? '';
+  assert.ok(section.length > 200, 'section 5 not found');
+
+  assert.match(section.split('\n')[0], /^已裁决/, '§5 must be titled 已裁决, not 开放问题');
+  const rows = section.split('\n').filter((l) => /^\| Q\d+ \|/.test(l));
+  assert.ok(rows.length >= 5, `ruled rows parsed: ${rows.length}`);
+
+  const incomplete = rows.filter((l) => {
+    const cells = l.split('|').map((c) => c.trim());
+    return cells.length < 6 || cells[3].length < 20 || cells[4].length < 20;   // ruling + basis
+  });
+  assert.deepEqual(incomplete.map((l) => l.slice(0, 60)), [], 'rows without a ruling and its basis');
+});
