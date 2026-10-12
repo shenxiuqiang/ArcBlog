@@ -1,1 +1,0 @@
-LIST_ERROR exec Path not found: /app/arcblog/hub/registrations

@@ -114,7 +114,7 @@ final deploy, not before.
 
 Update, in this order:
 
-1. `docs/arc-contracts.md` — the measurement and its evidence (numbered section);
+1. `docs/05-开发文档/附件/arc-contracts.md` — the measurement and its evidence (numbered section);
 2. `CLAUDE.md` — if it changes how a contributor must work;
 3. `.agents/skills/aup-dsl/` — this skill, so the next agent does not re-derive it;
 4. `docs/ArcBlog-feature-checklist.md` — the maintenance log entry.

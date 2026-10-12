@@ -135,7 +135,7 @@ is genuinely dead — in ArcBlog that took lint from hundreds of warnings to
 
 ## 7. Where the measured detail lives (read, don't re-derive)
 
-* `docs/arc-contracts.md` §21–§25 — this project's platform measurements:
+* `docs/05-开发文档/附件/arc-contracts.md` §21–§25 — this project's platform measurements:
   live-region behaviour, hashchange re-render, URL normalisation, iframe sandbox,
   page-per-section layout, full-screen header, the DSL capability map (§25),
   the `--fix` trap (§25.4) and a prioritised primitive backlog (§25.5).

@@ -1,9 +1,0 @@
-{
-  "name": "news-ticker",
-  "description": "Scrolling news headlines from data source",
-  "seoStrategy": "full",
-  "hasScript": true,
-  "props": {
-    "items": { "type": "array", "description": "News items with title, slug, date" }
-  }
-}

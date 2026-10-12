@@ -35,7 +35,7 @@ test('a fixed site default theme matches the compiled mode', () => {
   const seed = JSON.parse(readFileSync(seedThemePath, 'utf8'));
   // An adaptive default (`system`) cannot match every visitor by construction —
   // the bridge resolves it, and the flash window is the cost documented in
-  // docs/arc-contracts.md §17.
+  // docs/05-开发文档/附件/arc-contracts.md §17.
   if (seed.value === 'system') return;
   assert.equal(
     appMode(),

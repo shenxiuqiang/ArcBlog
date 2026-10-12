@@ -1,8 +1,0 @@
-kind: Category
-fields:
-  slug: string
-  name: string
-  description: string
-  sort: number
-  createdAt: datetime
-  updatedAt: datetime

@@ -1,3 +1,0 @@
-Would generate 0 file(s) (dry-run) — nothing to change
-  path: /Users/shenxiuqiang/workspace/ArcBlog
-  files: 7

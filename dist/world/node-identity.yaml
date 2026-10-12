@@ -1,8 +1,0 @@
-kind: NodeIdentity
-fields:
-  did: string
-  authMethod: string # developer | provider | blocklet | did-connect
-  caller: string
-  blockletDid: string
-  createdAt: datetime
-  updatedAt: datetime

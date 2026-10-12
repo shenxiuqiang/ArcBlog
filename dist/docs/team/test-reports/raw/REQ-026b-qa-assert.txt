@@ -1,6 +1,0 @@
-public-footer runs checked: 20
-FAILURES: NONE
-auth-console V3 text colors: posts=rgb(26, 26, 31)/rgb(197, 48, 48) | categories=null/null | hub=rgb(26, 26, 31)/rgb(197, 48, 48)
-auth-console copyQR: posts=0@nullxnull below24=0 | categories=17@24x24 below24=0 | hub=21@24x24 below24=0
-guest-console: {"des":0,"cb":0}
-servedCssEqualsSource: true sha b925f13a3da4303b

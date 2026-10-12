@@ -1,2 +1,0 @@
-mine: {"url":"http://arcblog.localhost:4939/?page=hub&locale=zh","bctx":"38227CD227A6B8E575C1E93744E6C9BD"}
-pages after: ["http://arcblog.localhost:4939/","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh","http://arcblog.localhost:4939/","http://arcblog.localhost:4939/?locale=zh"]

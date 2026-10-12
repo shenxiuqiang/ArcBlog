@@ -1,8 +1,0 @@
-1803x908|general {"url":"http://arcblog.localhost:4939/?page=general","candidates":1,"linksPerColumn":[1],"total":1,"offenders":[{"text":"Open the Node NFT page","href":"/?page=factory","id":"general-view-1-view-1-row-2-view-2-view-2-view-1-view-5-row-29-action-1"}]}
-1803x908|policy {"url":"http://arcblog.localhost:4939/?page=policy","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}
-1803x908|hub {"url":"http://arcblog.localhost:4939/?page=hub","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}
-1803x908|pages {"url":"http://arcblog.localhost:4939/?page=pages","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}
-1512x765|general {"url":"http://arcblog.localhost:4939/?page=general","candidates":1,"linksPerColumn":[1],"total":1,"offenders":[{"text":"Open the Node NFT page","href":"/?page=factory","id":"general-view-1-view-1-row-2-view-2-view-2-view-1-view-5-row-29-action-1"}]}
-1512x765|policy {"url":"http://arcblog.localhost:4939/?page=policy","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}
-1512x765|hub {"url":"http://arcblog.localhost:4939/?page=hub","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}
-1512x765|pages {"url":"http://arcblog.localhost:4939/?page=pages","candidates":1,"linksPerColumn":[0],"total":0,"offenders":[]}

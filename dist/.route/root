@@ -1,4 +1,0 @@
-site: arcblog
-path: /
-source: .
-handler: aup

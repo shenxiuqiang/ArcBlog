@@ -72,7 +72,7 @@ export const NODE_ADAPTER_STATES = Object.freeze(['mock', 'ocap', 'unknown']);
  * hold facts from different adapters: `nodes.studio` was written by a real
  * `ocap` run while `nodes.hub` was stale `mock` residue, and every consumer that
  * decided "is this chain truth?" from the header read the simulated values as
- * on-chain facts (docs/arc-contracts.md §32(9)).
+ * on-chain facts (docs/05-开发文档/附件/arc-contracts.md §32(9)).
  *
  * So each node (and each factory) now carries the adapter that produced IT, in
  * THREE states — `mock` | `ocap` | `unknown` — never an empty string that a

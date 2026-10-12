@@ -115,7 +115,7 @@ function commandPolicyShow(opts, instance) {
 
 // --- policy intent queue (REQ-032 / D-R24-3 option ③) ------------------------
 //
-// The console can only rewrite records IT created (docs/arc-contracts.md §29.2):
+// The console can only rewrite records IT created (docs/05-开发文档/附件/arc-contracts.md §29.2):
 // `economy/policies/active.json` is written by this CLI, so a browser preset /
 // adapter click is refused with zero change (BUG-068). The page therefore
 // QUEUES the change — ONE record per click under `config/policy-intents/`, the

@@ -25,7 +25,7 @@
 // The network layer is published as **AFS resources**, not a REST API: the
 // verified blocklet contract cannot serve `/.well-known/arcblog` or `/api/*`
 // (the AUP handler answers every root path with the app shell — see
-// docs/arc-contracts.md §7). AFS paths are what the runtime's Agent Access
+// docs/05-开发文档/附件/arc-contracts.md §7). AFS paths are what the runtime's Agent Access
 // surfaces (`/mcp`, AFS RPC, llms.txt) already expose.
 
 import { ensure, fail, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
@@ -753,7 +753,7 @@ Relations (spec §70.3): applied | indexed | removed. Removal keeps a tombstone.
 Protocol: ${PROTOCOL}. Discovery and health are AFS records under ${INSTANCE_ROOT}/node,
 hub registrations under ${HUB_REGISTRATIONS_DIR}. They are published as AFS
 resources rather than an HTTP API because the AUP handler owns "/" and answers
-every path with the app shell (see docs/arc-contracts.md §7); AFS is what the
+every path with the app shell (see docs/05-开发文档/附件/arc-contracts.md §7); AFS is what the
 runtime's Agent Access surfaces expose. Hub statuses: ${HUB_STATUSES.join('|')}.
 `);
 }

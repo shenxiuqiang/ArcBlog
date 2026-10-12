@@ -1,9 +1,0 @@
-{
-  "balanceBefore": "16154907215234937951",
-  "balanceAfter": "16154907215234937951",
-  "nonceBefore": "1790498079479",
-  "nonceAfter": "1790498079479",
-  "windowBefore": 188,
-  "windowAfter": 188,
-  "identical": true
-}

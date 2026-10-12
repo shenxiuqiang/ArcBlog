@@ -1,3 +1,0 @@
-Serving blocklet "arcblog" on port 4939
-  http://arcblog.localhost:4939/
-  http://localhost:4939/?blocklet=arcblog  (Safari / universal)

@@ -1,8 +1,0 @@
-{
-  "label": "Theme",
-  "description": "Interface theme — anyone can personalize their own; admins set the default.",
-  "value": "system",
-  "scope": "shared",
-  "type": "select",
-  "options": ["system", "light", "dark"]
-}

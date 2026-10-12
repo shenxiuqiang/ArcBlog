@@ -1,1 +1,0 @@
-add: a hub did is required (hubDid) — no data changed

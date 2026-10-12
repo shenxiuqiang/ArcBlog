@@ -94,7 +94,7 @@ For AFS-bound data prefer `afs-list` (which also reads `columns`, `layout`,
 是它的**返回结构**，同样不能当 prop 写。此前本文件把它们混列为 prop，是文档漂移（BUG-065）。
 **`total` 必须静态**（没有求任意长度的原语）⇒ 用它必然写死条数 ⇒ **本仓 0 处使用**。
 `onChange` 事件在本部署**无任何可观察效果**（`set:$args.page` / `set:$args.data.page` / `navigate` 三种接线
-实测点击后 state/URL/active 全不变）—— 见 `docs/arc-contracts.md` §38。
+实测点击后 state/URL/active 全不变）—— 见 `docs/05-开发文档/附件/arc-contracts.md` §38。
 
 **要翻页/限长就用 `afs-list` 的原生模式**：`afs-list <stable-id> … pagination=manual pageSize=N`
 （默认 `pagination=auto` 只截断 + 自动续载，**没有页码入口**，正是"页面被拉长"的机制）。

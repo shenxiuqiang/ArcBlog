@@ -1,9 +1,0 @@
-{
-  "slug": "qa-r16-del-mul7ii18",
-  "caller": "z3hzvf2CyM1pb63TCMnFpDTeif8dJ4RykBkbP",
-  "write": "{\"ok\":true,\"path\":\"/user/arcblog/bookmarks/qa-r16-del-mul7ii18.json\",\"createdAt\":\"2026-09-28T12:11:36.469Z\"}",
-  "readBack": "{\"ok\":true,\"content\":\"{\\\"slug\\\":\\\"qa-r16-del-mul7ii18\\\",\\\"title\\\":\\\"QA delete probe\\\",\\\"addedAt\\\":\\\"2026-09-28T12:11:36.464Z\\\"}\"}",
-  "delete": "{\"ok\":true,\"result\":\"{\\\"message\\\":\\\"Successfully deleted: arcblog/bookmarks/qa-r16-del-mul7ii18.json\\\",\\\"deleted\\\":true,\\\"path\\\":\\\"/arcblog/bookmarks/qa-r16-del-mul7ii18.json\\\"}\"}",
-  "readAfterDelete": "{\"ok\":false,\"err\":\"Path not found: /arcblog/bookmarks/qa-r16-del-mul7ii18.json\"}",
-  "pilotStillThere": "{\"ok\":true}"
-}

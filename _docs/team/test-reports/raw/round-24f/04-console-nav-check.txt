@@ -1,7 +1,0 @@
-$ node scripts/arcblog-console-nav.mjs --check
-{
-  "ok": true,
-  "action": "check",
-  "pages": 21
-}
-rc=0

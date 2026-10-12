@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 // signed-out browser does: `POST /api/afs/rpc` with no cookies, which the daemon
 // resolves to the `guest` role.
 //
-// Measured response contract (docs/arc-contracts.md §13):
+// Measured response contract (docs/05-开发文档/附件/arc-contracts.md §13):
 //   200 -> allowed and the path exists
 //   404 AFS_NOT_FOUND -> allowed, path missing (NOT a denial)
 //   403 -> denied; a role denial additionally reads "below readRole '<role>'"

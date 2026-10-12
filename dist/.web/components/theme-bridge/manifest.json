@@ -1,7 +1,0 @@
-{
-  "name": "theme-bridge",
-  "description": "Hidden bridge that applies settings-driven tone/palette/mode to the host AUP document",
-  "seoStrategy": "partial",
-  "hasScript": true,
-  "props": {}
-}

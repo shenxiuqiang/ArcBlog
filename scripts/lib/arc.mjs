@@ -3,7 +3,7 @@
 // Spec §102/§103: business logic must not call ARC internals directly; keep an
 // adapter so a change in the ARC contract only touches this file.
 //
-// Contract facts verified against ARC 2.0.0-beta.50 (see docs/arc-contracts.md):
+// Contract facts verified against ARC 2.0.0-beta.50 (see docs/05-开发文档/附件/arc-contracts.md):
 // - `/instance/**` is a per-session overlay: plain `arc afs <op>` from a shell
 //   runs in the root scope and cannot see it. It is reachable through the
 //   blocklet's own actions at `/blocklets/arcblog/.actions/{read,list,write,delete}`.
@@ -130,7 +130,7 @@ function argVector(argv, instance) {
  *
  * The CLI reshapes/truncates stdout when it is a pipe: a directory listing that
  * is a bare array in the file view arrives as a `{success,data}` envelope and
- * can fall foul of the 64KB pipe buffer (see docs/arc-contracts.md 4.1). Writing
+ * can fall foul of the 64KB pipe buffer (see docs/05-开发文档/附件/arc-contracts.md 4.1). Writing
  * to a file sidesteps both, so this is the fallback whenever a piped payload
  * will not parse.
  */
@@ -260,7 +260,7 @@ export function exec(action, args, instance) {
   // turns a successful delete into a bogus "path not found". The file capture
   // exists because the CLI reshapes and can truncate *piped* stdout (it answers
   // a directory listing with an envelope in the pipe view and a bare array in the
-  // file view — see docs/arc-contracts.md §4.1).
+  // file view — see docs/05-开发文档/附件/arc-contracts.md §4.1).
   const captured = runToFile(argv, instance);
   const parsed = parsePayload(captured.stdout);
 

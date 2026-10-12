@@ -28,7 +28,7 @@ function json(stdout) {
 
 // The provider query index only covers SMALL records: measured on this platform, a
 // published post with an ~800 byte body is found by `where`, while one with a
-// ~2.5 KB body is not (`docs/arc-contracts.md` §15). These tests therefore publish
+// ~2.5 KB body is not (`docs/05-开发文档/附件/arc-contracts.md` §15). These tests therefore publish
 // their own tiny fixture instead of depending on whatever content the instance
 // happens to hold — the assertion they protect is the pushdown path, not the demo
 // data.
@@ -177,7 +177,7 @@ test('query helpers build typed predicates and decode inline content', async () 
   const plain = arc.queryRecords('/instance/app/arcblog/posts');
   // The projected read goes through the provider query (indexed records only),
   // while the unprojected one may fall back to a directory listing — and the
-  // index only covers small records (`docs/arc-contracts.md` §15). So assert the
+  // index only covers small records (`docs/05-开发文档/附件/arc-contracts.md` §15). So assert the
   // relationship that must hold, not set equality.
   // A record whose content was not inlined (a large body is not indexed, §15)
   // legitimately has no decodable fields, so only compare what decoded.
