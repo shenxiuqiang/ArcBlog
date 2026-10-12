@@ -18,7 +18,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -127,4 +127,19 @@ test('docs that state the FAST_TESTS size state the current one', () => {
   assert.ok(claims.length >= 1, 'expected at least one in-doc FAST_TESTS count to check');
   const stale = claims.filter((c) => c.value !== count);
   assert.deepEqual(stale, [], `stale FAST_TESTS counts (runner has ${count}):\n  ${stale.map((c) => `${c.rel}: ${c.value} :: ${c.line}`).join('\n  ')}`);
+});
+
+/**
+ * The human checklist is the document a person acts on, and no gate covered its links (the six
+ * volume gates cover docs/01-08; docs/team is outside them). A dead link there wastes the human's
+ * time at exactly the moment they are trying to do a task — and this round produced one (a
+ * ../.aup path that resolved to docs/.aup). It is now checked like everything else.
+ */
+test('every relative link in the human checklist resolves', () => {
+  const rel = 'docs/team/human-checkpoints.md';
+  const text = readFileSync(join(repoRoot, rel), 'utf8');
+  const links = [...text.matchAll(/\]\(([^)#\s]+)\)/g)].map((m) => m[1]).filter((l) => !/^https?:/.test(l));
+  assert.ok(links.length >= 6, `links parsed: ${links.length}`);
+  const broken = links.filter((l) => !existsSync(join(repoRoot, 'docs', 'team', l)));
+  assert.deepEqual(broken, [], `dead links in the human checklist: ${broken.join(', ')}`);
 });
