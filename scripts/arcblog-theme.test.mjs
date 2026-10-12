@@ -66,3 +66,37 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
     'the bridge must cache the resolved theme so a fresh iframe re-applies it the moment it runs instead of after the settings reads',
   );
 });
+
+/**
+ * The appearance controls and the bridge must agree (2026-10-12, ENG-48). `?page=appearance` renders
+ * the platform settings surface from `seed/settings/arcblog/{tone,palette,theme}.json`, and the
+ * bridge carries its own accepted set in `RANGES`. An option the bridge does not know is a control
+ * that silently does nothing (the false-green class this repository keeps hunting); a bridge value
+ * nobody can select is dead code. Measured first: both sides agree exactly — tone 4, palette 5,
+ * theme 3.
+ */
+test('every selectable appearance value is one the bridge implements, and vice versa', () => {
+  const bridge = readFileSync(join(repoRoot, '.web', 'components', 'theme-bridge', 'script.js'), 'utf8');
+  const block = /var RANGES = \{([\s\S]*?)\n  \};/.exec(bridge);
+  assert.ok(block, 'RANGES table not found in the theme bridge');
+
+  const ranges = {};
+  for (const axis of ['tone', 'palette', 'theme']) {
+    const row = new RegExp(`${axis}: \\{([^}]*)\\}`).exec(block[1]);
+    assert.ok(row, `RANGES.${axis} not found`);
+    ranges[axis] = [...row[1].matchAll(/([a-z]+): 1/g)].map((m) => m[1]).sort();
+    assert.ok(ranges[axis].length >= 3, `RANGES.${axis} parsed: ${ranges[axis].length}`);
+  }
+
+  const problems = [];
+  for (const axis of ['tone', 'palette', 'theme']) {
+    const seed = JSON.parse(readFileSync(join(repoRoot, 'seed', 'settings', 'arcblog', `${axis}.json`), 'utf8'));
+    const options = [...seed.options].sort();
+    const onlySeed = options.filter((o) => !ranges[axis].includes(o));
+    const onlyBridge = ranges[axis].filter((o) => !options.includes(o));
+    if (onlySeed.length) problems.push(`${axis}: selectable but not implemented by the bridge: ${onlySeed.join(', ')}`);
+    if (onlyBridge.length) problems.push(`${axis}: implemented but not selectable: ${onlyBridge.join(', ')}`);
+    if (!options.includes(seed.value)) problems.push(`${axis}: default '${seed.value}' is not selectable`);
+  }
+  assert.deepEqual(problems, [], `appearance controls and the bridge disagree:\n  ${problems.join('\n  ')}`);
+});
