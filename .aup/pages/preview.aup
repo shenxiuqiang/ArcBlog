@@ -3,7 +3,8 @@ page preview {
     back-home { en "Back to latest stories" zh "返回最新文章" }
     title { en "Preview" zh "预览" }
     notice { en "Draft preview — this record is not public." zh "草稿预览 — 该记录未公开。" }
-    runtime-note { en "This page binds the draft record after the first load. If the draft does not appear, reload once — or open the studio and pick an existing draft." zh "本页在首次加载之后才绑定草稿记录。若草稿没有出现，刷新一次即可；也可以回工作室挑选一个已有草稿。" }
+    runtime-note { en "The draft below is read from the record bound to this address, so it is here on the first load — no reload needed. If the body area is empty, the draft does not exist (or this session may not read it)." zh "下方草稿读取的是本地址绑定的记录，首次打开即已取到，无需刷新。若正文区为空，说明该草稿不存在（或本次会话无权读取）。" }
+    write-note { en "Publish / delete need the record in the session binding, which the platform only attaches after the first render — reload once before using them." zh "发布 / 删除需要会话已绑定该记录，而平台只在首次渲染之后才附加该绑定 —— 使用前刷新一次即可。" }
     back { en "Back to studio" zh "返回工作室" }
     edit { en "Edit" zh "编辑" }
     preview-publish { en "Publish" zh "发布" }
@@ -14,6 +15,11 @@ page preview {
     deleted-ok { en "Draft deleted." zh "草稿已删除。" }
   }
   view gap=lg {
+    // `propBind` is kept on this wrapper for the WRITE controls only: their exec
+    // args are interpolated from `${state.post.*}`, and the daemon attaches that
+    // binding to the session after the first render (DEF-21 / B14). The read-only
+    // display below does NOT wait for it — it uses `surface url="$state.loc"`,
+    // which reads the record on the first paint.
     view gap=lg propBind={post: "/instance/app/arcblog/drafts/$params.slug.json"} {
       row gap=sm {
         view visible=$session.authenticated {
@@ -22,25 +28,26 @@ page preview {
         view href="/posts" style={cursor: pointer, color: "var(--color-dim)"} visible="!$session.authenticated" {
           p :back-home
         }
-        view layout=inline href="/edit/${state.post.slug}" style={cursor: pointer, color: "var(--color-dim)"} visible=$state.post {
+        // `$state.slug` comes from the route binding (not from `propBind`), so the
+        // link works on a cold load; `$session.authenticated` is synchronous and
+        // therefore a reliable gate.
+        view layout=inline href="/edit/${state.slug}" style={cursor: pointer, color: "var(--color-dim)"} visible=$session.authenticated {
           p :edit scale=sm
         }
       }
-      // DEF-15/DEF-18: the old card used `visible="!$state.post"`, evaluated once
-      // before `propBind` resolved and then frozen (arc-contracts §28.1). The copy is
-      // now standing platform behaviour, never a "missing record" claim.
+      // Standing statement about the platform; never a "missing record" claim.
       view gap=xs {
         h2 :title level=2 scale=sm intent=muted
         p :runtime-note intent=muted scale=sm
       }
-      // Deliberate DEF-18 exception, unlike the read-only reader/page-view bodies:
+      // Deliberate DEF-18 exception (allowlisted in
+      // scripts/visible-conditions-allowlist.json), unlike the read-only bodies:
       // THIS block carries the publish/delete writes, whose args are interpolated
       // from `${state.post.*}`. Rendering it before the record is bound would offer a
       // live "publish" button that writes `/instance/app/arcblog/posts/.json` with an
       // empty title into the PUBLIC posts directory — a corrupt record. So the write
-      // surface keeps its gate (fail closed), and the standing line above tells the
-      // operator how to get the record.
-      // DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state publish/save control
+      // surface keeps its gate (fail closed), and `preview.write-note` states why it
+      // needs a reload.
       view gap=md visible=$state.post {
         row gap=sm {
           action variant=primary label=:preview-publish onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
@@ -49,17 +56,14 @@ page preview {
         view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} {
           p :notice intent=info
         }
-        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 10px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible=$state.post.coverImage {
-          p " "
-        }
-        h1 "${state.post.title}" scale=display
-        row gap=xs cross=center {
-          p "${state.post.status}" scale=sm intent=muted
-          p "${state.post.authorName}" scale=sm intent=muted
-          p "${state.post.category}" scale=sm intent=muted style={textTransform: capitalize}
-        }
-        p "${state.post.body}" format=markdown
       }
+    }
+    // The record itself: read on the first paint through the binding-derived path
+    // (`$state.loc` = `/instance/app/arcblog/drafts/<slug>.json`), rendered with
+    // `drafts/.aup/item.json`. Guests get the platform's own permission/not-found
+    // message — a real answer, not a stale-gate guess.
+    surface url=$state.loc editable=false {
+      p :write-note intent=muted scale=sm
     }
     app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
   }

@@ -28,7 +28,8 @@ use `references/verification.md` to measure it in ~1 minute instead of guessing.
 | Can an expression compare values? | No comparisons. Only `!`, `&&`, `||` over `$session.*` / `$state.*` (that is why draft/published is split across two AFS directories instead of filtered by `status`). |
 | Does `active=true` auto-detect the current page? | No: the runtime checks literal `t.active === true`. Mark the current row statically. |
 | Is `arc dsl lint --fix` safe to run? | **No.** It also deletes ids that only the *runtime* addresses (event targets, iframe ids). See §6. |
-| Do list filters see edited records? | No — `afs-list` `filter`/`serverFilters` go through the index, and an edit leaves the index entry stale, so the row silently disappears. Prefer directory boundaries or `propBind`. |
+| Do list filters see edited records? | No — `afs-list` `filter`/`serverFilters` go through the index, and an edit leaves the index entry stale (nor is a normal body indexed), so the row silently disappears and a filter can never select a single record. Prefer directory boundaries. |
+| Does `propBind` bind on a browser session's FIRST visit? | **No** — the daemon attaches the record to the session state only after the first render, the client bundle has no `propBind` handler, and no later push arrives. Cold-start alternatives: `surface url=$state.loc` (one record, needs an item recipe `<dir>/.aup/item.json`) and `afs-list` row templates (`role=item`). See gotcha 7b / `arc-contracts` §57 / `05-开发文档 02` B14. |
 
 ## 1. The 60-second mental model
 
@@ -98,7 +99,7 @@ Full list + prop contracts: `references/primitives.md`.
 
 | You want | Use | Notes |
 | --- | --- | --- |
-| Reads of one record on a page | `propBind={x: "/instance/app/<b>/<dir>/$params.slug.json"}` + `${state.x.*}` | binds before render; `${…}` form for `visible` |
+| Reads of one record on a page | `surface <id> url=$state.loc editable=false` + an item recipe `<dir>/.aup/item.json` | the only cold-start channel; `propBind={x:…}` + `${state.x.*}` renders nothing on a session's first visit (gotcha 7b) |
 | A list of records | `afs-list` (+ `layout`, `columns`, `pageSize`, `autoSelect=false`) | filters are index-backed (see §0) |
 | Label/value pairs (profile, health, policy) | `key-value-list fields=[{label, value, monospace, copyable}]` | platform alignment + copy button for free |
 | Breadcrumb / tags / counts | `breadcrumb items=[{label, href}]`, `chip label=… count=…` | last breadcrumb item gets `aria-current` |

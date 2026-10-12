@@ -1,28 +1,23 @@
 page page-view {
   i18n {
     title { en "Page" zh "页面" }
-    runtime-note { en "This page binds its record after the first load. If the content is empty, reload once." zh "本页在首次加载之后才绑定记录。若内容为空，刷新一次即可。" }
+    runtime-note { en "The page below is read from the record bound to this address, so it is here on the first load — no reload needed. If the body area is empty, the record does not exist (or this session may not read it)." zh "下方正文读取的是本地址绑定的记录，首次打开即已取到，无需刷新。若正文区为空，说明该记录不存在（或本次会话无权读取）。" }
     back { en "Back to latest stories" zh "返回最新文章" }
   }
   view gap=lg {
-    view gap=lg propBind={page: "/instance/app/arcblog/pages/$params.slug.json"} {
-      row gap=sm {
-        view href="/posts" style={cursor: pointer, color: "var(--color-dim)", padding: "3px 0"} {
-          p :back scale=sm
-        }
+    row gap=sm {
+      view href="/posts" style={cursor: pointer, color: "var(--color-dim)", padding: "3px 0"} {
+        p :back scale=sm
       }
-      // DEF-15/DEF-18: the old card used `visible="!$state.page"`, evaluated once
-      // before `propBind` resolved and then frozen — it reported a missing page for a
-      // record that exists (arc-contracts §28.1). The body is unconditional and this
-      // line states the platform behaviour instead of claiming anything is missing.
-      view gap=xs {
-        h2 :title level=2 scale=sm intent=muted
-        p :runtime-note intent=muted scale=sm
-      }
-      view gap=md {
-        h1 "${state.page.title}" scale=display
-        p "${state.page.body}" format=markdown
-      }
+    }
+    // DEF-21 / B14 — same channel as reader.aup: `surface url="$state.loc"` reads
+    // the record bound to `/pages/<slug>` on the first paint (the runtime derives
+    // `$state.loc` from `__AUP_BOOT__.bindings`), while `propBind` only lands in
+    // the session state after the first render. `url` is the interpolated prop;
+    // a node-level `src` would keep the literal `$state.loc`. The markup comes
+    // from the item recipe `pages/.aup/item.json` (`scripts/arcblog-recipes.mjs`).
+    surface url=$state.loc editable=false {
+      p :runtime-note intent=muted scale=sm
     }
     app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
   }

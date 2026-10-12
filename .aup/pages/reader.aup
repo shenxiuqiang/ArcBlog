@@ -1,53 +1,32 @@
 page reader {
   i18n {
     title { en "Article" zh "文章" }
-    runtime-note { en "This page binds its record after the first load. If the article body is empty — or a shared link opens blank — reload once." zh "本页在首次加载之后才绑定记录。若正文为空（或分享链接打开时是空白），刷新一次即可。" }
+    runtime-note { en "The article below is read from the record bound to this address, so it is here on the first load — no reload needed. If the body area is empty, the record does not exist (or this session may not read it)." zh "下方正文读取的是本地址绑定的记录，首次打开即已取到，无需刷新。若正文区为空，说明该记录不存在（或本次会话无权读取）。" }
     back { en "Back to latest stories" zh "返回最新文章" }
   }
   view gap=lg {
-    view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
-      breadcrumb items=[{label: "$t(reader.back)", href: "/posts"}, {label: "${state.post.title}"}]
-      // DEF-15/DEF-18 (measured 2026-10-12, arc 2.0.0-beta.50): the old empty-state
-      // card carried `visible="!$state.post"`, which is evaluated ONCE — before
-      // `propBind` resolves the record — and then never recovers. On a cold load that
-      // stuck it TRUE, so a VALID article rendered "Post not found." with no body
-      // (measured: `/posts/hello-arcblog` first visit = 157 chars of shell; reload =
-      // 3748 chars with the h1s). The body block is therefore UNCONDITIONAL and the
-      // copy below is a standing statement about the platform, never a claim that the
-      // record is missing (arc-contracts §28.1).
-      view gap=xs {
-        h2 :title level=2 scale=sm intent=muted
-        p :runtime-note intent=muted scale=sm
-      }
-      view gap=md {
-        // Standing cover: with an empty coverImage the shorthand keeps the base
-        // colour only (measured 2026-10-12: `background: <color> url() center /
-        // cover no-repeat` paints the colour and drops the empty image layer), so
-        // no condition is needed and the block cannot break the layout.
-        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 10px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
-          p " "
-        }
-        h1 "${state.post.title}" scale=display
-        row gap=xs cross=center {
-          p "${state.post.authorName}" scale=sm intent=muted
-          view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-            // DEF-18: the `time` primitive CANNOT be used on a propBind-bound field.
-            // Its display branch is `var n = r.value || new Date().toISOString()`
-            // (verbatim from the served runtime bundle, measured 2026-10-12), so an
-            // empty value becomes NOW and is then formatted — `timeMode=relative`
-            // printed "just now" and the default absolute mode printed the current
-            // wall-clock date (cold load: "Oct 12, 2026, 8:01 PM" against a true
-            // publishedAt of Sep 18). No prop suppresses it, and on a cold load the
-            // record is never bound (no AFS read is even issued). So the record's own
-            // value is printed as standing text: empty while unbound, truthful when
-            // bound. (`time` stays in afs-list row templates — index.aup / saved.aup —
-            // where every row carries its own already-bound record.)
-            p "${state.post.publishedAt}"
-          }
-          chip label="${state.post.category}" color=default
-        }
-        p "${state.post.body}" format=markdown
-      }
+    breadcrumb items=[{label: "$t(reader.back)", href: "/posts"}, {label: "$t(reader.title)"}]
+    // DEF-21 / B14 (measured 2026-10-12): `propBind` resolves the record into the
+    // daemon's SESSION state only AFTER the first render — the first `aup render`
+    // frame carries `propBind` and no `state`, the served client bundle has no
+    // `propBind` handler, and no later push arrives. A cold entry therefore
+    // painted an empty body (265 chars) and only a reload (which reuses the
+    // session) showed the article (3893 chars).
+    //
+    // The cold-start channel is `surface url="$state.loc"`: the runtime derives
+    // the record path from `__AUP_BOOT__.bindings` + `location.pathname`
+    // (`Vi()` → `Un()`, exposed to props as `$state.loc`, `$state.slug`,
+    // `$state.page`) and the surface reads it with `window.afs.read()` on mount.
+    // `url` is used (not `src`) because only PROPS are rewritten with the state
+    // context (`N0()`); a node-level `src` keeps the literal `$state.loc` and
+    // fails with "Path not found". The article markup is the item recipe
+    // `<dir>/.aup/item.json`, installed by `node scripts/arcblog-recipes.mjs install`.
+    //
+    // The note is the surface's chrome child (rendered above the record) and is
+    // an unconditional statement about the platform, never a claim about a record
+    // it has not read.
+    surface url=$state.loc editable=false {
+      p :runtime-note intent=muted scale=sm
     }
     app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "$t(wrapper.nav-saved)", href: "/?page=saved"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
   }

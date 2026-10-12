@@ -1,0 +1,88 @@
+{
+  "id": "draft-record",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "md"
+    }
+  },
+  "children": [
+    {
+      "id": "draft-record-cover",
+      "type": "view",
+      "props": {
+        "style": {
+          "minHeight": "280px",
+          "borderRadius": "var(--radius-lg, 10px)",
+          "background": "var(--color-border) url(${content.coverImage}) center / cover no-repeat"
+        }
+      },
+      "children": [
+        {
+          "id": "draft-record-cover-spacer",
+          "type": "text",
+          "props": {
+            "content": " "
+          }
+        }
+      ]
+    },
+    {
+      "id": "draft-record-title",
+      "type": "text",
+      "props": {
+        "content": "${content.title}",
+        "level": 1,
+        "scale": "display"
+      }
+    },
+    {
+      "id": "draft-record-meta",
+      "type": "view",
+      "props": {
+        "layout": {
+          "direction": "row",
+          "gap": "xs",
+          "crossAlign": "center"
+        }
+      },
+      "children": [
+        {
+          "id": "draft-record-status",
+          "type": "text",
+          "props": {
+            "content": "${content.status}",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "draft-record-author",
+          "type": "text",
+          "props": {
+            "content": "${content.authorName}",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        },
+        {
+          "id": "draft-record-category",
+          "type": "text",
+          "props": {
+            "content": "${content.category}",
+            "scale": "sm",
+            "intent": "muted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "draft-record-body",
+      "type": "text",
+      "props": {
+        "content": "${content.body}",
+        "format": "markdown"
+      }
+    }
+  ]
+}

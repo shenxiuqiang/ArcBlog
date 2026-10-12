@@ -1,0 +1,37 @@
+{
+  "id": "page-record",
+  "type": "view",
+  "props": {
+    "layout": {
+      "gap": "md"
+    }
+  },
+  "children": [
+    {
+      "id": "page-record-title",
+      "type": "text",
+      "props": {
+        "content": "${content.title}",
+        "level": 1,
+        "scale": "display"
+      }
+    },
+    {
+      "id": "page-record-meta",
+      "type": "text",
+      "props": {
+        "content": "${content.summary}",
+        "scale": "sm",
+        "intent": "muted"
+      }
+    },
+    {
+      "id": "page-record-body",
+      "type": "text",
+      "props": {
+        "content": "${content.body}",
+        "format": "markdown"
+      }
+    }
+  ]
+}

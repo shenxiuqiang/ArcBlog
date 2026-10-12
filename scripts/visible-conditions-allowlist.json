@@ -3,17 +3,7 @@
   "exceptions": [
     {
       "path": ".aup/pages/preview.aup",
-      "text": "view layout=inline href=\"/edit/${state.post.slug}\" style={cursor: pointer, color: \"var(--color-dim)\"} visible=$state.post {",
-      "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
-    },
-    {
-      "path": ".aup/pages/preview.aup",
       "text": "view gap=md visible=$state.post {",
-      "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
-    },
-    {
-      "path": ".aup/pages/preview.aup",
-      "text": "view style={minHeight: \"280px\", borderRadius: \"var(--radius-lg, 10px)\", background: \"var(--color-border) url(${state.post.coverImage}) center / cover no-repeat\"} visible=$state.post.coverImage {",
       "reason": "DEF-18 measured exception: keep the preview/write surface gated — cold-load rendering would expose an empty-state publish control"
     },
     {

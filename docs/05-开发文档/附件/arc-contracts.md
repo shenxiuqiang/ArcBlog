@@ -2611,3 +2611,85 @@ $ git diff --stat -- blocklet.yaml providers   → 空
 - 对照：同一页的**普通插值**（`${state.x}`）是真的（绑定时间戳确实渲染）⇒ 坏的是**闸门语义**，不是绑定通道。
 ⇒ 需要"有值才显示"时，把判断放到 **`afs-list` 行内**；单记录页上的条件渲染不要依赖 `visible`。
 （与 §28.1/§28.8 一致；`docs/team/requirements/REQ-039-home-module-switch.md` 有完整探针。）
+
+## 57. 单记录 `propBind` 的**首访不取数**，与首访可用的三条通道（DEF-21 根因，2026-10-12 实测）
+
+**结论层 = [`docs/05-开发文档/02` §2 B14](../02-平台能力与边界.md)。** 本节是原始证据。
+
+### 57.1 复现（Playwright，chromium headless shell，`http://arcblog.localhost:4939`）
+
+同一个 context 内：`/posts/hello-arcblog` 首访 `document.body.innerText` = **265 字符**（只有壳 + 常驻说明），
+`page.reload()` 后 = **3893 字符**（h1 `Hello ArcBlog`、正文 3557 字符）。新 context 首访同样 265 字符 ⇒ 与会话/缓存无关，是"首访 vs 复用同一 AUP 会话"的差别。
+
+WebSocket 帧（`__aup` 会话，`framereceived` 逐帧字节数）：
+
+| 场景 | 帧 | `aup render` 树里的绑定节点 |
+| --- | --- | --- |
+| 首访 | `120, **4520**, 46, 46, 46, 46` | `{"id":"reader-view-1-view-1","type":"view","propBind":{"post":"/instance/app/arcblog/posts/hello-arcblog.json"}}` —— **无 `state`** |
+| reload | `120, **14042**, 46, 46, 46, 46` | 同上 **+ `"state":["post"]`**，`state.post.body` 3753 字符 |
+
+⇒ ① 首访的 `/api/afs/rpc` 里**没有该记录的任何 `read`**（只有 theme bridge 的 3 条 settings 读）；
+② 服务端把 `propBind` 解析进**会话状态**发生在首帧之后，且**不补发**（30 s 内无第二帧）；
+③ 客户端 bundle 里 `grep propBind aup.<hash>.js` = **0** ⇒ 首屏没有任何取数代码路径。
+④ **"自动触发"救不回来**：页面同时挂 `afs-list autoSelect=true clickMode=select`（首访确实发出 `select` 事件）与
+`surface events={connect,navigate}` 之后，`PBTITLE[]` 在 1/2/4/7/12/20 s 全部为空 ⇒ 事件不会让 daemon 把 `propBind` 状态并入重渲染。
+
+### 57.2 `$params.*` 的作用域 = **只有 `propBind` 值**
+
+在 `/posts/hello-arcblog` 上（binding `post-reader` 命中）逐项实测：
+
+| 位置 | 结果 |
+| --- | --- |
+| `propBind={post:"/instance/app/arcblog/posts/$params.slug.json"}` | ✅ 服务端替换成 `hello-arcblog.json`（见 57.1 的树） |
+| 纯文本 `p "PARAMSLUG[$params.slug]"` | ❌ 字面量 `PARAMSLUG[$params.slug]` |
+| `afs-list filter={field:"content.slug", match:"$params.slug"}` | ❌ 下推负载 `"where":{"field":"slug","eq":"$params.slug"}` → 0 行 |
+| `surface src=".../posts/$params.slug.json"`（`$` 与 `${}` 两种写法） | ❌ `stat` 打的是字面量路径 → `Path not found` |
+
+`afs-list filter` 本身也**不能按 slug 取单条**：`filter={field:"content.slug", match:"hello-arcblog"}` 下推
+`{"type":"exec","path":"/.actions/query","args":{"path":"/instance/app/arcblog/posts","where":{"field":"slug","eq":"hello-arcblog"},"limit":3}}` → **`No items`**（索引只覆盖小记录/未改写记录，§15.1）。字段名必须带 `content.` 前缀才会被下推。
+
+### 57.3 首访可用的通道（唯一一条"取单记录"的）
+
+`Vi()`（渲染前 `Cr=Vi()`）构造 `$state`：URL 查询参数 + `page` + `nn.params`（daemon 在 `aup render` 里带的 `routeContext`）
++ **`loc = Un()`**；`Un(pathname)` 用 `__AUP_BOOT__.bindings[].path` 匹配 `location.pathname`，把 `{slug}` 填进 `bindings[].afs` 模板，
+返回 **AFS 记录路径**。`Lt()` 只在节点 `props` 上跑 `N0()`→`$i(props, $state)`（**node 级 `src` 不参与**），
+`$i` 认识整串 `$state.x`、`${state.x}` 与 `${x}`。
+
+因此首访取数可用的写法是 **`surface` + `url=`（prop）**：
+
+```aup
+surface reader-record url=$state.loc editable=false { p :note }
+```
+
+实测（新 context，10 s 后读 DOM）：`data-aup-surface-src="/instance/app/arcblog/posts/hello-arcblog.json"`，
+首访 rpc 依次为 `stat` → `read <record>` → `read <dir>/.aup/item.json (optional)` ⇒ **首屏就取到记录**。
+同页探针还读出 `LOC[/instance/app/arcblog/posts/hello-arcblog.json]`、`SLUG[hello-arcblog]`、`PAGE[probe-reader]`。
+
+**范围/反例**：① node 级 `surface src=$state.loc` 不插值（`Path not found: /app/.../$state.loc.json`）；
+② `url=$state.slug.json`（整串不是单个引用）不插值；③ `afs-list from=$state.loc` 无效 ——
+`.actions/list` 打在**文件**路径上返回 `[]`（`.actions/query` 打在文件上直接 `Internal server error`）⇒ 列表通道取不到单条。
+
+### 57.4 `surface` 的渲染：靠 `afs-list` 之外的第二半 —— **item recipe**
+
+`surface` 读到记录后按 `<记录所在目录>/.aup/item.json`（`cw()`→`Vn()`，候选 `item.<kind>` / `item` / `item/default`）
+取模板，用 `Ch()`→`Qd()`→`xh()` 把 `${content.<字段>}` 换成记录字段（`content` 是 JSON 字符串时会自动 `JSON.parse`。
+**没有 recipe 时**：字符串 content + 可写元数据 ⇒ 渲染成**surface 编辑器**（"Preview/Code/Revert/Save"）；
+`editable=false` ⇒ 退化成**原始 JSON 文本**。两者都不是文章 ⇒ recipe 是这条通道的必要配件，
+本仓以 `seed/recipes/{posts,drafts,pages}/item.json` + `node scripts/arcblog-recipes.mjs install` 提供（同 `arcblog-settings.mjs install` 的形态）。
+
+**点目录不污染列表**：`.actions/list /instance/app/arcblog/posts` 会返回 `['.aup', ...]`，但运行期 `afs-list`
+不显示点条目 —— 装入 recipe 前后 `?page=index` 与 `?page=author` 的行数/行 id 不变（3 行，无 `.aup`）。
+`afs-list` 的行模板必须给直接子节点写 `role=item`（`Yv` 里 `C.props.role === "item"` 才当模板）：
+漏写时退化成默认文件行（`hello-arcblog.json application/json 4.8 KB`），写上后首访即 `A0ROW[Hello ArcBlog]`。
+
+### 57.5 实改后的首访数字（三页，均新 context、无 reload）
+
+| 页面 | 首访 DOM | 关键节点 | 首访 rpc（与记录有关的部分） |
+| --- | --- | --- | --- |
+| `/posts/hello-arcblog` | **3960** 字符（改前 265） | `h1 = Hello ArcBlog`；最长文本节点 **3557** 字符；无 `"slug":"` JSON 残渣 | `stat` + `read` 记录 + `read posts/.aup/item.json` |
+| `/pages/<slug>`（探针记录 `probe-coldtest`，测后删除） | **439** 字符 | `h1 = Probe cold test`，正文在 | `stat` + `read` 记录 + `read pages/.aup/item.json` |
+| `/preview/<draft>`（guest） | **504** 字符 | surface 内为平台真话 `Sign in to view this content.`（不是假 not-found） | `stat`（guest 无 `read`） |
+| `/pages/does-not-exist` | 444 字符 | 常驻说明 + 平台真话 `Failed to resolve: … Path not found` | `stat` 失败 |
+
+`preview` 的**写入**按钮（发布/删除）仍依赖 `propBind` 的 `state.post.*` 作为 exec args ⇒ 保留 `visible=$state.post`
+的 fail-closed 闸门（allowlist 项），页面常驻说明写明"写入前刷新一次"；**未**在登录态复核（无 DID 会话）。

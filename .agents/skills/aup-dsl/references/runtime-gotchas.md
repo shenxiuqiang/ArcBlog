@@ -48,8 +48,39 @@ All of these were reproduced on the live daemon; "symptom → cause → fix".
    verbatim on `propBind` pages (`scripts/lib`/`.aup/pages/reader.aup`).
 7. **A row silently disappears from a filtered list after being edited**
    `afs-list` `filter`/`serverFilters` run through the index, and an edit leaves
-   the index entry stale. Prefer a directory boundary (`posts/` vs `drafts/`) or
-   `propBind` for a single record.
+   the index entry stale — and a record with a normal body is never indexed at all
+   (measured: `where {field:"slug", eq:"hello-arcblog"}` → 0 rows), so a filter
+   can never select one record. Prefer a directory boundary (`posts/` vs `drafts/`).
+   Note the field name must start with `content.` to be pushed down at all.
+7b. **`propBind` does NOT bind on the first visit of a browser session** (v3,
+   2026-10-12, `arc-contracts` §57 / `docs/05-开发文档/02` B14 — the root cause of
+   the blank article page)
+   The daemon resolves `propBind` into the **AUP session state only after the first
+   render**: the first `aup render` WS frame carries `propBind` and **no `state`**
+   (4520 B), the reload frame carries `state:["post"]` + the record (14042 B), and
+   nothing is pushed later (30 s). The served client bundle has **no `propBind`
+   handler** (`grep propBind aup.*.js` = 0) ⇒ the first paint cannot fetch it.
+   Firing `select`/`connect`/`navigate` events on load does **not** make the daemon
+   re-render with the state (measured: `PBTITLE[]` still empty after 20 s).
+   `$params.*` is substituted **only inside a `propBind` value** — in plain text, in
+   `afs-list filter`, and in `surface src` it stays literal.
+
+   **The cold-start channels that DO work:**
+   * **one record** — `surface <id> url=$state.loc editable=false { … }`.
+     `$state.loc` is the record path the runtime derives from
+     `__AUP_BOOT__.bindings[].afs` + `location.pathname` (`Vi()`→`Un()`); `$state.slug`
+     / `$state.page` also exist. It must be given as a **prop** (`url=`) because only
+     props are rewritten with the state context (`N0()`); a node-level `src=` keeps the
+     literal `$state.loc`. `editable=false` avoids the surface editor.
+     The markup comes from the record directory's **item recipe**
+     `<dir>/.aup/item.json` (`${content.<field>}` placeholders, `format=markdown`
+     works) — without it the surface prints the raw JSON string. Install with
+     `node scripts/arcblog-recipes.mjs install` (ArcBlog).
+   * **a list** — `afs-list` fetches on first paint (`list`/`query` RPC) and
+     `$entry.*` in the **row template** is correct; the row's direct child must carry
+     **`role=item`**, otherwise the runtime renders its default file row
+     (`name.json application/json 4.8 KB`).
+   * `afs-list from=$state.loc` does **not** work: `list` on a *file* returns `[]`.
 8. **`afs-list` `emptyText` shows the runtime's English default**
    `emptyText` does not evaluate `$t()`. And per gotcha 6 you **cannot** gate a
    page-level empty card on bound data with `visible`: put the guidance in
