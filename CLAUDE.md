@@ -33,6 +33,11 @@ npm test                  # THE gate (~1s): the fast suites that never write to 
                           # and `arc dsl generate --check` is NOT wired into any test today (a `--check`
                           # drift gate is still an open item: see docs/06-功能开发列表/02 ENG-07)
                           # (artifact-drift claim removed 2026-09-30: grep "'generate'" scripts/*.test.mjs = 0)
+npm run gate:docs       # the SIX per-volume doc gates in one command (scripts/arcblog-doc-gates.mjs):
+                          # each volume's _gate.sh (A0 files / links / word-table / error codes),
+                          # aggregated; any failure makes the command exit 1 (`--quiet` = summary only).
+                          # Separate from `npm test` on purpose: the fast tier is the implementation
+                          # gate (~1-2 s), this is the delivery gate (docs/07-团队与开发规范/03 §9).
 npm run test:unit             # legacy alias of `npm test` (identical command); kept for older tooling
 npm run test:live         # the live suites (serial, ~21 min measured in Round 7 2026-09-27): they
                           # mutate the dev instance and are cleaned up after a passing run

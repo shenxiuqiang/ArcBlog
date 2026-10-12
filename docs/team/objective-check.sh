@@ -71,5 +71,7 @@ except Exception as e:
 
 print()
 print('=' * 78)
-print('注：本表只报"文档层"落点；②③ 的**机制**仍标【规划中】（代码未接，见 S1-05 §5.2）')
+print('注：本表只报"文档层"落点。② 的机制（agent 承担聚合 + 链上注册表发现）**已实现并在台账有证据**：'
+      '聚合 = PRD-AGT-07/08（arcblog-summarize.mjs，含 cited[] 可追溯）；发现 = PRD-NET-03（arcblog-network.mjs registry refresh → node/registry.json，四种可达态）。'
+      '（原注"仍标【规划中】"为 2026-10-01 的状态，2026-10-12 Lead 按台账更正。）')
 PY
