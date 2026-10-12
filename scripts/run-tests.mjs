@@ -69,6 +69,7 @@ const FAST_TESTS = new Set([
   'arcblog-i18n',
   'arcblog-memory',
   'arcblog-node-factory-markers',
+  'arcblog-page-grants',
   'arcblog-permissions',
   'arcblog-recipes',
   'arcblog-roles-settings',
@@ -94,6 +95,7 @@ const GUARDS = {
   // is deliberately NOT in FAST_TESTS — it stays live.
   'arcblog-memory': [/^scripts\/lib\/memory\.mjs$/, /^scripts\/arcblog-memory(\.mjs|\.test\.mjs)?$/, /^\.gitignore$/],
   'arcblog-node-factory-markers': [/^scripts\/lib\/chain\.mjs$/, /^scripts\/arcblog-node-factory-markers/],
+  'arcblog-page-grants': [/^\.aup\/pages\//, /^blocklet\.yaml$/, /^scripts\/arcblog-page-grants/],
   'arcblog-permissions': [/^blocklet\.yaml$/, /^scripts\/arcblog-permissions/],
   'arcblog-recipes': [/^seed\/recipes\//, /^world\//, /^scripts\/(arcblog-recipes|lib\/recipes)/, /^\.aup\/pages\/(reader|page-view|preview)\.aup$/],
   'arcblog-roles-settings': [/^\.aup\/pages\/admin\/general\.aup$/, /^scripts\/(arcblog-roles|lib\/roles)/, /^\.aup\/locales\//],
