@@ -2,7 +2,7 @@ page feeds {
   i18n {
     desc { en "Subscription and index surfaces generated from published content." zh "由已发布内容生成的订阅与索引入口。" }
     feeds-agent { en "Agent access (llms.txt / MCP) is declared by the runtime." zh "Agent 访问（llms.txt / MCP）由运行时声明。" }
-    feeds-desc { en "These surfaces are built by the CLI, not by the runtime: run node scripts/arcblog-rss.mjs to generate the RSS artifact — until it has run, /p/rss.xml does not exist." zh "以下分发面由 CLI 生成、而非运行时自动产出：需运行 node scripts/arcblog-rss.mjs 生成 RSS 产物——未生成时 /p/rss.xml 不存在。" }
+    feeds-desc { en "The RSS feed at /p/rss.xml is produced by the deploy pipeline: every deploy regenerates it and then checks that it answers. A bare build removes it, so deploy before you ship — ops manual step O8 has the details. The agent surfaces (/p/llms.txt, MCP) come from the runtime and need nothing." zh "RSS 订阅在 /p/rss.xml，由部署管线产出：每次部署都会重新生成并核对它是否可访问。裸构建会把它删掉，发布前要走部署——细节见运维手册 O8。agent 面（/p/llms.txt、MCP）由运行时提供，无需操作。" }
     feeds-posts { en "Article index" zh "文章索引" }
     feeds-rss { en "RSS feed" zh "RSS 订阅" }
     gate-desc { en "Sign in with DID Wallet to view the distribution surfaces." zh "使用 DID Wallet 登录后查看分发面。" }

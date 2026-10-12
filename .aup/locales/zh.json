@@ -250,7 +250,7 @@
   "factory.worker-hint": "Worker：node scripts/arcblog-chain-worker.mjs watch",
   "feeds.desc": "由已发布内容生成的订阅与索引入口。",
   "feeds.feeds-agent": "Agent 访问（llms.txt / MCP）由运行时声明。",
-  "feeds.feeds-desc": "以下分发面由 CLI 生成、而非运行时自动产出：需运行 node scripts/arcblog-rss.mjs 生成 RSS 产物——未生成时 /p/rss.xml 不存在。",
+  "feeds.feeds-desc": "RSS 订阅在 /p/rss.xml，由部署管线产出：每次部署都会重新生成并核对它是否可访问。裸构建会把它删掉，发布前要走部署——细节见运维手册 O8。agent 面（/p/llms.txt、MCP）由运行时提供，无需操作。",
   "feeds.feeds-posts": "文章索引",
   "feeds.feeds-rss": "RSS 订阅",
   "feeds.gate-desc": "使用 DID Wallet 登录后查看分发面。",

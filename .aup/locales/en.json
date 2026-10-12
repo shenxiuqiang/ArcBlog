@@ -250,7 +250,7 @@
   "factory.worker-hint": "Worker: node scripts/arcblog-chain-worker.mjs watch",
   "feeds.desc": "Subscription and index surfaces generated from published content.",
   "feeds.feeds-agent": "Agent access (llms.txt / MCP) is declared by the runtime.",
-  "feeds.feeds-desc": "These surfaces are built by the CLI, not by the runtime: run node scripts/arcblog-rss.mjs to generate the RSS artifact — until it has run, /p/rss.xml does not exist.",
+  "feeds.feeds-desc": "The RSS feed at /p/rss.xml is produced by the deploy pipeline: every deploy regenerates it and then checks that it answers. A bare build removes it, so deploy before you ship — ops manual step O8 has the details. The agent surfaces (/p/llms.txt, MCP) come from the runtime and need nothing.",
   "feeds.feeds-posts": "Article index",
   "feeds.feeds-rss": "RSS feed",
   "feeds.gate-desc": "Sign in with DID Wallet to view the distribution surfaces.",

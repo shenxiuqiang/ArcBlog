@@ -78,7 +78,7 @@
     "ctrl": 0,
     "styles": 6,
     "i18n": 9,
-    "tech": 2
+    "tech": 0
   },
   "appearance": {
     "blocks": 2,
@@ -170,7 +170,7 @@
     "categories": "8d8c902a8134e09a",
     "tags": "9d3c00223244d54e",
     "seo": "9ca4d0e4576db911",
-    "feeds": "a840c3cd38e7869e",
+    "feeds": "5d0a28e839a63375",
     "appearance": "93b80c1873251269",
     "operations": "4abd7287a5f36064",
     "registry": "0d4b406d6640cde0",
