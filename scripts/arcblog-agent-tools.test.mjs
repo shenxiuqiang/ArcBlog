@@ -88,3 +88,48 @@ test('the extractor really works (guard against a silently empty comparison)', (
   assert.deepEqual(handlerFlags(src, 'get_post'), ['slug']);
   assert.deepEqual(handlerFlags(src, 'this_tool_does_not_exist'), []);
 });
+
+/**
+ * Three-way consistency, added 2026-10-12: the tool catalogue (code), the MCP declaration the
+ * runtime publishes (agents/<name>/agent.json) and the manifest's guest grants. Measured before
+ * writing it: all eight read tools' resource paths are covered by the declaration's three scopes
+ * (posts/**, categories/**, node/**), and all three scopes are guest-readable in blocklet.yaml —
+ * true today, checked by nobody, and a drift here is invisible until an MCP client is denied
+ * while our own CLI succeeds.
+ */
+test('the MCP declaration covers every read tool, and the manifest grants cover the declaration', async () => {
+  const { AGENT_TOOLS } = await import(LIB);
+  const declaration = JSON.parse(readFileSync(join(REPO, 'agents', 'arcblog-agent', 'agent.json'), 'utf8'));
+  const scopes = declaration.tools.map((t) => ({
+    path: String(t.path).replace(/\/\*\*$/, ''),
+    ops: [...t.ops].sort(),
+  }));
+  assert.ok(scopes.length >= 1, 'the declaration must expose at least one scope');
+
+  // (1) read-only declaration: a write op here would promise the MCP surface more than spec §59's
+  // policy allows; widening it is a deliberate edit of this expectation.
+  const READ_OPS = ['list', 'read', 'stat'];
+  const writable = scopes.filter((s) => s.ops.some((op) => !READ_OPS.includes(op)));
+  assert.deepEqual(writable, [], `declared scopes with non-read ops: ${JSON.stringify(writable)}`);
+
+  // (2) every read tool's resource path sits inside a declared scope
+  const reads = Object.values(AGENT_TOOLS).filter((t) => t.kind === 'read');
+  assert.ok(reads.length >= 8, `read tools found: ${reads.length}`);
+  const uncovered = reads
+    .filter((t) => {
+      const path = t.resource?.path ?? '';
+      return !scopes.some((s) => path === s.path || path.startsWith(s.path + '/'));
+    })
+    .map((t) => `${t.name} (${t.resource?.path})`);
+  assert.deepEqual(uncovered, [], `read tools outside the MCP declaration: ${uncovered.join(', ')}`);
+
+  // (3) every declared scope is guest-readable in the manifest (else the declaration lies)
+  const manifest = readFileSync(join(REPO, 'blocklet.yaml'), 'utf8');
+  const guestPrefixes = [...manifest.matchAll(/networkRead:\n((?:\s+.*\n)+?)(?=\n\S|\Z)/gm)]
+    .flatMap((m) => [...m[1].matchAll(/path:\s*(\S+)\n\s+role:\s*guest/g)].map((x) => x[1]));
+  assert.ok(guestPrefixes.length >= 3, `guest prefixes parsed: ${guestPrefixes.length}`);
+  const denied = scopes
+    .filter((s) => !guestPrefixes.some((p) => s.path === p || s.path.startsWith(p)))
+    .map((s) => s.path);
+  assert.deepEqual(denied, [], `declared scopes no guest grant covers: ${denied.join(', ')}`);
+});
