@@ -161,3 +161,25 @@ test('every FAST_TESTS entry is a file tracked by git', () => {
   });
   assert.deepEqual(untracked, [], `fast suites that are NOT tracked by git: ${untracked.join(', ')}`);
 });
+
+/**
+ * A guard for the guards (ENG-64): a fast suite that asserts NOTHING is vacuously green. Reviewing
+ * all 32 suites for non-vacuity floors found the floors missing in twelve, but every one of those is
+ * driven by a literal list or carries a targeted presence assertion — the review was a negative
+ * result. What remains worth machine-checking is the degenerate case: a suite file with no assertion
+ * at all, or one that cannot even be read.
+ */
+test('every fast suite asserts something, and the suite list is non-empty', () => {
+  const runner = readFileSync(join(repoRoot, 'scripts', 'run-tests.mjs'), 'utf8');
+  const names = [...runner.match(/const FAST_TESTS = new Set\(\[([\s\S]*?)\]\);/)[1].matchAll(/'(\w[\w-]*)'/g)].map((m) => m[1]);
+  assert.ok(names.length >= 25, `FAST_TESTS entries parsed: ${names.length}`);
+
+  const silent = [];
+  for (const name of names) {
+    const file = join(repoRoot, 'scripts', `${name}.test.mjs`);
+    assert.ok(existsSync(file), `${name}.test.mjs is registered but missing`);
+    const body = readFileSync(file, 'utf8');
+    if (!/assert\.(ok|equal|deepEqual|match|notEqual|throws|rejects)\b/.test(body)) silent.push(name);
+  }
+  assert.deepEqual(silent, [], `fast suites with no assertion (they can only pass vacuously): ${silent.join(', ')}`);
+});

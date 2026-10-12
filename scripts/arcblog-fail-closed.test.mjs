@@ -26,6 +26,10 @@ const DESTRUCTIVE_DEFAULTS = [
   { script: 'scripts/arcblog-deploy.mjs', bare: 'really deploys to the local Pages instance' },
 ];
 
+// The list is what makes this suite non-vacuous: an empty list would run no spawn at all and the
+// file would still pass. Measured floor = 2 (dist-secrets + deploy).
+assert.ok(DESTRUCTIVE_DEFAULTS.length >= 2, `destructive-default entries: ${DESTRUCTIVE_DEFAULTS.length}`);
+
 for (const { script, bare } of DESTRUCTIVE_DEFAULTS) {
   test(`${script}: an unknown flag fails closed instead of doing the bare action`, () => {
     const run = spawnSync(process.execPath, [join(REPO, script), BAD], { cwd: REPO, encoding: 'utf8', timeout: 60000 });
