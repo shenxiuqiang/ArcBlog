@@ -6,7 +6,7 @@
 | 版本 | v1.0 ｜ 2026-10-01 ｜ 主笔 `dev-doc` |
 | 上游 | [`00-需求地图与规范.md`](00-需求地图与规范.md)（§2 领域图：`AGT` 为**主干域**；§5 **S2-B 裁决：注册表归 `NET`、读取归 `AGT`**）；[`00a-需求模板与验收规范.md`](00a-需求模板与验收规范.md)（模板列 / 验收规范 A1–A5）；**已冻结** [`docs/01-产品概念/`](../01-产品概念/00-导读.md)（`02 §2 A`、`03 §J2/J4`、`04 §1` 发现/汇总/记忆/公开面）；[`concept-口径裁决-Lead.md`](../team/concept-口径裁决-Lead.md)（§4 不变口径、§5 裁决 D1/D4/D5） |
 | 下游 | Stage 3（`?page=agents` 主入口升级）；Stage 6 台账（`FP-AGT-*`）；[`03-NET`](03-NET-发现与网络.md)（注册表）、[`04-ID`](04-ID-身份与角色.md)（授权面）、[`01-CNT`](01-CNT-内容创作.md)（生成稿的人审与署名）、[`02-SITE`](02-SITE-发布与站点.md)（只读出口契约） |
-| 证据基线 | 工具面与授权面逐项实测：`scripts/lib/agents.mjs:24-27`（读/写算子）、`:45`（五档能力）、`:74-75`（发现工具 `unavailable` + 理由）、`:263`（grant 目录）；工具条数 = `AGENT_TOOLS` **19**（`node -e` 实测）；通道 = `/p/llms.txt` 实测 **200**、`/p/rss.xml` 实测 **404**（需先生成） |
+| 证据基线 | 工具面与授权面逐项实测：`scripts/lib/agents.mjs:24-27`（读/写算子）、`:45`（五档能力）、`:74-75`（发现工具 2026-10-12 已 available —— `PRD-AGT-12`）、`:263`（grant 目录）；工具条数 = `AGENT_TOOLS` **12**（2026-10-12 `node -e` 实测；本条基线原记 19，值随 `PRD-AGT-13` 与去经济/去 hub、`list_summaries` 演进而更新）；通道 = `/p/llms.txt` 实测 **200**、`/p/rss.xml` 实测 **404**（需先生成） |
 | 事实标签 | 五类（门槛 = [`docs/README.md`](../README.md) §3.1）；**本目录不写实现状态六态**（出处 = `docs/06-功能开发列表/`） |
 
 > **领域范围（主干）**：agent 的**公开读取面**、**发现 → 汇总 → chat → 生成草稿 → 发布**的编排、**能力档与授权**、**记忆（先本地）**、工具面与审计。
@@ -37,7 +37,7 @@
 | PRD-ID | 一句话需求 | 概念条款 | 旅程/落点 | 现状标签 | 阻塞 | 优先级 | 验收 | 证据 | 验证者 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PRD-AGT-01` | 未配置节点的 agent **只暴露公开只读面** | `02 §2 A①`、`04 §1` 公开面 | `03 §J4` 步 3；`?page=agents` | 【已实现】 | 无 | P0 | `node scripts/arcblog-agent.mjs tools` → 只读工具可执行、写工具在无 grant 时被拒（返回显式原因） | `scripts/lib/agents.mjs:24-27`（读/写算子）、`:30-33`（敏感路径前缀） | 独立方（Stage 6 指派） |
-| `PRD-AGT-02` | 工具**按能力分级**，高风险**默认关闭**，`agent.admin` **不可授予** | `02 §2 A②`、`04 §1` 能力档 | `03 §J4` 步 1 | 【已实现】 | 无 | P0 | `node scripts/arcblog-agent.mjs tools` → 19 条各带 `capability`/`kind`；`agent.admin` 三条为 `closed` 且**不可授予** | `scripts/lib/agents.mjs:45`（五档）、`:27`（`WRITE_OPS` default-closed）；实测 `AGENT_TOOLS` = **19** | 独立方（Stage 6 指派） |
+| `PRD-AGT-02` | 工具**按能力分级**，高风险**默认关闭**，`agent.admin` **不可授予** | `02 §2 A②`、`04 §1` 能力档 | `03 §J4` 步 1 | 【已实现】 | 无 | P0 | `node scripts/arcblog-agent.mjs tools` → 12 条各带 `capability`/`kind`；`agent.admin` 三条为 `closed` 且**不可授予** | `scripts/lib/agents.mjs:45`（五档）、`:27`（`WRITE_OPS` default-closed）；实测 `AGENT_TOOLS` = **12**（2026-10-12） | 独立方（Stage 6 指派） |
 | `PRD-AGT-03` | 授权**签发/撤销/TTL**；到期即拒 | `02 §2 A②` | `03 §J4` 步 1；`?page=agents` | 【已实现】（CLI）/【规划中】（页面签发） | 无 | P1 | `node scripts/arcblog-agent.mjs authorize --agent did:key:z… --capability agent.write --ttl 30` → 落 `config/agent-grants/<didHash>.json`；过期后再用被拒 | `scripts/lib/agents.mjs:263`（grant 目录）；页面侧签发**待落** | 独立方（Stage 6 指派） |
 | `PRD-AGT-04` | 每次 agent 操作**可审计**，且页面有只读审计视图 | `02 §2 G`、`03 §J4` 卡点③ | `03 §J4`；`?page=agents` | 【已实现】（CLI 审计）/【规划中】（页面视图） | 无 | P1 | `node scripts/arcblog-audit.mjs log\|read` 有记录；页面只读展示**尚未落** | `scripts/arcblog-audit.mjs`；`?page=agents` 为 agent 工作面**主入口** | 独立方（Stage 6 指派） |
 | `PRD-AGT-05` | 接入面**可被发现**，且如实声明可达通道 | `02 §2 A①`、`04 §1` 公开面 | `03 §J4` 步 3；`/p/llms.txt`、`/mcp` | 【已实现】（`llms.txt`/`/mcp`）/【规划中】（`rss.xml`） | 无 | P1 | `curl -s -o /dev/null -w '%{http_code}' /p/llms.txt` → **200**；`/p/rss.xml` → **404**（需先生成产物） | 通道实测：`/p/llms.txt` 200 / `text/plain`；`.web-cache/llms.txt` 在册 | 独立方（Stage 6 指派） |
