@@ -2835,3 +2835,26 @@ AssertionError: a paginated afs-list lost its explicit id — `<id>.page` is the
 
 **方法论提醒**：验证"HTML 属性是否被转发"必须三处对齐 —— **源码 / 部署文件 / 服务出的 DOM**；
 只查其中一处会得出相反结论（本轮先看到"部署文件里有"就差点以为修好了）。
+
+## 62. `$session.*` 的解析面：**只有文本节点**（2026-10-12，客户端产物 802 KB 逐处核对）
+
+**问题**：页面提交（`exec` 的 `content`/`args`）能否带真实署名（`U6`/`PRD-CNT-02`）。
+
+**方法**：拉服务出的客户端产物（`/aup.bc92de568433b0dc.js`，802 492 B），对"会话映射"与替换词表逐处定位：
+
+| 证据 | 位置/原文 |
+| --- | --- |
+| 会话映射**唯一**使用点是 text 渲染器 | `var u=String(typeof i=="string"&&i.indexOf("$session.")===0?Zt[i.slice(9)]??"":i)`（`Zt[` 全产物仅 **1** 处命中） |
+| ⇒ 解析条件是**整串**等于 `$session.<字段>` | 复合模板（`"Author: $session.did"`）整体不插值 |
+| `args` 模板词表 | `$0=/\$\{(input\|args)\.([^}]+)\}/g`、`B0=/^\$input\.(.+)$/`、`V0=/^\$args\.(.+)$/`（**不含 `session`**） |
+| 点击动作的 `args` 来自 **DOM 表单值** | `var B={}; … B[Y]=$.value; … var Ke=e.events.click.exec, Re=e.events.click.args; … window.afs.exec(Ke,B)` |
+| 其它插值词表（列表/渲染上下文） | `${entry.*}` `${ctx.*}` `${state.*}`（`Qt(f,m)`）——同样**不含 `session`** |
+| 可见性条件 | 单独一条路径（`Eu`/`rh`），**只用于 `visible=`**，不参与写载荷 |
+
+**结论（判定 B）**：`$session.*` 只在 ① 文本节点内容（整串）② `visible` 条件下有效；**写入路径（`content`/`args`）拿不到会话值**
+⇒ 页面提交必然写入字面量 `"$session.did"`（当前 `compose.aup` 的写载荷正是 `content:{authorDid:"$session.did"}`）。
+
+**降级（已实现）**：`node scripts/arcblog-lifecycle.mjs publish --author-did …`（CLI 面写真实署名）；`node scripts/arcblog-doctor.mjs` 报空署名记录。
+**若要页面路径也带真署名**：只能由 worker/CLI **回填**（产品口径变更）——见 [`05/02 B18`](02-平台能力与边界.md)。
+
+**方法论**：这一条**没有**用浏览器实测就定案——产物是静态可读的，而"某 HTML/行为是否可能"能被词表穷举回答；浏览器实测降级为**复核**（同样适用于 `DEF-24`/§59 那一类）。
