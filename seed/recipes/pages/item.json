@@ -8,15 +8,6 @@
   },
   "children": [
     {
-      "id": "page-record-title",
-      "type": "text",
-      "props": {
-        "content": "${content.title}",
-        "level": 1,
-        "scale": "display"
-      }
-    },
-    {
       "id": "page-record-meta",
       "type": "text",
       "props": {

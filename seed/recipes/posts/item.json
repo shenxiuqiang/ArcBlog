@@ -28,15 +28,6 @@
       ]
     },
     {
-      "id": "post-record-title",
-      "type": "text",
-      "props": {
-        "content": "${content.title}",
-        "level": 1,
-        "scale": "display"
-      }
-    },
-    {
       "id": "post-record-meta",
       "type": "view",
       "props": {

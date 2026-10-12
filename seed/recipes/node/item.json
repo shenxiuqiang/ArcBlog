@@ -14,14 +14,6 @@
   },
   "children": [
     {
-      "id": "node-record-name",
-      "type": "text",
-      "props": {
-        "content": "${content.name}",
-        "level": 1
-      }
-    },
-    {
       "id": "node-record-description",
       "type": "text",
       "props": {
