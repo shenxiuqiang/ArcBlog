@@ -30,16 +30,24 @@ node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 
 ## B. 需要**人在浏览器里做一次**（本机无钱包连接能力，自动化不了）
 
-**B1 · 探针 `U6`（页面写入的署名落库形态）+ `DEF-20`（控制台发布是否等构）**
-1. 浏览器打开 `http://arcblog.localhost:4939/.well-known/service/login` 完成登录（钱包/DID Connect）；
-2. 进 `?page=compose`，随便写一篇（标题必填、正文一行即可），**保存/发布一次**；
-3. 读回记录并回报：
+> 一次登录可解锁 **4 项**验证（B1 的四步做完即可同时收口 U6 / DEF-20 / OPS-07 渲染面 / DEF-22 剩余两页）。
+
+**B1 · 一次登录 + 四步验证**
+1. 浏览器打开 `http://arcblog.localhost:4939/.well-known/service/login` 完成登录（DID Wallet 扫码 / DID Connect）；
+2. **创建一次**：进 `?page=compose`，写一篇（标题必填、正文一行即可）并**保存为草稿**，再在 `?page=posts` 的草稿页签点一次 **Publish**；
+3. 读回两条记录并回报：
 ```bash
-arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/posts/<slug>.json
-# 看 authorDid：应为 did:key:…（或 did:blocklet:…）——若为字面量 "$session.did" ⇒ U6 判定 B
 arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/drafts/<slug>.json
-# 控制台发布路径：看是否有 contentHash / contentSignature / version（DEF-20）
+arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/posts/<slug>.json
 ```
+   - **`authorDid`**：应为 `did:key:…` / `did:blocklet:…`；若是字面量 `"$session.did"` ⇒ **探针 `U6` 判定 B**
+   - **`contentHash` / `contentSignature` / `version`**：控制台发布若缺这些字段 ⇒ **`DEF-20` 成立**（与 CLI 发布的记录不等构）
+4. **看四个页面的渲染**（登录态、直连 URL 首次打开即可，不必刷新）：
+   - `?page=registry`：应出现「我是否在这个注册表里？」一句（与 `node scripts/arcblog-network.mjs registry show` 的 `ownState`/`ownNote` 一致）
+   - `?page=operations`：健康/发现/注册表三块应有真实值（不是空白）
+   - `?page=factory`：链事实 + marker 文案（`hasChain`/`stateNote`/`nodeNote`…）
+   - `?page=general`：站点名/语言/时区/角色配置应有值
+   > 这四项即 **`DEF-22` 剩余面**的渲染验收；把它们的结果（截图或 innerText 摘要）发回即可闭环。
 
 ## B2 · 部署前置（新实例一次）
 ```bash
