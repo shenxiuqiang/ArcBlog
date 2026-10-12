@@ -7,7 +7,7 @@ description: >-
   export / backup path, the permission surface, the background chain-intent queue
   and first-line troubleshooting folded into a single Advanced tab.
 synopsis: >-
-  Prototype P5 (operations, docs/ArcBlog-admin-ui-design.md §2.7.1): answer "is
+  Operations (设计依据 = `docs/03-产品设计/01-控制台骨架与页面族.md` §1–§2): answer "is
   this node healthy right now" — the last recorded self-check verdict, when it
   ran, and every check one row each — and fold all level-3 detail (commands,
   storage / index internals, logs, export / backup, the permission surface, the

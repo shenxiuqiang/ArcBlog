@@ -289,8 +289,8 @@ page general {
               // vocabulary inline. The VALUES stay verbatim: `$t()` keys must be
               // compile-time constants (arc-contracts §28.8) and this console cannot
               // translate a runtime value — the design-doc degradation path is
-              // "localized label + raw value visible" (docs/ArcBlog-admin-ui-design.md
-              // §4.1 / §5.5). The roles-reason-note line states unconditionally that a
+              // "localized label + raw value visible" (docs/04-UI设计规范/04-文案与i18n.md
+              // 与 docs/04-UI设计规范/03-状态与降级.md). The roles-reason-note line states unconditionally that a
               // granted role carries no withheld reason instead of faking a condition.
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={roles: "/instance/app/arcblog/config/roles.json", verification: "/instance/app/arcblog/node/role-verification.json", basic: "/instance/app/arcblog/node/role-status/basic.json", studio: "/instance/app/arcblog/node/role-status/studio.json"} {
                 h3 :roles-title level=3 style={fontSize: "var(--type-body)"}

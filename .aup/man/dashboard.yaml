@@ -3,21 +3,23 @@ page: dashboard
 description: >-
   Operator dashboard for this ArcBlog instance: node identity, roles and
   capabilities from the node profile and the externalized role configuration,
-  the category taxonomy, recent published stories, and quick links into the write
-  and studio surfaces. Economy and Agent surfaces are shown as explicitly
-  not-yet-enabled rather than omitted.
+  the category taxonomy, the ANOMALY ZONE (the four node-anomaly classes, each as a
+  standing sentence the operator can act on), recent published stories and the newest
+  drafts waiting to be finished. The economy surface was removed on 2026-10-01 and the
+  agent surface is live (?page=agents), so neither is described as "not yet enabled".
 synopsis: >-
-  Prototype P2 (overview, docs/ArcBlog-admin-ui-design.md §2.7.1): answer "what
-  needs me now" in one screen — the newest drafts waiting to be finished, with
-  the platform pager's own total, and the newest published stories — and offer
-  exactly one primary action, Write a post (?page=compose). Node, network,
-  order and Agent detail belongs to Operations / Agents; the
-  landing page shows no technical identifier at all (§2.7.3, level-3 content).
+  Overview (设计依据 = `docs/03-产品设计/01-控制台骨架与页面族.md` §1–§2): answer "what
+  needs me now" in one screen — the anomaly zone first (PRD-OPS-01), then the newest
+  drafts waiting to be finished, then the newest published stories — and offer exactly
+  one primary action, Write a post (?page=compose). Node, network and registry detail
+  belongs to Operations; agent policy belongs to Agents. The landing page shows no
+  technical identifier at all (level-3 content).
 flows:
   - Read the node profile written by scripts/arcblog-node.mjs.
   - Read the externalized role configuration and whether chain verification is on
     (scripts/arcblog-roles.mjs); capabilities stay withheld while it is off.
   - Review the category taxonomy written by scripts/arcblog-category.mjs.
   - Open recent published stories.
-  - See that Economy (MVP-3) and Agent (MVP-4) are not enabled yet.
+  - Read the anomaly zone written by scripts/arcblog-anomalies.mjs (four classes:
+    identity / read-only exit / chain registry / test residue).
   - Jump to write, studio or appearance settings.

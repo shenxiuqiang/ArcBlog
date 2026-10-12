@@ -7,7 +7,7 @@ description: >-
   operator's own DID space; the upload index is CLI-maintained and admin-only
   (a record exposes the upload path).
 synopsis: >-
-  Prototype P1 list + P5 operations (docs/ArcBlog-admin-ui-design.md §2.7.1):
+  Prototype P1 list + P5 operations (设计依据 = `docs/03-产品设计/01-控制台骨架与页面族.md` §1–§2):
   the page answers "what is indexed on this node, and how do I clean it up".
   Skeleton = header (title + one-sentence purpose, no primary action — the only
   action on the page is the upload, and the platform's afs-dropzone owns it) +
