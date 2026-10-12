@@ -92,6 +92,15 @@ test('shipped prose does not cite missing files or claim retired surfaces are li
       // A route to a page that no longer exists is a promise the app cannot keep.
       const route = /\?page=(store|hub|economy|policies|orders|ledger)\b/i.exec(line);
       if (route && !REMOVAL.test(line)) problems.push(`${rel}:${i + 1} routes to a removed page: ?page=${route[1]}`);
+      // Copy that TELLS A USER which command to run must still be runnable: the script has to exist
+      // (covered by the path rule above) AND the subcommand it names has to be in that script.
+      for (const m of line.matchAll(/(scripts\/[\w.-]+\.mjs)\s+([a-z][\w-]*)/g)) {
+        if (!existsSync(join(REPO, m[1]))) continue;           // reported by the path rule
+        if (!/^[a-z][\w-]*$/.test(m[2])) continue;
+        if (!readFileSync(join(REPO, m[1]), 'utf8').includes(m[2])) {
+          problems.push(`${rel}:${i + 1} names a subcommand that no longer exists: ${m[1]} ${m[2]}`);
+        }
+      }
     }
   }
   assert.deepEqual(problems, [], `shipped prose that misleads:\n  ${problems.join('\n  ')}`);
