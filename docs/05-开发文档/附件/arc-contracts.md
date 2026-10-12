@@ -2811,3 +2811,27 @@ AssertionError: a paginated afs-list lost its explicit id — `<id>.page` is the
 
 **规则（给后来者）**：`arc dsl lint --fix` 的全量修复**永远不要跑**；删任何一个显式 id 之前，
 ① 过 `npm test`（`arcblog-runtime-ids` 是这类回归的唯一守卫）② 找**登录态**在同一页确认无运行时寻址（本机无 DID 会话时**不得**以"grep 没引用"为由删）。
+
+## 61. 一个"空链接"暴露的两条编译期限制：`aria-label` 不被转发、视觉隐藏样式不可用（2026-10-12 实测）
+
+**症状（无障碍巡检）**：`?page=index` 的**封面瓦片**是一个真实链接
+`<a class="aup-view aup-view-link" href="/posts/<slug>" data-aup-id="feed-list-row-1-view-2">`，
+其全部内容是 `p " "`（一个空格）⇒ **可访问名称为空**（读屏软件只会念出 URL）。
+来源 = `.aup/pages/index.aup` 的封面瓦片：`view layout=inline href=… visible="${entry.content.coverImage}" { p " " }`。
+
+**两次修法都被平台挡住（这是本条的价值）**：
+1. **`aria-label` 不被转发**：给该 `view` 加 `aria-label="${entry.content.title}"` ⇒ `arc dsl validate` **issues: []**、
+   部署文件里**有**该属性（`grep` 命中 1），但**服务出的 DOM 没有**它，且编译产物 `.aup/app.json` 里也没有（`grep` = 0）
+   ⇒ **未知 prop 在编译期被静默丢弃**（不报错），所以 `aria-*` 不能作为 AUP 的无障碍出口。
+2. **视觉隐藏（visually-hidden）样式不可用**：加上
+   `style={position:"absolute", width:"1px", height:"1px", overflow:"hidden", clipPath:"inset(50%)", whiteSpace:"nowrap"}`
+   ⇒ **`arc dsl validate` 直接报错**（`invalid_page_dsl`，错误指向该节点之后的下一行），页面对当时的文件**构不过**。
+   与 [`§25.x` 的 safe-style allowlist](§25) 一致：允许的是 `background` 这类简写，`position`/`overflow`/`clipPath`/`whiteSpace` 不在内。
+
+**剩下的两条路（属产品/设计决定，未擅自改）**：
+① 封面瓦片**去掉 `href`**（变成装饰图）——代价：点封面不再跳转；
+② 瓦片里放**可见**文案（如小号标题/「阅读」）——代价：视觉需要设计确认。
+`DEF-27` 记在案，等口径。
+
+**方法论提醒**：验证"HTML 属性是否被转发"必须三处对齐 —— **源码 / 部署文件 / 服务出的 DOM**；
+只查其中一处会得出相反结论（本轮先看到"部署文件里有"就差点以为修好了）。
