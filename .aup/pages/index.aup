@@ -20,6 +20,12 @@ page index {
             }
             p "${entry.content.summary}" intent=muted scale=sm style={margin: "0"}
           }
+          // DEF-15 measured exception (Lead ruling 2026-10-12): `$entry.*` inside an `afs-list`
+          // ROW template works both ways — the row renders after its entry is bound. Measured on
+          // the served DOM for the 3 published posts: exactly ONE `flex: 0 0 240px` cover tile
+          // exists, and it belongs to the only post that has a coverImage; the two coverless rows
+          // render no tile at all (the negated form hid nothing). Kept as-is, and the blanket "no
+          // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
           view layout=inline href="/posts/${entry.content.slug}" style={display: block, flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: stretch, background: "url(${entry.content.coverImage}) center / cover no-repeat"} visible="${entry.content.coverImage}" {
             p " "
           }

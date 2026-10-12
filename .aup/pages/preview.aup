@@ -3,7 +3,7 @@ page preview {
     back-home { en "Back to latest stories" zh "返回最新文章" }
     title { en "Preview" zh "预览" }
     notice { en "Draft preview — this record is not public." zh "草稿预览 — 该记录未公开。" }
-    not-found { en "Preview not found." zh "预览不存在。" }
+    runtime-note { en "This page binds the draft record after the first load. If the draft does not appear, reload once — or open the studio and pick an existing draft." zh "本页在首次加载之后才绑定草稿记录。若草稿没有出现，刷新一次即可；也可以回工作室挑选一个已有草稿。" }
     back { en "Back to studio" zh "返回工作室" }
     edit { en "Edit" zh "编辑" }
     preview-publish { en "Publish" zh "发布" }
@@ -26,10 +26,21 @@ page preview {
           p :edit scale=sm
         }
       }
-      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {
-        h2 :title level=2
-        p :not-found intent=muted
+      // DEF-15/DEF-18: the old card used `visible="!$state.post"`, evaluated once
+      // before `propBind` resolved and then frozen (arc-contracts §28.1). The copy is
+      // now standing platform behaviour, never a "missing record" claim.
+      view gap=xs {
+        h2 :title level=2 scale=sm intent=muted
+        p :runtime-note intent=muted scale=sm
       }
+      // Deliberate DEF-18 exception, unlike the read-only reader/page-view bodies:
+      // THIS block carries the publish/delete writes, whose args are interpolated
+      // from `${state.post.*}`. Rendering it before the record is bound would offer a
+      // live "publish" button that writes `/instance/app/arcblog/posts/.json` with an
+      // empty title into the PUBLIC posts directory — a corrupt record. So the write
+      // surface keeps its gate (fail closed), and the standing line above tells the
+      // operator how to get the record.
+      // DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state publish/save control
       view gap=md visible=$state.post {
         row gap=sm {
           action variant=primary label=:preview-publish onSuccessToast={intent: success, message: "$t(preview.published-hint)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${state.post.slug}.json", content: {title: "${state.post.title}", slug: "${state.post.slug}", summary: "${state.post.summary}", body: "${state.post.body}", coverImage: "${state.post.coverImage}", images: [], tags: "${state.post.tags}", category: "${state.post.category}", seoTitle: "${state.post.seoTitle}", seoDescription: "${state.post.seoDescription}", ogTitle: "${state.post.ogTitle}", ogDescription: "${state.post.ogDescription}", ogImage: "${state.post.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: 1}}}}

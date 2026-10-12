@@ -5,20 +5,20 @@ page factory {
     gate-title { en "Node NFT" zh "节点 NFT" }
     gate-desc { en "Sign in with DID Wallet to view the node NFT and operate it." zh "使用 DID Wallet 登录后查看并操作节点 NFT。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    projection { en "Read from the public projection node/factories.json; the authoritative records stay in config/ (admin-only). No key material is mirrored." zh "数据来自公开投影 node/factories.json；权威记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。" }
+    projection { en "Read from the public projection node/factories.json; the authoritative records stay in config/ (admin-only). No key material is mirrored. No condition is tested against it: for bound data no visible spelling is a condition — the interpolation form renders even when the value is empty, the negated interpolation form never renders, and the bare form is evaluated once, before the binding resolves (arc-contracts §28.1, measured 2026-10-12 on this daemon). So the CLI precomputes the state lines (chain note / node note / card note / tx note / state note) and this page only prints them. Every printed line is standing copy: it must stay true in every state — an empty state line means the projection has not been written yet, so run the regeneration command below." zh "数据来自公开投影 node/factories.json；权威记录仍在 config/（仅管理员可读）。投影不含任何密钥材料。本页不对它做条件判断：绑定数据上没有任何一种 visible 写法能当条件——插值形式即使值为空也照样渲染、取反的插值形式永不渲染、裸形式在绑定完成前只求值一次（arc-contracts §28.1，2026-10-12 在本 daemon 实测）。因此状态行（链行 / 节点行 / 卡片行 / 交易行 / 状态行）由 CLI 预先算好，本页只负责常驻打印。每一行都是常驻文案：必须在任何状态下都成立——状态行为空只表示投影还没写入，运行下方的重新生成命令即可。" }
     render-timing { en "First-load note: on this platform the projection is bound AFTER the first render, so on a cold visit every field below can read the empty placeholder — that means \"not bound yet / unavailable\", never \"the record is empty\". Expand the advanced details or reload once to bind it (measured 2026-09-28: no channel recovers on its own)." zh "首屏提示：本平台在首次渲染之后才完成投影绑定，因此冷启动进入时下列字段可能全部显示空占位「—」——请读作「尚未绑定 / 暂不可用」，不是「记录为空」。展开高级详情或刷新一次即可绑定（2026-09-28 实测：不做任何操作不会自行恢复）。" }
     chain-adapter { en "Adapter" zh "适配器" }
     chain-network { en "Network" zh "网络" }
     chain-host { en "Chain host" zh "链地址" }
     chain-token { en "Mint token" zh "铸造代币" }
-    chain-empty { en "No factory yet. Create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap" zh "还没有工厂。创建：node scripts/arcblog-factory.mjs create --role studio --adapter ocap" }
+    state-note { en "Projection state (computed by the CLI)" zh "投影状态（由 CLI 计算）" }
+    cli-label { en "Regenerate the projection (CLI)" zh "重新生成投影（CLI）" }
     factories { en "Factories" zh "工厂" }
     factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
     factory-address { en "Factory address" zh "工厂地址" }
     factory-moniker { en "Moniker" zh "标识" }
     factory-issuer { en "Issuer wallet" zh "发行钱包" }
     factory-stake { en "Stake per node" zh "每个节点质押" }
-    node-empty { en "No node NFT yet — press Buy / mint below." zh "还没有节点 NFT —— 点下面的「购买 / 铸造」。" }
     node-moniker { en "NFT" zh "NFT" }
     node-state { en "Lifecycle" zh "生命周期" }
     node-asset { en "Asset address" zh "资产地址" }
@@ -162,13 +162,18 @@ page factory {
             p :desc intent=muted
             p :projection intent=muted scale=sm
             p :render-timing intent=muted scale=sm
+            key-value-list factory-cli dense=true fields=[{label: "$t(factory.cli-label)", value: "node scripts/arcblog-factory.mjs project"}]
+            key-value-list factory-state dense=true fields=[{label: "$t(factory.state-note)", value: "${state.summary.stateNote}"}]
           }
           grid gap=md style={gridTemplateColumns: "minmax(0, 1fr)", alignItems: start} {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :node-svg level=3 style={fontSize: "var(--type-body)"}
-              media factory-nft-svg src="${state.summary.nodes.studio.svg}" alt="$t(factory.node-svg)" style={borderRadius: "var(--radius-md, 8px)", width: "100%", maxWidth: "480px"} visible="${state.summary.nodes.studio.svg}"
-              p :node-empty intent=info scale=sm visible="!${state.summary.nodes.studio.svg}"
-              key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}"}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}"}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
+              // Standing copy: the CLI decided this in `cardNote` / `nodeNote`, so
+              // the card renders whenever it exists and the note is always true.
+              media factory-nft-svg src="${state.summary.nodes.studio.svg}" alt="$t(factory.node-svg)" style={borderRadius: "var(--radius-md, 8px)", width: "100%", maxWidth: "480px"}
+              p "${state.summary.nodes.studio.cardNote}" intent=muted scale=sm
+              key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}", hideWhenEmpty: true}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}", hideWhenEmpty: true}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}]
+              p "${state.summary.nodes.studio.nodeNote}" intent=info scale=sm
             }
             view gap=sm {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
@@ -185,7 +190,7 @@ page factory {
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
                 h3 :factories level=3 style={fontSize: "var(--type-body)"}
-                p :chain-empty intent=info scale=sm visible="!${state.summary.adapter}"
+                p "${state.summary.chainNote}" intent=info scale=sm
                 key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}]
                 p :factory-studio scale=sm intent=muted
                 key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
@@ -248,9 +253,11 @@ page factory {
               action -> set factory-advanced state {open: "true"} variant=secondary size=sm label=:advanced-show style={borderRadius: "var(--radius-md, 8px)"}
             }
             view gap=sm visible=$state.open {
-              key-value-list factory-node-adv dense=true fields=[{label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.assetId}"
-              h3 :tx level=3 style={fontSize: "var(--type-body)"} visible="${state.summary.nodes.studio.acquireTx}"
-              key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}] visible="${state.summary.nodes.studio.acquireTx}"
+              key-value-list factory-node-adv dense=true fields=[{label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}]
+              p "${state.summary.nodes.studio.nodeNote}" intent=muted scale=sm
+              h3 :tx level=3 style={fontSize: "var(--type-body)"}
+              p "${state.summary.nodes.studio.txNote}" intent=muted scale=sm
+              key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}]
               key-value-list factory-chain-adv dense=true fields=[{label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true, hideWhenEmpty: true}]
               key-value-list factory-studio-adv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true, hideWhenEmpty: true}]
               row cross=start {

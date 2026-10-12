@@ -1,0 +1,28 @@
+kind: SummaryPick
+fields:
+  # PRD-AGT-07: the deterministic aggregation record. ONE record per summary id,
+  # written under node/summaries/<id>.json as a PUBLIC read-only projection (the
+  # same family as node/registry.json) — public fields only, never key material,
+  # never a raw remote body (only a bounded preview + a sha256 of the full text).
+  id: string # operator-chosen id -> node/summaries/<id>.json
+  registryRefreshedAt: datetime # the registry projection's own refreshedAt = the aggregation 口径
+  discoveredAt: datetime # when the node surfaces were read (DISPLAY ONLY — never sorted on)
+  generatedAt: datetime
+  adapter: string # chain adapter of the registry projection (mock | ocap)
+  network: string
+  factory: string # studio factory address the stakes were enumerated from
+  registryTotal: number # nodes the projection carried at refreshedAt (its own total)
+  registryStale: string # 'true' | '' — the registry snapshot this ran on is older than a day
+  registryHint: string # the remedy sentence when registryStale is 'true' (display only)
+  total: number # == sources.length; one entry per node read (the number the page must print)
+  pickCount: number # == picks.length, after --limit
+  limit: number # --limit used
+  maxCollect: number # --max-collect used (the bounded collection cap)
+  truncated: string # 'true' | '': 'true' when maxCollect cut the registry short
+  weights: json # the fixed WEIGHTS constants actually used (no clock / RNG / LLM)
+  totalNote: string # 口径 sentence: "本投影口径 = registry refreshedAt <t> 时刻的 N 条"
+  stateNote: string # precomputed for the page: AUP has no string operations
+  empty: string # 'true' | '' — the page renders whichever state string is current
+  sources: json # every registry node + its read outcome (status/contentType/bytes/hash/preview)
+  picks: json # scored + ordered by (-score.total, slug, stakeAddress); each has reason/score/cited
+  skipped: json # nodes with no readable public surface (code + error) — never silently dropped

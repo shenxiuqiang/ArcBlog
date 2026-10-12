@@ -18,6 +18,7 @@ import { ensure, fail, optString, parseArgs, readJson, resolveInstance, writeJso
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   FACTORY_REGISTRY_PATH,
+  decorateNodeFactorySummary,
   NODE_FACTORY_SUMMARY_PATH,
   NODE_NFT_STATE_PATH,
   nodeAdapterOf,
@@ -81,7 +82,7 @@ function publishFactorySummary(registry, instance) {
       ...nodeAdapterOf(rec),
     };
   }
-  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
+  writeJson(NODE_FACTORY_SUMMARY_PATH, decorateNodeFactorySummary(summary), instance);
 }
 
 /**
@@ -113,7 +114,7 @@ function annotateProjection(instance) {
     annotated.push(`node:${role}=${rec.adapter || 'unattributed'} simulated=${rec.simulated}`);
   }
   summary.updatedAt = new Date().toISOString();
-  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance, stored?.ifMatch ?? undefined);
+  writeJson(NODE_FACTORY_SUMMARY_PATH, decorateNodeFactorySummary(summary), instance, stored?.ifMatch ?? undefined);
   return { annotated, adapterScope: summary.adapterScope };
 }
 

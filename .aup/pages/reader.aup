@@ -1,25 +1,48 @@
 page reader {
   i18n {
     title { en "Article" zh "文章" }
-    not-found { en "Post not found." zh "文章不存在。" }
+    runtime-note { en "This page binds its record after the first load. If the article body is empty — or a shared link opens blank — reload once." zh "本页在首次加载之后才绑定记录。若正文为空（或分享链接打开时是空白），刷新一次即可。" }
     back { en "Back to latest stories" zh "返回最新文章" }
   }
   view gap=lg {
     view gap=lg propBind={post: "/instance/app/arcblog/posts/$params.slug.json"} {
       breadcrumb items=[{label: "$t(reader.back)", href: "/posts"}, {label: "${state.post.title}"}]
-      view gap=md style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "var(--space-block, 16px)"} visible="!$state.post" {
-        h2 :title level=2
-        p :not-found intent=muted
+      // DEF-15/DEF-18 (measured 2026-10-12, arc 2.0.0-beta.50): the old empty-state
+      // card carried `visible="!$state.post"`, which is evaluated ONCE — before
+      // `propBind` resolves the record — and then never recovers. On a cold load that
+      // stuck it TRUE, so a VALID article rendered "Post not found." with no body
+      // (measured: `/posts/hello-arcblog` first visit = 157 chars of shell; reload =
+      // 3748 chars with the h1s). The body block is therefore UNCONDITIONAL and the
+      // copy below is a standing statement about the platform, never a claim that the
+      // record is missing (arc-contracts §28.1).
+      view gap=xs {
+        h2 :title level=2 scale=sm intent=muted
+        p :runtime-note intent=muted scale=sm
       }
-      view gap=md visible=$state.post {
-        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 10px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} visible="${state.post.coverImage}" {
+      view gap=md {
+        // Standing cover: with an empty coverImage the shorthand keeps the base
+        // colour only (measured 2026-10-12: `background: <color> url() center /
+        // cover no-repeat` paints the colour and drops the empty image layer), so
+        // no condition is needed and the block cannot break the layout.
+        view style={minHeight: "280px", borderRadius: "var(--radius-lg, 10px)", background: "var(--color-border) url(${state.post.coverImage}) center / cover no-repeat"} {
           p " "
         }
         h1 "${state.post.title}" scale=display
         row gap=xs cross=center {
           p "${state.post.authorName}" scale=sm intent=muted
           view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-            time mode=display value="${state.post.publishedAt}" timeMode=relative
+            // DEF-18: the `time` primitive CANNOT be used on a propBind-bound field.
+            // Its display branch is `var n = r.value || new Date().toISOString()`
+            // (verbatim from the served runtime bundle, measured 2026-10-12), so an
+            // empty value becomes NOW and is then formatted — `timeMode=relative`
+            // printed "just now" and the default absolute mode printed the current
+            // wall-clock date (cold load: "Oct 12, 2026, 8:01 PM" against a true
+            // publishedAt of Sep 18). No prop suppresses it, and on a cold load the
+            // record is never bound (no AFS read is even issued). So the record's own
+            // value is printed as standing text: empty while unbound, truthful when
+            // bound. (`time` stays in afs-list row templates — index.aup / saved.aup —
+            // where every row carries its own already-bound record.)
+            p "${state.post.publishedAt}"
           }
           chip label="${state.post.category}" color=default
         }

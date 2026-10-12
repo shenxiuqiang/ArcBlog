@@ -19,7 +19,7 @@ page compose-edit {
     gate-desc { en "Sign in with DID Wallet to edit this draft; save it back to the private drafts or publish it." zh "使用 DID Wallet 登录后编辑这篇草稿，可存回私有草稿或直接发布。" }
     gate-title { en "Edit post" zh "编辑文章" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    not-found { en "Draft not found. Open the studio to pick an existing draft." zh "草稿不存在。请回到工作室选择一个已有草稿。" }
+    runtime-note { en "The editor binds the draft record after the first load. If the fields stay empty, reload once — or open the studio and pick an existing draft." zh "编辑器在首次加载之后才绑定草稿记录。若表单仍为空，刷新一次即可；也可以回工作室挑选一个已有草稿。" }
     publish-now { en "Publish" zh "发布" }
     save-draft { en "Save draft" zh "存草稿" }
     saved { en "Saved." zh "已保存。" }
@@ -45,9 +45,13 @@ page compose-edit {
           h2 :title level=2 style={fontSize: "var(--type-subheading)"}
           p :desc intent=muted
         }
-        view gap=sm visible="!$state.post" {
-          p :not-found intent=muted
+        // DEF-15/DEF-18: the old card used `visible="!$state.post"`, evaluated once
+        // before `propBind` resolved and then frozen (arc-contracts §28.1). Standing
+        // copy only — it must not claim the draft is missing.
+        view gap=sm {
+          p :runtime-note intent=muted
         }
+        // DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state publish/save control
         view gap=lg size={flex: 1} visible=$state.post {
           view gap=lg size={flex: 1} style={overflowY: auto} {
             view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {

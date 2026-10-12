@@ -139,6 +139,85 @@ export function nodeAdapterOf(record) {
 /** Marks that the header `adapter` describes `config/nft-factories.json`, not every node. */
 export const PROJECTION_ADAPTER_SCOPE = 'registry';
 
+/** The four chain writes a node lifecycle can record a hash for. */
+export const NODE_TX_FIELDS = Object.freeze(['acquireTx', 'stakeTx', 'revokeTx', 'claimTx']);
+
+/**
+ * Derived, page-ready markers for `node/factories.json` (DEF-15).
+ *
+ * The AUP page CANNOT branch on this file: `node/factories.json` reaches a page
+ * through `propBind`, and for bound data no `visible` spelling is a condition —
+ * `visible="${state.x}"` is true even for an empty value, `visible="!${state.x}"`
+ * never renders, and bare `visible=$state.x` is evaluated once (before the
+ * binding resolves) and never recovers. Measured 2026-10-12 on arc 2.0.0-beta.50
+ * (probe page, bound projection): `arc-contracts` §28.1.
+ *
+ * So the decision is made HERE, in the writer, and the console page only prints
+ * these strings — the same split `node/registry.json` uses for its `stateNote`.
+ * Every marker is a plain string (`'true'` / `'false'` / a sentence) because the
+ * page renders it verbatim, and every sentence must stay TRUE in every state:
+ * it is standing copy, not an empty-state claim.
+ *
+ * `has*` markers are for machines (and for a future page that must not count
+ * fields itself); `*Note` markers are the one-line sentences the page prints.
+ * Locale-neutral on purpose: a record value cannot select a localized string on
+ * this platform (arc-contracts §28.8).
+ */
+export function decorateNodeFactorySummary(input) {
+  const summary = { ...(input ?? {}) };
+  const chain = String(summary.adapter ?? '').trim();
+  const network = String(summary.network ?? '').trim();
+  const host = String(summary.chainHost ?? '').trim();
+  const token = String(summary.tokenId ?? '').trim();
+  const nodes = { ...(summary.nodes ?? {}) };
+  for (const [role, raw] of Object.entries(nodes)) {
+    const node = { ...(raw ?? {}) };
+    const assetId = String(node.assetId ?? '').trim();
+    const svg = String(node.svg ?? '').trim();
+    const svgError = String(node.svgError ?? '').trim();
+    const txs = NODE_TX_FIELDS.map((field) => [field, String(node[field] ?? '').trim()]).filter(([, value]) => value);
+    const missing = `No node NFT recorded for ${role} yet — press Buy / mint below.`;
+    node.hasNode = assetId ? 'true' : 'false';
+    node.hasCard = svg ? 'true' : 'false';
+    node.hasTxs = txs.length ? 'true' : 'false';
+    node.nodeNote = assetId
+      ? `Node NFT recorded for ${role}: ${assetId}${
+          String(node.state ?? '').trim() ? ` · lifecycle ${String(node.state).trim()}` : ''
+        }`
+      : missing;
+    node.cardNote = svg
+      ? `NFT card rendered for ${String(node.moniker ?? '').trim() || assetId || role}.`
+      : assetId
+        ? `Node NFT ${assetId} is recorded, but no card could be built${
+            svgError ? `: ${svgError}` : ' — the NFT template returned nothing'
+          }.`
+        : missing;
+    node.txNote = txs.length
+      ? `Transaction hashes recorded (${txs.map(([field]) => field.replace(/Tx$/, '')).join(', ')}): ${txs
+          .map(([, value]) => value)
+          .join(' · ')}`
+      : `No on-chain transaction hash recorded for ${role} yet — a hash appears here as the worker applies each step.`;
+    nodes[role] = node;
+  }
+  const studio = nodes.studio ?? {};
+  return {
+    ...summary,
+    nodes,
+    hasChain: chain ? 'true' : 'false',
+    chainNote: chain
+      ? `Chain facts recorded: adapter=${chain} · network=${network || '—'} · host=${host || '—'} · mint token=${
+          token || '—'
+        }`
+      : 'No factory / chain facts recorded yet — create one: node scripts/arcblog-factory.mjs create --role studio --adapter ocap',
+    stateNote: [
+      `adapter=${chain || 'none'}`,
+      `studio node=${studio.hasNode === 'true' ? 'recorded' : 'not recorded'}`,
+      `transactions=${studio.hasTxs === 'true' ? 'recorded' : 'not recorded'}`,
+      `projection updated ${String(summary.updatedAt ?? '').trim() || '—'}`,
+    ].join(' · '),
+  };
+}
+
 /**
  * Preset chain environments (Lead ruling **L-R15-2**). A preset only supplies
  * **defaults**: a CLI flag or an explicit `ARCBLOG_CHAIN_*` always wins, and

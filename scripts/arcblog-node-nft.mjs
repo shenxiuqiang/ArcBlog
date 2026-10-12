@@ -28,6 +28,7 @@ import {
   DEFAULT_REVOKE_WAITING_PERIOD_DAYS,
   FACTORY_REGISTRY_PATH,
   NODE_FACTORY_SUMMARY_PATH,
+  decorateNodeFactorySummary,
   NODE_NFT_STATE_PATH,
   openChain,
   nodeAdapterOf,
@@ -102,7 +103,7 @@ function publishNodeSummary(state, instance) {
       ...nodeAdapterOf(rec),
     };
   }
-  writeJson(NODE_FACTORY_SUMMARY_PATH, summary, instance);
+  writeJson(NODE_FACTORY_SUMMARY_PATH, decorateNodeFactorySummary(summary), instance);
   return summary;
 }
 

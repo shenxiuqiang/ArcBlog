@@ -89,6 +89,8 @@ networkRead:
   - path: /instance/app/arcblog/heroes
     role: guest
   # spec §109: a node's identity/roles/capabilities are public network metadata.
+  # This prefix also carries the public projections node/registry.json (ENG-15)
+  # and node/summaries/<id>.json (PRD-AGT-07) — guest-readable by this grant.
   - path: /instance/app/arcblog/node
     role: guest
   # spec §12 /content/categories: public taxonomy used by the reader filters.
@@ -141,8 +143,15 @@ replicated:
     readRole: guest
   # /arcblog/node/* — public metadata, admin-writable (node identity/roles are
   # operator-controlled, spec §107–§109): profile/identity, discovery/health,
-  # the factories projection, and the chain-registry projection
-  # (registry.json + registry/<stakeAddress>.json, ENG-15).
+  # the factories projection, the chain-registry projection
+  # (registry.json + registry/<stakeAddress>.json, ENG-15), and the agent
+  # aggregation projection (summaries/<id>.json, PRD-AGT-07 — written by
+  # scripts/arcblog-summarize.mjs, public fields only).
+  #
+  # This prefix grant IS the read declaration for node/summaries: a prefix grant
+  # covers the whole subtree, and node/ holds no private child, so no nested
+  # collection is needed. Measured, not inferred — scripts/arcblog-permissions.test.mjs
+  # lists `node/summaries` in its guest-readable public set (R5-a, 2026-10-12).
   node:
     canonical: instance/app/arcblog/node/*
     copy: none

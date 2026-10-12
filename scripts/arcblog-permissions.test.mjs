@@ -29,6 +29,10 @@ const PUBLIC_PATHS = [
   'posts',
   'heroes',
   'node',
+  // PRD-AGT-07: the aggregation projection is a public read (same family as
+  // node/registry*), covered by the `node` prefix grant. Listed explicitly so
+  // the subtree is MEASURED, not inferred from its parent (R5-a).
+  'node/summaries',
   'categories',
   'pages',
 ];
@@ -237,7 +241,9 @@ test('the replicated table itself keeps the private prefixes admin-only', () => 
 
   // The public side is a coverage assertion too: these directories must stay
   // readable to a guest through a guest collection (a page or agent reads them).
-  for (const dir of ['posts', 'heroes', 'node', 'categories', 'pages']) {
+  // node/summaries (PRD-AGT-07) is asserted explicitly: it must be covered by the
+  // guest grant on node/, not by a recollection that "node is guest so a child is".
+  for (const dir of ['posts', 'heroes', 'node', 'node/summaries', 'categories', 'pages']) {
     const needle = `instance/app/arcblog/${dir}`;
     const owners = covers(needle);
     assert.ok(owners.length > 0, `${dir} must stay covered by a collection`);

@@ -8,7 +8,7 @@ page seo {
     gate-desc { en "Sign in with DID Wallet to manage site-level SEO." zh "使用 DID Wallet 登录后管理站点级 SEO。" }
     gate-title { en "SEO" zh "SEO" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    profile-empty { en "No node profile yet. Run: node scripts/arcblog-node.mjs init" zh "还没有节点档案。运行：node scripts/arcblog-node.mjs init" }
+    profile-empty { en "If the fields below are empty, either no node profile record exists yet (create one: node scripts/arcblog-node.mjs init) or this page has not bound it yet — records are bound after the first load, so reload once." zh "若下方字段为空：要么还没有节点档案记录（创建：node scripts/arcblog-node.mjs init），要么本页尚未完成绑定——记录在首次加载之后才绑定，刷新一次即可。" }
     save { en "Save" zh "保存" }
     saved-ok { en "Site metadata saved." zh "站点元数据已保存。" }
     site-card { en "Site metadata" zh "站点元数据" }
@@ -108,7 +108,10 @@ page seo {
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
             view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} visible="!${state.profile}" {
+              // DEF-15: standing note, not an empty-state card. `visible="!${state.profile}"`
+              // never rendered (arc-contracts §28.1), so this line was invisible while
+              // the fields below looked merely blank. The copy now covers both causes.
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 p :profile-empty intent=info
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {

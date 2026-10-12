@@ -24,7 +24,13 @@ import { fileURLToPath } from 'node:url';
 
 import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
-import { NODE_NFT_STATE_PATH, nodeAdapterOf, openChain, resolveChainOptions } from './lib/chain.mjs';
+import {
+  NODE_NFT_STATE_PATH,
+  decorateNodeFactorySummary,
+  nodeAdapterOf,
+  openChain,
+  resolveChainOptions,
+} from './lib/chain.mjs';
 import { INTENT_STATUS, isInFlightStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
 
@@ -244,7 +250,7 @@ async function refreshSvg(instance, { chain: injectedChain = null, opts = {} } =
     }
   }
   summary.updatedAt = nowIso();
-  writeJson(SUMMARY_PATH, summary, instance, stored?.ifMatch ?? undefined);
+  writeJson(SUMMARY_PATH, decorateNodeFactorySummary(summary), instance, stored?.ifMatch ?? undefined);
   // `skipped` counts the nodes the D37c guard refused to query (mock/unknown, or
   // an adapter that does not match this run) — a number QA can assert on.
   return { updated, skipped, adapter: chain.adapter ?? '' };

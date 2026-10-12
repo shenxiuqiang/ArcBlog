@@ -183,6 +183,13 @@ page posts {
                   }
                   view label=:tab-drafts {
                     afs-list posts-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/drafts" {
+                      // DEF-15 measured exception (Lead ruling 2026-10-12): `$entry.*` inside an
+                      // `afs-list` ROW template works BOTH ways on this daemon — the row renders after
+                      // its entry is bound. Probe (arc 2.0.0-beta.50): of 3 posts, the one with a cover
+                      // showed the positive tile and hid the negated one; the two without a cover did
+                      // the opposite, on the very first load. So this pair is NOT a data-state bug and
+                      // is kept: it is what makes drafts/ and archived/ two real views. The blanket "no
+                      // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
                       row gap=sm cross=start role=item visible="!${entry.content.archivedAt}" {
                         view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
                           h3 "${entry.content.title}"
@@ -205,6 +212,13 @@ page posts {
                   }
                   view label=:tab-archived {
                     afs-list posts-archived-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/drafts" {
+                      // DEF-15 measured exception (Lead ruling 2026-10-12): `$entry.*` inside an
+                      // `afs-list` ROW template works BOTH ways on this daemon — the row renders after
+                      // its entry is bound. Probe (arc 2.0.0-beta.50): of 3 posts, the one with a cover
+                      // showed the positive tile and hid the negated one; the two without a cover did
+                      // the opposite, on the very first load. So this pair is NOT a data-state bug and
+                      // is kept: it is what makes drafts/ and archived/ two real views. The blanket "no
+                      // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
                       row gap=sm cross=start role=item visible="${entry.content.archivedAt}" {
                         view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
                           h3 "${entry.content.title}"
