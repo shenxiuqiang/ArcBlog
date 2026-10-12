@@ -22,7 +22,6 @@ import {
   optString,
 } from './arc.mjs';
 import { readBlockletMeta } from './manifest.mjs';
-import { probeEndpoint } from './probe.mjs';
 
 export const NODE_DIR = `${INSTANCE_ROOT}/node`;
 export const DISCOVERY_PATH = `${NODE_DIR}/discovery.json`;

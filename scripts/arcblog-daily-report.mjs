@@ -7,18 +7,6 @@ function optString(value) {
   return String(value);
 }
 
-function arcAfs(args, instance) {
-  const full = ['afs', ...args, '--json'];
-  if (instance) full.push('-i', instance);
-  try {
-    const stdout = execFileSync('arc', full, { encoding: 'utf8' });
-    return stdout ? JSON.parse(stdout) : {};
-  } catch (err) {
-    const msg = (err.stderr || err.stdout || err.message || '').toString();
-    throw new Error(msg.trim() || 'arc command failed');
-  }
-}
-
 // Post records live in the shared instance space (/instance/app/arcblog/posts),
 // reachable from the CLI only through the blocklet's own AFS actions. `arc afs
 // exec` reports errors as text on stdout with exit code 0 — detect them.

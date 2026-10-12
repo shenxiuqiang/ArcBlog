@@ -28,7 +28,7 @@
 // Everything except `value` is preserved, so the console's auto-surface keeps
 // working after a CLI edit.
 
-import { fail, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { fail, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   GENERAL_DIR,

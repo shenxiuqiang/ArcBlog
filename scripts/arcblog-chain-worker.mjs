@@ -22,16 +22,10 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { exec, fail, list, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { exec, fail, list, nowIso, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { loadLocalEnv } from './lib/local-env.mjs';
-import {
-  NODE_NFT_STATE_PATH,
-  decorateNodeFactorySummary,
-  nodeAdapterOf,
-  openChain,
-  resolveChainOptions,
-} from './lib/chain.mjs';
+import { NODE_NFT_STATE_PATH, decorateNodeFactorySummary, nodeAdapterOf, openChain } from './lib/chain.mjs';
 import { INTENT_STATUS, isInFlightStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { renderTemplate } from './lib/nft-factory.mjs';
 

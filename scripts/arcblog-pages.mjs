@@ -42,7 +42,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { list, INSTANCE_ROOT, ensure, fail, nowIso, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { list, INSTANCE_ROOT, ensure, fail, nowIso, optString, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INTENT_STATUS, isInFlightStatus, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { PAGES_DIR, PAGE_DRAFTS_DIR, buildPage, ensureValidPage, pagePath } from './lib/pages.mjs';

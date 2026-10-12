@@ -7,18 +7,7 @@
 // records. Exit code 1 only for broken contracts; authorship gaps and similar
 // honest limitations are reported as warnings.
 
-import {
-  INSTANCE_ROOT,
-  arcCapture,
-  list,
-  nowIso,
-  optString,
-  parseArgs,
-  parseJsonLoose,
-  readJson,
-  resolveInstance,
-  writeJson,
-} from './lib/arc.mjs';
+import { INSTANCE_ROOT, arcCapture, list, nowIso, parseJsonLoose, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { listCategories } from './lib/categories.mjs';
 import { blockletIdentifiers } from './lib/manifest.mjs';

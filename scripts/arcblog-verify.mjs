@@ -17,7 +17,7 @@
 
 import { readFileSync } from 'node:fs';
 
-import { ensure, fail, optString, parseArgs, resolveInstance } from './lib/arc.mjs';
+import { ensure, fail, optString, resolveInstance } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { contentHashFor } from './lib/content-hash.mjs';
 import { getSigningKey, signingKeyPath, validateContentSignature, verifyPostContent } from './lib/content-sign.mjs';
@@ -27,14 +27,6 @@ const { INSTANCE_ROOT } = await import('./lib/arc.mjs');
 
 const POSTS_DIR = `${INSTANCE_ROOT}/posts`;
 const DRAFTS_DIR = `${INSTANCE_ROOT}/drafts`;
-
-function parseJson(text) {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
 
 /** Read a post record from the published directory, else from drafts/. */
 function readPost(slug, instance) {

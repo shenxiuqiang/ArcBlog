@@ -26,7 +26,7 @@
 
 import { readFileSync } from 'node:fs';
 
-import { ensure, fail, nowIso, optString, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { ensure, fail, nowIso, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   DEFAULT_REVOKE_WAITING_PERIOD_DAYS,
@@ -42,7 +42,7 @@ import {
   resolveClock,
   validateRealChainConfig,
 } from './lib/chain.mjs';
-import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, buildMintInputs } from './lib/nft-factory.mjs';
+import { DEFAULT_STAKE_AMOUNT, buildNodeFactory, buildMintInputs } from './lib/nft-factory.mjs';
 import { getSigningKey } from './lib/content-sign.mjs';
 import { backfillAttribution } from './lib/node-attribution.mjs';
 import { CHAIN_ROLES, getRoleConfig, putRoleLifecycle, roleStatus } from './lib/roles.mjs';

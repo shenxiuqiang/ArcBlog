@@ -9,10 +9,6 @@ function optString(value) {
   return String(value);
 }
 
-function ensure(condition, message) {
-  if (!condition) throw new Error(`VALIDATION: ${message}`);
-}
-
 function escapeXml(value) {
   return String(value || '')
     .replace(/&/g, '&amp;')
@@ -64,18 +60,6 @@ function rfc822(date, timeZone) {
   const abs = Math.abs(offsetMinutes);
   const offset = `${sign}${String(Math.floor(abs / 60)).padStart(2, '0')}${String(abs % 60).padStart(2, '0')}`;
   return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year} ${hour}:${parts.minute}:${parts.second} ${offset}`;
-}
-
-function arcAfs(args, instance) {
-  const full = ['afs', ...args, '--json'];
-  if (instance) full.push('-i', instance);
-  try {
-    const stdout = execFileSync('arc', full, { encoding: 'utf8' });
-    return stdout ? JSON.parse(stdout) : {};
-  } catch (err) {
-    const msg = (err.stderr || err.stdout || err.message || '').toString();
-    throw new Error(msg.trim() || 'arc command failed');
-  }
 }
 
 // Post records live in the shared instance space (/instance/app/arcblog/posts),

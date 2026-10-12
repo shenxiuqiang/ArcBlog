@@ -16,7 +16,7 @@
 // fail-closed rule (§114/§115) and the reason `status` never reports an active
 // chain role while `chainVerification` is false.
 
-import { fail, nowIso, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
+import { fail, nowIso, optString, readJson, resolveInstance } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
 import {
@@ -31,17 +31,7 @@ import {
   roleStatuses,
   validateRoleConfig,
 } from './lib/roles.mjs';
-import {
-  ROLE_STATUS_DIR,
-  ROLE_VERIFICATION_PATH,
-  ROLE_VERIFY_INTENTS_DIR,
-  applyRoleVerifyIntent,
-  deriveRoleVerification,
-  enqueueRoleVerifyIntent,
-  readRoleVerification,
-  runPendingRoleVerifyIntents,
-  scanRoleVerifyQueue,
-} from './lib/role-verify.mjs';
+import { ROLE_STATUS_DIR, ROLE_VERIFICATION_PATH, ROLE_VERIFY_INTENTS_DIR, deriveRoleVerification, enqueueRoleVerifyIntent, readRoleVerification, runPendingRoleVerifyIntents, scanRoleVerifyQueue } from './lib/role-verify.mjs';
 
 
 const NODE_PROFILE_PATH = `${INSTANCE_ROOT}/node/profile.json`;

@@ -6,18 +6,7 @@
 // `/instance/app/arcblog/node/profile.json`; guest-readable, admin-writable
 // (see blocklet.yaml `networkRead` / `replicated`).
 
-import {
-  INSTANCE_ROOT,
-  ensure,
-  fail,
-  list,
-  optString,
-  parseArgs,
-  parseList,
-  readJson,
-  resolveInstance,
-  writeJson,
-} from './lib/arc.mjs';
+import { INSTANCE_ROOT, ensure, fail, list, optString, parseList, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { readBlockletMeta } from './lib/manifest.mjs';
 import {

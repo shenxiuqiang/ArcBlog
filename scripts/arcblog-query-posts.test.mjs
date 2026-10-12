@@ -80,7 +80,14 @@ test('query works via action or fallback for any status', () => {
   const out = json(res.stdout);
   assert.equal(out.ok, true);
   assert.equal(out.status, 'deleted');
-  assert.ok(['query-action', 'ls-read-fallback'].includes(out.mode));
+  // DEF-31 added a third path: the provider query can succeed yet be INCOMPLETE, in which case the
+  // CLI repairs it from the directory listing and says so. This allowlist predated that change and
+  // is why this live suite went red ~40 rounds later on a stale index (R9).
+  assert.ok(['query-action', 'ls-read-fallback', 'query-action+list-recovered'].includes(out.mode));
+  if (out.mode === 'query-action+list-recovered') {
+    assert.ok(Array.isArray(out.staleIndex) && out.staleIndex.length > 0, 'recovered mode must name the stale records');
+    assert.ok(String(out.staleIndexNote ?? '').length > 0, 'recovered mode must explain itself');
+  }
   assert.ok(Array.isArray(out.result.records ?? out.result.entries));
 });
 

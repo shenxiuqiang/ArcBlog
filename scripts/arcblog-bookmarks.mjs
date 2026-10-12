@@ -23,7 +23,7 @@
 // No `blocklet.yaml` permission is involved: `/user` is authorized by the session,
 // not by a `replicated` collection (REQ-028 A probe).
 
-import { fail, list, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { fail, list, optString, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 /** Base58btc DID (no 0 O I l) — `did:key:z…` bodies are `z…`. */

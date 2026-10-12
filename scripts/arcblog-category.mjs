@@ -23,32 +23,11 @@
 // → `rewritePost`/`writePost`), shared with `merge` / `remove --migrate-to`, so
 // the page and the CLI cannot diverge.
 
-import {
-  INSTANCE_ROOT,
-  fail,
-  optString,
-  parseArgs,
-  resolveInstance,
-  ensure,
-  list,
-  nowIso,
-  readJson,
-  remove,
-  writeJson,
-} from './lib/arc.mjs';
+import { INSTANCE_ROOT, fail, optString, resolveInstance, ensure, list, nowIso, readJson, remove, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { scanPosts, rewritePost, writePost } from './lib/content-scan.mjs';
 import { INTENT_STATUS, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
-import {
-  CATEGORY_DIR,
-  DEFAULT_CATEGORIES,
-  buildCategory,
-  getCategory,
-  listCategories,
-  putCategory,
-  removeCategory,
-  slugify,
-} from './lib/categories.mjs';
+import { CATEGORY_DIR, DEFAULT_CATEGORIES, getCategory, listCategories, putCategory, removeCategory, slugify } from './lib/categories.mjs';
 
 /**
  * The console's intent queue (REQ-019 B5, option A).

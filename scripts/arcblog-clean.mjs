@@ -15,16 +15,7 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {
-  INSTANCE_ROOT,
-  fail,
-  list,
-  optString,
-  parseArgs,
-  readJson,
-  remove,
-  resolveInstance,
-} from './lib/arc.mjs';
+import { INSTANCE_ROOT, fail, list, optString, readJson, remove, resolveInstance } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
 

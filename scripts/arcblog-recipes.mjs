@@ -31,7 +31,7 @@
 // keeps an instance recipe that differs, and `check` reports drift without
 // writing.
 
-import { fail, parseArgs, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { fail, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   RECIPES,

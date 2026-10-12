@@ -25,18 +25,7 @@
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
-import {
-  INSTANCE_ROOT,
-  ensure,
-  fail,
-  list,
-  nowIso,
-  optString,
-  parseArgs,
-  readJson,
-  resolveInstance,
-  writeJson,
-} from './lib/arc.mjs';
+import { INSTANCE_ROOT, ensure, fail, list, nowIso, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INTENT_STATUS, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';
 import { MEDIA_DIR, findMediaReferences, getMedia, listMedia, putMedia, removeMedia } from './lib/media.mjs';

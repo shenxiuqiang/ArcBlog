@@ -11,15 +11,7 @@
 //    reports `active: false` and the *effective* capability set stays at the
 //    base set, no matter what the node profile declares.
 
-import {
-  INSTANCE_ROOT,
-  ensure,
-  fail,
-  nowIso,
-  optString,
-  readJson,
-  writeJson,
-} from './arc.mjs';
+import { INSTANCE_ROOT, ensure, fail, nowIso, readJson, writeJson } from './arc.mjs';
 import { BASE_CAPABILITIES, NODE_ROLES, ROLE_CAPABILITIES, capabilitiesForRoles } from './node-profile.mjs';
 
 // Overridable so live chain tests never share the production role record: the

@@ -14,7 +14,7 @@
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
-import { INSTANCE_ROOT, ensure, fail, list, optString, parseArgs, queryRecords, readJson, remove, resolveInstance, whereAll, whereEq } from './lib/arc.mjs';
+import { INSTANCE_ROOT, ensure, fail, list, optString, queryRecords, readJson, remove, resolveInstance, whereAll, whereEq } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   AGENT_CAPABILITIES,

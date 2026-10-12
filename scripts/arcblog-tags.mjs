@@ -26,7 +26,7 @@
 // of truth (REQ-001 §2.2.2). `ARCBLOG_TAGS_PATH` overrides its root so tests never
 // clobber the live projection.
 
-import { ensure, fail, list, nowIso, optString, parseArgs, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
+import { ensure, fail, list, nowIso, optString, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { rewritePost, scanPosts, writePost } from './lib/content-scan.mjs';
 import { INTENT_STATUS, isTerminalStatus, normalizeIntentRecord } from './lib/intents.mjs';

@@ -27,7 +27,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { knownFlagsFor } from './lib/cli-flags.mjs';
 import { fileURLToPath } from 'node:url';
 

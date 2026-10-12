@@ -7,18 +7,6 @@ function optString(value) {
   return String(value);
 }
 
-function arcAfs(args, instance) {
-  const full = ['afs', ...args, '--json'];
-  if (instance) full.push('-i', instance);
-  try {
-    const stdout = execFileSync('arc', full, { encoding: 'utf8' });
-    return stdout ? JSON.parse(stdout) : {};
-  } catch (err) {
-    const msg = (err.stderr || err.stdout || err.message || '').toString();
-    throw new Error(msg.trim() || 'arc command failed');
-  }
-}
-
 // Post records are split by visibility: /instance/app/arcblog/posts holds
 // published records (guest-readable via networkRead); /instance/app/arcblog/drafts
 // holds draft/archived/deleted records (private). Both are reachable from the
@@ -177,7 +165,10 @@ The positional status picks the directory (the draft boundary IS the storage spl
 --category matches the record's category, --tag matches one whole tag token, and
 --limit (default 20) caps the returned records. Filtering is server-side through the
 provider's query action when available; when it is not, the CLI falls back to
-list + read and says so in "mode" (query-action | ls-read-fallback).
+list + read. "mode" names which path ran AND whether the directory listing had to
+repair it (DEF-31): query-action | ls-read-fallback | query-action+list-recovered.
+The third means the provider index was missing records that exist on disk; those
+records are appended, "staleIndex" lists them and "staleIndexNote" says why.
 
 Exit codes: 0 = a report was produced (stdout is JSON: { ok, status, mode, result });
 1 = the query could not run (VALIDATION / RUNTIME_ERROR) — stderr carries

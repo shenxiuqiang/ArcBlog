@@ -38,7 +38,7 @@ import { existsSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CLEAN_DIRS, findTestRecords } from '../arcblog-clean.mjs';
+import { findTestRecords } from '../arcblog-clean.mjs';
 import { INSTANCE_ROOT, readJson } from './arc.mjs';
 import { TEST_RECORD_PREFIXES } from './doctor.mjs';
 import { probeEndpoint } from './probe.mjs';

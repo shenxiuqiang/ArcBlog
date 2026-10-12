@@ -103,19 +103,6 @@ function arcRead(path, instance) {
   }
 }
 
-function arcStat(path, instance) {
-  try {
-    if (isPublicPath(path)) {
-      const raw = blockletExec('read', { path }, instance);
-      return { data: { meta: raw?.meta } };
-    }
-    return arcAfs(['stat', '--path', path], instance);
-  } catch (err) {
-    if (/No data found for path|Path not found/i.test(err.message)) return null;
-    throw err;
-  }
-}
-
 function auditEvent({ action, slug, actor, detail, instance }) {
   const args = [AUDIT_SCRIPT, 'log', '--action', action, '--slug', slug, '--actor', actor];
   if (detail) args.push('--detail', detail);

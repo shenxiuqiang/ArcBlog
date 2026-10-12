@@ -127,3 +127,40 @@ test('no exported symbol is dead (used nowhere, not even in its own module)', ()
   }
   assert.deepEqual(dead, [], `dead exports (delete them, or wire them): ${dead.join(', ')}`);
 });
+
+/**
+ * Two more leftovers of the same family (added 2026-10-12, after the export sweep): an import
+ * binding the file never uses, and a module-scope private declaration nothing calls. Measured
+ * before the cleanup: 29 unused import bindings and 6 unused private helpers across 25 files (the
+ * helpers — ensure/arcAfs/parseJson/arcStat — were local duplicates of what scripts/lib/arc.mjs
+ * already provides). Both were deleted; the tally is 0 now.
+ *
+ * The rule counts every textual occurrence, so a name mentioned in a comment or a string counts as
+ * used: the check can only UNDER-report, never delete something live.
+ */
+function unusedBindings() {
+  const found = [];
+  for (const file of walk(join(REPO, 'scripts'), true)) {
+    const text = readFileSync(file, 'utf8');
+    const uses = (name) => (text.match(new RegExp(`\\b${name}\\b`, 'g')) ?? []).length;
+    const rel = file.replace(REPO + '/', '');
+
+    for (const m of text.matchAll(/^import\s+(?:([A-Za-z_$][\w$]*)\s*,?\s*)?(?:\{([^}]*)\})?\s*from/gm)) {
+      const names = [];
+      if (m[1]) names.push(m[1]);
+      if (m[2]) names.push(...m[2].split(',').map((p) => p.split(' as ').pop().trim()).filter(Boolean));
+      for (const name of names) {
+        if (/^[A-Za-z_$][\w$]*$/.test(name) && uses(name) <= 1) found.push(`${rel}: unused import '${name}'`);
+      }
+    }
+    for (const m of text.matchAll(/^(?:const|let|function|async function)\s+([A-Za-z_$][\w$]*)/gm)) {
+      if (uses(m[1]) <= 1) found.push(`${rel}: unused private '${m[1]}'`);
+    }
+  }
+  return found;
+}
+
+test('no unused import binding and no unused private declaration', () => {
+  const found = unusedBindings();
+  assert.deepEqual(found, [], `dead bindings (delete them):\n  ${found.join('\n  ')}`);
+});

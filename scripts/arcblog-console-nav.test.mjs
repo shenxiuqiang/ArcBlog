@@ -5,7 +5,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CONSOLE_MENU, CONSOLE_PAGES, blockEnd } from './console-nav.mjs';
+import { CONSOLE_MENU, CONSOLE_PAGES } from './console-nav.mjs';
 
 // The console menu lives in `scripts/console-nav.mjs`. Since the console was
 // split into one page per section (B′), the sidebar is repeated in every console
