@@ -69,6 +69,7 @@ const FAST_TESTS = new Set([
   'arcblog-error-codes',
   'arcblog-fail-closed',
   'arcblog-hero-carousel',
+  'arcblog-ledger-evidence',
   'arcblog-i18n',
   'arcblog-memory',
   'arcblog-node-factory-markers',
@@ -96,6 +97,9 @@ const GUARDS = {
   'arcblog-doc-commands': [/^CLAUDE\.md$/, /^docs\/05-开发文档\/06-/, /^scripts\/arcblog-doc-commands/, /^scripts\/arcblog-[\w-]+\.mjs$/],
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
+  // ENG-23: the ledger is the status authority; its evidence cells must not be tautologies
+  // and its '输出: 待补' debt must not grow (scripts/ledger-evidence-debt.json pins it).
+  'arcblog-ledger-evidence': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^scripts\/arcblog-ledger-evidence/, /^scripts\/ledger-evidence-debt\.json$/],
   'arcblog-i18n': [/^\.aup\//, /^scripts\/arcblog-i18n/],
   // PRD-AGT-11: the fast half is pure storage logic against a temp dir. The CLI
   // half (`arcblog-memory-cli.test.mjs`) writes an AUDIT record through AFS, so it
