@@ -42,7 +42,10 @@ auth.json
 # into dist/, so a stray one ends up tracked by a plain `git add -A`.
 .zshrc*
 *.bak-*
-# Local chain material (never commit keys)
+# Local chain material — two DIFFERENT kinds, all ignored:
+#   .env.local   = the chain mnemonic / RPC config (never commit)
+#   .node-pk.pem = the node's PUBLIC key (measured 2026-10-12: `-----BEGIN PUBLIC KEY-----`, 114 B)
+#   node.key     = the PRIVATE Ed25519 content-signing key (AGENTS.md iron rule 5)
 .env.local
 .node-pk.pem
 node.key
