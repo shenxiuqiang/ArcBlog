@@ -23,16 +23,28 @@ All of these were reproduced on the live daemon; "symptom → cause → fix".
 
 ## Data binding
 
-6. **`visible` never becomes true for bound data**
-   `visible="$state.post.coverImage"` (expression) is evaluated once, before
-   `propBind` resolves. Use `visible="${state.post.coverImage}"`.
+6. **No data-state condition works — neither form is a condition** (corrected
+   2026-10-12 against `arc-contracts` §28.1; this entry previously said "use the
+   interpolation form", which is **wrong**)
+   For bound/async data (`$state.*`, `$entry.*`) the two spellings fail in
+   **opposite** directions: `visible="${state.x}"` is evaluated before `propBind`
+   resolves and then **stays true** (renders even when there is no data), while
+   `visible="!${state.x}"` **never shows**. The expression form
+   `visible="$state.x"` is evaluated once and never recovers. ⇒ Mutual exclusion
+   ("empty-state card OR list") cannot be expressed with `visible` at all.
+   **Workaround:** compute the state in the CLI/record and print precomputed
+   strings/markers as *standing* text (e.g. a `stateNote` line that is always
+   rendered), or drive the branch with a **synchronous** `$session.*` condition.
+   Reference implementation: `?page=registry` (`.aup/pages/ops/registry.aup`,
+   markers `generated`/`empty`/`hasNodes`/`stateNote`) after `DEF-15`.
 7. **A row silently disappears from a filtered list after being edited**
    `afs-list` `filter`/`serverFilters` run through the index, and an edit leaves
    the index entry stale. Prefer a directory boundary (`posts/` vs `drafts/`) or
    `propBind` for a single record.
 8. **`afs-list` `emptyText` shows the runtime's English default**
-   `emptyText` does not evaluate `$t()`. Put empty-state guidance in a page-level
-   card shown by `visible`.
+   `emptyText` does not evaluate `$t()`. And per gotcha 6 you **cannot** gate a
+   page-level empty card on bound data with `visible`: put the guidance in
+   standing copy (always rendered), or precompute a marker in the record.
 9. **An `afs-list` select event cannot navigate**
    The select-event payload merges the entry over `args`, so a `navigate` target is
    inert. Use `view href="…"` links (which also work inside item templates).

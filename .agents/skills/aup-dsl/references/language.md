@@ -145,8 +145,11 @@ and `--check`-able (`scripts/arcblog-console-nav.mjs` + its test are the pattern
 * Two interpolation channels, and mixing them up is a classic bug:
   * `prop="$state.x"` — expression, evaluated once (safe for `visible=$session.authenticated`).
   * `prop="${state.x}"` — template, re-evaluated when state changes.
-  With async `propBind` data, always use the `${…}` form:
-  `visible="${state.post.coverImage}"`. The expression form never recovers.
+  **Neither channel gates async data** (`arc-contracts` §28.1): with `propBind`
+  data `visible="${state.x}"` stays true when there is no data, while
+  `visible="!${state.x}"` never renders — a mutual-exclusion empty state is not
+  expressible. Compute the state in the record/CLI and render a precomputed
+  marker as standing text (see `runtime-gotchas.md` #6).
 * `input value="${state.x}"` interpolates and stays editable;
   `input state={value: "${state.x}"}` renders the template literally.
 * Object/array props use the `{…}` / `[…]` literal syntax:
