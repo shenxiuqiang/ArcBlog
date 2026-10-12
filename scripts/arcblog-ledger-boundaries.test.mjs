@@ -7,7 +7,7 @@
 // rows carried no resolvable anchor at all (SITE-04 now cites B19; NET-06/AGT-11 cite U10).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
@@ -113,7 +113,17 @@ test('no living doc states the boundary range (cite the file instead)', () => {
  * file must exist, the line must be inside the file, and it must not be blank.
  */
 test('every file:line citation in the boundary files resolves to real content', () => {
-  const files = ['docs/05-开发文档/02-平台能力与边界.md', 'docs/05-开发文档/02a-平台禁止与降级模式.md'];
+  // Every LIVING volume, not just the two boundary files: a citation is evidence wherever it is
+  // written, and the frozen volumes (docs/01-04) plus 附件/ are excluded — they are stage records
+  // and raw transcripts whose line numbers legitimately describe the past.
+  const files = [
+    ...readdirSync(join(REPO, 'docs', '05-开发文档')).map((f) => `docs/05-开发文档/${f}`),
+    ...readdirSync(join(REPO, 'docs', '06-功能开发列表')).map((f) => `docs/06-功能开发列表/${f}`),
+    ...readdirSync(join(REPO, 'docs', '07-团队与开发规范')).map((f) => `docs/07-团队与开发规范/${f}`),
+    ...readdirSync(join(REPO, 'docs', '08-其他')).map((f) => `docs/08-其他/${f}`),
+    'CLAUDE.md',
+    'README.md',
+  ].filter((f) => f.endsWith('.md') && !f.includes('_提纲') && !f.includes('附件'));
   const problems = [];
   let checked = 0;
   for (const rel of files) {
@@ -129,6 +139,6 @@ test('every file:line citation in the boundary files resolves to real content', 
       if (!lines[start - 1].trim()) problems.push(`${rel}: ${target}:${startRaw} points at a blank line`);
     }
   }
-  assert.ok(checked >= 5, `citations checked: ${checked}`);
+  assert.ok(checked >= 50, `citations checked: ${checked} — the citation scan found almost nothing`);
   assert.deepEqual(problems, [], `unresolvable citations in the boundary authority:\n  ${problems.join('\n  ')}`);
 });
