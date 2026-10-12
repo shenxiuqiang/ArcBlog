@@ -9,7 +9,7 @@
 // The three tabs are data views of the two AFS directory boundaries; the
 // archived tab splits the private directory with the record's own archivedAt
 // stamp because an index-backed `filter` silently drops large records
-// (docs/arc-contracts.md §15.1).
+// (docs/05-开发文档/附件/arc-contracts.md §15.1).
 page posts {
   i18n {
     gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
@@ -31,7 +31,7 @@ page posts {
     admin-unpublish-msg { en "Remove this post from public? Deletes the record from the public posts directory. Archive first if you want to keep a private copy." zh "将这篇文章从公开移除？从公开 posts 目录删除该记录。若想保留私有副本，请先归档。" }
     pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
     cli-note { en "Move semantics and bulk work stay in the CLI: node scripts/arcblog-lifecycle.mjs archive moves posts/ → drafts/, publish and republish move drafts/ → posts/, soft-delete marks a private record deleted. The console copies instead of moving, and drafts/ is one private directory (draft + archived + deleted) — the Archived tab is that same directory narrowed by each record's own archivedAt stamp." zh "移动语义与批量操作留在 CLI：node scripts/arcblog-lifecycle.mjs archive 把 posts/ 移到 drafts/，publish / republish 把 drafts/ 移到 posts/，soft-delete 把私有记录标记为 deleted。控制台是复制而非移动；drafts/ 是同一个私有目录（草稿 + 归档 + 已删），「归档」页签是用每条记录自带的 archivedAt 收窄的同一目录视图。" }
-    status-note { en "Per-record status is shown as the raw machine value: the platform cannot pick a localized label per record (a dynamic $t() key renders literally, docs/arc-contracts.md §28.8). Record counts are rendered by each tab's own list footer (“Total: N records”) — this page invents no number. An empty tab means that state holds no record yet; write one with the button above." zh "每条记录的状态显示机器原始值：本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染，docs/arc-contracts.md §28.8）。条数由每个页签列表自己的页脚（“Total: N records”）渲染——本页不臆造数字。页签为空表示该状态还没有记录；用上方按钮写一篇即可。" }
+    status-note { en "Per-record status is shown as the raw machine value: the platform cannot pick a localized label per record (a dynamic $t() key renders literally, docs/05-开发文档/附件/arc-contracts.md §28.8). Record counts are rendered by each tab's own list footer (“Total: N records”) — this page invents no number. An empty tab means that state holds no record yet; write one with the button above." zh "每条记录的状态显示机器原始值：本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染，docs/05-开发文档/附件/arc-contracts.md §28.8）。条数由每个页签列表自己的页脚（“Total: N records”）渲染——本页不臆造数字。页签为空表示该状态还没有记录；用上方按钮写一篇即可。" }
   }
   component recordFields() {
     input type=hidden name=eTitle value="${entry.content.title}"

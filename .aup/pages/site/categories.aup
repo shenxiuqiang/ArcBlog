@@ -50,7 +50,7 @@ page categories {
     sort-title { en "Sorting is CLI-only" zh "排序仅 CLI 可改" }
     sort-value { en "sort" zh "排序" }
     status-intent { en "Status" zh "状态" }
-    status-note { en "The status text is read verbatim from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown — docs/arc-contracts.md §28.8." zh "状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/arc-contracts.md §28.8。" }
+    status-note { en "The status text is read verbatim from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown — docs/05-开发文档/附件/arc-contracts.md §28.8." zh "状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/05-开发文档/附件/arc-contracts.md §28.8。" }
     target-hint { en "Every row has its own target field: type the slug of an existing category there (the list below shows every slug). An unknown or empty target is refused by the worker with a reason — nothing is changed." zh "每一行都有自己的目标字段：填一个已存在分类的 slug（下方列表列出了全部 slug）。目标不存在或为空会被 worker 拒绝并给出原因——不会改动任何数据。" }
     target-label { en "Target category (slug)" zh "目标分类（slug）" }
     title { en "Categories" zh "分类" }

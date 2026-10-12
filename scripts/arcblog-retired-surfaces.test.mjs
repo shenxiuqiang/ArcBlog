@@ -63,6 +63,9 @@ test('no retired surface (economy / hub) is routable or declarable again', () =>
 test('shipped prose does not cite missing files or claim retired surfaces are live', () => {
   const problems = [];
   const files = [
+    // locales are the USER-VISIBLE copy (scanned as text: the files keep one key per line), and the
+    // man/ + agents/ prose ships inside dist.
+    ...readdirSync(join(REPO, '.aup', 'locales')).map((f) => `.aup/locales/${f}`),
     ...readdirSync(join(REPO, '.aup', 'man')).map((f) => `.aup/man/${f}`),
     ...readdirSync(join(REPO, 'agents')).flatMap((d) => {
       try {
@@ -71,7 +74,7 @@ test('shipped prose does not cite missing files or claim retired surfaces are li
         return [];
       }
     }),
-  ].filter((f) => /\.(yaml|md)$/.test(f));
+  ].filter((f) => /\.(yaml|md|json)$/.test(f));
   assert.ok(files.length >= 15, `shipped text files scanned: ${files.length}`);
 
   const REMOVAL = /removed|deleted|retired|已移除|已删|退役|2026-10-01/;
@@ -86,6 +89,9 @@ test('shipped prose does not cite missing files or claim retired surfaces are li
       if (/(economy|hub)[^.]{0,60}(enabled|available|surface|surfaces)/i.test(line) && !REMOVAL.test(line)) {
         problems.push(`${rel}:${i + 1} suggests a retired surface is live: ${line.trim().slice(0, 80)}`);
       }
+      // A route to a page that no longer exists is a promise the app cannot keep.
+      const route = /\?page=(store|hub|economy|policies|orders|ledger)\b/i.exec(line);
+      if (route && !REMOVAL.test(line)) problems.push(`${rel}:${i + 1} routes to a removed page: ?page=${route[1]}`);
     }
   }
   assert.deepEqual(problems, [], `shipped prose that misleads:\n  ${problems.join('\n  ')}`);
