@@ -68,6 +68,7 @@ const FAST_TESTS = new Set([
   // instance writes, no chain, no network.
   'arcblog-anomalies',
   'arcblog-artifact-drift',
+  'arcblog-chain-literals',
   'arcblog-console-nav',
   'arcblog-deps',
   'arcblog-dist-secrets',
