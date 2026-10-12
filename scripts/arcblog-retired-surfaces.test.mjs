@@ -13,7 +13,7 @@
 // schema carries one of the retired names, the teardown has been partly undone.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -104,4 +104,46 @@ test('shipped prose does not cite missing files or claim retired surfaces are li
     }
   }
   assert.deepEqual(problems, [], `shipped prose that misleads:\n  ${problems.join('\n  ')}`);
+});
+
+/**
+ * The shipped management docs must describe REAL pages, and none of them may ship a placeholder
+ * (2026-10-12, ENG-67). Measured before the fix: 22 man docs, of which TEN declared `page:` names that
+ * no longer existed (`categories-admin`, `console`, `ops-admin`…) and SIX were still the generator's
+ * `TODO: describe what "X" is for and when an agent should use it` placeholder — all of it inside the
+ * published artifact. The renames and the authored docs left a perfect bijection: 25 docs, 25 pages,
+ * filename == page field, no TODO anywhere in the shipped text.
+ */
+test('every management doc names a real page, and no shipped text ships a TODO', () => {
+  const manDir = join(REPO, '.aup', 'man');
+  const docs = readdirSync(manDir).filter((f) => f.endsWith('.yaml'));
+  assert.ok(docs.length >= 15, `management docs: ${docs.length}`);
+
+  const pageNames = new Set([
+    ...readdirSync(join(REPO, '.aup', 'pages')).flatMap((entry) => {
+      const full = join(REPO, '.aup', 'pages', entry);
+      try {
+        return statSync(full).isDirectory()
+          ? readdirSync(full).filter((f) => f.endsWith('.aup')).map((f) => f.replace(/\.aup$/, ''))
+          : full.endsWith('.aup') ? [entry.replace(/\.aup$/, '')] : [];
+      } catch {
+        return [];
+      }
+    }),
+  ]);
+  assert.ok(pageNames.size >= 20, `pages found: ${pageNames.size}`);
+
+  const problems = [];
+  for (const f of docs) {
+    const text = readFileSync(join(manDir, f), 'utf8');
+    const declared = /^page:\s*(\S+)/m.exec(text)?.[1];
+    if (!declared) problems.push(`${f}: no page field`);
+    else if (!pageNames.has(declared)) problems.push(`${f}: declares page '${declared}', which does not exist`);
+    else if (declared !== f.replace(/\.yaml$/, '')) problems.push(`${f}: declares page '${declared}' — filename and page must agree`);
+    if (/TODO\b|FIXME\b|XXX\b/.test(text)) problems.push(`${f}: ships a placeholder (TODO/FIXME)`);
+  }
+  for (const page of pageNames) {
+    if (!docs.includes(`${page}.yaml`)) problems.push(`${page}: page has no management doc`);
+  }
+  assert.deepEqual(problems, [], `management docs that misdescribe the app:\n  ${problems.join('\n  ')}`);
 });

@@ -1,0 +1,15 @@
+schemaVersion: 1
+page: agents
+description: >-
+  What the agent surface can do to this node: the enforced policy, the declared tool catalogue, the
+  grant records, and the operator CLI that issues them.
+synopsis: >-
+  Read-only by construction: the tools are enumerated from the declaration, the closed ones are shown
+  as closed (they never run from the agent surface), and a write tool only runs with an unexpired
+  grant. `agent.admin` cannot be granted at all. The page reads the declaration and the grant records
+  under `config/agent-grants/**`; it never signs anything.
+flows:
+  - Read the declared agent (name / model / budget) and the tool catalogue with its policy checks.
+  - Read the grant records, their capabilities and expiry.
+  - Copy the operator commands (`authorize`, `revoke`) from the CLI card below; an explicit --ttl is required.
+  - Verify the policy with `node scripts/arcblog-agent.mjs check`.

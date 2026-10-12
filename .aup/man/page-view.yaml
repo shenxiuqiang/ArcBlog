@@ -1,14 +1,13 @@
-# Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
-# point, not finished documentation. Fill in description/synopsis/examples/flows,
-# then this file is the authoritative man page for "page-view".
 schemaVersion: 1
 page: page-view
 description: >-
-  TODO: describe what "page-view" is for and when an agent should use it
-  (auto-scaffolded stub — fill in before relying on this man page).
-refs:
-  actions:
-    - id: site-header
-      event: user-menu-item
-    - id: site-header
-      event: nav-click
+  The public reader for one static page record: `/pages/<slug>` renders whatever the page record
+  holds, at this node's own appearance.
+synopsis: >-
+  The record is bound to the address, so the content is here on the FIRST load (no reload needed —
+  see the cold-start channel in the runtime notes). Offline pages are not served; a missing record
+  is not-found. Editing happens in the console (`?page=pages`), never here.
+flows:
+  - Open /pages/<slug> to read the published page.
+  - Use the back link to return to the latest stories.
+  - Edit the record in the console (pages) — this surface is read-only.

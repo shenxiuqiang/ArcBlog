@@ -1,8 +1,8 @@
 # Auto-scaffolded by `arc dsl generate --write` (#1284 Phase 2) — this is a starting
 # point, not finished documentation. Fill in description/synopsis/examples/flows,
-# then this file is the authoritative man page for "admin".
+# then this file is the authoritative man page for "posts".
 schemaVersion: 1
-page: admin
+page: posts
 description: >-
   Wallet-gated Creator Studio for managing draft/published/archived lifecycle,
   plus media stored in the caller's DID Space.

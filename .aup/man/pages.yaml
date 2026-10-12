@@ -1,6 +1,6 @@
-# Man page for "pages-admin" (spec §15.4) — static page management.
+# Man page for "pages" (spec §15.4) — static page management.
 schemaVersion: 1
-page: pages-admin
+page: pages
 description: >-
   Wallet-gated management of standalone pages (About, Support, ...). Pages have
   exactly two states — online (public under pages/) and offline (admin-only

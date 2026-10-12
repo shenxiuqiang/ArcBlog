@@ -1,0 +1,13 @@
+schemaVersion: 1
+page: tags
+description: >-
+  Tags are free-form words on posts — there is no tag registry. Rename or merge to converge spelling
+  variants; the counts on this page come from the same scan the CLI uses.
+synopsis: >-
+  A rename or merge queues an intent and the node's worker rewrites every post that references the
+  source tag in place (version + content hash move with it). The page never rewrites records from the
+  browser, and it never invents a tag: a tag exists exactly as long as a post carries it.
+flows:
+  - Read the tag list with its usage counts (from the audit scan).
+  - Queue a rename / merge, confirm it, then let the worker apply it.
+  - Use the CLI (`node scripts/arcblog-tags.mjs list|merge`) when a script needs the same data.

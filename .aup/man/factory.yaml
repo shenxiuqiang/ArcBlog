@@ -1,0 +1,15 @@
+schemaVersion: 1
+page: factory
+description: >-
+  The on-chain identity of this node: the SVG card it renders, the factory that mints it, and the
+  buy / stake / revoke / claim lifecycle.
+synopsis: >-
+  One click queues an INTENT record; this node's chain worker signs it (the key never reaches the
+  browser) and then refreshes the public projection. The page reads that projection — addresses and
+  transaction hashes only, never key material — so it works for any signed-in session while the
+  authoritative records stay in the admin-only config collection.
+flows:
+  - Inspect the rendered card, the factory address and the node's lifecycle state.
+  - Queue buy / stake / revoke / claim; then run the worker (`arcblog-chain-worker.mjs run`) to sign it.
+  - Verify the projection against the chain via the advanced section's commands.
+  - Real chain writes need human approval (see the human checkpoints).

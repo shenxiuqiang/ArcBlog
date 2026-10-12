@@ -1,6 +1,6 @@
-# Man page for "seo-admin" (spec §15.5) — site-level SEO & distribution.
+# Man page for "seo" (spec §15.5) — site-level SEO & distribution.
 schemaVersion: 1
-page: seo-admin
+page: seo
 description: >-
   Wallet-gated site metadata (name, description, default OG image, endpoint)
   stored on the public node profile, plus the always-on distribution surfaces

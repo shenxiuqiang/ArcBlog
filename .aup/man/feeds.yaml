@@ -1,0 +1,14 @@
+schemaVersion: 1
+page: feeds
+description: >-
+  The subscription and index surfaces generated from published content: the RSS feed, the article
+  index and the agent-facing llms.txt.
+synopsis: >-
+  The feed is produced by the DEPLOY PIPELINE (step 3b), not by the platform and not at request time:
+  every deploy regenerates it and the pipeline verifies `/p/rss.xml` before it reports success. The
+  page shows where each surface lives and how to check it; a bare `arc blocklet build` removes the
+  artifact, which is why the deploy entry (`node scripts/arcblog-deploy.mjs`) is the safe one.
+flows:
+  - Open /p/rss.xml (the feed) and /p/llms.txt (the agent pointer page).
+  - Regenerate the feed with `node scripts/arcblog-rss.mjs --feed-link <origin> > .web-cache/rss.xml`.
+  - Treat a missing artifact as "readers cannot subscribe yet", not as a hidden success.

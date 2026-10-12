@@ -1,0 +1,13 @@
+schemaVersion: 1
+page: saved
+description: >-
+  A private reading list. Every record lives in the signed-in reader's own DID space
+  (`/user/<did>/arcblog/bookmarks/<slug>.json`), never in the node's instance space.
+synopsis: >-
+  The list is per user, and the platform is what keeps it private: another visitor cannot read it,
+  and the node operator does not collect it. A page write stores exactly the three fields the record
+  shape declares; the CLI half exists so a reader can manage the same records from a terminal.
+flows:
+  - Save a post from the reader ("Add to reading list") and see it appear here.
+  - Remove one record from the list.
+  - Manage the same records from the CLI: `node scripts/arcblog-bookmarks.mjs where --user <did>`.

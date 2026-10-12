@@ -1,0 +1,14 @@
+schemaVersion: 1
+page: categories
+description: >-
+  The taxonomy used by the publish validator and the public feed: one record per category, guest
+  readable, admins write it.
+synopsis: >-
+  Every governance action is a button that queues an intent and lets this node's worker do the work,
+  so no destructive migration runs from the browser. A page write stores `sort=0`; ordering and the
+  operations the page does not offer (sort, merge, remove with migration) are in the CLI card below.
+flows:
+  - Add a category (slug + label); the record lands under categories/.
+  - Queue a rename / merge / remove-with-migration intent and confirm it.
+  - Copy the equivalent CLI command from the advanced section when a script needs it.
+  - The publish validator reads this taxonomy (built-in technology|design|life while it is empty).

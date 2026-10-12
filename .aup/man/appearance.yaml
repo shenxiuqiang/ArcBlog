@@ -1,0 +1,15 @@
+schemaVersion: 1
+page: appearance
+description: >-
+  Theme, tone and palette for this site. Admins set the defaults; a signed-in user can personalize
+  their own theme.
+synopsis: >-
+  The page is the platform's own settings surface, mounted over `/instance/settings/arcblog`: the
+  records carry label / description / scope / type / options / value, and the values offered are
+  exactly the ones the theme bridge implements. The bridge reads the same three records and applies
+  them to the whole page (including the frames), caching the resolved theme so navigation does not
+  flash the wrong mode.
+flows:
+  - Pick theme / tone / palette and save; the settings records are written.
+  - Read the current values with `node scripts/arcblog-settings.mjs show`.
+  - The bridge re-applies the result on every navigation (no reload needed).

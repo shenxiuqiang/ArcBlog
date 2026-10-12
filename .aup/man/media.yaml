@@ -1,5 +1,5 @@
 schemaVersion: 1
-page: media-admin
+page: media
 description: >-
   Media operations for this ArcBlog instance: the platform upload surface
   (afs-dropzone) and this node's upload index, plus the CLI commands that compute

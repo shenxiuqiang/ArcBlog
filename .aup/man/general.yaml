@@ -1,16 +1,15 @@
-# Renamed from the auto-scaffolded `settings.yaml` stub (2026-09-28, Round 11F).
-# `settings` is a reserved AUP keyword, so the page id is `general` (see
-# scripts/console-nav.mjs for the measured reason). This man page is still a
-# stub: fill in description/synopsis/examples/flows, then it becomes the
-# authoritative man page for "general".
 schemaVersion: 1
 page: general
 description: >-
-  TODO: describe what "general" (console → Settings → General) is for and when an
-  agent should use it (stub — fill in before relying on this man page). It holds
-  the site-level basics (site name, language, timezone) and the instance switches
-  (comments, RSS, Agent Access); the data lives in
-  /instance/app/arcblog/config/{general,switches}/<field>.json and is read by
-  scripts/arcblog-rss.mjs and scripts/arcblog-agent.mjs.
-refs:
-  actions: []
+  Instance-level General settings: the site name, language and timezone plus the three
+  instance switches. One home for every "where is that switch?" question.
+synopsis: >-
+  Every field is backed by a record in this blocklet's own `config/general/**` collection, which is
+  the same surface the CLI writes (`arcblog-settings.mjs`), so the page and the command line cannot
+  disagree. Each control offers only its own record's allowed values, so the page cannot submit an
+  out-of-options value; a refused write changes nothing and says so.
+flows:
+  - Read the current values (site name / language / timezone / switches) from config/general/**.
+  - Edit one field and Save; the page writes the record and reports "Setting saved." or a refusal.
+  - Read the site-level values the RSS generator and the feed consume.
+  - Fall back to the CLI (`node scripts/arcblog-settings.mjs show`) when a script needs the value.

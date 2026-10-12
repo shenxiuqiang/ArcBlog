@@ -1,0 +1,15 @@
+schemaVersion: 1
+page: registry
+description: >-
+  Which nodes are staked to this node's studio factory — the on-chain registry view. The page reads
+  the public projection `node/registry.json`, which the CLI writes.
+synopsis: >-
+  A page cannot branch on asynchronous state, so every judgement is precomputed into the projection:
+  the reachability state of each entry (four states), the provenance of its endpoint, and the
+  standing sentence that answers "am I in the registry?". This page renders those strings verbatim
+  and offers the commands that verify them against the chain itself.
+flows:
+  - Read the staked nodes, their endpoints, stake amounts and reachability states.
+  - Read the "am I in the registry?" sentence for this node.
+  - Refresh the projection: `node scripts/arcblog-network.mjs registry refresh` (add --probe to test endpoints).
+  - Verify against the chain with the commands in the page's "how to verify" card.
