@@ -28,10 +28,30 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
+import { knownFlagsFor } from './lib/cli-flags.mjs';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
+
+// A bare run REALLY deploys, so an unrecognised flag must not be ignored: a typo'd
+// `--dry-run` used to perform the deploy anyway (measured 2026-10-12). The flag list
+// lives in the shared registry — one source of truth for every CLI.
+{
+  const known = new Set(knownFlagsFor(import.meta.url).map((f) => `--${f}`));
+  const unknown = args.filter((a) => a.startsWith('-') && !known.has(a.split('=')[0]));
+  if (unknown.length) {
+    console.error(
+      JSON.stringify(
+        { ok: false, code: 'VALIDATION', error: `unknown flag ${unknown[0]} — this tool really deploys with no flag; see --help for the accepted flags` },
+        null,
+        2,
+      ),
+    );
+    process.exit(1);
+  }
+}
+
 const flag = (name, fallback) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback;

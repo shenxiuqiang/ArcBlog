@@ -20,6 +20,7 @@
  */
 
 import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { knownFlagsFor } from './lib/cli-flags.mjs';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -185,6 +186,25 @@ export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
 const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (isMain) {
   const args = process.argv.slice(2);
+
+  // A bare run SCRUBS dist/ (it deletes the leaked copies and rewrites the manifest),
+  // so an unrecognised flag must not be ignored: a typo'd `--check` used to perform the
+  // destructive scrub instead of the read-only report (measured 2026-10-12).
+  {
+    const known = new Set([...knownFlagsFor(import.meta.url).map((f) => `--${f}`), '-h']);
+    const unknown = args.filter((a) => a.startsWith('-') && !known.has(a.split('=')[0]));
+    if (unknown.length) {
+      console.error(
+        JSON.stringify(
+          { ok: false, code: 'VALIDATION', error: `unknown flag ${unknown[0]} — a bare run scrubs dist/; use --check for the read-only report` },
+          null,
+          2,
+        ),
+      );
+      process.exit(1);
+    }
+  }
+
   const has = (flag) => args.includes(flag);
   const valueOf = (flag) => {
     const i = args.indexOf(flag);

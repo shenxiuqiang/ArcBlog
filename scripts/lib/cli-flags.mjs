@@ -52,6 +52,10 @@ export const SCRIPT_FLAGS = {
   "arcblog-chain-worker.mjs": ["action", "adapter", "by", "endpoint", "instance", "interval", "json", "name", "owner", "pk", "region", "role", "stake"],
   "arcblog-clean.mjs": ["confirm", "dir", "help", "sign-key"],
   "arcblog-console-nav.mjs": ["check", "fix"],
+  // The two tools with DESTRUCTIVE defaults (a bare run scrubs dist/ or really
+  // deploys) — a typo'd --check/--dry-run must not silently do the other thing.
+  "arcblog-deploy.mjs": ["domain", "dry-run", "help", "instance", "json", "project"],
+  "arcblog-dist-secrets.mjs": ["check", "dir", "dist", "help", "json", "pages", "project"],
   "arcblog-daily-report.mjs": ["args", "instance", "json", "limit"],
   "arcblog-doctor.mjs": ["help", "instance", "json", "record"],
   "arcblog-factory.mjs": ["adapter", "chain-host", "description", "endpoint", "help", "instance", "issuer", "json", "keep-registry", "name", "out", "region", "role", "stake", "token-id", "update"],
