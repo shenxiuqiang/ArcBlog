@@ -51,3 +51,6 @@ node.key
 # `${ARCBLOG_MEMORY_DIR:-<repo>/.arcblog/memory}/<sessionId>.jsonl` holds user-side
 # context, so it carries exactly the same "never commit" status as node.key above.
 .arcblog/
+
+# Live-test gate lock (docs/05 §5): created and deleted by a run, never a source file.
+docs/team/.gate-lock

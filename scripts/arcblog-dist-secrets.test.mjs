@@ -312,3 +312,28 @@ test('blocklet.yaml keeps its identity and publishable metadata', () => {
   assert.ok(logo, 'manifest declares no logo');
   assert.ok(existsSync(join(REPO_ROOT, logo)), `manifest logo '${logo}' does not exist`);
 });
+
+/**
+ * The secrets contract lives in .gitignore, and only `.arcblog/` was asserted anywhere. `npm run
+ * build` copies root files into dist/ (BUG-067's neighbourhood) and this repo's own gitignore
+ * comment warns about `git add -A`, so a dropped rule here is how a private key becomes a commit.
+ */
+test('.gitignore still covers every secret, build artefact and runtime lock', () => {
+  const ignore = readFileSync(join(REPO_ROOT, '.gitignore'), 'utf8')
+    .split('\n')
+    .map((l) => l.trim());
+  const required = [
+    'node.key',          // the Ed25519 content-signing key (AGENTS.md iron rule 5)
+    '.env.local',        // chain env + mnemonic
+    '.node-pk.pem',      // local chain material
+    '*.pem',
+    '*.key',
+    'auth.json',         // arc CLI credentials
+    'dist/',             // build output that may carry copies of the above
+    '.web-cache/',
+    '.arcblog/',         // local-first agent memory
+    'docs/team/.gate-lock',
+  ];
+  const missing = required.filter((r) => !ignore.includes(r));
+  assert.deepEqual(missing, [], `.gitignore no longer covers: ${missing.join(', ')} — a plain \`git add -A\` could commit them`);
+});
