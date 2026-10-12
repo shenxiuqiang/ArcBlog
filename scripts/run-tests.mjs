@@ -82,6 +82,7 @@ const FAST_TESTS = new Set([
   'arcblog-page-grants',
   'arcblog-permissions',
   'arcblog-prd-ledger',
+  'arcblog-probe-verdicts',
   'arcblog-recipes',
   'arcblog-roles-settings',
   'arcblog-run-tests',
@@ -112,6 +113,8 @@ const GUARDS = {
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   // ENG-24: a 平台边界 row cites a B*/probe/contract section that must actually resolve.
+  // ENG-25: the goal's criterion ② — every probe has an explicit verdict, tally pinned.
+  'arcblog-probe-verdicts': [/^docs\/05-开发文档\/07-/, /^docs\/team\/human-checkpoints\.md$/, /^scripts\/arcblog-probe-verdicts/],
   'arcblog-ledger-boundaries': [/^docs\/06-功能开发列表\/01-功能台账\.md$/, /^docs\/05-开发文档\/02-平台能力与边界\.md$/, /^docs\/05-开发文档\/07-/, /^scripts\/arcblog-ledger-boundaries/],
   // ENG-23: the ledger is the status authority; its evidence cells must not be tautologies
   // ENG-22: docs/06/01 is the authoritative status source; docs/02 re-states every PRD row.
