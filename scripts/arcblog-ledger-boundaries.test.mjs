@@ -7,7 +7,7 @@
 // rows carried no resolvable anchor at all (SITE-04 now cites B19; NET-06/AGT-11 cite U10).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
@@ -102,4 +102,33 @@ test('no living doc states the boundary range (cite the file instead)', () => {
     }
   }
   assert.deepEqual(offenders, [], `stale boundary ranges (cite docs/05/02 without a range):\n  ${offenders.join('\n  ')}`);
+});
+
+/**
+ * Citations in the platform-boundary authority must RESOLVE (2026-10-12). Three were broken when I
+ * checked: `blocklet.yaml:160-259` (the file is 204 lines after the economy teardown), 
+ * `.aup/wrapper.aup:45` (41 lines), and `arc-contracts.md:1579` (an EMPTY line). Line numbers are
+ * the same class of brittle identifier the constitution warns about ("会变更的编号不得当稳定标识"),
+ * so the fix was to cite KEYS and SECTIONS instead — and this guard keeps the remaining ones honest:
+ * file must exist, the line must be inside the file, and it must not be blank.
+ */
+test('every file:line citation in the boundary files resolves to real content', () => {
+  const files = ['docs/05-开发文档/02-平台能力与边界.md', 'docs/05-开发文档/02a-平台禁止与降级模式.md'];
+  const problems = [];
+  let checked = 0;
+  for (const rel of files) {
+    const text = readFileSync(join(REPO, rel), 'utf8');
+    for (const m of text.matchAll(/`([\w./-]+\.(?:mjs|aup|js|json|yaml|md)):(\d+)(?:-(\d+))?`/g)) {
+      const [, target, startRaw, endRaw] = m;
+      checked += 1;
+      if (!existsSync(join(REPO, target))) { problems.push(`${rel}: missing file ${target}`); continue; }
+      const lines = readFileSync(join(REPO, target), 'utf8').split('\n');
+      const start = Number(startRaw);
+      const end = endRaw ? Number(endRaw) : start;
+      if (end > lines.length) { problems.push(`${rel}: ${target}:${startRaw}${endRaw ? `-${endRaw}` : ''} exceeds ${lines.length} lines`); continue; }
+      if (!lines[start - 1].trim()) problems.push(`${rel}: ${target}:${startRaw} points at a blank line`);
+    }
+  }
+  assert.ok(checked >= 5, `citations checked: ${checked}`);
+  assert.deepEqual(problems, [], `unresolvable citations in the boundary authority:\n  ${problems.join('\n  ')}`);
 });
