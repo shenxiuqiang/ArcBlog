@@ -127,10 +127,10 @@
   },
   "agents": {
     "blocks": 1,
-    "cards": 5,
+    "cards": 6,
     "nested": 0,
     "ctrl": 0,
-    "styles": 19,
+    "styles": 21,
     "i18n": 40,
     "tech": 11
   },
@@ -176,7 +176,7 @@
     "registry": "0d4b406d6640cde0",
     "factory": "7c0f0ffa50cf1d11",
     "media": "22bf414d4dc13b8b",
-    "agents": "6ca5988f016b8c94",
+    "agents": "a175adc6af88b35e",
     "general": "29dc70d9de73bc91",
     "diagnostics": "39f4ed9684fe1c9b",
     "compose-edit": "4098d82ef6772a1c"

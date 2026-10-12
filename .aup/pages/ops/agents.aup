@@ -178,7 +178,12 @@ page agents {
                 key-value-list agent-grant-cmds dense=true fields=[{label: "$t(agents.cmd-authorize)", value: "node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30", monospace: true, copyable: true}, {label: "$t(agents.cmd-revoke)", value: "node scripts/arcblog-agent.mjs revoke --agent <did>", monospace: true, copyable: true}]
                 p :grant-forbidden scale=sm intent=muted
                 p :runtime-note scale=sm intent=muted
-                h3 :summaries-title level=3
+              }
+              // DEF-19: the aggregation section is its own card with the same heading
+              // style as its siblings (it lived inside the grants card before, which
+              // left its h3 unstyled to avoid a baseline re-record).
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :summaries-title level=3 style={fontSize: "var(--type-body)"}
                 p :summaries-note intent=muted
                 afs-list agents-summaries-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/summaries" {
                   row gap=xs role=item {
