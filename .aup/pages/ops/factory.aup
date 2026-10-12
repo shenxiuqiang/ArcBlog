@@ -12,6 +12,8 @@ page factory {
     chain-host { en "Chain host" zh "链地址" }
     chain-token { en "Mint token" zh "铸造代币" }
     state-note { en "Projection state (computed by the CLI)" zh "投影状态（由 CLI 计算）" }
+    registry-link-label { en "Is it live right now?" zh "现在还是活的吗？" }
+    registry-link-value { en "This page is the NFT lifecycle record (acquired / staked / revoked, from node/factories.json). Whether the node currently counts as a live registry entry is a separate projection — open ?page=registry, or run: node scripts/arcblog-network.mjs registry show" zh "本页是 NFT 生命周期记录（获取 / 质押 / 撤销，来自 node/factories.json）。该节点当前是否算作注册表中的存活条目是另一个投影——请打开 ?page=registry，或运行：node scripts/arcblog-network.mjs registry show" }
     cli-label { en "Regenerate the projection (CLI)" zh "重新生成投影（CLI）" }
     factories { en "Factories" zh "工厂" }
     factory-studio { en "Studio node factory" zh "Studio 节点工厂" }
@@ -164,6 +166,12 @@ page factory {
             p :render-timing intent=muted scale=sm
             key-value-list factory-cli dense=true fields=[{label: "$t(factory.cli-label)", value: "node scripts/arcblog-factory.mjs project"}]
             key-value-list factory-state dense=true fields=[{label: "$t(factory.state-note)", value: "${state.summary.stateNote}"}]
+            // Standing cross-reference (QA R4–R8 observation): this page shows the
+            // node-NFT LIFECYCLE facts (what was acquired/staked/revoked, from
+            // node/factories.json); whether the node is LIVE in the chain registry
+            // today is a separate projection. Reading only this page can look like
+            // a contradiction, so the two are linked in standing copy.
+            key-value-list factory-registry-link dense=true fields=[{label: "$t(factory.registry-link-label)", value: "$t(factory.registry-link-value)"}]
           }
           grid gap=md style={gridTemplateColumns: "minmax(0, 1fr)", alignItems: start} {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {

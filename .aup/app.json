@@ -25,6 +25,9 @@
     "preview": {
       "tree": "pages/preview.aup"
     },
+    "probe-reader": {
+      "tree": "pages/probe-reader.aup"
+    },
     "reader": {
       "tree": "pages/reader.aup"
     },

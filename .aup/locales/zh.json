@@ -653,5 +653,15 @@
   "reader.runtime-note": "本页在首次加载之后才绑定记录。若正文为空（或分享链接打开时是空白），刷新一次即可。",
   "agents.summaries-note": "汇总记录：node/summaries/ 下的只读投影，由下方运营者 CLI 写入（列表为空表示尚未 build——本页既不生成也不评分）。每行显示的数字全部取自该记录自带的 totalNote/stateNote；本页不得自算总数（B5）。",
   "agents.summaries-title": "汇总记录（node/summaries/）",
-  "registry.own-note": "我是否在这个注册表里？（由 CLI 计算）"
+  "registry.own-note": "我是否在这个注册表里？（由 CLI 计算）",
+  "probe-reader.title": "探针阅读",
+  "probe-reader.note": "临时探针页（测量后删除）。",
+  "probe-reader.section-a0": "A0 对照：不带筛选的 afs-list",
+  "probe-reader.section-a1": "A1 筛选 content.slug = hello-arcblog",
+  "probe-reader.section-a2": "A2 筛选 content.slug = $params.slug",
+  "probe-reader.section-a3": "A3 不带 content. 前缀的 filter",
+  "probe-reader.section-b1": "B1 surface src 含 $params.slug",
+  "probe-reader.section-b2": "B2 surface src 固定路径",
+  "factory.registry-link-label": "现在还是活的吗？",
+  "factory.registry-link-value": "本页是 NFT 生命周期记录（获取 / 质押 / 撤销，来自 node/factories.json）。该节点当前是否算作注册表中的存活条目是另一个投影——请打开 ?page=registry，或运行：node scripts/arcblog-network.mjs registry show"
 }

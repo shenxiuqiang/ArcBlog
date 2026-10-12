@@ -113,8 +113,8 @@
     "nested": 0,
     "ctrl": 7,
     "styles": 26,
-    "i18n": 68,
-    "tech": 3
+    "i18n": 70,
+    "tech": 5
   },
   "media": {
     "blocks": 1,
@@ -174,7 +174,7 @@
     "appearance": "93b80c1873251269",
     "operations": "6a8c1b00d12dc972",
     "registry": "ca539e48c8faf4fe",
-    "factory": "241d58ad82bb07eb",
+    "factory": "7c0f0ffa50cf1d11",
     "media": "22bf414d4dc13b8b",
     "agents": "6ca5988f016b8c94",
     "general": "29dc70d9de73bc91",
