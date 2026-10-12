@@ -46,7 +46,8 @@ arc afs exec /blocklets/arcblog/.actions/read --path /instance/app/arcblog/posts
 ```
    - **`authorDid`**：应为 `did:key:…` / `did:blocklet:…`；若是字面量 `"$session.did"` ⇒ **探针 `U6` 判定 B**
    - **`contentHash` / `contentSignature` / `version`**：控制台发布若缺这些字段 ⇒ **`DEF-20` 成立**（与 CLI 发布的记录不等构）
-4. **看四个页面的渲染**（登录态、直连 URL 首次打开即可，不必刷新）：
+4. **`PRD-CNT-02`（页面署名）**：第 2 步的草稿记录里 `authorDid` 若为字面量 `"$session.did"`，请再试一次**只改 `args` 模板**的写法（把署名从 `content` 挪到 `args`）并复测——`args` 模板是否插值**从未实测**，这一试能同时收口 `CNT-02` 与 `U6`。
+5. **看四个页面的渲染**（登录态、直连 URL 首次打开即可，不必刷新）：
    - `?page=registry`：应出现「我是否在这个注册表里？」一句（与 `node scripts/arcblog-network.mjs registry show` 的 `ownState`/`ownNote` 一致）
    - `?page=operations`：健康/发现/注册表三块应有真实值（不是空白）
    - `?page=factory`：链事实 + marker 文案（`hasChain`/`stateNote`/`nodeNote`…）
