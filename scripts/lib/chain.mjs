@@ -143,6 +143,14 @@ export const PROJECTION_ADAPTER_SCOPE = 'registry';
 export const NODE_TX_FIELDS = Object.freeze(['acquireTx', 'stakeTx', 'revokeTx', 'claimTx']);
 
 /**
+ * DEF-13: the only role a factory registry may describe since the hub teardown
+ * (2026-10-01). Unknown roles found in a stored projection are dropped there and
+ * then (see `decorateNodeFactorySummary`) so a stale entry cannot be copied
+ * forward forever.
+ */
+export const KNOWN_FACTORY_ROLES = Object.freeze(['studio']);
+
+/**
  * Derived, page-ready markers for `node/factories.json` (DEF-15).
  *
  * The AUP page CANNOT branch on this file: `node/factories.json` reaches a page
@@ -170,6 +178,14 @@ export function decorateNodeFactorySummary(input) {
   const host = String(summary.chainHost ?? '').trim();
   const token = String(summary.tokenId ?? '').trim();
   const nodes = { ...(summary.nodes ?? {}) };
+  // DEF-13: `hub` was removed with the role teardown (2026-10-01), but a projection
+  // written by the mock era can still carry a `hub` entry and every re-annotation
+  // would faithfully copy it forward. The public projection must only ever describe
+  // KNOWN roles, so unknown ones are dropped here — visibly, not silently.
+  const droppedRoles = [...new Set([...Object.keys(nodes), ...Object.keys(summary.factories ?? {})])].filter(
+    (role) => !KNOWN_FACTORY_ROLES.includes(role),
+  );
+  for (const role of droppedRoles) delete nodes[role];
   for (const [role, raw] of Object.entries(nodes)) {
     const node = { ...(raw ?? {}) };
     const assetId = String(node.assetId ?? '').trim();
@@ -200,9 +216,19 @@ export function decorateNodeFactorySummary(input) {
     nodes[role] = node;
   }
   const studio = nodes.studio ?? {};
+  const factories = Object.fromEntries(
+    Object.entries(summary.factories ?? {}).filter(([role]) => KNOWN_FACTORY_ROLES.includes(role)),
+  );
   return {
     ...summary,
+    factories,
     nodes,
+    // A projection that dropped a stale role says so, and the page prints it
+    // (locale-neutral string; a record value cannot select a localized one, §28.8).
+    droppedRoles: droppedRoles.join(', '),
+    droppedNote: droppedRoles.length
+      ? `Stale role record(s) dropped from this projection: ${droppedRoles.join(', ')} — the role no longer exists in this project (hub teardown 2026-10-01). The underlying config record still needs the human-approved cleanup.`
+      : '',
     hasChain: chain ? 'true' : 'false',
     chainNote: chain
       ? `Chain facts recorded: adapter=${chain} · network=${network || '—'} · host=${host || '—'} · mint token=${

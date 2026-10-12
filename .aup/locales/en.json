@@ -637,5 +637,6 @@
   "factory.registry-link-label": "Is it live right now?",
   "factory.registry-link-value": "This page is the NFT lifecycle record (acquired / staked / revoked, from node/factories.json). Whether the node currently counts as a live registry entry is a separate projection — open ?page=registry, or run: node scripts/arcblog-network.mjs registry show",
   "preview.write-note": "Publish / delete need the record in the session binding, which the platform only attaches after the first render — reload once before using them.",
-  "author.about": "Node"
+  "author.about": "Node",
+  "factory.dropped-label": "Stale role records dropped (computed by the CLI)"
 }

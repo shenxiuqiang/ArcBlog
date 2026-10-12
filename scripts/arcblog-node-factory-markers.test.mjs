@@ -63,9 +63,12 @@ test('a real node prints its facts, and a card that could not be built says why'
   assert.equal(out.nodes.studio.cardNote, 'NFT card rendered for Node #1.');
   assert.match(out.nodes.studio.nodeNote, /zASSET · lifecycle staked/);
   assert.match(out.nodes.studio.txNote, /Transaction hashes recorded \(acquire\): AB/);
-  // An asset without a rendered card must name the reason instead of claiming a card.
-  assert.equal(out.nodes.hub.hasCard, 'false');
-  assert.match(out.nodes.hub.cardNote, /zHUB is recorded, but no card could be built: not queried/);
+  // DEF-13: an unknown role (hub was removed with the teardown) is DROPPED from the
+  // projection rather than copied forward, and the record says so visibly.
+  assert.equal(out.nodes.hub, undefined, 'an unknown role must not survive into the projection');
+  assert.equal(out.droppedRoles, 'hub');
+  assert.match(out.droppedNote, /Stale role record\(s\) dropped from this projection: hub/);
+  assert.match(out.droppedNote, /human-approved cleanup/);
   assert.match(out.stateNote, /studio node=recorded · transactions=recorded · projection updated 2026-10-12T00:00:00\.000Z/);
 });
 
@@ -81,4 +84,18 @@ test('the markers are strings and the projection itself is never mutated in plac
   }
   for (const key of ['hasChain', 'chainNote', 'stateNote']) assert.equal(typeof out[key], 'string', key);
   assert.deepEqual(NODE_TX_FIELDS, ['acquireTx', 'stakeTx', 'revokeTx', 'claimTx']);
+});
+
+test('a recorded asset whose card could not be built names the reason (known role)', () => {
+  const out = decorateNodeFactorySummary({
+    adapter: 'ocap',
+    network: 'beta',
+    chainHost: 'https://beta.abtnetwork.io/api/',
+    tokenId: 'zTOKEN',
+    nodes: { studio: { state: 'acquired', assetId: 'zASSET', svg: '', svgError: 'not queried: simulated' } },
+  });
+  assert.equal(out.nodes.studio.hasCard, 'false');
+  assert.match(out.nodes.studio.cardNote, /zASSET is recorded, but no card could be built: not queried/);
+  assert.equal(out.droppedRoles, '', 'a clean projection drops nothing');
+  assert.equal(out.droppedNote, '');
 });
