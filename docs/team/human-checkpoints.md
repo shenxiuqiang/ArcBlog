@@ -26,6 +26,7 @@ node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 ```
 范围：`config/mock-chain-test-*`、`node/factories-test-*`、`node/reg-dbg*`、`config/mock-chain-dbg9-*`、
 `audits/memory-list.audit.jsonl`（5 行测试审计，`clean` 目前扫不到该目录——若批准我会顺带把它纳入 cleaner）。
+另：**`node/` 里 6 条临时探针残留**（`reg-repro-*`×3、`reg-dbg*`×2、`factories-dbg*`×1——2026-10-12 期间 agent 调查注册表时直接写进 `node/` 的一次性记录，**不是**产品数据）；已登记进 cleaner 的前缀表 ⇒ `found` 从 3 变 **9**。**批准后** `node scripts/arcblog-clean.mjs --confirm` 一并清掉（我不擅自删实例数据）。
 另：**3 条合成签名密钥**（`config/signing-keys/*`，DID 形如 `did:key:zHuman<stamp>`，来自 `arcblog-agent-publish-flow.test.mjs`；测试已修 **BUG-075**，不再新增）——`node scripts/arcblog-clean.mjs` **现在能看见它们**（`found: 3`），批准后 `node scripts/arcblog-clean.mjs --confirm` 即可清掉；
 另：`drafts/` 有 3 个更早的 `hub-idx-test-*` 残留（pre-Round-2）；**`config/nft-factories.json` 仍有陈旧的 `hub` 工厂记录**（`factories: {hub, studio}`，mock 时代物证）——投影层已不再输出它（DEF-13 已修），但底层记录要删属人类批准的清理。
 

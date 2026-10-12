@@ -127,6 +127,15 @@ export const TEST_RECORD_PREFIXES = [
   // so these two synthetic tokens are distinctive.
   'did:key:zHuman',
   'did:key:zAgentPublish',
+  // Ad-hoc PROBE residue from 2026-10-12: agents investigating the registry wrote
+  // throwaway records straight into node/ (`reg-repro-<stamp>.json`, `reg-dbg*`,
+  // `factories-dbg<stamp>.json`) instead of using the recognised `probe-`/`spike-`
+  // prefixes, so the cleaner could not see them (dry run said found=3 while node/ held
+  // five such files). Registering the names makes them sweepable; the durable rule is to
+  // name probe records `probe-*` in the first place.
+  'reg-repro-',
+  'reg-dbg',
+  'factories-dbg',
   // `arcblog-lifecycle.test.mjs` / the audit test also leave timestamped residue.
   'audit-test-',
   // `arcblog-lifecycle.test.mjs` archives then deletes its fixture, so each run
