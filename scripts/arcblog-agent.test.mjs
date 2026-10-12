@@ -254,7 +254,12 @@ test('the two discovery tools act on the registry projection, not on nothing', (
   }
   assert.equal(toolPolicy('list_studios').resource.op, 'list');
   assert.equal(toolPolicy('get_studio').resource.op, 'get');
-  assert.deepEqual(toolPolicy('get_studio').params, ['stakeAddress']);
+  // ENG-21 (2026-10-12): the declaration used to name only `stakeAddress` while the handler
+  // read --content/--afs/--afs-op/--path/--endpoint — a contract that lied about its own
+  // inputs. The params were filled in, and this live suite still pinned the OLD list for
+  // ~40 rounds because the live tier is not a per-round gate. Keep this list equal to the
+  // handler's real inputs; the fast `arcblog-agent-tools` guard is the ratchet.
+  assert.deepEqual(toolPolicy('get_studio').params, ['stakeAddress', 'content', 'afs', 'afsOp', 'path', 'endpoint']);
   // the two discovery reads are reachable through the declared node/** scope
   const uncovered = uncoveredReadTools({
     tools: [{ path: '/instance/app/arcblog/node/**', ops: ['read', 'list'], maxDepth: 2 }],
