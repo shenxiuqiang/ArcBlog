@@ -2792,3 +2792,22 @@ non-empty children`）⇒ 字面路径 surface 必须带一个 chrome 子节点�
 **结论**：登记为**平台边界**（[`02` B15](02-平台能力与边界.md)），本项目侧**无需改代码**；若平台后续把最终 sandbox 提到首次导航之前，本条自然消失。
 **同时记录的正面结果**：一次 **24 个页面**（17 控制台 + 7 公开）的 guest 巡检：**全部 HTTP 200**，
 **唯一** `pageerror` 就是本条；hub/经济删页后没有残留的坏引用。
+
+## 60. `arc dsl lint` 的 74 条 `unreferenced_explicit_id`：**不要批量删**，`<id>.page` 是 URL 契约（2026-10-12 实测）
+
+**分类（脚本审计 + `grep` 全仓）**：74 条告警 = **69 个不同 id**，分三类 ——
+① **3 个**由 [`scripts/arcblog-runtime-ids.test.mjs`](../../../scripts/arcblog-runtime-ids.test.mjs) 守卫（`site-header` 的 nav-click、wrapper/hero 的 frame）；
+② **7 个**被脚本或文档引用（如 `pages-published-list` 被 `arcblog-pages.test.mjs` 选择器用到、`factory-nft-svg` 出现在本文档）；
+③ **59 个**在 scripts/docs 里**没有任何引用**。
+
+**删除实验（一轮，结论 = 不安全）**：在 `?page=agents` 上删掉 8 个 id ⇒ lint 74→**66**（精确 −8）、`validate` 仍 `[]`、
+`ui-budget` 仍绿，但 **`arcblog-runtime-ids` 立刻变红 2 处**：
+```
+AssertionError: a paginated afs-list lost its explicit id — `<id>.page` is the URL contract
+  .aup/pages/ops/agents.aup: afs-list layout=list … pagination=manual
+```
+⇒ **分页 `afs-list` 的 id 是 URL 的一部分**（`?page=agents&agents-grants-list.page=2`），删掉会让"第 2 页"这个深链**静默失效**；
+而这类"运行时寻址"在纯文本 grep 里**看不见**（第 ③ 类里可能还有同类）。因此按纪律**全部回滚**（源码 + 重新部署，部署目录与源码逐字节一致）。
+
+**规则（给后来者）**：`arc dsl lint --fix` 的全量修复**永远不要跑**；删任何一个显式 id 之前，
+① 过 `npm test`（`arcblog-runtime-ids` 是这类回归的唯一守卫）② 找**登录态**在同一页确认无运行时寻址（本机无 DID 会话时**不得**以"grep 没引用"为由删）。

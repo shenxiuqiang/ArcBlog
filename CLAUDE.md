@@ -89,7 +89,13 @@ node scripts/arcblog-console-nav.mjs --check # verify the console page carries t
 arc dsl lint                                 # dead locale keys + DSL formatting. NEVER run `--fix`
                                             # wholesale: it also deletes ids that only the RUNTIME
                                             # addresses (site-header for nav-click, the hero/wrapper
-                                            # frames) — guarded by scripts/arcblog-runtime-ids.test.mjs
+                                            # frames, and every paginated afs-list — its `<id>.page`
+                                            # IS a URL) — guarded by scripts/arcblog-runtime-ids.test.mjs.
+                                            # A 2026-10-12 experiment deleted 8 "unreferenced" ids on
+                                            # one page: lint 74->66, validate green, ui-budget green,
+                                            # and the guard caught 2 URL-contract ids -> reverted.
+                                            # See docs/05-开发文档/附件/arc-contracts.md §60 before
+                                            # deleting ANY explicit id
                                             # (`docs/05-开发文档/附件/arc-contracts.md` §25.4). The remaining
                                             # warnings are intentional — take the count from
                                             # `arc dsl lint` itself; never hard-code it here.
