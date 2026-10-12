@@ -73,3 +73,11 @@ node scripts/arcblog-deploy.mjs --domain blog.example.com --project arcblog
 
 - 2026-09-29 建立：由一次真实重新部署（`deploy-1790674405308-u5im2w`）抽出；
   同批清除了 40 个带真密钥的历史部署副本，并把部署流程固化成本技能。
+
+## 已知噪音（不要当成失败）
+
+- 构建尾部会打印 **两条平台路由未预渲染** 的告警（`/p/en/search/`、`/p/zh/search/`）。平台文案自称
+  "pre-render bug, not a content problem"，并称冷隔离下可能 17.5 s；**本地实测 200 / 0.02–0.10 s**
+  （见 [`05/02 B16`](../../../docs/05-开发文档/02-平台能力与边界.md)）。**不要**为它设 `ARC_PRERENDER=1`
+  —— 那会把平台侧的问题变成**硬构建失败**。
+- 部署后校验里 `/p/rss.xml` 必须 **200**（DEF-28：裸 `arc blocklet build` 会重建 `.web-cache/` 并抹掉它）。
