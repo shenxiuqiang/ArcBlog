@@ -131,3 +131,44 @@ test('each console page gates on the session and shares the shell', () => {
   const wrapper = readFileSync(join(repoRoot, '.aup', 'wrapper.aup'), 'utf8');
   assert.match(wrapper, /app-header site-header/, 'the wrapper lost the shared header');
 });
+
+/**
+ * The three-way nav contract (ENG-72): every menu item's label key must exist in BOTH locales, and
+ * no `wrapper.nav-*` key may survive a section that was renamed or removed. The label key is NOT
+ * always `wrapper.nav-<page>` — the menu maps `posts` to nav-studio, `compose` to nav-write and
+ * `general` to nav-settings — so the check reads CONSOLE_MENU rather than guessing. Measured
+ * 2026-10-12: 25 keys used (menu items, group headers, and the app chrome's own nav-console / about /
+ * author / saved), 25 present in each locale. The platform does NOT cover this: `wrapper.*` keys are
+ * hand-maintained, so `arc dsl lint` reports 75 unreferenced-id warnings and no dead-key warning.
+ */
+test('every menu label exists in both locales, and no nav label is orphaned', () => {
+  const aupFiles = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.aup')) aupFiles.push(full);
+    }
+  };
+  walk(join(repoRoot, '.aup'));
+  const used = new Set();
+  for (const file of aupFiles) {
+    for (const m of readFileSync(file, 'utf8').matchAll(/\$t\((wrapper\.[a-z0-9-]+)\)/g)) used.add(m[1]);
+  }
+  assert.ok(used.size >= 20, `wrapper labels referenced by pages/chrome: ${used.size}`);
+
+  const items = CONSOLE_MENU.flatMap((g) => [{ label: g.group, page: '(group)' }, ...g.items]);
+  assert.ok(items.length >= 15, `menu labels parsed: ${items.length}`);
+
+  const problems = [];
+  for (const lang of ['en', 'zh']) {
+    const strings = JSON.parse(readFileSync(join(repoRoot, '.aup', 'locales', `${lang}.json`), 'utf8'));
+    for (const item of items) {
+      if (!strings[`wrapper.${item.label}`]) problems.push(`${lang}: ${item.page} has no wrapper.${item.label} label`);
+    }
+    for (const key of Object.keys(strings)) {
+      if (key.startsWith('wrapper.nav-') && !used.has(key)) problems.push(`${lang}: ${key} is declared but nothing references it`);
+    }
+  }
+  assert.deepEqual(problems, [], `nav labels that drifted:\n  ${problems.join('\n  ')}`);
+});
