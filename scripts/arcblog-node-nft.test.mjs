@@ -38,7 +38,6 @@ const {
   ROLE_FACTORIES,
   buildNodeFactory,
   buildMintInputs,
-  capacityForStake,
   fromTokenToUnit,
   renderTemplate,
   validateMintInputs,
@@ -138,22 +137,10 @@ test('the studio factory carries the GLofter-compatible on-chain shape (spec §8
   assert.deepEqual(required, ['endpoint', 'region', 'name', 'stake', 'pk']);
 });
 
-test('the hub factory adds capacity, pricing tiers and rules (spec §8.3)', () => {
-  const spec = buildNodeFactory({ role: 'hub', tokenAddress: '0xABT', issuerAddress: '0xISSUER', stakeAmount: '4' });
-  assert.deepEqual(validateNodeFactory(spec), []);
-  assert.equal(spec.moniker, 'ArcBlogHubNode');
-  assert.equal(spec.arcblog.capacity, capacityForStake(4));
-  // the tiers and the rules are the hub's terms: baked into the factory, not
-  // typed by the buyer at mint time (GLofter parity)
-  assert.deepEqual(spec.output.data.value.pricing, { basic: '0.1', pro: '0.2', premium: '0.3', enterprise: '0.4' });
-  assert.equal(spec.output.data.value.capacity, '{{input.capacity}}');
-  assert.match(spec.output.data.value.rules, /Comply with local laws/);
-  // ...and a custom tier list is honoured
-  const custom = buildNodeFactory({ role: 'hub', tokenAddress: '0xABT', issuerAddress: '0xI', stakeAmount: '1', pricing: { basic: '1' } });
-  assert.deepEqual(custom.output.data.value.pricing, { basic: '1', pro: '0.2', premium: '0.3', enterprise: '0.4' });
-  assert.match(spec.description, /capacity, pricing tiers and the rules/);
-  // a studio factory has no pricing/capacity in its data
-  assert.equal(spec.output.data.value.roles, undefined);
+test('concept v2: the retired hub role is rejected by the factory builder', () => {
+  assert.deepEqual(Object.keys(ROLE_FACTORIES), ['studio']);
+  assert.throws(() => buildNodeFactory({ role: 'hub', tokenAddress: '0xABT', issuerAddress: '0xISSUER' }), /unknown node role/);
+  assert.throws(() => buildMintInputs({ role: 'hub' }), /unknown node role/);
 });
 
 test('factory validation fails closed on a broken spec', () => {
@@ -238,7 +225,7 @@ test('chain environment: an unknown preset and an incomplete real-chain triple f
 });
 
 test('chain environment: config/roles.json is the only record fallback and must agree with the preset (REQ-023)', () => {
-  const roleConfig = { studio: { network: 'main', collectionAddress: 'zCollection' }, hub: { network: 'main' } };
+  const roleConfig = { studio: { network: 'main', collectionAddress: 'zCollection' } };
 
   withChainEnv({}, () => {
     const fallback = chain.resolveChainOptions({ adapter: 'ocap' }, { roleConfig, role: 'studio' });
@@ -273,14 +260,6 @@ test('live: a real-chain action without the chain triple exits non-zero and writ
   assert.equal(out.code, 'VALIDATION');
   assert.match(out.error, /network is missing; chainHost is missing; tokenId is missing/);
   assert.equal(readJson(tripleRegistry), null, 'a refused real-chain action must not create a registry');
-});
-
-test('capacity follows the shared formula, capped at 10000 studios', () => {
-  assert.equal(capacityForStake(0), 0);
-  assert.equal(capacityForStake(1), 1000); // 1442.695 * ln(2) = 999.9…
-  assert.equal(capacityForStake(4), Math.min(Math.ceil(1442.695 * Math.log(5)), 10000));
-  assert.equal(capacityForStake(1e9), 10000);
-  assert.throws(() => capacityForStake(-1), /non-negative/);
 });
 
 test('token amounts convert to minimal units, and templates never leak (spec §66 style)', () => {
@@ -326,13 +305,6 @@ test('mint inputs come from the node profile and satisfy the factory', () => {
   // missing identity pieces fail closed instead of minting an anonymous node
   assert.match(validateMintInputs({ ...inputs, pk: '' }, studio).join('; '), /pk/);
   assert.match(validateMintInputs({ ...inputs, endpoint: '  ' }, studio).join('; '), /endpoint/);
-
-  const hub = buildNodeFactory({ role: 'hub', tokenAddress: '0xABT', issuerAddress: '0xISSUER', stakeAmount: '4' });
-  const hubInputs = buildMintInputs({ role: 'hub', profile: { endpoint: 'https://hub.example', region: 'CN-BJ' }, pk: 'zPk', stakeAmount: '4' });
-  assert.equal(hubInputs.capacity, String(capacityForStake(4)));
-  // pricing/rules are factory terms, so they are not mint inputs
-  assert.equal('pricing.pro' in hubInputs, false);
-  assert.deepEqual(validateMintInputs(hubInputs, hub), []);
 });
 
 test('live: factory creation is recorded and duplicates are refused (mock chain)', () => {
@@ -349,12 +321,13 @@ test('live: factory creation is recorded and duplicates are refused (mock chain)
   assert.equal(again.status, 1);
   assert.equal(json(again.stderr).code, 'DUPLICATE_FACTORY');
 
-  const hub = factory(['create', '--role', 'hub', '--adapter', 'mock', '--stake', '4']);
-  assert.equal(hub.status, 0, hub.stderr);
+  // concept v2: the retired hub role fails closed, never creates a factory
+  const hub = factory(['create', '--role', 'hub', '--adapter', 'mock']);
+  assert.equal(hub.status, 1);
+  assert.equal(json(hub.stderr).code, 'VALIDATION');
   const shown = json(factory(['show']).stdout);
-  assert.equal(shown.count, 2);
-  assert.equal(shown.factories.hub.moniker, 'ArcBlogHubNode');
-  assert.equal(shown.factories.hub.capacity, capacityForStake(4));
+  assert.equal(shown.count, 1);
+  assert.equal(shown.factories.studio.moniker, 'ArcBlogStudioNode');
 
   // the real chain needs its libraries AND the chain triple: never a silent success
   const ocap = factory(['create', '--role', 'studio', '--adapter', 'ocap', '--network', 'beta', '--token-id', '0xABT', '--chain-host', 'http://localhost:9999']);
@@ -431,29 +404,20 @@ test('live: acquire → stake → revoke → waiting period → claim (spec §8.
   }
 });
 
-test('live: hub acquire computes capacity from the stake (spec §8.3)', () => {
+test('live: node-nft acquire rejects the retired hub role (fail closed)', () => {
   assert.equal(factory(['reset', '--adapter', 'mock']).status, 0);
-  assert.equal(factory(['create', '--role', 'hub', '--adapter', 'mock', '--stake', '4']).status, 0);
-  const acquired = cli([
-    'acquire', '--role', 'hub', '--adapter', 'mock', '--owner', '0xhubowner', '--pk', 'zHubPk',
-    '--endpoint', 'https://hub.example.com', '--region', 'CN-BJ', '--stake', '4',
-  ]);
-  assert.equal(acquired.status, 0, acquired.stderr);
-  assert.equal(json(acquired.stdout).capacity, capacityForStake(4));
-  const status = json(cli(['status', '--role', 'hub', '--adapter', 'mock']).stdout);
-  assert.equal(status.onChain.data.capacity, String(capacityForStake(4)));
-  assert.equal(status.onChain.data.pricing.basic, '0.1');
-  assert.equal(status.onChain.data.pricing.enterprise, '0.4');
-  assert.match(status.onChain.data.rules, /Comply with local laws/);
-  factory(['reset', '--adapter', 'mock']);
+  const acquired = cli(['acquire', '--role', 'hub', '--adapter', 'mock', '--owner', '0xsomeowner', '--pk', 'zPk']);
+  assert.equal(acquired.status, 1);
+  assert.equal(json(acquired.stderr).code, 'VALIDATION');
+  assert.match(json(acquired.stderr).error, /--role must be one of: studio/);
 });
 
 // The chain renders `output.display.content` / `data.value` with JSON.parse, so a
 // raw control character anywhere in the payload kills the mint on a real chain
 // ("Bad control character in string literal"). The multi-line SVG card did exactly
-// that, so the whole payload is asserted JSON-safe for both roles.
+// that, so the whole payload is asserted JSON-safe.
 test('factory payloads are JSON-safe (no raw control characters)', () => {
-  for (const role of ['studio', 'hub']) {
+  for (const role of ['studio']) {
     const payload = buildNodeFactory({ role, tokenAddress: 'z35n6UoHSi9MED4uaQy6ozFgKPaZj2UKrurBG', issuerAddress: 'z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a' });
     const bad = [];
     const walk = (node, path) => {
@@ -499,7 +463,7 @@ test('a private key is refused as --pk', () => {
 // --- BUG-043: per-node adapter attribution in the public projection ----------
 //
 // One file-header `adapter` cannot describe a projection that holds facts from
-// different adapters (the hub's mock residue read as chain truth under an
+// different adapters (stale mock residue read as chain truth under an
 // `adapter: "ocap"` header). Each node now carries its own adapter, and a record
 // written before that existed stays unattributed — never chain truth.
 
@@ -536,20 +500,19 @@ test('BUG-043 / D37b: nodeAdapterOf publishes a THREE-state attribution, never a
 });
 
 test('BUG-043: `factory project` attributes each node from its own record, not from the header', () => {
-  // A projection exactly like the live one: an `ocap` header, a real studio node
-  // and the hub mock residue (`0xhubowner` / a non-hex tx hash).
+  // A projection exactly like the live one: an `ocap` header over a node whose
+  // own record says `mock` (a simulation must never read as chain truth).
   writeJson(summaryPath, {
     adapter: 'ocap',
     network: 'beta',
-    factories: { studio: { address: 'zStudioAddr' }, hub: { address: 'zHubAddr' } },
+    factories: { studio: { address: 'zStudioAddr' } },
     nodes: {
       studio: { state: 'acquired', owner: 'z1StudioOwner', assetId: 'zAsset', acquireTx: 'ABDBD742C055', svg: 'data:image/svg+xml;base64,AAA' },
-      hub: { state: 'acquired', owner: '0xhubowner', assetId: '0xa5ed65ce', acquireTx: '0xte32482c' },
     },
     updatedAt: '2026-09-27T08:34:45.194Z',
   }, '');
   // the isolated node-NFT record says studio=mock (a later real-chain run must not
-  // relabel it) and says nothing about hub (the legacy residue)
+  // relabel it)
   writeJson(nftStatePath, {
     adapter: 'ocap',
     roles: { studio: { state: 'acquired', assetId: 'zAsset', adapter: 'mock' } },
@@ -557,7 +520,7 @@ test('BUG-043: `factory project` attributes each node from its own record, not f
   writeJson(registryPath, {
     adapter: 'ocap',
     network: 'beta',
-    factories: { studio: { address: 'zStudioAddr', adapter: 'mock' }, hub: { address: 'zHubAddr' } },
+    factories: { studio: { address: 'zStudioAddr', adapter: 'mock' } },
   }, '');
 
   const projected = factory(['project']);
@@ -568,13 +531,6 @@ test('BUG-043: `factory project` attributes each node from its own record, not f
   assert.equal(summary.nodes.studio.adapter, 'mock', "the node's own adapter wins over the header");
   assert.equal(summary.nodes.studio.simulated, true);
   assert.equal(summary.nodes.studio.chainVerified, false);
-  assert.equal(summary.nodes.hub.adapter, 'unknown', 'a legacy node is published as explicitly unknown');
-  assert.equal(summary.nodes.hub.adapterSource, 'unrecorded');
-  assert.equal(summary.nodes.hub.simulated, null, 'D37b: unknown must not claim "not simulated"');
-  assert.equal(summary.nodes.hub.simulationUnknown, true);
-  assert.equal(summary.nodes.hub.chainVerified, false, 'the hub mock residue is not chain truth');
-  assert.equal(summary.nodes.hub.owner, '0xhubowner', 'evidence fields are preserved, never cleaned up');
-  assert.equal(summary.nodes.hub.acquireTx, '0xte32482c');
   assert.equal(summary.nodes.studio.svg, 'data:image/svg+xml;base64,AAA', 'the worker-rendered svg survives a re-annotation');
   assert.equal(summary.nodes.studio.acquireTx, 'ABDBD742C055', 'existing fields are not dropped');
   assert.equal(typeof summary.nodes.studio.attribution, 'string');
@@ -583,13 +539,13 @@ test('BUG-043: `factory project` attributes each node from its own record, not f
 
 // --- D37: read-only attribution backfill for records that predate it ------------
 //
-// The two live node records were written before per-node attribution existed.
+// The live studio node record was written before per-node attribution existed.
 // Re-running the chain flows is forbidden (it would sign transactions), so the
-// attribution is derived from the evidence the records already carry — which is
+// attribution is derived from the evidence the record already carries — which is
 // what REQ-021 verified with read-only getTx. The backfill must never guess and
 // never touch the chain.
 
-test('D37: backfillAttribution derives studio=ocap / hub=mock from recorded evidence, and never guesses', async () => {
+test('D37: backfillAttribution derives studio=ocap from recorded evidence, and never guesses', async () => {
   const { backfillAttribution } = await import('./lib/node-attribution.mjs');
   const realStudio = {
     assetId: 'zjdkuSoywKFkqiGa8c2NJsBhtLnd2tMRjXas',
@@ -599,16 +555,12 @@ test('D37: backfillAttribution derives studio=ocap / hub=mock from recorded evid
     revokeTx: 'E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66',
     claimTx: '631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0',
   };
-  const mockHub = { owner: '0xhubowner', assetId: '0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4', acquireTx: '0xte32482c95fb67c26b0834619c44ac321b5428e' };
 
-  const result = backfillAttribution({ roles: { studio: realStudio, hub: mockHub } }, { now: '2026-09-28T00:00:00.000Z' });
+  const result = backfillAttribution({ roles: { studio: realStudio } }, { now: '2026-09-28T00:00:00.000Z' });
   assert.equal(result.chainQueries, 0, 'the backfill must never call a chain');
-  assert.deepEqual(result.changed.map((c) => [c.role, c.adapter]), [['studio', 'ocap'], ['hub', 'mock']]);
+  assert.deepEqual(result.changed.map((c) => [c.role, c.adapter]), [['studio', 'ocap']]);
   assert.equal(result.state.roles.studio.adapter, 'ocap');
-  assert.equal(result.state.roles.hub.adapter, 'mock');
   assert.equal(result.state.roles.studio.attributionSource, 'backfill:req-021-gettx');
-  // evidence fields are not rewritten
-  assert.equal(result.state.roles.hub.owner, '0xhubowner');
   // pure: the input state is untouched
   assert.equal(realStudio.adapter, undefined);
 
@@ -631,13 +583,12 @@ test('D37: `node-nft backfill` writes the record without a chain call, and `fact
     revokeTx: 'E99717953CD5BD9EFE2A2B75321A26AB8796C241EEEEEF32CF919B9C8C79EA66',
     claimTx: '631F210A219B8330C2D3A6BB273CDB53A5AF137D2FE2DA52832D1B79206C7AD0',
   };
-  const mockHub = { owner: '0xhubowner', assetId: '0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4', acquireTx: '0xte32482c95fb67c26b0834619c44ac321b5428e' };
-  writeJson(nftStatePath, { adapter: 'ocap', network: 'beta', roles: { studio: realStudio, hub: mockHub } }, '');
+  writeJson(nftStatePath, { adapter: 'ocap', network: 'beta', roles: { studio: realStudio } }, '');
 
   const dry = json(cli(['backfill', '--dry-run']).stdout);
   assert.equal(dry.chainQueries, 0);
   assert.equal(dry.written, false);
-  assert.equal(dry.changed.length, 2);
+  assert.equal(dry.changed.length, 1);
   assert.equal(readJson(nftStatePath)?.value.roles.studio.adapter, undefined, 'a dry run must write nothing');
 
   const ran = json(cli(['backfill']).stdout);
@@ -646,17 +597,15 @@ test('D37: `node-nft backfill` writes the record without a chain call, and `fact
   assert.equal(ran.next, 'node scripts/arcblog-factory.mjs project');
   const stored = readJson(nftStatePath)?.value;
   assert.equal(stored.roles.studio.adapter, 'ocap');
-  assert.equal(stored.roles.hub.adapter, 'mock');
   assert.equal(stored.roles.studio.attributionSource, 'backfill:req-021-gettx');
 
   // the public projection keeps its worker-rendered fields and gains the facts
   writeJson(summaryPath, {
     adapter: 'ocap',
     adapterScope: 'registry',
-    factories: { studio: { address: 'zStudioAddr' }, hub: { address: 'zHubAddr' } },
+    factories: { studio: { address: 'zStudioAddr' } },
     nodes: {
       studio: { state: 'acquired', ...realStudio, svg: 'data:image/svg+xml;base64,AAA' },
-      hub: { state: 'acquired', ...mockHub },
     },
     updatedAt: '2026-09-27T08:34:45.194Z',
   }, '');
@@ -669,11 +618,4 @@ test('D37: `node-nft backfill` writes the record without a chain call, and `fact
   assert.equal(summary.nodes.studio.simulationUnknown, false);
   assert.equal(summary.nodes.studio.adapterSource, 'backfill:req-021-gettx');
   assert.equal(summary.nodes.studio.svg, 'data:image/svg+xml;base64,AAA', 'the projection stays additive');
-  assert.equal(summary.nodes.hub.adapter, 'mock');
-  assert.equal(summary.nodes.hub.simulated, true);
-  assert.equal(summary.nodes.hub.simulationUnknown, false);
-  assert.match(summary.nodes.hub.attribution, /SIMULATION, not chain truth/);
-  assert.match(summary.nodes.hub.simulatedLabel, /SIMULATED/);
-  assert.equal(summary.nodes.hub.owner, '0xhubowner', 'evidence fields survive the re-annotation');
-  assert.equal(summary.nodes.hub.acquireTx, '0xte32482c95fb67c26b0834619c44ac321b5428e');
 });

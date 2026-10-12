@@ -1,7 +1,6 @@
 kind: RoleConfig
 fields:
-  studio: json # { collectionAddress, network, assetType, lifecycle } — externalized (spec §9)
-  hub: json # { collectionAddress, network, assetType, lifecycle } — externalized (spec §9)
+  studio: json # { collectionAddress, network, assetType, lifecycle } — externalized (spec §9; concept v2: studio is the only chain role)
   # lifecycle: { state, assetId, stakeId, revokedAt, claimableAt } — the §8.5
   # five-state lifecycle (none|acquired|staked|revoking|claimable),
   # operator-declared until chain verification is wired; never grants a

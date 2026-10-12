@@ -15,7 +15,7 @@
 // (the single source of truth), compares `config/roles.json` with the public
 // `node/factories.json` projection, and lands a timestamped snapshot:
 //
-//   node/role-status/<role>.json   one record per role (basic/studio/hub)
+//   node/role-status/<role>.json   one record per role (basic/studio)
 //   node/role-verification.json    the snapshot header + capability sets
 //
 // The console button only queues an intent under `config/role-verify-intents/`

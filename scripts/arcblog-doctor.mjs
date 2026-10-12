@@ -169,9 +169,6 @@ function recordSnapshot({ checks, verdict, instance }) {
  */
 function testCounts(instance) {
   const dirs = {
-    ledger: `${INSTANCE_ROOT}/economy/ledger`,
-    orders: `${INSTANCE_ROOT}/economy/orders`,
-    products: `${INSTANCE_ROOT}/economy/products`,
     drafts: `${INSTANCE_ROOT}/drafts`,
     media: `${INSTANCE_ROOT}/media`,
   };

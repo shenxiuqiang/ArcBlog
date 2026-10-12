@@ -125,12 +125,10 @@ const READ_RUNNERS = {
     if (!record) fail('NOT_FOUND', 'node profile not found');
     return record.value;
   },
-  // Aggregate counts over public surfaces only (spec §60). Economy analytics
-  // stay closed: orders name buyers (privacy, spec §62).
+  // Aggregate counts over public surfaces only (spec §60/§62).
   get_analytics(opts, instance) {
     const posts = recordsIn(`${INSTANCE_ROOT}/posts`, instance);
     const pages = recordsIn(`${INSTANCE_ROOT}/pages`, instance);
-    const products = recordsIn(`${INSTANCE_ROOT}/economy/products`, instance);
     const byCategory = {};
     const tagCounts = new Map();
     for (const post of posts) {
@@ -140,7 +138,6 @@ const READ_RUNNERS = {
     return {
       publishedPosts: posts.length,
       onlinePages: pages.length,
-      productsListed: products.length,
       byCategory,
       topTags: [...tagCounts.entries()]
         .map(([tag, count]) => ({ tag, count }))
@@ -327,14 +324,14 @@ Usage:
 
 Read tools run straight against AFS. Write tools require an unexpired grant at
 their capability (spec §61) and delegate to the operational CLIs. Tools marked
-closed never run here: buyer data stays private and settle_payment /
-change_wallet / change_role are default-closed (spec §130).
+closed never run here: change_role is default-closed (spec §130).
+(settle_payment / change_wallet were retired with the economy surface.)
 
 Agent declarations live in agents/<name>/{agent.dsl,agent.json,system.md} and are
 the platform's own contract (path + ops + maxDepth). The policy enforced here:
 
   read-only ops ....... ${READ_OPS.join(', ')}
-  never exposed ....... drafts / orders / settlements / ledger / attributions / access grants
+  never exposed ....... drafts / page-drafts / /blocklets
   default-closed ...... ${defaultClosedTools().join(', ')} (spec §130)
   capabilities ........ ${AGENT_CAPABILITIES.join(' | ')} (spec §61)
 

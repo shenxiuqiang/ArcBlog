@@ -1,7 +1,7 @@
 kind: AgentGrant
 fields:
   agentDid: string
-  capabilities: json # spec §61: agent.read | agent.write | agent.publish | agent.economy
+  capabilities: json # spec §61: agent.read | agent.write | agent.publish
   ttlMinutes: number
   grantedAt: datetime
   expiresAt: datetime # authorization is time-boxed, never open-ended

@@ -4,11 +4,11 @@
 //   node scripts/arcblog-clean.mjs            # dry run: report what would go
 //   node scripts/arcblog-clean.mjs --confirm  # actually delete it
 //
-// The live test suite is non-hermetic: it writes to the default instance, and the
-// economy ledger is append-only (spec §92), so a dev machine accumulates records
-// forever (the doctor reports the volume). This command is the maintenance
-// counterpart — it only ever touches records whose id carries a known test
-// prefix (see lib/doctor.mjs TEST_RECORD_PREFIXES), never published content.
+// The live test suite is non-hermetic: it writes to the default instance, so a
+// dev machine accumulates records forever (the doctor reports the volume). This
+// command is the maintenance counterpart — it only ever touches records whose
+// id carries a known test prefix (see lib/doctor.mjs TEST_RECORD_PREFIXES),
+// never published content.
 //
 // Deleting is destructive, so it is opt-in: without --confirm nothing is removed.
 
@@ -33,13 +33,6 @@ import { TEST_RECORD_PREFIXES, isTestRecordId } from './lib/doctor.mjs';
  * deliberately absent: published content is never test residue.
  */
 export const CLEAN_DIRS = [
-  'economy/ledger',
-  'economy/orders',
-  'economy/settlements',
-  'economy/products',
-  'economy/access-grants',
-  'economy/attributions',
-  'economy/refunds',
   'config/agent-grants',
   // §67: public keys registered by `publish --sign-key` — test DIDs leave residue here.
   'config/signing-keys',
@@ -58,7 +51,6 @@ export const CLEAN_DIRS = [
   'node',
   'drafts',
   'page-drafts',
-  'paid',
   'media',
 ];
 

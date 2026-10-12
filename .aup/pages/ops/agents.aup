@@ -1,7 +1,7 @@
 page agents {
   i18n {
     admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-    agent-closed { en "Default-closed (spec §130): settle_payment, change_wallet, change_role never run from the agent surface." zh "默认关闭（spec §130）：settle_payment、change_wallet、change_role 永不从 Agent 面执行。" }
+    agent-closed { en "Default-closed (spec §130): change_role never runs from the agent surface (settle_payment / change_wallet were retired with the economy surface)." zh "默认关闭（spec §130）：change_role 永不从 Agent 面执行（settle_payment / change_wallet 已随经济面下线）。" }
     agent-expires { en "Expires" zh "到期" }
     agent-grants-empty { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "如何授权：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
     cmd-authorize { en "Grant (TTL required)" zh "授权（必须带 TTL）" }
@@ -14,7 +14,7 @@ page agents {
     gate-desc { en "Sign in with DID Wallet to view agent grants and policy." zh "使用 DID Wallet 登录后查看 Agent 授权与策略。" }
     gate-title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
     grant-desc { en "Grants are addressed by sha256(agentDid).slice(0,16), and the AUP DSL has no hash primitive, so this page cannot sign or revoke one. Use the operator CLI: it requires an explicit expiry and keeps high-risk capabilities behind a second confirmation." zh "授权记录按 sha256(agentDid).slice(0,16) 寻址，而 AUP DSL 没有哈希原语，因此本页无法签发或撤销。请用运营者 CLI：它强制填写到期时间，高风险能力需要二次确认。" }
-    grant-forbidden { en "agent.admin is not grantable and cannot be granted: settle_payment, change_wallet and change_role never run from the agent surface (spec §130)." zh "agent.admin 不可授予：settle_payment、change_wallet、change_role 永不从 Agent 面执行（spec §130）。" }
+    grant-forbidden { en "agent.admin is not grantable: change_role never runs from the agent surface (spec §130)." zh "agent.admin 不可授予：change_role 永不从 Agent 面执行（spec §130）。" }
     grant-title { en "Authorize an agent (CLI)" zh "授权 Agent（CLI）" }
     grants-desc { en "Records under config/agent-grants/ (admin-only). A write tool only runs while its grant is unexpired." zh "config/agent-grants/ 下的记录（仅管理员可读）。写工具仅在授权未过期时可执行。" }
     grants-title { en "Current grants" zh "当前授权" }
@@ -33,7 +33,7 @@ page agents {
     studio-registry { en "no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)" zh "本平台版本没有跨节点 Studio 注册表（spec §71 属 POST-MVP 传输）" }
     title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
     tools-closed { en "Closed tools (3) — never exposed (spec §130)" zh "关闭工具（3）——永不暴露（spec §130）" }
-    tools-closed-note { en "Closed tools never run from the agent surface: settle_payment, change_wallet and change_role are agent.admin and default-closed. The four economy tools (create_product, get_orders, get_settlements, get_sales) are gone from the catalogue entirely, not merely closed." zh "关闭工具永不从 Agent 面执行：settle_payment、change_wallet、change_role 属 agent.admin 且默认关闭。四个经济工具（create_product、get_orders、get_settlements、get_sales）已从目录整体移除，而非仅关闭。" }
+    tools-closed-note { en "Closed tools never run from the agent surface: change_role is agent.admin and default-closed. The economy tools left the catalogue with the economy surface — removed entirely, not merely closed." zh "关闭工具永不从 Agent 面执行：change_role 属 agent.admin 且默认关闭。经济工具已随经济面从目录整体移除，而非仅关闭。" }
     tools-desc { en "Every tool the agent surface declares, with the capability it needs and whether it can run today. Read tools are always on; write tools need a time-boxed grant; closed tools never run." zh "Agent 面声明的每个工具，含所需能力与当前可用状态。只读工具始终可用；写工具需要限时授权；关闭工具永不执行。" }
     tools-legend { en "Status: available = runs today; unavailable = declared but the platform cannot serve it (reason inline)." zh "状态：可用 = 当前可执行；不可用 = 已声明但平台无法提供（原因见行内）。" }
     tools-read { en "Read tools (7)" zh "只读工具（7）" }
@@ -158,8 +158,8 @@ page agents {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :policy-title level=3 style={fontSize: "var(--type-body)"}
                 p :policy-desc intent=muted
-                key-value-list agent-policy dense=true fields=[{label: "$t(agents.policy-read)", value: "read, list, stat, search", monospace: true}, {label: "$t(agents.policy-blocked)", value: "write, delete, exec, mount, unmount, create, update", monospace: true}, {label: "$t(agents.policy-never)", value: "/instance/app/arcblog/drafts, /instance/app/arcblog/page-drafts, /instance/app/arcblog/paid, /instance/app/arcblog/economy/orders, /instance/app/arcblog/economy/settlements, /instance/app/arcblog/economy/ledger, /instance/app/arcblog/economy/attributions, /instance/app/arcblog/economy/access-grants, /instance/app/arcblog/economy/refunds, /instance/app/arcblog/config/trusted-hubs, /blocklets", monospace: true}, {label: "$t(agents.policy-default)", value: "settle_payment, change_wallet, change_role", monospace: true}]
-                key-value-list agent-declaration dense=true fields=[{label: "$t(agents.declared-agents)", value: "arcblog-agent — agents/arcblog-agent (type ai, model gpt-5.5, instructions system.md)"}, {label: "$t(agents.declared-scopes)", value: "/instance/app/arcblog/posts/** · categories/** · node/** · economy/policies/** · economy/products/** — ops read, list, stat; maxDepth 2", monospace: true}, {label: "$t(agents.declared-budget)", value: "maxRounds 6 · totalTokens 64000", monospace: true}, {label: "$t(agents.declared-checks)", value: "node scripts/arcblog-agent.mjs check — ok true, failed [], 8 checks", monospace: true}]
+                key-value-list agent-policy dense=true fields=[{label: "$t(agents.policy-read)", value: "read, list, stat, search", monospace: true}, {label: "$t(agents.policy-blocked)", value: "write, delete, exec, mount, unmount, create, update", monospace: true}, {label: "$t(agents.policy-never)", value: "/instance/app/arcblog/drafts, /instance/app/arcblog/page-drafts, /blocklets", monospace: true}, {label: "$t(agents.policy-default)", value: change_role, monospace: true}]
+                key-value-list agent-declaration dense=true fields=[{label: "$t(agents.declared-agents)", value: "arcblog-agent — agents/arcblog-agent (type ai, model gpt-5.5, instructions system.md)"}, {label: "$t(agents.declared-scopes)", value: "/instance/app/arcblog/posts/** · categories/** · node/** — ops read, list, stat; maxDepth 2", monospace: true}, {label: "$t(agents.declared-budget)", value: "maxRounds 6 · totalTokens 64000", monospace: true}, {label: "$t(agents.declared-checks)", value: "node scripts/arcblog-agent.mjs check — ok true, failed [], 8 checks", monospace: true}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :tools-title level=3 style={fontSize: "var(--type-body)"}
@@ -169,7 +169,7 @@ page agents {
                 h3 :tools-write level=3 style={fontSize: "var(--type-body)"}
                 key-value-list agent-tools-write dense=true fields=[{label: create_draft, value: "$t(agents.status-available) · agent.write"}, {label: update_draft, value: "$t(agents.status-available) · agent.write"}, {label: publish_post, value: "$t(agents.status-available) · agent.publish"}]
                 h3 :tools-closed level=3 style={fontSize: "var(--type-body)"}
-                key-value-list agent-tools-closed dense=true fields=[{label: settle_payment, value: "$t(agents.status-closed) · agent.admin"}, {label: change_wallet, value: "$t(agents.status-closed) · agent.admin"}, {label: change_role, value: "$t(agents.status-closed) · agent.admin"}]
+                key-value-list agent-tools-closed dense=true fields=[{label: change_role, value: "$t(agents.status-closed) · agent.admin"}]
                 p :tools-legend scale=caption intent=muted
                 p :tools-closed-note scale=caption intent=muted
                 p :tools-source scale=caption intent=muted

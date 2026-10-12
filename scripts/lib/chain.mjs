@@ -69,8 +69,8 @@ export const NODE_ADAPTER_STATES = Object.freeze(['mock', 'ocap', 'unknown']);
  * Per-node adapter attribution for the public projection (BUG-043, BUG-046/D37b).
  *
  * `node/factories.json` used to carry ONE header `adapter` for a file that can
- * hold facts from different adapters: `nodes.studio` was written by a real
- * `ocap` run while `nodes.hub` was stale `mock` residue, and every consumer that
+ * hold facts from different adapters: one node entry was written by a real
+ * `ocap` run while another was stale `mock` residue, and every consumer that
  * decided "is this chain truth?" from the header read the simulated values as
  * on-chain facts (docs/05-开发文档/附件/arc-contracts.md §32(9)).
  *
@@ -460,8 +460,6 @@ export function createMockChain({ instance, now } = {}) {
         tokenAddress: factory.token.address || state.token.address || 'mock-token',
         issuerAddress: factory.issuer || owner,
         stakeAmount: factory.arcblog?.stakeAmount ?? DEFAULT_STAKE_AMOUNT,
-        pricing: factory.arcblog?.pricing,
-        rules: factory.arcblog?.rules,
       });
       const issues = validateMintInputs(inputs, factorySpec);
       if (issues.length) fail('VALIDATION', issues.join('; '));
@@ -479,8 +477,6 @@ export function createMockChain({ instance, now } = {}) {
         tokenAddress: token.address || state.token.address || 'mock-token',
         issuerAddress: factory.issuer || itx.owner,
         stakeAmount: factory.arcblog?.stakeAmount ?? DEFAULT_STAKE_AMOUNT,
-        pricing: factory.arcblog?.pricing,
-        rules: factory.arcblog?.rules,
       });
       const scope = { ctx: { owner: itx.owner, factory: factory.address, issuer: { id: factory.issuer }, id: state.seq + 1 } };
       const data = renderTemplate(spec.output.data.value, { ...scope, input: itx.inputs });
@@ -826,13 +822,13 @@ export async function createOcapChain(config, instance) {
     },
 
     async stake({ assetId, owner, message, stakeAddress, revokeWaitingPeriod, slashers = [] }) {
-      // The receiver of an asset stake is the FACTORY (GLofter: `stake({assets, to:
-      // hubNFTFactory})`); the chain derives a separate stake address, so a
+      // The receiver of an asset stake is the FACTORY (GLofter: `stake({assets,
+      // to: nodeNFTFactory})`); the chain derives a separate stake address, so a
       // recorded stake address must never be reused as `to` (that yields
       // `Invalid itx: "address" Expected DID type info to match`).
-      // Stake targets the studio factory only — no hub fallback (DEF-08): the
-      // "one address ⇒ all nodes" premise breaks if a missing studio factory
-      // silently resolves to the hub one, so this fails closed instead.
+      // Stake targets the studio factory only (DEF-08): the "one address ⇒ all
+      // nodes" premise breaks if a missing studio factory silently resolves to
+      // another one, so this fails closed instead.
       const factory = await this.factoryFor('studio');
       ensure(factory?.address, 'no studio factory recorded to stake into — run arcblog-factory.mjs create --role studio first');
       const to = factory.address;
@@ -883,8 +879,8 @@ export async function createOcapChain(config, instance) {
      */
     stakeAddressFor() {
       const registry = readJson(FACTORY_REGISTRY_PATH, instance)?.value ?? null;
-      // Studio factory only — the hub fallback was removed with DEF-08 (a missing
-      // studio factory must fail closed, never silently resolve to the hub one).
+      // Studio factory only (DEF-08): a missing studio factory must fail
+      // closed, never silently resolve to another factory.
       const factory = registry?.factories?.studio?.address || this.__factoryAddress || '';
       if (!factory || typeof toStakeAddress !== 'function') return '';
       try {

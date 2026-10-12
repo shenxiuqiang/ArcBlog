@@ -16,7 +16,7 @@
 // fail-closed rule (§114/§115) and the reason `status` never reports an active
 // chain role while `chainVerification` is false.
 
-import { fail, list, nowIso, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
+import { fail, nowIso, optString, parseArgs, readJson, resolveInstance } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
 import {
@@ -62,10 +62,6 @@ function commandInit(opts, instance) {
   const input = {
     studio: {
       collectionAddress: fromEnvOrFlag(opts, 'studio-collection', 'ARCBLOG_STUDIO_COLLECTION'),
-      network,
-    },
-    hub: {
-      collectionAddress: fromEnvOrFlag(opts, 'hub-collection', 'ARCBLOG_HUB_COLLECTION'),
       network,
     },
     chainVerification: opts['chain-verification'] === true ? true : existing?.value?.chainVerification ?? false,
@@ -122,45 +118,16 @@ function commandCheck(opts, instance) {
 // Spec §8.5: the five-state lifecycle. Operator-declared until chain
 // verification is wired — setting state=staked does NOT activate the role
 // (fail closed, §114/§115).
-const ORDERS_DIR = `${INSTANCE_ROOT}/economy/orders`;
-const POLICIES_DIR = `${INSTANCE_ROOT}/economy/policies`;
-const IN_FLIGHT_ORDER_STATUSES = ['pending', 'paid'];
 
 /**
  * Spec §8.6 — the data promise when a role leaves. Run with `--link-exit`:
- *
- *   in-flight orders are *reported*, never rewritten: they settle under the
- *   split policy in force at settlement time (§29 keeps policy versions), so
- *   the operator gets the list + the policy version that will govern them,
- *   and a warning when a recorded version no longer resolves.
- *
- * (ENG-12/DEF-11: the Studio↔Hub relation Tombstone step is gone with the hub
- * surface itself — there are no hub registrations left to terminate.)
+ * content is never deleted by an exit — nothing here touches posts/.
  */
-function linkRoleExit(opts, instance) {
+function linkRoleExit(opts, _instance) {
   const reason = optString(opts.reason) || `role exit: ${optString(opts.role) || 'unknown role'}`;
-
-  const policy = readJson(`${POLICIES_DIR}/active.json`, instance)?.value ?? null;
-  const orders = list(ORDERS_DIR, instance)
-    .map((entry) => readJson(`${ORDERS_DIR}/${String(entry?.id ?? '')}`, instance)?.value ?? null)
-    .filter(Boolean)
-    .filter((order) => IN_FLIGHT_ORDER_STATUSES.includes(String(order.status)))
-    .map((order) => ({
-      id: order.id,
-      status: order.status,
-      amount: order.amount,
-      asset: order.asset,
-      // blank means "the policy in force when the settlement runs" (§29/§43)
-      settlementVersion: order.settlementVersion || null,
-      settlesUnder: order.settlementVersion || `policy v${policy?.version ?? '?'} at settlement time`,
-    }));
-
   return {
     role: optString(opts.role),
     reason,
-    activePolicyVersion: policy?.version ?? null,
-    ordersInFlight: orders,
-    // §8.6: content is never deleted by an exit — nothing here touches posts/.
     contentKept: true,
   };
 }
@@ -356,7 +323,7 @@ function help() {
   console.log(`ArcBlog role engine (spec §9/§10/§11)
 
 Usage:
-  node scripts/arcblog-roles.mjs init [--studio-collection <addr>] [--hub-collection <addr>]
+  node scripts/arcblog-roles.mjs init [--studio-collection <addr>]
                                       [--network <net>] [--chain-verification] [--update]
   node scripts/arcblog-roles.mjs show
   node scripts/arcblog-roles.mjs status
@@ -364,7 +331,7 @@ Usage:
   node scripts/arcblog-roles.mjs check
   node scripts/arcblog-roles.mjs state set --role studio --state <${STAKE_STATES.join('|')}>
   node scripts/arcblog-roles.mjs state set --role studio --state revoking --link-exit [--reason "…"]
-      §8.6: report in-flight orders (content is kept)
+      §8.6: declare the exit linkage (content is kept)
                                           [--asset-id <id>] [--stake-id <id>] [--claimable-at <iso>]
   node scripts/arcblog-roles.mjs verify request [--intent-id <id>] [--by <did>]
       Queue ONE verification intent (the console button writes the same record)
@@ -396,7 +363,7 @@ activates a capability on its own. revoking requires --claimable-at (the end of
 the waiting period, §8.4); it derives to claimable at read time once reached.
 
 Config is external (spec §9): flags win, then environment —
-  ARCBLOG_STUDIO_COLLECTION / ARCBLOG_HUB_COLLECTION / ARCBLOG_NETWORK
+  ARCBLOG_STUDIO_COLLECTION / ARCBLOG_NETWORK
 Roles: ${CHAIN_ROLES.join(' | ')} (basic is implicit for every instance)
 
 Capabilities are withheld until a role is verified (fail closed, spec §114/§115);

@@ -31,24 +31,15 @@ const PUBLIC_PATHS = [
   'node',
   'categories',
   'pages',
-  'economy/policies',
-  'economy/products',
 ];
 
-/** Prefixes that must stay admin-only (they name buyers, readers or secrets). */
+/** Prefixes that must stay admin-only (they carry unpublished content or secrets). */
 const ADMIN_PATHS = [
   'drafts',
   'page-drafts',
-  'paid',
   'media',
   'config',
   'config/agent-grants',
-  'economy/orders',
-  'economy/settlements',
-  'economy/ledger',
-  'economy/access-grants',
-  'economy/attributions',
-  'economy/refunds',
   // §15.4: the console's tag projection + intent queue (derived from posts,
   // which themselves stay behind drafts/ and posts/ rules).
   'tags',
@@ -227,17 +218,10 @@ test('the replicated table itself keeps the private prefixes admin-only', () => 
   const privateDirs = [
     'drafts',
     'media',
-    'paid',
     'config',
     'config/agent-grants',
     'config/signing-keys',
     'page-drafts',
-    'economy/orders',
-    'economy/settlements',
-    'economy/ledger',
-    'economy/access-grants',
-    'economy/refunds',
-    'economy/attributions',
     // §15.4: the console's tag surface (projection + intent queue).
     'tags',
   ];
@@ -253,7 +237,7 @@ test('the replicated table itself keeps the private prefixes admin-only', () => 
 
   // The public side is a coverage assertion too: these directories must stay
   // readable to a guest through a guest collection (a page or agent reads them).
-  for (const dir of ['posts', 'heroes', 'node', 'categories', 'pages', 'economy/policies', 'economy/products']) {
+  for (const dir of ['posts', 'heroes', 'node', 'categories', 'pages']) {
     const needle = `instance/app/arcblog/${dir}`;
     const owners = covers(needle);
     assert.ok(owners.length > 0, `${dir} must stay covered by a collection`);

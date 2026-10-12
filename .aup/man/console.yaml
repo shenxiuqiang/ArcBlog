@@ -46,12 +46,6 @@ refs:
       event: click
     - id: seo-save
       event: click
-    - id: hub-approve
-      event: click
-    - id: hub-reject
-      event: click
-    - id: hub-purge
-      event: click
     - id: save-draft
       event: click
     - id: publish-now

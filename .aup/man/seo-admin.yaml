@@ -39,7 +39,5 @@ refs:
       event: click
     - id: console-nav-ops-admin
       event: click
-    - id: console-nav-economy-admin
-      event: click
     - id: seo-save
       event: click

@@ -18,7 +18,7 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CONSOLE_PAGES, ADAPTER_BLOCK_BEGIN, ADAPTER_BLOCK_END, adapterOptionLines, blockEnd, sidebarLines } from './console-nav.mjs';
+import { CONSOLE_PAGES, blockEnd, sidebarLines } from './console-nav.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -83,34 +83,6 @@ function fail(payload) {
   process.exit(1);
 }
 
-/**
- * Replace (or check) the GENERATED payment-adapter option block of one page
- * (REQ-031 ②/D1).
- *
- * Only pages that carry the markers are touched, so this stays opt-in: a page
- * without them is simply skipped. The block is located by its `economy-adapters:`
- * comment markers rather than by an id, because `arc dsl lint --fix` strips
- * unreferenced ids and the input keeps its `name` (which IS referenced by the
- * page's save action, but the marker is what identifies the generated region).
- */
-function syncAdapterBlock(lines, page, write) {
-  const start = lines.findIndex((line) => line.includes(ADAPTER_BLOCK_BEGIN));
-  if (start < 0) return null;
-  const end = lines.findIndex((line, index) => index > start && line.includes(ADAPTER_BLOCK_END));
-  if (end < 0) throw new Error(`page ${page}: ${ADAPTER_BLOCK_BEGIN} without ${ADAPTER_BLOCK_END}`);
-
-  // Indent comes from the block already in the file (the line after the two
-  // leading comments), so `arc dsl format` re-indenting the page does not put
-  // the generator and the formatter in a permanent loop.
-  const inputLine = lines.slice(start, end + 1).find((line) => /^\s*input\b/.test(line));
-  const indent = (inputLine ?? lines[start]).match(/^\s*/)[0].length;
-  const expected = adapterOptionLines(indent);
-  const actual = lines.slice(start, end + 1);
-  const changed = normalize(actual.join('\n')) !== normalize(expected.join('\n'));
-  if (write) lines.splice(start, end - start + 1, ...expected);
-  return { page, changed };
-}
-
 function help() {
   console.log(FLAG_SYNTAX_NOTE);
   console.log(`ArcBlog console generator — projects the menu model into every console page
@@ -120,12 +92,12 @@ Usage:
   node scripts/arcblog-console-nav.mjs --check  # verify them (part of npm test)
 
 The menu lives once in scripts/console-nav.mjs; the DSL has no cross-file component
-mechanism, so both the sidebar and the economy payment-adapter option block are copied
-into every console page. Default mode rewrites only those generated regions (located
-by their markers, never by an id) and prints { ok, action: "write", pages, changed }.
---check writes nothing and fails with { ok: false, error } when a page is out of sync
-(that payload also lists the drifted pages), or when a page listed in
-scripts/console-nav.mjs is missing under .aup/pages/.
+mechanism, so the sidebar is copied into every console page. Default mode rewrites
+only that generated region (located by its marker, never by an id) and prints
+{ ok, action: "write", pages, changed }. --check writes nothing and fails with
+{ ok: false, error } when a page is out of sync (that payload also lists the
+drifted pages), or when a page listed in scripts/console-nav.mjs is missing under
+.aup/pages/.
 
 Exit codes: 0 = written, or in sync; 1 = drift / a missing console page.
 `);
@@ -145,9 +117,8 @@ function main() {
     const page = header.match(/^page ([A-Za-z0-9_-]+) \{/)[1];
     if (!CONSOLE_PAGES.includes(page)) continue;
     const result = syncPage(lines, page, !check);
-    const adapter = syncAdapterBlock(lines, page, !check);
-    if (!check && (result.changed || adapter?.changed)) writeFileSync(path, lines.join('\n'));
-    results.push({ ...result, adapter: adapter?.changed ?? null, path });
+    if (!check && result.changed) writeFileSync(path, lines.join('\n'));
+    results.push({ ...result, path });
   }
 
   const missing = CONSOLE_PAGES.filter((p) => !results.some((r) => r.page === p));
@@ -156,12 +127,12 @@ function main() {
   }
 
   if (check) {
-    const drifted = results.filter((r) => r.changed || r.adapter);
+    const drifted = results.filter((r) => r.changed);
     if (drifted.length) {
       fail({
         ok: false,
         error:
-          'generated console blocks are out of sync with scripts/console-nav.mjs / scripts/lib/economy.mjs — run: node scripts/arcblog-console-nav.mjs',
+          'generated console sidebars are out of sync with scripts/console-nav.mjs — run: node scripts/arcblog-console-nav.mjs',
         pages: drifted.map((r) => r.page),
       });
     }
@@ -175,10 +146,7 @@ function main() {
         ok: true,
         action: 'write',
         pages: results.length,
-        // Either generated block counts as a change (the sidebar or the
-        // economy-adapter option set) — listing only the sidebar made an
-        // adapter-only rewrite look like a no-op.
-        changed: results.filter((r) => r.changed || r.adapter).map((r) => r.page),
+        changed: results.filter((r) => r.changed).map((r) => r.page),
       },
       null,
       2,

@@ -7,10 +7,9 @@
 //
 // These checks encode the spec's rules on top of that declaration:
 // - read-only by default (§61: agents start at `agent.read`);
-// - high-risk tools are default-closed (§130: settle_payment, change_wallet,
-//   change_role);
-// - buyer/reader data (orders, settlements, ledger, access grants) and drafts are
-//   never exposed to an agent;
+// - high-risk tools are default-closed (§130: change_role — settle_payment and
+//   change_wallet were retired with the economy surface, 2026-10-01);
+// - drafts and page-drafts are never exposed to an agent;
 // - tool grants are bounded (explicit `maxDepth`), never a wildcard over `/`.
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -30,13 +29,6 @@ export const WRITE_OPS = ['write', 'delete', 'exec', 'mount', 'unmount', 'create
 export const SENSITIVE_PATH_PREFIXES = [
   '/instance/app/arcblog/drafts',
   '/instance/app/arcblog/page-drafts',
-  '/instance/app/arcblog/paid',
-  '/instance/app/arcblog/economy/orders',
-  '/instance/app/arcblog/economy/settlements',
-  '/instance/app/arcblog/economy/ledger',
-  '/instance/app/arcblog/economy/attributions',
-  '/instance/app/arcblog/economy/access-grants',
-  '/instance/app/arcblog/economy/refunds',
   '/blocklets',
 ];
 
@@ -64,8 +56,7 @@ export const AGENT_TOOLS = [
   { name: 'get_post', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'get' }, params: ['slug'] },
   { name: 'list_categories', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/categories', op: 'list' } },
   { name: 'get_node_profile', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/node', op: 'get' } },
-  // Aggregate counts over public surfaces only — economy analytics stay closed
-  // because orders name buyers (privacy, spec §62).
+  // Aggregate counts over public surfaces only (spec §60/§62).
   { name: 'get_analytics', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'list' } },
   // --- reads with no surface in this platform version ------------------------
   { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)' },
@@ -75,8 +66,6 @@ export const AGENT_TOOLS = [
   { name: 'update_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'publish_post', capability: 'agent.publish', kind: 'write', command: 'lifecycle-publish' },
   // --- default-closed admin operations (spec §130) ---------------------------
-  { name: 'settle_payment', capability: 'agent.admin', kind: 'closed', defaultClosed: true, reason: 'default-closed (spec §130) — requires human authorization outside the agent surface' },
-  { name: 'change_wallet', capability: 'agent.admin', kind: 'closed', defaultClosed: true, reason: 'default-closed (spec §130) — requires human authorization outside the agent surface' },
   { name: 'change_role', capability: 'agent.admin', kind: 'closed', defaultClosed: true, reason: 'default-closed (spec §130) — requires human authorization outside the agent surface' },
 ];
 
@@ -174,7 +163,7 @@ export function checkAgentManifest(agent) {
 
   checks.push(result(`agent:${name}:read-only`, writes.length === 0, writes.length ? `write-capable ops: ${writes.join('; ')}` : 'read-only ops only (spec §61)'));
   checks.push(result(`agent:${name}:scoped`, broad.length === 0, broad.length ? `wildcard scope: ${broad.join(', ')}` : 'scoped to explicit paths'));
-  checks.push(result(`agent:${name}:privacy`, sensitive.length === 0, sensitive.length ? `sensitive paths exposed: ${sensitive.join(', ')}` : 'no drafts/orders/settlements/ledger/grants exposed'));
+  checks.push(result(`agent:${name}:privacy`, sensitive.length === 0, sensitive.length ? `sensitive paths exposed: ${sensitive.join(', ')}` : 'no sensitive paths exposed'));
   checks.push(result(`agent:${name}:bounded`, unbounded.length === 0, unbounded.length ? `missing maxDepth: ${unbounded.join(', ')}` : 'every tool scope is depth-bounded'));
 
   const budget = agent?.budget ?? {};

@@ -15,7 +15,7 @@ page pages {
     create { en "New page" zh "新建页面" }
     create-offline { en "Create (offline)" zh "创建（离线）" }
     created-ok { en "Page created offline. Bring it online when ready." zh "页面已创建（离线）。准备好后再上线。" }
-    desc { en "Standalone pages such as About. Two states only — online and offline; no post lifecycle, no RSS, no Hub indexing." zh "About 等独立页面。只有上线 / 下线两个状态——不复用文章生命周期，不进 RSS，不被 Hub 索引。" }
+    desc { en "Standalone pages such as About. Two states only — online and offline; no post lifecycle, no RSS." zh "About 等独立页面。只有上线 / 下线两个状态——不复用文章生命周期，不进 RSS。" }
     f-body { en "Body (Markdown)" zh "正文（Markdown）" }
     f-slug { en "Slug" zh "别名" }
     f-summary { en "Summary" zh "摘要" }
@@ -27,7 +27,7 @@ page pages {
     offline-hint { en "Offline pages are admin-only. 「Bring online」 only queues an intent under config/page-intents/; the local worker performs the move (arcblog-pages.mjs queue prints those rows read-only, apply runs them once, watch keeps running). The list below the two page lists is that queue, read straight from AFS: action · status · message." zh "离线页面仅后台可见。「上线」只向 config/page-intents/ 入队一条意图；真正的迁移由本机 worker 执行（arcblog-pages.mjs queue 只读列出这些行，apply 执行一次，watch 常驻）。两个页面列表下方那个列表就是该队列，直接读 AFS：action · status · message。" }
     offline-list { en "Offline" zh "已下线" }
     offline-ok { en "Intent queued — read config/page-intents to confirm; the local worker takes the page offline." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行下线。" }
-    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS and the Hub index. 「Take offline」 only queues an intent under config/page-intents/ — the local worker completes the move. 「Remove public copy」 is a different, immediate action: it hard-deletes the public record (pages have no soft delete)." zh "上线页面公开于 /pages/<别名>；不进 RSS，也不被 Hub 索引。「下线」只向 config/page-intents/ 入队一条意图——真正的迁移由本机 worker 完成。「移除公开副本」是另一条立即生效的动作：硬删除公开记录（页面没有软删除）。" }
+    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS. 「Take offline」 only queues an intent under config/page-intents/ — the local worker completes the move. 「Remove public copy」 is a different, immediate action: it hard-deletes the public record (pages have no soft delete)." zh "上线页面公开于 /pages/<别名>；不进 RSS。「下线」只向 config/page-intents/ 入队一条意图——真正的迁移由本机 worker 完成。「移除公开副本」是另一条立即生效的动作：硬删除公开记录（页面没有软删除）。" }
     online-list { en "Online" zh "已上线" }
     queue-legend { en "pending = queued, not run yet · applied = the worker ran it · rejected = refused, zero change · noop = already in that state" zh "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态" }
     queue-empty-note { en "Empty state: when a list has no records this platform prints its own hard-coded English empty-list text (arc-contracts §20 measures that `emptyText` is not evaluated at runtime), so this page cannot localize it. This note is standing and does not claim that any list is empty; the authority for the queue is `node scripts/arcblog-pages.mjs queue`." zh "空态说明：列表没有记录时，平台会打印它自带的英文空列表文案（arc-contracts §20 实测 `emptyText` 在运行期不求值），因此本页无法将其本地化。本说明常驻，不代表任何列表为空；队列的权威入口是 `node scripts/arcblog-pages.mjs queue`。" }

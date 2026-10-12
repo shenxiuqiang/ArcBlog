@@ -9,9 +9,8 @@
  * Rules for keeping this honest:
  * - a flag is listed under the CLI that *consumes* it; passthrough flags (one
  *   CLI building another CLI's argv) are listed too, a superset is harmless;
- * - `scripts/arcblog-economy.test.mjs` re-derives this set from the sources and
- *   fails when a CLI reads a flag (`opts.x` / `opts["x"]` / `--x`) that is
- *   missing here — so new flags cannot rot the registry.
+ * - the registry exists so a typo'd flag fails closed instead of being
+ *   silently ignored.
  *
  * `help` / `instance` / `json` live in `BASE_FLAGS` (`scripts/lib/arc.mjs`) and
  * `CHAIN_FLAGS` covers what `scripts/lib/chain.mjs` reads off the shared opts
@@ -55,17 +54,16 @@ export const SCRIPT_FLAGS = {
   "arcblog-console-nav.mjs": ["check", "fix"],
   "arcblog-daily-report.mjs": ["args", "instance", "json", "limit"],
   "arcblog-doctor.mjs": ["help", "instance", "json", "record"],
-  "arcblog-economy.mjs": ["action", "adapter", "all", "amount", "asset", "buyer-did", "by", "chain-host", "content", "content-id", "creator", "creator-did", "expect-amount", "expect-asset", "expect-receiver", "help", "hub", "hub-did", "id", "intent-id", "interval", "json", "limit", "order", "payment-adapter", "payment-ref", "period-days", "price-amount", "price-asset", "product-id", "protocol", "reader", "reason", "settlement-policy", "tx-hash", "type", "update", "version", "visibility"],
-  "arcblog-factory.mjs": ["adapter", "chain-host", "description", "endpoint", "help", "instance", "issuer", "json", "keep-registry", "name", "out", "pricing-basic", "region", "role", "rules", "stake", "token-id", "update"],
+  "arcblog-factory.mjs": ["adapter", "chain-host", "description", "endpoint", "help", "instance", "issuer", "json", "keep-registry", "name", "out", "region", "role", "stake", "token-id", "update"],
   "arcblog-hero-carousel.mjs": ["check"],
-  "arcblog-lifecycle.mjs": ["action", "actor", "args", "author-did", "author-name", "body", "body-file", "category", "content", "cover-image", "detail", "help", "if-match", "ifMatch", "instance", "json", "mode", "og-description", "og-image", "og-title", "path", "product-id", "push", "seo-description", "seo-title", "sign-key", "signer-did", "signer-label", "slug", "summary", "tags", "title", "update", "visibility"],
+  "arcblog-lifecycle.mjs": ["action", "actor", "args", "author-did", "author-name", "body", "body-file", "category", "content", "cover-image", "detail", "help", "if-match", "ifMatch", "instance", "json", "mode", "og-description", "og-image", "og-title", "path", "push", "seo-description", "seo-title", "sign-key", "signer-did", "signer-label", "slug", "summary", "tags", "title", "update", "visibility"],
   "arcblog-media.mjs": ["action", "alt", "by", "force", "height", "help", "id", "ids", "instance", "intent-id", "interval", "mime", "path", "size", "title", "update", "uploader-did", "width"],
   "arcblog-network.mjs": ["base-url", "help", "instance", "publish", "update"],
-  "arcblog-node-nft.mjs": ["adapter", "asset", "description", "dry-run", "endpoint", "evidence", "help", "instance", "message", "name", "now", "owner", "pk", "pricing-basic", "region", "role", "rules", "sign-key", "stake", "stake-address", "waiting-period"],
+  "arcblog-node-nft.mjs": ["adapter", "asset", "description", "dry-run", "endpoint", "evidence", "help", "instance", "message", "name", "now", "owner", "pk", "region", "role", "sign-key", "stake", "stake-address", "waiting-period"],
   "arcblog-node.mjs": ["auth-method", "caller", "capabilities", "description", "did", "endpoint", "help", "instance", "json", "name", "roles", "update"],
   "arcblog-pages.mjs": ["action", "actor", "author-did", "body", "body-file", "help", "instance", "online", "push", "slug", "summary", "title"],
   "arcblog-query-posts.mjs": ["args", "category", "instance", "json", "limit", "tag"],
-  "arcblog-roles.mjs": ["asset-id", "by", "chain-verification", "claimable-at", "help", "hub-collection", "intent-id", "interval", "link-exit", "network", "reason", "role", "stake-id", "state", "studio-collection", "update"],
+  "arcblog-roles.mjs": ["asset-id", "by", "chain-verification", "claimable-at", "help", "intent-id", "interval", "link-exit", "network", "reason", "role", "stake-id", "state", "studio-collection", "update"],
   "arcblog-rss.mjs": ["args", "feed-description", "feed-link", "feed-title", "instance", "json", "limit"],
   "arcblog-settings.mjs": ["agent-access", "comments", "help", "instance", "language", "palette", "rss", "site-name", "theme", "timezone", "tone"],
   "arcblog-tags.mjs": ["action", "by", "from", "help", "id", "interval", "to"],

@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 // ArcBlog node NFT factories (spec §8.1) — the operator CLI.
 //
-//   node scripts/arcblog-factory.mjs spec --role studio|hub [--json]
-//   node scripts/arcblog-factory.mjs svg  --role studio|hub [--out node.svg]
-//   node scripts/arcblog-factory.mjs create --role studio|hub [--adapter mock|ocap] [...]
+//   node scripts/arcblog-factory.mjs spec --role studio [--json]
+//   node scripts/arcblog-factory.mjs svg  --role studio [--out node.svg]
+//   node scripts/arcblog-factory.mjs create --role studio [--adapter mock|ocap] [...]
 //   node scripts/arcblog-factory.mjs show//   node scripts/arcblog-factory.mjs reset            # mock only: start the simulation over
 //
 // The factory payload mirrors GLofter's (`createAssetFactory({wallet, factory})`),
 // see `scripts/lib/nft-factory.mjs` for the mapping table. Created factories are
 // recorded in AFS (`config/nft-factories.json`) so the node CLIs know which
 // address to mint from, and so the console can show "this node has an on-chain
-// Studio/Hub identity".
+// Studio identity".
 
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -138,8 +138,6 @@ function commandSpec(opts) {
     tokenAddress: optString(opts['token-id']).trim() || '<ABT token address>',
     issuerAddress: optString(opts.issuer).trim() || '<factory owner address>',
     stakeAmount: optString(opts.stake).trim() || DEFAULT_STAKE_AMOUNT,
-    pricing: pickPricing(opts),
-    rules: optString(opts.rules).trim() || undefined,
   });
   const issues = validateNodeFactory(factory);
   if (opts.json) {
@@ -154,22 +152,8 @@ function commandSpec(opts) {
   console.log(`  variables:   ${factory.input.variables.map((v) => (v.required ? `${v.name}*` : v.name)).join(', ')}`);
   console.log(`  NFT data:    ${Object.keys(factory.output.data.value).join(', ')}`);
   console.log(`  hook:        ${factory.hooks[0].hook}`);
-  if (role === 'hub') {
-    console.log(`  capacity:    ${factory.arcblog.capacity} studios (stake ${factory.arcblog.stakeAmount} ABT)`);
-    console.log(`  pricing:     ${Object.entries(factory.arcblog.pricing).map(([k, v]) => `${k}=${v}`).join(' ')} ABT/day`);
-  }
   console.log(`\nIssues: ${issues.length ? issues.join('; ') : 'none'}`);
   if (issues.length) process.exit(1);
-}
-
-function pickPricing(opts) {
-  const keys = ['basic', 'pro', 'premium', 'enterprise'];
-  const out = {};
-  for (const key of keys) {
-    const value = optString(opts[`pricing-${key}`]).trim();
-    if (value) out[key] = value;
-  }
-  return Object.keys(out).length ? out : undefined;
 }
 
 function commandSvg(opts) {
@@ -183,13 +167,11 @@ function commandSvg(opts) {
     tokenAddress: '0xsample',
     issuerAddress: '0xsample',
     stakeAmount: optString(opts.stake).trim() || DEFAULT_STAKE_AMOUNT,
-    pricing: pickPricing(opts),
-    rules: optString(opts.rules).trim() || undefined,
     simulated: true,
   });
   const sample = {
     data: {
-      name: optString(opts.name).trim() || (role === 'studio' ? 'ArcBlog Studio' : 'ArcBlog Hub'),
+      name: optString(opts.name).trim() || 'ArcBlog Studio',
       description: optString(opts.description).trim() || factory.description,
       endpoint: optString(opts.endpoint).trim() || 'https://arcblog.example.com',
       region: optString(opts.region).trim() || 'CN-BJ-Beijing',
@@ -200,9 +182,6 @@ function commandSvg(opts) {
       capabilities: 'blog.read,blog.write,blog.publish',
       protocolVersion: '1',
       nodeVersion: '0.3.7',
-      rules: factory.arcblog?.rules ?? '',
-      pricing: factory.arcblog?.pricing ?? {},
-      capacity: String(factory.arcblog?.capacity ?? ''),
     },
   };
   const svg = renderTemplate(factory.output.display.content, sample);
@@ -217,7 +196,7 @@ function commandSvg(opts) {
 
 async function commandCreate(opts, instance) {
   const role = optString(opts.role).trim();
-  ensure(ROLE_FACTORIES[role], '--role is required (studio|hub)');
+  ensure(ROLE_FACTORIES[role], '--role is required (studio)');
   const config = resolveChainConfig(opts, instance, { role });
   // Fail closed BEFORE anything is read/written for the chain (L-R15-2 item 3):
   // a real-chain action without the triple (network/chainHost/tokenId) never runs.
@@ -234,8 +213,6 @@ async function commandCreate(opts, instance) {
     tokenAddress: tokenId,
     issuerAddress,
     stakeAmount: optString(opts.stake).trim() || DEFAULT_STAKE_AMOUNT,
-    pricing: pickPricing(opts),
-    rules: optString(opts.rules).trim() || undefined,
     // BUG-037: only a real chain may show an unqualified NFT card. A mock factory
     // mints nothing, so its SVG says "未上链 / NOT ON CHAIN — SIMULATED" out loud
     // (all evidence fields stay put — nothing is hidden, nothing is invented).
@@ -283,8 +260,6 @@ async function commandCreate(opts, instance) {
         moniker: factory.moniker,
         issuer: issuerAddress,
         stakeAmount: factory.arcblog.stakeAmount,
-        capacity: factory.arcblog.capacity ?? null,
-        pricing: factory.arcblog.pricing ?? null,
         role,
         // BUG-043: per-factory attribution — a later run under another adapter
         // must not relabel a factory another adapter created.
@@ -350,9 +325,9 @@ function help() {
   console.log(`ArcBlog node NFT factories (spec §8.1)
 
 Usage:
-  node scripts/arcblog-factory.mjs spec --role studio|hub [--json] [--stake 1]
-  node scripts/arcblog-factory.mjs svg  --role studio|hub [--out node.svg] [--name ...]
-  node scripts/arcblog-factory.mjs create --role studio|hub [--adapter mock|ocap] [options]
+  node scripts/arcblog-factory.mjs spec --role studio [--json] [--stake 1]
+  node scripts/arcblog-factory.mjs svg  --role studio [--out node.svg] [--name ...]
+  node scripts/arcblog-factory.mjs create --role studio [--adapter mock|ocap] [options]
   node scripts/arcblog-factory.mjs show
   node scripts/arcblog-factory.mjs project          # re-annotate the public projection (no chain call)
   node scripts/arcblog-factory.mjs reset            # mock only: start the simulation over
@@ -367,9 +342,7 @@ Options:
   --adapter mock|ocap        mock = local simulation (default), ocap = real chain
   --token-id <address>       mint token (real chain: required; see "Chain environment")
   --chain-host <url>         GraphQL endpoint (real chain: required)
-  --stake <amount>           token staked per node (default 1; drives hub capacity)
-  --pricing-basic|pro|premium|enterprise <per-day>        hub tiers
-  --rules <text>             hub rules recorded in the NFT
+  --stake <amount>           token staked per node (default 1)
   --update                   Replace an existing local factory record
 
 Chain environment (switching chains = changing env, never code):

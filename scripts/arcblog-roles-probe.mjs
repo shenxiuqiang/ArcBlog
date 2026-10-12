@@ -149,13 +149,12 @@ const collectGeneral = async (ctx, lang) => j(await ctx.ev(`(() => { ${HELPERS}
     cardTextLength: text.length,
     stateWords: ['none','acquired','staked','revoking','claimable'].filter((w) => new RegExp('\\\\b' + w + '\\\\b').test(text)),
     orderedLegend: zh ? /none → acquired → staked → revoking → claimable/.test(text) : /none → acquired → staked → revoking → claimable/.test(text),
-    collectionAddress: text.includes('0xStudioCollection') && text.includes('0xHubCollection'),
+    collectionAddress: text.includes('0xStudioCollection'),
     network: text.includes('arcblock'),
     effectiveLine: (text.match(/blog\\.read[^\\n]*/) || [null])[0],
     withheldLine: (text.match(/(Withheld capabilities|被扣留的能力)[^\\n]*/) || [null])[0],
     verifyKindLine: (text.match(/(read-only re-derivation[^\\n]*|只读[^\\n]*重推导[^\\n]*)/i) || [null])[0],
     reasonStudio: text.includes('stake state is "none"; chain verification is not wired yet (fail closed, spec §115)'),
-    reasonHub: text.includes('stake state is "acquired"; chain verification is not wired yet (fail closed, spec §115)'),
     assetOwnedNo: (text.split('studio.assetOwned')[1] || '').trimStart().startsWith('no'),
     assetOwnedSegment: (() => { const i = text.indexOf('studio.assetOwned'); return i < 0 ? null : text.slice(i, i + 24).replace(/\\n/g, ' · '); })(),
     addressedInputs: inputs.filter((i) => /collectionAddress|network|eCollection|eNetwork/i.test(i.getAttribute('name') || '')).length,
@@ -230,7 +229,7 @@ if (PHASE === 'all' || PHASE === 'verify') {
   q.snapshotAfterClickSha = sha256(snapshotAfterClick.raw);
   q.snapshotUntouchedByClick = q.snapshotAfterClickSha === q.snapshotBefore.sha256;
   q.statusRowsAfterClick = {};
-  for (const role of ['basic', 'studio', 'hub']) q.statusRowsAfterClick[role] = sha256(read(`${STATUS_DIR}/${role}.json`).raw);
+  for (const role of ['basic', 'studio']) q.statusRowsAfterClick[role] = sha256(read(`${STATUS_DIR}/${role}.json`).raw);
   q.pageStateAfterClick = j(await ctx.ev(`(() => { ${HELPERS} return qaPageState(); })()`));
   await ctx.close();
 
@@ -241,7 +240,7 @@ if (PHASE === 'all' || PHASE === 'verify') {
   q.snapshotAfterWorkerSha = sha256(snapshotAfterWorker.raw);
   q.snapshotChangedByWorker = q.snapshotAfterWorkerSha !== q.snapshotBefore.sha256;
   q.statusRowsAfterWorker = {};
-  for (const role of ['basic', 'studio', 'hub']) q.statusRowsAfterWorker[role] = sha256(read(`${STATUS_DIR}/${role}.json`).raw);
+  for (const role of ['basic', 'studio']) q.statusRowsAfterWorker[role] = sha256(read(`${STATUS_DIR}/${role}.json`).raw);
   q.queueAfterWorker = listDir(VERIFY_QUEUE).names.map((n) => ({ name: n, status: read(`${VERIFY_QUEUE}/${n}`).content?.status }));
   // idempotence: a second apply is a noop with zero change (C2)
   const second = cli(['scripts/arcblog-roles.mjs', 'verify', 'apply']);

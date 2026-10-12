@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // ArcBlog node NFT lifecycle (spec §8.2–§8.4) — acquire, stake, revoke, claim.
 //
-//   node scripts/arcblog-node-nft.mjs acquire --role studio|hub [--stake 1] [--endpoint ...]
-//   node scripts/arcblog-node-nft.mjs stake   --role studio|hub [--asset 0x..] [--waiting-period 30]
-//   node scripts/arcblog-node-nft.mjs revoke  --role studio|hub [--now 2026-10-01T00:00:00Z]
-//   node scripts/arcblog-node-nft.mjs claim   --role studio|hub [--now 2026-11-01T00:00:00Z]
-//   node scripts/arcblog-node-nft.mjs status  [--role studio|hub]
+//   node scripts/arcblog-node-nft.mjs acquire --role studio [--stake 1] [--endpoint ...]
+//   node scripts/arcblog-node-nft.mjs stake   --role studio [--asset 0x..] [--waiting-period 30]
+//   node scripts/arcblog-node-nft.mjs revoke  --role studio [--now 2026-10-01T00:00:00Z]
+//   node scripts/arcblog-node-nft.mjs claim   --role studio [--now 2026-11-01T00:00:00Z]
+//   node scripts/arcblog-node-nft.mjs status  [--role studio]
 //
 // Every step writes the on-chain facts back into AFS so the rest of ArcBlog sees
 // them:
@@ -37,7 +37,7 @@ import {
   resolveClock,
   validateRealChainConfig,
 } from './lib/chain.mjs';
-import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, buildMintInputs, capacityForStake } from './lib/nft-factory.mjs';
+import { DEFAULT_STAKE_AMOUNT, ROLE_FACTORIES, buildNodeFactory, buildMintInputs } from './lib/nft-factory.mjs';
 import { getSigningKey } from './lib/content-sign.mjs';
 import { backfillAttribution } from './lib/node-attribution.mjs';
 import { CHAIN_ROLES, getRoleConfig, putRoleLifecycle, roleStatus } from './lib/roles.mjs';
@@ -222,8 +222,6 @@ async function commandAcquire(opts, instance) {
     },
     pk,
     stakeAmount,
-    rules: optString(opts.rules).trim() || undefined,
-    pricing: pickPricing(opts),
   });
   const owner = optString(opts.owner).trim() || chain.ownerAddress || '';
   ensure(owner, '--owner <address> is required when the adapter has no wallet (mock)');
@@ -246,7 +244,6 @@ async function commandAcquire(opts, instance) {
         endpoint: inputs.endpoint,
         region: inputs.region,
         stakeAmount: String(stakeAmount),
-        capacity: role === 'hub' ? capacityForStake(Number(stakeAmount)) : null,
         state: 'acquired',
         acquiredAt: clock,
         acquireTx: acquired.hash ?? '',
@@ -264,20 +261,11 @@ async function commandAcquire(opts, instance) {
   publishNodeSummary(next, instance);
   console.log(
     JSON.stringify(
-      { ok: true, action: 'node-nft-acquire', adapter: chain.adapter, network: chain.network, role, assetId, owner, stake: String(stakeAmount), capacity: role === 'hub' ? capacityForStake(Number(stakeAmount)) : undefined, hash: acquired.hash ?? '', lifecycle: status.stakeState },
+      { ok: true, action: 'node-nft-acquire', adapter: chain.adapter, network: chain.network, role, assetId, owner, stake: String(stakeAmount), hash: acquired.hash ?? '', lifecycle: status.stakeState },
       null,
       2,
     ),
   );
-}
-
-function pickPricing(opts) {
-  const out = {};
-  for (const key of ['basic', 'pro', 'premium', 'enterprise']) {
-    const value = optString(opts[`pricing-${key}`]).trim();
-    if (value) out[key] = value;
-  }
-  return Object.keys(out).length ? out : undefined;
 }
 
 /** Resolve which asset to stake: `--asset`, else the recorded one for the role. */
@@ -504,12 +492,12 @@ function help() {
   console.log(`ArcBlog node NFT lifecycle (spec §8.2–§8.4)
 
 Usage:
-  node scripts/arcblog-node-nft.mjs acquire --role studio|hub [--stake 1] [--endpoint <url>] [--region <r>] [--owner <addr>]
-  node scripts/arcblog-node-nft.mjs stake   --role studio|hub [--asset <addr>] [--waiting-period 30] [--owner <addr>]
-  node scripts/arcblog-node-nft.mjs revoke  --role studio|hub [--now <iso>]
-  node scripts/arcblog-node-nft.mjs claim   --role studio|hub [--now <iso>]
-  node scripts/arcblog-node-nft.mjs status  [--role studio|hub]
-  node scripts/arcblog-node-nft.mjs backfill [--role studio|hub] [--dry-run]
+  node scripts/arcblog-node-nft.mjs acquire --role studio [--stake 1] [--endpoint <url>] [--region <r>] [--owner <addr>]
+  node scripts/arcblog-node-nft.mjs stake   --role studio [--asset <addr>] [--waiting-period 30] [--owner <addr>]
+  node scripts/arcblog-node-nft.mjs revoke  --role studio [--now <iso>]
+  node scripts/arcblog-node-nft.mjs claim   --role studio [--now <iso>]
+  node scripts/arcblog-node-nft.mjs status  [--role studio]
+  node scripts/arcblog-node-nft.mjs backfill [--role studio] [--dry-run]
                           # D37: attribute records that predate per-node
                           # attribution, from the record's own evidence. Read
                           # only: no chain call, no signing, no invented hash.
@@ -521,14 +509,13 @@ Every step syncs config/node-nft.json and the §8.5 lifecycle in config/roles.js
 Options:
   --instance <name>            Arc instance (optional)
   --adapter mock|ocap          mock = local simulation (default), ocap = real chain
-  --role studio|hub            which node identity
+  --role studio                which node identity (concept v2: studio only)
   --stake <amount>             token staked (default 1)
   --asset <address>            NFT asset address (defaults to the recorded one)
   --owner <address>            wallet that owns the NFT (mock default: mock-owner)
   --pk <pem|file>              public key bound into the NFT (default: §67 signing key)
   --waiting-period <days>      revoke waiting period (default 30)
   --now <iso>                  mock only: move the clock to test the waiting period
-  --pricing-basic|pro|premium|enterprise <per-day>   hub tiers stored in the NFT
 
 Chain environment (switching chains = changing env, never code):
   ARCBLOG_CHAIN_ENV=beta|main  fills the defaults (host / network / token id);

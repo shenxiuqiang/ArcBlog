@@ -10,7 +10,7 @@ fields:
   updatedAt: datetime
   version: number
   contentHash: string # sha256:<hex> over normalized content (spec §66)
-# Pages are NOT posts: no lifecycle states beyond online/offline, no RSS, no Hub
+# Pages are NOT posts: no lifecycle states beyond online/offline, no RSS, no
 # indexing. Storage follows the same directory-boundary rule as posts:
 #   pages/        online only — guest-readable
 #   page-drafts/  offline only — admin-only

@@ -106,29 +106,16 @@ export function checkAuthorship(records) {
 
 /**
  * Ids that the (non-hermetic) live test suite leaves behind. The suite writes to
- * the default instance, so a development machine accumulates records; the ledger
- * is append-only (spec §92) and never shrinks, which is worth surfacing before it
- * becomes an operational surprise.
+ * the default instance, so a development machine accumulates records, which is
+ * worth surfacing before it becomes an operational surprise.
  */
 export const TEST_RECORD_PREFIXES = [
   // Unambiguous ids only. A bare `attr-` or `agent-` would also match plausible
-  // production ids (attribution ids are derived from a content slug), so every
-  // entry here carries the distinctive token the test suite actually uses.
+  // production ids, so every entry here carries the distinctive token the test
+  // suite actually uses.
   'spike-',
-  'unattr-',
-  'econ-test-',
   'probe-',
   'cmsprobe',
-  'ledger-order-',
-  'ledger-product-',
-  'attr-ok-',
-  'attr-other-',
-  'attr-product-',
-  'attr-live-',
-  'attr-paid-',
-  'attr-order-',
-  'attr-prod-',
-  'attr-content-',
   'agent-surface-',
   'agent-draft',
   // `arcblog-lifecycle.test.mjs` / the audit test also leave timestamped residue.
@@ -147,13 +134,9 @@ export const TEST_RECORD_PREFIXES = [
   'cat-test-',
   // `arcblog-media.test.mjs` (media + draft fixtures deleted in `finally`).
   'media-test-',
-  // `arcblog-content-hash.test.mjs` paid-visibility fixtures.
-  'paid-test-',
   // `arcblog-content-sign.test.mjs` signed/unsigned publish fixtures.
   'sign-test-',
   'sign-plain-',
-  // `arcblog-roles.test.mjs` §8.6 exit-linkage fixtures (product + order).
-  'exit-test-',
   // `arcblog-store` fixtures used while verifying the public catalogue.
   'store-test-',
   // `arcblog-node-nft.test.mjs` uses an isolated mock-chain ledger per run.

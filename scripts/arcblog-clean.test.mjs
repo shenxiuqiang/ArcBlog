@@ -28,8 +28,7 @@ function json(text) {
 
 test('isTestRecordId recognises residue and leaves real content alone', () => {
   assert.equal(isTestRecordId('spike-post-1.json'), true);
-  assert.equal(isTestRecordId('attr-ok-123:creator_share.json'), true);
-  assert.equal(isTestRecordId('econ-test-order-9.json'), true);
+  assert.equal(isTestRecordId('agent-surface-1.json'), true);
   for (const prefix of TEST_RECORD_PREFIXES) assert.equal(isTestRecordId(`${prefix}x`), true);
 
   // Guard the ids the suite actually produces — the loop above only re-tests the
@@ -45,7 +44,7 @@ test('isTestRecordId recognises residue and leaves real content alone', () => {
 test('the cleanup never touches published content directories', () => {
   assert.ok(!CLEAN_DIRS.includes('posts'));
   assert.ok(!CLEAN_DIRS.includes('heroes'));
-  assert.ok(CLEAN_DIRS.includes('economy/ledger'));
+  assert.ok(CLEAN_DIRS.includes('config/agent-grants'));
 });
 
 test('BUG-048: the cleaner scans node/ and both console intent queues', () => {
@@ -87,14 +86,14 @@ test('live: the dry run reports residue and deletes nothing', () => {
 });
 
 test('the residue matcher cannot swallow plausible production ids', () => {
-  // A bare `attr-` or `agent-` prefix would also match real ids: attribution ids
-  // are derived from a content slug, so `attr-<slug>-<hash>` is a legal id.
+  // A bare `agent-` prefix would also match real ids, so only the distinctive
+  // tokens the suite actually uses are listed.
   assert.ok(!TEST_RECORD_PREFIXES.includes('attr-'));
   assert.ok(!TEST_RECORD_PREFIXES.includes('agent-'));
   assert.equal(isTestRecordId('agent-handbook:creator_share.json'), false);
   assert.equal(isTestRecordId('attr-migration-guide-9f3a1c.json'), false);
   // …while the tokens the suite actually uses are still recognised
-  assert.equal(isTestRecordId('attr-ok-1790162244441:creator_share.json'), true);
+  assert.equal(isTestRecordId('lifecycle-test-1790162244441.json'), true);
   assert.equal(isTestRecordId('agent-surface-draft-1790164.json'), true);
 });
 

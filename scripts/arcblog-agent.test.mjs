@@ -55,8 +55,6 @@ function readOnlyAgent(overrides = {}) {
       { path: '/instance/app/arcblog/posts/**', ops: ['read', 'list'], maxDepth: 2 },
       { path: '/instance/app/arcblog/categories/**', ops: ['read', 'list'], maxDepth: 2 },
       { path: '/instance/app/arcblog/node/**', ops: ['read', 'list'], maxDepth: 2 },
-      { path: '/instance/app/arcblog/economy/products/**', ops: ['read', 'list'], maxDepth: 2 },
-      { path: '/instance/app/arcblog/economy/policies/**', ops: ['read', 'list'], maxDepth: 2 },
     ],
     budget: { max_rounds: 4, total_tokens: 8000 },
     ...overrides,
@@ -70,9 +68,12 @@ function failing(checkResults, id) {
 // --- pure policy ------------------------------------------------------------
 
 test('the tool catalogue marks high-risk tools default-closed (spec §130)', () => {
-  assert.deepEqual(defaultClosedTools(), ['settle_payment', 'change_wallet', 'change_role']);
+  assert.deepEqual(defaultClosedTools(), ['change_role']);
   assert.equal(toolPolicy('get_post').capability, 'agent.read');
-  assert.equal(toolPolicy('settle_payment').defaultClosed, true);
+  assert.equal(toolPolicy('change_role').defaultClosed, true);
+  // settle_payment / change_wallet retired with the economy surface (2026-10-01)
+  assert.equal(toolPolicy('settle_payment'), null);
+  assert.equal(toolPolicy('change_wallet'), null);
   assert.equal(toolPolicy('nope'), null);
   for (const tool of AGENT_TOOLS) assert.ok(AGENT_CAPABILITIES.includes(tool.capability), tool.name);
 });
@@ -99,7 +100,7 @@ test('declared write ops are rejected (agents start read-only)', () => {
 });
 
 test('sensitive paths and wildcard scopes are rejected', () => {
-  const sensitive = checkAgentManifest(readOnlyAgent({ tools: [{ path: '/instance/app/arcblog/economy/orders/**', ops: ['read'], maxDepth: 1 }] }));
+  const sensitive = checkAgentManifest(readOnlyAgent({ tools: [{ path: '/instance/app/arcblog/page-drafts/**', ops: ['read'], maxDepth: 1 }] }));
   assert.ok(failing(sensitive, ':privacy'));
 
   const broad = checkAgentManifest(readOnlyAgent({ tools: [{ path: '/**', ops: ['read'], maxDepth: 1 }] }));
@@ -145,7 +146,7 @@ test('agent help exits 0 and documents the default-closed tools', () => {
   const res = run(['--help']);
   assert.equal(res.status, 0);
   assert.match(res.stdout, /arcblog-agent\.mjs show/);
-  assert.match(res.stdout, /settle_payment, change_wallet, change_role/);
+  assert.match(res.stdout, /change_role/);
 });
 
 test('agent rejects an unknown command with VALIDATION', () => {
@@ -155,7 +156,7 @@ test('agent rejects an unknown command with VALIDATION', () => {
 });
 
 test('tools --tool reports one tool and rejects an unknown one', () => {
-  const known = run(['tools', '--tool', 'settle_payment']);
+  const known = run(['tools', '--tool', 'change_role']);
   assert.equal(known.status, 0);
   assert.equal(json(known.stdout).tool.defaultClosed, true);
 
@@ -173,7 +174,7 @@ test('the repository declares a policy-compliant read-only agent', () => {
   assert.equal(report.ok, true);
   assert.deepEqual(report.failed, []);
   assert.ok(report.checks.some((check) => check.id === 'agent:arcblog-agent:read-only'));
-  assert.deepEqual(report.policy.defaultClosedTools, ['settle_payment', 'change_wallet', 'change_role']);
+  assert.deepEqual(report.policy.defaultClosedTools, ['change_role']);
 
   const show = run(['show']);
   assert.equal(show.status, 0, show.stderr);
@@ -200,7 +201,7 @@ test('every catalogue entry declares how it would act', () => {
   }
   assert.equal(executableReadTools().length, 5);
   assert.equal(writeTools().length, 3);
-  assert.equal(closedTools().length, 3);
+  assert.equal(closedTools().length, 1); // settle_payment/change_wallet retired (ENG-16)
 });
 
 test('scopeCoversResource matches a directory scope and its children', () => {
@@ -251,7 +252,7 @@ test('grantAllows checks capability and expiry', () => {
 // --- run: closed and unavailable tools --------------------------------------
 
 test('run refuses closed and unavailable tools with distinct codes', () => {
-  const closed = run(['run', '--tool', 'settle_payment']);
+  const closed = run(['run', '--tool', 'change_role']);
   assert.equal(closed.status, 1);
   assert.equal(json(closed.stderr).code, 'FORBIDDEN');
   assert.match(json(closed.stderr).error, /default-closed/);
@@ -319,7 +320,7 @@ test('get_analytics aggregates public surfaces only (spec §60/§62)', () => {
   const out = json(res.stdout);
   assert.equal(out.capability, 'agent.read');
   assert.ok(Number.isFinite(out.result.publishedPosts));
-  assert.ok(Number.isFinite(out.result.productsListed));
+  assert.ok(Number.isFinite(out.result.onlinePages));
   // privacy boundary: no buyer data, ever (spec §62)
   assert.ok(!('orders' in out.result));
   assert.ok(!('buyers' in out.result));

@@ -56,7 +56,7 @@ const AUDIT_SCRIPT = join(__dirname, 'arcblog-audit.mjs');
  * The console's static-page intent queue (REQ-019 fourth batch).
  *
  * It lives under the admin-only `config/` tree — the same tree
- * `config/category-intents` / `config/media-intents` / `config/hub-intents` use —
+ * `config/category-intents` / `config/media-intents` use —
  * so the queue is authorized by the existing `config` replicated collection and
  * the existing admin `networkRead` prefix: **zero `blocklet.yaml` change**. It
  * must NOT hang under `pages/` (guest-readable) or `page-drafts/`.
@@ -212,7 +212,7 @@ function commandShow(opts, instance) {
 
 // ---------------------------------------------------------------------------
 // The console intent queue (REQ-019 fourth batch) — same shape as the category
-// (R18), media (R19) and hub (R21) workers: ONE intent per record, terminal
+// (R18) and media (R19) workers: ONE intent per record, terminal
 // status written back onto the record, D36 vocabulary, D38 `<id>.json` naming.
 // ---------------------------------------------------------------------------
 
@@ -255,7 +255,7 @@ export function scanQueue(instance) {
       dir.ignored.push({ path, reason: 'queue entry could not be read — no worker will consume it (D38)' });
       continue;
     }
-    // D36 read-side compatibility (same shape as category/media/hub): a record
+    // D36 read-side compatibility (same shape as category/media): a record
     // written before the vocabulary was unified is canonicalized and repaired in
     // place, so the console never renders a word the legend does not define.
     const { record, changed, from } = normalizeIntentRecord(stored.value);

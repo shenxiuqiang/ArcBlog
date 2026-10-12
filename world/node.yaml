@@ -6,7 +6,7 @@ fields:
   ogImage: string # default share-card image (spec §15.5); posts override per-article
   did: string
   endpoint: string
-  roles: json # basic | studio | hub (spec §7)
+  roles: json # basic | studio (spec §7; concept v2)
   capabilities: json # spec §11 capability list
   version: string
   protocolVersion: string

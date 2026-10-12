@@ -39,35 +39,35 @@ function json(text) {
 
 test('buildRoleConfig externalizes role assets and defaults assetType', () => {
   const config = buildRoleConfig(
-    { studio: { collectionAddress: '0xStudio', network: 'arcblock' }, hub: { collectionAddress: '0xHub', network: 'arcblock' } },
+    { studio: { collectionAddress: '0xStudio', network: 'arcblock' } },
     { now: '2026-01-01T00:00:00.000Z' },
   );
   assert.equal(config.studio.collectionAddress, '0xStudio');
   assert.equal(config.studio.assetType, 'studio');
-  assert.equal(config.hub.assetType, 'hub');
+  // concept v2: studio is the only chain role — no second role entry exists
+  assert.deepEqual(Object.keys(config).filter((k) => !['chainVerification', 'createdAt', 'updatedAt'].includes(k)), ['studio']);
   assert.equal(config.chainVerification, false);
   assert.equal(config.createdAt, '2026-01-01T00:00:00.000Z');
 });
 
 test('buildRoleConfig preserves createdAt and never hard-codes an address', () => {
   const existing = { studio: { collectionAddress: '0xOld', network: 'arcblock' }, createdAt: '2020-01-01T00:00:00.000Z' };
-  const config = buildRoleConfig({ hub: { collectionAddress: '0xNew', network: 'arcblock' } }, { now: 'n', existing });
+  const config = buildRoleConfig({ studio: { collectionAddress: '0xNew', network: 'arcblock' } }, { now: 'n', existing });
   assert.equal(config.createdAt, '2020-01-01T00:00:00.000Z');
-  assert.equal(config.studio.collectionAddress, '0xOld');
-  assert.equal(config.hub.collectionAddress, '0xNew');
+  assert.equal(config.studio.collectionAddress, '0xNew');
 });
 
 test('validateRoleConfig requires role objects and a boolean switch', () => {
   const ok = validateRoleConfig(buildRoleConfig({}));
   assert.deepEqual(ok, []);
-  assert.ok(validateRoleConfig({ studio: {}, hub: {}, chainVerification: 'yes' }).length >= 1);
+  assert.ok(validateRoleConfig({ studio: {}, chainVerification: 'yes' }).length >= 1);
   assert.ok(validateRoleConfig(null).length === 1);
 });
 
 test('isRoleConfigured needs both an address and a network', () => {
   const config = buildRoleConfig({ studio: { collectionAddress: '0xS', network: 'arcblock' } });
   assert.equal(isRoleConfigured(config, 'studio'), true);
-  assert.equal(isRoleConfigured(config, 'hub'), false);
+  assert.equal(isRoleConfigured(buildRoleConfig({}), 'studio'), false);
 });
 
 test('roleStatus fails closed while chain verification is unwired', () => {
@@ -83,10 +83,8 @@ test('roleStatus fails closed while chain verification is unwired', () => {
   assert.equal(studio.configured, true);
   assert.match(studio.reason, /chain verification is not wired/);
 
-  const hub = roleStatus(config, 'hub', { now: 'now' });
-  assert.equal(hub.configured, false);
-  assert.match(hub.reason, /not configured/);
-
+  // concept v2: hub is no longer a role at all — it is rejected, not configured
+  assert.throws(() => roleStatus(config, 'hub'), /unknown role/);
   assert.throws(() => roleStatus(config, 'enterprise'), /unknown role/);
 });
 
@@ -96,6 +94,7 @@ test('roleStatuses reports basic plus every chain role', () => {
     statuses.map((s) => s.role),
     ['basic', ...CHAIN_ROLES],
   );
+  assert.deepEqual(CHAIN_ROLES, ['studio']);
 });
 
 test('effective capabilities only include active roles; declared ones do not count', () => {
@@ -107,18 +106,19 @@ test('effective capabilities only include active roles; declared ones do not cou
   const verified = statuses.map((s) => (s.role === 'studio' ? { ...s, active: true } : s));
   const effective = effectiveCapabilities(verified);
   assert.ok(effective.includes('studio.publish'));
-  assert.ok(!effective.includes('hub.discovery'));
+  assert.ok(effective.includes('studio.payments'));
 });
 
 test('capabilityReport splits claimed capabilities into granted and withheld', () => {
-  const config = buildRoleConfig({ studio: { collectionAddress: '0xS', network: 'arcblock' }, hub: { collectionAddress: '0xH', network: 'arcblock' } });
-  const report = capabilityReport({ declaredRoles: ['studio', 'hub'], statuses: roleStatuses(config) });
+  const config = buildRoleConfig({ studio: { collectionAddress: '0xS', network: 'arcblock' } });
+  const report = capabilityReport({ declaredRoles: ['studio'], statuses: roleStatuses(config) });
   assert.ok(report.declared.includes('studio.payments'));
   assert.deepEqual(report.granted, BASE_CAPABILITIES);
   assert.equal(report.effective.length, BASE_CAPABILITIES.length);
   assert.ok(report.withheld.includes('studio.payments'));
-  assert.ok(report.withheld.includes('hub.route'));
-  assert.equal(report.granted.length + report.withheld.length, declaredCapabilities(['studio', 'hub']).length);
+  assert.equal(report.granted.length + report.withheld.length, declaredCapabilities(['studio']).length);
+  // a retired role contributes nothing (ROLE_CAPABILITIES has no hub entry)
+  assert.deepEqual(declaredCapabilities(['studio', 'hub']), declaredCapabilities(['studio']));
 });
 
 // --- CLI surface -----------------------------------------------------------
@@ -128,6 +128,15 @@ test('roles help exits 0 and names the external env vars', () => {
   assert.equal(res.status, 0);
   assert.match(res.stdout, /arcblog-roles\.mjs init/);
   assert.match(res.stdout, /ARCBLOG_STUDIO_COLLECTION/);
+  // concept v2: hub is retired — no hub flag or env var may appear
+  assert.ok(!/\bhub/i.test(res.stdout), `help must not mention hub:\n${res.stdout}`);
+});
+
+test('roles state set rejects the retired hub role (fail closed)', () => {
+  const res = run(['state', 'set', '--role', 'hub', '--state', 'acquired']);
+  assert.equal(res.status, 1);
+  assert.equal(json(res.stderr).code, 'VALIDATION');
+  assert.match(json(res.stderr).error, /unknown chain role/);
 });
 
 test('roles rejects an unknown command with VALIDATION', () => {
@@ -235,32 +244,14 @@ test('live: roles state set records the lifecycle and never activates the role',
   }
 });
 
-// §8.6: a role exit keeps the content and reports the in-flight orders with the
-// policy version that will govern them. (ENG-12/DEF-11: the Hub-relation
-// Tombstone step went away with the hub surface itself.)
-test('live: --link-exit reports in-flight orders (spec §8.6)', () => {
-  const economy = join(repoRoot, 'scripts', 'arcblog-economy.mjs');
-  const stamp = Date.now();
-  const productId = `exit-test-product-${stamp}`;
-  const orderId = `exit-test-order-${stamp}`;
-  const run2 = (script, args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: repoRoot, env: { ...process.env } });
+// §8.6: a role exit keeps the content; --link-exit makes the linkage explicit.
+test('live: --link-exit declares the exit linkage (spec §8.6)', () => {
   try {
-    // an in-flight (paid, unsettled) order
-    assert.equal(run2(economy, ['product', 'add', '--id', productId, '--creator-did', 'did:key:zTest', '--price-amount', '3']).status, 0);
-    assert.equal(run2(economy, ['order', 'create', '--id', orderId, '--product-id', productId, '--buyer-did', 'did:key:zBuyer']).status, 0);
-    assert.equal(run2(economy, ['order', 'pay', '--id', orderId, '--adapter', 'manual']).status, 0);
-
     const res = run(['state', 'set', '--role', 'studio', '--state', 'revoking', '--claimable-at', '2999-01-01T00:00:00Z', '--link-exit', '--reason', 'studio exit test']);
     assert.equal(res.status, 0, res.stderr);
     const linkage = json(res.stdout).exitLinkage;
     assert.ok(linkage, 'exitLinkage is reported');
     assert.equal(linkage.contentKept, true);
-    assert.ok(linkage.ordersInFlight.some((o) => o.id === orderId), 'the paid, unsettled order is listed');
-    assert.ok(linkage.ordersInFlight.find((o) => o.id === orderId).settlesUnder.length > 0);
-
-    // the order itself is untouched
-    const order = json(run2(economy, ['order', 'show', '--id', orderId]).stdout).order;
-    assert.equal(order.status, 'paid');
 
     // without the flag nothing is touched (the linkage is explicit, never a side effect)
     const plain = run(['state', 'set', '--role', 'studio', '--state', 'revoking']);

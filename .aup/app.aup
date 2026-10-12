@@ -10,5 +10,4 @@ app "ArcBlog" {
   pages from "pages/admin/*.aup"
   pages from "pages/site/*.aup"
   pages from "pages/ops/*.aup"
-  pages from "pages/economy/*.aup"
 }

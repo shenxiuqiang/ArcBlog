@@ -1,9 +1,8 @@
 // ArcBlog Node NFT factories (spec §8.1–§8.4) — the *specification* half.
 //
 // Design reference: GLofter's factories
-// (`glofter/studio/mock/create-glofter-studio-node-nft-factory.ts` and
-// `glofter/hub/mock/create-glofter-hub-node-nft-factory.ts`). ArcBlog keeps the
-// same on-chain shape so both networks are readable by the same tooling:
+// (`glofter/studio/mock/create-glofter-studio-node-nft-factory.ts`). ArcBlog
+// keeps the same on-chain shape so the network is readable by the same tooling:
 //
 //   createAssetFactory({ wallet, factory })            ← `arcblog-factory.mjs create`
 //   factory.moniker / settlement / limit / input / output / data / hooks
@@ -13,8 +12,8 @@
 //
 // What ArcBlog adds on top of the GLofter shape: node metadata comes from the
 // node profile (`node/profile.json` — name, description, endpoint, roles,
-// capabilities, protocol version) instead of a studio database, and the two
-// roles (studio / hub) are two factories of one product.
+// capabilities, protocol version) instead of a studio database. Concept v2
+// (2026-09-30) retired the second node role: `studio` is the only factory.
 //
 // This module is pure: no AFS, no chain, no dependencies (the blocklet has
 // none). `{{...}}` templates are expanded by `renderTemplate` below — a small
@@ -23,19 +22,8 @@
 /** ABT has 18 decimals; GLofter mints/stakes 1 ABT (`fromTokenToUnit(1, 18)`). */
 export const TOKEN_DECIMALS = 18;
 
-/** Capacity formula shared with GLofter (`hub/api/src/utils/node/capacity.ts`). */
-export const CAPACITY_COEFFICIENT = 1442.695;
-export const CAPACITY_MAX = 10000;
-
-/** Default hub pricing tiers (ABT per day), same numbers GLofter ships. */
-export const DEFAULT_HUB_PRICING = { basic: '0.1', pro: '0.2', premium: '0.3', enterprise: '0.4' };
-
-/** Default per-node stake, in ABT (GLofter stakes 1 ABT for both roles). */
+/** Default per-node stake, in ABT (GLofter stakes 1 ABT). */
 export const DEFAULT_STAKE_AMOUNT = '1';
-
-export const DEFAULT_HUB_RULES =
-  'Comply with local laws and regulations; Prohibit pornographic, violent and false information; ' +
-  'Ensure original works or authorized use; Violations result in rejection of the application.';
 
 /** Decimal string → smallest unit string (`1` + 18 decimals → `1{18 zeros}`). */
 export function fromTokenToUnit(amount, decimals = TOKEN_DECIMALS) {
@@ -46,17 +34,7 @@ export function fromTokenToUnit(amount, decimals = TOKEN_DECIMALS) {
   return `${whole}${padded}`.replace(/^0+(?=\d)/, '');
 }
 
-/**
- * Capacity for a Hub node (studios), derived from the staked amount.
- * `capacity = min(ceil(1442.695 * ln(stake + 1)), 10000)` — 1 ABT ≈ 1000.
- */
-export function capacityForStake(stakeAmount) {
-  const stake = Number(stakeAmount);
-  if (!Number.isFinite(stake) || stake < 0) throw new Error(`stake must be a non-negative number: ${stakeAmount}`);
-  return Math.min(Math.ceil(CAPACITY_COEFFICIENT * Math.log(stake + 1)), CAPACITY_MAX);
-}
-
-/** The role-specific half of a factory. Keep both entries symmetric. */
+/** The role-specific half of a factory (concept v2: studio only). */
 export const ROLE_FACTORIES = {
   studio: {
     role: 'studio',
@@ -67,7 +45,7 @@ export const ROLE_FACTORIES = {
       'Non-fungible asset representing a Studio node in the ArcBlog network. Each NFT establishes on-chain ' +
       'studio identity and records the node metadata ArcBlog publishes in its node profile.',
     // ArcBlog studio nodes are the publishing side: identity + endpoint + what
-    // the node is allowed to do. Pricing/capacity belong to hubs.
+    // the node is allowed to do.
     variables: [
       { name: 'endpoint', required: true },
       { name: 'region', required: true },
@@ -81,27 +59,6 @@ export const ROLE_FACTORIES = {
       { name: 'nodeVersion', required: false },
     ],
     dataKeys: ['name', 'description', 'endpoint', 'region', 'stake', 'pk', 'roles', 'capabilities', 'protocolVersion', 'nodeVersion'],
-    ownerKey: 'owner',
-  },
-  hub: {
-    role: 'hub',
-    name: 'ArcBlog Hub Node',
-    moniker: 'ArcBlogHubNode',
-    tag: 'ArcBlogHubNode',
-    description:
-      'Non-fungible asset representing a Hub node in the ArcBlog network. Each NFT establishes on-chain node ' +
-      'identity and records the hub metadata: capacity, pricing tiers and the rules it enforces.',
-    variables: [
-      { name: 'endpoint', required: true },
-      { name: 'region', required: true },
-      { name: 'pk', required: true },
-      { name: 'name', required: false },
-      { name: 'description', required: false },
-      { name: 'stake', required: true },
-      { name: 'rules', required: false },
-      { name: 'pricing', required: false },
-    ],
-    dataKeys: ['name', 'description', 'endpoint', 'region', 'pk', 'stake', 'rules', 'pricing', 'capacity'],
     ownerKey: 'owner',
   },
 };
@@ -121,7 +78,7 @@ export const ROLE_FACTORIES = {
 export function buildNodeSVG(role, { simulated = false } = {}) {
   const spec = ROLE_FACTORIES[role];
   if (!spec) throw new Error(`unknown node role: ${role}`);
-  const accent = role === 'studio' ? '#2563eb' : '#0f766e';
+  const accent = '#2563eb';
   const label = simulated ? `${spec.name} — not on chain / simulated` : spec.name;
   const banner = simulated
     ? `
@@ -137,8 +94,8 @@ export function buildNodeSVG(role, { simulated = false } = {}) {
   <text x="32" y="158" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#94a3b8">region {{data.region}}</text>
   <text x="32" y="206" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#64748b">stake</text>
   <text x="32" y="228" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#f8fafc">{{data.stake}} ABT</text>
-  <text x="248" y="206" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#64748b">${role === 'hub' ? 'capacity' : 'owner'}</text>
-  <text x="248" y="228" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#f8fafc">${role === 'hub' ? '{{data.capacity}} studios' : '{{data.owner}}'}</text>
+  <text x="248" y="206" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#64748b">owner</text>
+  <text x="248" y="228" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#f8fafc">{{data.owner}}</text>
   <text x="32" y="268" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#475569">pk {{data.pk}}</text>
 </svg>`;
   // OCAP keeps `output.display.content` as a JSON string and `@ocap/asset` renders
@@ -151,28 +108,22 @@ export function buildNodeSVG(role, { simulated = false } = {}) {
  * Build the `createAssetFactory` payload for a role.
  *
  * @param {object} input
- * @param {'studio'|'hub'} input.role
+ * @param {'studio'} input.role
  * @param {string} input.tokenAddress   ABT token address on the target chain
  * @param {string} input.issuerAddress  factory owner / issuer wallet address
  * @param {string} [input.stakeAmount]  ABT to stake (also the mint price basis)
- * @param {{basic:string,pro:string,premium:string,enterprise:string}} [input.pricing] hub tiers
- * @param {string} [input.rules]        hub rules text
  * @param {boolean} [input.simulated]   mark the SVG card "not on chain / simulated"
  *                                      (mock adapter, offline sample) — BUG-037
  */
-export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmount = DEFAULT_STAKE_AMOUNT, pricing, rules, simulated = false } = {}) {
+export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmount = DEFAULT_STAKE_AMOUNT, simulated = false } = {}) {
   const spec = ROLE_FACTORIES[role];
-  if (!spec) throw new Error(`unknown node role: ${role} (use studio|hub)`);
+  if (!spec) throw new Error(`unknown node role: ${role} (use studio)`);
   if (!tokenAddress) throw new Error('tokenAddress is required (the ABT token used to mint)');
   if (!issuerAddress) throw new Error('issuerAddress is required (the factory owner wallet)');
 
   const token = { address: tokenAddress, value: fromTokenToUnit(stakeAmount) };
-  const tiers = { ...DEFAULT_HUB_PRICING, ...(pricing ?? {}) };
-  const capacity = capacityForStake(Number(stakeAmount));
-  const rulesText = rules || DEFAULT_HUB_RULES;
 
-  // The data block is what the NFT carries. Studio nodes carry identity +
-  // endpoint; hub nodes additionally carry capacity/pricing/rules (§8.3).
+  // The data block is what the NFT carries: identity + endpoint + capabilities.
   const dataValue = {
     name: '{{input.name}}',
     description: '{{input.description}}',
@@ -181,33 +132,16 @@ export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmoun
     stake: '{{input.stake}}',
     pk: '{{input.pk}}',
     owner: '{{ctx.owner}}',
+    roles: '{{input.roles}}',
+    capabilities: '{{input.capabilities}}',
+    protocolVersion: '{{input.protocolVersion}}',
+    nodeVersion: '{{input.nodeVersion}}',
   };
-  if (role === 'studio') {
-    dataValue.roles = '{{input.roles}}';
-    dataValue.capabilities = '{{input.capabilities}}';
-    dataValue.protocolVersion = '{{input.protocolVersion}}';
-    dataValue.nodeVersion = '{{input.nodeVersion}}';
-  } else {
-    // GLofter bakes the tiers and the rules into the factory (they are the
-    // hub's terms, not something a buyer types at mint time). Capacity follows
-    // the stake, so it is resolved per mint.
-    dataValue.pricing = { ...tiers };
-    dataValue.capacity = '{{input.capacity}}';
-    dataValue.rules = rulesText;
-  }
 
   // `data.value` is the mutable projection the issuer can refresh later
   // (GLofter does exactly this in its node-status route).
   const mutableData = {};
   for (const key of spec.dataKeys) mutableData[key] = `{{data.${key}}}`;
-  if (role === 'hub') {
-    mutableData.pricing = {
-      basic: '{{data.pricing.basic}}',
-      pro: '{{data.pricing.pro}}',
-      premium: '{{data.pricing.premium}}',
-      enterprise: '{{data.pricing.enterprise}}',
-    };
-  }
 
   return {
     name: spec.name,
@@ -218,11 +152,7 @@ export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmoun
     input: {
       tokens: [token],
       assets: [],
-      variables: [
-        ...spec.variables,
-        // hub capacity is derived from the stake by ArcBlog, not typed by the buyer
-        ...(role === 'hub' ? [{ name: 'capacity', required: false }] : []),
-      ],
+      variables: spec.variables,
     },
     output: {
       moniker: `${spec.moniker} #{{ctx.id}}`,
@@ -248,10 +178,6 @@ export function buildNodeFactory({ role, tokenAddress, issuerAddress, stakeAmoun
       role,
       token,
       stakeAmount: String(stakeAmount),
-      capacity: role === 'hub' ? capacity : undefined,
-      pricing: role === 'hub' ? tiers : undefined,
-      rules: role === 'hub' ? rulesText : undefined,
-      capacityFormula: 'min(ceil(1442.695 * ln(stake + 1)), 10000)',
     },
   };
 }
@@ -312,10 +238,9 @@ export function renderTemplate(value, scope) {
  * consume exactly these names. `pk` is the node's signing public key (§67 reuses
  * it for content provenance).
  */
-export function buildMintInputs({ role, profile = {}, pk = '', stakeAmount = DEFAULT_STAKE_AMOUNT, pricing, rules } = {}) {
+export function buildMintInputs({ role, profile = {}, pk = '', stakeAmount = DEFAULT_STAKE_AMOUNT } = {}) {
   const spec = ROLE_FACTORIES[role];
-  if (!spec) throw new Error(`unknown node role: ${role} (use studio|hub)`);
-  const tiers = { ...DEFAULT_HUB_PRICING, ...(pricing ?? {}) };
+  if (!spec) throw new Error(`unknown node role: ${role} (use studio)`);
   const inputs = {
     endpoint: String(profile.endpoint ?? ''),
     region: String(profile.region ?? profile.regionLabel ?? ''),
@@ -327,16 +252,11 @@ export function buildMintInputs({ role, profile = {}, pk = '', stakeAmount = DEF
     // fails ("Bad control character in string literal"). GLofter passes a
     // single-line `wallet.publicKey`; collapse any whitespace so a PEM file works.
     pk: String(pk ?? '').replace(/\s+/g, ''),
+    roles: Array.isArray(profile.roles) ? profile.roles.join(',') : String(profile.roles ?? 'basic'),
+    capabilities: Array.isArray(profile.capabilities) ? profile.capabilities.join(',') : String(profile.capabilities ?? ''),
+    protocolVersion: String(profile.protocolVersion ?? ''),
+    nodeVersion: String(profile.version ?? ''),
   };
-  if (role === 'studio') {
-    inputs.roles = Array.isArray(profile.roles) ? profile.roles.join(',') : String(profile.roles ?? 'basic');
-    inputs.capabilities = Array.isArray(profile.capabilities) ? profile.capabilities.join(',') : String(profile.capabilities ?? '');
-    inputs.protocolVersion = String(profile.protocolVersion ?? '');
-    inputs.nodeVersion = String(profile.version ?? '');
-  } else {
-    // tiers + rules live in the factory; only the capacity follows the stake
-    inputs.capacity = String(capacityForStake(Number(stakeAmount)));
-  }
   return inputs;
 }
 

@@ -84,7 +84,7 @@ const GUARDS = {
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   'arcblog-i18n': [/^\.aup\//, /^scripts\/arcblog-i18n/],
   'arcblog-permissions': [/^blocklet\.yaml$/, /^scripts\/arcblog-permissions/],
-  'arcblog-roles-settings': [/^\.aup\/pages\/(admin\/general|economy\/policy)\.aup$/, /^scripts\/(arcblog-roles|lib\/roles)/, /^\.aup\/locales\//],
+  'arcblog-roles-settings': [/^\.aup\/pages\/admin\/general\.aup$/, /^scripts\/(arcblog-roles|lib\/roles)/, /^\.aup\/locales\//],
   'arcblog-run-tests': [/^scripts\/run-tests\.mjs$/, /^scripts\/arcblog-run-tests/, /^package\.json$/],
   'arcblog-runtime-ids': [/^\.aup\/wrapper\.aup$/, /^\.aup\/pages\//, /^scripts\/arcblog-runtime-ids/],
   'arcblog-theme': [/^\.aup\/app\.aup$/, /^\.aup\/wrapper\.aup$/, /^\.web\//, /^scripts\/arcblog-theme/],

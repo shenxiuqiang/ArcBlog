@@ -57,18 +57,19 @@ test('parseManifest reads scalar keys and strips quotes', () => {
 
 test('capabilitiesForRoles derives capabilities from roles (spec §11)', () => {
   assert.deepEqual(capabilitiesForRoles(['basic']), BASE_CAPABILITIES);
-  const hub = capabilitiesForRoles(['basic', 'hub']);
-  assert.ok(hub.includes('hub.discovery'));
-  assert.ok(hub.includes('blog.publish'));
-  const studioAndHub = capabilitiesForRoles(['studio', 'hub']);
-  assert.ok(studioAndHub.includes('studio.payments'));
-  assert.ok(studioAndHub.includes('hub.route'));
+  const studio = capabilitiesForRoles(['basic', 'studio']);
+  assert.ok(studio.includes('studio.publish'));
+  assert.ok(studio.includes('blog.publish'));
+  assert.ok(studio.includes('studio.payments'));
 });
 
 test('normalizeRoles rejects unknown roles', () => {
-  assert.deepEqual(normalizeRoles('studio,hub'), ['studio', 'hub']);
+  assert.deepEqual(normalizeRoles('basic,studio'), ['basic', 'studio']);
   assert.deepEqual(normalizeRoles(''), ['basic']);
   assert.throws(() => normalizeRoles('enterprise'), /VALIDATION: unknown role/);
+  // concept v2: hub is retired — it is an unknown role now, not a valid one
+  assert.throws(() => normalizeRoles('hub'), /VALIDATION: unknown role/);
+  assert.throws(() => normalizeRoles('studio,hub'), /VALIDATION: unknown role/);
 });
 
 test('normalizeCapabilities rejects unknown capabilities', () => {
@@ -111,12 +112,25 @@ test('validateNodeProfile warns when a role capability is missing', () => {
     did: 'did:blocklet:a',
     version: '1',
     protocolVersion: '1',
-    roles: ['hub'],
+    roles: ['studio'],
     capabilities: BASE_CAPABILITIES,
   });
   assert.equal(result.ok, true);
   assert.equal(result.warnings.length, 1);
-  assert.match(result.warnings[0], /hub\.discovery/);
+  assert.match(result.warnings[0], /studio\.publish/);
+});
+
+test('validateNodeProfile rejects the retired hub role', () => {
+  const result = validateNodeProfile({
+    name: 'A',
+    did: 'did:blocklet:a',
+    version: '1',
+    protocolVersion: '1',
+    roles: ['hub'],
+    capabilities: BASE_CAPABILITIES,
+  });
+  assert.equal(result.ok, false);
+  assert.ok(result.issues.some((issue) => /unknown role: hub/.test(issue)));
 });
 
 // --- CLI surface -----------------------------------------------------------
@@ -125,7 +139,8 @@ test('node help exits 0 and documents the role set', () => {
   const res = run(['--help']);
   assert.equal(res.status, 0);
   assert.match(res.stdout, /arcblog-node\.mjs init/);
-  assert.match(res.stdout, /basic \| studio \| hub/);
+  assert.match(res.stdout, /basic \| studio/);
+  assert.ok(!/hub/i.test(res.stdout), `help must not mention hub:\n${res.stdout}`);
 });
 
 test('node unknown command fails with VALIDATION', () => {

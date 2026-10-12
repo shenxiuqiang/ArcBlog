@@ -27,7 +27,6 @@ const { INSTANCE_ROOT } = await import('./lib/arc.mjs');
 
 const POSTS_DIR = `${INSTANCE_ROOT}/posts`;
 const DRAFTS_DIR = `${INSTANCE_ROOT}/drafts`;
-const PAID_DIR = `${INSTANCE_ROOT}/paid`;
 
 function parseJson(text) {
   try {
@@ -37,16 +36,9 @@ function parseJson(text) {
   }
 }
 
-/**
- * Read a post record. A paid post's public record is preview-only (§24/§86), so
- * the hash/signature cover the full text in paid/ — verify against that one.
- */
+/** Read a post record from the published directory, else from drafts/. */
 function readPost(slug, instance) {
   const publicRecord = readJson(`${POSTS_DIR}/${slug}.json`, instance)?.value || null;
-  if (publicRecord?.previewOnly) {
-    const full = readJson(`${PAID_DIR}/${slug}.json`, instance)?.value || null;
-    if (full) return { post: full, path: `${PAID_DIR}/${slug}.json`, where: 'paid' };
-  }
   if (publicRecord) return { post: publicRecord, path: `${POSTS_DIR}/${slug}.json`, where: 'published' };
   const draft = readJson(`${DRAFTS_DIR}/${slug}.json`, instance)?.value || null;
   if (draft) return { post: draft, path: `${DRAFTS_DIR}/${slug}.json`, where: 'private' };

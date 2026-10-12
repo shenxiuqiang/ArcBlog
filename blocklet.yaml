@@ -72,10 +72,7 @@ sites:
                     # lands on the standalone `seo` page directly (no bridge).
 
 # The `store` binding and its page were removed (ENG-07, storefront off the
-# product surface). The economy/* networkRead + replicated declarations below
-# are KEPT on purpose: they gate the AFS collections that the retained CLI
-# `scripts/arcblog-economy.mjs` reads and writes — they are record-level
-# permissions, not pointers to the deleted pages.
+# product surface).
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).
@@ -88,10 +85,6 @@ networkRead:
   - path: /instance/app/arcblog/posts
     role: guest
   - path: /instance/app/arcblog/drafts
-    role: admin
-  # spec §24/§86: paid full text is admin-only storage; readers get it through
-  # an Access Grant check, never through the guest-readable posts/ directory.
-  - path: /instance/app/arcblog/paid
     role: admin
   - path: /instance/app/arcblog/heroes
     role: guest
@@ -114,32 +107,10 @@ networkRead:
   # listing of admin-only children — measured: a guest could list
   # config/agent-grants/ and see the file ids of capability grants. The documented
   # pattern is to gate the whole tree and never nest a public child under a private
-  # parent. config/ therefore holds no public surface at all: roles and trusted Hub
-  # keys are read by the CLI and by admin-only pages (the dashboard is behind the
+  # parent. config/ therefore holds no public surface at all: the role config is
+  # read by the CLI and by admin-only pages (the dashboard is behind the
   # sign-in gate), so the whole prefix stays admin.
   - path: /instance/app/arcblog/config
-    role: admin
-  # spec §50: economic transparency — the split policy is public; orders,
-  # settlements and the ledger stay admin-only (they name buyers).
-  - path: /instance/app/arcblog/economy/policies
-    role: guest
-  - path: /instance/app/arcblog/economy/products
-    role: guest
-  - path: /instance/app/arcblog/economy/orders
-    role: admin
-  - path: /instance/app/arcblog/economy/settlements
-    role: admin
-  - path: /instance/app/arcblog/economy/ledger
-    role: admin
-  - path: /instance/app/arcblog/economy/access-grants
-    role: admin
-  # spec §90: refund events are corrections, never deletions — admin-only like
-  # the orders they reference.
-  - path: /instance/app/arcblog/economy/refunds
-    role: admin
-  # Attribution proofs are evidence for settlement (admin-only); trusted Hub
-  # public keys are public by definition.
-  - path: /instance/app/arcblog/economy/attributions
     role: admin
   # spec §15.4: static pages. The same directory-boundary rule as posts —
   # pages/ is online only (guest), page-drafts/ is offline only (admin).
@@ -160,12 +131,6 @@ replicated:
     readRole: guest
   drafts:
     canonical: instance/app/arcblog/drafts/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §24/§86: full text of paid posts (preview-only copies live in posts/).
-  paid:
-    canonical: instance/app/arcblog/paid/*
     copy: none
     minRole: admin
     readRole: admin
@@ -204,58 +169,13 @@ replicated:
     minRole: admin
     readRole: admin
   # The whole config tree is one admin-only collection: roles, content-signing
-  # keys, trusted Hub keys, agent grants and the node-NFT records (spec §9/§61/§67).
+  # keys, agent grants and the node-NFT records (spec §9/§61/§67).
   # Guest on the PARENT prefix would also expose the directory listing of nested
   # admin-only records (measured: a guest could list config/agent-grants and read
   # the grant file ids), so the tree stays admin — the documented ARC pattern is
   # to gate the tree and never nest a public child under a private parent.
   config:
     canonical: instance/app/arcblog/config/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §29/§41/§42/§91: economy records. The policy is public (transparency),
-  # everything naming a buyer stays admin-only.
-  economy-policy:
-    canonical: instance/app/arcblog/economy/policies/*
-    copy: none
-    minRole: admin
-    readRole: guest
-  economy-products:
-    canonical: instance/app/arcblog/economy/products/*
-    copy: none
-    minRole: admin
-    readRole: guest
-  economy-orders:
-    canonical: instance/app/arcblog/economy/orders/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  economy-settlements:
-    canonical: instance/app/arcblog/economy/settlements/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  economy-ledger:
-    canonical: instance/app/arcblog/economy/ledger/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  economy-access-grants:
-    canonical: instance/app/arcblog/economy/access-grants/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §90: refund events (Original Order + Refund Event + Settlement
-  # Reversal; the ledger stays append-only).
-  economy-refunds:
-    canonical: instance/app/arcblog/economy/refunds/*
-    copy: none
-    minRole: admin
-    readRole: admin
-  # spec §30–§33: discovery proofs and the Hub keys needed to verify them.
-  economy-attributions:
-    canonical: instance/app/arcblog/economy/attributions/*
     copy: none
     minRole: admin
     readRole: admin

@@ -13,10 +13,9 @@ What you can read:
 
 What you must never attempt (default-closed, spec §61/§130):
 
-- `settle_payment`, `change_wallet`, `change_role` — high-risk operations that
-  require explicit human authorization, not an agent turn.
-- Reading `orders/`, `settlements/`, `ledger/` or `access-grants/` — those name
-  buyers and readers and are admin-only.
+- `change_role` — a high-risk operation that requires explicit human
+  authorization, not an agent turn.
+- Reading `drafts/`, `page-drafts/` or anything under `/blocklets` — admin-only surfaces.
 - Creating, editing or publishing content. Drafting is a human workflow here;
   use the CLI (`scripts/arcblog-lifecycle.mjs`) with a DID session instead.
 

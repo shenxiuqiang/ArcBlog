@@ -11,7 +11,7 @@ synopsis: >-
   needs me now" in one screen — the newest drafts waiting to be finished, with
   the platform pager's own total, and the newest published stories — and offer
   exactly one primary action, Write a post (?page=compose). Node, network,
-  order, Agent and Hub detail belongs to Operations / Orders / Agents / Hub; the
+  order and Agent detail belongs to Operations / Agents; the
   landing page shows no technical identifier at all (§2.7.3, level-3 content).
 flows:
   - Read the node profile written by scripts/arcblog-node.mjs.

@@ -28,8 +28,8 @@ import { BASE_CAPABILITIES, NODE_ROLES, ROLE_CAPABILITIES, capabilitiesForRoles 
 export const ROLE_CONFIG_PATH =
   process.env.ARCBLOG_ROLES_PATH || `${INSTANCE_ROOT}/config/roles.json`;
 
-/** Roles that require an on-chain asset + stake (spec §7.2/§7.3). */
-export const CHAIN_ROLES = ['studio', 'hub'];
+/** Roles that require an on-chain asset + stake (concept v2: studio only). */
+export const CHAIN_ROLES = ['studio'];
 
 /**
  * Role lifecycle states (spec §8.5): none → acquired → staked → revoking →
@@ -68,7 +68,6 @@ function roleEntry(input, existing, role) {
 export function buildRoleConfig(input = {}, { now = nowIso(), existing = null } = {}) {
   const config = {
     studio: roleEntry(input, existing, 'studio'),
-    hub: roleEntry(input, existing, 'hub'),
     // Master switch for on-chain verification. Off until a verifier is wired,
     // which is what keeps every roleStatus() fail-closed.
     chainVerification: Boolean(input.chainVerification ?? existing?.chainVerification ?? false),

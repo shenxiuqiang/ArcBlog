@@ -12,10 +12,10 @@
  *      must be able to prove there is none without a browser;
  *   3. a positive "chain verified" claim must never appear (fail closed, §114);
  *   4. BUG-072: an unconditional "nothing queued yet" claim must not come back;
- *   5. BUG-073: the `running` state the console legend describes must really be
- *      written by the policy worker;
- *   6. REQ-034's "re-verify" must stay a queued intent + worker, and must not
+ *   5. REQ-034's "re-verify" must stay a queued intent + worker, and must not
  *      grow a second buy/stake path on the settings page (L-R26-2 / L-R26-1).
+ *
+ * (BUG-073's CLI-side assertions were retired with the economy data layer.)
  */
 
 import test from 'node:test';
@@ -31,11 +31,6 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(join(repoRoot, rel), 'utf8');
 
 const GENERAL = '.aup/pages/admin/general.aup';
-// retired by ENG-07 (page removed): .aup/pages/economy/policy.aup was deleted, so
-// the POLICY-based guards below were retired with it (BUG-072's page assertions,
-// BUG-073's legend row). BUG-073's CLI-side assertions (scripts/arcblog-economy.mjs,
-// still present) stay.
-const ECONOMY = 'scripts/arcblog-economy.mjs';
 const LOCALES = ['.aup/locales/en.json', '.aup/locales/zh.json'];
 const VERIFY_QUEUE_DIR = '/instance/app/arcblog/config/role-verify-intents';
 
@@ -77,24 +72,6 @@ test('no positive "chain verified" claim in the settings page or its locales', (
   }
   // the honesty string that MUST be there instead
   assert.match(read(GENERAL), /NOT a chain verification|不是\*\*链上验证/, 'the re-verify honesty note is gone');
-});
-
-// retired by ENG-07 (page removed): the BUG-072 guard read the deleted
-// economy/policy.aup; its page-level empty-state assertions no longer have a
-// subject. The retired locale keys stay prunable by `arc dsl lint`.
-
-test('BUG-073: the policy worker really writes the `running` claim it advertises', () => {
-  const economy = read(ECONOMY);
-  assert.match(economy, /next\.status = INTENT_STATUS\.running;/, 'the claim write is gone — BUG-073 is back');
-  assert.match(economy, /next\.claimedAt = claimedAt;/, 'the claim timestamp is gone');
-  assert.match(economy, /next\.statusHistory = \[\.\.\.history, next\.status\];/, 'the status trail is gone');
-  // the claim must happen BEFORE the policy data write, or a crash leaves a
-  // record that looks untouched (the whole point of the in-flight state).
-  const claimAt = economy.indexOf('next.status = INTENT_STATUS.running;');
-  const dataWriteAt = economy.indexOf('writeJson(POLICY_PATH, policy, instance', claimAt);
-  assert.ok(claimAt > 0 && dataWriteAt > claimAt, 'the claim must be written before the policy data write');
-  // retired by ENG-07 (page removed): the legend row lived in the deleted
-  // economy/policy.aup ("running = claimed by the worker" assertion dropped).
 });
 
 test('the re-verify control is a queued intent + worker, never a second buy path', () => {

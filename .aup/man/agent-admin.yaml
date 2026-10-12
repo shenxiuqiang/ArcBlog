@@ -30,8 +30,6 @@ refs:
       event: click
     - id: console-nav-operations
       event: click
-    - id: console-nav-hub-admin
-      event: click
     - id: console-nav-media-admin
       event: click
     - id: console-nav-agent-admin

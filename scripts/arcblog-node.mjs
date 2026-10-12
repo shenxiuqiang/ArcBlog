@@ -179,7 +179,7 @@ function help() {
 
 Usage:
   node scripts/arcblog-node.mjs init [--name <n>] [--description <d>] [--did <did>]
-                                     [--endpoint <url>] [--roles basic,studio,hub]
+                                     [--endpoint <url>] [--roles basic,studio]
                                      [--capabilities blog.read,...] [--update]
   node scripts/arcblog-node.mjs show
   node scripts/arcblog-node.mjs set --name <n> [--description <d>] [--roles ...] ...

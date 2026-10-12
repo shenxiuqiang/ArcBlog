@@ -194,33 +194,42 @@ test('D37c: refreshSvg queries an ocap node and skips mock/unknown ones with a d
       return { moniker: 'ArcBlogStudioNode #7', data: { type: 'json', value: '{"name":"ArcBlog"}' } };
     },
   };
-  writeJson(env.ARCBLOG_FACTORY_REGISTRY_PATH, { adapter: 'ocap', factories: { studio: { address: 'zStudioFactory' }, hub: { address: 'zHubFactory' } } }, '');
-  writeJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH, { adapter: 'ocap', adapterScope: 'registry', factories: { studio: { address: 'zStudioFactory' }, hub: { address: 'zHubFactory' } }, nodes: { studio: { assetId: 'zStudioAsset' }, hub: { assetId: 'zHubAsset' } } }, '');
+  writeJson(env.ARCBLOG_FACTORY_REGISTRY_PATH, { adapter: 'ocap', factories: { studio: { address: 'zStudioFactory' } } }, '');
+  writeJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH, { adapter: 'ocap', adapterScope: 'registry', factories: { studio: { address: 'zStudioFactory' } }, nodes: { studio: { assetId: 'zStudioAsset' } } }, '');
 
-  // 1) studio = ocap (query it), hub = mock (never query it)
-  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset', adapter: 'ocap' }, hub: { assetId: '0xa5ed65ce34c5c62da786bdbc10efb57ebacd2f4', owner: '0xhubowner', adapter: 'mock' } } }, '');
+  // 1) studio = ocap → queried and refreshed
+  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset', adapter: 'ocap' } } }, '');
   const mixed = await refreshSvg('', { chain: fakeChain });
-  assert.deepEqual(calls, [['factoryState', 'zStudioFactory'], ['getAssetState', 'zStudioAsset']], 'only the ocap node may be queried');
+  assert.deepEqual(calls, [['factoryState', 'zStudioFactory'], ['getAssetState', 'zStudioAsset']], 'the ocap node is queried');
   assert.equal(mixed.updated, 1);
-  assert.equal(mixed.skipped, 1);
+  assert.equal(mixed.skipped, 0);
   const summary = readJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH)?.value;
   assert.ok(String(summary.nodes.studio.svg).startsWith('data:image/svg+xml;base64,'), 'studio must keep refreshing its real NFT card');
   assert.equal(summary.nodes.studio.moniker, 'ArcBlogStudioNode #7');
   assert.equal(summary.nodes.studio.svgError, '', 'a successful refresh clears an older diagnostic');
   assert.equal(summary.nodes.studio.chainVerified, true);
-  assert.equal(summary.nodes.hub.adapter, 'mock');
-  assert.equal(summary.nodes.hub.simulated, true);
-  assert.equal(summary.nodes.hub.simulationUnknown, false);
-  assert.match(summary.nodes.hub.svgError, /simulation/, 'the mock node is skipped WITH a reason');
-  assert.match(summary.nodes.hub.svgError, /not queried/);
+
+  // 1b) studio = mock → never queried through the real chain, WITH a reason
+  calls.length = 0;
+  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset', adapter: 'mock' } } }, '');
+  const mockNode = await refreshSvg('', { chain: fakeChain });
+  assert.deepEqual(calls, [], 'a mock node must never be queried through the real chain');
+  assert.equal(mockNode.updated, 0);
+  assert.equal(mockNode.skipped, 1);
+  const afterMock = readJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH)?.value;
+  assert.equal(afterMock.nodes.studio.adapter, 'mock');
+  assert.equal(afterMock.nodes.studio.simulated, true);
+  assert.equal(afterMock.nodes.studio.simulationUnknown, false);
+  assert.match(afterMock.nodes.studio.svgError, /simulation/, 'the mock node is skipped WITH a reason');
+  assert.match(afterMock.nodes.studio.svgError, /not queried/);
 
   // 2) a record with no per-node adapter is `unknown` -> never queried (fail closed)
   calls.length = 0;
-  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset' }, hub: { assetId: 'zHubAsset', adapter: 'mock' } } }, '');
+  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset' } } }, '');
   const unknown = await refreshSvg('', { chain: fakeChain });
   assert.deepEqual(calls, [], 'an unattributed record must not be queried through any adapter');
   assert.equal(unknown.updated, 0);
-  assert.equal(unknown.skipped, 2);
+  assert.equal(unknown.skipped, 1);
   const afterUnknown = readJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH)?.value;
   assert.equal(afterUnknown.nodes.studio.adapter, 'unknown');
   assert.equal(afterUnknown.nodes.studio.simulationUnknown, true);
@@ -229,11 +238,11 @@ test('D37c: refreshSvg queries an ocap node and skips mock/unknown ones with a d
 
   // 3) an ocap node under a non-ocap worker is skipped too (never mix adapters)
   calls.length = 0;
-  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset', adapter: 'ocap' }, hub: { assetId: 'zHubAsset', adapter: 'mock' } } }, '');
+  writeJson(env.ARCBLOG_NODE_NFT_STATE_PATH, { adapter: 'ocap', roles: { studio: { assetId: 'zStudioAsset', adapter: 'ocap' } } }, '');
   const mismatched = await refreshSvg('', { chain: { ...fakeChain, adapter: 'mock' } });
   assert.deepEqual(calls, []);
   assert.equal(mismatched.updated, 0);
-  assert.equal(mismatched.skipped, 2);
+  assert.equal(mismatched.skipped, 1);
   assert.match(readJson(env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH)?.value.nodes.studio.svgError, /this worker runs "mock"/);
 });
 

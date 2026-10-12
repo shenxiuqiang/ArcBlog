@@ -1,10 +1,10 @@
 // Node Profile domain logic — pure functions, no ARC or filesystem access.
 //
-// Spec: §7 (roles: Basic / Studio / Hub), §11 (capability engine instead of
-// scattered `if (isHub)`), §107–§109 (Studio / Hub / Network profile fields).
+// Spec: §7 (roles: Basic / Studio — concept v2 retired the second chain role), §11
+// (capability engine instead of scattered role checks), §107–§109 (profile fields).
 
-/** The three node states from spec §7. `basic` is implicit for every instance. */
-export const NODE_ROLES = ['basic', 'studio', 'hub'];
+/** The node roles. `basic` is implicit for every instance. */
+export const NODE_ROLES = ['basic', 'studio'];
 
 /** Capabilities every ArcBlog instance has (spec §11). */
 export const BASE_CAPABILITIES = ['blog.read', 'blog.write', 'blog.publish'];
@@ -12,14 +12,12 @@ export const BASE_CAPABILITIES = ['blog.read', 'blog.write', 'blog.publish'];
 /** Capabilities a role activates (spec §11). */
 export const ROLE_CAPABILITIES = {
   studio: ['studio.publish', 'studio.register', 'studio.rss', 'studio.payments'],
-  hub: ['hub.discovery', 'hub.index', 'hub.search', 'hub.aggregate', 'hub.route', 'hub.recommend'],
 };
 
 /** Every capability the spec names, used to reject typos. */
 export const KNOWN_CAPABILITIES = [
   ...BASE_CAPABILITIES,
   ...ROLE_CAPABILITIES.studio,
-  ...ROLE_CAPABILITIES.hub,
 ];
 
 function str(value) {

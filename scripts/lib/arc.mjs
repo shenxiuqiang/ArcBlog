@@ -68,12 +68,28 @@ export function parseArgs(argv, options = {}) {
       continue;
     }
     const next = argv[i + 1];
-    if (!next || next.startsWith('--')) {
-      out[key] = true;
+    // A value may legitimately start with dashes — a PEM key begins with
+    // "-----BEGIN ..." (`verify content --public-key <PEM>` used to fail with
+    // "unknown flag: -----BEGIN PUBLIC KEY-----"). A following token only takes
+    // the value slot when it is unambiguously a flag: in strict mode its key
+    // must be in `known`; in lax mode "---" (or more dashes) is never a flag.
+    const nextIsFlag = (() => {
+      if (!next || !next.startsWith('--')) return false;
+      if (next.startsWith('---')) return false;
+      if (known) {
+        const body2 = next.slice(2);
+        const key2 = body2.includes('=') ? body2.slice(0, body2.indexOf('=')) : body2;
+        return known.has(key2);
+      }
+      return true;
+    })();
+    if (!nextIsFlag) {
+      if (next === undefined) { out[key] = true; continue; }
+      out[key] = next;
+      i += 1;
       continue;
     }
-    out[key] = next;
-    i += 1;
+    out[key] = true;
   }
   return out;
 }

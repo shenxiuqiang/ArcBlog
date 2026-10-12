@@ -38,7 +38,7 @@ const SUMMARY_PATH = process.env.ARCBLOG_NODE_FACTORY_SUMMARY_PATH || '/instance
 const NODE_NFT_PATH = NODE_NFT_STATE_PATH;
 const REGISTRY_PATH = process.env.ARCBLOG_FACTORY_REGISTRY_PATH || '/instance/app/arcblog/config/nft-factories.json';
 const ACTIONS = ['acquire', 'stake', 'revoke', 'claim'];
-const ROLES = ['studio', 'hub'];
+const ROLES = ['studio'];
 
 /** `.env.local` (gitignored) so `watch` works without exporting anything by hand. */
 function loadLocalEnv() {
@@ -304,7 +304,7 @@ Usage:
   node scripts/arcblog-chain-worker.mjs watch   [--interval <seconds>] [--instance <name>]
                                                 # keep draining (Ctrl-C to stop)
   node scripts/arcblog-chain-worker.mjs enqueue --action acquire|stake|revoke|claim \\
-                                                [--role studio|hub] [--by <did>] [--instance <name>]
+                                                [--role studio] [--by <did>] [--instance <name>]
   node scripts/arcblog-chain-worker.mjs queue   [--instance <name>]   # queue view: never drains,
                                                 # repairs pre-D36 done/failed records in place
   node scripts/arcblog-chain-worker.mjs refresh [--instance <name>]   # re-render the NFT SVG only
