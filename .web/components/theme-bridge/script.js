@@ -85,6 +85,14 @@
     // raises the target without moving the visual box. REVERT = delete these two rules.
     '.aup-app-header-brand-link{min-height:24px}',
     '.aup-breadcrumb-item a{display:inline-flex;align-items:center;min-height:24px}',
+    // V06 (long identifiers must not overflow): the surfaces that render identifiers wrap
+    // correctly out of the box -- `key-value-list` values compute `overflow-wrap:anywhere`
+    // (measured on /?page=author with a 190-char token: scrollWidth == clientWidth) and the
+    // article surface `break-word`. A LIST ROW's text does not: `overflow-wrap:normal` plus the
+    // row's own `overflow:hidden` silently CLIPS an unbroken token (measured /?page=index:
+    // scrollWidth 2261 vs clientWidth 218, page-level overflow 0 because it is clipped).
+    // `anywhere` only breaks when the token cannot fit, so it adds no hard breaks.
+    '.aup-list .aup-text{overflow-wrap:anywhere}',
     // Button radius is a THEME-LAYER concern (standard V1.10 §4.3; UI-019 candidate A,
     // task-24). The `editorial` tone paints EVERY `.aup-action` with `border-radius:2rem`
     // — `[data-tone=editorial] .aup-action` in the served aup-core.css — so all of
