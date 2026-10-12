@@ -84,10 +84,12 @@ Full list + prop contracts: `references/primitives.md`.
 4. **Two interpolation channels**: `prop="$state.x"` is an *expression* (evaluated
    once — fine for booleans, fatal for async data arriving later), while
    `prop="${state.x}"` is a *template* (re-evaluated). **But neither form gates
-   async data**: `visible="${state.x}"` renders even with no data and
-   `visible="!${state.x}"` never renders (`arc-contracts` §28.1 — see
-   `references/runtime-gotchas.md` #6). Put the decision in the record/CLI and
-   print a precomputed marker as standing text.
+   async data** — measured truth table: `visible="${state.x}"` always true,
+   `visible="!${state.x}"` always hidden, bare `visible=$state.x` frozen at first
+   paint (so `!$state.record` renders a false "not found" on the first load of a
+   valid record); only `$entry.*` **inside an `afs-list` row** branches correctly
+   (`arc-contracts` §28.1, `references/runtime-gotchas.md` #6). Put every decision
+   in the record/CLI and print a precomputed marker as standing text.
 5. **Writes** go through `exec "/.actions/write"` with `${args.*}` templates and are
    authorized by `replicated` collections in `blocklet.yaml` — a plain base-path
    network write is denied. `minRole: admin` + `copy: none` keeps records single-file.

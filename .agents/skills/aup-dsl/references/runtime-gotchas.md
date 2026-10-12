@@ -23,20 +23,29 @@ All of these were reproduced on the live daemon; "symptom → cause → fix".
 
 ## Data binding
 
-6. **No data-state condition works — neither form is a condition** (corrected
-   2026-10-12 against `arc-contracts` §28.1; this entry previously said "use the
-   interpolation form", which is **wrong**)
-   For bound/async data (`$state.*`, `$entry.*`) the two spellings fail in
-   **opposite** directions: `visible="${state.x}"` is evaluated before `propBind`
-   resolves and then **stays true** (renders even when there is no data), while
-   `visible="!${state.x}"` **never shows**. The expression form
-   `visible="$state.x"` is evaluated once and never recovers. ⇒ Mutual exclusion
-   ("empty-state card OR list") cannot be expressed with `visible` at all.
-   **Workaround:** compute the state in the CLI/record and print precomputed
-   strings/markers as *standing* text (e.g. a `stateNote` line that is always
-   rendered), or drive the branch with a **synchronous** `$session.*` condition.
-   Reference implementation: `?page=registry` (`.aup/pages/ops/registry.aup`,
-   markers `generated`/`empty`/`hasNodes`/`stateNote`) after `DEF-15`.
+6. **`visible` on async data: four spellings, three of them useless** (v2,
+   2026-10-12, measured on a deployed instance — `arc-contracts` §28.1)
+   | spelling | bound, value non-empty | bound, value empty |
+   | --- | --- | --- |
+   | `visible="${state.x}"` | shows | **still shows** → always true |
+   | `visible="!${state.x}"` | **hidden** | hidden → always false |
+   | `visible=$state.x` (bare) | **hidden** | hidden → **frozen at first paint** |
+   | `visible="!$state.x"` (bare) | **still shows** | shows → same freeze |
+   | `visible="${entry.x}"` **inside an `afs-list` row** | shows | hidden → ✅ **correct both ways** |
+   ⇒ Only **synchronous `$session.*`** conditions are reliable, and only
+   **`$entry.*` inside row templates** is a working data-driven branch. On a
+   `propBind` page a bare `!$state.record` renders a **false "not found"** on the
+   first load of a *valid* record (`DEF-18`, measured: 157 chars of shell on the
+   cold load vs 3748 with the article on reload).
+   **Workaround:** compute the decision in the CLI/record and print precomputed
+   strings/markers as *standing* text (reference: `?page=registry` markers, and
+   `decorateNodeFactorySummary()` in `scripts/lib/chain.mjs` for `?page=factory`).
+   Never gate a body block on `$state.*`: make it unconditional and put an honest
+   platform note in standing copy — but the note must be true in both cases
+   ("this page binds after first load; reload if blank"), never "not found".
+   Also: **`time mode=display` renders an empty value as `now()`** (runtime bundle,
+   no suppressing prop) — use it only inside row templates; print the record value
+   verbatim on `propBind` pages (`scripts/lib`/`.aup/pages/reader.aup`).
 7. **A row silently disappears from a filtered list after being edited**
    `afs-list` `filter`/`serverFilters` run through the index, and an edit leaves
    the index entry stale. Prefer a directory boundary (`posts/` vs `drafts/`) or

@@ -1388,6 +1388,34 @@ locale 保持、内容正确、无 `SESSION INIT FAILED`。
 **证据**：`?page=tags` 的空态卡与列表用互斥 `visible` 时，有 27 条标签的同时空态卡仍然渲染
 （`docs/team/bugs/BUG-001-*.md`）；`ops/factory.aup` 的 `!${state.summary.nodes.studio.svg}` 疑为同一模式（未单独复验）。
 
+**收窄实测（2026-10-12，Round 5 / `DEF-15`+`DEF-18`，基线 `e4b6acb`→`456baac`）**：
+上面那句"`$entry.*` 得不到语义"**过泛**——探针页 + 部署实例 Playwright 实测得到**四种写法各不相同**的真值表
+（`$state.*` 经 `propBind` 绑定；DOM 存在性以 `[data-aup-id]` 判定）：
+
+| 写法 | 绑定后（值非空） | 绑定后（值为空串） | 结论 |
+| --- | --- | --- | --- |
+| `visible="${state.x}"` | 显示 | **仍显示** | **恒真**（空值也渲染） |
+| `visible="!${state.x}"` | **不显示** | 不显示 | **恒隐藏** |
+| `visible=$state.x`（裸表达式） | **不显示** | 不显示 | **首屏求值一次后冻结**（不是恒值：它记的是绑定前的值） |
+| `visible="!$state.x"`（裸表达式取反） | **仍显示** | 显示 | 同上（冻结在 true） |
+| `visible="${entry.x}"`（**`afs-list` 行模板内**） | 显示 | 不显示 | ✅ **双向正确、首屏即正确** |
+
+⇒ **必须区分三件事**：① 只有**同步的 `$session.*`** 能可靠用于条件渲染；
+② **模板插值形式在 `$state.*` 上双向都不可用**（正恒真、取反恒隐藏）；
+③ **裸表达式形式是"首屏冻结"语义**，因此在 `propBind` 页面上 `!$state.record` 会让**有效记录的首访**
+渲染出假"不存在"（`DEF-18` 实测：`/posts/hello-arcblog` 首访 157 字符、无 h1、显示 "Post not found"；
+reload 后 3748 字符、h1 正常）；而 **`$entry.*` 在行模板内是唯一可用的双向判断**（`posts.aup`/`index.aup` 因此**不必**改）。
+
+**同族实测：`time` 组件对空值输出当前时刻**（无 prop 可抑制）。运行时 bundle 逐字（`aup.bc92de568433b0dc.js`）：
+```js
+if (a==="display") { t.classList.add("aup-time-display");
+  var n = r.value || new Date().toISOString();   // ← 空 value = now
+```
+⇒ 在 `propBind` 字段上用 `time mode=display`（无论 `timeMode` 是 `relative` 还是绝对）**首访必然输出一个假时间**
+（实测：3 周前的文章在首访被标成"今天 20:01"，去掉 `relative` 只是把"just now"换成更像真数据的假日期）。
+**处方**：`time` 只用在 `afs-list` 行模板（每行自带记录，实测 `data-datetime` 正确）；
+`propBind` 字段直接打印记录原值（`.aup/pages/reader.aup` 先例），或由写侧预计算展示字段。
+
 ### 28.2 `afs-list` 的空列表会**抢焦点**，页面一打开滚到底
 
 **症状**：页面里存在空的 `afs-list` 且它位于首屏之下时，渲染后浏览器把焦点/滚动带到它那里——
