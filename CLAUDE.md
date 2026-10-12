@@ -85,6 +85,12 @@ node scripts/arcblog-memory.mjs remember|recall|list --session <id>  # PRD-AGT-1
 node scripts/arcblog-verify.mjs content --slug x  # §65–§67: content hash + Ed25519 signature check
 node scripts/arcblog-verify.mjs keys         # registered content-signing public keys (never private)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
+node scripts/arcblog-anomalies.mjs refresh|show  # PRD-OPS-01 anomaly zone: the four node-anomaly
+                                             # classes (identity / read-only exit / chain registry /
+                                             # test residue) precomputed into node/anomalies/<key>.json
+                                             # + node/anomalies.json (stateNote) for ?page=dashboard
+                                             # (refresh [--origin <url>] [--adapter mock|ocap]; show is read-only;
+                                             # the page cannot branch on $state.* — B13)
 node scripts/arcblog-console-nav.mjs         # regenerate the console sidebar from scripts/console-nav.mjs
 node scripts/arcblog-console-nav.mjs --check # verify the console page carries that menu (part of npm test)
 arc dsl lint                                 # dead locale keys + DSL formatting. NEVER run `--fix`

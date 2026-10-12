@@ -1,5 +1,10 @@
 page dashboard {
   i18n {
+    anomalies { en "Anomaly zone" zh "异常区" }
+    anomalies-desc { en "The four node-anomaly classes — identity not initialized / read-only exit missing its artifact / chain registry does not list this node / test residue — one clickable entry per class. Every verdict is precomputed by the CLI and printed here verbatim; this page decides nothing. The standing line above the rows is the CLI's own sentence and says which checks passed, and when. No rows is not evidence by itself: read that line — it is either “all four passed at <time>” or “the CLI has not run yet”." zh "四类节点异常——身份未初始化 / 只读出口缺产物 / 注册表查不到本节点 / 数据残留——每类一个可点击入口。所有判定由 CLI 预计算、本页逐字打印：页面不做任何判定。行上方的常驻行就是 CLI 的原话，写明哪几项检查在什么时间通过。没有行本身不是证据：请看常驻行——它要么是「四类检查在 <时间> 均通过」，要么是「CLI 尚未运行」。" }
+    anomalies-open { en "Open" zh "去处理" }
+    anomalies-severity { en "Severity" zh "级别" }
+    anomalies-state { en "Standing state" zh "常驻状态" }
     content { en "Recent published" zh "最近发布" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
     content-guide { en "Write and publish from Write; the newest five stories appear here." zh "在「写文章」页撰写并发布；最新五篇会显示在这里。" }
@@ -122,6 +127,36 @@ page dashboard {
           }
           // ---- 内容区：唯一滚动容器（standard §2.5 单一滚动归属）----------------
           view gap=sm size={flex: 1} style={overflowY: auto} {
+            // ---- 异常区（PRD-OPS-01 / DEF-36）：四类异常每类一个可点击入口 -----
+            // 判定全部由 `arcblog-anomalies.mjs refresh` 预计算（B13：页面不能
+            // 条件化 `$state.*`——`${…}` 恒真、`!${…}` 恒隐、裸写法冻结在首屏）。
+            // 本卡只做两件事：常驻打印预计算的 `stateNote`（经 node/ 目录的 item
+            // recipe，recipe 里的 `${content.stateNote}` 才是真正的打印点），以及用
+            // `afs-list` 的 `$entry.*` 行内模板渲染每类一行——行内的 `view href=` 是
+            // 唯一可靠的数据分支。空列表 ≠ 无异常：没有行时以常驻 stateNote 为准
+            // （`emptyText` 不求值 `$t()`，见 arc-contracts §20）。
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :anomalies level=3
+              p :anomalies-desc scale=sm intent=muted
+              surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
+                h3 :anomalies-state level=3
+              }
+              afs-list dashboard-anomalies-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
+                row gap=xs cross=center role=item {
+                  view gap=xs size={flex: "1 1 0%"} {
+                    row gap=xs cross=center {
+                      p :anomalies-severity scale=sm intent=muted
+                      p "${entry.content.severity}" scale=sm
+                      p "${entry.content.title}"
+                    }
+                    p "${entry.content.detail}" scale=sm intent=muted
+                  }
+                  view layout=inline href="${entry.content.href}" {
+                    p :anomalies-open
+                  }
+                }
+              }
+            }
             // ---- UI-022：唯一的「下一步」不能只写在 emptyText 上（平台运行期不求值，
             // docs/arc-contracts.md §20）。这里是**页面级常驻说明卡**：一句现状 + 一句
             // 价值 + 一个动作（§4.4），措辞如实标明它是常驻说明、不声称下方列表为空

@@ -63,6 +63,10 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
  */
 const FAST_TESTS = new Set([
   'arcblog-agent-tools',
+  // PRD-OPS-01 / DEF-36: the anomaly-zone decision logic is pure (injected
+  // context) + a static wiring check + three child-process flag assertions — no
+  // instance writes, no chain, no network.
+  'arcblog-anomalies',
   'arcblog-console-nav',
   'arcblog-dist-secrets',
   'arcblog-doc-commands',
@@ -92,6 +96,14 @@ const FAST_TESTS = new Set([
  */
 const GUARDS = {
   'arcblog-agent-tools': [/^scripts\/lib\/agents\.mjs$/, /^scripts\/arcblog-agent\.mjs$/, /^scripts\/arcblog-agent-tools/],
+  // PRD-OPS-01 / DEF-36: the decision library, its CLI, the dashboard that prints
+  // it, and the recipe that is the stateNote print point.
+  'arcblog-anomalies': [
+    /^scripts\/lib\/anomalies\.mjs$/,
+    /^scripts\/arcblog-anomalies(\.mjs|-)/,
+    /^\.aup\/pages\/admin\/dashboard\.aup$/,
+    /^seed\/recipes\/node\/item\.json$/,
+  ],
   'arcblog-console-nav': [/^scripts\/console-nav\.mjs$/, /^scripts\/arcblog-console-nav/, /^\.aup\/pages\//],
   'arcblog-error-codes': [/^scripts\/.*\.mjs$/, /^docs\/08-其他\/05-错误码索引\.md$/],
   'arcblog-fail-closed': [/^scripts\/arcblog-fail-closed/, /^scripts\/arcblog-deploy\.mjs$/, /^scripts\/arcblog-dist-secrets\.mjs$/, /^scripts\/lib\/cli-flags\.mjs$/],

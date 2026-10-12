@@ -45,6 +45,10 @@ export const CHAIN_FLAGS = [
 /** Per-script flag names, keyed by the script's basename. */
 export const SCRIPT_FLAGS = {
   "arcblog-agent.mjs": ["agent", "agent-access", "afs", "afs-op", "author-did", "body", "body-file", "capability", "category", "content", "content-id", "creator-did", "endpoint", "help", "id", "instance", "limit", "note", "path", "price-amount", "price-asset", "query", "slug", "stake-address", "title", "tool", "ttl", "update"],
+  // PRD-OPS-01 / DEF-36: `refresh` takes the adapter label and the served-origin
+  // check; anything else must fail closed (a typo'd flag must not silently skip
+  // the signal it names).
+  "arcblog-anomalies.mjs": ["adapter", "origin"],
   "arcblog-attribution.mjs": ["help", "out"],
   "arcblog-audit.mjs": ["action", "actor", "content", "detail", "help", "instance", "json", "mode", "path", "slug"],
   "arcblog-bookmarks.mjs": ["help", "json", "slug", "title", "user"],

@@ -638,5 +638,10 @@
   "factory.registry-link-value": "This page is the NFT lifecycle record (acquired / staked / revoked, from node/factories.json). Whether the node currently counts as a live registry entry is a separate projection — open ?page=registry, or run: node scripts/arcblog-network.mjs registry show",
   "preview.write-note": "Publish / delete need the record in the session binding, which the platform only attaches after the first render — reload once before using them.",
   "author.about": "Node",
-  "factory.dropped-label": "Stale role records dropped (computed by the CLI)"
+  "factory.dropped-label": "Stale role records dropped (computed by the CLI)",
+  "dashboard.anomalies": "Anomaly zone",
+  "dashboard.anomalies-desc": "The four node-anomaly classes — identity not initialized / read-only exit missing its artifact / chain registry does not list this node / test residue — one clickable entry per class. Every verdict is precomputed by the CLI and printed here verbatim; this page decides nothing. The standing line above the rows is the CLI's own sentence and says which checks passed, and when. No rows is not evidence by itself: read that line — it is either “all four passed at <time>” or “the CLI has not run yet”.",
+  "dashboard.anomalies-open": "Open",
+  "dashboard.anomalies-severity": "Severity",
+  "dashboard.anomalies-state": "Standing state"
 }

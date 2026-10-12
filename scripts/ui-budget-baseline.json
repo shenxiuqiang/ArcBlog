@@ -1,11 +1,11 @@
 {
   "dashboard": {
     "blocks": 2,
-    "cards": 2,
+    "cards": 3,
     "nested": 0,
     "ctrl": 3,
-    "styles": 8,
-    "i18n": 16,
+    "styles": 9,
+    "i18n": 21,
     "tech": 0
   },
   "posts": {
@@ -162,7 +162,7 @@
     "tech": 0
   },
   "_sources": {
-    "dashboard": "009d1ef49aa3a3c3",
+    "dashboard": "6759bf8c06e80b5a",
     "posts": "8c698e38db3f6e3c",
     "pages": "a115ee9f18ac2a5d",
     "compose": "373a644dcc2d78c6",
