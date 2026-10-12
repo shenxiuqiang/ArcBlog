@@ -29,7 +29,8 @@ node scripts/arcblog-clean.mjs            # 先看清单
 node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 ```
 
-> 现有 **9 条**：3 条合成签名密钥（`did:key:zHuman*`，`BUG-075` 已修 ⇒ 不再新增）+ 6 条 `node/` 临时探针记录（`reg-repro-*`×3、`reg-dbg*`×2、`factories-dbg*`×1，是 2026-10-12 调查注册表时写进去的）。
+> **现有 29 条**（2026-10-12 实测 `node scripts/arcblog-clean.mjs`）：`config/signing-keys` **3**（合成签名密钥，`BUG-075` 已修 ⇒ 不再新增）· `node` **6**（`reg-repro-*`×3、`reg-dbg*`×2、`factories-dbg*`×1）· `drafts` **20**（**Lead 本轮 live 层定向全审计（27 文件）留下的测试草稿** —— 审计的副作用，已如实登记）。
+> ⚠️ 草稿数会随测试继续增长；`--confirm` 一次清掉全部（不碰 `posts/`）。
 > 另需你决定的两项**不在 cleaner 扫描面**：`drafts/` 的 3 个 `hub-idx-test-*`（pre-Round-2）；`config/nft-factories.json` 里陈旧的 `hub` 工厂记录（投影层已不再输出，见 `DEF-13`）。
 > 闭环：`arcblog-clean` dry-run 归零。
 
