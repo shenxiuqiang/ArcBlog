@@ -171,9 +171,15 @@ test('every living volume\'s count row equals what its own command prints', () =
     for (const [i, line] of readFileSync(join(REPO, rel), 'utf8').split('\n').entries()) {
       if (!line.startsWith('|')) continue;
       const numbers = [...line.matchAll(/\*\*(\d+)\*\*/g)].map((m) => Number(m[1]));
-      const commands = [...line.matchAll(/`([^`]{8,160})`/g)]
-        .map((m) => m[1].replace(/\\\|/g, '|').trim())
-        .filter((c) => COUNT.test(c) && /^(ls|grep|find|node|wc)\b/.test(c) && !c.includes('<'));
+      // Find the command DIRECTLY in the line instead of among backtick spans: the first version
+      // harvested `` `…` `` spans, and a nested cell like `**已接**：`grep -c x f` = **10**` made the
+      // span extraction skip the command entirely, so the row was never checked (proved by editing
+      // its number to 99 and watching the guard stay green).
+      const cmdMatch = /(grep -c[^`|]*|ls [^`|]*\| wc -l|node -e "[^"]*CONSOLE_SECTIONS\.length[^"]*")/.exec(line);
+      const commands = cmdMatch ? [cmdMatch[1].replace(/\\\|/g, '|').trim()] : [];
+      // A usable command names a path; a bare mention (`grep -c`, a usage fragment) cannot be run.
+      // …and it must be standalone: a fragment of a larger snippet carries shell variables ($d).
+      if (commands.some((c) => c.includes('<') || c.includes('$') || !c.includes('/'))) continue;
       if (numbers.length !== 1 || commands.length !== 1) continue;
       // A row that DECLARES its measurement date (`证据基线 …（2026-10-01）`) is a historical
       // record, exactly like DEF-10's "world/ 22 → 20": rewriting it would be fabricating
