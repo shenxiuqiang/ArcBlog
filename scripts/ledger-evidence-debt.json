@@ -1,14 +1,5 @@
 {
-  "_comment": "ENG-23: ledger evidence debt. Rows here claim 已实现待验 while their evidence cell still says '输出: 待补' — allowed by 00 §2.1 (call site + runnable command) but it is DEBT: PRD-OPS-01 proved a 待补 row can hide a criterion that was never met. The guard forbids new debt and requires the list to shrink. 2026-10-12: 30 -> 23 (three tautologies rewritten) -> 8 (fifteen rows filled with outputs measured this round).",
-  "baseline": 8,
-  "rows": [
-    "PRD-SITE-01",
-    "PRD-SITE-02",
-    "PRD-SITE-06",
-    "PRD-SITE-07",
-    "PRD-NET-04",
-    "PRD-ID-01",
-    "PRD-AGT-03",
-    "PRD-SET-01"
-  ]
+  "_comment": "ENG-23: ledger evidence debt — EMPTY as of 2026-10-12. Every 已实现待验/已验证 row in docs/06/01 now carries an output measured from a runnable command (30 rows were on the floor when the ratchet was introduced). The guard still fails on tautological evidence and on any NEW 待补 row; if debt ever returns, pin the id here deliberately and say why.",
+  "baseline": 0,
+  "rows": []
 }
