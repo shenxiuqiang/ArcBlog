@@ -71,7 +71,20 @@ test('clean help exits 0 and cleanup rejects an unknown directory', () => {
 test('live: the dry run reports residue and deletes nothing', () => {
   const found = findTestRecords();
   assert.ok(Array.isArray(found));
-  for (const record of found) assert.equal(isTestRecordId(record.id), true);
+  // R9 (2026-10-12): the scanner has TWO rule kinds. In CONTENT_MATCH_DIRS
+  // (config/signing-keys, config/agent-grants) the FILE NAME is a DID hash, so residue is
+  // recognised by reading the record body and matching its identity — `record.id` is then
+  // legitimately unrecognisable. This assertion used to demand isTestRecordId(id) for every
+  // record, so it failed on the three synthetic signing keys (a live suite pinning an older
+  // contract; the live tier is not a per-round gate, so it sat red). Assert the real contract:
+  // a record is residue when its id OR the identity it matched on is a test identifier.
+  for (const record of found) {
+    assert.equal(
+      isTestRecordId(record.id) || isTestRecordId(record.matchedOn),
+      true,
+      `${record.path} matched neither by id nor by identity (matchedOn=${record.matchedOn})`,
+    );
+  }
 
   const res = run([]);
   assert.equal(res.status, 0, res.stderr);
