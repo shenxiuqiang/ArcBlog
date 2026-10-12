@@ -26,6 +26,14 @@ import { readBlockletMeta } from './manifest.mjs';
 export const NODE_DIR = `${INSTANCE_ROOT}/node`;
 export const DISCOVERY_PATH = `${NODE_DIR}/discovery.json`;
 export const HEALTH_PATH = `${NODE_DIR}/health.json`;
+// ENG-15: the chain-registry projection. The summary record carries the totals
+// the page needs for its three states (absent / empty / populated); one item
+// record per staked node under REGISTRY_DIR is what the page's `afs-list`
+// renders (a page cannot iterate an array field — arc-contracts §21).
+// Env-overridable so tests never touch the dev instance's real projection
+// (same discipline as ARCBLOG_MOCK_STATE_PATH in lib/chain.mjs).
+export const REGISTRY_PATH = process.env.ARCBLOG_REGISTRY_PATH || `${NODE_DIR}/registry.json`;
+export const REGISTRY_DIR = process.env.ARCBLOG_REGISTRY_DIR || `${NODE_DIR}/registry`;
 
 /** Protocol identity of this network layer (spec §68/§69). */
 export const PROTOCOL = 'arcblog';
@@ -110,6 +118,56 @@ export function validateHealth(record) {
 /** The blocklet version from blocklet.yaml (used by health/discovery). */
 export function currentBlockletVersion() {
   return str(readBlockletMeta().version);
+}
+
+/**
+ * Build the public chain-registry projection (ENG-15) from the stakes a
+ * `listStakes` enumeration returned for the studio factory.
+ *
+ * PUBLIC FIELDS ONLY: stake/owner addresses, the endpoint (the stake message)
+ * and the staked asset ids — everything here is already on the chain. No key
+ * material, ever.
+ *
+ * `empty` is a precomputed 'true'|'' marker: the AUP expression layer cannot
+ * compare numbers (arc-contracts §21), so the page cannot derive `total === 0`
+ * itself. The CLI — which knows the count — says it, and the page only
+ * distinguishes the THREE honest states:
+ *   record absent        → "not generated yet" guidance (never an empty list)
+ *   record, empty='true' → "no staked nodes on chain" (a sourced empty state)
+ *   record, nodes[]      → the node list
+ */
+export function buildRegistryProjection({ adapter, network, factory, stakes = [], now = nowIso() } = {}) {
+  const nodes = (Array.isArray(stakes) ? stakes : []).map((stake) => ({
+    stakeAddress: str(stake?.address),
+    owner: str(stake?.sender),
+    endpoint: str(stake?.message),
+    assets: Array.isArray(stake?.assets) ? stake.assets.map((id) => str(id)).filter(Boolean) : [],
+  }));
+  return {
+    refreshedAt: now,
+    adapter: str(adapter),
+    network: str(network),
+    factory: str(factory),
+    total: nodes.length,
+    empty: nodes.length === 0 ? 'true' : '',
+    nodes,
+  };
+}
+
+/** Validate a registry projection; returns issues (empty = ok). */
+export function validateRegistryProjection(record) {
+  const issues = [];
+  if (!record || typeof record !== 'object') return ['registry projection must be an object'];
+  if (!str(record.refreshedAt)) issues.push('refreshedAt is required');
+  if (!str(record.adapter)) issues.push('adapter is required');
+  if (!str(record.factory)) issues.push('factory is required');
+  if (!Array.isArray(record.nodes)) issues.push('nodes must be an array');
+  if (record.total !== (record.nodes ?? []).length) issues.push('total must equal nodes.length');
+  for (const node of record.nodes ?? []) {
+    if (!str(node?.stakeAddress)) issues.push('every node needs a stakeAddress');
+    if (!str(node?.owner)) issues.push(`node ${str(node?.stakeAddress) || '?'} needs an owner`);
+  }
+  return issues;
 }
 
 export { optString };

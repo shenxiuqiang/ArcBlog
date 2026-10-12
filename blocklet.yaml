@@ -139,8 +139,10 @@ replicated:
     copy: none
     minRole: admin
     readRole: guest
-  # /arcblog/node/{profile,identity} — public metadata, admin-writable
-  # (node identity/roles are operator-controlled, spec §107–§109).
+  # /arcblog/node/* — public metadata, admin-writable (node identity/roles are
+  # operator-controlled, spec §107–§109): profile/identity, discovery/health,
+  # the factories projection, and the chain-registry projection
+  # (registry.json + registry/<stakeAddress>.json, ENG-15).
   node:
     canonical: instance/app/arcblog/node/*
     copy: none

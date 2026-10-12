@@ -100,12 +100,12 @@
   },
   "registry": {
     "blocks": 1,
-    "cards": 3,
+    "cards": 4,
     "nested": 0,
     "ctrl": 0,
-    "styles": 9,
-    "i18n": 15,
-    "tech": 1
+    "styles": 12,
+    "i18n": 29,
+    "tech": 2
   },
   "factory": {
     "blocks": 3,
@@ -113,7 +113,7 @@
     "nested": 0,
     "ctrl": 7,
     "styles": 26,
-    "i18n": 73,
+    "i18n": 68,
     "tech": 4
   },
   "media": {
@@ -132,7 +132,7 @@
     "ctrl": 0,
     "styles": 19,
     "i18n": 40,
-    "tech": 20
+    "tech": 12
   },
   "general": {
     "blocks": 2,
@@ -140,7 +140,7 @@
     "nested": 0,
     "ctrl": 12,
     "styles": 38,
-    "i18n": 96,
+    "i18n": 90,
     "tech": 17
   },
   "diagnostics": {
@@ -164,7 +164,7 @@
   "_sources": {
     "dashboard": "009d1ef49aa3a3c3",
     "posts": "6ec126d230795808",
-    "pages": "efdf9f1a40f457c2",
+    "pages": "a115ee9f18ac2a5d",
     "compose": "373a644dcc2d78c6",
     "heroes": "87bf9de9b0b52d12",
     "categories": "8d8c902a8134e09a",
@@ -173,11 +173,11 @@
     "feeds": "a840c3cd38e7869e",
     "appearance": "93b80c1873251269",
     "operations": "6a8c1b00d12dc972",
-    "registry": "f7fccb8a2a14c923",
-    "factory": "3dba3e286f60a9f5",
+    "registry": "32a621d7bc2fee19",
+    "factory": "0e05329d19c6f174",
     "media": "22bf414d4dc13b8b",
-    "agents": "90e09ffafc8b5eee",
-    "general": "cd6b60ffadbdb14a",
+    "agents": "287fb595b21d9941",
+    "general": "29dc70d9de73bc91",
     "diagnostics": "39f4ed9684fe1c9b",
     "compose-edit": "3384303dfd7fbb9b"
   }
