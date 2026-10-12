@@ -102,7 +102,26 @@ const HELPERS = `
   };
 `;
 
-const ver = await (await fetch(`${CDP}/json/version`)).json();
+// Fail closed with an ACTIONABLE message: this probe reads an EXTERNAL Chrome's
+// cookies (the logged-in ArcBlog session), so it cannot launch one itself. Without
+// this preflight a missing browser surfaces as an unhandled `fetch failed`
+// ECONNREFUSED stack (measured 2026-10-12).
+const cdpBase = process.env.ARCBLOG_CDP || CDP;
+let ver;
+try {
+  ver = await (await fetch(`${cdpBase}/json/version`)).json();
+} catch (err) {
+  console.error(
+    [
+      `CDP_UNAVAILABLE: no Chrome DevTools endpoint at ${cdpBase} (${err.message}).`,
+      'This probe is the DOM half of the roles-settings evidence and needs a browser that is ALREADY logged in:',
+      `  1. start Chrome with --remote-debugging-port=${new URL(cdpBase).port || '9333'}`,
+      '  2. sign in to http://arcblog.localhost:4939 in that browser',
+      '  3. re-run this probe (or point it elsewhere with ARCBLOG_CDP=http://127.0.0.1:<port>)',
+    ].join('\n'),
+  );
+  process.exit(2);
+}
 out.browser = ver.Browser;
 const browser = await S.open(ver.webSocketDebuggerUrl);
 const { cookies } = await browser.send('Storage.getCookies');

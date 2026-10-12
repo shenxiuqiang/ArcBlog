@@ -521,6 +521,27 @@ async function commandStatus(opts, instance) {
             }
           : null,
         lifecycle: lifecycle ? { state: lifecycle.stakeState, active: lifecycle.active, withheld: lifecycle.withheld } : null,
+        // DEF-25: this command reads the LOCAL record (config/nft-factories.json)
+        // while the console reads the public projection. They can disagree (measured
+        // 2026-10-12: local adapter=mock/network=mock vs projection ocap/beta), and an
+        // operator who sees only one of them cannot tell which is stale — so both are
+        // reported together, with a plain-language note instead of a silent difference.
+        projection: (() => {
+          const proj = readJson(NODE_FACTORY_SUMMARY_PATH, instance)?.value ?? null;
+          if (!proj) return { present: false, note: `no public projection at ${NODE_FACTORY_SUMMARY_PATH} yet` };
+          const pAdapter = String(proj.adapter ?? '').trim();
+          const pNetwork = String(proj.network ?? '').trim();
+          const agrees = pAdapter === String(chain.adapter ?? '').trim() && pNetwork === String(chain.network ?? '').trim();
+          return {
+            present: true,
+            adapter: pAdapter || null,
+            network: pNetwork || null,
+            agrees,
+            note: agrees
+              ? 'the public projection agrees with this record'
+              : `DIVERGENCE: the local record says adapter=${chain.adapter}/network=${chain.network} while the public projection (what ?page=factory shows) says adapter=${pAdapter || '—'}/network=${pNetwork || '—'} — one of them is stale; re-run the chain step that owns this environment (or the human-approved config cleanup) before trusting either.`,
+          };
+        })(),
       },
       null,
       2,

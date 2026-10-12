@@ -26,6 +26,7 @@ node scripts/arcblog-clean.mjs --confirm  # 批准后执行
 ```
 范围：`config/mock-chain-test-*`、`node/factories-test-*`、`node/reg-dbg*`、`config/mock-chain-dbg9-*`、
 `audits/memory-list.audit.jsonl`（5 行测试审计，`clean` 目前扫不到该目录——若批准我会顺带把它纳入 cleaner）。
+另：**3 条合成签名密钥**（`config/signing-keys/*`，DID 形如 `did:key:zHuman<stamp>`，来自 `arcblog-agent-publish-flow.test.mjs`；测试已修 **BUG-075**，不再新增）——`node scripts/arcblog-clean.mjs` **现在能看见它们**（`found: 3`），批准后 `node scripts/arcblog-clean.mjs --confirm` 即可清掉；
 另：`drafts/` 有 3 个更早的 `hub-idx-test-*` 残留（pre-Round-2）；**`config/nft-factories.json` 仍有陈旧的 `hub` 工厂记录**（`factories: {hub, studio}`，mock 时代物证）——投影层已不再输出它（DEF-13 已修），但底层记录要删属人类批准的清理。
 
 ## B. 需要**人在浏览器里做一次**（本机无钱包连接能力，自动化不了）

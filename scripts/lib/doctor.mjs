@@ -118,6 +118,15 @@ export const TEST_RECORD_PREFIXES = [
   'cmsprobe',
   'agent-surface-',
   'agent-draft',
+  // BUG-075: `arcblog-agent-publish-flow.test.mjs` signs with synthetic DIDs
+  // (`did:key:zHuman<stamp>` / `did:key:zAgentPublish<stamp>`). The run forgot only
+  // the agent one, so `config/signing-keys/<hash>.json` accumulated one `zHuman*`
+  // record per run — invisible to the cleaner, because a DID hash file name carries
+  // no marker and `residueIdentity` had nothing to match (measured 2026-10-12:
+  // three zHuman* keys, cleaner `found: 0`). A real DID is `did:key:z` + base58,
+  // so these two synthetic tokens are distinctive.
+  'did:key:zHuman',
+  'did:key:zAgentPublish',
   // `arcblog-lifecycle.test.mjs` / the audit test also leave timestamped residue.
   'audit-test-',
   // `arcblog-lifecycle.test.mjs` archives then deletes its fixture, so each run

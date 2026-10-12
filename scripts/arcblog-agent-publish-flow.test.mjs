@@ -114,6 +114,10 @@ test('live: PRD-CNT-08 — an agent draft is reviewed, published and signed like
   const { readJson, remove } = await import('./lib/arc.mjs');
   const stamp = `${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   const agentDid = `did:key:zAgentPublish${stamp}`;
+
+  // The HUMAN half of the flow signs with its own DID (was inlined at both call
+  // sites, which is why the registered key was never forgotten; BUG-075).
+  const humanDid = `did:key:zHuman${stamp}`;
   // The `agent-draft` token is the recognised residue marker (lib/doctor.mjs
   // TEST_RECORD_PREFIXES) — a crashed run stays sweepable by arcblog-clean.mjs.
   const agentSlug = `agent-draft-flow-${stamp}`;
@@ -222,7 +226,7 @@ test('live: PRD-CNT-08 — an agent draft is reviewed, published and signed like
     // options, and the two PUBLISHED records must be structurally identical: the
     // declared world/post.yaml field list plus the §67 signature block.
     const humanDraft = await runCli(lifecycleScript, [
-      'draft', '--title', `human draft flow ${stamp}`, '--author-did', `did:key:zHuman${stamp}`,
+      'draft', '--title', `human draft flow ${stamp}`, '--author-did', humanDid,
       '--body', HUMAN_BODY, '--slug', humanSlug,
     ]);
     assert.equal(humanDraft.code, 0, humanDraft.stderr);
@@ -232,7 +236,7 @@ test('live: PRD-CNT-08 — an agent draft is reviewed, published and signed like
     const humanKeygen = json((await runCli(attributionScript, ['keygen', '--out', humanKeyFile])).stdout);
     assert.match(String(humanKeygen.publicKeyPem), /BEGIN PUBLIC KEY/);
     const humanPublish = await runCli(lifecycleScript, [
-      'publish', '--slug', humanSlug, '--sign-key', humanKeyFile, '--signer-did', `did:key:zHuman${stamp}`,
+      'publish', '--slug', humanSlug, '--sign-key', humanKeyFile, '--signer-did', humanDid,
     ]);
     assert.equal(humanPublish.code, 0, humanPublish.stderr);
     const humanPost = readJson(humanPublishedPath)?.value;
@@ -292,6 +296,11 @@ test('live: PRD-CNT-08 — an agent draft is reviewed, published and signed like
     }
     const forgotten = await runCli(verifyScript, ['key', '--did', agentDid, '--forget']);
     assert.equal(forgotten.code, 0, forgotten.stderr);
+    // BUG-075: the run also registers a key for the HUMAN signer DID; forgetting
+    // only the agent DID left one `config/signing-keys/<hash>.json` behind per run
+    // (measured 2026-10-12: three zHuman* keys had accumulated).
+    const humanForgotten = await runCli(verifyScript, ['key', '--did', humanDid, '--forget']);
+    assert.equal(humanForgotten.code, 0, humanForgotten.stderr);
     const revoked = await runCli(agentScript, ['revoke', '--agent', agentDid]);
     assert.equal(revoked.code, 0, revoked.stderr);
     rmSync(dir, { recursive: true, force: true });
