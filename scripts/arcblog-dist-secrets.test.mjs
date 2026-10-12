@@ -51,6 +51,14 @@ test('dist/ carries no key material, and the scrub removes only the dist copies 
   assert.deepEqual(dist.files, [], `key files inside dist/ (run \`npm run scrub:dist-secrets\`): ${dist.files.join(', ')}`);
   assert.deepEqual(dist.privateKeyFiles, [], `private keys inside dist/: ${dist.privateKeyFiles.join(', ')}`);
   assert.deepEqual(dist.manifestEntries, [], `dist/.afs/manifest.json lists secret paths: ${dist.manifestEntries.join(', ')}`);
+  // ENG-38's policy, asserted where it can regress: the published artifact must not carry the
+  // source trees the running blocklet never reads. `npm run build` scrubs them; a bare
+  // `arc blocklet build` (forbidden) would put them back, and this is what would say so.
+  assert.deepEqual(
+    dist.nonProductFiles,
+    [],
+    `source trees inside dist/ (run \`npm run build\` — the running blocklet never reads docs/, _research/ or scripts/): ${dist.nonProductFiles.slice(0, 5).join(', ')}${dist.nonProductFiles.length > 5 ? ` … +${dist.nonProductFiles.length - 5}` : ''}`,
+  );
 
   // ---- 2. detector + scrub, against a throwaway fixture -------------------
   const root = mkdtempSync(join(tmpdir(), 'arcblog-dist-secrets-'));
