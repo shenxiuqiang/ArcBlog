@@ -107,6 +107,13 @@ run('npm', ['run', 'build']);
 // --------------------------------------------- 2. pre-deploy secret gate ----
 run('npm', ['run', 'verify:artifacts']);
 
+// ------------------------------- 2b. item recipes (DEF-21 / B14) ------------
+// The single-record pages read their record through `surface url=$state.loc`,
+// which renders it with `<record-dir>/.aup/item.json`. Those recipes are AFS
+// RECORDS, not build artifacts: a fresh instance has none and the pages degrade
+// to raw JSON. `install` is idempotent, so every deploy asserts them cheaply.
+run('node', ['scripts/arcblog-recipes.mjs', 'install', '--json']);
+
 // ------------------------------------------------------- 3. deploy ----------
 run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);
 

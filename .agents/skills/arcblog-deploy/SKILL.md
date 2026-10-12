@@ -8,6 +8,8 @@ description: "当人类说「重新部署」「部署 ArcBlog」「redeploy」�
 第一方项目技能（不是从 `ArcBlock/agent-skills` 装的），与本仓库的实现事实同步维护。
 **引擎**：[`scripts/arcblog-deploy.mjs`](../../../scripts/arcblog-deploy.mjs) —— 技能只负责“什么时候跑、跑完怎么判”。
 
+> ⚠️ **配方步骤（2b）已内置**：脚本在密钥门之后自动跑 `arcblog-recipes.mjs install`（幂等）。若手工部署（不经过脚本），**必须**自己补这一步，否则 `?page=reader` / `?page=page-view` 会渲染原始 JSON。
+
 ## 触发
 
 人类说（任一即可）：
@@ -28,12 +30,13 @@ node scripts/arcblog-deploy.mjs --domain blog.example.com --project arcblog
 **部署前先确认要发布什么**：脚本会打印 `HEAD` 与未提交路径清单。未提交的改动**会被原样打进这次部署** ——
 如果那些改动不属于本次要发的范围（例如还有别人在途的半成品），先停下来问人类，或先提交/暂存。
 
-## 四步门（顺序不可换、不可跳）
+## 五步门（顺序不可换、不可跳）
 
 | 步 | 命令 | 为什么不能跳 |
 | --- | --- | --- |
 | 1 | `npm run build` | = `arc blocklet build` + `npm run scrub:dist-secrets`。**裸 `arc blocklet build` 会把仓库根的 `node.key`/`.env.local` 复制进 `dist/`**（BUG-067，平台无排除开关） |
 | 2 | `npm run verify:artifacts` | 部署前密钥门：扫 `dist/` **和** Pages 部署通道。历史实测：**17 个部署副本带着仓库那把真 `node.key`**（sha256 一致），18 个带 `.env.local`（BUG-074）。此门 exit≠0 时**必须停下** |
+| 2b | `node scripts/arcblog-recipes.mjs install --json` | **单记录页的渲染配件**（DEF-21/B14）：`surface url=$state.loc` 用 `<记录目录>/.aup/item.json` 渲染记录，而这些配方是 **AFS 记录、不是构建产物** ⇒ 新实例不装会退化为**原始 JSON**。幂等，每次部署都跑 |
 | 3 | `arc blocklet instance deploy . --domain arcblog.localhost` | 把已发布 blocklet 的 `dist/` 部署到本地 Pages 并绑定域名（会新增一个 `deploy-*`，历史不清） |
 | 4 | 部署后校验（脚本自动） | 新部署顶层无 `node.key`/`.env.local` · Pages 通道整体 `--check` 通过 · `http://<domain>:4939/` 与 `?page=dashboard` 返回 200 · 部署里的 `.aup/pages/<x>.aup` 与源码**字节数一致** |
 
