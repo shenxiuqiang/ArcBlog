@@ -21,7 +21,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { DIST_DIR, SECRET_BASENAMES, assertInside, findDistSecrets, scrubDist } from './arcblog-dist-secrets.mjs';
+import { DIST_DIR, SECRET_BASENAMES, JUNK_BASENAMES, JUNK_DIRS, assertInside, findDistSecrets, isJunkPath, scrubDist } from './arcblog-dist-secrets.mjs';
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'arcblog-dist-secrets.mjs');
 
@@ -62,27 +62,74 @@ test('dist/ carries no key material, and the scrub removes only the dist copies 
     writeFileSync(join(fixtureDist, '.env.local'), readFileSync(join(root, '.env.local')));
     writeFileSync(join(fixtureDist, 'id_ecdsa'), '-----BEGIN EC PRIVATE KEY-----\nLEAK\n');
     writeFileSync(join(fixtureDist, 'index.html'), '<html></html>\n');
+    // DEF-17: `arc blocklet build` also copies the operator's logs/ and scratch
+    // tmp/ plus the node's PUBLIC key; none of it is key material, all of it is noise.
+    mkdirSync(join(fixtureDist, 'logs'), { recursive: true });
+    writeFileSync(join(fixtureDist, 'logs', 'combined.log'), '2026-10-12 local path /Users/operator/secret-dir\n');
+    mkdirSync(join(fixtureDist, 'tmp'), { recursive: true });
+    writeFileSync(join(fixtureDist, 'tmp', 'probe.mjs'), 'console.log(1)\n');
+    writeFileSync(join(fixtureDist, '.node-pk.pem'), '-----BEGIN PUBLIC KEY-----\nPUB\n');
     writeFileSync(
       join(fixtureDist, '.afs', 'manifest.json'),
-      JSON.stringify({ afs: '1.0', type: 'readonly-tree', files: [{ path: 'node.key' }, { path: '.env.local' }, { path: 'index.html' }] }, null, 2),
+      JSON.stringify(
+        {
+          afs: '1.0',
+          type: 'readonly-tree',
+          files: [
+            { path: 'node.key' },
+            { path: '.env.local' },
+            { path: 'index.html' },
+            { path: 'logs/combined.log' },
+            { path: 'tmp/probe.mjs' },
+            { path: '.node-pk.pem' },
+          ],
+        },
+        null,
+        2,
+      ),
     );
 
     const found = findDistSecrets(fixtureDist);
     assert.deepEqual(found.files, ['.env.local', 'node.key'], 'lockstep leak: key files must be flagged');
     assert.deepEqual(found.privateKeyFiles, ['id_ecdsa'], 'a renamed PEM private key must be flagged');
     assert.deepEqual(found.manifestEntries, ['.env.local', 'node.key'], 'the manifest entries must be flagged');
+    assert.deepEqual(
+      found.junkFiles,
+      ['.node-pk.pem', 'logs/combined.log', 'tmp/probe.mjs'],
+      'local junk must be reported (DEF-17) — but it is NOT a secret-gate failure',
+    );
+    assert.ok(isJunkPath('logs/a/b.log') && isJunkPath('tmp/x.mjs') && isJunkPath('.node-pk.pem'));
+    assert.ok(!isJunkPath('index.html') && !isJunkPath('scripts/arcblog-audit.mjs'), 'product files are not junk');
+    assert.deepEqual([...JUNK_DIRS], ['logs', 'tmp']);
+    assert.deepEqual([...JUNK_BASENAMES], ['.node-pk.pem']);
 
     const report = scrubDist(fixtureDist);
     assert.deepEqual([...report.removed].sort(), ['.env.local', 'node.key']);
     assert.deepEqual(report.privateKeyRemoved, ['id_ecdsa']);
-    assert.deepEqual([...report.manifestRemoved].sort(), ['.env.local', 'node.key']);
-    assert.equal(report.manifestFilesBefore, 3);
+    // manifestRemoved = every entry dropped from the manifest: the secrets AND the
+    // junk (both must leave the manifest; only the former is a secret-gate finding).
+    assert.deepEqual(
+      [...report.manifestRemoved].sort(),
+      ['.env.local', '.node-pk.pem', 'logs/combined.log', 'node.key', 'tmp/probe.mjs'],
+    );
+    assert.deepEqual(
+      [...report.junkRemoved].sort(),
+      ['.node-pk.pem', 'logs/combined.log', 'tmp/probe.mjs'],
+      'the scrub must remove the local junk too',
+    );
+    assert.equal(report.manifestFilesBefore, 6);
     assert.equal(report.manifestFilesAfter, 1);
 
     const after = findDistSecrets(fixtureDist);
     assert.deepEqual(after.files, [], 'scrub must clear the key files');
     assert.deepEqual(after.privateKeyFiles, [], 'scrub must clear renamed private keys');
     assert.deepEqual(after.manifestEntries, [], 'scrub must clear the manifest entries');
+    assert.deepEqual(after.junkFiles, [], 'scrub must clear the local junk');
+    assert.ok(!existsSync(join(fixtureDist, 'logs')), 'the logs tree must be gone');
+    assert.ok(!existsSync(join(fixtureDist, 'tmp')), 'the tmp tree must be gone');
+    assert.ok(!existsSync(join(fixtureDist, '.node-pk.pem')), 'the public-key copy must be gone');
+    // the fixture's SOURCES outside dist/ are untouched (iron rule)
+    assert.ok(existsSync(join(root, 'node.key')) && existsSync(join(root, '.env.local')));
     const manifest = JSON.parse(readFileSync(join(fixtureDist, '.afs', 'manifest.json'), 'utf8'));
     assert.deepEqual(manifest.files.map((f) => f.path), ['index.html'], 'the manifest must keep every non-secret entry');
 

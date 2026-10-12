@@ -29,6 +29,24 @@ export const DIST_DIR = join(REPO_ROOT, 'dist');
 /** Basenames that are key material no matter what they contain. */
 export const SECRET_BASENAMES = new Set(['node.key', '.env.local']);
 
+/**
+ * DEF-17: local junk that `arc blocklet build` copies into dist/ because it has no
+ * exclude switch (BUG-067). None of it is key material — a `.node-pk.pem` is the
+ * node's PUBLIC key (measured 2026-10-12) — but shipping logs, scratch probes and
+ * a stray public key is noise, and `logs/` can carry paths from the operator's
+ * machine. Removing them is hygiene; `--check` stays a SECRET gate and does not
+ * fail on junk (reported as `junkFiles` so the scrub can act).
+ */
+export const JUNK_DIRS = ['logs', 'tmp'];
+export const JUNK_BASENAMES = new Set(['.node-pk.pem']);
+
+/** True when a dist-relative path is local junk rather than product content. */
+export function isJunkPath(rel) {
+  const top = String(rel).split('/')[0];
+  if (JUNK_DIRS.includes(top)) return true;
+  return JUNK_BASENAMES.has(basename(rel));
+}
+
 /** A PEM private key header — the second line of defence for key-ish files. */
 export const PRIVATE_KEY_RE = /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----/;
 
@@ -70,11 +88,12 @@ export function walkFiles(dir, base = dir) {
  * Returns `{ distExists, files, privateKeyFiles, manifestEntries }` — all arrays sorted.
  */
 export function findDistSecrets(distDir = DIST_DIR) {
-  const findings = { distExists: existsSync(distDir), files: [], privateKeyFiles: [], manifestEntries: [] };
+  const findings = { distExists: existsSync(distDir), files: [], privateKeyFiles: [], manifestEntries: [], junkFiles: [] };
   if (!findings.distExists) return findings;
 
   for (const rel of walkFiles(distDir)) {
     const full = join(distDir, rel);
+    if (isJunkPath(rel)) findings.junkFiles.push(rel);
     if (SECRET_BASENAMES.has(basename(rel))) {
       findings.files.push(rel);
       continue;
@@ -103,6 +122,7 @@ export function findDistSecrets(distDir = DIST_DIR) {
   findings.files.sort();
   findings.privateKeyFiles.sort();
   findings.manifestEntries.sort();
+  findings.junkFiles.sort();
   return findings;
 }
 
@@ -112,7 +132,7 @@ export function findDistSecrets(distDir = DIST_DIR) {
  */
 export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
   const root = resolve(distDir);
-  const report = { distDir: root, dryRun, removed: [], privateKeyRemoved: [], manifestRemoved: [], manifestFilesBefore: null, manifestFilesAfter: null };
+  const report = { distDir: root, dryRun, removed: [], privateKeyRemoved: [], junkRemoved: [], manifestRemoved: [], manifestFilesBefore: null, manifestFilesAfter: null };
   if (!existsSync(root)) return report;
 
   const findings = findDistSecrets(root);
@@ -123,13 +143,34 @@ export function scrubDist(distDir = DIST_DIR, { dryRun = false } = {}) {
     (SECRET_BASENAMES.has(basename(rel)) ? report.removed : report.privateKeyRemoved).push(rel);
   }
 
+  // DEF-17: drop the local junk copies as well (never the sources — this loop only
+  // walks inside `root`, and every path is asserted to live under dist/).
+  for (const rel of findings.junkFiles) {
+    const target = assertInside(root, join(root, rel));
+    if (!existsSync(target)) continue;
+    if (!dryRun) rmSync(target, { force: true });
+    report.junkRemoved.push(rel);
+  }
+
+  // Every path under a JUNK_DIR is junk by definition, so the emptied trees can go
+  // too (a leftover empty `logs/` in a deployment is still noise).
+  if (!dryRun) {
+    for (const dir of JUNK_DIRS) {
+      const target = join(root, dir);
+      if (existsSync(target)) rmSync(target, { recursive: true, force: true });
+    }
+  }
+
   const manifestPath = assertInside(root, join(root, '.afs', 'manifest.json'));
   if (existsSync(manifestPath)) {
     const raw = readFileSync(manifestPath, 'utf8');
     const manifest = JSON.parse(raw);
     const files = Array.isArray(manifest?.files) ? manifest.files : [];
     report.manifestFilesBefore = files.length;
-    const kept = files.filter((entry) => !SECRET_BASENAMES.has(basename(typeof entry?.path === 'string' ? entry.path : '')));
+    const kept = files.filter((entry) => {
+      const p = typeof entry?.path === 'string' ? entry.path : '';
+      return !SECRET_BASENAMES.has(basename(p)) && !isJunkPath(p);
+    });
     report.manifestRemoved = files.filter((entry) => !kept.includes(entry)).map((entry) => entry.path);
     report.manifestFilesAfter = kept.length;
     if (report.manifestRemoved.length > 0 && !dryRun) {
@@ -229,6 +270,9 @@ This script never deletes, moves or rotates anything outside <repo>/dist/.`);
         files: findings.files,
         privateKeyFiles: findings.privateKeyFiles,
         manifestEntries: findings.manifestEntries,
+        // DEF-17: informational only — junk never fails the secret gate; the scrub
+        // (which runs as `npm run build`'s second half) is what removes it.
+        junkFiles: findings.junkFiles,
       },
       null,
       2,
