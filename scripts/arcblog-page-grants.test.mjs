@@ -127,3 +127,40 @@ test('the extractor and the grant parser both really see something (guard agains
   assert.ok(!grants.some((g) => g.startsWith('/instance/settings')), 'settings must NOT be an app-scope grant');
   assert.ok(existsSync(join(REPO, 'blocklet.yaml')));
 });
+
+
+/**
+ * The site bindings are the pretty-URL contract: `path → page + afs`. A binding that names a
+ * page no file defines, or an AFS path no grant covers, is a 404 or a denial for the visitor —
+ * and nothing checked it (measured 2026-10-12: all six bindings happened to be correct, which is
+ * exactly the kind of luck this file exists to replace with a fact).
+ */
+test('every site binding names an existing page and a granted AFS path', () => {
+  const manifest = readFileSync(join(REPO, 'blocklet.yaml'), 'utf8');
+  const bindings = [...manifest.matchAll(/^\s+- id: ([\w-]+)\n\s+path: "([^"]+)"\n\s+afs: "([^"]+)"\n\s+page: ([\w-]+)/gm)]
+    .map((m) => ({ id: m[1], path: m[2], afs: m[3], page: m[4] }));
+  assert.ok(bindings.length >= 6, `bindings parsed: ${bindings.length}`);
+
+  const pagesRoot = join(REPO, '.aup', 'pages');
+  const pages = new Set();
+  for (const entry of readdirSync(pagesRoot, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith('.aup')) pages.add(entry.name.replace(/\.aup$/, ''));
+    else if (entry.isDirectory()) {
+      for (const f of readdirSync(join(pagesRoot, entry.name))) {
+        if (f.endsWith('.aup')) pages.add(f.replace(/\.aup$/, ''));
+      }
+    }
+  }
+
+  const grants = declaredGrants();
+  const problems = [];
+  for (const b of bindings) {
+    if (!pages.has(b.page)) problems.push(`binding ${b.id}: page '${b.page}' has no .aup file`);
+    // A binding may point AT a directory (`/instance/app/arcblog/posts`) or at a record
+    // (`…/posts/{slug}.json`): strip a trailing segment only in the second case, otherwise
+    // the directory check would compare its parent and report a false denial.
+    const dir = /\.json$|\{[^}]*\}/.test(b.afs) ? b.afs.replace(/\/[^/]*$/, '') : b.afs;
+    if (!isCovered(dir, grants)) problems.push(`binding ${b.id}: afs '${b.afs}' is not covered by a declared grant`);
+  }
+  assert.deepEqual(problems, [], `site bindings that would 404 or deny:\n  ${problems.join('\n  ')}`);
+});
