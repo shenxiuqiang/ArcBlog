@@ -27,7 +27,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -198,20 +199,76 @@ test('live: create_draft is field-isomorphic with the operator draft path, and s
   }
 });
 
-test('live: the agent surface has no --body-file flag yet (fail closed, never a silent no-op)', async (t) => {
+test('live: --body-file is supported, and --body + --body-file fails closed', async (t) => {
   if (!daemonUp) {
     t.skip(`ARC daemon not reachable at ${baseUrl}`);
     return;
   }
-  // The PM brief's rehearsal reads `--body-file <md>`; today the agent surface
-  // accepts `--body` only and its flags are strictly validated, so an operator
-  // following that command gets a loud VALIDATION instead of an empty draft.
-  const unknown = await runCli(agentScript, [
-    'run', '--tool', 'create_draft', '--agent', 'did:key:zNobody',
-    '--title', 'x', '--author-did', 'did:key:zNobody', '--body-file', '/tmp/nope.md',
-  ]);
-  assert.equal(unknown.code, 1);
-  const out = json(unknown.stderr);
-  assert.equal(out.code, 'VALIDATION');
-  assert.match(out.error, /--body-file/);
+  // R5-b found the gap: the PM brief's rehearsal reads `--body-file <md>`, but the
+  // agent surface accepted `--body` only, so an operator following the brief got a
+  // loud VALIDATION. The flag is now registered and forwarded to
+  // `arcblog-lifecycle.mjs` — with ONE rule the lifecycle CLI does not enforce: it
+  // silently prefers the file when both are given (`readBody`), so on the agent
+  // surface passing both must fail closed instead of picking one for the caller.
+  const { readJson, remove } = await import('./lib/arc.mjs');
+  const stamp = `${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+  const agentDid = `did:key:zAgentBodyFile${stamp}`;
+  const fileSlug = `agent-draft-bodyfile-${stamp}`;
+  const filePath = `/instance/app/arcblog/drafts/${fileSlug}.json`;
+  const dir = mkdtempSync(join(tmpdir(), 'arcblog-body-file-'));
+  const bodyFile = join(dir, 'post.md');
+  writeFileSync(bodyFile, BODY, 'utf8');
+
+  const grant = await runCli(agentScript, ['authorize', '--agent', agentDid, '--capability', 'agent.write', '--ttl', '5']);
+  assert.equal(grant.code, 0, grant.stderr);
+
+  try {
+    // 1. --body-file alone is accepted and the body reaches the record
+    const drafted = await runCli(agentScript, [
+      'run', '--tool', 'create_draft',
+      '--agent', agentDid,
+      '--title', `agent body-file ${stamp}`,
+      '--author-did', agentDid,
+      '--body-file', bodyFile,
+      '--slug', fileSlug,
+    ]);
+    assert.equal(drafted.code, 0, drafted.stderr);
+    assert.equal(json(drafted.stdout).result.path, filePath);
+    const record = readJson(filePath)?.value;
+    assert.ok(record, `${filePath} must exist after the --body-file write`);
+    assert.match(String(record.body), /# Agent draft/, 'the file must be the body that was stored');
+
+    // 2. both spellings at once: loud VALIDATION, never a silent pick
+    const both = await runCli(agentScript, [
+      'run', '--tool', 'create_draft',
+      '--agent', agentDid,
+      '--title', `agent both bodies ${stamp}`,
+      '--author-did', agentDid,
+      '--body', BODY,
+      '--body-file', bodyFile,
+      '--slug', `${fileSlug}-both`,
+    ]);
+    assert.equal(both.code, 1, 'passing both bodies must fail closed');
+    assert.equal(json(both.stderr).code, 'VALIDATION');
+    assert.match(json(both.stderr).error, /--body and --body-file are mutually exclusive/);
+    assert.equal(readJson(`/instance/app/arcblog/drafts/${fileSlug}-both.json`), null, 'nothing may be written');
+
+    // 3. a genuinely unknown flag still fails closed (the assertion this test used
+    //    to make about --body-file, now made about a flag that really is unknown)
+    const unknown = await runCli(agentScript, [
+      'run', '--tool', 'create_draft',
+      '--agent', agentDid,
+      '--title', 'x', '--author-did', agentDid, '--body', BODY, '--bogus-flag', 'x',
+    ]);
+    assert.equal(unknown.code, 1);
+    assert.equal(json(unknown.stderr).code, 'VALIDATION');
+    assert.match(json(unknown.stderr).error, /unknown flag: --bogus-flag/);
+  } finally {
+    try {
+      remove(filePath);
+    } catch { /* best effort */ }
+    const revoked = await runCli(agentScript, ['revoke', '--agent', agentDid]);
+    assert.equal(revoked.code, 0, revoked.stderr);
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

@@ -155,6 +155,15 @@ const READ_RUNNERS = {
   list_studios(opts, instance) {
     return listStudioNodes(instance, { now: optString(opts.now) || undefined });
   },
+  // --- aggregation projection (PRD-AGT-07/AGT-08) ----------------------------
+  // The agent surface only LISTS what the operator CLI already built: collecting
+  // from remote nodes, scoring and ranking live in `arcblog-summarize.mjs build`,
+  // which owns `node/summaries/<id>.json` (public fields only). A read tool that
+  // aggregated here would duplicate that pipeline and break its determinism.
+  list_summaries(opts, instance) {
+    const summaries = recordsIn(`${INSTANCE_ROOT}/node/summaries`, instance);
+    return { count: summaries.length, summaries };
+  },
   // `get_studio` alone returns the registry record for one node; with `--content`
   // it also reads that node's public surface over the endpoint the registry
   // carries (GET /p/llms.txt by default, `--path` for another public path), and
@@ -190,6 +199,26 @@ const READ_RUNNERS = {
 
 // --- write tools: delegate to the operational CLIs (already tested) ---------
 
+/**
+ * The body of a write tool: `--body <markdown>` or `--body-file <path>`, the two
+ * spellings `arcblog-lifecycle.mjs` accepts.
+ *
+ * **Both at once fails closed.** The lifecycle CLI prefers the file (`readBody`),
+ * so a caller passing both would never learn which body was stored — on the agent
+ * surface that must be a loud VALIDATION, not a silent pick. Exactly one is
+ * required, and an unknown flag already fails at parse time.
+ */
+function bodyArgs(opts) {
+  const body = optString(opts.body);
+  const bodyFile = optString(opts['body-file']).trim();
+  ensure(
+    !(body.trim() && bodyFile),
+    '--body and --body-file are mutually exclusive: pass exactly one (the lifecycle CLI would silently prefer the file)',
+  );
+  ensure(body.trim() || bodyFile, '--body or --body-file is required for this tool');
+  return bodyFile ? ['--body-file', bodyFile] : ['--body', body];
+}
+
 function runCli(scriptName, args, instance) {
   const argv = [join(REPO_ROOT, 'scripts', scriptName), ...args];
   if (instance) argv.push('--instance', instance);
@@ -201,13 +230,13 @@ const WRITE_RUNNERS = {
   'lifecycle-draft': (opts, instance) =>
     runCli(
       'arcblog-lifecycle.mjs',
-      ['draft', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), '--body', optString(opts.body), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
+      ['draft', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), ...bodyArgs(opts), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
       instance,
     ),
   'lifecycle-publish': (opts, instance) =>
     runCli(
       'arcblog-lifecycle.mjs',
-      ['publish', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), '--body', optString(opts.body), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
+      ['publish', '--title', required(opts, 'title'), '--author-did', required(opts, 'author-did'), ...bodyArgs(opts), ...(opts.slug ? ['--slug', optString(opts.slug)] : [])],
       instance,
     ),
 };
@@ -358,11 +387,12 @@ Usage:
   node scripts/arcblog-agent.mjs check         # enforce the agent policy
   node scripts/arcblog-agent.mjs tools [--tool <name>]
   node scripts/arcblog-agent.mjs run --tool <name> [--slug <s>] [--query <q>] [--category <c>]
-                                       [--agent <did>] [--title <t>] [--body <markdown>]
+                                       [--agent <did>] [--title <t>] (--body <markdown> | --body-file <path>)
   node scripts/arcblog-agent.mjs run --tool list_studios
   node scripts/arcblog-agent.mjs run --tool get_studio --stake-address <addr>
                                        [--content [--path <public path>] [--endpoint <origin>]]
                                        [--afs <afs path> [--afs-op list|read|stat|search]]
+  node scripts/arcblog-agent.mjs run --tool list_summaries
   node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write[,agent.publish] [--ttl <minutes>]
   node scripts/arcblog-agent.mjs revoke --agent <did>
   node scripts/arcblog-agent.mjs grants
@@ -384,6 +414,18 @@ list_studios/get_studio never touch a chain themselves. A projection older than
 --content additionally reads that node's PUBLIC surface over the endpoint the
 registry carries (default /p/llms.txt, --path for another public path; --afs
 for one anonymous AFS read) — read-only, never a write.
+
+list_summaries (PRD-AGT-07/AGT-08) lists the aggregation projection the operator
+CLI writes — one record per id under node/summaries/:
+
+  node scripts/arcblog-summarize.mjs build --from-registry --id <id>
+  ... run --tool list_summaries
+
+It lists only: collecting from remote nodes, scoring and ranking belong to that
+CLI (its order is deterministic and must not be recomputed here).
+
+Write tools take their body as exactly one of --body <markdown> or
+--body-file <path>; passing both fails closed (every unknown flag does too).
 
 Agent declarations live in agents/<name>/{agent.dsl,agent.json,system.md} and are
 the platform's own contract (path + ops + maxDepth). The policy enforced here:

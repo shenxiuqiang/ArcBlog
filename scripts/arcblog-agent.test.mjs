@@ -211,9 +211,29 @@ test('every catalogue entry declares how it would act', () => {
       assert.ok(tool.reason, `${tool.name} needs a reason`);
     }
   }
-  assert.equal(executableReadTools().length, 7);
+  assert.equal(executableReadTools().length, 8);
   assert.equal(writeTools().length, 3);
   assert.equal(closedTools().length, 1); // settle_payment/change_wallet retired (ENG-16)
+});
+
+test('list_summaries lists the aggregation projection and needs no new scope', () => {
+  // PRD-AGT-07/AGT-08: aggregating is the operator CLI's job
+  // (`arcblog-summarize.mjs build` -> node/summaries/<id>.json). The read tool only
+  // lists that public projection, and it sits under the node prefix the declared
+  // agent scope already covers — so agents/arcblog-agent does not change.
+  const tool = toolPolicy('list_summaries');
+  assert.ok(tool, 'list_summaries must be in the catalogue');
+  assert.equal(tool.kind, 'read');
+  assert.equal(tool.status, 'available');
+  assert.equal(tool.capability, 'agent.read');
+  assert.equal(tool.resource.path, '/instance/app/arcblog/node/summaries');
+  assert.equal(tool.resource.op, 'list');
+  assert.match(tool.source, /arcblog-summarize\.mjs build/, 'the tool must name how the projection is built');
+
+  const uncovered = uncoveredReadTools({
+    tools: [{ path: '/instance/app/arcblog/node/**', ops: ['read', 'list'], maxDepth: 2 }],
+  }).map((entry) => entry.name);
+  assert.ok(!uncovered.includes('list_summaries'), 'node/** already covers node/summaries');
 });
 
 // --- discovery tools on the on-chain registry projection (AGT-12) ------------

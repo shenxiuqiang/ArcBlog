@@ -47,6 +47,19 @@ export const REGISTRY_SOURCE =
   'on-chain registry projection (node/registry.json + node/registry/<stakeAddress>.json) — refresh it first: node scripts/arcblog-network.mjs registry refresh';
 
 /**
+ * Where `list_summaries` gets its data (PRD-AGT-07/AGT-08).
+ *
+ * The aggregation itself happens in the operator CLI (`arcblog-summarize.mjs
+ * build`), which writes one PUBLIC summary record per id under
+ * `node/summaries/<id>.json` — the same read-only projection family as
+ * `node/registry.json`. The agent tool only lists what that projection holds: it
+ * never collects from remote nodes, never scores and never re-ranks, so a read
+ * tool cannot become an aggregation engine.
+ */
+export const SUMMARY_SOURCE =
+  'aggregation projection (node/summaries/<id>.json) — build it first: node scripts/arcblog-summarize.mjs build --from-registry --id <id>';
+
+/**
  * Tool catalogue (spec §130).
  *
  * Every entry states where it would act — `resource` for a read (an AFS path the
@@ -78,6 +91,14 @@ export const AGENT_TOOLS = [
   // named node's public surface over its endpoint (read-only, no key material).
   { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'list' }, source: REGISTRY_SOURCE },
   { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'get' }, params: ['stakeAddress'], source: REGISTRY_SOURCE },
+  // --- read backed by the aggregation projection (PRD-AGT-07/AGT-08) ---------
+  // One record per summary id under `node/summaries/`, written by
+  // `arcblog-summarize.mjs build`. It sits under the `node/**` prefix the declared
+  // agent scope already covers (`agents/arcblog-agent/agent.json`), so no
+  // declaration change is needed — `tool-coverage` proves it; see also
+  // agents/arcblog-agent/system.md. The tool lists the projection and does not
+  // aggregate anything.
+  { name: 'list_summaries', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/summaries`, op: 'list' }, source: SUMMARY_SOURCE },
   // --- writes: gated by an explicit grant -----------------------------------
   { name: 'create_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'update_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },

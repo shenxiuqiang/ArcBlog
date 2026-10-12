@@ -66,6 +66,7 @@ const FAST_TESTS = new Set([
   'arcblog-dist-secrets',
   'arcblog-hero-carousel',
   'arcblog-i18n',
+  'arcblog-memory',
   'arcblog-node-factory-markers',
   'arcblog-permissions',
   'arcblog-roles-settings',
@@ -84,6 +85,10 @@ const GUARDS = {
   'arcblog-dist-secrets': [/^scripts\/arcblog-dist-secrets/, /^package\.json$/, /^dist\//],
   'arcblog-hero-carousel': [/^\.web\/components\/hero-carousel\//, /^scripts\/arcblog-hero-carousel/, /^\.aup\/pages\/index\.aup$/],
   'arcblog-i18n': [/^\.aup\//, /^scripts\/arcblog-i18n/],
+  // PRD-AGT-11: the fast half is pure storage logic against a temp dir. The CLI
+  // half (`arcblog-memory-cli.test.mjs`) writes an AUDIT record through AFS, so it
+  // is deliberately NOT in FAST_TESTS — it stays live.
+  'arcblog-memory': [/^scripts\/lib\/memory\.mjs$/, /^scripts\/arcblog-memory(\.mjs|\.test\.mjs)?$/, /^\.gitignore$/],
   'arcblog-node-factory-markers': [/^scripts\/lib\/chain\.mjs$/, /^scripts\/arcblog-node-factory-markers/],
   'arcblog-permissions': [/^blocklet\.yaml$/, /^scripts\/arcblog-permissions/],
   'arcblog-roles-settings': [/^\.aup\/pages\/admin\/general\.aup$/, /^scripts\/(arcblog-roles|lib\/roles)/, /^\.aup\/locales\//],

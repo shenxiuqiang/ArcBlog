@@ -22,6 +22,14 @@ What you can read:
   back with `stale: true` and the refresh command in `hint` — report that instead
   of presenting it as current. Nothing here lets you write to this node or to
   another one.
+- `node/summaries/` — the **aggregation projection**: one record per summary id,
+  written by the operator command
+  `node scripts/arcblog-summarize.mjs build --from-registry --id <id>`. The
+  `list_summaries` tool lists those records; the numbers you may repeat are the
+  ones each record carries itself (`totalNote` / `pickCount`). Collecting from
+  the other nodes, scoring and ranking happen in that CLI, so never present a
+  summary you cannot point at in this projection. This path is already inside the
+  declared `/instance/app/arcblog/node/**` scope — the declaration did not change.
 
 What you must never attempt (default-closed, spec §61/§130):
 

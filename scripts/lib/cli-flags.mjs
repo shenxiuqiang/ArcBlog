@@ -44,7 +44,7 @@ export const CHAIN_FLAGS = [
 
 /** Per-script flag names, keyed by the script's basename. */
 export const SCRIPT_FLAGS = {
-  "arcblog-agent.mjs": ["agent", "agent-access", "afs", "afs-op", "author-did", "body", "capability", "category", "content", "content-id", "creator-did", "endpoint", "help", "id", "instance", "limit", "note", "path", "price-amount", "price-asset", "query", "slug", "stake-address", "title", "tool", "ttl", "update"],
+  "arcblog-agent.mjs": ["agent", "agent-access", "afs", "afs-op", "author-did", "body", "body-file", "capability", "category", "content", "content-id", "creator-did", "endpoint", "help", "id", "instance", "limit", "note", "path", "price-amount", "price-asset", "query", "slug", "stake-address", "title", "tool", "ttl", "update"],
   "arcblog-attribution.mjs": ["help", "out"],
   "arcblog-audit.mjs": ["action", "actor", "content", "detail", "help", "instance", "json", "mode", "path", "slug"],
   "arcblog-bookmarks.mjs": ["help", "json", "slug", "title", "user"],
@@ -58,6 +58,7 @@ export const SCRIPT_FLAGS = {
   "arcblog-hero-carousel.mjs": ["check"],
   "arcblog-lifecycle.mjs": ["action", "actor", "args", "author-did", "author-name", "body", "body-file", "category", "content", "cover-image", "detail", "help", "if-match", "ifMatch", "instance", "json", "mode", "og-description", "og-image", "og-title", "path", "push", "seo-description", "seo-title", "sign-key", "signer-did", "signer-label", "slug", "summary", "tags", "title", "update", "visibility"],
   "arcblog-media.mjs": ["action", "alt", "by", "force", "height", "help", "id", "ids", "instance", "intent-id", "interval", "mime", "path", "size", "title", "update", "uploader-did", "width"],
+  "arcblog-memory.mjs": ["actor", "help", "json", "key", "session", "value"],
   "arcblog-network.mjs": ["base-url", "help", "instance", "max-assets", "probe", "probe-limit", "probe-timeout", "publish", "update"],
   "arcblog-node-nft.mjs": ["adapter", "asset", "description", "dry-run", "endpoint", "evidence", "help", "instance", "message", "name", "now", "owner", "pk", "region", "role", "sign-key", "stake", "stake-address", "waiting-period"],
   "arcblog-node.mjs": ["auth-method", "caller", "capabilities", "description", "did", "endpoint", "help", "instance", "json", "name", "roles", "update"],

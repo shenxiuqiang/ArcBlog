@@ -46,3 +46,8 @@ auth.json
 .env.local
 .node-pk.pem
 node.key
+
+# Local-first agent memory (PRD-AGT-11) — repo-local, deliberately OUTSIDE AFS:
+# `${ARCBLOG_MEMORY_DIR:-<repo>/.arcblog/memory}/<sessionId>.jsonl` holds user-side
+# context, so it carries exactly the same "never commit" status as node.key above.
+.arcblog/
