@@ -6,24 +6,33 @@ page registry {
     check-desc { en "This page renders the projection node/registry.json; verify it against the chain itself — list stakes where receiver = the factory address with a chain explorer or a general SDK, and never trust a number this page cannot source." zh "本页渲染的是投影 node/registry.json；请与链上核对——用链上浏览器或通用 SDK 查询 receiver = 工厂地址的质押列表，不要信任何本页无法给出出处的数字。" }
     check-title { en "How to verify" zh "核对入口" }
     desc { en "Which nodes are staked to this node's studio factory — the on-chain registry view. The page reads the public projection node/registry.json, which the CLI writes from the chain query (listStakes, probes P-1/P-2 verified 2026-10-01); it carries public fields only, never key material." zh "质押到本节点 studio 工厂的节点列表——链上注册表面。本页读取公开投影 node/registry.json；投影由 CLI 查询链上注册表（listStakes，探针 P-1/P-2 已于 2026-10-01 验证）写入，只含公开字段，绝无密钥材料。" }
-    empty-note { en "No staked nodes on chain — a sourced empty state: the CLI enumerated the registry and the projection says total = 0 (refreshed at the time above)." zh "链上暂无质押节点——这是有出处的空态：CLI 已枚举链上注册表，投影 total = 0（刷新时间见上）。" }
     gate-desc { en "Sign in with DID Wallet to view the registry status." zh "使用 DID Wallet 登录后查看注册表状态。" }
     gate-title { en "Node registry" zh "节点注册表" }
     list-title { en "Staked nodes" zh "质押节点" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     node-assets { en "Staked assets" zh "质押资产数" }
+    node-data-updated { en "Last data update" zh "最近一次 data 更新时间" }
     node-endpoint { en "Endpoint" zh "Endpoint" }
     node-owner { en "Owner" zh "Owner" }
+    node-reach-label { en "Reachability" zh "时效" }
+    node-reach-note { en "Basis" zh "依据" }
     node-stake { en "Stake address" zh "质押地址" }
     pending-cli-label { en "Generate the projection (CLI)" zh "生成投影（CLI）" }
-    pending-note { en "The registry projection has not been generated yet, so this page does not know how many nodes the chain holds and renders no list. Run the refresh command below — the page reads the projection it writes." zh "注册表投影尚未生成——本页不知道链上有多少节点，因此不渲染列表。请运行下方命令刷新；本页读取它写入的投影。" }
+    pending-note { en "This page renders only what the projection node/registry.json says. The state line below is computed by the CLI (the AUP expression layer cannot compare or concatenate, so the page only prints the string): it distinguishes not-yet-generated / a sourced empty state / the node list, and it states the remedy for the first and second. A projection with no live node is NOT an assertion about the whole chain — it means this factory has no live stake row (dead rows, `assets` empty next to a non-empty `revokedAssets`, are excluded), so the count is live nodes, not raw stake rows." zh "本页只渲染投影 node/registry.json 说的内容。下方状态行由 CLI 计算（AUP 表达式层不能比较、不能拼接，本页只打印字符串）：区分 未生成 / 有出处的空态 / 节点列表，并对前两者给出恢复路径。投影里没有存活节点不等于断言整条链上没有节点——它只表示本工厂名下没有存活质押行（失活行 = assets 为空且 revokedAssets 非空，不计入），因此计数是存活节点，不是原始质押行数。" }
     probe-p1-label { en "Probe P-1 (mock-chain enumeration)" zh "探针 P-1（mock 链枚举）" }
     probe-p1-value { en "Verified (2026-10-01, mock adapter): returned count = staked count, unstaked nodes absent, cursor pagination continues (docs/05-开发文档/07 §1)." zh "已验证通过（2026-10-01，mock 适配器）：返回条数 = 质押数、未质押的不出现、分页游标可续（docs/05-开发文档/07 §1）。" }
     probe-p2-label { en "Probe P-2 (beta real-chain enumeration)" zh "探针 P-2（beta 真链枚举）" }
     probe-p2-value { en "Verified (2026-10-01, ocap adapter on beta): the minimal query shape addressFilter.receiver + paging.{size,cursor} is accepted and the cursor paginates (docs/05-开发文档/07 §1)." zh "已验证通过（2026-10-01，ocap 适配器，beta 真链）：最小查询形参 addressFilter.receiver + paging.{size,cursor} 被接受、游标可分页（docs/05-开发文档/07 §1）。" }
+    reach-labels { en "Four reachability states (PRD-NET-03): reachable / stale / never / offline — fixed names, never renamed." zh "可达性四态（PRD-NET-03）：可达 / 陈旧 / 从未可达 / 离线——固定命名，不得新造词。" }
+    state-note { en "Projection state (computed by the CLI)" zh "投影状态（由 CLI 计算）" }
     status-title { en "Connection status" zh "接入状态" }
     status-wired { en "Wired end to end: the adapters enumerate the chain registry (listStakes — P-1 mock / P-2 ocap, both verified 2026-10-01), the CLI's registry refresh writes the projection, and this page renders it. The chain remains the source of truth — a refresh re-reads it." zh "已端到端接通：适配器层枚举链上注册表（listStakes——P-1 mock / P-2 ocap，均于 2026-10-01 验证），CLI 的 registry refresh 写入投影，本页渲染投影。链上仍是事实来源——刷新即重新读取。" }
     sum-adapter { en "Adapter" zh "适配器" }
+    sum-probe-answered { en "Endpoints answered" zh "探测应答数" }
+    sum-probe-enabled { en "Probe" zh "探测" }
+    sum-probe-at { en "Probe run at" zh "探测时间" }
+    sum-probe-checked { en "Endpoints probed" zh "已探测端点数" }
+    sum-probe-timeout { en "Probe timeout (ms)" zh "探测超时（ms）" }
     sum-factory { en "Factory (stake receiver)" zh "工厂地址（质押 receiver）" }
     sum-network { en "Network" zh "网络" }
     sum-refreshed { en "Projection refreshed at" zh "投影刷新时间" }
@@ -127,35 +136,47 @@ page registry {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :status-title level=3 style={fontSize: "var(--type-body)"}
                 p :status-wired intent=muted
+                p :reach-labels intent=muted scale=sm
+                key-value-list dense=true fields=[{label: "$t(registry.sum-probe-enabled)", value: "${state.registry.probe.enabled}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-timeout)", value: "${state.registry.probe.timeoutMs}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-checked)", value: "${state.registry.probe.checked}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-answered)", value: "${state.registry.probe.answered}", hideWhenEmpty: true}, {label: "$t(registry.sum-probe-at)", value: "${state.registry.probe.checkedAt}", hideWhenEmpty: true}]
                 key-value-list dense=true fields=[{label: "$t(registry.probe-p1-label)", value: "$t(registry.probe-p1-value)"}, {label: "$t(registry.probe-p2-label)", value: "$t(registry.probe-p2-value)"}]
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
-                p :pending-note intent=info scale=sm visible="!${state.registry.refreshedAt}"
-                key-value-list dense=true fields=[{label: "$t(registry.pending-cli-label)", value: "node scripts/arcblog-network.mjs registry refresh", monospace: true, copyable: true}] visible="!${state.registry.refreshedAt}"
-                key-value-list dense=true fields=[{label: "$t(registry.sum-factory)", value: "${state.registry.factory}", monospace: true, copyable: true}, {label: "$t(registry.sum-network)", value: "${state.registry.network}"}, {label: "$t(registry.sum-adapter)", value: "${state.registry.adapter}"}, {label: "$t(registry.sum-total)", value: "${state.registry.total}"}, {label: "$t(registry.sum-refreshed)", value: "${state.registry.refreshedAt}"}] visible="${state.registry.refreshedAt}"
-                p :empty-note intent=info scale=sm visible="${state.registry.empty}"
-                view gap=sm visible="${state.registry.refreshedAt}" {
-                  view gap=sm visible="!${state.registry.empty}" {
-                    afs-list registry-nodes layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/registry" {
-                      row gap=sm cross=center role=item {
-                        view gap=xs style={flex: "1 1 0%"} {
-                          row gap=xs cross=center {
-                            p :node-endpoint scale=sm intent=muted
-                            p "${entry.content.endpoint}" scale=sm
-                          }
-                          row gap=xs cross=center {
-                            p :node-owner scale=sm intent=muted
-                            p "${entry.content.owner}" scale=sm
-                          }
-                          row gap=xs cross=center {
-                            p :node-stake scale=sm intent=muted
-                            p "${entry.content.stakeAddress}" scale=sm
-                          }
-                          row gap=xs cross=center {
-                            p :node-assets scale=sm intent=muted
-                            p "${entry.content.assetCount}" scale=sm
-                          }
+                p :pending-note intent=info scale=sm
+                key-value-list dense=true fields=[{label: "$t(registry.pending-cli-label)", value: "node scripts/arcblog-network.mjs registry refresh", monospace: true, copyable: true}]
+                key-value-list dense=true fields=[{label: "$t(registry.sum-factory)", value: "${state.registry.factory}", monospace: true, copyable: true}, {label: "$t(registry.sum-network)", value: "${state.registry.network}"}, {label: "$t(registry.sum-adapter)", value: "${state.registry.adapter}"}, {label: "$t(registry.sum-total)", value: "${state.registry.total}"}, {label: "$t(registry.sum-refreshed)", value: "${state.registry.refreshedAt}"}]
+                key-value-list dense=true fields=[{label: "$t(registry.state-note)", value: "${state.registry.stateNote}"}]
+                view gap=sm {
+                  afs-list registry-nodes layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/registry" {
+                    row gap=sm cross=center role=item {
+                      view gap=xs style={flex: "1 1 0%"} {
+                        row gap=xs cross=center {
+                          p :node-reach-label scale=sm intent=muted
+                          p "${entry.content.reachabilityLabel}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-reach-note scale=sm intent=muted
+                          p "${entry.content.reachabilityReason}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-endpoint scale=sm intent=muted
+                          p "${entry.content.endpoint}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-data-updated scale=sm intent=muted
+                          p "${entry.content.dataUpdatedAt}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-owner scale=sm intent=muted
+                          p "${entry.content.owner}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-stake scale=sm intent=muted
+                          p "${entry.content.stakeAddress}" scale=sm
+                        }
+                        row gap=xs cross=center {
+                          p :node-assets scale=sm intent=muted
+                          p "${entry.content.assetCount}" scale=sm
                         }
                       }
                     }

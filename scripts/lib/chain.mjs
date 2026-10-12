@@ -357,14 +357,31 @@ function emptyMockState(network = 'mock') {
   };
 }
 
+/**
+ * The mock ledger path for THIS call.
+ *
+ * `MOCK_STATE_PATH` is still the import-time default (the CLI contract), but a
+ * long-lived process that runs several isolated test cases (one `node --test`
+ * file) has ONE module instance: an import-time constant made the second case
+ * silently reuse the first case's path — in-process seeding then wrote a ledger
+ * the CLI subprocess never read, which read as "no studio factory recorded".
+ * Re-reading the env per call keeps the documented CLI behaviour and makes
+ * isolation per-case, not per-process.
+ */
+function mockStatePath() {
+  const override = String(process.env.ARCBLOG_MOCK_STATE_PATH ?? '').trim();
+  return override || MOCK_STATE_PATH;
+}
+
 function readMockState(instance, { network = 'mock' } = {}) {
-  const stored = readJson(MOCK_STATE_PATH, instance)?.value ?? null;
+  const path = mockStatePath();
+  const stored = readJson(path, instance)?.value ?? null;
   if (!stored) return { state: emptyMockState(network), ifMatch: undefined };
-  return { state: { ...emptyMockState(network), ...stored }, ifMatch: readJson(MOCK_STATE_PATH, instance)?.ifMatch };
+  return { state: { ...emptyMockState(network), ...stored }, ifMatch: readJson(path, instance)?.ifMatch };
 }
 
 function writeMockState(state, instance, ifMatch) {
-  writeJson(MOCK_STATE_PATH, state, instance, ifMatch ?? undefined);
+  writeJson(mockStatePath(), state, instance, ifMatch ?? undefined);
 }
 
 function debit(state, address, amount) {
@@ -398,7 +415,7 @@ export function createMockChain({ instance, now } = {}) {
 
   const persist = () => {
     writeMockState(state, instance, version);
-    version = readJson(MOCK_STATE_PATH, instance)?.ifMatch;
+    version = readJson(mockStatePath(), instance)?.ifMatch;
   };
   const ensureToken = (tokenId, decimals) => {
     if (tokenId && state.token.address !== tokenId) {
@@ -413,7 +430,9 @@ export function createMockChain({ instance, now } = {}) {
     adapter: 'mock',
     network: state.network,
     clock: () => state.clock,
-    statePath: MOCK_STATE_PATH,
+    get statePath() {
+      return mockStatePath();
+    },
 
     ensureToken,
     balanceOf: (address) => state.balances[address] ?? MOCK_START_BALANCE,
@@ -425,7 +444,7 @@ export function createMockChain({ instance, now } = {}) {
       Object.keys(state).forEach((key) => delete state[key]);
       Object.assign(state, fresh);
       persist();
-      return { cleared: true, statePath: MOCK_STATE_PATH };
+      return { cleared: true, statePath: mockStatePath() };
     },
 
     createFactory({ role, factory, tokenId, decimals, issuerAddress }) {
@@ -489,6 +508,11 @@ export function createMockChain({ instance, now } = {}) {
         owner: itx.owner,
         data: { type: 'json', value: JSON.stringify({ ...data, owner: itx.owner }) },
         mintedAt: state.clock,
+        // The real chain's AssetState carries `renaissanceTime` = when the asset
+        // state last changed (mint or updateAsset). PRD-NET-03 reads it as "the
+        // most recent `data` update time", so the mock must carry the same field
+        // (`updateAsset` below bumps it instead of adding a private one).
+        renaissanceTime: state.clock,
         price: token.value,
       };
       const hash = recordTx(state, 'acquireAsset', { asset: id, owner: itx.owner, factory: factory.address });
@@ -499,7 +523,14 @@ export function createMockChain({ instance, now } = {}) {
     getAssetState(address) {
       const asset = state.assets[address];
       if (!asset) return null;
-      return { address, owner: asset.owner, moniker: asset.moniker, data: asset.data, mintedAt: asset.mintedAt };
+      return {
+        address,
+        owner: asset.owner,
+        moniker: asset.moniker,
+        data: asset.data,
+        mintedAt: asset.mintedAt,
+        renaissanceTime: asset.renaissanceTime ?? asset.mintedAt ?? '',
+      };
     },
 
     assetsByOwner(owner) {
@@ -520,6 +551,7 @@ export function createMockChain({ instance, now } = {}) {
         owner,
         assets: [],
         revokedAssets: [],
+        claimedAssets: [],
         tokens: [],
         slashers,
         message,
@@ -559,11 +591,16 @@ export function createMockChain({ instance, now } = {}) {
       const receiver = addressFilter.receiver ?? '';
       const size = Number(paging.size) || 20;
       const start = Number(paging.cursor) || 0;
-      const live = Object.values(state.stakes)
-        .filter((s) => (!receiver || s.factory === receiver))
-        .filter((s) => s.assets.some((id) => !s.revokedAssets.includes(id)));
-      const total = live.length;
-      const slice = live.slice(start, start + size);
+      // A2 (QA R3): return EVERY stake row for the receiver, including one whose
+      // assets are all revoked, and carry `revokedAssets` + the revoked asset ids
+      // in `assets` — that is the real chain's raw response shape (measured on
+      // beta 2026-10-12: `{assets:[], revokedAssets:[…], message:…, data:null}`).
+      // The mock used to filter dead stakes out and hide `revokedAssets`, which
+      // made the two adapters disagree: `lib/network.mjs` `isLiveStake` now owns
+      // that judgment for both, so the mock must stop pre-deciding it.
+      const rows = Object.values(state.stakes).filter((s) => !receiver || s.factory === receiver);
+      const total = rows.length;
+      const slice = rows.slice(start, start + size);
       return {
         code: 'OK',
         page: { cursor: String(start + slice.length), next: start + slice.length < total, total },
@@ -571,9 +608,16 @@ export function createMockChain({ instance, now } = {}) {
           address: s.address,
           sender: s.owner,
           receiver: s.factory,
-          assets: s.assets.filter((id) => !s.revokedAssets.includes(id)),
+          // Same shape as the real chain's IndexedStakeState (`node.d.ts`): the
+          // full asset list next to the revoked ids, so a consumer applies the
+          // liveness criterion itself instead of trusting a pre-filtered list.
+          assets: [...s.assets],
+          revokedAssets: [...s.revokedAssets],
+          claimedAssets: [...(s.claimedAssets ?? [])],
           message: s.message ?? '',
           nonce: '',
+          genesisTime: s.createdAt ?? '',
+          renaissanceTime: s.revokedAt || s.createdAt || '',
         })),
       };
     },
@@ -592,6 +636,7 @@ export function createMockChain({ instance, now } = {}) {
       if (data !== undefined) {
         asset.data = { type: 'json', value: typeof data === 'string' ? data : JSON.stringify(data) };
       }
+      asset.renaissanceTime = state.clock;
       const hash = recordTx(state, 'updateAsset', { asset: address });
       persist();
       return { hash, address };
@@ -624,6 +669,10 @@ export function createMockChain({ instance, now } = {}) {
         const asset = state.assets[id];
         if (asset) asset.owner = stake.owner;
       }
+      // The row keeps the evidence of what left it (`claimedAssets`) instead of
+      // erasing both lists: a row that ends up all-empty is indistinguishable from
+      // "never staked", and `isLiveStake` must be able to tell them apart.
+      stake.claimedAssets = [...new Set([...(stake.claimedAssets ?? []), ...claimed])];
       stake.revokedAssets = [];
       stake.assets = stake.assets.filter((id) => !claimed.includes(id));
       stake.claimedAt = state.clock;
@@ -813,7 +862,16 @@ export async function createOcapChain(config, instance) {
     async getAssetState(address) {
       const { state } = await client.getAssetState({ address });
       if (!state) return null;
-      return { address, owner: state.owner, moniker: state.moniker, data: state.data, mintedAt: state.genesisTime };
+      return {
+        address,
+        owner: state.owner,
+        moniker: state.moniker,
+        data: state.data,
+        mintedAt: state.genesisTime,
+        // AssetState.renaissanceTime = the last state change (mint or
+        // updateAsset) — the "most recent `data` update time" PRD-NET-03 reads.
+        renaissanceTime: state.renaissanceTime ?? state.genesisTime ?? '',
+      };
     },
 
     async assetsByOwner(owner) {

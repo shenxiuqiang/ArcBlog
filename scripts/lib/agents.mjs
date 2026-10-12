@@ -36,6 +36,17 @@ export const SENSITIVE_PATH_PREFIXES = [
 export const AGENT_CAPABILITIES = ['agent.read', 'agent.write', 'agent.publish', 'agent.admin'];
 
 /**
+ * Where the two discovery reads get their data (AGT-12).
+ *
+ * The chain is the registry; what an AFS/agent read can reach is the **public
+ * projection** the operator's `registry refresh` writes. The tools therefore
+ * state the projection and the command that refreshes it instead of implying
+ * that a read tool can query a chain.
+ */
+export const REGISTRY_SOURCE =
+  'on-chain registry projection (node/registry.json + node/registry/<stakeAddress>.json) — refresh it first: node scripts/arcblog-network.mjs registry refresh';
+
+/**
  * Tool catalogue (spec §130).
  *
  * Every entry states where it would act — `resource` for a read (an AFS path the
@@ -58,9 +69,15 @@ export const AGENT_TOOLS = [
   { name: 'get_node_profile', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/node', op: 'get' } },
   // Aggregate counts over public surfaces only (spec §60/§62).
   { name: 'get_analytics', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: '/instance/app/arcblog/posts', op: 'list' } },
-  // --- reads with no surface in this platform version ------------------------
-  { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)' },
-  { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'unavailable', reason: 'no cross-node Studio registry in this platform version' },
+  // --- reads backed by the on-chain registry projection (AGT-12/AGT-06) ------
+  // The registry IS the chain (`listStakes` where receiver = the studio factory
+  // address, spec §71). Enumerating it needs chain configuration — an operator
+  // action — so `node scripts/arcblog-network.mjs registry refresh` writes the
+  // public projection and these two tools read *that* projection; an agent read
+  // tool never talks to a chain itself. `get_studio --content` then reads the
+  // named node's public surface over its endpoint (read-only, no key material).
+  { name: 'list_studios', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'list' }, source: REGISTRY_SOURCE },
+  { name: 'get_studio', capability: 'agent.read', kind: 'read', status: 'available', resource: { path: `${INSTANCE_ROOT}/node/registry`, op: 'get' }, params: ['stakeAddress'], source: REGISTRY_SOURCE },
   // --- writes: gated by an explicit grant -----------------------------------
   { name: 'create_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },
   { name: 'update_draft', capability: 'agent.write', kind: 'write', command: 'lifecycle-draft' },

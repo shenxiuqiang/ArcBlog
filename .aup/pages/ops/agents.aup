@@ -29,15 +29,15 @@ page agents {
     runtime-note { en "Spec §129: /mcp, /api/afs/rpc and llms.txt are provided by the ARC Runtime; ArcBlog only declares and audits them, so this page does not assert their runtime availability." zh "spec §129：/mcp、/api/afs/rpc 与 llms.txt 由 ARC Runtime 提供；ArcBlog 只声明与审计，本页不断言其运行期可用性。" }
     status-available { en "available" zh "可用" }
     status-closed { en "closed" zh "关闭" }
-    status-unavailable { en "unavailable" zh "不可用" }
-    studio-registry { en "no cross-node Studio registry in this platform version (spec §71 is a POST-MVP transport)" zh "本平台版本没有跨节点 Studio 注册表（spec §71 属 POST-MVP 传输）" }
+    registry-source { en "on-chain registry projection (node/registry.json + one record per node) — the operator's registry refresh writes it; run that before reading" zh "链上注册表投影（node/registry.json + 每节点一条记录）——由运营者的 registry refresh 写入；读取前请先执行" }
+    registry-content { en "get_studio --content then reads that node's public surface over its staked endpoint (read-only)" zh "get_studio --content 再经该节点质押的 endpoint 只读其公开面" }
     title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
-    tools-closed { en "Closed tools (3) — never exposed (spec §130)" zh "关闭工具（3）——永不暴露（spec §130）" }
+    tools-closed { en "Closed tools (1) — never exposed (spec §130)" zh "关闭工具（1）——永不暴露（spec §130）" }
     tools-closed-note { en "Closed tools never run from the agent surface: change_role is agent.admin and default-closed. The economy tools left the catalogue with the economy surface — removed entirely, not merely closed." zh "关闭工具永不从 Agent 面执行：change_role 属 agent.admin 且默认关闭。经济工具已随经济面从目录整体移除，而非仅关闭。" }
     tools-desc { en "Every tool the agent surface declares, with the capability it needs and whether it can run today. Read tools are always on; write tools need a time-boxed grant; closed tools never run." zh "Agent 面声明的每个工具，含所需能力与当前可用状态。只读工具始终可用；写工具需要限时授权；关闭工具永不执行。" }
-    tools-legend { en "Status: available = runs today; unavailable = declared but the platform cannot serve it (reason inline)." zh "状态：可用 = 当前可执行；不可用 = 已声明但平台无法提供（原因见行内）。" }
+    tools-legend { en "Status: available = runs today; every tool below is available. Write tools additionally need an unexpired grant, and closed tools never run." zh "状态：可用 = 当前可执行；下列工具当前均可用。写工具另需未过期授权，关闭工具永不执行。" }
     tools-read { en "Read tools (7)" zh "只读工具（7）" }
-    tools-source { en "Source: node scripts/arcblog-agent.mjs tools — 13 tools (read 7 / write 3 / closed 3). Re-run the CLI to re-verify." zh "来源：node scripts/arcblog-agent.mjs tools —— 13 个工具（read 7 / write 3 / closed 3）。可重跑 CLI 复核。" }
+    tools-source { en "Source: node scripts/arcblog-agent.mjs tools — 11 tools (read 7 / write 3 / closed 1). Re-run the CLI to re-verify." zh "来源：node scripts/arcblog-agent.mjs tools —— 11 个工具（read 7 / write 3 / closed 1）。可重跑 CLI 复核。" }
     tools-title { en "Declared tools (spec §130)" zh "已声明工具（spec §130）" }
     tools-write { en "Write tools (3) — require a time-boxed grant" zh "写工具（3）——需要限时授权" }
   }
@@ -165,7 +165,7 @@ page agents {
                 h3 :tools-title level=3 style={fontSize: "var(--type-body)"}
                 p :tools-desc intent=muted
                 h3 :tools-read level=3 style={fontSize: "var(--type-body)"}
-                key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}, {label: get_studio, value: "$t(agents.status-unavailable) · agent.read — $t(agents.studio-registry)"}]
+                key-value-list agent-tools-read dense=true fields=[{label: search_posts, value: "$t(agents.status-available) · agent.read"}, {label: get_post, value: "$t(agents.status-available) · agent.read"}, {label: list_categories, value: "$t(agents.status-available) · agent.read"}, {label: get_node_profile, value: "$t(agents.status-available) · agent.read"}, {label: get_analytics, value: "$t(agents.status-available) · agent.read"}, {label: list_studios, value: "$t(agents.status-available) · agent.read — $t(agents.registry-source)"}, {label: get_studio, value: "$t(agents.status-available) · agent.read — $t(agents.registry-source); $t(agents.registry-content)"}]
                 h3 :tools-write level=3 style={fontSize: "var(--type-body)"}
                 key-value-list agent-tools-write dense=true fields=[{label: create_draft, value: "$t(agents.status-available) · agent.write"}, {label: update_draft, value: "$t(agents.status-available) · agent.write"}, {label: publish_post, value: "$t(agents.status-available) · agent.publish"}]
                 h3 :tools-closed level=3 style={fontSize: "var(--type-body)"}

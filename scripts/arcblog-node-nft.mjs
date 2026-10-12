@@ -289,7 +289,10 @@ async function commandStake(opts, instance) {
     role,
     assetId,
     owner,
-    message: optString(opts.message).trim() || stored.state.roles[role]?.endpoint || '',
+    // --message explicitly overrides (an empty value is a real choice: a stake
+    // that declares no endpoint is the PRD-NET-03 `stale` shape), otherwise the
+    // recorded node endpoint is used.
+    message: opts.message !== undefined ? optString(opts.message).trim() : (stored.state.roles[role]?.endpoint || ''),
     revokeWaitingPeriod: waitingPeriod,
   });
 

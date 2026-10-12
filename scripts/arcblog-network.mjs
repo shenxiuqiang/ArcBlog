@@ -42,12 +42,52 @@ import {
   buildHealth,
   buildRegistryProjection,
   currentBlockletVersion,
+  declaredEndpoint,
+  declaredRegion,
+  isLiveStake,
   validateDiscoveryDocument,
   validateHealth,
   validateRegistryProjection,
 } from './lib/network.mjs';
+import { probeEndpoints } from './lib/probe.mjs';
 
 const NODE_PROFILE_PATH = `${INSTANCE_ROOT}/node/profile.json`;
+
+/** PRD-NET-03 defaults: probe OFF, bounded timeout and a bounded number of endpoints per refresh. */
+const DEFAULT_PROBE_TIMEOUT_MS = 3000;
+const DEFAULT_PROBE_LIMIT = 200;
+const DEFAULT_MAX_ASSETS = 500;
+
+/**
+ * Flags read by registry refresh (parsed here, declared in lib/cli-flags.mjs).
+ * `min` lets a cap be turned OFF explicitly (`0`): a bounded default must be
+ * escapable, otherwise `--probe-limit 0` — the way to say "do not probe a single
+ * endpoint" — would fail closed instead of disabling.
+ */
+function numberFlag(opts, name, fallback, { min = 1 } = {}) {
+  const raw = optString(opts[name]);
+  if (!raw) return fallback;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < min) fail('VALIDATION', `--${name} must be a number >= ${min} (got "${raw}")`);
+  return value;
+}
+
+/** Parse an NFT `data` field: the real chain returns the object, the mock a JSON string. */
+function parseAssetData(data) {
+  if (!data || typeof data !== 'object') return {};
+  const value = data.value;
+  if (value && typeof value === 'object') return value;
+  const text = typeof value === 'string' ? value.trim() : '';
+  if (!text) return {};
+  try {
+    const parsed = JSON.parse(text);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    // An unparsable payload is a node that declares nothing usable — the same
+    // projection outcome as a cleared one. It is never repaired or guessed at.
+    return {};
+  }
+}
 
 function readProfile(instance) {
   const profile = readJson(NODE_PROFILE_PATH, instance)?.value ?? null;
@@ -127,11 +167,88 @@ async function commandRegistryRefresh(opts, instance) {
     cursor = next;
   }
 
+  // PRD-NET-03 input #1 — the staked NFT's `data` (endpoint/region + the last
+  // time that data changed). `listStakes` returns stake rows only, so the
+  // declared endpoint lives on the ASSET: read each staked asset with
+  // `getAssetState`. Bounded by --max-assets, and a read that fails is recorded
+  // as "no facts" (⇒ `stale`) instead of failing the whole refresh — the
+  // enumeration itself is still on-chain truth.
+  const maxAssets = numberFlag(opts, 'max-assets', DEFAULT_MAX_ASSETS, { min: 0 });
+  const facts = {};
+  const assetErrors = [];
+  let assetsRead = 0;
+  for (const stake of stakes) {
+    const stakeAddress = String(stake?.address ?? '');
+    if (!stakeAddress) continue;
+    // The stake row itself declares an endpoint in `message` (the real beta row
+    // has `data: null` and carries only this). It is the FALLBACK: PRD-NET-03
+    // reads the endpoint from the staked NFT `data` first (the authoritative
+    // node self-description), and only falls back to the stake message when no
+    // asset data exists to read.
+    const fact = { endpoint: '', region: '', dataUpdatedAt: '', endpointSource: '' };
+    const stakeMessage = String(stake?.message ?? '').trim();
+    if (stakeMessage) {
+      fact.endpoint = stakeMessage;
+      fact.endpointSource = 'stake.message';
+    }
+    facts[stakeAddress] = fact;
+    for (const assetId of Array.isArray(stake?.assets) ? stake.assets : []) {
+      const id = String(assetId ?? '');
+      if (!id) continue;
+      if (assetsRead >= maxAssets) {
+        assetErrors.push({ stakeAddress, assetId: id, code: 'LIMIT', error: `--max-assets ${maxAssets} reached` });
+        continue;
+      }
+      assetsRead += 1;
+      try {
+        const state = await chain.getAssetState(id);
+        if (!state) {
+          assetErrors.push({ stakeAddress, assetId: id, code: 'NOT_FOUND', error: 'asset state not found' });
+          continue;
+        }
+        const data = parseAssetData(state.data);
+        const endpoint = declaredEndpoint(data);
+        const region = declaredRegion(data);
+        // Asset data BEATS the stake message (PRD-NET-03: the input is the `data`
+        // update); the message only holds the slot until an asset declares one.
+        if (endpoint) {
+          fact.endpoint = endpoint;
+          fact.endpointSource = 'asset.data';
+        }
+        if (region && !fact.region) fact.region = region;
+        const stamp = String(state.renaissanceTime || state.mintedAt || '');
+        if (stamp && stamp > fact.dataUpdatedAt) fact.dataUpdatedAt = stamp;
+      } catch (err) {
+        assetErrors.push({ stakeAddress, assetId: id, code: err?.code || 'RUNTIME_ERROR', error: String(err?.message ?? err) });
+      }
+    }
+  }
+
+  // PRD-NET-03 input #2 — the OPTIONAL read-only probe. Off by default; when on,
+  // it is the only thing that can decide `offline`, and it never writes anything
+  // on chain (failures are recorded verbatim in the projection).
+  const probed = Boolean(opts.probe);
+  const probeTimeoutMs = numberFlag(opts, 'probe-timeout', DEFAULT_PROBE_TIMEOUT_MS);
+  const probeLimit = numberFlag(opts, 'probe-limit', DEFAULT_PROBE_LIMIT, { min: 0 });
+  const probes = probed
+    ? await probeEndpoints(
+        // Dead rows are not probed: they never reach the projection (isLiveStake).
+        stakes
+          .filter((stake) => isLiveStake(stake))
+          .map((stake) => ({ stakeAddress: String(stake?.address ?? ''), endpoint: facts[String(stake?.address ?? '')]?.endpoint ?? '' })),
+        { timeoutMs: probeTimeoutMs, limit: probeLimit },
+      )
+    : {};
+
   const projection = buildRegistryProjection({
     adapter: chain.adapter,
     network: chain.network || config.network,
     factory: factory.address,
     stakes,
+    facts,
+    probes,
+    probed,
+    probeTimeoutMs: probed ? probeTimeoutMs : 0,
   });
   const issues = validateRegistryProjection(projection);
   if (issues.length) fail('VALIDATION', issues.join('; '));
@@ -169,6 +286,19 @@ async function commandRegistryRefresh(opts, instance) {
     factory: projection.factory,
     total: projection.total,
     removed,
+    reachability: {
+      states: projection.nodes.reduce((acc, node) => {
+        acc[node.reachability] = (acc[node.reachability] ?? 0) + 1;
+        return acc;
+      }, {}),
+      offlineNeedsProbe: projection.offlineNeedsProbe === 'true',
+    },
+    assetErrors,
+    // A2: how many raw stake rows the chain returned vs how many are live (the
+    // real chain returns dead rows; the projection only lists live ones).
+    stakesReturned: stakes.length,
+    stakesLive: projection.total,
+    deadStakes: stakes.filter((stake) => !isLiveStake(stake)).map((stake) => String(stake?.address ?? '')),
     projection,
   }, null, 2));
 }
@@ -188,11 +318,21 @@ Usage:
   node scripts/arcblog-network.mjs discovery show
   node scripts/arcblog-network.mjs health [--publish]
   node scripts/arcblog-network.mjs registry refresh [--adapter mock|ocap]
+                            [--probe [--probe-timeout <ms>] [--probe-limit <n>]]
+                            [--max-assets <n>]
   node scripts/arcblog-network.mjs registry show
 
 Options:
-  --instance <name>   target a named ARC instance (default: default instance)
-  --adapter <name>    chain adapter for registry refresh: mock (default) | ocap
+  --instance <name>      target a named ARC instance (default: default instance)
+  --adapter <name>       chain adapter for registry refresh: mock (default) | ocap
+  --max-assets <n>       cap the staked-asset reads per refresh (default ${DEFAULT_MAX_ASSETS})
+  --probe                OPTIONAL read-only reachability probe of each declared
+                         endpoint (HTTP HEAD, GET on 405): OFF by default. The only
+                         input that can decide the offline state (PRD-NET-03) —
+                         without it a declared endpoint is reported reachable
+                         with an explicit "liveness unverified" marker.
+  --probe-timeout <ms>   per-endpoint probe timeout (default ${DEFAULT_PROBE_TIMEOUT_MS})
+  --probe-limit <n>      cap the probed endpoints per refresh (default ${DEFAULT_PROBE_LIMIT})
 
 Protocol: ${PROTOCOL}. Discovery and health are AFS records under ${INSTANCE_ROOT}/node.
 They are published as AFS resources rather than an HTTP API because the AUP
@@ -201,9 +341,17 @@ docs/05-开发文档/附件/arc-contracts.md §7); AFS is what the runtime's Age
 surfaces expose.
 
 registry refresh enumerates the chain registry (listStakes where receiver = the
-studio factory address, probe P-1/P-2) and writes the public projection
-node/registry.json (+ one record per node under node/registry/) that the
-?page=registry page renders. Public fields only — never key material.
+studio factory address, probe P-1/P-2), reads the staked NFT data for the declared
+endpoint/region, derives the PRD-NET-03 reachability four-state
+(reachable|stale|never|offline) and writes the public projection node/registry.json
+(+ one record per node under node/registry/) that the ?page=registry page renders.
+Public fields only — never key material.
+
+WHICH STATE NEEDS AN EXTRA INPUT: offline and only offline. never (no live stake)
+and stale (stake but no endpoint in the asset data) are decidable from the chain
+facts alone. The chain carries no liveness signal, so offline requires the
+read-only --probe; the projection says so itself via offlineNeedsProbe and the
+per-node reachabilityExact marker. A probe failure changes no chain fact.
 `);
 }
 

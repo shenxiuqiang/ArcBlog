@@ -26,17 +26,29 @@ import {
   validateAgentGrant,
   writeTools,
 } from './lib/agents.mjs';
+import { DEFAULT_TIMEOUT_MS, NODE_AGENT_SURFACE, nodeSurfaceUrl } from './lib/node-content.mjs';
+import { REGISTRY_STALE_AFTER_MINUTES, nodeEndpoint, registryFreshness } from './lib/studio-registry.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = join(__dirname, '..');
 const script = join(repoRoot, 'scripts', 'arcblog-agent.mjs');
+const networkScript = join(repoRoot, 'scripts', 'arcblog-network.mjs');
 
 function run(args) {
   return spawnSync(process.execPath, [script, ...args], {
     encoding: 'utf8',
     cwd: repoRoot,
     env: { ...process.env },
+  });
+}
+
+/** Same, with extra environment (the isolated registry-projection fixtures). */
+function runWith(env, args) {
+  return spawnSync(process.execPath, [script, ...args], {
+    encoding: 'utf8',
+    cwd: repoRoot,
+    env: { ...process.env, ...env },
   });
 }
 
@@ -199,9 +211,70 @@ test('every catalogue entry declares how it would act', () => {
       assert.ok(tool.reason, `${tool.name} needs a reason`);
     }
   }
-  assert.equal(executableReadTools().length, 5);
+  assert.equal(executableReadTools().length, 7);
   assert.equal(writeTools().length, 3);
   assert.equal(closedTools().length, 1); // settle_payment/change_wallet retired (ENG-16)
+});
+
+// --- discovery tools on the on-chain registry projection (AGT-12) ------------
+
+test('the two discovery tools act on the registry projection, not on nothing', () => {
+  // AGT-12: both were `unavailable` with a "no cross-node registry on this
+  // platform" reason. The registry is the CHAIN (listStakes over the studio
+  // factory) and it is reachable, so both read the projection `registry refresh`
+  // writes — and neither carries an availability reason any more.
+  for (const name of ['list_studios', 'get_studio']) {
+    const tool = toolPolicy(name);
+    assert.equal(tool.status, 'available', `${name} must not stay unavailable`);
+    assert.equal(tool.reason, undefined, `${name} must not carry an availability reason`);
+    assert.equal(tool.kind, 'read');
+    assert.equal(tool.capability, 'agent.read');
+    assert.equal(tool.resource.path, '/instance/app/arcblog/node/registry');
+    assert.match(tool.source, /registry refresh/, `${name} must name the refresh command`);
+  }
+  assert.equal(toolPolicy('list_studios').resource.op, 'list');
+  assert.equal(toolPolicy('get_studio').resource.op, 'get');
+  assert.deepEqual(toolPolicy('get_studio').params, ['stakeAddress']);
+  // the two discovery reads are reachable through the declared node/** scope
+  const uncovered = uncoveredReadTools({
+    tools: [{ path: '/instance/app/arcblog/node/**', ops: ['read', 'list'], maxDepth: 2 }],
+  }).map((tool) => tool.name);
+  assert.deepEqual(uncovered.sort(), ['get_analytics', 'get_post', 'list_categories', 'search_posts']);
+});
+
+test('registryFreshness flags an old or undated projection with the remedy', () => {
+  const fresh = registryFreshness({ refreshedAt: '2026-01-01T10:00:00.000Z' }, { now: '2026-01-01T10:05:00.000Z' });
+  assert.equal(fresh.stale, false);
+  assert.equal(fresh.ageMinutes, 5);
+  assert.equal(fresh.hint, '');
+
+  const old = registryFreshness({ refreshedAt: '2026-01-01T00:00:00.000Z' }, { now: '2026-01-03T00:00:00.000Z' });
+  assert.equal(old.stale, true);
+  assert.ok(old.ageMinutes > REGISTRY_STALE_AFTER_MINUTES);
+  assert.match(old.hint, /registry refresh/);
+
+  // an undated projection cannot be trusted to describe today
+  const undated = registryFreshness({}, { now: '2026-01-01T00:00:00.000Z' });
+  assert.equal(undated.stale, true);
+  assert.equal(undated.ageMinutes, null);
+});
+
+test('nodeEndpoint prefers the projection field and falls back to the stake message', () => {
+  assert.equal(nodeEndpoint({ endpoint: 'https://a.example.com', message: 'https://b.example.com' }), 'https://a.example.com');
+  // measured on beta: a live stake can carry its self-description in the stake
+  // `message` and hold no asset at all, so a record built from the raw stake row
+  // must still resolve an endpoint.
+  assert.equal(nodeEndpoint({ message: 'https://arcblog.localhost', assets: [] }), 'https://arcblog.localhost');
+  assert.equal(nodeEndpoint({ endpoint: '', message: '' }), '');
+});
+
+test('nodeSurfaceUrl refuses a record with no endpoint and a non-http one', () => {
+  assert.equal(nodeSurfaceUrl('https://a.example.com/', '/p/llms.txt'), 'https://a.example.com/p/llms.txt');
+  assert.equal(nodeSurfaceUrl('https://a.example.com', 'p/llms.txt'), 'https://a.example.com/p/llms.txt');
+  assert.equal(nodeSurfaceUrl('https://a.example.com'), `https://a.example.com${NODE_AGENT_SURFACE}`);
+  assert.throws(() => nodeSurfaceUrl(''), /no endpoint/);
+  assert.throws(() => nodeSurfaceUrl('arcblog.localhost'), /not an http\(s\) origin/);
+  assert.ok(DEFAULT_TIMEOUT_MS > 0);
 });
 
 test('scopeCoversResource matches a directory scope and its children', () => {
@@ -251,7 +324,7 @@ test('grantAllows checks capability and expiry', () => {
 
 // --- run: closed and unavailable tools --------------------------------------
 
-test('run refuses closed and unavailable tools with distinct codes', () => {
+test('run refuses closed tools and unknown tools with distinct codes', () => {
   const closed = run(['run', '--tool', 'change_role']);
   assert.equal(closed.status, 1);
   assert.equal(json(closed.stderr).code, 'FORBIDDEN');
@@ -261,10 +334,6 @@ test('run refuses closed and unavailable tools with distinct codes', () => {
   const removed = run(['run', '--tool', 'get_orders']);
   assert.equal(removed.status, 1);
   assert.equal(json(removed.stderr).code, 'NOT_FOUND');
-
-  const unavailable = run(['run', '--tool', 'list_studios']);
-  assert.equal(unavailable.status, 1);
-  assert.equal(json(unavailable.stderr).code, 'NOT_AVAILABLE');
 
   const unknown = run(['run', '--tool', 'nope']);
   assert.equal(unknown.status, 1);
@@ -324,4 +393,232 @@ test('get_analytics aggregates public surfaces only (spec §60/§62)', () => {
   // privacy boundary: no buyer data, ever (spec §62)
   assert.ok(!('orders' in out.result));
   assert.ok(!('buyers' in out.result));
+});
+
+// --- live: discovery over the chain registry projection (AGT-12/AGT-06) ------
+
+/**
+ * Run `fn` against an ISOLATED registry projection at a test path, so the dev
+ * instance's real projection is never touched (same discipline as
+ * arcblog-network.test.mjs).
+ *
+ * The fixture record is written literally on purpose: the projection's shape is
+ * owned by `registry refresh` (the writer), and these tools must read whatever
+ * the operator projected. A reader pinned to today's field list would have
+ * refused every projection written after PRD-NET-03 added its fields.
+ */
+async function withProjection(nodes, fn) {
+  const { list, remove, writeJson } = await import('./lib/arc.mjs');
+  const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const registryPath = `/instance/app/arcblog/node/registry-agent-test-${stamp}.json`;
+  const registryDir = `/instance/app/arcblog/node/registry-agent-test-${stamp}`;
+  const env = { ARCBLOG_REGISTRY_PATH: registryPath, ARCBLOG_REGISTRY_DIR: registryDir };
+  writeJson(registryPath, {
+    refreshedAt: '2026-10-12T10:00:00.000Z',
+    adapter: 'mock',
+    network: 'mock',
+    factory: '0xfactory',
+    total: nodes.length,
+    empty: nodes.length ? '' : 'true',
+    nodes,
+  });
+  try {
+    return await fn({ env, registryPath, registryDir });
+  } finally {
+    try {
+      remove(registryPath);
+    } finally {
+      for (const entry of list(registryDir)) remove(`${registryDir}/${entry.id}`);
+    }
+  }
+}
+
+const SURFACE_ORIGIN = 'http://arcblog.localhost:4939';
+
+test('live: list_studios/get_studio read the registry projection (AGT-12)', async () => {
+  await withProjection(
+    [
+      // Measured on beta: the live stake carries its self-description in the
+      // stake `message` and holds NO asset at all — a node like this must still
+      // be discovered, and must still resolve an endpoint.
+      { stakeAddress: '0xagentTestNoAssets', owner: '0xowner1', message: SURFACE_ORIGIN, assets: [] },
+      { stakeAddress: '0xagentTestEndpoint', owner: '0xowner2', endpoint: SURFACE_ORIGIN, assets: ['0xasset1'] },
+    ],
+    async ({ env, registryDir, registryPath }) => {
+      const { writeJson } = await import('./lib/arc.mjs');
+      // one item record, the way `registry refresh` writes them
+      writeJson(`${registryDir}/0xagentTestNoAssets.json`, {
+        stakeAddress: '0xagentTestNoAssets',
+        owner: '0xowner1',
+        endpoint: SURFACE_ORIGIN,
+        assets: [],
+        assetCount: 0,
+        refreshedAt: '2026-10-12T10:00:00.000Z',
+      });
+
+      const listed = runWith(env, ['run', '--tool', 'list_studios', '--now', '2026-10-12T10:30:00.000Z']);
+      assert.equal(listed.status, 0, listed.stderr);
+      const result = json(listed.stdout).result;
+      assert.equal(result.total, 2);
+      assert.equal(result.empty, '');
+      assert.deepEqual(
+        result.nodes.map((node) => node.stakeAddress),
+        ['0xagentTestNoAssets', '0xagentTestEndpoint'],
+      );
+      // a node with no staked asset is a node: listed, with an empty asset list
+      const noAssets = result.nodes.find((node) => node.stakeAddress === '0xagentTestNoAssets');
+      assert.ok(noAssets, 'a node whose stake holds no asset must still be listed');
+      assert.deepEqual(noAssets.assets, []);
+      assert.equal(result.stale, false, 'a 30-minute-old projection is not stale');
+      assert.equal(result.hint, '');
+
+      // the node set the tool reports IS the set the operator surface reports
+      const shown = spawnSync(process.execPath, [networkScript, 'registry', 'show'], {
+        encoding: 'utf8',
+        cwd: repoRoot,
+        env: { ...process.env, ...env },
+      });
+      assert.equal(shown.status, 0, shown.stderr);
+      assert.deepEqual(
+        result.nodes.map((node) => node.stakeAddress),
+        json(shown.stdout).projection.nodes.map((node) => node.stakeAddress),
+      );
+
+      // an old projection is still read, but never silently: the hint carries
+      // the exact command that fixes it
+      const old = runWith(env, ['run', '--tool', 'list_studios', '--now', '2026-10-20T10:00:00.000Z']);
+      assert.equal(old.status, 0, old.stderr);
+      assert.equal(json(old.stdout).result.stale, true);
+      assert.match(json(old.stdout).result.hint, /registry refresh/);
+
+      // get_studio: one node, its item record, its asset count
+      const one = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestNoAssets', '--now', '2026-10-12T10:30:00.000Z']);
+      assert.equal(one.status, 0, one.stderr);
+      const node = json(one.stdout).result;
+      assert.equal(node.stakeAddress, '0xagentTestNoAssets');
+      assert.equal(node.assetCount, 0);
+      assert.deepEqual(node.assets, []);
+      // the endpoint resolves from the stake message when the projection has no
+      // `endpoint` field of its own
+      assert.equal(node.endpoint, SURFACE_ORIGIN);
+      assert.equal(node.source, `${registryDir}/0xagentTestNoAssets.json`);
+      assert.equal(node.projectionPath, registryPath);
+
+      // an address the registry does not list is NOT_FOUND, naming what exists
+      const missing = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xnope']);
+      assert.equal(missing.status, 1);
+      assert.equal(json(missing.stderr).code, 'NOT_FOUND');
+      assert.match(json(missing.stderr).error, /0xagentTestNoAssets/);
+      // ...and a missing argument is a validation error, not a silent empty read
+      const noArg = runWith(env, ['run', '--tool', 'get_studio']);
+      assert.equal(noArg.status, 1);
+      assert.equal(json(noArg.stderr).code, 'VALIDATION');
+    },
+  );
+});
+
+test('live: get_studio --content reads a discovered node over its endpoint (AGT-06)', async () => {
+  await withProjection(
+    [
+      { stakeAddress: '0xagentTestReachable', owner: '0xowner1', message: SURFACE_ORIGIN, assets: [] },
+      { stakeAddress: '0xagentTestDead', owner: '0xowner2', endpoint: 'http://127.0.0.1:9', assets: [] },
+      { stakeAddress: '0xagentTestNoEndpoint', owner: '0xowner3', assets: [] },
+    ],
+    async ({ env }) => {
+      // 1. the default remote read: the Runtime's agent index, at the endpoint
+      //    the registry carries — the node has no asset and still answers.
+      const content = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--content']);
+      assert.equal(content.status, 0, content.stderr);
+      const node = json(content.stdout).result;
+      assert.equal(node.assetCount, 0);
+      assert.equal(node.content.url, `${SURFACE_ORIGIN}${NODE_AGENT_SURFACE}`);
+      assert.equal(node.content.status, 200);
+      assert.match(node.content.contentType, /text\/plain/);
+      assert.ok(node.content.bytes > 0);
+      assert.match(node.content.body, /For agents/);
+      assert.equal(node.content.truncated, false);
+
+      // 2. the same node's public CONTENT, read anonymously over AFS RPC
+      const afs = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--afs', '/instance/app/arcblog/posts']);
+      assert.equal(afs.status, 0, afs.stderr);
+      const remote = json(afs.stdout).result.afs;
+      assert.equal(remote.op, 'list');
+      assert.equal(remote.path, '/instance/app/arcblog/posts');
+      assert.equal(remote.status, 200);
+      assert.ok(Array.isArray(remote.data));
+      assert.ok(remote.data.length > 0, 'the dev node has published posts to read');
+
+      // 3. a node that declares no endpoint cannot be read — and says which step is missing
+      const none = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestNoEndpoint', '--content']);
+      assert.equal(none.status, 1);
+      assert.equal(json(none.stderr).code, 'NO_ENDPOINT');
+
+      // 4. an endpoint that does not answer fails closed, naming the URL
+      const dead = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestDead', '--content']);
+      assert.equal(dead.status, 1);
+      assert.equal(json(dead.stderr).code, 'REMOTE_UNREACHABLE');
+      assert.match(json(dead.stderr).error, /127\.0\.0\.1:9/);
+
+      // 5. the read can never become a write — locally or on the remote node
+      const write = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--afs', '/instance/app/arcblog/posts', '--afs-op', 'delete']);
+      assert.equal(write.status, 1);
+      assert.equal(json(write.stderr).code, 'VALIDATION');
+      assert.match(json(write.stderr).error, /must be a read op/);
+      const outside = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--afs', '/etc/passwd']);
+      assert.equal(outside.status, 1);
+      assert.equal(json(outside.stderr).code, 'VALIDATION');
+      // admin-only content stays admin-only even on a discovered node: the remote
+      // node refuses and the refusal is reported verbatim (never softened)
+      const drafts = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--afs', '/instance/app/arcblog/drafts']);
+      assert.equal(drafts.status, 1);
+      assert.equal(json(drafts.stderr).code, 'REMOTE_AFS_ERROR');
+      assert.match(json(drafts.stderr).error, /AFS_FORBIDDEN/);
+
+      // 6. a modifier flag without a read is a validation error, never ignored
+      const stray = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--path', '/p/rss.xml']);
+      assert.equal(stray.status, 1);
+      assert.equal(json(stray.stderr).code, 'VALIDATION');
+
+      // 7. --path reads a different public path; an absent artifact is reported
+      //    as the remote node's own answer (404), not as a success. (Measured
+      //    2026-10-12: /p/llms.txt is 200, /p/rss.xml is 404 until the operator
+      //    generates it — so the fixture uses a path that never exists, to keep
+      //    this assertion about the reader and not about RSS's roadmap.)
+      const missing = `/p/agent-test-missing-${Date.now()}.txt`;
+      const rss = runWith(env, ['run', '--tool', 'get_studio', '--stake-address', '0xagentTestReachable', '--content', '--path', missing]);
+      assert.equal(rss.status, 0, rss.stderr);
+      const rssResult = json(rss.stdout).result.content;
+      assert.equal(rssResult.status, 404);
+      assert.equal(rssResult.ok, false);
+      assert.equal(rssResult.url, `${SURFACE_ORIGIN}${missing}`);
+    },
+  );
+});
+
+test('live: list_studios agrees with registry show on the real projection', () => {
+  const shown = spawnSync(process.execPath, [networkScript, 'registry', 'show'], {
+    encoding: 'utf8',
+    cwd: repoRoot,
+    env: { ...process.env },
+  });
+  const listed = run(['run', '--tool', 'list_studios']);
+  if (shown.status !== 0) {
+    // No projection generated yet: the tool must not invent an empty registry —
+    // it names the command that creates one.
+    assert.equal(listed.status, 1);
+    assert.equal(json(listed.stderr).code, 'NOT_FOUND');
+    assert.match(json(listed.stderr).error, /registry refresh/);
+    return;
+  }
+  assert.equal(listed.status, 0, listed.stderr);
+  const expected = json(shown.stdout).projection;
+  const actual = json(listed.stdout).result;
+  assert.deepEqual(
+    actual.nodes.map((node) => node.stakeAddress),
+    expected.nodes.map((node) => node.stakeAddress),
+  );
+  assert.equal(actual.total, expected.total);
+  assert.equal(actual.factory, expected.factory);
+  assert.equal(actual.adapter, expected.adapter);
+  assert.equal(actual.network, expected.network);
 });

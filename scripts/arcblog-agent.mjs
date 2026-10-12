@@ -37,6 +37,8 @@ import {
 } from './lib/agents.mjs';
 import { REPO_ROOT } from './lib/manifest.mjs';
 import { readGeneralSettings } from './lib/general-settings.mjs';
+import { listStudioNodes, readStudioNode } from './lib/studio-registry.mjs';
+import { NODE_AGENT_SURFACE, fetchNodeAfs, fetchNodeSurface } from './lib/node-content.mjs';
 
 /**
  * The Instance-level Agent Access master switch (spec §15.9, the settings page).
@@ -145,6 +147,45 @@ const READ_RUNNERS = {
         .slice(0, 10),
     };
   },
+  // --- on-chain registry discovery (AGT-12/AGT-06) ---------------------------
+  // A read tool never talks to a chain: the chain is enumerated by the operator
+  // CLI (`registry refresh`), which writes the public projection these two read.
+  // A stale projection is still the last known truth about the chain, so it is
+  // returned WITH its refresh hint — never silently trusted, never hidden.
+  list_studios(opts, instance) {
+    return listStudioNodes(instance, { now: optString(opts.now) || undefined });
+  },
+  // `get_studio` alone returns the registry record for one node; with `--content`
+  // it also reads that node's public surface over the endpoint the registry
+  // carries (GET /p/llms.txt by default, `--path` for another public path), and
+  // with `--afs <path>` it makes one anonymous AFS read on that node instead.
+  async get_studio(opts, instance) {
+    const now = optString(opts.now) || undefined;
+    // Fail closed on a switch used like a value flag, so nothing is silently
+    // ignored (the same rule that makes an unknown flag a VALIDATION error).
+    ensure(opts.content === undefined || opts.content === true, '--content is a switch (no value); use --path <public path> to read a different path');
+    ensure(opts.afs === undefined || Boolean(optString(opts.afs).trim()), '--afs needs an AFS path, e.g. --afs /instance/app/arcblog/posts');
+    ensure(opts.path === undefined || Boolean(optString(opts.path).trim()), '--path needs a public path, e.g. --path /p/llms.txt');
+    ensure(opts.endpoint === undefined || Boolean(optString(opts.endpoint).trim()), '--endpoint needs an http(s) origin, e.g. --endpoint https://node.example.com');
+
+    const node = readStudioNode(instance, required(opts, 'stake-address'), { now });
+    const endpoint = optString(opts.endpoint).trim() || node.endpoint;
+    const afsPath = optString(opts.afs).trim();
+    const wantsContent = Boolean(opts.content) || Boolean(afsPath);
+    if (!wantsContent) {
+      ensure(
+        !optString(opts.path).trim() && !optString(opts.endpoint).trim() && !optString(opts['afs-op']).trim(),
+        '--path / --endpoint / --afs-op only modify a remote read: add --content (the agent surface) or --afs <path> (an AFS read)',
+      );
+      return node;
+    }
+    if (afsPath) {
+      node.afs = await fetchNodeAfs({ endpoint, path: afsPath, op: optString(opts['afs-op']) || 'list', now });
+    } else {
+      node.content = await fetchNodeSurface({ endpoint, path: optString(opts.path) || NODE_AGENT_SURFACE, now });
+    }
+    return node;
+  },
 };
 
 // --- write tools: delegate to the operational CLIs (already tested) ---------
@@ -173,7 +214,7 @@ const WRITE_RUNNERS = {
 
 // --- run (spec §130) --------------------------------------------------------
 
-function commandRun(opts, instance) {
+async function commandRun(opts, instance) {
   if (!agentAccessEnabled(instance)) fail('AGENT_DISABLED', AGENT_DISABLED);
   const name = required(opts, 'tool');
   const tool = toolPolicy(name);
@@ -197,7 +238,7 @@ function commandRun(opts, instance) {
     return;
   }
 
-  const result = READ_RUNNERS[name](opts, instance);
+  const result = await READ_RUNNERS[name](opts, instance);
   console.log(JSON.stringify({ ok: true, tool: name, capability: tool.capability, result }, null, 2));
 }
 
@@ -318,6 +359,10 @@ Usage:
   node scripts/arcblog-agent.mjs tools [--tool <name>]
   node scripts/arcblog-agent.mjs run --tool <name> [--slug <s>] [--query <q>] [--category <c>]
                                        [--agent <did>] [--title <t>] [--body <markdown>]
+  node scripts/arcblog-agent.mjs run --tool list_studios
+  node scripts/arcblog-agent.mjs run --tool get_studio --stake-address <addr>
+                                       [--content [--path <public path>] [--endpoint <origin>]]
+                                       [--afs <afs path> [--afs-op list|read|stat|search]]
   node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write[,agent.publish] [--ttl <minutes>]
   node scripts/arcblog-agent.mjs revoke --agent <did>
   node scripts/arcblog-agent.mjs grants
@@ -326,6 +371,19 @@ Read tools run straight against AFS. Write tools require an unexpired grant at
 their capability (spec §61) and delegate to the operational CLIs. Tools marked
 closed never run here: change_role is default-closed (spec §130).
 (settle_payment / change_wallet were retired with the economy surface.)
+
+The two discovery reads (AGT-12/AGT-06) act on the ON-CHAIN REGISTRY once the
+operator has projected it to AFS:
+
+  node scripts/arcblog-network.mjs registry refresh   # chain -> node/registry.json
+  ... run --tool list_studios                         # every staked node
+  ... run --tool get_studio --stake-address <addr>    # one node
+
+list_studios/get_studio never touch a chain themselves. A projection older than
+24h is still read but reported "stale" with the refresh command. get_studio
+--content additionally reads that node's PUBLIC surface over the endpoint the
+registry carries (default /p/llms.txt, --path for another public path; --afs
+for one anonymous AFS read) — read-only, never a write.
 
 Agent declarations live in agents/<name>/{agent.dsl,agent.json,system.md} and are
 the platform's own contract (path + ops + maxDepth). The policy enforced here:
@@ -340,7 +398,7 @@ ArcBlog does not implement its own protocol (spec §129).
 `);
 }
 
-(function main() {
+(async function main() {
   const args = parseCliArgs(process.argv.slice(2), import.meta.url);
   const [cmd] = args._;
   try {
@@ -348,7 +406,7 @@ ArcBlog does not implement its own protocol (spec §129).
     if (cmd === 'show') return commandShow();
     if (cmd === 'check') return commandCheck(resolveInstance(args));
     if (cmd === 'tools') return commandTools(args);
-    if (cmd === 'run') return commandRun(args, resolveInstance(args));
+    if (cmd === 'run') return await commandRun(args, resolveInstance(args));
     if (cmd === 'authorize') return commandAuthorize(args, resolveInstance(args));
     if (cmd === 'revoke') return commandRevoke(args, resolveInstance(args));
     if (cmd === 'grants') return commandGrants(args, resolveInstance(args));
