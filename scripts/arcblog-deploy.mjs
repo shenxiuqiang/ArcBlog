@@ -148,14 +148,6 @@ if (existsSync(join(repoRoot, 'docs', 'team', '.gate-lock'))) {
 // ------------------------------------------------------- 1. safe build ------
 run('npm', ['run', 'build']);
 
-// ------------------------------- 1b. RSS feed (build wipes it) -------------
-// `arc blocklet build` REGENERATES `.web-cache/` (llms.txt, robots.txt, sitemaps) and
-// therefore deletes a previously generated rss.xml — measured 2026-10-12: the ops manual's
-// O8 produced a 200/application/xml feed, the next build silently turned /p/rss.xml back
-// into a 404, and the footer link (and PRD-SITE-08) pointed at nothing. Generating it here,
-// after the build and before the deploy, keeps the promise.
-runToFile('rss', process.execPath, ['scripts/arcblog-rss.mjs', '--feed-link', `http://${DOMAIN}:4939`], join(repoRoot, '.web-cache', 'rss.xml'));
-
 // --------------------------------------------- 2. pre-deploy secret gate ----
 run('npm', ['run', 'verify:artifacts']);
 
@@ -168,6 +160,16 @@ run('node', ['scripts/arcblog-recipes.mjs', 'install', '--json']);
 
 // ------------------------------------------------------- 3. deploy ----------
 run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);
+
+// ------------------------------- 3b. RSS feed (after the deploy) -----------
+// `.web-cache/` is OWNED BY THE PLATFORM: `arc blocklet build` regenerates it (llms.txt,
+// robots.txt, sitemaps) and `arc blocklet instance deploy` regenerates it AGAIN — measured
+// 2026-10-12: the feed written between build and deploy was 200 when checked and gone by the
+// time the deploy finished (`.web-cache/` mtime moved past the write), which is exactly the
+// 404 the footer link had been pointing at. A service restart does NOT wipe it (measured:
+// write -> 200 -> `arc service restart` -> still 200), so writing it AFTER the deploy is
+// stable. Order matters: build -> deploy -> rss -> verify.
+runToFile('rss', process.execPath, ['scripts/arcblog-rss.mjs', '--feed-link', `http://${DOMAIN}:4939`], join(repoRoot, '.web-cache', 'rss.xml'));
 
 // --------------------------------------------------- 4. post-verify ---------
 if (DRY) {
