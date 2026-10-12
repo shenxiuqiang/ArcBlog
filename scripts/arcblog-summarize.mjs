@@ -6,6 +6,21 @@
 //                            pre-screen → score → order deterministically, and
 //                            write the PUBLIC projection node/summaries/<id>.json
 //   show <id>                read that projection back (re-validated before printing)
+//   ask --id <id> --question <q> [--json] [--llm <cmd>]
+//                            answer the question from THAT record only; every
+//                            assertion carries `cited` pointers that are re-resolved
+//                            against the record before printing (PRD-AGT-08)
+//
+// WHAT `ask` IS (and is not): there is no model in this CLI and no second data
+// source — the answer is a deterministic projection of the summary record
+// (`picks[].reason`, `score.terms[]`, `sources[]`, `skipped[]`, the 口径 notes),
+// and when the record has no field that answers the question it says
+// `记录里没有依据` instead of generalising. The optional `--llm <cmd>` is a wiring
+// point only: it hands the deterministic context to an OPERATOR-SIDE command
+// (stdin JSON), never links a model into this node (docs/05-开发文档/02 B11;
+// `05-AGT §4` forbids binding an agent framework). It fails closed, it refuses to
+// combine with `--json` (the child's free text is not machine-checkable against
+// the record), and it announces on stderr that its output is unchecked.
 //
 // WHY A PROJECTION AND NOT A PAGE: an AUP page cannot read another node over HTTP
 // (the app shell owns "/", and a `frame` is a cross-origin sandbox — docs/05-开发文档/02 B1),
@@ -32,6 +47,7 @@
 // projection under node/summaries/ (public fields only).
 
 import { createHash } from 'node:crypto';
+import { spawn } from 'node:child_process';
 
 import { fail, nowIso, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { INSTANCE_ROOT } from './lib/arc.mjs';
@@ -44,10 +60,13 @@ import {
   DEFAULT_MAX_COLLECT,
   MAX_LIMIT,
   MAX_MAX_COLLECT,
+  NO_BASIS_NOTE,
   WEIGHTS,
+  answerFromSummary,
   buildSummaryRecord,
   isHttpEndpoint,
   sourceFrom,
+  validateSummaryAnswer,
   validateSummaryRecord,
 } from './lib/summarize.mjs';
 
@@ -222,9 +241,9 @@ async function commandBuild(opts, instance) {
   }, null, 2));
 }
 
-function commandShow(opts, instance) {
+function requireSummary(opts, instance, command) {
   const id = optString(opts._?.[1]).trim() || optString(opts.id).trim();
-  if (!id) fail('VALIDATION', 'show needs an id: node scripts/arcblog-summarize.mjs show <id>');
+  if (!id) fail('VALIDATION', `${command} needs an id: node scripts/arcblog-summarize.mjs ${command} <id>`);
   const path = summaryPath(id);
   const record = readJson(path, instance);
   if (!record) {
@@ -239,28 +258,183 @@ function commandShow(opts, instance) {
     console.error(JSON.stringify({ ok: false, code: 'VALIDATION', path, issues, summary: record.value }, null, 2));
     process.exit(1);
   }
-  console.log(JSON.stringify({ ok: true, path, summary: record.value }, null, 2));
+  return { id, path, summary: record.value };
+}
+
+function commandShow(opts, instance) {
+  const { path, summary } = requireSummary(opts, instance, 'show');
+  console.log(JSON.stringify({ ok: true, path, summary }, null, 2));
+}
+
+/** `--llm` budget: a stalled operator command must not hang the CLI. */
+const DEFAULT_LLM_TIMEOUT_MS = 30000;
+
+function llmContext(id, path, answer, summary) {
+  return {
+    kind: 'ArcBlogSummaryAskContext',
+    // The deterministic answer is the INPUT of the operator-side LLM, not its
+    // output: everything the external layer may say is already cited here.
+    note:
+      'Deterministic context from node/summaries/<id>.json. Every `cited` entry resolves inside `summary`. ' +
+      'The operator-side command may reformulate it, but only this file is the record of truth.',
+    id,
+    path,
+    question: answer.question,
+    matched: answer.matched,
+    basis: answer.basis,
+    answer: answer.answer,
+    assertions: answer.assertions,
+    cited: answer.cited,
+    summary,
+  };
+}
+
+/**
+ * Hand the deterministic context to an operator-side command (stdin JSON) and
+ * mirror its output. Fail closed on every path: no command, no child, a non-zero
+ * exit or a timeout all end this CLI with a non-zero code and a code word —
+ * never a silent success. The child's own stderr is folded into that error
+ * (bounded), so this CLI's stderr stays a single JSON object when it fails.
+ */
+function runExternalLlm(command, context, timeoutMs) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      resolve(result);
+    };
+    let child;
+    try {
+      child = spawn(command, { shell: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    } catch (err) {
+      finish({ ok: false, code: 'LLM_UNAVAILABLE', error: String(err?.message ?? err) });
+      return;
+    }
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', (chunk) => { stdout += chunk; });
+    child.stderr.on('data', (chunk) => { stderr += chunk; });
+    const timer = setTimeout(() => {
+      try {
+        child.kill('SIGKILL');
+      } catch { /* already gone */ }
+      finish({
+        ok: false,
+        code: 'LLM_TIMEOUT',
+        error: `--llm command did not finish within ${timeoutMs}ms: ${command}`,
+      });
+    }, timeoutMs);
+    child.on('error', (err) => {
+      clearTimeout(timer);
+      finish({ ok: false, code: 'LLM_UNAVAILABLE', error: String(err?.message ?? err) });
+    });
+    child.on('close', (code, signal) => {
+      clearTimeout(timer);
+      if (code === 0) {
+        finish({ ok: true, stdout, stderr });
+        return;
+      }
+      const tail = stderr.trim().slice(-500);
+      finish({
+        ok: false,
+        code: 'LLM_FAILED',
+        error:
+          `--llm command exited ${code === null ? `on ${signal}` : code}: ${command}` +
+          (tail ? ` — stderr: ${tail}` : ''),
+      });
+    });
+    child.stdin.on('error', () => { /* the child closed stdin first: its exit code decides */ });
+    child.stdin.end(`${JSON.stringify(context, null, 2)}\n`);
+  });
+}
+
+async function commandAsk(opts, instance) {
+  // The flag is checked before the record is read: a missing question is a usage
+  // error regardless of whether that id exists.
+  const question = optString(opts.question).trim();
+  if (!question) {
+    fail('VALIDATION', 'ask needs --question <q> (the only input it reads besides the summary record)');
+  }
+  const { id, path, summary } = requireSummary(opts, instance, 'ask');
+  const answer = answerFromSummary(summary, question);
+  const issues = validateSummaryAnswer(answer, summary);
+  if (issues.length) {
+    console.error(JSON.stringify({ ok: false, code: 'VALIDATION', path, question, issues, answer }, null, 2));
+    process.exit(1);
+  }
+
+  const llm = optString(opts.llm).trim();
+  if (llm) {
+    // The judged contract is the JSON answer, and free text from a child process
+    // cannot be re-resolved against the record — so the two never combine.
+    if (opts.json) {
+      fail(
+        'LLM_UNVERIFIABLE',
+        '--llm cannot be combined with --json: the command\'s free text is not machine-checkable against the record. ' +
+          'Use `ask --json` for the cited answer, or `ask --llm <cmd>` for the operator-side layer.',
+      );
+    }
+    const timeoutMs = intFlag(opts, 'timeout', DEFAULT_LLM_TIMEOUT_MS, { min: MIN_TIMEOUT_MS, max: MAX_TIMEOUT_MS * 4 });
+    console.error(
+      '[summarize] --llm: handing the deterministic context to an operator-side command; ' +
+        'its output is NOT machine-checked against the record (the cited guarantee applies to `ask --json`).',
+    );
+    const result = await runExternalLlm(llm, llmContext(id, path, answer, summary), timeoutMs);
+    if (!result.ok) fail(result.code || 'LLM_FAILED', result.error);
+    // The child's output is forwarded, never re-checked: it is the operator's
+    // layer talking, and `--json` above is the cited, machine-checked answer.
+    if (result.stderr) process.stderr.write(result.stderr);
+    process.stdout.write(result.stdout);
+    return;
+  }
+
+  if (opts.json) {
+    console.log(JSON.stringify({ ok: true, action: 'summary-ask', path, ...answer }, null, 2));
+    return;
+  }
+
+  console.log(`question: ${answer.question}`);
+  console.log(`record:   ${path} (id=${id})`);
+  console.log(`intent:   ${answer.matched || '(none — the record has no field for this question)'}`);
+  console.log(`basis:    ${answer.basis}`);
+  console.log('');
+  console.log(answer.answer);
+  for (const [index, assertion] of answer.assertions.entries()) {
+    console.log(`  ${index + 1}. ${assertion.claim}`);
+    for (const entry of assertion.cited) console.log(`       cited: ${entry.field} = ${JSON.stringify(entry.value)}`);
+  }
+  if (answer.basis === 'none') {
+    console.log('');
+    console.log('no assertion is printed because no record field backs one.');
+  }
 }
 
 function help() {
   console.log(FLAG_SYNTAX_NOTE);
-  console.log(`ArcBlog agent aggregation — deterministic multi-node summary (PRD-AGT-07)
+  console.log(`ArcBlog agent aggregation — deterministic multi-node summary (PRD-AGT-07/AGT-08)
 
 Usage:
   node scripts/arcblog-summarize.mjs build --from-registry --id <id>
         [--limit <n>] [--max-collect <n>] [--timeout <ms>]
   node scripts/arcblog-summarize.mjs show <id>
+  node scripts/arcblog-summarize.mjs ask --id <id> --question <q> [--json] [--llm <cmd>]
 
 Options:
   --from-registry        (required by build) the discovery source is the chain-registry
                          projection node/registry.json — generate it with
                          node scripts/arcblog-network.mjs registry refresh
   --id <id>              summary id -> ${SUMMARY_DIR}/<id>.json
+  --question <q>         (required by ask) the question answered from that record alone
+  --llm <cmd>            ask only: hand the deterministic context to an OPERATOR-SIDE
+                         command (JSON on stdin); this build wires no model, the child's
+                         output is not machine-checked, and --llm + --json fails closed
   --limit <n>            how many picks the record keeps (default ${DEFAULT_LIMIT}, max ${MAX_LIMIT})
   --max-collect <n>      cap the nodes read out of one registry snapshot
                          (default ${DEFAULT_MAX_COLLECT}, max ${MAX_MAX_COLLECT}); a cut registry is
                          marked truncated='true' in the record
-  --timeout <ms>         per-node read budget (default ${DEFAULT_TIMEOUT_MS}, max ${MAX_TIMEOUT_MS})
+  --timeout <ms>         build: per-node read budget (default ${DEFAULT_TIMEOUT_MS}); ask --llm: the
+                         child budget (default ${DEFAULT_LLM_TIMEOUT_MS})
   --instance <name>      target a named ARC instance (default: default instance)
 
 The record is a PUBLIC read-only projection (public fields only; a remote body is
@@ -275,6 +449,10 @@ the same registry + surfaces produce the same order. No clock, RNG or LLM takes
 part. Every pick carries reason (human string), score.terms (structured) and
 cited (the record fields the score read; re-resolved before the record is written).
 
+ask answers from THAT record only (picks / score.terms / sources / skipped / the 口径
+notes). Every assertion carries cited pointers that are re-resolved before printing;
+a question the record cannot back answers '${NO_BASIS_NOTE}' instead of generalising.
+
 Coverage is never claimed as "all nodes": the record's total/pickCount and
 '本投影口径 = registry refreshedAt <t> 时刻的 N 条' are the only numbers a consumer
 may print.`);
@@ -288,7 +466,8 @@ async function main() {
     if (!cmd || args.help || cmd === 'help' || cmd === '-h') return help();
     if (cmd === 'build') return await commandBuild(args, instance);
     if (cmd === 'show') return commandShow(args, instance);
-    fail('VALIDATION', `unknown command: ${cmd} (use build|show)`);
+    if (cmd === 'ask') return await commandAsk(args, instance);
+    fail('VALIDATION', `unknown command: ${cmd} (use build|show|ask)`);
   } catch (err) {
     console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));
     process.exit(1);

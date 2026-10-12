@@ -552,3 +552,399 @@ export function validateSummaryRecord(record) {
   }
   return issues;
 }
+
+// ---------------------------------------------------------------------------
+// PRD-AGT-08 (chat) — the deterministic, citation-backed half.
+//
+// WHAT THIS IS: `summarize ask` answers a question about ONE already-written
+// summary record. There is no model here and no second data source: the answer
+// is assembled from the record's own fields, and EVERY assertion carries `cited`
+// pointers (`picks[0].reason`, `picks[0].score.terms[2].note`, `sources[1].url`,
+// …) that `validateSummaryAnswer` re-resolves against that same record before
+// the answer is printed. An answer that cannot cite the record is not guessed:
+// it says `记录里没有依据` (`basis: 'none'`, empty `cited`).
+//
+// WHY IT IS NOT A CHATBOT (docs/05-开发文档/02 B11, 02a P3): the AUP page surface
+// has no LLM primitive and may not hold a key, and `05-AGT §4` forbids binding an
+// external agent framework — so the page renders the copyable `ask` command and
+// the natural-language layer stays outside the node (the CLI's `--llm` wiring
+// point hands the deterministic context to an operator-side command; this build
+// wires none).
+//
+// DETERMINISM: intent selection is keyword scoring over a FIXED catalogue with a
+// fixed tie break (catalogue order), and every string is built from record
+// fields, so the same record + same question always produce the same answer.
+
+/** The exact sentence an answer must carry when the record has no 判据. */
+export const NO_BASIS_NOTE = '记录里没有依据';
+
+/**
+ * The fixed intent catalogue. `keywords` are matched case-insensitively as
+ * substrings of the question; the intent with the most distinct hits wins and a
+ * tie is broken by this array's order (never by the object key order).
+ */
+export const ASK_INTENTS = Object.freeze([
+  {
+    key: 'pick-reason',
+    title: '为什么入选 / why a node was picked',
+    keywords: ['为什么', '入选', '判据', '依据', 'why', 'reason', 'picked', 'selected'],
+  },
+  {
+    key: 'score-terms',
+    title: '评分与权重 / score terms and weights',
+    keywords: ['评分', '权重', '得分', '打分', '加了多少分', 'score', 'weight', 'term', 'scoring'],
+  },
+  {
+    key: 'ranking',
+    title: '排名与顺序 / rank and order',
+    keywords: ['排名', '排序', '顺序', '第几', '最高分', 'rank', 'order', 'sort', 'top', 'best'],
+  },
+  {
+    key: 'skipped',
+    title: '跳过与失败 / skipped nodes',
+    keywords: ['跳过', '失败', '不可达', '错误', '没读', 'skip', 'skipped', 'unreachable', 'failed', 'error'],
+  },
+  {
+    key: 'sources',
+    title: '来源节点 / source nodes',
+    keywords: ['来源', '节点', '地址', '端点', '链接', 'source', 'node', 'stake', 'endpoint', 'url'],
+  },
+  {
+    key: 'coverage',
+    title: '口径与覆盖 / total and coverage',
+    keywords: ['口径', '覆盖', '总数', '多少条', '几条', '条数', '时间', 'coverage', 'total', 'how many', 'count', 'when'],
+  },
+]);
+
+/** The catalogue's keys, in the fixed order tie-breaking uses. */
+export const ASK_INTENT_KEYS = Object.freeze(ASK_INTENTS.map((intent) => intent.key));
+
+const NO_BASIS_ANSWER =
+  `${NO_BASIS_NOTE}：该问题在汇总记录里没有可引用的字段（记录只包含 picks / sources / skipped / weights / totalNote / stateNote）。` +
+  ' 请改问记录覆盖的问题：为什么入选、评分权重、排名顺序、跳过节点、来源节点、口径覆盖。';
+
+function citation(record, field) {
+  return { field, value: resolveField(record, field) };
+}
+
+/** Every term index of one pick that actually hit, in `score.terms` order. */
+function hitTermIndexes(pick) {
+  const terms = Array.isArray(pick?.score?.terms) ? pick.score.terms : [];
+  const out = [];
+  terms.forEach((term, index) => {
+    if (term?.hit === true) out.push(index);
+  });
+  return out;
+}
+
+function pickHead(pick) {
+  return (
+    `picks[${pick.index}] rank=${num(pick.rank)} score=${num(pick?.score?.total)}` +
+    ` slug=${str(pick.slug) || '(no slug)'} stake=${str(pick.stakeAddress) || '(no stake)'}`
+  );
+}
+
+function pickReasonAssertion(record, pick) {
+  const at = `picks[${pick.index}]`;
+  const cited = [
+    citation(record, `${at}.reason`),
+    citation(record, `${at}.rank`),
+    citation(record, `${at}.score.total`),
+    citation(record, `${at}.stakeAddress`),
+  ];
+  for (const index of hitTermIndexes(pick)) cited.push(citation(record, `${at}.score.terms[${index}].note`));
+  return { claim: `${pickHead(pick)} — ${str(pick.reason)}`, cited };
+}
+
+function rankingAssertion(record, pick) {
+  const at = `picks[${pick.index}]`;
+  return {
+    claim: `${pickHead(pick)} (endpoint=${str(pick.endpoint) || '(none)'})`,
+    cited: [
+      citation(record, `${at}.rank`),
+      citation(record, `${at}.score.total`),
+      citation(record, `${at}.slug`),
+      citation(record, `${at}.endpoint`),
+    ],
+  };
+}
+
+function termAssertions(record, pick) {
+  const at = `picks[${pick.index}]`;
+  const terms = Array.isArray(pick?.score?.terms) ? pick.score.terms : [];
+  return terms.map((term, index) => ({
+    claim: `${at}.score.terms[${index}] ${str(term.key)} weight=${num(term.weight)} hit=${term.hit === true ? 'true' : 'false'} note=${str(term.note)}`,
+    cited: [
+      citation(record, `${at}.score.terms[${index}].key`),
+      citation(record, `${at}.score.terms[${index}].weight`),
+      citation(record, `${at}.score.terms[${index}].hit`),
+      citation(record, `${at}.score.terms[${index}].note`),
+    ],
+  }));
+}
+
+/**
+ * The answer builders, one per intent. Each returns `{ answer, assertions }`
+ * where every assertion carries its own citations; the caller flattens them.
+ */
+const ASK_BUILDERS = Object.freeze({
+  'pick-reason': (record) => {
+    const picks = record.picks;
+    if (!picks.length) {
+      return {
+        answer:
+          `本记录 id=${str(record.id)} 没有入选记录（pickCount=0），因此没有"哪条入选"可解释：` +
+          ` ${str(record.stateNote)}`,
+        assertions: [
+          {
+            claim: `pickCount=${num(record.pickCount)}，empty=${str(record.empty) || '(unset)'}`,
+            cited: [citation(record, 'pickCount'), citation(record, 'empty'), citation(record, 'stateNote')],
+          },
+        ],
+      };
+    }
+    const assertions = picks.map((pick, index) => pickReasonAssertion(record, { ...pick, index }));
+    return {
+      answer:
+        `本记录 id=${str(record.id)} 的 ${picks.length} 条入选各有判据（reason 与 score.terms 同源，cited 逐条回填）：` +
+        ` ${picks.map((pick) => `#${num(pick.rank)} ${str(pick.slug)} (${str(pick.stakeAddress) || 'no stake'}) ⇒ ${num(pick?.score?.total)}`).join('；')}`,
+      assertions,
+    };
+  },
+
+  'score-terms': (record) => {
+    const assertions = Object.entries(record.weights ?? {}).map(([key, weight]) => ({
+      claim: `weights.${key} = ${num(weight)}`,
+      cited: [citation(record, `weights.${key}`)],
+    }));
+    const picks = record.picks;
+    if (!picks.length) {
+      assertions.push({
+        claim: `pickCount=${num(record.pickCount)}：没有入选，权重未作用于任何节点`,
+        cited: [citation(record, 'pickCount'), citation(record, 'stateNote')],
+      });
+    } else {
+      termAssertions(record, { ...picks[0], index: 0 }).forEach((assertion) => assertions.push(assertion));
+    }
+    return {
+      answer:
+        `评分是源码固定常量（不读时钟、不读随机、不读 LLM）：` +
+        ` ${Object.entries(record.weights ?? {}).map(([key, weight]) => `${key}(+${num(weight)})`).join(' · ')}；` +
+        ` 排序键 = -score.total, slug, stakeAddress（totalNote 自述口径）。`,
+      assertions,
+    };
+  },
+
+  ranking: (record) => {
+    const picks = record.picks;
+    if (!picks.length) {
+      return {
+        answer: `本记录 id=${str(record.id)} 没有入选记录（pickCount=0），没有排名可引用： ${str(record.stateNote)}`,
+        assertions: [
+          {
+            claim: `pickCount=${num(record.pickCount)}，empty=${str(record.empty) || '(unset)'}`,
+            cited: [citation(record, 'pickCount'), citation(record, 'empty'), citation(record, 'stateNote')],
+          },
+        ],
+      };
+    }
+    return {
+      answer:
+        `排名按稳定全序键 -score.total → slug → stakeAddress 落定（同一输入两次排序一致）：` +
+        ` ${picks.map((pick) => `#${num(pick.rank)} ${str(pick.slug)} (${str(pick.stakeAddress) || 'no stake'}, ${num(pick?.score?.total)})`).join(' → ')}`,
+      assertions: picks.map((pick, index) => rankingAssertion(record, { ...pick, index })),
+    };
+  },
+
+  skipped: (record) => {
+    const skipped = Array.isArray(record.skipped) ? record.skipped : [];
+    if (!skipped.length) {
+      return {
+        answer:
+          `本记录 id=${str(record.id)} 没有跳过节点：skipped[] 为空（${num(record.total)} 条节点中 ${num(record.pickCount)} 条入选，` +
+          ` 其余由记录自身口径说明）。${str(record.stateNote)}`,
+        assertions: [
+          {
+            claim: `skipped=[] · total=${num(record.total)} · pickCount=${num(record.pickCount)}`,
+            cited: [citation(record, 'skipped'), citation(record, 'total'), citation(record, 'pickCount'), citation(record, 'stateNote')],
+          },
+        ],
+      };
+    }
+    return {
+      answer: `本记录 id=${str(record.id)} 跳过 ${skipped.length} 条，每条带自己的 code/error（失败是记录下来的值，不是静默丢弃）：`,
+      assertions: skipped.map((entry, index) => ({
+        claim: `skipped[${index}] ${str(entry.stakeAddress) || '(no stake)'} ${str(entry.code)} — ${str(entry.error)}`,
+        cited: [
+          citation(record, `skipped[${index}].stakeAddress`),
+          citation(record, `skipped[${index}].code`),
+          citation(record, `skipped[${index}].error`),
+        ],
+      })),
+    };
+  },
+
+  sources: (record) => {
+    const sources = Array.isArray(record.sources) ? record.sources : [];
+    if (!sources.length) {
+      return {
+        answer: `本记录 id=${str(record.id)} 的 sources[] 为空（total=0），没有来源节点可引用： ${str(record.stateNote)}`,
+        assertions: [
+          {
+            claim: `sources=[] · total=${num(record.total)}`,
+            cited: [citation(record, 'sources'), citation(record, 'total'), citation(record, 'stateNote')],
+          },
+        ],
+      };
+    }
+    return {
+      answer: `本记录 id=${str(record.id)} 的来源节点（每条读到的公开面只留 hash 与截断预览）：`,
+      assertions: sources.map((source, index) => ({
+        claim:
+          `sources[${index}] ${str(source.stakeAddress) || '(no stake)'} ${str(source.url) || '(no url)'}` +
+          ` HTTP ${num(source.status)} ${str(source.contentType) || '(no content-type)'} ${num(source.bytes)}B`,
+        cited: [
+          citation(record, `sources[${index}].stakeAddress`),
+          citation(record, `sources[${index}].url`),
+          citation(record, `sources[${index}].status`),
+          citation(record, `sources[${index}].contentType`),
+          citation(record, `sources[${index}].bytes`),
+          citation(record, `sources[${index}].bodyHash`),
+        ],
+      })),
+    };
+  },
+
+  coverage: (record) => ({
+    answer:
+      `本记录的覆盖口径由它自己的字段给出：registryRefreshedAt=${str(record.registryRefreshedAt) || '(unset)'}、` +
+      ` total=${num(record.total)}、pickCount=${num(record.pickCount)}、skipped=${(record.skipped ?? []).length}、` +
+      ` truncated=${str(record.truncated) || '(no)'}。${str(record.totalNote)}`,
+    assertions: [
+      { claim: str(record.totalNote), cited: [citation(record, 'totalNote'), citation(record, 'registryRefreshedAt'), citation(record, 'total'), citation(record, 'registryTotal')] },
+      { claim: str(record.stateNote), cited: [citation(record, 'stateNote'), citation(record, 'pickCount'), citation(record, 'truncated'), citation(record, 'empty')] },
+      { claim: `weights 自述：${Object.keys(record.weights ?? {}).join(', ')}`, cited: [citation(record, 'weights')] },
+    ],
+  }),
+});
+
+/**
+ * Which intent a question hits: the most distinct keyword hits, ties broken by
+ * `ASK_INTENT_KEYS` order. `''` means the record is not asked anything it covers.
+ */
+export function matchAskIntent(question) {
+  const text = String(question ?? '').toLowerCase();
+  if (!text.trim()) return { key: '', hits: [] };
+  let best = { key: '', hits: [] };
+  for (const intent of ASK_INTENTS) {
+    const hits = intent.keywords.filter((keyword) => text.includes(keyword.toLowerCase()));
+    if (!hits.length) continue;
+    if (hits.length > best.hits.length) best = { key: intent.key, hits };
+  }
+  return best;
+}
+
+/**
+ * Answer ONE question from ONE summary record. Pure: no I/O, no clock, no model.
+ * Returns the answer object `validateSummaryAnswer` re-checks before it ships.
+ */
+export function answerFromSummary(record, question) {
+  const asked = str(question);
+  if (!asked) throw invalid('question is required (--question <q>)');
+  if (!record || typeof record !== 'object') throw invalid('a summary record is required to answer');
+  const id = str(record.id);
+  const match = matchAskIntent(asked);
+  if (!match.key) {
+    return {
+      id,
+      question: asked,
+      matched: '',
+      matchedKeywords: [],
+      basis: 'none',
+      answerable: false,
+      answer: NO_BASIS_ANSWER,
+      assertions: [],
+      cited: [],
+    };
+  }
+  const built = ASK_BUILDERS[match.key](record);
+  const cited = [];
+  for (const assertion of built.assertions) {
+    for (const entry of assertion.cited) {
+      if (!cited.some((seen) => sameValue(seen, entry))) cited.push(entry);
+    }
+  }
+  return {
+    id,
+    question: asked,
+    matched: match.key,
+    matchedKeywords: match.hits,
+    basis: cited.length ? 'record' : 'none',
+    answerable: cited.length > 0,
+    answer: built.answer,
+    assertions: built.assertions,
+    cited,
+  };
+}
+
+const POINTER = /^[A-Za-z0-9_]+(?:\[\d+\])?(?:\.[A-Za-z0-9_]+(?:\[\d+\])?)*$/;
+
+/**
+ * Machine-check one answer against the record it claims to speak about. This is
+ * the AGT-08 判定式 as code: `cited` must be non-empty for an answerable
+ * question, every pointer must resolve inside THAT record to the value it
+ * claims, every assertion must carry at least one resolvable citation, and an
+ * `basis: 'none'` answer must carry none and say `记录里没有依据`.
+ */
+export function validateSummaryAnswer(answer, record) {
+  const issues = [];
+  if (!answer || typeof answer !== 'object') return ['answer must be an object'];
+  if (!record || typeof record !== 'object') return ['a summary record is required to check an answer'];
+  if (!str(answer.id)) issues.push('answer.id is required');
+  else if (str(answer.id) !== str(record.id)) issues.push(`answer.id (${str(answer.id)}) must be the record it cites (${str(record.id)})`);
+  if (!str(answer.question)) issues.push('answer.question is required');
+  if (!str(answer.answer)) issues.push('answer.answer is required');
+  if (!(answer.basis === 'record' || answer.basis === 'none')) issues.push("answer.basis must be 'record' or 'none'");
+  if (!Array.isArray(answer.assertions)) issues.push('answer.assertions must be an array');
+  if (!Array.isArray(answer.cited)) issues.push('answer.cited must be an array');
+  if (!Array.isArray(answer.assertions) || !Array.isArray(answer.cited)) return issues;
+
+  if (answer.basis === 'none') {
+    if (answer.assertions.length) issues.push("a basis:'none' answer must not assert anything");
+    if (answer.cited.length) issues.push("a basis:'none' answer must not cite anything");
+    if (!str(answer.answer).includes(NO_BASIS_NOTE)) {
+      issues.push(`a basis:'none' answer must say ${NO_BASIS_NOTE} instead of generalising`);
+    }
+    return issues;
+  }
+
+  if (!answer.cited.length) issues.push('answer.cited must be non-empty for an answerable question (each assertion cites its 判据)');
+  for (const [index, entry] of answer.cited.entries()) {
+    const field = str(entry?.field);
+    if (!field) {
+      issues.push(`answer.cited[${index}] has no field`);
+      continue;
+    }
+    if (!POINTER.test(field)) issues.push(`answer.cited[${index}] is not a record pointer: ${field}`);
+    const resolved = resolveField(record, field);
+    if (resolved === undefined) issues.push(`answer.cited[${index}] points at a field this record does not have: ${field}`);
+    else if (!sameValue(resolved, entry.value)) issues.push(`answer.cited[${index}] ${field} does not resolve to the cited value`);
+  }
+  for (const [index, assertion] of answer.assertions.entries()) {
+    if (!str(assertion?.claim)) issues.push(`answer.assertions[${index}].claim is required`);
+    const cited = Array.isArray(assertion?.cited) ? assertion.cited : [];
+    if (!cited.length) {
+      issues.push(`answer.assertions[${index}] must cite the record fields it read`);
+      continue;
+    }
+    for (const entry of cited) {
+      const field = str(entry?.field);
+      if (!field || resolveField(record, field) === undefined) {
+        issues.push(`answer.assertions[${index}] cites a missing field: ${field || '(empty)'}`);
+      } else if (!sameValue(resolveField(record, field), entry.value)) {
+        issues.push(`answer.assertions[${index}] ${field} does not resolve to the cited value`);
+      }
+    }
+  }
+  return issues;
+}

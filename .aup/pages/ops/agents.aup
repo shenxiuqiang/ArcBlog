@@ -1,9 +1,7 @@
 page agents {
   i18n {
-    admin-only { en "Sign in as an administrator to see this list." zh "以管理员身份登录后可见该列表。" }
-    agent-closed { en "Default-closed (spec §130): change_role never runs from the agent surface (settle_payment / change_wallet were retired with the economy surface)." zh "默认关闭（spec §130）：change_role 永不从 Agent 面执行（settle_payment / change_wallet 已随经济面下线）。" }
     agent-expires { en "Expires" zh "到期" }
-    agent-grants-empty { en "How to grant one: node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" zh "如何授权：node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30" }
+    agent-grants-empty { en "How to grant one: the authorize command in the operator CLI card below (agent.write; an explicit TTL is required)." zh "如何授权：见下方运营者 CLI 卡片里的 authorize 命令（需 agent.write，且必须显式带 TTL）。" }
     cmd-authorize { en "Grant (TTL required)" zh "授权（必须带 TTL）" }
     cmd-revoke { en "Revoke" zh "撤销" }
     declared-agents { en "Declared agent" zh "已声明 Agent" }
@@ -15,20 +13,22 @@ page agents {
     gate-title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
     grant-desc { en "Grants are addressed by sha256(agentDid).slice(0,16), and the AUP DSL has no hash primitive, so this page cannot sign or revoke one. Use the operator CLI: it requires an explicit expiry and keeps high-risk capabilities behind a second confirmation." zh "授权记录按 sha256(agentDid).slice(0,16) 寻址，而 AUP DSL 没有哈希原语，因此本页无法签发或撤销。请用运营者 CLI：它强制填写到期时间，高风险能力需要二次确认。" }
     grant-forbidden { en "agent.admin is not grantable: change_role never runs from the agent surface (spec §130)." zh "agent.admin 不可授予：change_role 永不从 Agent 面执行（spec §130）。" }
-    grant-title { en "Authorize an agent (CLI)" zh "授权 Agent（CLI）" }
+    grant-title { en "Operator CLI (grants & summaries)" zh "运营者 CLI（授权与汇总）" }
     grants-desc { en "Records under config/agent-grants/ (admin-only). A write tool only runs while its grant is unexpired." zh "config/agent-grants/ 下的记录（仅管理员可读）。写工具仅在授权未过期时可执行。" }
     grants-title { en "Current grants" zh "当前授权" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     mutations { en "This console reports state only. Value-bearing mutations (settlement, wallets, roles, payments) stay deliberate CLI actions with a DID session." zh "本页只报告状态。涉及价值的写操作（结算、钱包、角色、支付）仍是需要 DID 会话的显式 CLI 动作。" }
     policy-blocked { en "Blocked write ops" zh "被阻止的写操作" }
     policy-default { en "Default-closed tools" zh "默认关闭工具" }
-    policy-desc { en "Enforced by scripts/arcblog-agent.mjs and audited by node scripts/arcblog-agent.mjs check. Read-only: this page has no switches." zh "由 scripts/arcblog-agent.mjs 强制执行、node scripts/arcblog-agent.mjs check 审计。只读：本页没有任何开关。" }
+    policy-desc { en "Enforced by scripts/arcblog-agent.mjs and audited by the check declared below. Read-only: this page has no switches." zh "由 scripts/arcblog-agent.mjs 强制执行、由下方声明的 check 审计。只读：本页没有任何开关。" }
     policy-never { en "Never exposed (prefixes)" zh "永不暴露（前缀）" }
     policy-read { en "Read-only ops" zh "只读操作" }
     policy-title { en "Policy & declaration (read-only)" zh "策略与声明（只读）" }
     runtime-note { en "Spec §129: /mcp, /api/afs/rpc and llms.txt are provided by the ARC Runtime; ArcBlog only declares and audits them, so this page does not assert their runtime availability." zh "spec §129：/mcp、/api/afs/rpc 与 llms.txt 由 ARC Runtime 提供；ArcBlog 只声明与审计，本页不断言其运行期可用性。" }
     status-available { en "available" zh "可用" }
     status-closed { en "closed" zh "关闭" }
+    summaries-note { en "Aggregated summaries: the read-only projections under node/summaries/ written by the operator CLI below (an empty list means none has been built yet — this page neither builds nor scores one). Every figure a row shows is that record's own totalNote/stateNote; this page must not recompute a total (B5)." zh "汇总记录：node/summaries/ 下的只读投影，由下方运营者 CLI 写入（列表为空表示尚未 build——本页既不生成也不评分）。每行显示的数字全部取自该记录自带的 totalNote/stateNote；本页不得自算总数（B5）。" }
+    summaries-title { en "Aggregated summaries (node/summaries/)" zh "汇总记录（node/summaries/）" }
     registry-source { en "on-chain registry projection (node/registry.json + one record per node) — the operator's registry refresh writes it; run that before reading" zh "链上注册表投影（node/registry.json + 每节点一条记录）——由运营者的 registry refresh 写入；读取前请先执行" }
     registry-content { en "get_studio --content then reads that node's public surface over its staked endpoint (read-only)" zh "get_studio --content 再经该节点质押的 endpoint 只读其公开面" }
     title { en "Agent capabilities & tools" zh "Agent 能力与工具" }
@@ -138,7 +138,6 @@ page agents {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :grants-title level=3 style={fontSize: "var(--type-body)"}
                 p :grants-desc intent=muted
-                p :admin-only scale=sm intent=muted visible="!$session.authenticated"
                 view visible=$session.authenticated {
                   afs-list agents-grants-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:agent-grants-empty pagination=manual pageSize=10 from "/instance/app/arcblog/config/agent-grants" {
                     row gap=xs role=item style={background: transparent, borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
@@ -152,7 +151,6 @@ page agents {
                   }
                 }
                 p :agent-grants-empty scale=sm intent=muted
-                p :agent-closed scale=sm intent=muted
                 p :mutations scale=sm intent=muted
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
@@ -180,6 +178,16 @@ page agents {
                 key-value-list agent-grant-cmds dense=true fields=[{label: "$t(agents.cmd-authorize)", value: "node scripts/arcblog-agent.mjs authorize --agent <did> --capability agent.write --ttl 30", monospace: true, copyable: true}, {label: "$t(agents.cmd-revoke)", value: "node scripts/arcblog-agent.mjs revoke --agent <did>", monospace: true, copyable: true}]
                 p :grant-forbidden scale=sm intent=muted
                 p :runtime-note scale=sm intent=muted
+                h3 :summaries-title level=3
+                p :summaries-note intent=muted
+                afs-list agents-summaries-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/summaries" {
+                  row gap=xs role=item {
+                    p "${entry.content.id}" scale=sm
+                    p "${entry.content.totalNote}" scale=sm intent=muted
+                    p "${entry.content.registryRefreshedAt}" scale=sm intent=muted
+                  }
+                }
+                key-value-list dense=true fields=[{label: build, value: "node scripts/arcblog-summarize.mjs build --from-registry --id s1 --limit 10", monospace: true, copyable: true}, {label: show, value: "node scripts/arcblog-summarize.mjs show s1", monospace: true, copyable: true}, {label: ask, value: "node scripts/arcblog-summarize.mjs ask --id s1 --question \"为什么这条入选\" --json", monospace: true, copyable: true}]
               }
             }
           }

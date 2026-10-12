@@ -6,20 +6,26 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  ASK_INTENTS,
+  ASK_INTENT_KEYS,
   DEFAULT_LIMIT,
+  NO_BASIS_NOTE,
   SOURCE_FIELDS,
   SUMMARY_KIND,
   TERM_KEYS,
   WEIGHTS,
+  answerFromSummary,
   buildSummaryRecord,
   comparePicks,
   isHttpEndpoint,
+  matchAskIntent,
   nodeSlug,
   publicSource,
   reasonFrom,
   resolveField,
   scoreTotal,
   sourceFrom,
+  validateSummaryAnswer,
   validateSummaryRecord,
 } from './lib/summarize.mjs';
 
@@ -318,6 +324,132 @@ test('a node with no readable surface yields an explicit skip reason', () => {
   for (const entry of record.skipped) assert.ok(entry.error, `${entry.stakeAddress} must explain itself`);
 });
 
+// --- pure: PRD-AGT-08 `ask` (deterministic, cited answers) -------------------
+
+test('ask: the fixture question "为什么这条入选" hits the pick-reason intent', () => {
+  assert.equal(matchAskIntent('为什么这条入选').key, 'pick-reason');
+  // every catalogue intent is reachable by at least one of its own keywords, so
+  // none of them is decorative
+  for (const intent of ASK_INTENTS) {
+    assert.ok(intent.keywords.length > 0, `${intent.key} needs keywords`);
+    const hit = matchAskIntent(intent.keywords[intent.keywords.length - 1]);
+    assert.equal(hit.key, intent.key, `${intent.keywords[intent.keywords.length - 1]} must select ${intent.key}`);
+  }
+  assert.deepEqual(ASK_INTENT_KEYS, ASK_INTENTS.map((intent) => intent.key));
+  assert.equal(matchAskIntent('今天天气怎么样').key, '', 'a question the record cannot answer matches nothing');
+  assert.equal(matchAskIntent('').key, '');
+});
+
+test('ask: every assertion cites resolvable record pointers (the 判定式)', () => {
+  const record = build();
+  const question = '为什么这条入选';
+  const answer = answerFromSummary(record, question);
+  assert.equal(answer.matched, 'pick-reason');
+  assert.equal(answer.basis, 'record');
+  assert.equal(answer.answerable, true);
+  assert.ok(answer.cited.length > 0, 'cited[] must be non-empty');
+  assert.ok(answer.assertions.length > 0);
+  for (const entry of answer.cited) {
+    assert.equal(resolveField(record, entry.field), entry.value, `${entry.field} must resolve in the s1 record`);
+  }
+  for (const assertion of answer.assertions) {
+    assert.ok(assertion.cited.length > 0, 'every assertion carries its own citations');
+    for (const entry of assertion.cited) {
+      assert.notEqual(resolveField(record, entry.field), undefined, `${entry.field} must exist`);
+    }
+  }
+  // the citations name the record fields the PRD asks for, not a paraphrase
+  for (const pick of record.picks) {
+    const at = `picks[${pick.rank - 1}]`;
+    assert.ok(answer.cited.some((entry) => entry.field === `${at}.reason`), `${at}.reason must be cited`);
+    assert.ok(answer.cited.some((entry) => entry.field.startsWith(`${at}.score.terms[`)), `${at}.score.terms[j] must be cited`);
+  }
+  assert.deepEqual(validateSummaryAnswer(answer, record), []);
+});
+
+test('ask: the same record + question always produce the same answer (determinism)', () => {
+  const record = build();
+  for (const question of ['为什么这条入选', '评分权重是什么', '排名顺序', '哪些节点被跳过了', '来源节点', '覆盖多少条']) {
+    assert.deepEqual(answerFromSummary(record, question), answerFromSummary(record, question), question);
+    assert.deepEqual(validateSummaryAnswer(answerFromSummary(record, question), record), [], question);
+  }
+});
+
+test('ask: answers each covered intent from the record alone', () => {
+  const record = build();
+  const reason = answerFromSummary(record, '为什么这条入选');
+  assert.match(reason.answer, /0xaaa/); // the top pick's slug is the owner DID slug
+  const skipped = answerFromSummary(record, '哪些节点被跳过了');
+  assert.equal(skipped.matched, 'skipped');
+  assert.ok(skipped.cited.some((entry) => entry.field === 'skipped[0].code'));
+  assert.ok(skipped.cited.some((entry) => entry.field === 'skipped[0].error'));
+  assert.equal(resolveField(record, 'skipped[0].code'), 'REMOTE_UNREACHABLE');
+  const coverage = answerFromSummary(record, '这个投影覆盖多少条');
+  assert.ok(coverage.cited.some((entry) => entry.field === 'totalNote'));
+  assert.ok(coverage.cited.some((entry) => entry.field === 'registryRefreshedAt'));
+  const terms = answerFromSummary(record, '评分权重是什么');
+  assert.ok(terms.cited.some((entry) => entry.field === 'weights.reachable'));
+  assert.ok(terms.cited.some((entry) => entry.field === 'picks[0].score.terms[0].weight'));
+  const sources = answerFromSummary(record, '来源节点');
+  assert.ok(sources.cited.some((entry) => entry.field === 'sources[0].url'));
+  const ranking = answerFromSummary(record, '排名顺序');
+  assert.deepEqual(ranking.cited.filter((entry) => entry.field.endsWith('.rank')).length, record.picks.length);
+});
+
+test('ask: a question the record cannot answer says so instead of generalising', () => {
+  const record = build();
+  const answer = answerFromSummary(record, '作者最喜欢哪种颜色');
+  assert.equal(answer.matched, '');
+  assert.equal(answer.basis, 'none');
+  assert.equal(answer.answerable, false);
+  assert.deepEqual(answer.cited, []);
+  assert.deepEqual(answer.assertions, []);
+  assert.ok(answer.answer.includes(NO_BASIS_NOTE), `must say ${NO_BASIS_NOTE}`);
+  assert.deepEqual(validateSummaryAnswer(answer, record), []);
+});
+
+test('ask: an empty record still answers honestly from its own 口径 fields', () => {
+  const record = buildSummaryRecord({
+    id: 's-empty',
+    registry: { ...FIXTURE_REGISTRY, total: 0 },
+    sources: [],
+    discoveredAt: STAMP,
+    generatedAt: STAMP,
+  });
+  for (const question of ['为什么这条入选', '排名顺序', '哪些节点被跳过了', '来源节点', '覆盖多少条']) {
+    const answer = answerFromSummary(record, question);
+    assert.equal(answer.basis, 'record', `${question}: the record itself is the 判据`);
+    assert.ok(answer.cited.length > 0);
+    assert.ok(answer.cited.some((entry) => entry.field === 'stateNote'));
+    assert.deepEqual(validateSummaryAnswer(answer, record), [], question);
+  }
+});
+
+test('ask: the machine check refuses a citation the record does not back', () => {
+  const record = build();
+  const answer = answerFromSummary(record, '为什么这条入选');
+
+  const wrongValue = JSON.parse(JSON.stringify(answer));
+  wrongValue.cited[0].value = 'not what the record says';
+  assert.ok(validateSummaryAnswer(wrongValue, record).some((issue) => /does not resolve to the cited value/.test(issue)));
+
+  const missing = JSON.parse(JSON.stringify(answer));
+  missing.cited[0].field = 'picks[99].reason';
+  assert.ok(validateSummaryAnswer(missing, record).some((issue) => /points at a field this record does not have/.test(issue)));
+
+  const unwarranted = JSON.parse(JSON.stringify(answer));
+  unwarranted.assertions[0].cited = [];
+  assert.ok(validateSummaryAnswer(unwarranted, record).some((issue) => /must cite the record fields it read/.test(issue)));
+
+  const noBasisWithClaims = JSON.parse(JSON.stringify(answerFromSummary(record, '作者最喜欢哪种颜色')));
+  noBasisWithClaims.cited.push({ field: 'total', value: record.total });
+  assert.ok(validateSummaryAnswer(noBasisWithClaims, record).some((issue) => /must not cite anything/.test(issue)));
+
+  const otherRecord = JSON.parse(JSON.stringify(answer));
+  otherRecord.id = 'someone-elses-record';
+  assert.ok(validateSummaryAnswer(otherRecord, record).some((issue) => /must be the record it cites/.test(issue)));
+});
+
 // --- pure: the public projection boundary -----------------------------------
 
 test('only public fields survive into the record (a private field cannot leak)', () => {
@@ -521,4 +653,94 @@ test('live: build fails closed without --from-registry and on a missing summary'
   const badFlag = await runCli(['build', '--from-registry', '--id', 'x', '--limit', '0'], {});
   assert.equal(badFlag.code, 1);
   assert.match(JSON.parse(badFlag.stderr).error, /--limit/);
+});
+
+test('live: ask answers from the stored record and every cited pointer resolves', async (t) => {
+  if (skipUnlessUp(t)) return;
+  const { readJson, remove, writeJson } = await import('./lib/arc.mjs');
+  const stamp = `${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+  const summaryDir = `/instance/app/arcblog/node/summaries-ask-test-${stamp}`;
+  const id = `ask-${stamp}`;
+  const env = { ARCBLOG_SUMMARY_DIR: summaryDir };
+  const record = buildSummaryRecord({
+    id,
+    registry: FIXTURE_REGISTRY,
+    sources: fixtureSources(),
+    limit: DEFAULT_LIMIT,
+    discoveredAt: STAMP,
+    generatedAt: STAMP,
+  });
+  assert.deepEqual(validateSummaryRecord(record), []);
+  writeJson(`${summaryDir}/${id}.json`, record);
+  try {
+    const asked = await runCli(['ask', '--id', id, '--question', '为什么这条入选', '--json'], env);
+    assert.equal(asked.code, 0, asked.stderr);
+    const answer = JSON.parse(asked.stdout);
+    assert.equal(answer.action, 'summary-ask');
+    assert.equal(answer.matched, 'pick-reason');
+    assert.equal(answer.basis, 'record');
+    assert.ok(answer.cited.length > 0, 'cited[] must be non-empty');
+    // the judged condition: every cited entry exists in THIS record with that value
+    const stored = readJson(`${summaryDir}/${id}.json`).value;
+    for (const entry of answer.cited) {
+      assert.notEqual(resolveField(stored, entry.field), undefined, `${entry.field} must exist in ${id}`);
+      assert.deepEqual(resolveField(stored, entry.field), entry.value, `${entry.field} must match`);
+    }
+    assert.deepEqual(validateSummaryAnswer(answer, stored), []);
+
+    const twice = await runCli(['ask', '--id', id, '--question', '为什么这条入选', '--json'], env);
+    assert.equal(twice.stdout, asked.stdout, 'ask must be reproducible');
+
+    const unmatched = await runCli(['ask', '--id', id, '--question', '作者最喜欢哪种颜色', '--json'], env);
+    assert.equal(unmatched.code, 0, unmatched.stderr);
+    const refused = JSON.parse(unmatched.stdout);
+    assert.equal(refused.basis, 'none');
+    assert.deepEqual(refused.cited, []);
+    assert.ok(refused.answer.includes(NO_BASIS_NOTE));
+
+    // --llm: the wiring point fails closed rather than pretending to answer
+    const unverifiable = await runCli(['ask', '--id', id, '--question', '为什么这条入选', '--json', '--llm', 'cat'], env);
+    assert.equal(unverifiable.code, 1);
+    assert.equal(JSON.parse(unverifiable.stderr).code, 'LLM_UNVERIFIABLE');
+
+    // a working operator-side command receives the deterministic context on stdin
+    // (the echo is the child's output, not a machine-checked answer)
+    const echoLlm = `'${process.execPath}' -e 'process.stdin.pipe(process.stdout)'`;
+    const echoed = await runCli(['ask', '--id', id, '--question', '为什么这条入选', '--llm', echoLlm], env);
+    assert.equal(echoed.code, 0, echoed.stderr);
+    const context = JSON.parse(echoed.stdout);
+    assert.equal(context.kind, 'ArcBlogSummaryAskContext');
+    assert.equal(context.basis, 'record');
+    assert.equal(context.summary.id, id);
+    assert.ok(context.cited.length > 0);
+    assert.match(echoed.stderr, /NOT machine-checked against the record/);
+
+    const missingLlm = await runCli(
+      ['ask', '--id', id, '--question', '为什么这条入选', '--llm', 'arcblog-no-such-operator-command'],
+      env,
+    );
+    assert.equal(missingLlm.code, 1);
+    // the fail-closed banner is the first stderr line, then this CLI's JSON error
+    assert.match(missingLlm.stderr, /NOT machine-checked against the record/);
+    assert.equal(JSON.parse(missingLlm.stderr.slice(missingLlm.stderr.indexOf('{'))).code, 'LLM_FAILED', missingLlm.stderr);
+  } finally {
+    try {
+      remove(`${summaryDir}/${id}.json`);
+    } catch { /* best effort */ }
+  }
+});
+
+test('live: ask fails closed without a question and on a missing summary', async (t) => {
+  if (skipUnlessUp(t)) return;
+  const noQuestion = await runCli(['ask', '--id', 'whatever'], {});
+  assert.equal(noQuestion.code, 1);
+  assert.equal(JSON.parse(noQuestion.stderr).code, 'VALIDATION');
+
+  const missing = await runCli(['ask', '--id', 'definitely-not-a-summary', '--question', '为什么'], {});
+  assert.equal(missing.code, 1);
+  assert.equal(JSON.parse(missing.stderr).code, 'NOT_FOUND');
+
+  const unknownFlag = await runCli(['ask', '--id', 'x', '--question', 'why', '--typo', '1'], {});
+  assert.equal(unknownFlag.code, 1);
+  assert.equal(JSON.parse(unknownFlag.stderr).code, 'VALIDATION');
 });

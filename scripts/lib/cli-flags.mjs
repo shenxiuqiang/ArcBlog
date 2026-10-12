@@ -66,7 +66,7 @@ export const SCRIPT_FLAGS = {
   "arcblog-roles.mjs": ["asset-id", "by", "chain-verification", "claimable-at", "help", "intent-id", "interval", "link-exit", "network", "reason", "role", "stake-id", "state", "studio-collection", "update"],
   "arcblog-rss.mjs": ["args", "feed-description", "feed-link", "feed-title", "instance", "json", "limit"],
   "arcblog-settings.mjs": ["agent-access", "comments", "help", "instance", "language", "palette", "rss", "site-name", "theme", "timezone", "tone"],
-  "arcblog-summarize.mjs": ["from-registry", "help", "id", "instance", "json", "limit", "max-collect", "timeout"],
+  "arcblog-summarize.mjs": ["from-registry", "help", "id", "instance", "json", "limit", "llm", "max-collect", "question", "timeout"],
   "arcblog-tags.mjs": ["action", "by", "from", "help", "id", "interval", "to"],
   "arcblog-ui-budget.mjs": ["card-bg", "includes", "json", "strict", "write-baseline"],
   "arcblog-verify.mjs": ["did", "expect-did", "forget", "help", "instance", "public-key", "sign-key", "slug"],
