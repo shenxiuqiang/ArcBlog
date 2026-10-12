@@ -155,3 +155,38 @@ test('every package.json script is documented (or exempt with a reason)', () => 
   assert.deepEqual(missing, [], `world schemas missing from docs/05/01 §2: ${missing.join(', ')}`);
   assert.deepEqual(extra, [], `docs/05/01 §2 lists schemas that do not exist: ${extra.join(', ')}`);
 });
+
+/**
+ * `npm run X` in a living doc must be a script package.json declares (2026-10-12, ENG-58). 107
+ * mentions across 8 distinct names, all declared today — a negative result, recorded as such — but a
+ * doc telling an operator to run a script that does not exist costs them the round. Cheap: no
+ * subprocess at all, just a set membership test.
+ */
+test('every `npm run X` a living doc tells you to run is declared in package.json', () => {
+  const declared = new Set(Object.keys(JSON.parse(readFileSync(join(REPO, 'package.json'), 'utf8')).scripts));
+  const files = [
+    ...readdirSync(join(REPO, 'docs/05-开发文档')).map((f) => `docs/05-开发文档/${f}`),
+    ...readdirSync(join(REPO, 'docs/06-功能开发列表')).map((f) => `docs/06-功能开发列表/${f}`),
+    ...readdirSync(join(REPO, 'docs/07-团队与开发规范')).map((f) => `docs/07-团队与开发规范/${f}`),
+    ...readdirSync(join(REPO, 'docs/08-其他')).map((f) => `docs/08-其他/${f}`),
+    'CLAUDE.md',
+    'README.md',
+    'AGENTS.md',
+  ].filter((f) => f.endsWith('.md') && !f.includes('_提纲'));
+
+  const missing = [];
+  let seen = 0;
+  for (const rel of files) {
+    for (const [i, line] of readFileSync(join(REPO, rel), 'utf8').split('\n').entries()) {
+      for (const m of line.matchAll(/npm run ([\w:.-]+)/g)) {
+        // `npm run X` is how the docs refer to the entry point in general; only a concrete name is
+        // a claim about package.json.
+        if (/^[A-Z]$/.test(m[1]) || m[1].includes('<')) continue;
+        seen += 1;
+        if (!declared.has(m[1])) missing.push(`${rel}:${i + 1} → npm run ${m[1]}`);
+      }
+    }
+  }
+  assert.ok(seen >= 40, `npm run mentions scanned: ${seen}`);
+  assert.deepEqual(missing, [], `docs pointing at undeclared npm scripts:\n  ${missing.join('\n  ')}`);
+});

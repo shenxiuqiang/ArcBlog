@@ -9,6 +9,7 @@
 #   A2 探针齐：`07` 必含 `P-1`–`P-4`
 #   A3 无活着的残留：hub / 经济族出现时须带删除/作废标记
 #   A4 形态 + 链接（豁免：标 Stage N/未落盘/原始证据；或目标在 `_提纲` 列为计划文件）
+#   A7 文档里的 `arc <组> <子命令>` 必须能被 CLI 认得（`--help` 实测；ENG-58，属交付门）
 #
 # 用法：bash docs/05-开发文档/_gate.sh        退出码 0=PASS，1=FAIL，2=环境异常
 set -uo pipefail
@@ -158,6 +159,13 @@ print(f'A4 未声明死链 = {len(links_miss)}')
 
 for x in links_miss[:5]:
     print('   ✗', x)
+
+# A7 文档里的 `arc …` 命令必须真的存在（ENG-58）。放在交付门而不是快层：实测 ~4.8 s（14 条 `--help`）。
+r = subprocess.run(['node', 'scripts/arcblog-doc-arc-commands.mjs'], capture_output=True, text=True)
+print((r.stdout or r.stderr).strip())
+if r.returncode != 0:
+    problems.append('A7 文档里的 arc 命令核验失败（见上）')
+
 for x in problems[:10]:
     print('   ✗', x)
 print('VERDICT', 'FAIL' if (problems or links_miss) else 'PASS')

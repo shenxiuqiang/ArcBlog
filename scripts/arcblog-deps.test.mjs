@@ -5,7 +5,7 @@
 // direction matters too: a dependency nobody imports is a declaration that has gone stale.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -71,6 +71,13 @@ test('no script module is orphaned (referenced from outside itself)', () => {
   const extras = [
     ...walk(join(REPO, '.aup')).map((f) => readFileSync(f, 'utf8')),
     readFileSync(join(REPO, 'package.json'), 'utf8'),
+    // The volume gates are BASH, and a helper invoked from one of them is wired (measured
+    // 2026-10-12: `arcblog-doc-arc-commands.mjs` is called by docs/05's _gate.sh and looked
+    // orphaned because only .aup/ and package.json counted as referrers).
+    ...readdirSync(join(REPO, 'docs'))
+      .map((d) => join(REPO, 'docs', d, '_gate.sh'))
+      .filter((f) => existsSync(f))
+      .map((f) => readFileSync(f, 'utf8')),
   ].join('\n');
 
   const orphans = [];
