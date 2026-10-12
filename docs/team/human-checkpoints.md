@@ -75,3 +75,18 @@ node scripts/arcblog-recipes.mjs install   # 幂等；check 验证
 - `U19` 已关闭（自适应边界**显式声明** + 可判部分仍断言，`arcblog-theme.test.mjs` 3/3）
 - 探针已关 7/10：`P-1` `P-2` `P-4` `U18` `U19` ✅；`U20` ❌判定 B（平台无 SSR meta）
 - 台账：`已实现待验` 47 ｜ `未开工` 2（`CNT-02` 待 B1、`ID-05` 待 A2）｜ `开发中` 0 ｜ `平台边界` 7
+
+## D · 环境/运维（需你拍板，agent 不擅自做）
+
+**D1 · DID Space 索引过期（`DEF-30`）**——`node scripts/arcblog-doctor.mjs` 的 `space-layout` 报 warn：
+```bash
+arc space check                 # 只读审计：2/6 空间 drifted（含 /blocklets 条目）
+arc space repair --index        # 平台给出的修法（修索引匹配磁盘）
+```
+⚠️ 它修的是**整个 ARC 安装**的索引（含 `/blocklets`，不只 ArcBlog）⇒ 请你在确认无其他项目在跑时执行。产品后果：`afs-list` 的过滤走索引，索引过期会让**按条件查静默漏记录**。
+
+**D2 · scope 目录明文（同上 doctor 的 `de-identification` warn）**
+```bash
+# 未设 AFS_DID_SPACE_SCOPE_SECRET ⇒ scope 目录是明文
+```
+设它会改变 scope 目录的存储方式（可能影响既有数据的可读性）⇒ 需你决定是否启用、以及何时启用。
