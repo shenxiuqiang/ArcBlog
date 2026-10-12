@@ -67,6 +67,7 @@ const FAST_TESTS = new Set([
   // context) + a static wiring check + three child-process flag assertions — no
   // instance writes, no chain, no network.
   'arcblog-anomalies',
+  'arcblog-artifact-drift',
   'arcblog-console-nav',
   'arcblog-deps',
   'arcblog-dist-secrets',
