@@ -125,7 +125,7 @@ arc space repair --index   # 平台给出的修法（重建索引以匹配磁盘
 | E5 | `U10`：`arc space sync` 远端端点 | **暂不提供**（停在"平台边界 + 未验证"，不阻塞主干） |
 | E6 | 入口三文件是否重写 | **已事实同步 `CLAUDE.md` v1.1**（结构未重写；要重写请明示） |
 | E7 | `DEF-27`：首页封面瓦片"空链接"如何修 | 两条候选都改交互/视觉（去 `href` 变装饰图 / 放可见文案）⇒ **等你选** |
-| E9 | `DEF-37`：`node/profile.json`（节点公开元数据 name/description/ogImage/endpoint）**归谁写** | 现状 = `?page=seo` 与 `node scripts/arcblog-node.mjs set` **都写**（另"站点名"在 `config/general/site-name.json` 重复存一份）⇒ `PRD-SET-02` 的"同一字段只有一个入口"未达。**三条候选**：① 页面唯一（CLI 两个旗标 fail-closed 指向页面）② CLI 唯一（`?page=seo` 只读）③ 分发元数据迁独立记录。**等你选**（改了要同步 `author/general/agent/doctor/network` 五个消费面） |
+| E9 | `DEF-37`：`node/profile.json`（`name`/`description`/`ogImage`/`endpoint`）**归谁写** | **依据指向同一方向**：`docs/02/07-SET` 的判定式 = "`?page=seo` **不再**写 `node/profile.json` 的身份字段"；`docs/03/01` 的页面族 = `seo`「站点级分发元数据」、`general`「**实例身份**」。**推荐**：`?page=seo` 改写自己的分发记录（如 `config/seo.json`，其字段受 `B19` 约束**无法注入源码**、属声明性数据），身份字段改为**只读展示**并指向 `?page=general`；`node/profile.json` 的写入口收敛为 general/CLI。⚠️ 这会**改动 `?page=seo` 的交互**（去掉身份字段的保存）⇒ 按铁律 8"产品口径追认"**等你点头**（或指定另两条候选之一：CLI 唯一 / 字段迁独立记录） |
 | E8 | `CNT-02`：页面写入的署名（平台不插值 `$session.*`） | **现状 = 页面写占位、署名靠 CLI**（`arcblog-lifecycle publish`）；可选：加 worker/CLI **回填**页面写入的记录（产品口径变更）⇒ **等你定** |
 
 ---
