@@ -193,6 +193,11 @@ function main() {
   const instance = optString(opts.instance);
   const category = optString(opts.category);
   const tag = optString(opts.tag);
+  const source = optString(opts.source) || 'auto';
+  if (!['auto', 'query', 'list'].includes(source)) {
+    console.error(JSON.stringify({ ok: false, code: 'VALIDATION', error: `--source must be auto|query|list (got ${source})` }, null, 2));
+    process.exit(1);
+  }
   const dirs = dirsForStatus(status);
 
   try {
@@ -200,20 +205,52 @@ function main() {
     let mode = 'query-action';
     let fallbackReason;
     const records = [];
+    // DEF-31: the provider query is INDEX-backed, and an edited record leaves a stale
+    // index entry — measured 2026-10-12: `published` returned 2 of the 3 records in
+    // posts/ (hello-arcblog was silently missing) while the public feed showed it. So the
+    // provider result is cross-checked against the directory (disk truth) and anything the
+    // index lost is appended and NAMED, instead of silently hidden.
+    const staleIndex = [];
     for (const dir of dirs) {
       let data;
       try {
+        if (source === 'list') throw new Error('forced by --source list');
         data = queryByAction({ dir, status, limit, instance, category, tag });
       } catch (err) {
         mode = 'ls-read-fallback';
         fallbackReason = err.message;
         data = queryByListing({ dir, status, limit, instance, category, tag });
       }
+      // `--source query` keeps the historical behaviour (index only) for diagnostics.
+      if (mode === 'query-action' && source !== 'query') {
+        const listing = queryByListing({ dir, status, limit, instance, category, tag });
+        const key = (r) => r.path || r.slug;
+        const seen = new Set(data.records.map(key));
+        for (const record of listing.records) {
+          if (seen.has(key(record))) continue;
+          staleIndex.push(key(record));
+          data.records.push(record);
+        }
+      }
       records.push(...data.records);
     }
     result = { total: Math.min(records.length, limit), records: records.slice(0, limit) };
+    if (staleIndex.length && mode === 'query-action') mode = 'query-action+list-recovered';
 
-    console.log(JSON.stringify({ ok: true, status: status || 'all', mode, ...(fallbackReason ? { fallbackReason } : {}), result }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          ok: true,
+          status: status || 'all',
+          mode,
+          ...(fallbackReason ? { fallbackReason } : {}),
+          ...(staleIndex.length ? { staleIndex, staleIndexNote: 'these records are on disk but missing from the provider index — appended from the directory listing; run `arc space repair --index` (see DEF-30)' } : {}),
+          result,
+        },
+        null,
+        2,
+      ),
+    );
   } catch (err) {
     console.error(JSON.stringify({ ok: false, error: err.message }, null, 2));
     process.exit(1);

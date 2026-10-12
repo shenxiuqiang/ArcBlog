@@ -137,19 +137,35 @@ test('non-published statuses query the private directory', () => {
 test('filters are applied by the provider query, not client-side', () => {
   // Pin the server-side path: a miss must come back empty from the provider,
   // not by fetching everything and filtering in JS.
+  // DEF-31: the provider query is the primary path, but a STALE index entry makes it
+  // silently drop a record, so the CLI cross-checks it against the directory and reports
+  // `query-action+list-recovered` with the recovered paths named. Pin the invariant —
+  // provider first, filters still correct, recovery explained — instead of one mode string.
   const hit = json(run(['published', '--category', 'technology']).stdout);
-  assert.equal(hit.mode, 'query-action');
+  assert.match(hit.mode, /^query-action/);
   assert.ok(hit.result.total >= 1);
   for (const record of hit.result.records) assert.equal(record.category, 'technology');
+  if (hit.mode === 'query-action+list-recovered') {
+    assert.ok(Array.isArray(hit.staleIndex) && hit.staleIndex.length > 0);
+    assert.match(hit.staleIndexNote, /missing from the provider index/);
+    for (const path of hit.staleIndex) {
+      assert.ok(hit.result.records.some((r) => (r.path || r.slug) === path), 'a recovered record must be in the result');
+    }
+  }
 
   const miss = json(run(['published', '--category', 'no-such-category']).stdout);
-  assert.equal(miss.mode, 'query-action');
+  assert.match(miss.mode, /^query-action/);
   assert.equal(miss.result.total, 0);
   assert.deepEqual(miss.result.records, []);
 
   const tagHit = json(run(['published', '--tag', 'identity']).stdout);
-  assert.equal(tagHit.mode, 'query-action');
+  assert.match(tagHit.mode, /^query-action/);
   assert.ok(tagHit.result.total >= 1);
+
+  // --source list bypasses the index entirely (the diagnostic escape hatch)
+  const listed = json(run(['published', '--source', 'list']).stdout);
+  assert.equal(listed.mode, 'ls-read-fallback');
+  assert.ok(listed.result.total >= hit.result.total);
 
   const tagMiss = json(run(['published', '--tag', 'no-such-tag']).stdout);
   assert.equal(tagMiss.result.total, 0);

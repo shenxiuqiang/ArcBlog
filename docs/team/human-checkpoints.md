@@ -76,6 +76,15 @@ node scripts/arcblog-recipes.mjs install   # 幂等；check 验证
 - 探针已关 7/10：`P-1` `P-2` `P-4` `U18` `U19` ✅；`U20` ❌判定 B（平台无 SSR meta）
 - 台账：`已实现待验` 47 ｜ `未开工` 2（`CNT-02` 待 B1、`ID-05` 待 A2）｜ `开发中` 0 ｜ `平台边界` 7
 
+## A2 · 公开可见的测试残留（DEF-32，**优先级更高**：访客能看到）
+
+`posts/` 里有两篇**已发布并公开可见**的测试夹具（出现在首页 feed）：
+```bash
+arc afs exec /blocklets/arcblog/.actions/delete --path /instance/app/arcblog/posts/paid-test-1790472790603.json
+arc afs exec /blocklets/arcblog/.actions/delete --path /instance/app/arcblog/posts/sign-test-1790502598928.json
+```
+⚠️ `arcblog-clean.mjs` **有意不扫 `posts/`**（"published content is never test residue"）⇒ 必须由你确认后手动删（它们是测试产物：`sign-test-`/`paid-test-` 前缀）。删除后首页 feed 只剩 `hello-arcblog`。
+
 ## D · 环境/运维（需你拍板，agent 不擅自做）
 
 **D1 · DID Space 索引过期（`DEF-30`）**——`node scripts/arcblog-doctor.mjs` 的 `space-layout` 报 warn：

@@ -154,6 +154,9 @@ export const TEST_RECORD_PREFIXES = [
   'media-test-',
   // `arcblog-content-sign.test.mjs` signed/unsigned publish fixtures.
   'sign-test-',
+  // economy-era fixture that was PUBLISHED (posts/ is not scanned by the cleaner, so this
+  // only makes it recognisable where records are read — see DEF-32).
+  'paid-test-',
   'sign-plain-',
   // `arcblog-store` fixtures used while verifying the public catalogue.
   'store-test-',
