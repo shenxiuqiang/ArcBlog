@@ -17,3 +17,17 @@ documentation disagree, the shipped documentation wins:
 
 Newcomers can skip this directory entirely — it is listed in the "what not to read" table of
 [`docs/00-getting-started.md`](../docs/00-getting-started.md) (English) ｜ [`docs/00-新手上路.md`](../docs/00-新手上路.md) (Chinese).
+
+## 升格路径（研究 → 契约，2026-10-13 补）
+
+`_research/**` 的结论**不会**自动变成契约。缺的这条流程现在写死在这里：
+
+| 步 | 做什么 | 判据 |
+| :-: | --- | --- |
+| 1 | 草稿里先有**证据**（日期 + 命令 + 原样输出摘要 + 基线；未提交就写"本轮改动（未提交）"） | 别人能照着复跑 |
+| 2 | 找**权威落点**（一处，别复制）：平台事实 → `docs/05-开发文档/附件/arc-contracts.md` 新 `§NN`；能力/边界 → `docs/05-开发文档/02`（`B*`）；探针 → `docs/05-开发文档/07`（`U*`）；实现状态 → `docs/06-功能开发列表/01-功能台账.md` | 落点符合各自卷的规范 |
+| 3 | 过门：`npm run gate:docs`（六卷）+ 受影响的快层套件；**改产品口径 = 人类检查点**（追认后才动正文） | 全绿才算落 |
+| 4 | 草稿那条**改成指针**（"已升格 → `§NN`"），同一事实不再两处展开 | 防漂移（2026-10-13 的 OG 结论曾复制五处，当天收敛） |
+| 5 | 提交人 = **Lead**（本目录的作者只出草稿） | 仓库铁律 5 |
+
+**仍留在本目录的**：过程、失败记录、被推翻的假设、还没到"结论"的证据。
