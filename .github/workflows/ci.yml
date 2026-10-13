@@ -29,7 +29,7 @@ jobs:
     name: fast tier (no ARC install needed)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -44,7 +44,7 @@ jobs:
     if: ${{ vars.ARCBLOG_ARC_RUNNER == 'true' }}
     runs-on: [self-hosted, arc]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 20
