@@ -1,10 +1,12 @@
 # The gates that a plain GitHub runner CAN run, plus the ones that need the ARC dev environment.
 #
 # Two jobs on purpose (2026-10-13):
-#   * `fast`   — 29 of the 32 fast suites; it skips exactly the three that need the `arc` CLI or a
-#                RUNNING instance, and the run header names them, so a green CI never looks like a
-#                clean sweep of the whole tier. The skip list lives in `scripts/run-tests.mjs`
-#                (`DAEMON_TESTS`) and is checked from both sides by `arcblog-run-tests.test.mjs`.
+#   * `fast`   — 28 of the 32 fast suites. It skips exactly the four that need the ARC **development
+#                environment** — the `arc` CLI (`artifact-drift`, `i18n`), a RUNNING instance
+#                (`permissions`), or a BUILT `dist/` (`dist-secrets`) — and the run header names them,
+#                so a green CI never looks like a clean sweep of the whole tier. The list and each
+#                suite's reason live in `scripts/run-tests.mjs` (`DEV_ENV_TESTS` / `DEV_ENV_REASONS`)
+#                and are checked from both sides by `arcblog-run-tests.test.mjs`.
 #   * `arc`    — the real gates: `arc dsl validate`, the FULL fast tier, and `npm run gate:docs`
 #                (its A7 step shells out to `arc <group> --help`). It needs the ARC CLI and a local
 #                instance, so it stays OFF until a self-hosted runner is registered. Turn it on by
@@ -34,8 +36,8 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
-      - name: Fast tier (skips the 3 suites that need the ARC daemon)
-        run: node scripts/run-tests.mjs fast --no-daemon
+      - name: Fast tier (skips the 4 suites that need the ARC dev environment)
+        run: node scripts/run-tests.mjs fast --no-dev-env
 
   arc:
     name: DSL + docs gates (needs the ARC dev environment)

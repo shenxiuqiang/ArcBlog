@@ -100,20 +100,30 @@ export const FAST_TESTS = new Set([
 ]);
 
 /**
- * Suites that need something a plain CI runner does not have: the `arc` CLI (`arc dsl generate` /
- * `arc dsl lint`) or a RUNNING instance (the guest permission matrix fetches
- * `http://arcblog.localhost:4939/api/afs/rpc`).
+ * Suites that need the **ARC development environment**, which a plain CI runner does not have:
  *
- * `--no-daemon` (or `ARCBLOG_NO_DAEMON=1`) skips EXACTLY these three and prints them, so a CI run
- * without an ARC install stays honest: nothing is skipped silently, and a suite that starts needing
- * the daemon must be declared here. `arcblog-run-tests.test.mjs` asserts each declared suite really
- * references `arc`/HTTP, and that no daemon-needing suite is missing from the list.
+ *   * the `arc` CLI            — `arc dsl generate` / `arc dsl lint` (`arcblog-artifact-drift`, `arcblog-i18n`)
+ *   * a RUNNING instance       — the guest permission matrix fetches `http://arcblog.localhost:4939`
+ *   * a BUILT `dist/`          — the secret/junk gate inspects the packaged artifact
+ *
+ * `--no-dev-env` skips exactly these and **names them in the run header**, so a CI run without ARC cannot
+ * look like a clean sweep of the whole tier. The reasons are declared per suite, and
+ * `arcblog-run-tests.test.mjs` checks both directions: every declared suite must really show its reason,
+ * and every suite that shows one must be declared.
  */
-export const DAEMON_TESTS = new Set([
+export const DEV_ENV_TESTS = new Set([
   'arcblog-artifact-drift',
+  'arcblog-dist-secrets',
   'arcblog-i18n',
   'arcblog-permissions',
 ]);
+export const DEV_ENV_REASONS = {
+  'arcblog-artifact-drift': 'arc',      // runs `arc dsl generate`
+  'arcblog-i18n': 'arc',                // runs `arc dsl lint`
+  'arcblog-permissions': 'instance',    // fetches the running instance
+  'arcblog-dist-secrets': 'build',      // inspects a built dist/
+};
+
 
 /**
  * Which repository paths each fast suite guards, for `--changed`.
@@ -313,7 +323,7 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
     process.exit(2);
   }
   const onlyChanged = argv.includes('--changed');
-  const noDaemon = argv.includes('--no-daemon') || process.env.ARCBLOG_NO_DAEMON === '1';
+  const noDevEnv = argv.includes('--no-dev-env') || process.env.ARCBLOG_NO_DEV_ENV === '1';
   const asJson = argv.includes('--json');
   const { perFileMs, totalMs, concurrency } = budgetsFor(tier);
 
@@ -338,17 +348,17 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
     }
   }
 
-  // `--no-daemon`: skip exactly the declared daemon/CLI-dependent fast suites, and SAY SO. A CI run
+  // `--no-dev-env`: skip exactly the declared dev-environment-dependent fast suites, and SAY SO. A CI run
   // without an ARC install must not look like a clean sweep of the whole tier.
-  const daemonSkipped = [];
-  if (noDaemon) {
+  const devEnvSkipped = [];
+  if (noDevEnv) {
     if (tier === 'live') {
-      console.error('--no-daemon is not meaningful for the live tier (those suites always need the instance)');
+      console.error('--no-dev-env is not meaningful for the live tier (those suites always need the instance)');
       process.exit(2);
     }
     selected = selected.filter((entry) => {
-      if (!DAEMON_TESTS.has(entry.name)) return true;
-      daemonSkipped.push(entry.name);
+      if (!DEV_ENV_TESTS.has(entry.name)) return true;
+      devEnvSkipped.push(entry.name);
       return false;
     });
   }
@@ -362,7 +372,7 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
       ` · concurrency ${tier === 'fast' ? concurrency : 1} · ${perFileMs}ms/file` +
       (totalMs ? ` · ${totalMs}ms total budget` : '') +
       (onlyChanged ? ' · changed-only' : '') +
-      (noDaemon ? ` · SKIPPED (needs ARC daemon): ${daemonSkipped.join(', ') || 'none'}` : '') +
+      (noDevEnv ? ` · SKIPPED (needs the ARC dev env): ${devEnvSkipped.join(', ') || 'none'}` : '') +
       '\n',
   );
 
