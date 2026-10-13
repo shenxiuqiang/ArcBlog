@@ -85,24 +85,29 @@
     // raises the target without moving the visual box. REVERT = delete these two rules.
     '.aup-app-header-brand-link{min-height:24px}',
     '.aup-breadcrumb-item a{display:inline-flex;align-items:center;min-height:24px}',
-    // BLANK-PAGE FIX (measured 2026-10-13): the platform header's `theme-toggle`
-    // rewrites `<html data-mode>`, which flips the host's used `color-scheme`
-    // light -> dark AFTER this overlay iframe has already been laid out.
-    // Chromium then keeps painting the overlay's canvas with its base background
-    // -- an opaque pure-white rectangle at z-index 99999 over the whole viewport
-    // (measured on /?page=index: a full-viewport screenshot of #ffffff = 4254 B
-    // while `#aup-display` still held 8756 B of live page DOM; `elementFromPoint`
-    // still returned the hero frame). Hiding `.aup-frame-overlay` restored the
-    // paint, so the page was never blank in the DOM -- only covered. The iframe
-    // document already declares `color-scheme: light` and
-    // `html,body{background:transparent!important}` (`.web/components/theme-bridge/render.js`),
-    // so pinning the overlay's *used* scheme to light keeps the frame transparent
-    // across the flip. Measured before/after: click the header toggle on
-    // /?page=index -> screenshot 4254 B (blank) before, 692218 B (visible) after;
-    // same fix also cures a cold load whose OS preference is dark (the compiled
-    // `mode light` is flipped to dark by this bridge after the frame exists).
+    // BLANK-PAGE FIX (measured 2026-10-13; real Chrome 155 and Chrome for Testing,
+    // identical results). The theme-toggle writes `localStorage['web-mode']`, and
+    // the runtime's pre-paint script replays it onto `<html data-mode>` BEFORE
+    // this overlay iframe exists. Whenever the host is already dark at that
+    // moment, Chromium paints the full-viewport overlay (position:fixed, z-index
+    // 99999) with an opaque white canvas instead of leaving it transparent.
+    // Measured on /?page=index with `web-mode=dark`: a 4255 B pure-#ffffff
+    // screenshot while `#aup-display` still held ~8.7 kB of live page DOM and
+    // `elementFromPoint(640,360)` still hit the hero frame -- the page was
+    // COVERED, never blank in the DOM. Hiding `.aup-frame-overlay` restored a
+    // ~689 kB paint in every state (fresh / dark OS / `web-mode=dark|light` /
+    // after toggle / reload / console / post / about), on both browsers.
+    // The document itself is already transparent (`render.js` injects
+    // `html,body{background:transparent!important}`), so the white canvas is
+    // Chromium's base background, not a background we set: an earlier attempt to
+    // pin the overlay's `color-scheme` to light fixed only the "flip after load"
+    // path and left every pre-set `web-mode=dark` load blank -- that rule is
+    // gone. The overlay exists to RUN the bridge, never to paint, so it is hidden
+    // outright; `visibility:hidden` (not `display:none`) keeps the document
+    // loaded and its scripts running -- verified `window.__arcblogThemeBridge` is
+    // set and the resolved theme still applies in all 10 states.
     // Revert = delete this one line.
-    '.aup-frame-overlay{color-scheme:light}',
+    '.aup-frame-overlay{visibility:hidden}',
     // V06 (long identifiers must not overflow): the surfaces that render identifiers wrap
     // correctly out of the box -- `key-value-list` values compute `overflow-wrap:anywhere`
     // (measured on /?page=author with a 190-char token: scrollWidth == clientWidth) and the

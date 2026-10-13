@@ -68,29 +68,41 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
 });
 
 /**
- * The full-viewport overlay frame must stay transparent when the host flips
- * `color-scheme` (measured 2026-10-13, Chromium 1243, live instance). The
- * platform's header `theme-toggle` rewrites `<html data-mode>`, which turns the
- * host's used color-scheme light -> dark AFTER this overlay iframe has already
- * been laid out; Chromium then keeps painting that overlay with an opaque pure
- * white canvas over the whole viewport. Measured on /?page=index: screenshot
- * 4254 B of #ffffff while `#aup-display` still held 8756 B of live DOM and
- * `elementFromPoint` still hit the hero frame — the page was COVERED, not blank;
- * `.aup-frame-overlay{display:none}` restored a 692340 B paint, and pinning the
- * overlay to `color-scheme:light` restored a 692218 B paint after the same
- * click. The same cause blanks a cold load whose OS preference is dark (the
- * compiled `mode light` is flipped by the bridge after the frame exists).
+ * The full-viewport overlay frame must never paint (measured 2026-10-13, real
+ * Chrome 155 + Chrome for Testing, live instance). The platform header's
+ * `theme-toggle` writes `localStorage['web-mode']`, and the runtime's pre-paint
+ * script replays it onto `<html data-mode>` BEFORE the overlay iframe exists.
+ * Whenever the host is already dark at that moment, Chromium paints the overlay
+ * (`position:fixed`, z-index 99999) with an opaque white canvas.
+ *
+ * Measured on /?page=index with `web-mode=dark`: a 4255 B pure-#ffffff
+ * screenshot while `#aup-display` still held ~8.7 kB of live DOM and
+ * `elementFromPoint(640,360)` still hit the hero frame — the page was COVERED,
+ * not blank. Hiding `.aup-frame-overlay` restored a ~689 kB paint in all ten
+ * states (fresh / dark OS / `web-mode=dark|light` / after toggle / reload /
+ * console / post / about) on both browsers.
+ *
+ * The document is already transparent (`render.js` injects
+ * `html,body{background:transparent!important}`), so the white canvas is
+ * Chromium's base background. An earlier attempt to pin the overlay's
+ * `color-scheme` to light fixed only the "flip after load" path and left every
+ * pre-set `web-mode=dark` load blank; that rule is deliberately gone.
  */
-test('the overlay frame is pinned to a light color-scheme (theme-toggle blank-page fix)', () => {
+test('the overlay frame is hidden, so it can never paint over the page (blank-page fix)', () => {
   const src = readFileSync(bridgePath, 'utf8');
   assert.match(
     src,
+    /\.aup-frame-overlay\{visibility:hidden\}/,
+    'CHROME_CSS must hide .aup-frame-overlay: this frame runs the bridge and must never paint, or Chromium covers the whole page with its white canvas whenever the host loads already dark',
+  );
+  assert.doesNotMatch(
+    src,
     /\.aup-frame-overlay\{color-scheme:light\}/,
-    'CHROME_CSS must pin .aup-frame-overlay to color-scheme:light: without it the platform theme toggle paints the full-viewport overlay opaque white and the page looks blank until reload',
+    'the color-scheme pin was replaced by visibility:hidden — it only fixed the flip-after-load path and left `web-mode=dark` loads blank; do not reintroduce it as the fix',
   );
   // It must also land BEFORE the first data-mode write. applyCached() runs while
   // afs is still unavailable and can flip the host light -> dark from the cache,
-  // so an injection deferred to start() would leave the frame opaque for the
+  // so an injection deferred to start() would leave the frame painting for the
   // whole boot-retry window.
   const boot = /function boot\(\)[\s\S]*?\n  \}/.exec(src);
   assert.ok(boot, 'boot() not found in the theme bridge source');
@@ -98,7 +110,7 @@ test('the overlay frame is pinned to a light color-scheme (theme-toggle blank-pa
   const cacheAt = boot[0].indexOf('applyCached(p)');
   assert.ok(
     injectAt !== -1 && cacheAt !== -1 && injectAt < cacheAt,
-    'boot() must inject the host chrome stylesheet before applyCached() writes data-mode, or a cached dark mode flips the host while the overlay is still unpinned',
+    'boot() must inject the host chrome stylesheet before applyCached() writes data-mode, or a cached dark mode flips the host while the overlay is still painted',
   );
 });
 
