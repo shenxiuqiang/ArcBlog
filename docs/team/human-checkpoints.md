@@ -189,3 +189,19 @@ arc space repair --folder /Users/shenxiuqiang/.afs/spaces/z3i16G9KhrGB593snxcCBz
 - **ENG 台账**：见 [`docs/06-功能开发列表/02`](../06-功能开发列表/02-工程与工具功能点.md)（含 `ENG-06` 转让接线：mock 端到端已验、真链待 C2）——**不在此处写死条数**
 - **缺陷台账**：见 [`docs/06-功能开发列表/03`](../06-功能开发列表/03-缺陷与待修.md)（**不在此处写死条数**）；仍待人处理的：`DEF-20`（B 段）、`DEF-25`/`DEF-26` 部分 + `DEF-27`（E 段）、`DEF-30`（D 段）、`DEF-32`（A 段）
 - **每轮门全绿**：`arc dsl validate` `issues:[]` + `npm test` 快层（`FAST_TESTS` 项数 = **32**、~1.5s）+ 六个文档卷门
+
+---
+
+## 本轮（2026-10-13 晚）：两次报修的处置 —— 请你复核两件事
+
+| 报修 | 处置 | 你要做的 |
+| --- | --- | --- |
+| "刷新页面会在右下角显示两个按钮，随后隐藏"（`DEF-45`） | ✅ **已修**：`blocklet.yaml` 顶层 `save: false`（关掉平台的 save 能力）+ 一次 `arc service restart`（AUP 面读的是 daemon **启动时**的 manifest）。登录态 10 ms 可见性采样器在 `?page=index`/`dashboard`/`posts` 由 **36/21/36** 个可见采样（首帧 t≈24–35 ms）→ **0/0/0**：首帧之前就没有节点。证据 = `arc-contracts §74`、平台边界 `B26` | **硬刷新一次**（Cmd-Shift-R）后看右下角：登录态下应当**完全没有** Bookmark / My saves（也不再有"出现后隐藏"） |
+| "退出登录无效，退出后仍处于登录状态"（`DEF-49`） | ✅ **已修（本仓兜底）**：平台登出响应只过期 **domain** 的 `login_token`；浏览器里残留的 **host-only** 那份（旧构建/带外登录路径留下的）它清不掉 ⇒ 登出后下一请求又被认证。主题桥现在**只在你点 Sign Out 时**过期 host-only 那份（`repairSignOutCookie`）。两种 scope 都用真鼠标事件实测过：host-only 由桥删、domain 由服务端删，之后刷新均 `anonymous`。证据 = `arc-contracts §75`、边界 `B27` | **点一次"退出登录"**：菜单应立刻变回"登录"，且**刷新后仍未登录**（这一步会清掉你浏览器里残留的 host-only cookie，之后一直正常） |
+| 平台侧待修（不阻塞你） | 登出响应应再发一条**不带 `Domain`** 的过期 cookie，才能同时清掉 host-only scope（`B27`）；否则任何用户都可能再次进入这个状态 | — |
+
+**本轮改动集（未提交；按纪律由 Lead/你决定何时提交）**：`blocklet.yaml`（`save: false`）、`.web/components/theme-bridge/script.js`（+ 生成的 `render.js`，新增 `repairSignOutCookie`）、`scripts/arcblog-theme.test.mjs`（两条守卫）、文档 `docs/05-开发文档/02`、`docs/05-开发文档/附件/arc-contracts.md`、`docs/06-功能开发列表/01`、`docs/06-功能开发列表/03`、`CHANGELOG.md`、`_research/platform-kb/04`。
+
+**门（本轮实跑）**：`arc dsl validate --json` → `issues: []`；`npm test` 快层 **32 文件全绿**（~2.2 s）；`npm run gate:docs` **6/6 PASS**；`npm run verify:visual` **3/3**（首页 mean 151.2）；部署 `deploy-1791888176456-4n7ch4`（`/p/rss.xml` 200）。
+
+**测试残留（需你批准才删）**：本轮为复现登录态，在开发实例里建了 **5 个 passkey 测试用户**（`arcblog-repro` / `arcblog-fixcheck` / `arcblog-fixcheck2` / `arcblog-savecheck` / `arcblog-cookiecheck`，全部 `guest`）。删用户是不可逆操作，按纪律不自动做；要清就说一声（服务台 `/admin/team` 或对应 CLI）。

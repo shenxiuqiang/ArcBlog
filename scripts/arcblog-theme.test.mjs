@@ -60,8 +60,16 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
   const src = readFileSync(bridgePath, 'utf8');
   assert.match(src, /prefers-color-scheme: light/, 'the bridge must resolve `system` through prefers-color-scheme');
   assert.match(src, /web-mode/, 'the bridge must honour the manual mode override');
-  // DEF-45: the platform mounts English save chrome ("Bookmark"/"My saves") on the host document
-  // with no blocklet-level switch; the bridge turns it off and sweeps late mounts.
+  // DEF-45: the platform mounts English save chrome ("Bookmark"/"My saves") on the host document.
+  // The PRIMARY fix is the manifest (`blocklet.yaml` `save: false` → `data-arc-save-capability="off"`
+  // before the first paint; measured 2026-10-13: the bar painted at t≈24–35 ms, before this iframe
+  // could do anything — arc-contracts §74 / boundary B26). The bridge keeps the belt: it locks
+  // `window.__arcSave` and sweeps any bar a not-yet-reloaded surface still mounts.
+  assert.match(
+    readFileSync(join(repoRoot, 'blocklet.yaml'), 'utf8'),
+    /^save:\s*false\s*$/m,
+    'blocklet.yaml must declare `save: false`: the platform save chrome is otherwise ON by default and is mounted by the daemon\'s first websocket message, before any of our code runs',
+  );
   assert.match(src, /__arcSave\s*=\s*false/, 'the bridge must disable the platform save chrome');
   assert.match(src, /arc-save-bar|data-arc-save/, 'the bridge must sweep an already-mounted save bar');
   // The platform's pre-paint script reads BOTH `localStorage['web-mode']` and the `arc_mode` cookie
@@ -224,6 +232,42 @@ test('the bridge shell (render.js) is generated and carries the script inline (D
   // shell inlines it — measured 2026-10-13: the built page had 0 bytes of bridge code.
   assert.match(committed, /__arcblogThemeBridge/, 'the bridge logic must be inlined in render.js');
   assert.match(committed, /suppressSaveChrome/, 'the save-chrome sweep must be inlined too');
+  assert.match(committed, /repairSignOutCookie/, 'the sign-out cookie repair must be inlined too');
+});
+
+/**
+ * The platform's own Sign Out must actually end the session (human report 2026-10-13: "退出登录无效，
+ * 退出后仍处于登录状态"). `/.well-known/service/api/did/logout` expires the DOMAIN cookie
+ * (`Domain=arcblog.localhost`), so a HOST-ONLY `login_token` — a different cookie to the browser —
+ * survives it and the next request is authenticated again. Only same-origin JS can expire it, so the
+ * bridge hooks the user's own Sign Out click. Measured: the platform renders that item last in
+ * `.aup-app-header-user-menu-panel` and it is the only item with `data-danger="true"`; injecting a
+ * host-only cookie, clicking Sign Out with a real mouse event and reloading left the header signed in
+ * until `document.cookie = 'login_token=; Max-Age=0; Path=/'` ran first (then `menuState: anonymous`).
+ * Guarded here because a silently missing hook looks exactly like the bug it repairs.
+ */
+test('the bridge repairs the host-only session cookie on an explicit Sign Out click', () => {
+  const src = readFileSync(bridgePath, 'utf8');
+  assert.match(src, /function repairSignOutCookie\(/, 'the sign-out repair must exist');
+  assert.match(
+    src,
+    /login_token=; Max-Age=0; Path=\//,
+    'the repair must expire `login_token` — the only scope same-origin JS can delete',
+  );
+  assert.match(
+    src,
+    /aup-app-header-user-menu-panel button\.aup-app-header-user-menu-item/,
+    'the repair must be scoped to the platform user-menu items, not to any click',
+  );
+  assert.match(src, /data-danger/, 'the click must be identified structurally (the sign-out item is the only danger one), not by its localized label');
+  assert.match(src, /siblings\[siblings\.length - 1\] !== item/, 'Sign Out is rendered last: keep an earlier danger item from expiring the session');
+  // It must be a click hook only — expiring on load would sign out every host-only session.
+  const boot = /function boot\(\)[\s\S]*?\n  \}/.exec(src);
+  assert.ok(boot && boot[0].includes('repairSignOutCookie(p)'), 'boot() must install the click hook');
+  assert.ok(
+    !/^\s*doc\.cookie = 'login_token=; Max-Age=0; Path=\/';\s*$/m.test(src.split('function repairSignOutCookie(')[0]),
+    'nothing may expire `login_token` outside the click hook',
+  );
 });
 
 test('the bridge reads and republishes the public appearance projection (DEF-48 / E14 = A)', async () => {

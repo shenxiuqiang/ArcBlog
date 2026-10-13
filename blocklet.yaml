@@ -38,6 +38,34 @@ repository:
   type: git
   url: https://github.com/shenxiuqiang/ArcBlog
 
+# Platform save capability (bookmark + selection note), OFF (2026-10-13).
+#
+# WHY: with `save:` omitted the platform treats the blocklet as save-enabled and mounts its own
+# chrome — a fixed bottom-right bar with two English buttons ("Bookmark" / "My saves") plus a
+# selection popover — for every AUTHENTICATED reader, on every page (human report, twice:
+# "右下角显示两个按钮", then still "刷新页面会…显示两个按钮，随后隐藏"). The theme bridge could only
+# react to that bar after its own iframe document had loaded, while the bar is mounted by the
+# daemon's first `aup` websocket message — measured 2026-10-13 in a real signed-in headless Chrome:
+# `__arcSave = "floating"`, `data-arc-save-capability = "floating"` and `[data-arc-save]` PAINTED at
+# t = 31 ms, when the bridge had not yet injected any stylesheet. So the bar appeared and was swept a
+# moment later — the "appears, then hides" flash, however fast the sweep ran. Declaring the
+# capability off is the only form of the fix that applies BEFORE the first paint.
+#
+# HOW: `save` is a top-level manifest field (boolean, or `{enabled, chrome}`); `false` normalises to
+# `{enabled: false, chrome: "floating"}` and stamps `data-arc-save-capability="off"`, which the
+# shared save-surface IIFE reads FIRST — no bar and no popover on either face (the web face stamps
+# the attribute server-side, the AUP face receives it in `msg.save`). Docs:
+# https://www.arcblock.io/zh/docs/web-device/save-capability/ (arc#6715).
+# Deliberately NOT `chrome: "buttons"`: that keeps the capability ON and expects the page to author
+# its own `[data-arc-save]` controls — i.e. the very chrome this declaration removes.
+#
+# DOCUMENTED SIDE EFFECT (accepted): the platform's own `/{locale}/my/` page stops listing its
+# built-in Bookmarks / Notes sections. ArcBlog's reading list is unaffected — it is a separate,
+# repo-owned feature at `/user/arcblog/bookmarks/` (`?page=saved`, `scripts/arcblog-bookmarks.mjs`),
+# while the platform's save bar wrote to `/user/bookmarks` via `/.actions/bookmark` — two bookmark
+# stores, only one of them ours.
+save: false
+
 # Pretty URLs for the reader page: /posts/<slug> resolves the post record and
 # renders the `reader` page (see .aup/app.aup), same pattern as discuss-kit.
 sites:

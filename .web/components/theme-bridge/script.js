@@ -500,7 +500,18 @@
   }
 
   var tries = 0;
-  // DEF-45: remove the platform's save chrome ("Bookmark" / "My saves") for good.
+  // DEF-45 belt: remove any platform save chrome ("Bookmark" / "My saves") that still mounts.
+  //
+  // PRIMARY FIX (2026-10-13) = the manifest: `blocklet.yaml` declares `save: false`, so the platform
+  // stamps `data-arc-save-capability="off"` before the first paint and the shared save-surface IIFE
+  // never mounts a bar. That is the only layer that runs early enough — measured with a 10 ms
+  // visibility sampler in a signed-in Chrome: with the capability ON the bar was PAINTED at
+  // t = 24–35 ms (`arcSave: "floating"`, `bridge: 0`), i.e. before this iframe's document had loaded,
+  // so the sweep below only ever shortened the flash. Evidence: `arc-contracts §74`, boundary `B26`.
+  //
+  // This function stays as the belt for the two cases the manifest cannot cover: a session served by
+  // a surface that has not re-read the manifest yet (the AUP face reads it at daemon start — see
+  // `§74(2)`), and a future re-enable that bypasses `blocklet.yaml`.
   //
   // Evidence (arc 2.0.0-beta.66 runtime bundle `/aup.<hash>.js`, function `fw()` — the handler for
   // the daemon's `case "aup":` message):
@@ -578,6 +589,61 @@
     }
   }
 
+  /**
+   * Make the platform's own Sign Out actually sign out (2026-10-13, human report
+   * "退出登录无效，退出后仍处于登录状态").
+   *
+   * `/.well-known/service/api/did/logout` answers
+   * `Set-Cookie: login_token=; Path=/; SameSite=Lax; Max-Age=0; Domain=arcblog.localhost` — that
+   * expires the DOMAIN cookie the login flows set (`.arcblog.localhost`, 7 days; measured: CDP
+   * `Network.getAllCookies` reports `domain: ".arcblog.localhost"`, and the logout leaves the jar
+   * empty). A HOST-ONLY `login_token` (no `Domain` attribute — the scope CDP `Network.setCookie`
+   * creates, and the scope a browser keeps from a sign-in served without it) is a DIFFERENT cookie to
+   * the browser, so the logout response cannot reach it: the next request is authenticated again and
+   * the header still shows the signed-in menu. Reproduced headlessly 2026-10-13: inject host-only
+   * `login_token` → click Sign Out with a real mouse event → still `menuState: authenticated`,
+   * `login_token` still in the jar, and a fresh load still signed in.
+   *
+   * Only same-origin JavaScript can delete it (a JS expiry is always host-only, and it can never
+   * touch the domain cookie — the server clears that one). So repair it exactly on the user's own
+   * Sign Out click: the platform renders that item LAST in the panel and it is the only item with
+   * `data-danger="true"` (`w(vs(e,"signOut"),{icon:"log-out",danger:!0,…})`), so the click is matched
+   * structurally rather than by its localized label. Expiring the cookie on page load instead would
+   * silently sign out every host-only session, which is why this is a click hook and nothing more.
+   * The platform's own handler still runs (we only add a listener), so nothing here is load-bearing
+   * for the flows that already work.
+   */
+  function repairSignOutCookie(p) {
+    try {
+      var doc = p.document;
+      if (!doc || typeof doc.addEventListener !== 'function' || doc.__arcblogSignOutRepair) return;
+      doc.__arcblogSignOutRepair = true;
+      doc.addEventListener(
+        'click',
+        function (ev) {
+          try {
+            var el = ev && ev.target;
+            if (!el || typeof el.closest !== 'function') return;
+            var item = el.closest('.aup-app-header-user-menu-panel button.aup-app-header-user-menu-item');
+            if (!item || item.getAttribute('data-danger') !== 'true') return;
+            var siblings = item.parentNode
+              ? item.parentNode.querySelectorAll('button.aup-app-header-user-menu-item')
+              : null;
+            // Sign Out is rendered last (after the divider): keep a repo-authored `danger` item in
+            // some earlier position from ever expiring the session.
+            if (siblings && siblings.length && siblings[siblings.length - 1] !== item) return;
+            doc.cookie = 'login_token=; Max-Age=0; Path=/';
+          } catch (e) {
+            /* best effort: the platform's own logout navigation still runs */
+          }
+        },
+        true,
+      );
+    } catch (e) {
+      /* cross-origin host or no document: nothing to repair */
+    }
+  }
+
   function boot() {
     var p = host();
     if (!p) return; // opened standalone (no bridged parent): stay inert
@@ -587,12 +653,16 @@
     if (p.__arcblogThemeBridge === window) return;
     // The platform's own save chrome (DEF-45): a `div.arc-save-bar` with two
     // English buttons ("Bookmark" / "My saves") is appended to the host
-    // documentElement for signed-in readers. The repo has no blocklet-level
-    // switch for it (the platform reads `window.__arcSave` /
-    // `data-arc-save-capability`), and it is English-only on a zh-capable site,
-    // so the bridge — which already owns host-document chrome — turns it off
-    // and sweeps any bar mounted later.
+    // documentElement for signed-in readers. The manifest declares
+    // `save: false` (the primary fix); this is the belt for a surface that has
+    // not re-read the manifest yet, so the bridge — which already owns
+    // host-document chrome — also turns it off and sweeps any bar mounted later.
     suppressSaveChrome(p);
+    // The platform's logout cannot expire a HOST-ONLY `login_token`; repair it
+    // on the user's own Sign Out click (see the function comment). Independent
+    // of the theme work, but this frame is the only same-origin document of
+    // ours that runs on every page.
+    repairSignOutCookie(p);
     // Land the host chrome stylesheet (incl. the overlay `color-scheme`
     // blank-page fix) BEFORE the first data-mode write: applyCached below can
     // flip the host light -> dark while afs is still unavailable, and the

@@ -3177,4 +3177,110 @@ t.setAttribute("data-aup-overlay", e.id || "")   // ← 每个 overlay frame 都
 
 所以 `aup-frame-overlay{visibility:hidden}` 会把**平台自己的交互式 overlay frame**（登录/退出登录流程用的那类）一起隐藏：元素不可见即不可点，人类报的"退出登录无效"与此吻合（2026-10-13，本仓那条规则从 949fec4 起就在，但**在此之前桥从未运行** ⇒ 副作用这一轮才第一次出现）。修法 = 收窄到我们自己的 frame：`[data-aup-overlay="theme-bridge-frame"]{visibility:hidden}`。验证：部署后 `npm run verify:visual` 三页仍 3/3（首页 mean 151.2、白占比 0.4% —— 没有白屏回来），探针 `overlayFrames: 1`。
 
+> **§73(1) 复测（2026-10-13，同基线）**：本应用**没有**平台自己的 overlay frame —— 运行时只在 frame props 带 `overlay: true` 时才建 `.aup-frame-overlay`，而本仓 DSL 里这么写的只有 `theme-bridge-frame`（每次探针 `overlayFrames: 1`；`app.json`/`wrapper.json` 里没有第二个）。所以上一段"隐藏了平台登录/退出登录 overlay ⇒ 退出登录无效"的**归因不成立**（收窄选择器这个修法本身仍然正确且必要）。同基线用真实鼠标事件复核退出登录：**可正常退出**。原始输出与更正见 **§74(5)**，上一段的归因**已被 §74(5) 取代**。
+
 **（2）`template.stylesheets` 这条通道在本仓不可用（试过并回退）。** 参照 shipped blocklet（`aggregator/.web/site.yaml` 用 `template.stylesheets` 挂 Google Fonts），把 `content/media/arcblog-chrome.css` 声明进 `.web/site.yaml` 后实测：`GET /p/media/arcblog-chrome.css` → **404**（文件确实在 `dist/content/media/` 与部署副本里；同目录的 `arcblog-og.png` 是 **200 image/png**）——即 `local:media` 这个 collection 对外服务的是**图片**，不包含 `.css`；`/?page=index`（AUP 面）与 `/p/en/theme-bridge/` 的 HTML 里也都没有出现该 `<link>`。⚠️ 教训：早先"`/p` 面命中 1 次"是**假阳性** —— 命中的是我们自己桥里 `#arcblog-chrome-style` 这个 id 的子串，不是 `<link>`；这条声明从未真正生效过（该实验已回退，文件与本仓不再保留）。结论不变且更强：**AUP 面没有任何"随页面解析、由本仓控制"的样式表/脚本注入点**（`app.aup`/`wrapper.aup` 无 head 钩子；DSL 无 raw-HTML 原语；`p format=html` 渲染进 `sandbox` + `default-src 'none'` 的 iframe；`/aup-app.<hash>.css` 是平台自带 238 041 B 样式表，`grep -c arcblog` = 0）。所以平台浮层在 AUP 面上只能靠**组件 iframe 的 JS** 抑制，剩余窗口 = 该 iframe 文档的加载时间。
+
+## 74. save 能力的开关在 `blocklet.yaml`，而 AUP 面读的是 daemon **启动时**的 manifest（2026-10-13 实测）
+
+基线：`36bdcd1` + **本轮未提交改动**（`blocklet.yaml` 顶层新增 `save: false`）｜实例 `arcblog.localhost:4939` ｜ arc `2.0.0-beta.66`
+
+**（1）`save` 是 manifest 的顶层字段，本版本的解析器认它（不是脚本/页面级开关）。** 口径见官方文档 <https://www.arcblock.io/zh/docs/web-device/save-capability/>（arc#6715）：**省略 = 开**（规范化为 `{enabled: true, chrome: "floating"}` ⇒ `<html data-arc-save-capability="floating">`）；`save: false`（或 `{enabled: false}`）⇒ `off`；`chrome: "buttons"` 是另一档（能力保留、要求**页面自己**写 `[data-arc-save]` 控件）。加 `save: false` 后两道门都照常：
+
+```bash
+arc dsl validate --json                        # → "issues": []（未知顶层键会被解析器拒绝，这里没有）
+arc blocklet check . --profile basic --json    # → "ok": true, "issues": []
+```
+
+**（2）web 面（`/p/**`）逐请求读源码，AUP 面不。** 改完源文件立刻 curl：
+
+```bash
+curl -s http://arcblog.localhost:4939/p/en/theme-bridge/ | head -c 165
+# 改前：<html lang="en" data-tone="editorial" data-palette="neutral" data-mode="light" data-arc-save-capability="floating" data-arc-my="on">
+# 改后：<html lang="en" data-tone="editorial" data-palette="neutral" data-mode="light" data-arc-save-capability="off" data-arc-my="off">
+```
+
+同一个 daemon 进程上的 **AUP 面**（`/?page=…`）在 `arc dsl generate`／`npm run build` 之后**仍然**收到旧的 `save: "floating"`：登录态下 `window.__arcSave === "floating"`、`data-arc-my="on"`、浮层照旧挂上（见 (3)）。⇒ **manifest 是 daemon 启动时读入并缓存的**；`blocklet.yaml` 的改动要经 `arc service restart`（+ 必要时 `arc blocklet run .` 复挂，同 §35(5)）才在 AUP 面生效。
+
+**（3）"右下角两个按钮"是**先画后藏**；量化输出（这是本节的核心证据）。** 探针 = 用 `Page.addScriptToEvaluateOnNewDocument` 在任何页面脚本之前装 10 ms 采样器，判据 = `getComputedStyle(el).display !== "none" && visibility !== "hidden" && rect.width > 0 && rect.height > 0`；会话 = 真 passkey 登录（`document.cookie` 含 `login_token`）。同一次加载里同时采样宿主是否有桥注入的 `#arcblog-chrome-style`：
+
+```json
+// save:false 之后、restart 之前（AUP 面仍旧 manifest）—— ?page=index
+{"t":31,"cls":"arc-save-bar","text":"Bookmark My saves","disp":"flex","vis":"visible",
+ "rect":[563,418,177,35],"ready":"floating","cap":"floating","arcSave":"floating","bridge":0}
+// 同一页整载统计：paintedSamples = 36（≈10 ms × 36 ≈ 0.36 s 可见）
+// ?page=dashboard = 21；?page=posts = 36（首帧分别 t=32 ms / t=35 ms）
+```
+
+即：daemon 的第一条 `aup` 消息把 `data-arc-save-capability`、`data-arc-save-ready="floating"` 与浮层节点**在同一次任务里**写进宿主（t ≈ 24–35 ms），此刻桥的 `<style>` **还没注入**（`bridge: 0`）⇒ 浮层真的画出去了，之后才被扫除 = 人类看到的"出现，随后隐藏"。`arc service restart -i default`（输出 `Version: 2.0.0-beta.66` / `Checkout: …/ArcBlog` / `Started: 2026-10-13T10:30:04.051Z`；重启后站点仍 `200`）之后，同一探针、同一账号：
+
+```json
+index     {"my":"off","barNodes":0,"paintedSamples":0,"firstPainted":"[]","menuItems":["EN","中文","User Center","Management","Sign Out"]}
+dashboard {"my":"off","barNodes":0,"paintedSamples":0,"firstPainted":"[]"}
+posts     {"my":"off","barNodes":0,"paintedSamples":0,"firstPainted":"[]"}
+```
+
+**首帧之前**就不再有节点可画 ⇒ 闪烁被**消灭**（不是缩短）。**§72(1) 的处方（把 `window.__arcSave` 锁成 getter + 宿主样式 + 扫除）只能缩短窗口**：它跑在 iframe 文档里，永远晚于 daemon 的第一条消息；`save: false` 是唯一"排在首帧之前"的一层。两者保留（getter 锁作为兜底），主要修法改为本节。
+
+**（4）`save: false` 的两处副作用都已核对。** ① 平台自带的 `/{locale}/my/` 页不再列内置 Bookmarks / Notes 小节，且 `<html data-arc-my="off">` ⇒ 运行时用户菜单里的 "My" 项消失（实测菜单正是上面那 5 项）；ArcBlog 自己的阅读清单是**另一个**存储（`/user/arcblog/bookmarks/`，见 `?page=saved` 与 `scripts/arcblog-bookmarks.mjs`），平台浮层写的是 `/user/bookmarks`（`/.actions/bookmark` / `/.actions/annotate`）—— 两套书签，去掉的是**平台那套的 chrome**。② 匿名访客本来就没有浮层（消费方 `o()` 要求 `session.authenticated`），改动对访客零影响：`--fresh` 匿名探针 `saveBar: 0`、`arcSave: locked->false`、`saveCapability: null`。
+
+**（5）更正 §73(1) 的归因：本应用**没有**平台 overlay frame；退出登录**可复现成功**。** 运行时只在 frame props 带 `overlay: true` 时创建 `.aup-frame-overlay`（`t.className="aup-frame-overlay"` + `data-aup-overlay="<frame id>"`），本仓唯一的这类 frame 是 `theme-bridge-frame`（每次探针 `overlayFrames: 1`）。所以"我们那条全局 `.aup-frame-overlay{visibility:hidden}` 把平台登录/退出登录流程的 overlay 一起隐藏了"**不成立** —— 当时没有任何平台 overlay 可被它隐藏（"收窄选择器"这个修法本身仍然是对的，只是不是"退出登录无效"的原因）。同基线用**真实鼠标事件**复核（先 `document.elementFromPoint` 证明命中项就是 `button.aup-app-header-user-menu-item`，再用 `Input.dispatchMouseEvent` 打 mousePressed/mouseReleased 到该项中心，规避 `element.click()` 绕过命中测试的假阳性）：
+
+```json
+HIT {"item":"Sign Out","center":[624,201],"topIsItem":true, "chain":[{"tag":"BUTTON","cls":"aup-app-header-user-menu-item","vis":"visible"}, …]}
+after click:      {"cookies":["arc_lang","arc_mode"],"menuState":"anonymous"}
+after fresh load: {"cookies":["arc_lang","arc_mode"],"menuState":"anonymous","loginBtn":1,"paintedSamples":0,"barNodes":0}
+```
+
+`login_token` 从 `document.cookie` 消失、菜单 `data-state` `authenticated` → `anonymous`、**再刷新仍是匿名**（头部回到登录按钮）。`save:false` 前后都一样。⇒ 在**直连 `:4939`** 的浏览器里"退出登录无效"**不可复现**；人类那次观察到的差异只可能来自会话来源（例如带 `?session=`／由外部壳注入会话的入口）或浏览器里残留/重复的 `login_token` cookie —— 这两条**本轮未验证**，不得当成已排除。
+
+> **§74(5) 复测（2026-10-13，同基线）**：上面"不可复现 / 未验证"的**限定已被 §75 取代** —— 可复现的条件就是**残留的 host-only `login_token`**（§75(1) 的两份 scope 对照），并已由主题桥的 click 兜底收口（§75(3)）。本段"本应用**没有**平台 overlay frame"那一半仍然成立。
+
+## 75. 平台登出清不掉 **HOST-ONLY** 的 `login_token`（cookie scope 不一致），以及本仓的点击兜底（2026-10-13 实测）
+
+基线：`36bdcd1` + **本轮未提交改动**（`blocklet.yaml` 顶层 `save: false`；主题桥新增 `repairSignOutCookie`）｜实例 `arcblog.localhost:4939` ｜ arc `2.0.0-beta.66`
+
+人类的第二句报修是"退出登录无效，退出后仍处于登录状态"。§74(5) 当时只能写到"直连 `:4939` 不可复现、剩余差异未验证"；本节把差异**复现出来**了：**cookie 的 scope 不一致**。
+
+**（1）两条 scope 的对照（CDP `Network.getAllCookies` 的 `domain` 字段：host-only 在 Chrome 里报 `arcblog.localhost`，domain cookie 报 `.arcblog.localhost`）。**
+
+```json
+// A. passkey 登录（POST /.well-known/service/api/passkey/*）之后 —— DOMAIN cookie
+[{"domain":".arcblog.localhost","path":"/","session":false,"expires":1792492695.653109,"secure":false,"sameSite":"Lax"}]
+
+// B. CDP `Network.setCookie {url}` 注入 —— HOST-ONLY cookie（无 Domain 属性；浏览器里由不带 Domain 的登录路径/旧构建留下）
+[{"domain":"arcblog.localhost","path":"/","session":true,"expires":-1}]
+```
+
+登出端点的响应头（无 cookie 也照发）：
+
+```bash
+curl -s -D - -o /dev/null http://arcblog.localhost:4939/.well-known/service/api/did/logout
+# HTTP/1.1 302 Found
+# location: /
+# set-cookie: login_token=; Path=/; SameSite=Lax; Max-Age=0; Domain=arcblog.localhost
+```
+
+⇒ 它**只过期 domain cookie**（`Domain=arcblog.localhost`）。两份 scope 在浏览器里是**两个不同的 cookie**，所以：
+
+| 会话里是哪一份 | 真实鼠标点 Sign Out 之后 |
+| --- | --- |
+| A（domain，正常登录路径） | jar **空** → `menuState: anonymous` → 刷新仍匿名（多次复现） |
+| B（host-only） | `menuState` 仍 `authenticated`、`login_token` **仍在** jar → 刷新仍登录 = **人类报的状态** |
+
+**（2）B 那份只有同源 JS 能删。** 执行 `document.cookie='login_token=; Max-Age=0; Path=/'`（JS 写的 cookie 永远是 host-only）后：jar 立即空、刷新 `anonymous`。平台自己的登出处理器只做 `cx()`（清 `sessionStorage` 的 `afs:web:session:*`）+ 跳登出地址，**不碰 cookie** ⇒ 这条路径原先**没有任何一层**能清掉 host-only 那份。
+
+**（3）本仓兜底 = 主题桥在用户点 Sign Out 时删它**（`repairSignOutCookie`，`.web/components/theme-bridge/script.js`；宿主文档捕获阶段 click，命中 `.aup-app-header-user-menu-panel button.aup-app-header-user-menu-item[data-danger="true"]` —— 运行时 `w(vs(e,"signOut"),{icon:"log-out",danger:!0,…})` 渲染的**唯一** danger 项，且在面板**最后**一项）。**不按文案匹配**（en/zh/ja 都行），**不在加载时执行**（那会把所有 host-only 会话静默登出）。端到端实测（真鼠标事件 + CDP 打 jar）：
+
+```json
+injected: [{"domain":"arcblog.localhost"}]          // 注入 host-only
+signed in: authenticated
+HIT {"center":[624,201],"topIsItem":true,"danger":"true"}
+jar after click: []                                 // 桥删掉了它
+after click: {"menuState":"anonymous"}
+after fresh load: {"menuState":"anonymous","loginBtn":1,"paintedSamples":0,"barNodes":0}
+```
+
+domain cookie 的对照同样登出成功（服务端删）⇒ **两种 scope 都收口**。守卫：`scripts/arcblog-theme.test.mjs`（断言函数、`login_token` 过期串、`data-danger` 结构匹配、"最后一项"约束、只允许出现在 click 钩子里）。
+
+**（4）为什么"根治"不在本仓。** `Set-Cookie` 由 daemon 的路由发出：AUP 面与 web 面都没有响应头控制权（`render.js` 只产出 HTML），而"每个请求都过期 `login_token`"会把所有人登出。正确处置 = **本仓兜底（用户点登出即生效）** + **平台侧修**（登出响应应同时过期 host-only scope，即再发一条不带 `Domain` 的 `login_token=; Max-Age=0`）。登记：边界 **`B27`**、缺陷 **`DEF-49`**。

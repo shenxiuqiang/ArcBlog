@@ -10,7 +10,21 @@ version; the git tag carries the release).
 
 ## [Unreleased]
 
-Nothing yet. The known pending items are not code: they are the human checkpoints
+### Fixed
+- **The platform's "Bookmark / My saves" chrome is gone** (human report: two buttons in the
+  bottom-right corner that appeared and then hid on every signed-in page load). A blocklet is treated
+  as save-enabled unless its manifest says otherwise, and the platform mounts that bar from the daemon's
+  first websocket message (~30 ms in) — before the theme bridge's iframe could react, which is why the
+  bridge could only shorten the flash. `blocklet.yaml` now declares `save: false`, so the capability is
+  `off` before the first paint (evidence: [`arc-contracts` §74](docs/05-开发文档/附件/arc-contracts.md),
+  platform boundary `B26`, defect `DEF-45`).
+- **Sign Out now ends the session in every cookie scope** (human report: "退出登录无效，退出后仍处于
+  登录状态"). The service's logout response expires only the DOMAIN `login_token`; a host-only copy is a
+  different cookie to the browser, survived it, and the next request was authenticated again. The theme
+  bridge now expires the host-only scope on the user's own Sign Out click and nowhere else (evidence:
+  [`arc-contracts` §75](docs/05-开发文档/附件/arc-contracts.md), boundary `B27`, defect `DEF-49`).
+
+The known pending items are not code: they are the human checkpoints
 ([`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md)) — a chain-write approval, a DID
 login pass, the pending licence decision, and pushing this work to the public repository.
 
