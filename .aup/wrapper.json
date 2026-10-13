@@ -8,7 +8,17 @@
   },
   "children": [
     {
-      "id": "wrapper-view-1-view-1",
+      "id": "theme-bridge-frame",
+      "type": "frame",
+      "props": {
+        "src": "/p/en/theme-bridge/",
+        "bridge": true,
+        "overlay": true,
+        "loading": "eager"
+      }
+    },
+    {
+      "id": "wrapper-view-1-view-2",
       "type": "view",
       "props": {
         "mode": "shell",
@@ -80,16 +90,6 @@
     },
     {
       "$ref": "content"
-    },
-    {
-      "id": "theme-bridge-frame",
-      "type": "frame",
-      "props": {
-        "src": "/p/en/theme-bridge/",
-        "bridge": true,
-        "overlay": true,
-        "loading": "eager"
-      }
     }
   ]
 }

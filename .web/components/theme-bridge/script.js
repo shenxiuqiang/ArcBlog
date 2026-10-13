@@ -114,7 +114,12 @@
     // loaded and its scripts running -- verified `window.__arcblogThemeBridge` is
     // set and the resolved theme still applies in all 10 states.
     // Revert = delete this one line.
-    '.aup-frame-overlay{visibility:hidden}',
+    // Our own overlay frame only. The blanket `.aup-frame-overlay{visibility:hidden}` this replaces
+    // hid EVERY overlay frame — including the platform's interactive ones (the sign-in / sign-out
+    // flow renders in an overlay frame), which is why "退出登录" could be clicked with no visible or
+    // clickable result (human report 2026-10-13). The container carries `data-aup-overlay="<frame id>"`
+    // (measured in the runtime bundle's frame renderer); ours is `theme-bridge-frame`.
+    '[data-aup-overlay="theme-bridge-frame"]{visibility:hidden}',
     // V06 (long identifiers must not overflow): the surfaces that render identifiers wrap
     // correctly out of the box -- `key-value-list` values compute `overflow-wrap:anywhere`
     // (measured on /?page=author with a 190-char token: scrollWidth == clientWidth) and the
@@ -539,24 +544,34 @@
     }
     var remove = function () {
       try {
-        var bars = doc.querySelectorAll('[data-arc-save="bar"], .arc-save-bar');
-        for (var i = 0; i < bars.length; i++) {
-          if (bars[i] && bars[i].parentNode) bars[i].parentNode.removeChild(bars[i]);
+        // Any node carrying the platform's marker, not just the bar we know about.
+        var nodes = doc.querySelectorAll('[data-arc-save], .arc-save-bar');
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i] && nodes[i].parentNode) nodes[i].parentNode.removeChild(nodes[i]);
         }
-        // Cosmetic: the attribute the platform keeps re-adding (the flag already answers "off").
-        doc.documentElement.removeAttribute('data-arc-save-capability');
+        var root = doc.documentElement;
+        // `data-arc-save-capability` is the value the platform re-asserts from the daemon message;
+        // `data-arc-save-ready` is what its OWN stylesheet uses to reveal the bar
+        // (`html:not([data-arc-save-ready]) [data-arc-save]{display:none!important}`) — dropping it
+        // keeps the platform's own rule in force even if our stylesheet is stripped.
+        root.removeAttribute('data-arc-save-capability');
+        root.removeAttribute('data-arc-save-ready');
       } catch (e) {
         /* best effort */
       }
     };
     remove();
+    // The platform can mount the bar before this frame's document loads (the AUP runtime renders the
+    // wrapper itself, and the daemon's session message can beat our iframe). A bounded re-sweep covers
+    // that first second cheaply; the observer below covers everything after it.
+    for (var k = 0; k < 10; k++) p.setTimeout(remove, 100 * (k + 1));
     try {
       var obs = new p.MutationObserver(remove);
       obs.observe(doc.documentElement, {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ['data-arc-save-capability'],
+        attributeFilter: ['data-arc-save-capability', 'data-arc-save-ready'],
       });
     } catch (e) {
       /* no MutationObserver on the host: the one-shot sweep above still applies */
