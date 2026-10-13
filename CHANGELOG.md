@@ -17,7 +17,8 @@ login pass, the pending licence decision, and pushing this work to the public re
 ## [0.3.7] — 2026-10-13
 
 ### Added
-- **A 30-minute way into the project** ([`docs/00-新手上路.md`](docs/00-新手上路.md)): what it is, how
+- **A 30-minute way into the project** ([`docs/00-getting-started.md`](docs/00-getting-started.md), English;
+  [`docs/00-新手上路.md`](docs/00-新手上路.md) is the Chinese twin): what it is, how
   to run it, where the code and data live, the four gates, and the section that matters most — *what not
   to read*.
 - **CI** (`.github/workflows/ci.yml`): a `fast` job that runs 29 of the 32 fast suites and **names** the

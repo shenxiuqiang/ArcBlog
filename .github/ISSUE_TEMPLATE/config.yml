@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Where to start reading
-    url: https://github.com/shenxiuqiang/ArcBlog/blob/main/docs/00-新手上路.md
+    url: https://github.com/shenxiuqiang/ArcBlog/blob/main/docs/00-getting-started.md
     about: 30-minute onboarding — what it is, how to run it, and what NOT to read.
   - name: Security report
     url: https://github.com/shenxiuqiang/ArcBlog/security/advisories/new

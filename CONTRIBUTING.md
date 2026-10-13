@@ -3,7 +3,8 @@
 Thanks for looking. This project is small and opinionated, and most of the opinion is written down —
 this file is the short version, with pointers to the authoritative files.
 
-> **Before anything else, read [`docs/00-新手上路.md`](docs/00-新手上路.md)** (30 minutes). It ends
+> **Before anything else, read [`docs/00-getting-started.md`](docs/00-getting-started.md)** (30 minutes,
+> English; its Chinese twin is [`docs/00-新手上路.md`](docs/00-新手上路.md)). It ends
 > with the list of documents you deliberately do **not** need.
 
 ## The one rule that surprises people

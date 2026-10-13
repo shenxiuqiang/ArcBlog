@@ -16,7 +16,7 @@
 
 > **Language note**: the long-form documentation under `docs/` is **Chinese-first**. This README and
 > [`CLAUDE.md`](CLAUDE.md) are the English entry points; every link below states its own status, and the
-> 30-minute onboarding ([`docs/00-新手上路.md`](docs/00-新手上路.md)) is Chinese.
+> 30-minute onboarding: [`docs/00-getting-started.md`](docs/00-getting-started.md) (English) ｜ [`docs/00-新手上路.md`](docs/00-新手上路.md) (Chinese).
 
 ---
 
@@ -73,9 +73,10 @@ node scripts/arcblog-query-posts.mjs published --category technology
 
 ## 3. Where to read
 
-> **New here? Start with [`docs/00-新手上路.md`](docs/00-新手上路.md)** (30 minutes, Chinese: what it is →
-> how to run it → where the code and data live → and, most usefully, **what not to read**). The map below
-> is for when you already know what you are looking for.
+> **New here? Start with [`docs/00-getting-started.md`](docs/00-getting-started.md)** (30 minutes: what it
+> is → how to run it → where the code and data live → and, most usefully, **what not to read**). The Chinese
+> twin is [`docs/00-新手上路.md`](docs/00-新手上路.md). The map below is for when you already know what you
+> are looking for.
 
 | Who you are / what you want | Start here |
 | --- | --- |

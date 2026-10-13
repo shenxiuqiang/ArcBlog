@@ -16,4 +16,4 @@ documentation disagree, the shipped documentation wins:
 | What a human still has to do | `docs/team/human-checkpoints.md` |
 
 Newcomers can skip this directory entirely — it is listed in the "what not to read" table of
-[`docs/00-新手上路.md`](../docs/00-新手上路.md).
+[`docs/00-getting-started.md`](../docs/00-getting-started.md) (English) ｜ [`docs/00-新手上路.md`](../docs/00-新手上路.md) (Chinese).

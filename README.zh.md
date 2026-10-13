@@ -64,7 +64,7 @@ node scripts/arcblog-query-posts.mjs published --category technology
 
 ## 3. 去哪读
 
-> **新人先读这一份**：[`docs/00-新手上路.md`](docs/00-新手上路.md)（30 分钟：是什么 → 怎么跑 → 代码与数据在哪 → **明确不用读什么**）。下面是完整地图，按需再展开。
+> **新人先读这一份**：[`docs/00-新手上路.md`](docs/00-新手上路.md)（30 分钟：是什么 → 怎么跑 → 代码与数据在哪 → **明确不用读什么**）；英文读者用 [`docs/00-getting-started.md`](docs/00-getting-started.md)。下面是完整地图，按需再展开。
 
 | 你是谁 / 想干什么 | 从这里开始 |
 | --- | --- |
