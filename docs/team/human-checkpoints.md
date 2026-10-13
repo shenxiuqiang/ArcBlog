@@ -21,7 +21,7 @@
 | **A2** | 清测试/探针残留（`arcblog-clean.mjs --confirm`；数字以命令的 `found` 为准） | 你批准 | dry-run 归零 |
 | **B** | **一次 DID 登录**，顺手看 6 项（草稿→发布、署名/hash 字段、5 个页面） | 你（本机无钱包，自动化不了） | `DEF-20`/`DEF-22`/`PRD-OPS-07`/`PRD-OPS-01` 的渲染验收 + `U6`/`CNT-02` 现状确认 |
 | **C** | **链写批准**：`describe` 与 `transfer --confirm`（`P-3`+`U8` 同一次执行收口） | ✅ **已批准（2026-10-12）** | 探针 8/10 → **10/10** |
-| **D** | **环境/运维拍板**：`arc space repair --index`（`DEF-30`）与 scope 目录是否加密 | 你决定（会动整个 ARC 安装） | 索引不再静默漏记录 |
+| **D** | **环境/运维拍板**：DID Space 索引修复（`DEF-30`）与 scope 目录是否加密 | ✅ **D1 已执行**（6/6 clean）；**D2 按推荐暂不做** | 索引不再静默漏记录 |
 | **E7** | `DEF-27`：首页封面瓦片"空链接"如何修（两个候选都改交互/视觉） | 你选 | 首页无障碍项闭环 |
 | **E9** | `DEF-37`：`node/profile.json` 身份字段归谁写 → **回一句 A / B / C** | 你选 | **`PRD-SET-02` 从 `开发中` 落定 ⇒ 台账 0 开发中** |
 | **E10** | `DEF-38`：UI 预算债（`docs/04 §2.7.2`）→ 删并分区达标（A）或正式接受（B） | 你选 | 预算债口径定案（棘轮已在防变差） |
@@ -145,7 +145,11 @@ ARCBLOG_CHAIN_MNEMONIC="$(python3 -c "import json;print(json.load(open('.arcblog
 
 ```bash
 arc space check            # 只读审计：输出 drifted 空间清单（含 /blocklets 条目；条数每次读它，别引用本文）
-arc space repair --index   # 平台给出的修法（重建索引以匹配磁盘）
+# ✅ 已执行（2026-10-13，人类批准）——注意平台只接受 --folder（`--index` 默认真）：
+# 每个 drifted 空间跑一次（空间路径从 `arc space check --json` 的 freshness.drifted[].folder 取）
+arc space repair --folder /Users/shenxiuqiang/.afs/spaces/z1csBwraYyLk6Z9QbybQ4YVgbdcMrmsPjnQ
+arc space repair --folder /Users/shenxiuqiang/.afs/spaces/z3i16G9KhrGB593snxcCBzZxkWGHwexW6UWTg
+# 结果：`arc space check` 由 2/6 漂移（2324 条）→ 6/6 clean、0 漂移；应用 GET / → 200
 ```
 
 > ⚠️ 它修的是**整个 ARC 安装**的索引（含 `/blocklets`，不只 ArcBlog）⇒ 请在确认无其他项目在跑时执行。
