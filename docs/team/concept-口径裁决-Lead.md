@@ -7,7 +7,7 @@
 | 定位 | 记录**产品概念**的人类裁决、**已核实的链上机制**与待决问题。**不写实现方案**（那是 `docs/05`） |
 | 上游 | 人类口述（§1）；Glofter 本机检出 `/Users/shenxiuqiang/workspace/glofter`（**只读参考**） |
 | 下游 | [`docs/README.md`](../README.md)（总纲）、`docs/01`–`docs/08` 全部正文、入口三文件 |
-| 过程记录 | [`stage-1-概念正文`](journal/stage-1-概念正文.md)、[`S1-定稿核验-Lead.md`](reviews/S1-定稿核验-Lead.md) |
+| 过程记录 | [`阶段日志归档.md`（stage-1-概念正文）](阶段日志归档.md)、[`S1-定稿核验-Lead.md`](reviews/归档-文档阶段审查.md) |
 
 ---
 
