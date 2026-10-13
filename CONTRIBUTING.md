@@ -18,8 +18,15 @@ wrong, change **that** file — do not restate the fact somewhere else. Reviewer
 ```bash
 npm install            # only for the chain CLIs (@arcblock/*, @ocap/*); the app itself needs no deps
 arc dsl validate --json
+npm run build          # one suite (arcblog-dist-secrets) inspects the packaged artifact, so a fresh
+                       # clone needs one build before the fast tier is green; it is also the only safe
+                       # build entry (it strips non-product files and fails on key material)
 npm test               # fast tier, ~2 s, never writes the instance
 ```
+
+Working without an ARC install? `node scripts/run-tests.mjs fast --no-dev-env` runs the 28 suites that
+need neither the `arc` CLI, nor a running instance, nor a built `dist/` — and it names the four it
+skipped. CI uses exactly that.
 
 Working on a page (`.aup/**`) additionally needs the ARC daemon and a local instance, and **a deploy is
 not enough** — the running instance keeps serving the previous build until you re-mount:
