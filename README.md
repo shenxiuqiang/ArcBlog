@@ -4,149 +4,178 @@
 [![licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D20-informational.svg)](package.json)
 
-> English readers: [`README.en.md`](README.en.md) is the short English entry point.
+**English** ｜ [中文](README.zh.md)
 
-> 版本：**v1.0** ｜ 2026-10-01 ｜ Lead
-
-
-> **ArcBlog 是一套任何人都能自己部署的博客软件**：内容归创作者，读者关系不被平台持有；多个各自部署的实例通过可验证的角色互相发现、互相分发，而不是所有人挤在同一个平台上。
-> 技术副标题：以 DID 为身份、以 AFS 为资源层的内容节点软件。
+> **ArcBlog is blog software you deploy yourself**: the content belongs to its author and the reader
+> relationship is not held by a platform. Individually deployed instances discover and redistribute each
+> other through verifiable roles, instead of everyone crowding onto one platform.
+> Technically: content-node software using DID as identity and AFS as the resource layer.
 >
-> 口径唯一出处 = [产品定位 §1.1](docs/01-产品概念/01-产品定位与边界.md)（**目标口径 ≠ 现状口径**，读法见 [导读 §5](docs/01-产品概念/00-导读.md)）。
+> The single source for that positioning = [product §1.1](docs/01-产品概念/01-产品定位与边界.md)
+> (**goal ≠ current state**; how to read the two apart: [guide §5](docs/01-产品概念/00-导读.md)).
+
+> **Language note**: the long-form documentation under `docs/` is **Chinese-first**. This README and
+> [`CLAUDE.md`](CLAUDE.md) are the English entry points; every link below states its own status, and the
+> 30-minute onboarding ([`docs/00-新手上路.md`](docs/00-新手上路.md)) is Chinese.
 
 ---
 
-## 1. 这是什么（30 秒）
+## 1. What this is (30 seconds)
 
-| 问题 | 一句话 | 去哪读 |
+| Question | One line | Where to read |
 | --- | --- | --- |
-| 它是什么 | 一个 **Blocklet**（[`blocklet.yaml`](blocklet.yaml)），用 Arc/AUP 栈写成不是 Node 应用：**没有 bundler、没有 dev server**，AUP 应用本体**零运行时依赖** | [架构总览](docs/05-开发文档/00-架构总览.md) |
-| 基本单位 | **一个 ArcBlog Instance**（同一份代码的一次部署） | [定位 §2.1](docs/01-产品概念/01-产品定位与边界.md) |
-| 角色 | **聚合由 agent 承担**：部署一个节点并把 **studio NFT 质押到同一 factory 地址**即被"发现"——**查该地址的质押资产列表 = 节点注册表**；人类侧角色集 = **C/R/O/A/G**（创作者 / 读者 / 节点运营者 / agent 接入方 / 平台方治理者） | [用户与角色 §1](docs/01-产品概念/02-用户与角色.md) ｜ [定位](docs/01-产品概念/01-产品定位与边界.md) |
-| 今天能做到哪 | 节点 NFT **链上生命周期【已实现】**（真链 beta，四步各有 tx）；**发现/枚举【已实现】**（`listStakes` 双适配器；真链只读 `P-2` 通过 ⇒ `?page=registry` 可查；真链"写自描述/转让"待人类批准） | [功能台账](docs/06-功能开发列表/00-台账总览与规范.md) ｜ [探针与未决](docs/05-开发文档/07-未决技术问题与探针计划.md) |
-| 谁在用它 | 创作者 / 读者 / 节点运营者 / agent 接入方 / 平台方治理者 | [用户与角色](docs/01-产品概念/02-用户与角色.md) |
+| What is it | A **Blocklet** ([`blocklet.yaml`](blocklet.yaml)) built on the Arc/AUP stack — not a Node app: **no bundler, no dev server**, and the AUP application itself has **zero runtime dependencies** | [Architecture](docs/05-开发文档/00-架构总览.md) |
+| Unit | **One ArcBlog instance** (one deployment of this code) | [Positioning §2.1](docs/01-产品概念/01-产品定位与边界.md) |
+| Roles | **Aggregation is the agent's job**: deploy a node and **stake its studio NFT to the same factory address** to be discovered — *the staked-asset list of that address is the node registry*. Human-side roles = **C/R/O/A/G** (creator / reader / node operator / agent integrator / platform governor) | [Users & roles §1](docs/01-产品概念/02-用户与角色.md) ｜ [Positioning](docs/01-产品概念/01-产品定位与边界.md) |
+| What works today | Node-NFT **on-chain lifecycle** implemented (beta, a tx per step); **discovery/enumeration** implemented (`listStakes` on both adapters; the read-only real-chain probe passed, so `?page=registry` answers) | [Ledger](docs/06-功能开发列表/00-台账总览与规范.md) ｜ [Probes](docs/05-开发文档/07-未决技术问题与探针计划.md) |
+| Who uses it | Creators / readers / node operators / agent integrators / platform governors | [Users & roles](docs/01-产品概念/02-用户与角色.md) |
 
-> **别把目标当现状**：`01 §6` 的"不可替代性"与同篇 `§6.5` 的"有机制、无闭环"**必须一起读**（[导读 §5](docs/01-产品概念/00-导读.md)）。
+> **Do not mistake the goal for the state**: `01 §6` ("irreplaceability") and `§6.5` ("a mechanism, not a
+> closed loop") must be read together ([guide §5](docs/01-产品概念/00-导读.md)).
 
 ---
 
-## 2. 怎么跑起来（5 分钟）
+## 2. Run it (5 minutes)
 
-**前置**：Node（本机实测 `v24.14.0`，ESM）、`arc` CLI（实测 `2.0.0-beta.50`）、本地 ARC daemon；`--adapter ocap` 才需要 `npm install`（5 个链脚本依赖）。运行环境依据 = [技术选型 §1.2](docs/05-开发文档/03-技术选型与依赖.md)。
+**Prerequisites**: Node (measured here on `v24.14.0`, ESM), the `arc` CLI (measured `2.0.0-beta.50`), and
+a local ARC daemon. `npm install` is needed only for `--adapter ocap` (five chain-script dependencies).
+The authority for that environment = [Technology §1.2](docs/05-开发文档/03-技术选型与依赖.md).
 
 ```bash
-# ① DSL 主门 —— issues 必须为 []
+# (1) the DSL gate — issues must be []
 arc dsl validate --json
 
-# ② 快层门（约 1 秒，不写实例）—— 用例数只认 runner 自己的输出
+# (2) the fast tier (~2 s, never writes an instance) — take the case count from the runner itself
 npm test
 
-# ③ 发一篇（CLI 是唯一会写真实署名与规范化 tags 的路径）
+# (3) publish a post (the CLI is the only path that writes real authorship and normalized tags)
 node scripts/arcblog-lifecycle.mjs publish \
   --title "My First Post" --author-did did:key:z... \
   --body-file post.md --category technology --tags "a,b"
 
-# ④ 查已发布
+# (4) query what is published
 node scripts/arcblog-query-posts.mjs published --category technology
 ```
 
-| 我想…… | 命令 | 权威篇 |
+| I want to… | Command | Authority |
 | --- | --- | --- |
-| 跑门（validate / 快层 / build） | `arc dsl validate --json` → `npm test` → `npm run build` | [质量门 §7](docs/05-开发文档/05-测试分层与质量门.md) ｜ [门纪律](docs/07-团队与开发规范/03-质量门与命令手册.md) |
-| 让 `.aup` 改动生效 | `arc service restart -i default`（**只有它重编译 `.aup`**） | [构建·部署·运行 §2](docs/05-开发文档/04-构建·部署·运行.md) |
-| 安全构建（**唯一入口**） | `npm run build` | [构建·部署·运行 §1](docs/05-开发文档/04-构建·部署·运行.md) |
-| 部署到本地 Pages | `node scripts/arcblog-deploy.mjs --dry-run` | [构建·部署·运行 §4](docs/05-开发文档/04-构建·部署·运行.md) |
-| 出问题了 | `arc service list` → 再按症状查 | [运维场景手册](docs/05-开发文档/06-运维场景手册.md) ｜ [常见任务导航](docs/08-其他/04-常见任务导航.md) |
-| 查一个错误码 | — | [错误码索引](docs/08-其他/05-错误码索引.md) |
+| Run the gates (validate / fast tier / build) | `arc dsl validate --json` → `npm test` → `npm run build` | [Quality gates §7](docs/05-开发文档/05-测试分层与质量门.md) ｜ [gate discipline](docs/07-团队与开发规范/03-质量门与命令手册.md) |
+| Make a `.aup` change take effect | `arc service restart -i default` **and** `arc blocklet run . -i default` (a deploy alone is not enough) | [Build/deploy §2](docs/05-开发文档/04-构建·部署·运行.md) |
+| Build safely (**the only entry**) | `npm run build` | [Build/deploy §1](docs/05-开发文档/04-构建·部署·运行.md) |
+| Deploy to the local Pages instance | `node scripts/arcblog-deploy.mjs --dry-run` | [Build/deploy §4](docs/05-开发文档/04-构建·部署·运行.md) |
+| Diagnose a problem | `arc service list`, then match the symptom | [Operations handbook](docs/05-开发文档/06-运维场景手册.md) ｜ [Task navigator](docs/08-其他/04-常见任务导航.md) |
+| Look up an error code | — | [Error-code index](docs/08-其他/05-错误码索引.md) |
 
-> 完整命令手册 = [构建·部署·运行 §6](docs/05-开发文档/04-构建·部署·运行.md)；**本文件不复述**其正文。
+> The full command manual = [Build/deploy §6](docs/05-开发文档/04-构建·部署·运行.md); this file does not
+> restate it.
 
 ---
 
-## 3. 去哪读
+## 3. Where to read
 
-> **新人先读这一份**：[`docs/00-新手上路.md`](docs/00-新手上路.md)（30 分钟：是什么 → 怎么跑 → 代码与数据在哪 → **明确不用读什么**）。下面是完整地图，按需再展开。
+> **New here? Start with [`docs/00-新手上路.md`](docs/00-新手上路.md)** (30 minutes, Chinese: what it is →
+> how to run it → where the code and data live → and, most usefully, **what not to read**). The map below
+> is for when you already know what you are looking for.
 
-
-| 你是谁 / 想干什么 | 从这里开始 |
+| Who you are / what you want | Start here |
 | --- | --- |
-| **第一次接触** | 本文件 §1 → [产品概念导读](docs/01-产品概念/00-导读.md) → [定位 §0（五问）](docs/01-产品概念/01-产品定位与边界.md) |
-| **要写 `docs/**`** | [**文档体系总纲**](docs/README.md)（宪法：阶段门 / 文档规范 / 术语归属） |
-| **要找"某类文档在哪"** | [索引与阅读路径](docs/08-其他/00-索引与阅读路径.md)（三类读者 + 八类入口 + **待裁总表**） |
-| **要动手改代码 / 发版** | [CLAUDE.md](CLAUDE.md)（实现事实与命令）→ [开发文档](docs/05-开发文档/00-架构总览.md) → [功能开发列表](docs/06-功能开发列表/00-台账总览与规范.md) |
-| **想知道某条需求做到哪** | [功能台账](docs/06-功能开发列表/01-功能台账.md)（**实现状态的唯一出处**） |
-| **要按团队规则干活** | [团队与开发规范](docs/07-团队与开发规范/00-角色与写入范围.md)（角色 / 阶段门 / 审查 / 门 / 交接） |
-| **看某条决策今天还成不成立** | [决策记录](docs/08-其他/01-决策记录.md)（归档 D1–D7 逐条处置） |
+| **First contact** | §1 of this file → [Product guide](docs/01-产品概念/00-导读.md) → [Positioning §0 (five questions)](docs/01-产品概念/01-产品定位与边界.md) |
+| **I will write `docs/**`** | [Documentation charter](docs/README.md) (stage gates / writing rules / term ownership) |
+| **I need to find a document** | [Index and reading paths](docs/08-其他/00-索引与阅读路径.md) |
+| **I will change code or release** | [`CLAUDE.md`](CLAUDE.md) (implementation facts, every command) → [Development docs](docs/05-开发文档/00-架构总览.md) → [Ledger](docs/06-功能开发列表/00-台账总览与规范.md) |
+| **How far is requirement X?** | [Requirement ledger](docs/06-功能开发列表/01-功能台账.md) (**the only status authority**) |
+| **I have to follow the team rules** | [Team & development rules](docs/07-团队与开发规范/00-角色与写入范围.md) |
+| **Is a past decision still valid?** | [Decision record](docs/08-其他/01-决策记录.md) |
 
-**八类目录**（结构见[总纲 §1](docs/README.md)，**阶段状态与冻结记录的唯一账本 = [总纲 §2.1](docs/README.md)**）：
+**The eight volumes** (structure in the [charter §1](docs/README.md); the only ledger of stage status and
+frozen records = [charter §2.1](docs/README.md)):
 
 ```text
 docs/01-产品概念/  02-产品需求/  03-产品设计/  04-UI设计规范/
 docs/05-开发文档/  06-功能开发列表/  07-团队与开发规范/  08-其他/
-docs/team/         工作台（阶段日志 + 审查/核验记录，不是产品文档）
+docs/team/         the workbench (stage logs + review/verification records — not product docs)
 ```
 
 ---
 
-## 4. 去哪改
+## 4. Where to change what
 
-| 你想改 | 改哪里 | 改完跑什么 |
+| You want to change | Change | Then run |
 | --- | --- | --- |
-| 页面 / 文案 / 交互 | `.aup/**`（**每个控制台区块是一个真页面**） | `arc dsl validate --json` + `npm test` |
-| 记录字段 / 必填 | `world/*.yaml`（**22 个 schema**，权威清单 = [数据模型 §1](docs/05-开发文档/01-数据模型与存储.md)） | 同上 + `npm run build` |
-| 读 / 写权限 | [`blocklet.yaml`](blocklet.yaml) 的 `replicated`（**只有它是权威门**；`networkRead` 只是前缀放行） | 同上 + `npm run build` |
-| 公开面 SSR / 主题 | `pages/**`、`.web/**`（**Web Device 拿不到 AFS**） | 同上 |
-| CLI / 运维脚本 | `scripts/**`（32 CLI + 32 测试；新增测试**默认算 live**，除非列进 `FAST_TESTS`） | `npm test` + 定向单跑见下 |
-| 链适配 | `scripts/lib/chain.mjs`（`mock`/`ocap`） | 定向单跑 + 人类批准（资金/链） |
-| 文档 | `docs/0X-*/**` | 按[总纲](docs/README.md) |
+| A page / copy / interaction | `.aup/**` (**every console section is a real page**) | `arc dsl validate --json` + `npm test` |
+| Record fields / required keys | `world/*.yaml` (**12 schemas**; authoritative list = [Data model §1](docs/05-开发文档/01-数据模型与存储.md)) | the same + `npm run build` |
+| Read/write permissions | `replicated` in [`blocklet.yaml`](blocklet.yaml) (**the only authoritative gate**; `networkRead` is merely a prefix allowance) | the same + `npm run build` |
+| Public SSR surface / theme | `pages/**`, `.web/**` (a Web Device has **no AFS channel**) | the same |
+| CLI / operations scripts | `scripts/**` (a new test counts as **live** unless it is listed in `FAST_TESTS`) | `npm test`, plus the targeted run below |
+| Chain adapter | `scripts/lib/chain.mjs` (`mock` / `ocap`) | a targeted run + human approval (funds/chain) |
+| Documentation | `docs/0X-*/**` | follow the [charter](docs/README.md) |
 
-**两条不能绕的纪律**（细节见 [团队规范](docs/07-团队与开发规范/00-角色与写入范围.md)）：
+**Two rules you cannot skip** (details in [the team rules](docs/07-团队与开发规范/00-角色与写入范围.md)):
 
-1. **写范围**：只写自己角色 glob 内的文件；**越界先报 Lead**（不要自己扩范围）。
-2. **提交**：**唯一提交人 = Lead**；teammate **禁止** `git commit`/`push`/`reset`。检查点提交，**精确 `add`**、**提交前 `git diff` 过内容**（[提交纪律](docs/07-团队与开发规范/04-交接·记录·提交.md) §3）。
+1. **Write scope**: only the files inside your role's glob; **ask the Lead before crossing it**.
+2. **Commits**: the Lead is the only committer; teammates must not `git commit` / `push` / `reset`.
+   Checkpoint commits, **exact paths** (never `git add -A`), and a `git diff` read before committing
+   ([commit discipline](docs/07-团队与开发规范/04-交接·记录·提交.md) §3).
 
-**改了 CLI / AFS 记录 / 链适配器 / daemon 路由时**：不要跑全量 live（~21 分钟且写共享实例），改为**定向单跑受影响的文件**，先持锁：
+**If your change touches a CLI, an AFS record, the chain adapter or a daemon route**: do not run the whole
+live tier (~21 minutes and it writes a shared instance). Run the affected file only, holding the lock:
 
 ```bash
-npm run test:file -- scripts/arcblog-media.test.mjs   # 先写 docs/team/.gate-lock，跑完删除
+npm run test:file -- scripts/arcblog-media.test.mjs   # write docs/team/.gate-lock first, remove it after
 ```
 
-**外部参考**：ArcBlock 官方技术文档 <https://www.arcblock.io/zh/docs/> —— 动手前先查，**不要臆造 ARC / AFS / AUP / Blocklet API**（平台能力与降级的唯一出处 = [平台能力与边界](docs/05-开发文档/02-平台能力与边界.md)）。
+**External reference**: ArcBlock's technical docs <https://www.arcblock.io/en/docs/> — check them before
+guessing any ARC / AFS / AUP / Blocklet API (the authority for capabilities and degradations is
+[Platform boundaries](docs/05-开发文档/02-平台能力与边界.md)).
 
 ---
 
-## 5. 仓库布局速查
+## 5. Repository layout at a glance
 
 ```text
-blocklet.yaml   身份 / 可发布元数据 / sites.bindings / scope / 权限表（replicated 才是权威门）
-.aup/           应用本体：app.aup（14 行 manifest）+ man/*.yaml + pages/**/*.aup（30 个页面）+ wrapper + locales
-world/*.yaml    AFS 记录 schema（22）
-pages/          SSR 页面定义（/p/en/…，由 .route/web 渲染）
-.web/           公共 Web Device 组件与主题（hero-carousel、theme-bridge）
-.route/         daemon 路由挂载：/ → AUP，/p → SSR
-agents/         Agent Access 声明（运行时提供 /mcp、/p/llms.txt）
-scripts/        运维 Node CLI + node:test 套件（32 + 32）
-seed/           默认设置记录（tone / palette / theme）
-dist/           构建产物（由 npm run build 刷新；**裸 arc blocklet build 会把密钥带进 dist/**）
+blocklet.yaml   identity / publishable metadata / sites.bindings / scope / permission tables
+.aup/           the application: app.aup (14-line manifest) + man/ + pages/**/*.aup + wrapper + locales
+world/*.yaml    AFS record schemas (12)
+pages/          SSR page definitions (/p/en/…, rendered by .route/web)
+.web/           public Web Device components and themes (hero-carousel, theme-bridge)
+.route/         daemon route mounts: / → AUP, /p → SSR
+agents/         Agent Access declarations (the runtime serves /mcp and /p/llms.txt)
+scripts/        operator Node CLIs + node:test suites (the fast tier's whitelist is FAST_TESTS)
+seed/           default settings records (tone / palette / theme)
+dist/           build output (refreshed by npm run build; **a bare arc blocklet build copies keys into dist/**)
 ```
 
-逐目录、逐层、逐写入通道的完整说明 = [架构总览](docs/05-开发文档/00-架构总览.md) 与 [CLAUDE.md](CLAUDE.md)（**实现事实的唯一入口**）。
+The full per-directory, per-layer and per-write-channel description = [Architecture](docs/05-开发文档/00-架构总览.md)
+and [`CLAUDE.md`](CLAUDE.md) (**the single entry for implementation facts**).
 
 ---
 
-## 6. 明确不在这里重复的事
+## 6. What this file deliberately does not repeat
 
-- **阶段门、文档规范、术语归属** → [文档体系总纲](docs/README.md)（本文件只链一次，**不复述**）。
-- **平台能做/不能做** → [平台能力与边界](docs/05-开发文档/02-平台能力与边界.md)（+ [禁止与降级模式](docs/05-开发文档/02a-平台禁止与降级模式.md)）；**未验证** → [未决技术问题与探针计划 §1](docs/05-开发文档/07-未决技术问题与探针计划.md)。
-- **质量门的操作面**（分层 / 名单 / 判定式 / 真红假红）→ [测试分层与质量门](docs/05-开发文档/05-测试分层与质量门.md)。
+- **Stage gates, documentation rules, term ownership** → [Documentation charter](docs/README.md).
+- **What the platform can and cannot do** → [Platform boundaries](docs/05-开发文档/02-平台能力与边界.md)
+  (+ [prohibitions and degradations](docs/05-开发文档/02a-平台禁止与降级模式.md)); **unverified** →
+  [Probes §1](docs/05-开发文档/07-未决技术问题与探针计划.md).
+- **How the gates operate** (tiers / lists / criteria / real-vs-fake red) →
+  [Test tiers and quality gates](docs/05-开发文档/05-测试分层与质量门.md).
 
-**必须人类批准的动作**（不可逆 / 对外）：`push`、真实资金与链上写、删数据与清理实例、入口文件最终重写、产品口径追认 —— 清单见 [人类检查点](docs/07-团队与开发规范/04-交接·记录·提交.md) §6。
+**Actions that require a human decision** (irreversible or outward-facing): `push`, real funds and chain
+writes, deleting instance data, the final rewrite of the entry files, and product-scope rulings — the list
+lives in [Human checkpoints](docs/07-团队与开发规范/04-交接·记录·提交.md) §6 and, in working form,
+[`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md).
 
+## 7. Licence and contributing
 
-## 7. 许可与贡献
-
-- **许可**：[Apache License 2.0](LICENSE)（附 [NOTICE](NOTICE) 与第三方归属 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)）。上游平台（ARC daemon / AFS / AUP / 链 SDK）属 ArcBlock，按其自身条款。
-- **贡献**：先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)——四条门禁、**一处事实一个出处**、以及"加守卫必须能证明它会红"。没有 CLA，提交即按同一许可授权（Apache-2.0 §5）。
-- **路线图**：不在别处维护。**需求与状态** = [`docs/06-功能开发列表/`](docs/06-功能开发列表/00-台账总览与规范.md)（56 行，`未开工`/`开发中` 均为 0）；**待办** = [`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md)；**平台边界** = [`docs/05-开发文档/02`](docs/05-开发文档/02-平台能力与边界.md)（`B1`–`B24`）。
-- **安全**：见 [`SECURITY.md`](SECURITY.md)（私下报告，不要开公开 issue）；**行为准则**：见 [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)。
-- **变更**：见 [`CHANGELOG.md`](CHANGELOG.md)（版本号以 `blocklet.yaml` 为准，发布以 git tag 为准）。
+- **Licence**: [Apache License 2.0](LICENSE), with [`NOTICE`](NOTICE) and third-party attribution in
+  [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md). The upstream platform (ARC daemon, AFS, AUP, the
+  chain SDKs) is ArcBlock's and keeps its own terms.
+- **Contributing**: read [`CONTRIBUTING.md`](CONTRIBUTING.md) first — the four gates,
+  **one authoritative file per fact**, and "a guard must be proven able to fail". There is no CLA:
+  submitting implies the same licence (Apache-2.0 §5).
+- **Roadmap**: not maintained anywhere else. **Requirements and status** =
+  [`docs/06-功能开发列表/`](docs/06-功能开发列表/00-台账总览与规范.md) (56 rows; zero unstarted, zero in
+  progress); **to-dos** = [`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md); **platform
+  boundaries** = [`docs/05-开发文档/02`](docs/05-开发文档/02-平台能力与边界.md).
+- **Security**: [`SECURITY.md`](SECURITY.md) (report privately, not as a public issue). **Conduct**:
+  [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **Changes**: [`CHANGELOG.md`](CHANGELOG.md) (the version lives in `blocklet.yaml`, releases are git tags).

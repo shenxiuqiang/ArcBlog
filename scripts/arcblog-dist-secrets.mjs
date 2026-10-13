@@ -60,7 +60,10 @@ export const NON_PRODUCT_DIRS = ['docs', '_research', 'scripts', '.github'];
 export const NON_PRODUCT_FILES = new Set([
   'AGENTS.md',
   'CLAUDE.md',
+  // Both READMEs are reader-facing metadata, not runtime requirements: the English one is the
+  // default `README.md`, the Chinese one is `README.zh.md` (they link to each other at the top).
   'README.md',
+  'README.zh.md',
   'skills-lock.json',
   'package-lock.json',
   '.gitignore',
@@ -74,7 +77,6 @@ export const NON_PRODUCT_FILES = new Set([
   // ⚠️ DELIBERATELY NOT LISTED: `LICENSE` and `NOTICE`. Apache-2.0 §4 requires a redistribution to
   // carry the licence and the attribution file, and the built blocklet IS a redistribution — a few KB
   // buys compliance, which "dist ships what runs" would otherwise quietly break.
-  'README.en.md',
   'CHANGELOG.md',
   'CONTRIBUTING.md',
   'SECURITY.md',
