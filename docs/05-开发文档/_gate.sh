@@ -9,6 +9,7 @@
 #   A2 探针齐：`07` 必含 `P-1`–`P-4`
 #   A3 无活着的残留：hub / 经济族出现时须带删除/作废标记
 #   A4 形态 + 链接（豁免：标 Stage N/未落盘/原始证据；或目标在 `_提纲` 列为计划文件）
+#       2026-10-13 起**覆盖 `附件/*.md`**：附件是逐字证据 ⇒ 不限行数、单行上限 2000（正文 800），死链判据相同
 #   A7 文档里的 `arc <组> <子命令>` 必须能被 CLI 认得（`--help` 实测；ENG-58，属交付门）
 #
 # 用法：bash docs/05-开发文档/_gate.sh        退出码 0=PASS，1=FAIL，2=环境异常
@@ -133,21 +134,26 @@ for p in files:
 print(f'A3 残留未标注 = {n_res}')
 
 # ---- A4 形态 + 链接
-for p in files:
-    base = os.path.basename(p)
+#   `附件/` 2026-10-13 纳入：它此前完全不在门里（`files` 只 glob 顶层 `*.md`），而它是本卷最大的
+#   文件、也是台账 `平台边界` 行引用的证据源。附件是**逐字证据**，所以口径不同：不限行数、
+#   单行上限放宽到 2000（正文 800）；死链判据相同。
+annex = sorted(glob.glob(os.path.join(DIR, '附件', '*.md')))
+for p in files + annex:
+    is_annex = p in annex
+    base = ('附件/' + os.path.basename(p)) if is_annex else os.path.basename(p)
     raw = body(p)
     lines = raw.split('\n')
-    lim = 200 if base == '_提纲.md' else 400
-    if len(lines) - 1 > lim:
+    lim = 200 if base == '_提纲.md' else (0 if is_annex else 400)
+    if lim and len(lines) - 1 > lim:
         problems.append(f'{base}: {len(lines)-1} 行 > {lim}')
-    over = [i for i, l in enumerate(lines, 1) if len(l) > 800]
+    over = [i for i, l in enumerate(lines, 1) if len(l) > (2000 if is_annex else 800)]
     if over:
         problems.append(f'{base}: 超长行 {over[:3]}')
     for i, l in enumerate(strip_fences(raw).split('\n'), 1):
         for u in re.findall(r'\]\(([^)]+)\)', l):
             if u.startswith(('http', '#')):
                 continue
-            if os.path.exists(os.path.normpath(os.path.join(DIR, u.split('#')[0]))):
+            if os.path.exists(os.path.normpath(os.path.join(os.path.dirname(p), u.split('#')[0]))):
                 continue
             if re.search(r'（Stage \d|未落盘|原始证据', l):
                 continue

@@ -29,10 +29,13 @@ npm test                  # THE gate (~1s): the fast suites that never write to 
                           # whitelist of fast suites is `FAST_TESTS` in scripts/run-tests.mjs — read it
                           # there, never from prose; it covers generated sidebar, dead locale keys,
                           # runtime-addressed ids, theme contract, guest permission matrix (HTTP), the
-                          # ui-budget ratchet and dist-secrets. It does NOT call `arc dsl validate`,
-                          # and `arc dsl generate --check` is NOT wired into any test today (a `--check`
-                          # drift gate is still an open item: see docs/06-功能开发列表/02 ENG-07)
-                          # (artifact-drift claim removed 2026-09-30: grep "'generate'" scripts/*.test.mjs = 0)
+                          # ui-budget ratchet, dist-secrets, generated-artifact drift
+                          # (`arc dsl generate` dry run, ENG-50) and — since 2026-10-13 — the platform's
+                          # own two checkers: `arc dsl validate --json` (issues must be []) and
+                          # `arc blocklet check . --profile basic --json` (ok:true, zero issues), plus the
+                          # three-home share-card declaration. They live in
+                          # scripts/arcblog-artifact-drift.test.mjs (a NEW suite cannot enter FAST_TESTS
+                          # before it is committed — `arcblog-run-tests.test.mjs` checks git tracking).
 npm run gate:docs       # the SIX per-volume doc gates in one command (scripts/arcblog-doc-gates.mjs):
                           # each volume's _gate.sh (A0 files / links / word-table / error codes),
                           # aggregated; any failure makes the command exit 1 (`--quiet` = summary only).
@@ -67,6 +70,12 @@ node scripts/arcblog-chain-worker.mjs watch|run        # the console's node-NFT 
                           # intent; this worker signs it on the chain (key stays on the node) and
                           # refreshes node/factories.json (incl. the rendered NFT SVG)
 node scripts/arcblog-node.mjs check          # node profile/identity (spec §107-109)
+                          # NOTE (2026-10-13): `node/profile.json`'s `avatar`/`ogImage` are still "".
+                          # They are a CONSUMED-BY-REMOTE projection (discovery/aggregation), so the
+                          # only correct values are instance-specific ABSOLUTE urls — never the
+                          # relative `/p/media/…` this repo uses for its own pages. Set them per
+                          # deployment: `node scripts/arcblog-node.mjs set`, whose field map accepts
+                          # `avatar` / `ogImage` (absolute urls only).
 node scripts/arcblog-category.mjs list       # taxonomy (spec §12); usage/merge/remove --migrate-to (§15.4)
 node scripts/arcblog-tags.mjs list           # tag usage audit; merge renames across all posts
 node scripts/arcblog-pages.mjs list          # static pages: online/offline only (spec §15.4)
@@ -150,6 +159,25 @@ arc dsl lint                                 # dead locale keys + DSL formatting
                                             # rule counted a key alive if it appeared in prose)
 node scripts/arcblog-clean.mjs [--confirm]   # dev-instance test residue (dry run by default)
 node --test scripts/arcblog-permissions.test.mjs   # guest permission matrix (no cookies; part of npm test)
+arc blocklet check . --profile basic --json  # THE manifest/site checker: stale generated JSON (error),
+                                             # og-image source, branding.title, content/ collections.
+                                             # Wired into `npm test` (scripts/arcblog-artifact-drift.test.mjs),
+                                             # together with `arc dsl validate --json` — measured 0.73 s / 0.49 s.
+node scripts/arcblog-visual-check.mjs       # painted-pixel gate (checkpoint tier, NOT in npm test):
+npm run verify:visual                        #   same script via npm; screenshots the key pages with
+                                             #   --fresh and measures luminance itself — catches the
+                                             #   §70 covered-viewport state that DOM/byte checks pass
+node scripts/arcblog-theme-bridge.mjs --check  # the bridge shell (render.js) must stay in sync
+node scripts/arcblog-theme-bridge.mjs        # regenerate it (inlines script.js + style.css)
+node scripts/arcblog-og-image.mjs --check    # share card: the three-home declaration + 1200x630 asset
+node scripts/arcblog-og-image.mjs            # regenerate content/media/arcblog-og.png from the platform
+arc collections scan .                       # prints the `collections:` YAML fragment for blocklet.yaml
+                                             # when `content/` exists (epic #3657); `type: local:<X>` also
+                                             # needs `schema/<X>.yaml` or check errors (#4149)
+node scripts/arcblog-browser-probe.mjs <url> --fresh --screenshot /tmp/x.png
+                                             # headless page probe. Use --fresh for any rendering
+                                             # judgement: a reused profile keeps cookies, and a lingering
+                                             # `arc_mode` cookie paints the page white (arc-contracts §70)
 # add `--instance <name>` to target a named Arc instance
 ```
 
@@ -209,7 +237,11 @@ counts as **live** unless it is added to `FAST_TESTS` in `scripts/run-tests.mjs`
 - `world/*.yaml` — AFS record schemas (**12** files; the authoritative list is [`docs/05-开发文档/01` §1](docs/05-开发文档/01-数据模型与存储.md) 的集合与 schema 总表 — don't re-enumerate here).
 - `pages/` — SSR page definitions (locale-prefixed, e.g. `/p/en/theme-bridge/`) rendered by the `.route/web` handler.
 - `.web/` — public web-surface components (`theme-bridge/`) and themes.
-- `.web/components/hero-carousel/` — the home hero carousel (custom Web Device component). `script.js` is **generated** = vendored ARC `photo-story` engine + `init.js`; regenerate with `scripts/arcblog-hero-carousel.mjs`. Component `script.js`/`style.css` are inlined into the SSR page, so a root-relative asset URL cannot be used (the AUP handler swallows it) — see `docs/05-开发文档/附件/arc-contracts.md` §14.
+- `.web/components/hero-carousel/` — the home hero carousel (custom Web Device component). **Both `script.js` and `render.js` are generated** (`script.js` = vendored ARC `photo-story` engine + `init.js`; `render.js` = the SSR shell with that script and `style.css` INLINED); regenerate with `node scripts/arcblog-hero-carousel.mjs`. ⚠️ Since 2026-10-13 the platform **no longer appends a component's `script.js`/`style.css`** to the page (DEF-47; the built page and every retained Pages deployment carried zero `photo-story` bytes), and blocklet files are not reachable as static assets (`/p/.web/**`, `/p/pages/**` → 404; only `content/**` is served, at the site mount) — so `render.js` → HTML is the only delivery channel, and it may not use `node:fs` (the render sandbox has none; a version that read files rendered an empty section silently). The same fix applies to `.web/components/theme-bridge/` (`node scripts/arcblog-theme-bridge.mjs`), without which the whole theme bridge never ran.
+- `.web/site.yaml` — **web-surface site config** (the `/p/**` face): `locale`, `seo.{description,og-image,og-site-name,title-template}`. The runtime reads `seo.*` from HERE; `arc blocklet check` does **not** credit it (see `.web/seo/og-image`). Adding it is what makes `pages/` render with the site title template (2026-10-13).
+- `.web/seo/og-image` — one-line **file** whose content is the share-card URL; the only form `arc blocklet check` credits for `og_image_source_missing`. Must equal `.web/site.yaml`'s `seo.og-image` or the checker and the runtime disagree — guarded by `scripts/arcblog-artifact-drift.test.mjs`. `pages/<name>/seo/{title,description,og-image}` override it **per page type**.
+- `content/` — the web surface's public root, served at the **site mount**: `content/media/x.png` answers `/p/media/x.png` (measured 2026-10-13; `/media/x.png` is swallowed by the AUP handler). Because `content/` is a *collection*, `blocklet.yaml` must declare `collections.<dir>` and a `local:<X>` type needs `schema/<X>.yaml`.
+- `schema/*.yaml` — local content schemas for the `content/` collections (`contentType` / `fields` / `render`); shape copied from the shipped reference package `places-notebook/schema/`.
 - `.route/` — daemon route mounts: `/` → AUP app handler, `/p` → SSR web handler.
 - `agents/` — Agent Access declarations (`<name>/agent.dsl`, `agent.json`, `system.md`); the runtime provides `/mcp`, AFS RPC and `/p/llms.txt`, ArcBlog only declares and audits (spec §129).
 - `scripts/` — operational Node.js helpers + `node:test` suites. These are the canonical way to create posts with full authorship metadata.

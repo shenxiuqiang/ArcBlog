@@ -6,6 +6,19 @@
 **原则（spec §150）**：不臆造 ARC API。本文件的每一条结论都附有核验命令；任何一条
 都可能被一次新的 `explain` / `--help` / `/.knowledge` 推翻——冲突时以实测为准。
 
+## 写入规则（**本节 = 本文件唯一可写形式的定义点**，2026-10-13 定）
+
+`AGENTS.md` 与本文件的定位曾互相矛盾（前者把 `附件/` 一律写成"只读转录"，`CLAUDE.md` 又把本文件
+称作"平台实测**原始证据库**"）。裁决如下，两者都对，**分区执行**：
+
+| 规则 | 要求 |
+| --- | --- |
+| **追加式** | 只允许在文末**新增** `## NN.` 小节。**已有小节只允许**：补一行带日期的复测、把过时结论标注为"已被 §N 取代"。**不得**改写历史段落的原样输出。 |
+| **带证据四件套** | 每个新小节必须写：**日期** + **基线**（`<commit>` 或 `778ec04 + 本轮未提交改动`）+ **可复跑命令** + **原样输出摘要**。缺一即视为未验证。 |
+| **结论不落这里** | 边界/能力的**结论层**仍是 `../02-平台能力与边界.md`（+ `../02a`）；本文件只提供证据。台账 `平台边界` 行的锚点可以引 `§NN`（`scripts/arcblog-ledger-boundaries.test.mjs` 会核这个编号存在）。 |
+| **同一事实一处** | 一处数字/口径只在**一个小节**里展开；其它文档（`02`、`07`、`06/**`）只写**结论 + 指针**。2026-10-13 曾把同一条 OG 结论复制进五处，当天即收敛。 |
+| **机检** | 本文件已被 `docs/05-开发文档/_gate.sh` 覆盖（死链）——历史段落的**逐字长行**按附件口径放宽到 2000 字符。 |
+
 
 ## 目录（**新人不必读本文件**；结论已提炼进 `../02-平台能力与边界.md`）
 
@@ -2872,7 +2885,7 @@ AssertionError: a paginated afs-list lost its explicit id — `<id>.page` is the
 2. **视觉隐藏（visually-hidden）样式不可用**：加上
    `style={position:"absolute", width:"1px", height:"1px", overflow:"hidden", clipPath:"inset(50%)", whiteSpace:"nowrap"}`
    ⇒ **`arc dsl validate` 直接报错**（`invalid_page_dsl`，错误指向该节点之后的下一行），页面对当时的文件**构不过**。
-   与 [`§25.x` 的 safe-style allowlist](§25) 一致：允许的是 `background` 这类简写，`position`/`overflow`/`clipPath`/`whiteSpace` 不在内。
+   与 §25.x 的 safe-style allowlist（见 §25）一致：允许的是 `background` 这类简写，`position`/`overflow`/`clipPath`/`whiteSpace` 不在内。
 
 **剩下的两条路（属产品/设计决定，未擅自改）**：
 ① 封面瓦片**去掉 `href`**（变成装饰图）——代价：点封面不再跳转；
@@ -3054,3 +3067,84 @@ tool trash twitter undo unlock upload user users video volume wallet warning wat
 **落点**：`.aup/pages/admin/dashboard.aup` 的 KPI 卡片右上角
 `action -> navigate "/?page=dashboard" icon=refresh variant=secondary size=sm label=:refresh`
 （`-> navigate` 在运行时就是 `window.location.href = url`，整页重进 ⇒ `propBind` 重新解析，这正是"重载即出数"的刷新语义）。
+
+## 68. OG / 分享卡是**分面**的：AUP 绑定面无 meta，web 面 `/p/**` 有完整 OG（2026-10-13 实测）
+
+基线：`778ec04` + 本轮未提交改动 ｜ 实例：`arcblog.localhost:4939` ｜ arc `2.0.0-beta.66`（`54a9b40e`）
+
+| 事实 | 证据（原样输出摘要） |
+|---|---|
+| **AUP 绑定面无分享卡**（`B19`/`U20` 依旧成立） | `curl -s http://arcblog.localhost:4939/posts/hello-arcblog \| grep -oiE '<title>[^<]*</title>\|<meta[^>]*(og:\|twitter:)'` → **仅** `<title>AFS</title>`；shell **11 078 B**，客户端渲染 |
+| **web 面有完整 OG/Twitter** | `curl -s …/p/en/theme-bridge/` → `<meta property="og:title\|type\|url\|locale\|site_name\|description\|image\|image:alt">` + `twitter:card=summary_large_image` |
+| **平台自产分享卡图** | `curl -s -o /dev/null -w '%{http_code} %{content_type} %{size_download}' '…/.well-known/service/blocklet/og.png?template=default&title=ArcBlog&description=…&locale=en'` → `200 image/png 153593`（另一次 132 832） |
+| **`.web/site.yaml` 运行时生效** | 新增该文件后：`<title>` 由 `ArcBlog theme bridge` 变为 **`ArcBlog theme bridge — ArcBlog`**（`seo.title-template`）；`og:image` 变为声明的值 |
+| **检查器只认"文件式"声明** | `arc blocklet check . --profile basic --json` 的 `og_image_source_missing` **仅**在存在 `.web/seo/og-image`（内容 = 图片路径）时消失；`.web/site.yaml` 的 `seo.og-image` **不算**——反证：官方随包 `nimbus-demo` 有该键且仍报同一 warning |
+| **web 面的静态根 = 站点挂载点，不是 `/`** | ArcBlog 的 web 挂在 `/p` ⇒ `content/media/x.png` 的真实 URL 是 **`/p/media/x.png`**（`200 image/png 153593`）；`/media/x.png` 与 `/content/media/x.png` 都返回 **AUP 壳**（`200 text/html 10943`）。did-space 写 `/media/…` 是因为它的 web 挂在 `/` |
+| **预渲染会把 content 媒体改写成指纹名** | `dist/.web-cache/index.html` 里 `og:image="https://arcblog.localhost/p/media/c3dabc1c-arcblog-og.png"`；`/p/media/arcblog-og.png` 与 `/p/media/c3dabc1c-arcblog-og.png` **都 200**（153 593 B） |
+| **不是所有根级文件都能被服务** | `/logo.svg` → `200 image/svg+xml`（blocklet 清单资产），而新建的 `/arcblog-og.png` → `200 text/html`（AUP 壳）⇒ **内容资产不要放仓库根** |
+| **`content/` 会触发 collections 门** | 出现 `warning site_collections_declaration_missing`；`arc collections scan .` 给出片段；`type: local:media` 还要求本地 schema，否则 `error content_schema_missing_local_schema`（`/packages/schema/media.yaml`）。官方 fixture 的 `local:article`/`local:docs` 只是 **ALLOWLISTED** 警告（#4147）⇒ 新增 `schema/media.yaml` 后 `check` 回到 `ok:true, issues 0` |
+| **配方元数据与 CLI 不一致** | `arc blocklet recipe explain blog` 声称 `checks: arc blocklet check <dir> --profile blog`，但 `--profile` 的 choices 只有 `basic/minimal-app/agent-workspace/support-community`（`blog` 被拒） |
+| **`branding.title` 的位置** | 只有 `.aup/app.aup` 的 `branding { title "…" }`（→ `.aup/app.json`）能消掉 `info branding_title_missing`；写在 `blocklet.yaml` 顶层**无效** |
+
+**结论**：`PRD-SITE-04` 的"平台做不到"应限定为 **AUP 绑定面**；**web 面既能出 meta，也能出自产图**，
+且声明方式有三层（`.web/seo/og-image` 文件 = 让检查器闭嘴；`.web/site.yaml seo.og-image` = 运行时取值；
+`content/media/*` = 真正被服务并指纹化的资产）。三者的关系必须同时满足，否则会出现"声明了但没有可服务 URL"的假绿灯。
+
+**§68 补充（同日，同基线）——分享卡里还有一个**平台侧**的错**：
+
+| 事实 | 证据 |
+|---|---|
+| 线上 `og:url` **少了站点挂载前缀 `/p`** | `curl -s http://arcblog.localhost:4939/p/en/theme-bridge/ \| grep -oE '<meta property="og:url"[^>]*>'` → `og:url = http://arcblog.localhost:4939/en/theme-bridge/`；而该地址实测返回 **200 `text/html` 的 AUP 壳**（不是这一页）⇒ 分享器按 `og:url` 回取会拿到壳页 |
+| 预渲染产物里的 `og:url` 又是**另一套**（scheme + path 都与线上不同） | `dist/.web-cache/en/theme-bridge/index.html` → `og:url = https://arcblog.localhost/p/en/theme-bridge/`（`https` + 带 `/p`） |
+
+⇒ 结论：**分享卡的四要素里，`og:url` 目前不可信**（平台侧生成，ArcBlog 无声明面）。页面/文档**不得**把 `og:url` 当作可分享地址的证据；要改需平台侧修（本仓只登记，见 `docs/05/02` `B25` 邻域与台账 `PRD-SITE-04`）。
+
+
+## 69. 会话 / 头像 / `user-menu` 的平台契约（arc 2.0.0-beta.66 实测）
+
+| 事实 | 证据 |
+|---|---|
+| 会话端点 | `curl …/.well-known/service/api/did/session` → 匿名 `{"authenticated":false,"user":null}` |
+| 登录态字段映射（运行时解析器） | `.web-cache/_arc/assets/116ea4c0…js` `_sessionCtxFromApiResponse`：`did`/`user.did`、`displayName`→`fullName`→`name`、`role`、`sourceProvider`→`authMethod`，派生 `isAdmin`/`isOwner` |
+| 平台写 `<html>` 属性 | 登录后 `data-authenticated` + `data-role`（小写）；匿名则移除；登出清 `sessionStorage` 的 `afs:web:session:*` 后跳 `/api/did/logout` |
+| 头像（**免鉴权**） | `curl '…/.well-known/service/user/avatar/did:key:zDemo?s=64'` → `200 image/svg+xml 310`；任意 DID/字符串同样 200（生成型 SVG）；`?s=` 对生成型不改变尺寸（仍 200×200 viewBox） |
+| 平台 URL 常量 | `/.well-known/service/login`、`/user`（个人中心）、`/admin`（管理台）、`/api/did/logout`、`/user/avatar/`（运行时 `_SESSION_*` 常量） |
+| `user-menu` 自定义项 | `{id,label,icon,href,exec}`：**`href` 直接跳转；只有 `exec` 会派发 `user-menu-item`**（payload `{exec, item}`）；`labels{login,my,userCenter,adminConsole,signOut}` 覆盖文案；`showUserCenter:false` 可隐藏个人中心项 |
+| 未登录时平台自带登录按钮 | 跳 `login?return_to=<encode(pathname+search+hash)>&cancel_to=<同值>` |
+| ArcBlog 落地 | `wrapper.aup` 的菜单项改为 `exec: dashboard`（此前 `href` 与事件 handler 并存 ⇒ handler 是死代码）；`seed/recipes/posts/item.json` 加 `#post-record-avatar`（`view` + `background: url(…/user/avatar/${content.authorDid}?s=64) center/cover`），读者页实测渲染出 32px 圆形头像（截图 `/tmp/reader-avatar-crop.png`） |
+
+## 70. `arc_mode` cookie → 整页白屏（arc 2.0.0-beta.66，2026-10-13 实测；**待修**）
+
+- **复现**：`node scripts/arcblog-browser-probe.mjs 'http://arcblog.localhost:4939/?page=index' --cookie 'arc_mode=dark' --screenshot /tmp/x.png --json`
+  → 截图**全白**（平均亮度 `255.0`，Chrome 155 无头），而同页 **DOM 完好**（`aupNodes: 21`、正文文本齐全）；
+  `--settle 8000` 仍是 255.0；`--cookie 'arc_mode=light'` 或不带 cookie → `239.2`（正常）。
+- **不是单页问题**：web 面 `/p/en/hero-carousel/` → `254.6`，`/?page=about` → `255.0`。
+- **机制线索**：AUP 壳 `<head>` 的内联预绘制脚本读 `localStorage['web-mode']` **与 `arc_mode` cookie**，写 `<html data-mode>`；
+  仓库已为 `web-mode=dark` 这条路做过白屏修复（`.aup-frame-overlay{visibility:hidden}`，`.web/components/theme-bridge/script.js:88-110`），
+  cookie 这条路仍白屏 ⇒ 既有修复未覆盖。
+- **与既有边界的关系**：机制**就是 `B25`**（平台 `overlay=true` 的 frame 在宿主"创建时已是 dark"时被画成不透明白层）。本节新增的是**触发路径**——`arc_mode` cookie（**平台自己的主题按钮**在每次切换时写）与 `web-mode` 一样能造成它，而仓库既有的白屏修复（隐藏 `.aup-frame-overlay`）**没有覆盖 web 面**（`/p/en/hero-carousel/` 上没有 ArcBlog 的主题桥，实测仍是 254.6 亮度）。
+- **处置**：本轮**只登记不改**（覆盖层定位仍缺一步，盲改会破坏已验的 10 态）；新增的 `npm run verify:visual` 已能让这一类缺陷**变红**而不是靠人眼。判据 = 带 `arc_mode=dark` 时截图平均亮度回到 ≠ 255，
+  且 `web-mode=dark|light` 的既有 10 态仍全绿（`scripts/arcblog-theme.test.mjs`）。
+
+**§70 补充（同日，同基线）**——两点必须一起读，否则会把缺陷范围读大：
+
+1. **没有 cookie 时一切正常**：新建 profile、**连续两次**加载 `/?page=index` → 截图平均亮度 **239.5 / 239.2**（可见）；
+   排除了"本轮改动让页面整体变白"的解释（早前一次 255.0 的截图来自**复用的无头浏览器 profile**，其中残留了上一步注入的 `arc_mode`）。
+2. **这个 cookie 是平台自己的主题按钮写的**：服务端驱动的 header 标记里，`kind: theme-toggle` 的 `onclick` 同时写
+   `localStorage.setItem('web-mode', n)` 与 `document.cookie='arc_mode='+n+';path=/;max-age=31536000;SameSite=Lax'`
+   （见 `dist/.web-cache/index.html` 的 `data-aup-*-theme-toggle` 按钮）。**【未验证】**：真实点按会**同时**写 `web-mode`，
+   而本节的复现只注入了 cookie；"真实切换 → 刷新"这一条组合路径未实测。判据同上（亮度应 ≠ 255）。
+
+## 71. 组件交付面：`script.js`/`style.css` **不再由平台附加**，渲染沙箱**没有 `node:fs`**（2026-10-13 实测）
+
+基线：`778ec04` + 本轮改动 ｜ 实例 `arcblog.localhost:4939` ｜ arc `2.0.0-beta.66`
+
+| 事实 | 证据 |
+|---|---|
+| 平台**不再**把组件的 `script.js`/`style.css` 追加到页面（`manifest.json` 的 `hasScript: true` 不足） | 构建产物与**全部 234 个留存 Pages 部署**的 `.web-cache/en/hero-carousel/index.html` 都是 **9.1–9.8 kB**、`photo-story` 命中 **0**；`/p/en/theme-bridge/` 同样 0 字节桥代码。后果：hero 轮播只有骨架（空白框）、主题桥从未运行（`DEF-47`） |
+| blocklet 文件**不可**作为静态资源取用 | `/p/.web/components/hero-carousel/script.js` → **404**；`/p/pages/hero-carousel/layout.aup` → **404**；`/p/logo.svg` → **404**；`/p/seed/…`、`/p/world/…` → **404**。可服务的只有 `content/**`（站点挂载，如 `/p/media/x.png` → 200）与平台自己的少数根文件（`/favicon.ico`、`/logo.svg` → 200） |
+| `render.js` → HTML 是唯一自有投递通道，且它**没有 `node:fs`** | 把 `render.js` 改成"渲染时读 `style.css`/`script.js`"后：`npm run build` 退出 0，但页面**静默**掉到 **8 904 B**、无 `<style>`、无容器（沙箱里读文件失败被吞）。改成**生成的自内联常量**后：`/p/en/hero-carousel/` = **55 811 B / 34 命中**，父页 iframe 内 **2** 个 `[data-story-block]` + **2** 张 `img` |
+| 站点 chrome 里 `height:100%` 解析为 **0** | 壳 CSS 用 `height:100%` 时：`[data-hero-carousel]` 的 rect **h=0**、`[data-story-block]` `position:absolute` **h=0**（DOM 有 2 slide / 2 img 却不画）；改成 `.hero-carousel{height:100vh;min-height:100vh}` 后 h=**469**，`npm run verify:visual` 首页亮度 241.6 → **160.7** |
+| **访客读不到** appearance 设置 | 无 cookie `POST /api/afs/rpc {type:read, path:/instance/settings/arcblog/tone.json}` → **403** `Forbidden at /arcblog/tone.json: sign in to read this setting`（对照 `posts/hello-arcblog.json` → 200）；⇒ 主题桥虽已运行（宿主出现 `#arcblog-chrome-style`），但 `readAll()` 三个读全被拒，`current.*` 全 null，宿主属性停在运行时编译值（`DEF-48`） |
+| **web 面缺 skip-link 的隐藏样式** | 平台给每个页面注入 `<a class="aup-skip-link" href="#main">Skip to main content</a>`，其"默认藏在视口外（`inset-block-start:-3.5rem`）、`:focus` 才滑入"的规则在 `_arc/assets/6b237032….css` 里；而 `/p/en/hero-carousel/` 链的是**另一张平台样式表**（`_arc/assets/bf76d0c0….css`），该表 **0 次** `aup-skip-link` ⇒ 链接以裸文本渲染在 hero 上方（人类截图所见）。修法 = 在组件壳里**逐字复用平台自己的规则**（不是 `display:none`，保留键盘可达） |
+| 平台的"书签/我的收藏"浮层有**客户端开关** | 平台资产 `_arc/assets/116ea4c0….js`：`capability()` 先读 `window.__arcSave`（`false`/`"off"` ⇒ off），否则读 `<html data-arc-save-capability>`；浮层是 `div.arc-save-bar[data-arc-save="bar"]` + `[data-arc-save="bookmark"|"library"]`，挂在 `document.documentElement`（`DEF-45` 的修法依据） |
