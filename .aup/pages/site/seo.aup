@@ -1,17 +1,16 @@
 page seo {
   i18n {
-    desc { en "Site-level defaults: name, description, OG image and endpoint." zh "站点级默认值：名称、描述、OG 图与站点地址。" }
-    f-desc { en "Site description" zh "站点描述" }
-    f-endpoint { en "Site endpoint (https URL)" zh "站点地址（https URL）" }
-    f-name { en "Site name" zh "站点名称" }
-    f-og { en "Default OG image (https URL)" zh "默认 OG 图（https 地址）" }
+    desc { en "Site distribution defaults this page owns. Node identity (name / description / OG image / endpoint) is read-only here: it lives in node/profile.json and only the CLI writes it (one writer per field)." zh "本页自有的站点分发默认值。节点身份（名称/描述/OG 图/地址）在此只读：它存在 node/profile.json，只由 CLI 写（一个字段一个入口）。" }
+    dist-card { en "Site distribution (this page's records)" zh "站点分发默认（本页自己的记录）" }
+    f-meta-desc { en "Site description (feed / social)" zh "站点描述（feed／社交）" }
+    f-share-image { en "Default share image (https URL)" zh "默认分享图（https 地址）" }
     gate-desc { en "Sign in with DID Wallet to manage site-level SEO." zh "使用 DID Wallet 登录后管理站点级 SEO。" }
     gate-title { en "SEO" zh "SEO" }
+    identity-card { en "Node identity (read-only)" zh "节点身份（只读）" }
+    identity-cli { en "Change it with: node scripts/arcblog-node.mjs set --name <n> --description <d> --ogImage <url> --endpoint <url>" zh "修改它用：node scripts/arcblog-node.mjs set --name <名称> --description <描述> --ogImage <地址> --endpoint <地址>" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    profile-empty { en "If the fields below are empty, either no node profile record exists yet (create one: node scripts/arcblog-node.mjs init) or this page has not bound it yet — records are bound after the first load, so reload once." zh "若下方字段为空：要么还没有节点档案记录（创建：node scripts/arcblog-node.mjs init），要么本页尚未完成绑定——记录在首次加载之后才绑定，刷新一次即可。" }
+    profile-empty { en "If the fields below are empty, either no record exists yet (create one: node scripts/arcblog-node.mjs init) or this page has not bound it yet — records are bound after the first load, so reload once." zh "若下方字段为空：要么还没有对应记录（创建：node scripts/arcblog-node.mjs init），要么本页尚未完成绑定——记录在首次加载之后才绑定，刷新一次即可。" }
     save { en "Save" zh "保存" }
-    saved-ok { en "Site metadata saved." zh "站点元数据已保存。" }
-    site-card { en "Site metadata" zh "站点元数据" }
     title { en "SEO" zh "SEO" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -108,21 +107,30 @@ page seo {
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
             view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              // DEF-15: standing note, not an empty-state card. `visible="!${state.profile}"`
-              // never rendered (arc-contracts §28.1), so this line was invisible while
-              // the fields below looked merely blank. The copy now covers both causes.
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                p :profile-empty intent=info
+              // E9 = A (2026-10-13): this page owns config/seo/* (site distribution). The node identity
+              // moved to a read-only card, so no field has two page-level writers (DEF-37 / PRD-SET-02).
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
+                h3 :dist-card level=3 style={fontSize: "var(--type-body)"}
+                view gap=xs {
+                  input type=text name=eValue label=:f-meta-desc value="${state.metaDescription.value}" maxLength=300
+                  action variant=secondary size=sm label=:save onSuccessToast={intent: success, message: "$t(seo.save)", duration: 2500} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/seo/meta-description.json", mode: tree-merge, content: {value: $args.eValue}}}}
+                }
+                view gap=xs {
+                  input type=text name=eValue label=:f-share-image value="${state.shareImage.value}" maxLength=500
+                  action variant=secondary size=sm label=:save onSuccessToast={intent: success, message: "$t(seo.save)", duration: 2500} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/seo/share-image.json", mode: tree-merge, content: {value: $args.eValue}}}}
+                }
               }
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
-                h3 :site-card level=3 style={fontSize: "var(--type-body)"}
-                input type=text label=:f-name name=name value="${state.profile.name}"
-                input type=text label=:f-desc name=description value="${state.profile.description}"
-                input type=text label=:f-og name=ogImage value="${state.profile.ogImage}"
-                input type=text label=:f-endpoint name=endpoint value="${state.profile.endpoint}"
-                row cross=start {
-                  action variant=primary label=:save onSuccessToast={intent: success, message: "$t(seo.saved-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/node/profile.json", content: {name: "${args.name}", description: "${args.description}", avatar: "${state.profile.avatar}", ogImage: "${args.ogImage}", did: "${state.profile.did}", endpoint: "${args.endpoint}", roles: "${state.profile.roles}", capabilities: "${state.profile.capabilities}", version: "${state.profile.version}", protocolVersion: "${state.profile.protocolVersion}", createdAt: "${state.profile.createdAt}", updatedAt: "${generate.timeiso}"}}}}
-                }
+                h3 :identity-card level=3 style={fontSize: "var(--type-body)"}
+                p "name: ${state.profile.name}" scale=sm
+                p "description: ${state.profile.description}" scale=sm
+                p "ogImage: ${state.profile.ogImage}" scale=sm
+                p "endpoint: ${state.profile.endpoint}" scale=sm
+                p :identity-cli scale=caption intent=info
+                // DEF-15: standing note (never an empty-state card — `visible="!${state.profile}"`
+                // does not render, arc-contracts §28.1). Merged into this card so the page still
+                // shows exactly two cards (UI budget ratchet, §2.7.2).
+                p :profile-empty intent=info
               }
             }
           }

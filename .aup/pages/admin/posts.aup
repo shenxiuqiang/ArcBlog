@@ -12,10 +12,10 @@
 // (docs/05-开发文档/附件/arc-contracts.md §15.1).
 page posts {
   i18n {
-    gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。" }
+    gate-desc { en "Sign in with DID Wallet to manage drafts, published stories and uploaded media." zh "使用 DID Wallet 登录后管理草稿、已发布文章与媒体。此处发布是原样复制草稿，记录不带签名（DSL 无哈希/签名原语，B22）——需要可信署名时改用 `arcblog-lifecycle publish --sign-key node.key`（E11 裁决）。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     title { en "Your studio" zh "你的工作室" }
-    desc { en "Your stories by state: published, drafts, archived. One primary action (write) and every lifecycle action kept." zh "按状态管理你的文章：已发布 / 草稿 / 归档。只有一个主操作（写作），生命周期动作一个不少。" }
+    desc { en "Your stories by state: published, drafts, archived. One primary action (write) and every lifecycle action kept. Publishing here copies the draft as-is and the record carries NO signature (the DSL has no hash/sign primitive, B22) — when attribution matters, publish with `arcblog-lifecycle publish --sign-key node.key` instead (E11 ruling)." zh "按状态管理你的文章：已发布 / 草稿 / 归档。只有一个主操作（写作），生命周期动作一个不少。" }
     new-post { en "New post" zh "新建文章" }
     tab-published { en "Published" zh "已发布" }
     tab-drafts { en "Drafts" zh "草稿" }

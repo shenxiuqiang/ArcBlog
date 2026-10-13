@@ -123,7 +123,7 @@ function listPublishedPosts({ limit, instance }) {
     .slice(0, limit);
 }
 
-function buildRss({ feedTitle, feedLink, feedDescription, posts, language, timezone, enabled }) {
+function buildRss({ feedTitle, feedLink, feedDescription, shareImage = '', posts, language, timezone, enabled }) {
   const items = enabled
     ? posts
         .map((post) => {
@@ -149,6 +149,7 @@ function buildRss({ feedTitle, feedLink, feedDescription, posts, language, timez
     <title>${escapeXml(feedTitle)}</title>
     <link>${escapeXml(feedLink)}</link>
     <description>${escapeXml(feedDescription)}</description>
+${shareImage ? `    <image>\n      <url>${escapeXml(shareImage)}</url>\n      <title>${escapeXml(feedTitle)}</title>\n      <link>${escapeXml(feedLink)}</link>\n    </image>\n` : ''}
 ${language ? `    <language>${escapeXml(language)}</language>\n` : ''}    <lastBuildDate>${rfc822(new Date(), timezone)}</lastBuildDate>
 ${items}
   </channel>
@@ -205,7 +206,11 @@ function main() {
   }
   const feedTitle = optString(opts['feed-title']) || general.siteName || 'ArcBlog';
   const feedLink = optString(opts['feed-link']) || 'http://localhost';
-  const feedDescription = optString(opts['feed-description']) || 'DID-native Markdown publishing';
+  // Precedence (E9=A): explicit flag > the seo page's own record (config/seo/meta-description.json)
+  // > the historical default. The seo record is the site's distribution copy; the node identity
+  // (node/profile.json) never feeds the feed.
+  const feedDescription = optString(opts['feed-description']) || general.metaDescription || 'DID-native Markdown publishing';
+  const shareImage = /^https?:\/\//.test(String(general.shareImage ?? '')) ? String(general.shareImage) : '';
 
   try {
     const posts = listPublishedPosts({ limit, instance });
@@ -213,6 +218,7 @@ function main() {
       feedTitle,
       feedLink,
       feedDescription,
+      shareImage,
       posts,
       language: general.language || '',
       timezone: general.timezone || 'UTC',

@@ -26,8 +26,11 @@ page index {
           // exists, and it belongs to the only post that has a coverImage; the two coverless rows
           // render no tile at all (the negated form hid nothing). Kept as-is, and the blanket "no
           // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
-          view layout=inline href="/posts/${entry.content.slug}" style={display: block, flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: stretch, background: "url(${entry.content.coverImage}) center / cover no-repeat"} visible="${entry.content.coverImage}" {
-            p " "
+          // DEF-27 / E7 (human ruling 2026-10-13: "put visible copy"): the cover tile used to carry
+          // a single space, so the link had NO accessible name (a screen reader read the URL only).
+          // The title is now rendered over the cover, which both names the link and labels the image.
+          view layout=inline href="/posts/${entry.content.slug}" style={display: flex, alignItems: flex-end, flexGrow: 0, flexShrink: 0, flexBasis: "240px", width: "240px", alignSelf: stretch, background: "url(${entry.content.coverImage}) center / cover no-repeat"} visible="${entry.content.coverImage}" {
+            p "${entry.content.title}" scale=caption style={margin: "0", padding: "6px 8px", width: "100%", color: "#fff", background: "rgba(0, 0, 0, 0.55)"}
           }
         }
       }

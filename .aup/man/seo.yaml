@@ -1,43 +1,38 @@
-# Man page for "seo" (spec §15.5) — site-level SEO & distribution.
+# Man page for "seo" (spec §15.5) — site distribution settings.
+#
+# E9 = A (human ruling 2026-10-13): this page owns its OWN records under
+# `config/seo/` (`meta-description.json`, `share-image.json`) and shows the node
+# identity read-only. It no longer writes `node/profile.json`, so every identity
+# field has exactly one writer — the CLI — which is what closed DEF-37 and let
+# PRD-SET-02 ("one entry point per field") land.
+#
+# The previous revision carried a DUPLICATE `refs:` key (the last one wins in
+# YAML) whose entries were the pre-rename ids (`console-nav-seo-admin`,
+# `console-nav-ops-admin`, `arcblog-seo-admin-card-1-action-3`) — dead references
+# inside the published artifact. Removed rather than re-pointed: the page is
+# id-less by policy (the console-nav generator emits no explicit ids).
 schemaVersion: 1
 page: seo
 description: >-
-  Wallet-gated site metadata (name, description, default OG image, endpoint)
-  stored on the public node profile, plus the always-on distribution surfaces
-  (RSS, article index, Agent access). Every article inherits these defaults
-  and can override them per post.
+  Site distribution defaults: the feed/social description and the default share
+  image, stored in this page's own records under config/seo/. The node identity
+  (name, description, OG image, endpoint) is displayed read-only here because it
+  lives in node/profile.json and only the CLI writes it.
 synopsis: >-
-  Connect a DID Wallet, edit the site metadata fields, and save; distribution
-  surfaces need no configuration.
+  Connect a DID Wallet, edit the two distribution fields and save each one; the
+  generated RSS feed reads them (channel description and channel image). To
+  change the node identity, run the node CLI instead.
 examples:
-  - label: Save site metadata
+  - label: Save the site description
+    action: click
+    target: seo-save
+  - label: Save the default share image
     action: click
     target: seo-save
 flows:
   - Connect the DID Wallet to establish the operator session.
-  - Edit site name / description / default OG image / endpoint and save.
-  - Use the distribution card to open the RSS feed or the article index.
-refs:
-  actions:
-    - id: seo-save
-      event: click
-refs:
-  actions:
-    - id: arcblog-seo-admin-card-1-action-3
-      event: click
-    - id: console-nav-dashboard
-      event: click
-    - id: console-nav-admin
-      event: click
-    - id: console-nav-pages-admin
-      event: click
-    - id: console-nav-heroes-admin
-      event: click
-    - id: console-nav-seo-admin
-      event: click
-    - id: console-nav-operations
-      event: click
-    - id: console-nav-ops-admin
-      event: click
-    - id: seo-save
-      event: click
+  - Edit the site description or the share image and save that field.
+  - Read the node identity card for the values the CLI owns, and change them with
+    `node scripts/arcblog-node.mjs set`.
+  - The generated RSS feed picks the description up as its channel
+    description and the share image as its channel image.
