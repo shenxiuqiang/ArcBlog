@@ -13,16 +13,16 @@ page dashboard {
     anomalies-severity { en "Severity" zh "级别" }
     anomalies-state { en "Last check, verbatim" zh "最近一次检查（原话）" }
     content { en "Recent published" zh "最近发布" }
-    content-desc { en "The five newest stories." zh "最新 5 篇已发布内容。" }
+    content-desc { en "Five newest stories." zh "最新 5 篇已发布。" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
     drafts { en "Drafts to finish" zh "待处理草稿" }
-    drafts-all { en "All drafts & published" zh "全部草稿与已发布" }
-    drafts-desc { en "Up to three recently touched drafts; publishing happens in the studio." zh "私有草稿区里最近更新的（未删除的）最多 3 条；发布在「工作室」完成。" }
+    drafts-all { en "View all" zh "查看全部" }
+    drafts-desc { en "Newest drafts (deleted ones excluded)." zh "最近更新的草稿（不含已删除）。" }
     drafts-empty { en "No drafts yet." zh "还没有草稿。" }
     gate-desc { en "Sign in with DID Wallet to see the drafts waiting for you and what is already live." zh "使用 DID Wallet 登录后查看待处理的草稿与已发布内容。" }
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    purpose { en "Drafts still to finish, anomalies to clear, and what is already live." zh "还没写完的草稿、要处理的异常，以及已经发布的内容。" }
+    purpose { en "Drafts to finish, anomalies to clear, what is live." zh "草稿、异常、已发布，一眼看完。" }
     q-write { en "Write a post" zh "写文章" }
     title { en "Dashboard" zh "仪表盘" }
   }
@@ -144,20 +144,32 @@ page dashboard {
               // 数字来自 `config/console/overview.json`（CLI 在数据库里 `count` 出来的记录）。
               row gap=lg cross=end {
                 view gap=xs size={width: "170px"} {
-                  p "${state.overview.publishedCount}" scale=display
-                  p "$t(dashboard.kpi-published)" scale=caption intent=muted
+                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
+                  view layout=inline href="/?page=posts" {
+                    p "${state.overview.publishedCount}" scale=display
+                    p "$t(dashboard.kpi-published)" scale=caption intent=muted
+                  }
                 }
                 view gap=xs size={width: "170px"} {
-                  p "${state.overview.draftCount}" scale=display
-                  p "$t(dashboard.kpi-drafts)" scale=caption intent=muted
+                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
+                  view layout=inline href="/?page=posts" {
+                    p "${state.overview.draftCount}" scale=display
+                    p "$t(dashboard.kpi-drafts)" scale=caption intent=muted
+                  }
                 }
                 view gap=xs size={width: "170px"} {
-                  p "${state.overview.pageOnlineCount}" scale=display
-                  p "$t(dashboard.kpi-pages)" scale=caption intent=muted
+                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
+                  view layout=inline href="/?page=pages" {
+                    p "${state.overview.pageOnlineCount}" scale=display
+                    p "$t(dashboard.kpi-pages)" scale=caption intent=muted
+                  }
                 }
                 view gap=xs size={width: "170px"} {
-                  p "${state.overview.mediaCount}" scale=display
-                  p "$t(dashboard.kpi-media)" scale=caption intent=muted
+                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
+                  view layout=inline href="/?page=media" {
+                    p "${state.overview.mediaCount}" scale=display
+                    p "$t(dashboard.kpi-media)" scale=caption intent=muted
+                  }
                 }
               }
             }
@@ -214,7 +226,12 @@ page dashboard {
             }
             // ---- 待处理草稿（卡 2）------------------------------------------------
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :drafts level=3
+              row cross=center {
+                view size={flex: "1 1 0%"} {
+                  h3 :drafts level=3
+                }
+                action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-md, 8px)"}
+              }
               p :drafts-desc scale=sm intent=muted
               // 最新 3 条。sort 走平台自己的 `/.actions/query`：实测 2026-09-29
               // `orderBy [["mtime","desc"]]` 返回 drafts total=46（与目录一致）且按
@@ -240,9 +257,6 @@ page dashboard {
               // 待处理草稿的去向：工作室（?page=posts）里才有发布 / 软删 / 行内编辑。
               // 空态时它也是引导动作（平台运行期不求值 emptyText 里的 $t()，
               // 见 docs/05-开发文档/附件/arc-contracts.md §20，所以「下一步」必须是常驻元素）。
-              row cross=start {
-                action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-md, 8px)"}
-              }
             }
             // ---- 最近发布（卡 3）--------------------------------------------------
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
