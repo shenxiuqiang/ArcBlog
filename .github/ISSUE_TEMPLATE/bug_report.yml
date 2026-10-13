@@ -1,0 +1,48 @@
+name: Bug report
+description: Something behaves differently from the documentation, or fails.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: please run the two gates and paste their output. Most reports turn out to be a
+        red gate, and the output is what makes a report actionable.
+        ```bash
+        arc dsl validate --json     # must print "issues":[]
+        npm test                    # fast tier, ~2 s
+        ```
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected instead
+    validations:
+      required: true
+  - type: textarea
+    id: gates
+    attributes:
+      label: Gate output
+      description: Paste `arc dsl validate --json` and `npm test` output (or say why you cannot run them).
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Exact commands, page URL, and the record/page ids involved if any.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Output of `git rev-parse --short HEAD` and the `version:` field from blocklet.yaml.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or logs (optional)
+      description: For UI issues, a screenshot beats a paragraph.
+    validations:
+      required: false

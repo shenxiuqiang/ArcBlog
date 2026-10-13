@@ -49,7 +49,7 @@ export const JUNK_DIRS = ['logs', 'tmp'];
  * scrub's removal set. Like junk, `--check` REPORTS them without failing: shipping them is
  * wasteful, not a secret leak, and a foreign deployment's choices are not this guard's business.
  */
-export const NON_PRODUCT_DIRS = ['docs', '_research', 'scripts'];
+export const NON_PRODUCT_DIRS = ['docs', '_research', 'scripts', '.github'];
 /**
  * Dev-instruction and dev-metadata FILES at the repo root (2026-10-12, ruled as part of ENG-38's
  * "dist ships what runs"): none of them is read at runtime, and none is even addressable — the AUP
@@ -68,6 +68,17 @@ export const NON_PRODUCT_FILES = new Set([
   // carries the beta token id, a chain fact the app surface is forbidden to ship (ENG-52) and the
   // published artifact has no reason to expose.
   '.env.example',
+  // Community / packaging files (2026-10-13): written for the repository's readers and for CI, none of
+  // them read at runtime. Shipping them would also duplicate the licence question inside the artifact
+  // (blocklet.yaml carries the only licence field the platform reads).
+  'CHANGELOG.md',
+  'CONTRIBUTING.md',
+  'SECURITY.md',
+  'CODE_OF_CONDUCT.md',
+  'THIRD_PARTY_LICENSES.md',
+  '.editorconfig',
+  '.nvmrc',
+  '.gitattributes',
 ]);
 export const JUNK_BASENAMES = new Set(['.node-pk.pem']);
 

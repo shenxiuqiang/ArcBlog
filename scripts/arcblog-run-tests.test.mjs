@@ -183,3 +183,43 @@ test('every fast suite asserts something, and the suite list is non-empty', () =
   }
   assert.deepEqual(silent, [], `fast suites with no assertion (they can only pass vacuously): ${silent.join(', ')}`);
 });
+
+/**
+ * The `--no-daemon` skip list must stay honest (2026-10-13, added with the CI workflow).
+ *
+ * A CI runner has no `arc` CLI and no running instance, so three fast suites are skipped there. A skip
+ * list is exactly the kind of thing that rots silently: if a new suite starts calling `arc`, the CI
+ * would go green while covering less. So the list is checked from both sides — every declared name must
+ * be a fast suite that really invokes `arc`/HTTP, and every fast suite that does must be declared.
+ * `arcblog-anomalies` is the one deliberate exemption: its `http://127.0.0.1` is the payload of an
+ * INVALID-FLAG test (`--origin2`), not a daemon call, so it runs in CI like the other 29.
+ */
+test('the daemon-skip list matches the suites that really need arc or an instance', async () => {
+  const { FAST_TESTS, DAEMON_TESTS } = await import('./run-tests.mjs');
+  const EXEMPT = new Set(['arcblog-anomalies']);
+  const CALLS_ARC = /(?:spawnSync|execFileSync|spawn)\(\s*'arc'|runToFile\(\s*\[\s*'arc'/;
+  const CALLS_INSTANCE = /http:\/\/arcblog\.localhost/;
+
+  for (const name of DAEMON_TESTS) {
+    assert.ok(FAST_TESTS.has(name), `${name} is declared daemon-dependent but is not a FAST suite`);
+  }
+
+  const needsDaemon = [];
+  for (const name of FAST_TESTS) {
+    if (EXEMPT.has(name)) continue;
+    const src = readFileSync(join(repoRoot, 'scripts', `${name}.test.mjs`), 'utf8');
+    if (CALLS_ARC.test(src) || CALLS_INSTANCE.test(src)) needsDaemon.push(name);
+  }
+  assert.deepEqual(
+    needsDaemon.sort(),
+    [...DAEMON_TESTS].sort(),
+    'fast suites that invoke arc / hit the instance and the declared --no-daemon list must be the same set',
+  );
+
+  // the flag is implemented, and it names what it skipped (checked in the source, not by re-running
+  // the tier from inside a test — a nested full-tier run would double the gate's cost)
+  const runner = readFileSync(SCRIPT, 'utf8');
+  assert.match(runner, /noDaemon/, 'run-tests.mjs must parse --no-daemon / ARCBLOG_NO_DAEMON');
+  assert.match(runner, /SKIPPED \(needs ARC daemon\)/, 'the run header must name the skipped suites');
+  for (const name of DAEMON_TESTS) assert.ok(runner.includes(`'${name}'`), `${name} is not declared in DAEMON_TESTS`);
+});

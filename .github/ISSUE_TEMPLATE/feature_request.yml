@@ -1,0 +1,47 @@
+name: Feature or change request
+description: Propose a requirement, a page change, or a platform capability we should use.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This project keeps **one authoritative place per fact**, so a proposal lands faster when it
+        names the artefact it changes:
+        * a requirement → its `PRD-*` row in `docs/06-功能开发列表/01-功能台账.md`
+        * a platform capability/boundary → `docs/05-开发文档/02-平台能力与边界.md` (`B*`)
+        * a defect → `docs/06-功能开发列表/03-缺陷与待修.md` (`DEF-*`)
+        * something only a human can do → `docs/team/human-checkpoints.md`
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: If it is a platform question, say what you measured (`arc <cmd> --help` / `explain` output beats an assumption).
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - console page
+        - public page
+        - content model / AFS records
+        - RSS / distribution
+        - node NFT / chain registry
+        - agent access
+        - docs
+        - build / deploy / tooling
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+    validations:
+      required: false

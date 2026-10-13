@@ -61,7 +61,7 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
  * new test file is live unless it is listed here, so the fast tier cannot
  * silently grow a daemon dependency.
  */
-const FAST_TESTS = new Set([
+export const FAST_TESTS = new Set([
   'arcblog-agent-tools',
   // PRD-OPS-01 / DEF-36: the anomaly-zone decision logic is pure (injected
   // context) + a static wiring check + three child-process flag assertions — no
@@ -97,6 +97,22 @@ const FAST_TESTS = new Set([
   'arcblog-ui-budget',
   'arcblog-vocabularies',
   'arcblog-visible-conditions',
+]);
+
+/**
+ * Suites that need something a plain CI runner does not have: the `arc` CLI (`arc dsl generate` /
+ * `arc dsl lint`) or a RUNNING instance (the guest permission matrix fetches
+ * `http://arcblog.localhost:4939/api/afs/rpc`).
+ *
+ * `--no-daemon` (or `ARCBLOG_NO_DAEMON=1`) skips EXACTLY these three and prints them, so a CI run
+ * without an ARC install stays honest: nothing is skipped silently, and a suite that starts needing
+ * the daemon must be declared here. `arcblog-run-tests.test.mjs` asserts each declared suite really
+ * references `arc`/HTTP, and that no daemon-needing suite is missing from the list.
+ */
+export const DAEMON_TESTS = new Set([
+  'arcblog-artifact-drift',
+  'arcblog-i18n',
+  'arcblog-permissions',
 ]);
 
 /**
@@ -297,6 +313,7 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
     process.exit(2);
   }
   const onlyChanged = argv.includes('--changed');
+  const noDaemon = argv.includes('--no-daemon') || process.env.ARCBLOG_NO_DAEMON === '1';
   const asJson = argv.includes('--json');
   const { perFileMs, totalMs, concurrency } = budgetsFor(tier);
 
@@ -321,6 +338,21 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
     }
   }
 
+  // `--no-daemon`: skip exactly the declared daemon/CLI-dependent fast suites, and SAY SO. A CI run
+  // without an ARC install must not look like a clean sweep of the whole tier.
+  const daemonSkipped = [];
+  if (noDaemon) {
+    if (tier === 'live') {
+      console.error('--no-daemon is not meaningful for the live tier (those suites always need the instance)');
+      process.exit(2);
+    }
+    selected = selected.filter((entry) => {
+      if (!DAEMON_TESTS.has(entry.name)) return true;
+      daemonSkipped.push(entry.name);
+      return false;
+    });
+  }
+
   // In --json mode everything human-readable goes to stderr so stdout stays pure JSON
   // (call it directly: `node scripts/run-tests.mjs fast --json`; `npm test` prepends its banner).
   const log = asJson ? (...args) => console.error(...args) : (...args) => console.log(...args);
@@ -330,6 +362,7 @@ export async function runGate(tierArg = 'all', argv = process.argv.slice(2)) {
       ` · concurrency ${tier === 'fast' ? concurrency : 1} · ${perFileMs}ms/file` +
       (totalMs ? ` · ${totalMs}ms total budget` : '') +
       (onlyChanged ? ' · changed-only' : '') +
+      (noDaemon ? ` · SKIPPED (needs ARC daemon): ${daemonSkipped.join(', ') || 'none'}` : '') +
       '\n',
   );
 

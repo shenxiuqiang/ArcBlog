@@ -1,0 +1,18 @@
+# Normalise line endings on checkin; keep text files diffable.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+
+# Generated files: keep them out of diffs' language detection, and never merge them by hand.
+.aup/app.json linguist-generated=true
+.aup/wrapper.json linguist-generated=true
+.aup/locales/*.json linguist-generated=true
+.web/components/hero-carousel/script.js linguist-generated=true
+package-lock.json -diff linguist-generated=true
