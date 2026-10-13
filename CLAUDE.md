@@ -91,12 +91,14 @@ node scripts/arcblog-memory.mjs remember|recall|list --session <id>  # PRD-AGT-1
 node scripts/arcblog-verify.mjs content --slug x  # §65–§67: content hash + Ed25519 signature check
 node scripts/arcblog-verify.mjs keys         # registered content-signing public keys (never private)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
-node scripts/arcblog-overview.mjs refresh|show  # the dashboard's KPI projection: counts every
-                                             # collection from its DIRECTORY listing (never the query
-                                             # index, arc-contracts §44) into config/console/overview.json,
-                                             # printed through seed/recipes/console/item.json (the page
-                                             # cannot count anything — B13). `refresh` writes, `show` reads;
-                                             # install the recipe once per instance (deploy step 2b does).
+node scripts/arcblog-overview.mjs refresh|show  # the dashboard's KPI projection: counts every collection
+                                             # in the DATABASE (/.actions/query + count:true, rows-free —
+                                             # arc-contracts §66) into config/console/overview.json, and
+                                             # cross-checks each count against the directory listing
+                                             # (disagreements land in the record's `divergences`). The page
+                                             # cannot count anything (B13) and reads the record with
+                                             # `propBind`, so no recipe is involved (a recipe label cannot be
+                                             # localized — §65). `refresh` writes, `show` reads.
 node scripts/arcblog-anomalies.mjs refresh|show  # PRD-OPS-01 anomaly zone: the four node-anomaly
                                              # classes (identity / read-only exit / chain registry /
                                              # test residue) precomputed into node/anomalies/<key>.json

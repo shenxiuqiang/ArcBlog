@@ -146,10 +146,6 @@ page posts {
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                // 状态行：计数由 CLI 预计算（config/console/posts.json），本页逐字打印、不自算。
-                surface url="/instance/app/arcblog/config/console/posts.json" editable=false {
-                  p " "
-                }
                 view mode=tabs {
                   view label=:tab-published {
                     afs-list posts-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/posts" {

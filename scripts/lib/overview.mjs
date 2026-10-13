@@ -38,21 +38,16 @@ export const OVERVIEW_COUNT_SOURCES = Object.freeze({
   pageDraftCount: '/instance/app/arcblog/page-drafts',
   mediaCount: '/instance/app/arcblog/media',
   summaryCount: '/instance/app/arcblog/node/summaries',
-  categoryCount: '/instance/app/arcblog/categories',
-  tagCount: '/instance/app/arcblog/tags/items',
 });
 
 /**
- * One record per print point: file stem → the counts it carries. The order here is
- * also the order the CLI writes them, and `source` records which fields a record owns.
+ * The projection's single print point: `config/console/overview.json`, read with `propBind` by
+ * `?page=dashboard`. (There used to be one record per list page, printed through an item recipe —
+ * removed 2026-10-13: a recipe CANNOT localize a label, measured (`$t(...)` renders literally,
+ * arc-contracts §65), so every such row read as machine output on a zh console.)
  */
 export const OVERVIEW_PAGE_RECORDS = Object.freeze({
   overview: ['publishedCount', 'draftCount', 'pageOnlineCount', 'pageDraftCount', 'mediaCount', 'summaryCount'],
-  posts: ['publishedCount', 'draftCount'],
-  media: ['mediaCount'],
-  pages: ['pageOnlineCount', 'pageDraftCount'],
-  tags: ['tagCount'],
-  categories: ['categoryCount'],
 });
 
 /** Coerce anything to a non-negative integer (a count is never a float or a string). */
@@ -70,13 +65,16 @@ function str(value) {
  * field it does not pass is OMITTED (never zero-filled) so a partial record cannot
  * print a wrong number on a page that has no such count.
  */
-export function buildOverview({ generatedAt, counts = {}, note = '', source = '' } = {}) {
+export function buildOverview({ generatedAt, counts = {}, note = '', source = '', divergences = '' } = {}) {
   const record = { generatedAt: str(generatedAt) };
   for (const field of Object.keys(OVERVIEW_COUNT_SOURCES)) {
     if (counts[field] !== undefined) record[field] = count(counts[field]);
   }
   record.note = str(note);
   record.source = str(source);
+  // Empty when the database count and the directory listing agreed (the normal case); a
+  // sentence when they did not, because a silently wrong KPI is worse than a stated one.
+  record.divergences = str(divergences);
   return record;
 }
 
@@ -86,6 +84,7 @@ export const OVERVIEW_FIELDS = Object.freeze([
   ...Object.keys(OVERVIEW_COUNT_SOURCES),
   'note',
   'source',
+  'divergences',
 ]);
 
 /**
@@ -117,8 +116,8 @@ export function validateOverview(record, { required = [] } = {}) {
  * record value), so the sentence stays words-free and the localized heading comes
  * from the page.
  */
-export function overviewNote(generatedAt, counts = {}) {
+export function overviewNote(generatedAt, counts = {}, source = 'database') {
   const fields = Object.keys(counts).filter((field) => field in OVERVIEW_COUNT_SOURCES);
   const total = fields.reduce((sum, field) => sum + count(counts[field]), 0);
-  return `${str(generatedAt)} · ${total} record(s) across ${fields.length} collection(s)`;
+  return `${str(generatedAt)} · ${total} record(s) across ${fields.length} collection(s) · counted in the ${str(source) || 'database'}`;
 }

@@ -134,10 +134,6 @@ page media {
               // 一级：媒体索引列表。行内只有两个平台自带的复制按钮（AFS 路径 / refs 命令），
               // 没有 action：清理是 CLI 的事，命令与口径全部在第二个页签（三级，默认不可见）。
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                // 状态行：计数由 CLI 预计算（config/console/media.json），本页逐字打印、不自算。
-                surface url="/instance/app/arcblog/config/console/media.json" editable=false {
-                  p " "
-                }
                 view mode=tabs {
                   view label=:index-title {
                     afs-list media-records-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=12 from "/instance/app/arcblog/media" {

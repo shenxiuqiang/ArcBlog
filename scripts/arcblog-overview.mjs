@@ -10,18 +10,22 @@
 // (docs/05-开发文档/附件/arc-contracts.md §28.1 / docs/05-开发文档/02 B13). Every number a
 // page shows must therefore be precomputed here and printed verbatim.
 //
-// THE COUNTS ARE INDEX-FREE ON PURPOSE. `afs-list filter=`/`sort=` go through
-// `/.actions/query`, whose index only covers small records (arc-contracts §44/§15.1)
-// — the CLI's directory listing is the source of truth (`scripts/lib/arc.mjs list()`).
+// THE COUNTS COME FROM THE DATABASE. Each collection is counted with the platform's own
+// query standard action — `/.actions/query` with `count: true` (rows-free counting,
+// measured 2026-10-13: `{total}` without any row) — i.e. the query index this platform
+// calls its database, NOT a page-side or listing-side estimate. A directory listing is
+// ALSO taken, purely as a cross-check: the two are compared and any disagreement is
+// written into the record (`divergences`), because a stale index is a real failure mode
+// here (DEF-42) and a silently wrong KPI is worse than a stated one.
 //
-// The record lives under `config/` (admin-only) because one count is the draft count;
-// `seed/recipes/console/item.json` is the print point (installed by
-// `node scripts/arcblog-recipes.mjs install`, which the deploy pipeline runs).
+// The record lives under `config/` (admin-only) because one count is the draft count.
+// `?page=dashboard` reads it with `propBind` (a recipe cannot localize a label —
+// arc-contracts §65) and prints the numbers verbatim.
 //
 // stdout is PURE JSON; human-readable lines go to stderr. Unknown flags fail closed
 // (VALIDATION, exit 1) — see scripts/lib/cli-flags.mjs.
 
-import { list, readJson, resolveInstance, writeJson, nowIso } from './lib/arc.mjs';
+import { exec, list, readJson, resolveInstance, writeJson, nowIso } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   OVERVIEW_COUNT_SOURCES,
@@ -38,27 +42,66 @@ function recordPath(stem) {
   return `${CONSOLE_DIR}/${stem}.json`;
 }
 
-/** Count the `*.json` records of one directory (the directory is the truth, not the index). */
-function countRecords(path, instance) {
-  return list(path, instance).filter((entry) => String(entry?.id ?? '').endsWith('.json')).length;
+/**
+ * Count one collection in the DATABASE: the query standard action with rows-free counting.
+ * Returns `null` when the provider cannot answer (undeclared / unavailable) so the caller
+ * can fall back to the listing and say so.
+ */
+function countInDatabase(path, instance) {
+  try {
+    const payload = exec('query', { path, count: true }, instance);
+    const data = payload?.data ?? payload;
+    return typeof data?.total === 'number' ? data.total : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Count the `*.json` records of one directory — the CROSS-CHECK, never the headline number. */
+function countInListing(path, instance) {
+  try {
+    return list(path, instance).filter((entry) => String(entry?.id ?? '').endsWith('.json')).length;
+  } catch {
+    return null;
+  }
+}
+
+/** One collection: the database count, the listing cross-check, and any disagreement. */
+function measureCollection(field, path, instance) {
+  const database = countInDatabase(path, instance);
+  const listing = countInListing(path, instance);
+  const count = database ?? listing ?? 0;
+  const divergence =
+    database !== null && listing !== null && database !== listing
+      ? `${field}: database ${database} != listing ${listing}`
+      : '';
+  return { field, count, source: database === null ? 'listing' : 'database', divergence };
 }
 
 function commandRefresh(opts, instance) {
-  // Measure every collection ONCE, then project the sub-sets each print point needs.
+  // Measure every collection ONCE (database + listing), then project the record.
   const measured = {};
+  const divergences = [];
+  const sources = new Set();
   for (const [field, dir] of Object.entries(OVERVIEW_COUNT_SOURCES)) {
-    measured[field] = countRecords(dir, instance);
+    const result = measureCollection(field, dir, instance);
+    measured[field] = result.count;
+    sources.add(result.source);
+    if (result.divergence) divergences.push(result.divergence);
+    console.error(`${field} = ${result.count} (${result.source})`);
   }
 
   const written = [];
   for (const [stem, fields] of Object.entries(OVERVIEW_PAGE_RECORDS)) {
     const counts = Object.fromEntries(fields.map((field) => [field, measured[field]]));
     const generatedAt = nowIso();
+    const source = [...sources].sort().join('+');
     const record = buildOverview({
       generatedAt,
       counts,
       note: overviewNote(generatedAt, counts),
-      source: fields.join(','),
+      source,
+      divergences: divergences.join('; '),
     });
 
     const issues = validateOverview(record, { required: fields });
@@ -70,7 +113,7 @@ function commandRefresh(opts, instance) {
     const path = recordPath(stem);
     const existing = readJson(path, instance);
     writeJson(path, record, instance, existing?.ifMatch ?? undefined);
-    console.error(`wrote ${path} (${fields.join(', ')})`);
+    console.error(`wrote ${path} (${fields.join(', ')}; source ${source})`);
     written.push({ path, record });
   }
 

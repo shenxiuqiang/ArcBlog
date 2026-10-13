@@ -176,3 +176,11 @@ otherwise nest a card inside a card. Full evidence: `docs/05-开发文档/附件
     Do not run the suite concurrently with `arc blocklet build` + `instance deploy`
     + `arc service restart`; the restart breaks the tests mid-run. Deploy first,
     then test.
+
+### 7e. An item recipe cannot localize: `$t()` renders literally (measured 2026-10-13)
+
+`<record-dir>/.aup/item.json` labels/strings do **not** pass through i18n — a `label: "$t(wrapper.nav-x)"`
+paints the literal `$t(wrapper.nav-x)`. So a record-driven *labelled* row can only ever carry
+language-neutral/English words. For a localized label + a record value, use `propBind` on the page with a
+page-owned `key-value-list` (labels from the page's `i18n {}`), and accept that the first cold paint has no
+value (§57/§58). Evidence: arc-contracts §65.

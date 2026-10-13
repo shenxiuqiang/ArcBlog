@@ -147,10 +147,6 @@ page categories {
               // 3) The taxonomy itself: every row carries the two buttons.
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
-                // 状态行：计数由 CLI 预计算（config/console/categories.json），本页逐字打印、不自算。
-                surface url="/instance/app/arcblog/config/console/categories.json" editable=false {
-                  p " "
-                }
                 p :list-desc scale=sm intent=muted
                 afs-list categories-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/categories" {
                   view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {

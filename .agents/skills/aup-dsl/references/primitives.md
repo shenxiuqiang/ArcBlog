@@ -59,6 +59,25 @@ Emitted attributes to style against: `data-layout`, `data-mode`, `data-intent`,
 Layout note: actions are inline-flex; inside a fixed-width column add
 `justifyContent: flex-start` and let the row stretch (`align-self: stretch`).
 
+### `action` — `icon`
+`icon=<name>` is looked up in the runtime's own table (143 names: `refresh`, `redo`, `undo`, `trash`, `edit`, `plus`,
+`check`, `save`, `settings`, `gear`, `search`, `download`, `upload`, `share`, `warning`, …). An unknown name returns
+`null` and the button silently falls back to its **label text** — so verify by checking that the button DOM contains an
+inline `<svg viewBox="0 0 24 24">` (measured 2026-10-13: a valid name appends the svg, an unknown one does not; the
+class list stays plain `aup-action`, so do not test for an `icon-svg` class). Icons are 24×24 `stroke: currentColor`
+and the button still renders its label text next to the icon — keep the label short.
+Evidence: arc-contracts §67. To re-read the list: fetch the served bundle and take the keys of the icon table used by
+`Dr(icon, size)` in the `action` renderer.
+
+### `input`
+`label`, `name`, `mode` | `type` | `variant` (`text` default; `hidden` renders `display:none` and carries a
+value into `exec` args), `required`, `value`, `options` (with `select`), **`rows`** (`type=textarea` → the
+`<textarea rows>` attribute; **default 3**, so a big writing surface is `rows=18`), `placeholder`,
+`maxLength`, `pattern`, `editable:false` → `data-readonly`, `danger:true`, `unit`, `multiple` (select).
+Measured in the served bundle (`Re.rows = r.rows || 3`), evidence: arc-contracts §64.
+Note: for multi-line prose use `input type=textarea rows=<n>`; `post-editor` is a self-contained
+write widget (its own publish path), **not** a form field — it does not feed `exec` args.
+
 ### `key-value-list`
 ```
 key-value-list kv-id dense=true caption="$t(page.title)" fields=[ … ]

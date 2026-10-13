@@ -65,6 +65,8 @@ test('thresholds match UI standard §2.7.2 (cannot drift silently)', () => {
   // 3 -> 4 on 2026-10-13: the KPI row landed as its own card (CLI projection, B13).
   // Registered in EXEMPTIONS' comment + docs/04's N8 row, never via a silent baseline bump.
   assert.equal(limitsFor('dashboard').cards, 4, 'P2 exemption: overview may carry 4 cards (KPI row)');
+  // 2026-10-13: the KPI row became a number panel with a top-right reload icon -> one more style.
+  assert.equal(limitsFor('dashboard').styles, 10, 'P2 exemption: the number panel + reload icon need 10 styles');
   assert.equal(limitsFor('posts').ctrl, 12, 'no exemption for a plain list page');
 });
 

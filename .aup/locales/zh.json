@@ -114,8 +114,6 @@
   "compose-edit.publish-now": "发布",
   "compose-edit.save-draft": "存草稿",
   "compose-edit.saved": "已保存。",
-  "compose-edit.tab-advanced": "高级",
-  "compose-edit.tab-basic": "基本",
   "compose-edit.tags": "标签",
   "compose-edit.title": "编辑文章",
   "compose.category": "分类",
@@ -135,7 +133,6 @@
   "compose.save-draft": "存草稿",
   "compose.saved": "已保存。",
   "compose.tab-advanced": "高级",
-  "compose.tab-basic": "基本",
   "compose.tags": "标签",
   "compose.title": "写文章",
   "dashboard.content": "最近发布",
@@ -622,7 +619,10 @@
   "dashboard.content-desc": "最新 5 篇已发布内容。",
   "dashboard.anomalies-state": "最近一次检查（原话）",
   "posts.empty-hint": "页签为空表示该状态还没有记录——用「新建文章」写一篇。",
-  "dashboard.overview": "概览",
-  "dashboard.overview-desc": "计数由运营侧 CLI 测得、本页逐字打印；下方一行写明测量时间——本页不臆造任何数字。",
-  "wrapper.admin-notice": "已登录，但本控制台需要 Blocklet 管理员——这里的列表仅管理员可读。"
+  "wrapper.admin-notice": "已登录，但本控制台需要 Blocklet 管理员——这里的列表仅管理员可读。",
+  "dashboard.kpi-published": "已发布",
+  "dashboard.kpi-drafts": "草稿",
+  "dashboard.kpi-pages": "已上线页面",
+  "dashboard.kpi-media": "素材",
+  "dashboard.refresh": "刷新"
 }

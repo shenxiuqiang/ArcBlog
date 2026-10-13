@@ -114,8 +114,6 @@
   "compose-edit.publish-now": "Publish",
   "compose-edit.save-draft": "Save draft",
   "compose-edit.saved": "Saved.",
-  "compose-edit.tab-advanced": "Advanced",
-  "compose-edit.tab-basic": "Essentials",
   "compose-edit.tags": "Tags",
   "compose-edit.title": "Edit post",
   "compose.category": "Category",
@@ -135,7 +133,6 @@
   "compose.save-draft": "Save draft",
   "compose.saved": "Saved.",
   "compose.tab-advanced": "Advanced",
-  "compose.tab-basic": "Essentials",
   "compose.tags": "Tags",
   "compose.title": "Write a post",
   "dashboard.content": "Recent published",
@@ -622,7 +619,10 @@
   "dashboard.content-desc": "The five newest stories.",
   "dashboard.anomalies-state": "Last check, verbatim",
   "posts.empty-hint": "An empty tab means that state holds no record yet — write one with New post.",
-  "dashboard.overview": "Overview",
-  "dashboard.overview-desc": "Counts measured by the operator CLI and printed here verbatim; the line under them states when — this page invents no number.",
-  "wrapper.admin-notice": "Signed in, but this console needs a Blocklet admin — the lists here are admin-only."
+  "wrapper.admin-notice": "Signed in, but this console needs a Blocklet admin — the lists here are admin-only.",
+  "dashboard.kpi-published": "Published",
+  "dashboard.kpi-drafts": "Drafts",
+  "dashboard.kpi-pages": "Pages online",
+  "dashboard.kpi-media": "Media",
+  "dashboard.refresh": "Reload"
 }

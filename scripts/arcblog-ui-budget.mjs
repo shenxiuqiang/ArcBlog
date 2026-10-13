@@ -81,6 +81,9 @@ export const THRESHOLDS = {
 };
 
 const EXEMPTIONS = {
+  // compose's thresholds are unchanged; its BASELINE moved on 2026-10-13 with the two-column
+  // write layout the human asked for (cards 1 -> 2: writing surface | settings; styles 7 -> 9:
+  // the grid + the second card). Disclosed in docs/04's N8 row + the round report, never silent.
   compose: { ctrl: 16, styles: 12 },
   'compose-edit': { ctrl: 16, styles: 12 },
   // dashboard is the P2 exception page. styles 9 was granted 2026-10-12 when PRD-OPS-01's
@@ -91,7 +94,10 @@ const EXEMPTIONS = {
   // a page at all (B13), so the KPI block had to be its own card fed by a CLI projection.
   // Both grants are deliberate and disclosed in docs/04's N8 row + the round report —
   // never let a threshold rise silently through --write-baseline.
-  dashboard: { cards: 4, styles: 9 },
+  // dashboard's cards exemption (3 -> 4) is the registered KPI-row exception from 2026-10-12;
+  // its styles exemption moved 8 -> 9 then 9 -> 10: the KPI row became a one-line number panel
+  // plus a top-right reload icon (2026-10-13, human request). Both were disclosed, never silent.
+  dashboard: { cards: 4, styles: 10 },
 };
 
 const NODE_START = /^\s*(view|row|grid|stack|h1|h2|h3|p|text|action|input|afs-list|afs-dropzone|key-value-list|chip|breadcrumb|frame|time|tooltip|entity-overview|table|pagination|searchable-dropdown|image|hero-widget)\b/;

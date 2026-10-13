@@ -22,7 +22,6 @@ page compose {
     save-draft { en "Save draft" zh "存草稿" }
     saved { en "Saved." zh "已保存。" }
     tab-advanced { en "Advanced" zh "高级" }
-    tab-basic { en "Essentials" zh "基本" }
     tags { en "Tags" zh "标签" }
     title { en "Write a post" zh "写文章" }
   }
@@ -116,35 +115,36 @@ page compose {
             p :desc intent=muted
           }
           view gap=lg size={flex: 1} style={overflowY: auto} {
-            view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
-              view compose-form-tabs mode=tabs {
-                view compose-form-basic label=:tab-basic {
-                  view gap=sm {
-                    h3 :g-content level=3
-                    input type=text label=:f-title name=title required=true state={value: ""}
-                    input type=text label=:f-slug name=slug required=true state={value: ""}
-                    input type=text label=:f-summary name=summary state={value: ""}
-                    input type=textarea label=:f-body name=body required=true state={value: ""}
-                  }
-                  view gap=sm {
-                    h3 :g-taxonomy level=3
-                    input type=select label=:category name=category options=[technology, design, life] state={value: technology}
-                    input type=text label=:tags name=tags state={value: ""}
-                  }
-                  view gap=sm {
-                    h3 :g-publish level=3
-                    input type=text label=:f-cover name=coverImage state={value: ""}
-                  }
+            // Two columns (2026-10-13, human request): the writing surface on the left —
+            // title, summary and a body editor with `rows=18` (the renderer reads `rows`,
+            // default 3: measured in the served bundle, recorded in arc-contracts §64) — and
+            // every other setting on the right, so the body never competes with the fields.
+            grid style={gridTemplateColumns: "minmax(0, 1fr) minmax(300px, 380px)", gap: "16px", alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+                h3 :g-content level=3
+                input type=text label=:f-title name=title required=true state={value: ""}
+                input type=text label=:f-summary name=summary state={value: ""}
+                input type=textarea rows=18 label=:f-body name=body required=true state={value: ""}
+              }
+              view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+                view gap=sm {
+                  h3 :g-taxonomy level=3
+                  input type=text label=:f-slug name=slug required=true state={value: ""}
+                  input type=select label=:category name=category options=[technology, design, life] state={value: technology}
+                  input type=text label=:tags name=tags state={value: ""}
                 }
-                view compose-form-advanced label=:tab-advanced {
-                  view gap=sm {
-                    input type=text label=:f-seo-title name=seoTitle state={value: ""}
-                    input type=text label=:f-seo-desc name=seoDescription state={value: ""}
-                    input type=text label=:f-og-title name=ogTitle state={value: ""}
-                    input type=text label=:f-og-desc name=ogDescription state={value: ""}
-                    input type=text label=:f-og-image name=ogImage state={value: ""}
-                  }
+                view gap=sm {
+                  h3 :g-publish level=3
+                  input type=text label=:f-cover name=coverImage state={value: ""}
                   afs-dropzone
+                }
+                view gap=sm {
+                  h3 :tab-advanced level=3
+                  input type=text label=:f-seo-title name=seoTitle state={value: ""}
+                  input type=text label=:f-seo-desc name=seoDescription state={value: ""}
+                  input type=text label=:f-og-title name=ogTitle state={value: ""}
+                  input type=text label=:f-og-desc name=ogDescription state={value: ""}
+                  input type=text label=:f-og-image name=ogImage state={value: ""}
                 }
               }
             }

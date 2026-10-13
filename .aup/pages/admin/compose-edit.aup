@@ -23,8 +23,6 @@ page compose-edit {
     publish-now { en "Publish" zh "发布" }
     save-draft { en "Save draft" zh "存草稿" }
     saved { en "Saved." zh "已保存。" }
-    tab-advanced { en "Advanced" zh "高级" }
-    tab-basic { en "Essentials" zh "基本" }
     tags { en "Tags" zh "标签" }
     title { en "Edit post" zh "编辑文章" }
   }
@@ -54,35 +52,35 @@ page compose-edit {
         // DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state publish/save control
         view gap=lg size={flex: 1} visible=$state.post {
           view gap=lg size={flex: 1} style={overflowY: auto} {
-            view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
-              view compose-edit-form-tabs mode=tabs {
-                view compose-edit-basic label=:tab-basic {
-                  view gap=sm {
-                    h3 :g-content level=3
-                    input type=text label=:f-title name=title required=true value="${state.post.title}"
-                    input type=text label=:f-slug name=slug required=true value="${state.post.slug}"
-                    input type=text label=:f-summary name=summary value="${state.post.summary}"
-                    input type=textarea label=:f-body name=body required=true value="${state.post.body}"
-                  }
-                  view gap=sm {
-                    h3 :g-taxonomy level=3
-                    input type=select label=:category name=category options=[technology, design, life] value="${state.post.category}"
-                    input type=text label=:tags name=tags value="${state.post.tags}"
-                  }
-                  view gap=sm {
-                    h3 :g-publish level=3
-                    input type=text label=:f-cover name=coverImage value="${state.post.coverImage}"
-                  }
+            // 左右两列（2026-10-13，与 `?page=compose` 同形）：左列只放写作面（标题 / 摘要 / 正文 rows=18），
+            // 右列是其余设置（slug / 分类 / 标签 / 封面 + 上传 / SEO·OG）；页签取消后 `tab-basic` 键随之删除。
+            grid style={gridTemplateColumns: "minmax(0, 1fr) minmax(320px, 400px)", gap: "16px", alignItems: start} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+                view gap=sm {
+                  h3 :g-content level=3
+                  input type=text label=:f-title name=title required=true value="${state.post.title}"
+                  input type=text label=:f-summary name=summary value="${state.post.summary}"
+                  input type=textarea rows=18 label=:f-body name=body required=true value="${state.post.body}"
                 }
-                view compose-edit-advanced label=:tab-advanced {
-                  view gap=sm {
-                    input type=text label=:f-seo-title name=seoTitle value="${state.post.seoTitle}"
-                    input type=text label=:f-seo-desc name=seoDescription value="${state.post.seoDescription}"
-                    input type=text label=:f-og-title name=ogTitle value="${state.post.ogTitle}"
-                    input type=text label=:f-og-desc name=ogDescription value="${state.post.ogDescription}"
-                    input type=text label=:f-og-image name=ogImage value="${state.post.ogImage}"
-                  }
+              }
+              view gap=lg {
+                view gap=sm {
+                  h3 :g-taxonomy level=3
+                  input type=text label=:f-slug name=slug required=true value="${state.post.slug}"
+                  input type=select label=:category name=category options=[technology, design, life] value="${state.post.category}"
+                  input type=text label=:tags name=tags value="${state.post.tags}"
+                }
+                view gap=sm {
+                  h3 :g-publish level=3
+                  input type=text label=:f-cover name=coverImage value="${state.post.coverImage}"
                   afs-dropzone
+                }
+                view gap=sm {
+                  input type=text label=:f-seo-title name=seoTitle value="${state.post.seoTitle}"
+                  input type=text label=:f-seo-desc name=seoDescription value="${state.post.seoDescription}"
+                  input type=text label=:f-og-title name=ogTitle value="${state.post.ogTitle}"
+                  input type=text label=:f-og-desc name=ogDescription value="${state.post.ogDescription}"
+                  input type=text label=:f-og-image name=ogImage value="${state.post.ogImage}"
                 }
               }
             }

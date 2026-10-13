@@ -1,7 +1,10 @@
 page dashboard {
   i18n {
-    overview { en "Overview" zh "概览" }
-    overview-desc { en "Counts measured by the operator CLI and printed here verbatim; the line under them states when — this page invents no number." zh "计数由运营侧 CLI 测得、本页逐字打印；下方一行写明测量时间——本页不臆造任何数字。" }
+    kpi-published { en "Published" zh "已发布" }
+    kpi-drafts { en "Drafts" zh "草稿" }
+    kpi-pages { en "Pages online" zh "已上线页面" }
+    kpi-media { en "Media" zh "素材" }
+    refresh { en "Reload" zh "刷新" }
     anomalies { en "Anomaly zone" zh "异常区" }
     anomalies-desc { en "One entry per detected anomaly class. No row means the standing line below is the verdict — it is what the checker itself reported, and when." zh "每类异常一个入口。没有行时以下方常驻行为准——那是检查器的原话与时间。" }
     anomalies-open { en "Open" zh "去处理" }
@@ -123,13 +126,36 @@ page dashboard {
           }
           // ---- 内容区：唯一滚动容器（standard §2.5 单一滚动归属）----------------
           view gap=sm size={flex: 1} style={overflowY: auto} {
-            // ---- 概览（KPI）：数字全部由 CLI 预计算、经 config/console 的 item
-            // recipe 逐字打印（页面不能自算，见 scripts/arcblog-overview.mjs）。
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              h3 :overview level=3
-              p :overview-desc scale=sm intent=muted
-              surface url="/instance/app/arcblog/config/console/overview.json" editable=false {
-                p :overview scale=caption intent=muted
+            // ---- 概览（KPI）：数字由 CLI 预计算成一条记录（config/console/overview.json），
+            // 页面用 propBind 绑定、逐字打印；标签是页面自己的 i18n（recipe 无法本地化，
+            // 见 arc-contracts §65，因此这里不走向 recipe 打印的路子）。
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={overview: "/instance/app/arcblog/config/console/overview.json"} {
+              // 右上角刷新：`propBind` 只在渲染后解析，重载/重进本页即出数；
+              // `-> navigate` 是整页跳转（runtime: `window.location.href = url`），
+              // 图标用运行时自带的 `refresh`（arc-contracts §67）。
+              row style={justifyContent: flex-end, alignItems: center, flexShrink: 0} {
+                action -> navigate "/?page=dashboard" icon=refresh variant=secondary size=sm label=:refresh
+              }
+              p "${state.overview.divergences}" scale=caption intent=warning
+              // 一行数字面板：上=数字（`scale=display` 实测 56px/600）、下=分类名。
+              // 数字来自 `config/console/overview.json`（CLI 在数据库里 `count` 出来的记录）。
+              row gap=lg cross=end {
+                view gap=xs {
+                  p "${state.overview.publishedCount}" scale=display
+                  p "$t(dashboard.kpi-published)" scale=caption intent=muted
+                }
+                view gap=xs {
+                  p "${state.overview.draftCount}" scale=display
+                  p "$t(dashboard.kpi-drafts)" scale=caption intent=muted
+                }
+                view gap=xs {
+                  p "${state.overview.pageOnlineCount}" scale=display
+                  p "$t(dashboard.kpi-pages)" scale=caption intent=muted
+                }
+                view gap=xs {
+                  p "${state.overview.mediaCount}" scale=display
+                  p "$t(dashboard.kpi-media)" scale=caption intent=muted
+                }
               }
             }
             // ---- 异常区（PRD-OPS-01 / DEF-36）：四类异常每类一个可点击入口 -----

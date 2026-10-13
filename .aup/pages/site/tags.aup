@@ -133,10 +133,6 @@ page tags {
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :list-title level=3 style={fontSize: "var(--type-body)"}
-                // 状态行：计数由 CLI 预计算（config/console/tags.json），本页逐字打印、不自算。
-                surface url="/instance/app/arcblog/config/console/tags.json" editable=false {
-                  p " "
-                }
                 afs-list tags-snapshot-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/tags/snapshot" {
                   row gap=xs cross=center role=item {
                     p :snapshot scale=caption intent=muted

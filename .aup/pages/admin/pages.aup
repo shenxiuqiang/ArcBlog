@@ -137,23 +137,21 @@ page pages {
             p :desc intent=muted
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
-            view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+            // 两列（2026-10-13，人类："右侧看着很乱"）：左侧窄栏只放「新建页面」；右侧一张卡里
+            // 三段——已上线 / 已下线 / 意图队列——取代原先四个 auto-fit 松散单元格。
+            grid style={gridTemplateColumns: "minmax(300px, 380px) minmax(0, 1fr)", gap: "16px", alignItems: start} {
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :create level=3 style={fontSize: "var(--type-body)"}
                 input type=text label=:f-slug name=slug required=true state={value: ""}
                 input type=text label=:f-title name=title required=true state={value: ""}
                 input type=text label=:f-summary name=summary state={value: ""}
-                input type=textarea label=:f-body name=body required=true state={value: ""}
+                input type=textarea rows=10 label=:f-body name=body required=true state={value: ""}
                 row cross=start {
                   action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
                 }
               }
-              view gap=sm style={flexShrink: 0} {
+              view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                 h3 :online-list level=3 style={fontSize: "var(--type-body)"}
-                // 状态行：计数由 CLI 预计算（config/console/pages.json），本页逐字打印、不自算。
-                surface url="/instance/app/arcblog/config/console/pages.json" editable=false {
-                  p " "
-                }
                 afs-list pages-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/pages" {
                   row gap=sm cross=center role=item {
                     view gap=xs style={flex: "1 1 0%"} {
@@ -176,8 +174,6 @@ page pages {
                   }
                 }
                 p :online-hint scale=sm intent=muted
-              }
-              view gap=sm style={flexShrink: 0} {
                 h3 :offline-list level=3 style={fontSize: "var(--type-body)"}
                 afs-list pages-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/page-drafts" {
                   row gap=sm cross=center role=item {
@@ -198,6 +194,28 @@ page pages {
                   }
                 }
                 p :offline-hint scale=sm intent=muted
+                view pages-advanced gap=sm {
+                  h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
+                  p :queue-legend scale=caption intent=muted
+                  p :queue-empty-note scale=caption intent=muted
+                  afs-list pages-intent-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/page-intents" {
+                    row gap=sm cross=start role=item {
+                      view gap=xs {
+                        p "${entry.content.slug} · ${entry.content.action} · ${entry.content.status}" scale=lg
+                        p "${entry.content.message}" scale=sm intent=muted
+                      }
+                    }
+                  }
+                  row cross=start {
+                    action -> set pages-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                  view gap=sm visible=$state.open {
+                    key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
+                    row cross=start {
+                      action -> set pages-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                    }
+                  }
+                }
               }
             }
             // 待执行意图队列（REQ-019 第四批）：两个页面列表下方的这个列表就是本页按钮写入的队列，
@@ -205,28 +223,6 @@ page pages {
             // 稳定 id 是 URL 契约（`pages-intent-list.page=<n>`，arc-contracts §38）。
             // UI-018 D5（§7.5 ①②④）：标题 + 状态图例（不含 `running`，见 i18n 注释），
             // CLI 三行折进「高级」——折叠本身是页内 `-> set`，零 AFS 写入。
-            view pages-advanced gap=sm {
-              h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
-              p :queue-legend scale=caption intent=muted
-              p :queue-empty-note scale=caption intent=muted
-              afs-list pages-intent-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/page-intents" {
-                row gap=sm cross=start role=item {
-                  view gap=xs {
-                    p "${entry.content.slug} · ${entry.content.action} · ${entry.content.status}" scale=lg
-                    p "${entry.content.message}" scale=sm intent=muted
-                  }
-                }
-              }
-              row cross=start {
-                action -> set pages-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
-              }
-              view gap=sm visible=$state.open {
-                key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
-                row cross=start {
-                  action -> set pages-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
-                }
-              }
-            }
           }
         }
       }

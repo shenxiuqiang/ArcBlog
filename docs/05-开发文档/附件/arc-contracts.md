@@ -2931,3 +2931,126 @@ headless Chromium（Playwright / chromium_headless_shell-1243）以**访客**身
 ④ 同型写法据此确认 `?page=dashboard` 的 KPI 卡**首屏**即打印 `config/console/overview.json`（不走 §57 的 `propBind` "绑定后才出现"通道）。
 
 **未测**：空文本子节点（`p ""`）是否合法 —— 本轮的状态行都用既有 i18n 标题作子节点。
+
+## 64. `input` 的 `rows`：正文编辑区的高度**可以**声明（2026-10-13，读服务的 runtime bundle 实测）
+
+**背景**：`?page=compose` 要"左列正文用大的编辑区域"。仓库里既有的写法是 `input type=textarea`（默认高度很矮），
+而**安全样式白名单不含 `minHeight`**（§25/§29.8），所以"靠 style 撑高"这条路不通。可行的只有原语自身的属性。
+
+**做法**：拉取服务的 runtime bundle（`curl http://arcblog.localhost:4939/aup.<hash>.js`，802,492 B），
+定位 `input` 的渲染器（注册表 `case"input":r=Sy(e)`），读它的 textarea 分支：
+
+```js
+} else if (n === "textarea") {
+  var Re = document.createElement("textarea");
+  if (Re.id = o, r.name && (Re.name = String(r.name)),
+      Re.rows = r.rows || 3,                      // <-- 读 props.rows，缺省 3
+      Re.placeholder && (Re.placeholder = String(r.placeholder)), …) { … }
+```
+
+**结论**：① `input type=textarea rows=<n>` 直接映射到 `<textarea rows=n>`（缺省 **3**）；
+② 同一渲染器还读 `label / name / mode|type|variant / required / value / options / maxLength / pattern / placeholder /
+editable / danger / unit / size`（`select` 分支另读 `multiple`）；③ **不需要**换用 `editor` / `post-editor`：
+`post-editor`（同 bundle 的 `Iw()`）是**自带写入**的独立发帖部件（自己的 New post 按钮 + 草稿自动保存 +
+Publish），不参与页面表单的 `args`，会把 `slug/摘要/SEO/封面` 等字段丢掉 —— 本仓的 `?page=compose` 因此继续用
+`input` 系列 + `exec /.actions/write`，只用 `rows` 把正文区撑大。落点：`.aup/pages/admin/compose.aup`（左列 `rows=18`）。
+
+## 65. **item recipe 里的 `$t()` 不会被翻译** ⇒ 记录驱动的"标签"只能是语言中立的英文（2026-10-13，guest 实测）
+
+**动机**：`?page=dashboard` 的 KPI 行与列表页状态行原本由 `config/console/<x>.json` + 目录 item recipe 打印，
+而 recipe 的 `label` 是写死在 JSON 里的英文（`published` / `pages online`）。要判断"能不能让 recipe 走 i18n"，
+只能实测。
+
+**做法**：临时建 `node/probe-l10n/`（guest 可读），写入一份 item recipe：
+`key-value-list.fields = [{label: "$t(wrapper.nav-dashboard)", value: "${content.value}"}, {label: "plain-label", …}]`，
+`one.json = {value:"42"}`；写一个临时公共页 `surface url="…/node/probe-l10n/one.json" editable=false { p "x" }`，
+headless Chromium 以 guest 冷加载。
+
+**实测 DOM 文本**：
+
+```text
+probe: does $t() localize inside an item recipe?
+x
+$t(wrapper.nav-dashboard)     <-- 原样输出（没有翻译）
+42
+plain-label
+42
+```
+
+**结论**：① item recipe 的 `label`/文本**不经过 i18n**，`$t(...)` 会**逐字**渲染（不是缺失、不是回退，而是字面量）；
+② 因此"记录 + recipe 打印"这条通道**永远只能显示语言中立的英文** —— 在中文控制台里就是"机器输出"的样子
+（人类 2026-10-13 反馈：页面右侧"看着很乱"）；
+③ 要**本地化标签 + 记录值**，本仓可行通道只剩 `propBind` + 页面自身 `key-value-list`（标签是页面 i18n，
+值是 `${state.<bind>.<field>}`），代价是**冷加载首帧没有值**（`propBind` 在首次渲染后才解析，§57/§58）。
+**现行选择**：KPI 行改走 `propBind`（4 行 + 一句"冷启动可能为空、重载即出现"的常驻说明）；
+列表页的 per-page 状态行**全部撤掉**（列表本身 + 平台分页器已足够，且不再有英文机器行）。
+探针页与探针记录已删除（`.aup/pages/probe-recipe-l10n.aup`、`node/probe-l10n/**`）。
+
+## 66. 数据库计数与"一行数字面板"（2026-10-13 实测）
+
+**需求**：仪表盘「概览」要**一行数字面板**（上=数字、下=分类名），且数字**从数据库查询获取**。
+
+**① 数据库计数 = 查询标准动作的 `count`**。`arc afs exec /blocklets/arcblog/.actions/query --args '{"path":"…","count":true}'`
+（`--help`：*"Rows-free counting (limit 0 + total/groups)"*）返回 `{total}`，**不带任何行**。逐集合实测（与目录清单逐一对照）：
+
+| 集合 | `count:true` → total | 目录 `list()` |
+| --- | --- | --- |
+| `posts` / `drafts` | 1 / 3 | 1 / 3 |
+| `pages` / `page-drafts` / `media` | 0 / 0 / 0 | 0 / 0 / **报错**（空目录 `list` 直接 `LIST_ERROR`） |
+| `node/summaries` / `categories` / `tags/items` | 1 / 3 / 22 | 1 / 3 / 22 |
+
+⇒ 两者当前一致，但 `count` 更稳（空/缺目录也回答 0，而不是抛 `Path not found`）。注意 `paging:` **不是**合法 spec key
+（`paging: unknown spec key`），分页是 keyset 语义；要"只要数量"就用 `count:true`。
+现行选择：`scripts/arcblog-overview.mjs` 用 `count:true` 取数，**同时**跑一次目录清单作**交叉核对**，
+不一致时把差异写进记录的 `divergences`（页面逐字打印）——索引陈旧是本仓真实故障模式（`DEF-42`），
+静默错误的 KPI 比明说的更糟。
+
+**② 大号数字**：`p` 的 `scale` 实测（headless Chromium，`getComputedStyle`）：
+
+| `scale` | 计算字号 / 字重 |
+| --- | --- |
+| 缺省 | 15px / 300 |
+| `caption` | 13px / **500** |
+| `sm` | 12.8px / 300 |
+| `md` / `lg` / `title` | 15px / 300（不放大） |
+| **`display`** | **56px / 600** |
+
+⇒ 数字面板无需任何 `style=`：`row gap=lg cross=end` + 每格 `view gap=xs { p "<数字>" scale=display ; p "$t(<分类名>)" scale=caption }`，
+DOM 顺序实测就是"数字在上、分类名紧跟其下"（`p.display.nextElementSibling` = 分类名）——页面的 `styles`/`i18n` 计数**零增长**。
+（`scale=xl` 之类**不存在**的值会被解析成节点类型并报 `Unknown node type "xl"`。）
+
+**③ 冷启动仍然只有"渲染后绑定"这条路**（§57/§58 的推论，实测）：整块面板 `propBind` 到记录后，
+**首帧数字为空**（`["","","",""]`），**重载一次即出现**（`["1","2","3","4"]`）。`recipe` 打印能在首帧出数，
+但标签只能是英文机器词（§65）——与人类"不要机器味"的要求冲突。因此现行取舍 = `propBind` + 面板下方一句常驻说明
+（"冷启动可能为空，重载一次即可"）；若要**首帧必有数**，唯一干净做法是构建期把数字**注入页面文本**（会牺牲新鲜度）。
+
+## 67. `action icon=<name>` 的图标词表 = 运行时自带的 143 个名字（2026-10-13，读服务 bundle 实测）
+
+**动机**：仪表盘「一行数字面板」要一个**右上角刷新图标**。`icon=` 是合法 prop（仓库里 `icon=trash` 已在用），
+但"可用的名字有哪些、写错会怎样"没人测过。
+
+**做法**：拉 `aup.<hash>.js`，定位 `action` 渲染器（`case"action":r=by(e)`）→ 它调用 `Dr(t.icon, size)`：
+
+```js
+function Dr(e,t){ if(!ga[e]) return null; … svg(viewBox 0 0 24 24, stroke currentColor, width/height = t||16) … a.innerHTML = ga[e]; }
+```
+
+`ga` 是运行时的图标表（内联的 SVG path 字符串），把它的键全部取出 = **143 个**：
+`activity anchor aperture archive award ban bell bluetooth bolt book bookmark bot box braces brain briefcase bug calendar
+camera chart check clipboard clock close cloud code coinbase columns compass copy cpu crosshair database disc discord
+download droplets edit ellipsis explore eye feather file film filter fingerprint flag flame folder gear gift github globe
+grid hash headphones heart home image inbox info key layers layout lightbulb link linkedin list loader lock mail maximize
+megaphone menu mic minimize monitor moon move music navigation package palette paperclip pause phone pin play plus power
+printer radio receipt redo refresh robot rocket routes rss save scissors scroll search send server settings share shield
+sidebar smartphone snowflake sparkles speaker star sun sunrise sunset tablet tag tags target telegram terminal thermometer
+tool trash twitter undo unlock upload user users video volume wallet warning watch wifi wind wrench x youtube zap`
+
+**结论**：① **`refresh` 在表里**（还有 `redo`/`undo`/`clock`/`loader`…），所以"刷新图标"不需要自造 SVG；
+② 名字不在表里时 `Dr` 返回 **`null`**，渲染器回退到按钮的 **label 文本**（不会报错、也不会出现空白按钮）——即写错图标是**静默降级**；
+判据 = 按钮 DOM 里**有没有内联 `<svg viewBox="0 0 24 24">`**（实测：`icon=refresh` / `icon=trash` / 不存在的名字分别渲染——
+两个合法名字的按钮都含 `<svg …>`；class 只有 `aup-action`，**不要**用 class 名判断，`icon-svg`/`icon-only` 这两个 class 在本版本并不出现）；
+③ 带 `icon` 的按钮**仍然渲染 label 文本**（图标在文字左侧），所以 label 要写短（本仓用「刷新」/「Reload」），不是纯图标按钮；
+③ 图标是 `stroke: currentColor` 的 24×24 线性图标，颜色继承按钮文字色，不需要额外配色。
+**落点**：`.aup/pages/admin/dashboard.aup` 的 KPI 卡片右上角
+`action -> navigate "/?page=dashboard" icon=refresh variant=secondary size=sm label=:refresh`
+（`-> navigate` 在运行时就是 `window.location.href = url`，整页重进 ⇒ `propBind` 重新解析，这正是"重载即出数"的刷新语义）。
