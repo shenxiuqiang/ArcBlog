@@ -55,7 +55,7 @@
                     "id": "console",
                     "label": "$t(wrapper.nav-console)",
                     "icon": "grid",
-                    "href": "/?page=dashboard"
+                    "exec": "dashboard"
                   }
                 ]
               }

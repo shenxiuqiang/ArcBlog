@@ -1,0 +1,16 @@
+# Local content schema for the `media` collection declared in blocklet.yaml.
+# `type: local:media` resolves to this file (`/packages/schema/media.yaml`), and without it
+# `arc blocklet check` fails with `content_schema_missing_local_schema` (#4149) — that code is a
+# warning only for the types the platform allowlists (`local:article`, `local:docs`).
+# Shape copied from the shipped reference package `places-notebook/schema/place.yaml`.
+contentType: media
+required: [title]
+fields:
+  title: { type: string, required: true }
+  alt: { type: string }
+  path: { type: string }
+  mimeType: { type: string }
+  width: { type: number }
+  height: { type: number }
+render:
+  component: content-page

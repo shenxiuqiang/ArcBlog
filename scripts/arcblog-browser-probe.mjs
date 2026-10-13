@@ -25,6 +25,16 @@
  *
  * The verdict reports the injected cookie NAMES (never values) plus document.cookie names.
  *
+ * ⚠️ COOKIES SURVIVE BETWEEN RUNS — and one of them paints the page white (arc-contracts §70).
+ * The probe REUSES a browser already listening on `--port`, and that browser's profile keeps its
+ * cookies, so `arc_mode=dark` (written by the platform's own theme-toggle button, see
+ * `dist/.web-cache/<locale>/index.html`) stays behind and makes every later screenshot pure white while
+ * the DOM looks perfect. That reads exactly like a site regression; measured 2026-10-13, it cost a
+ * false "we broke the theme" investigation. Use `--fresh` for any judgement about rendering.
+ *   - `--fresh`  unique profile + an auto-selected free port ⇒ cookies cannot leak in;
+ *                the chosen port is reported in the verdict as `port`.
+ *   - default    reuse `--port` (fast, but only trustworthy if you never injected cookies there).
+ *
  * Behaviour:
  *   - if nothing is listening on the port it starts headless Chrome DETACHED and
  *     reuses it for later runs (never kills it, never opens a visible window);
@@ -39,6 +49,7 @@
 
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { createServer } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -49,7 +60,23 @@ const flag = (name, fallback) => {
   return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback;
 };
 const has = (name) => args.includes(`--${name}`);
-const port = Number(flag('port', 9334));
+const wantFresh = has('fresh');
+
+/** An ephemeral free port — a fresh run must not reuse a browser (and its cookies). */
+function freePort() {
+  return new Promise((resolve, reject) => {
+    const srv = createServer();
+    srv.unref();
+    srv.on('error', reject);
+    srv.listen(0, '127.0.0.1', () => {
+      const { port: p } = srv.address();
+      srv.close(() => resolve(p));
+    });
+  });
+}
+
+const port = wantFresh ? Number(flag('port', await freePort())) : Number(flag('port', 9334));
+const profileDir = flag('profile', wantFresh ? `/tmp/arcblog-chrome-fresh-${port}-${process.pid}` : `/tmp/arcblog-chrome-headless-${port}`);
 const settle = Number(flag('settle', 1500)); // let the AUP runtime mount after load
 const timeout = Number(flag('timeout', 20_000));
 
@@ -96,7 +123,7 @@ async function ensureBrowser() {
     [
       '--headless=new', // no window ⇒ nothing can steal focus
       `--remote-debugging-port=${port}`,
-      `--user-data-dir=${flag('profile', `/tmp/arcblog-chrome-headless-${port}`)}`,
+      `--user-data-dir=${profileDir}`,
       '--no-first-run',
       '--disable-gpu',
       'about:blank',
@@ -206,6 +233,81 @@ async function probe(browserVersion) {
       gateText: (document.body.innerText.match(/Sign in with|登录|Login/i) || [])[0] ?? null,
       text: document.body.innerText.slice(0, 400),
       documentCookies: document.cookie.split(';').map((c) => c.trim().split('=')[0]).filter(Boolean),
+      // The host html attributes are what the theme bridge and the runtime fight over:
+      // data-palette is "neutral" (platform default) until the bridge applies the instance
+      // setting (settings say "natural"), and data-mode is the compiled default until either wins.
+      htmlAttrs: {
+        tone: document.documentElement.getAttribute('data-tone'),
+        palette: document.documentElement.getAttribute('data-palette'),
+        mode: document.documentElement.getAttribute('data-mode'),
+        auth: document.documentElement.hasAttribute('data-authenticated') ? 'yes' : 'no',
+        saveCapability: document.documentElement.getAttribute('data-arc-save-capability'),
+        saveBar: document.querySelectorAll('[data-arc-save="bar"], .arc-save-bar').length,
+        // The theme bridge's own footprint on the HOST document: its injected stylesheet and its
+        // localStorage cache are the two signals that it actually ran (its iframe is same-origin,
+        // so the host sees none of the bridge's own globals).
+        bridgeStyle: document.getElementById('arcblog-chrome-style') ? 'yes' : 'no',
+        bridgeCache: (function () { try { return localStorage.getItem('arcblog:theme:v1') || 'none'; } catch (e) { return 'blocked'; } })(),
+        overlayFrames: document.querySelectorAll('.aup-frame-overlay').length,
+        // Generic rendering diagnostics: enough to tell "the component never mounted" apart from
+        // "it mounted but its CSS hides it" without another tool.
+        details: (function () {
+          try {
+            return {
+              photoStory: typeof window.PhotoStory,
+              heroRoot: document.querySelectorAll('[data-hero-carousel]').length,
+              heroReady: document.querySelectorAll('.hero-carousel--ready').length,
+              storyBlocks: document.querySelectorAll('[data-story-block]').length,
+              images: document.querySelectorAll('img').length,
+              // Geometry: a slide that exists but has a 0-size box (or an unloaded image) explains a
+              // visually empty hero without any CSS guesswork.
+              bodyH: document.body ? document.body.scrollHeight : 0,
+              heroRect: (function () {
+                var el = document.querySelector('[data-hero-carousel]');
+                if (!el) return null;
+                var r = el.getBoundingClientRect();
+                return { w: Math.round(r.width), h: Math.round(r.height), opacity: getComputedStyle(el).opacity, display: getComputedStyle(el).display };
+              })(),
+              blockRect: (function () {
+                var el = document.querySelector('[data-story-block]');
+                if (!el) return null;
+                var r = el.getBoundingClientRect();
+                var cs = getComputedStyle(el);
+                return { w: Math.round(r.width), h: Math.round(r.height), opacity: cs.opacity, display: cs.display, visibility: cs.visibility, position: cs.position };
+              })(),
+              imgRect: (function () {
+                var el = document.querySelector('img');
+                if (!el) return null;
+                var r = el.getBoundingClientRect();
+                return { w: Math.round(r.width), h: Math.round(r.height), complete: el.complete, natural: el.naturalWidth + 'x' + el.naturalHeight, src: (el.currentSrc || el.src || '').slice(0, 60) };
+              })(),
+              // Same-origin frames (the hero carousel and the theme bridge live in iframes):
+              // count their story blocks / images so a parent-page probe can see inside them.
+              frames: (function () {
+                var out = [];
+                var all = document.querySelectorAll('iframe');
+                for (var i = 0; i < all.length; i++) {
+                  try {
+                    var d = all[i].contentDocument;
+                    if (!d) continue;
+                    out.push({
+                      src: (all[i].getAttribute('src') || '').slice(0, 40),
+                      blocks: d.querySelectorAll('[data-story-block]').length,
+                      images: d.querySelectorAll('img').length,
+                      text: (d.body ? d.body.innerText : '').replace(/\s+/g, ' ').trim().slice(0, 60),
+                    });
+                  } catch (e) {
+                    out.push({ src: (all[i].getAttribute('src') || '').slice(0, 40), error: 'cross-origin' });
+                  }
+                }
+                return out;
+              })(),
+            };
+          } catch (e) {
+            return { error: String(e && e.message) };
+          }
+        })(),
+      },
     });
   })()`;
   const evaluated = await send('Runtime.evaluate', { expression: probeJs, returnByValue: true });
@@ -219,13 +321,24 @@ async function probe(browserVersion) {
     screenshot = path;
   }
   ws.close();
+  // §70: a lingering `arc_mode` cookie makes Chromium paint the viewport white while the DOM stays
+  // intact — the single most misleading state this probe can produce. Say it in the verdict.
+  const arcMode = (verdict.documentCookies ?? []).includes('arc_mode');
+  const cookieWarning = arcMode && !wantFresh
+    ? 'this browser profile carries `arc_mode` (written by the platform theme toggle) — a white screenshot here may be the §70 blank-paint defect, not a page regression; rerun with --fresh'
+    : null;
+
   return {
     browserVersion,
+    port,
+    freshProfile: wantFresh,
+    profileDir,
     navigationWarning,
     loadFired: seen.includes('Page.loadEventFired'),
     reusedTarget: Boolean(targets.length),
     injectedCookies: injected,
     ...verdict,
+    cookieWarning,
     screenshot,
   };
 }

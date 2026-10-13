@@ -60,6 +60,19 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
   const src = readFileSync(bridgePath, 'utf8');
   assert.match(src, /prefers-color-scheme: light/, 'the bridge must resolve `system` through prefers-color-scheme');
   assert.match(src, /web-mode/, 'the bridge must honour the manual mode override');
+  // DEF-45: the platform mounts English save chrome ("Bookmark"/"My saves") on the host document
+  // with no blocklet-level switch; the bridge turns it off and sweeps late mounts.
+  assert.match(src, /__arcSave\s*=\s*false/, 'the bridge must disable the platform save chrome');
+  assert.match(src, /arc-save-bar|data-arc-save/, 'the bridge must sweep an already-mounted save bar');
+  // The platform's pre-paint script reads BOTH `localStorage['web-mode']` and the `arc_mode` cookie
+  // (the platform theme-toggle writes both). The bridge must mirror its resolved mode into that
+  // cookie too, or the next navigation pre-paints a mode the site settings disagree with
+  // (arc-contracts §69/§70; measured 2026-10-13).
+  assert.match(
+    src,
+    /document\.cookie\s*=\s*'arc_mode='/,
+    'the bridge must mirror the resolved mode into the platform `arc_mode` cookie',
+  );
   assert.match(
     src,
     /arcblog:theme:v1/,
@@ -146,4 +159,69 @@ test('every selectable appearance value is one the bridge implements, and vice v
     if (!options.includes(seed.value)) problems.push(`${axis}: default '${seed.value}' is not selectable`);
   }
   assert.deepEqual(problems, [], `appearance controls and the bridge disagree:\n  ${problems.join('\n  ')}`);
+});
+
+/**
+ * The painted-pixel detector must tell "an opaque white layer covers the viewport" (§70) apart from
+ * "the page painted something". `scripts/lib/png-stats.mjs` is otherwise only exercised by the
+ * checkpoint gate `npm run verify:visual` (which needs a daemon + Chrome), so a broken decoder
+ * would go unnoticed exactly where it matters. The fixtures are built here with `zlib.crc32`
+ * (Node >= 20.15), so the suite stays dependency-free and instance-free.
+ */
+test('the painted-pixel detector separates a white viewport from a painted one', async () => {
+  const { deflateSync, crc32 } = await import('node:zlib');
+  const { pngStats } = await import('./lib/png-stats.mjs');
+
+  const chunk = (type, body) => {
+    const head = Buffer.alloc(8);
+    head.writeUInt32BE(body.length, 0);
+    head.write(type, 4, 'latin1');
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(crc32(Buffer.concat([Buffer.from(type, 'latin1'), body])) >>> 0, 0);
+    return Buffer.concat([head, body, crc]);
+  };
+
+  /** Square RGB PNG of one flat colour (filter type 0 on every row). */
+  const solidPng = (size, [r, g, b]) => {
+    const ihdr = Buffer.alloc(13);
+    ihdr.writeUInt32BE(size, 0);
+    ihdr.writeUInt32BE(size, 4);
+    ihdr[8] = 8; // bit depth
+    ihdr[9] = 2; // truecolour
+    const rows = [];
+    for (let y = 0; y < size; y += 1) {
+      const row = Buffer.alloc(1 + size * 3);
+      for (let x = 0; x < size; x += 1) {
+        row[1 + x * 3] = r;
+        row[2 + x * 3] = g;
+        row[3 + x * 3] = b;
+      }
+      rows.push(row);
+    }
+    return Buffer.concat([
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+      chunk('IHDR', ihdr),
+      chunk('IDAT', deflateSync(Buffer.concat(rows))),
+      chunk('IEND', Buffer.alloc(0)),
+    ]);
+  };
+
+  const white = pngStats(solidPng(8, [255, 255, 255]));
+  const grey = pngStats(solidPng(8, [128, 128, 128]));
+  assert.equal(white.samples, 16, 'every sampled pixel counts');
+  assert.ok(white.meanLuminance >= 254.9, `white viewport must read ~255, got ${white.meanLuminance}`);
+  assert.equal(white.whiteFraction, 1, 'a white viewport is 100% white');
+  assert.ok(Math.abs(grey.meanLuminance - 128) < 1, `grey must read ~128, got ${grey.meanLuminance}`);
+  assert.ok(grey.meanLuminance < 252, 'the §70 threshold must not fire on a painted page');
+  assert.throws(() => pngStats(Buffer.from('not a png')), /not a PNG/, 'junk must throw, never silently read as black');
+});
+
+test('the bridge shell (render.js) is generated and carries the script inline (DEF-47)', async () => {
+  const { composeRender } = await import('./arcblog-theme-bridge.mjs');
+  const committed = readFileSync(join(repoRoot, '.web/components/theme-bridge/render.js'), 'utf8');
+  assert.equal(committed, composeRender(), 'run: node scripts/arcblog-theme-bridge.mjs');
+  // The platform no longer appends component scripts to the page, so the bridge is dead unless the
+  // shell inlines it — measured 2026-10-13: the built page had 0 bytes of bridge code.
+  assert.match(committed, /__arcblogThemeBridge/, 'the bridge logic must be inlined in render.js');
+  assert.match(committed, /suppressSaveChrome/, 'the save-chrome sweep must be inlined too');
 });

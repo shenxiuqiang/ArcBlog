@@ -1,0 +1,35 @@
+# Site-level declarations for the **web surface** (`/p/**`, the `web` handler mounted by `.route/web`).
+#
+# Why this file exists: it was absent until 2026-10-13, which is exactly what
+# `arc blocklet check . --profile basic` reported as `warning og_image_source_missing`
+# ("sites[].domains is declared but no og:image source is configured", arc#6393).
+# The field names below are copied from the reference blocklets shipped *inside* arc 2.0
+# (`~/.arc/current/assets/blocklets/did-space/.web/site.yaml`,
+#  `…/showcase-dsl/.web/site.yaml`) — not invented.
+#
+# ⚠️ Measured the same day: this `seo.og-image` key does **not** clear that warning —
+# `arc blocklet check` only accepts the FILE `.web/seo/og-image` (site default) or
+# `pages/<type>/seo/og-image` (per page type); the shipped `nimbus-demo` carries the same
+# `seo.og-image` key and gets the same warning. Both declarations live here on purpose,
+# with the same value, so the runtime and the checker cannot disagree.
+#
+# Kept deliberately minimal: only `locale` + `seo`. `theme` / `template` / `color-scheme`
+# are omitted on purpose, because ArcBlog's theme and shell are driven by the runtime
+# theme bridge (`.web/components/theme-bridge/`) and by the instance settings, and
+# declaring them here would add a second writer for the same state.
+locale: en
+seo:
+  description: "A DID-native publishing space for readable Markdown posts and images."
+  # 1200x630 PNG under `content/media/`. The URL is the **site mount**, not `/`: measured
+  # 2026-10-13, `/p/media/arcblog-og.png` → 200 image/png while `/media/…` and
+  # `/content/media/…` both return the AUP shell (200 text/html). (The reference blocklet
+  # did-space writes `/media/…` because its web surface is mounted at `/` — do not copy that
+  # path into this repo.) The pre-render also rewrites it to a fingerprinted
+  # `…/p/media/c3dabc1c-arcblog-og.png`; both URLs are 200.
+  # Regenerate the card with the platform's OWN renderer, through the checked-in script
+  # (`…/blocklet/og.png?template=default&title=…&description=…&locale=en` → 200 image/png):
+  #   node scripts/arcblog-og-image.mjs              # fetch + write content/media/arcblog-og.png
+  #   node scripts/arcblog-og-image.mjs --check      # offline: declarations agree, asset is 1200x630
+  og-image: /p/media/arcblog-og.png
+  og-site-name: ArcBlog
+  title-template: '%s — ArcBlog'

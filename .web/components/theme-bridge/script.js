@@ -294,6 +294,18 @@
         } catch (e) {
           /* best effort */
         }
+        // Mirror the mode into the PLATFORM's own cookie as well (arc-contracts §69/§70): the AUP
+        // shell's pre-paint script reads `arc_mode` — the same cookie the platform's server-driven
+        // theme-toggle writes — and paints `<html data-mode>` from it BEFORE this bridge can run.
+        // Without this, a user who ever toggled the theme elsewhere pre-paints a mode that
+        // disagrees with the site settings (wrong-theme flash; §70 covers the white-viewport case).
+        try {
+          if (mode === 'light' || mode === 'dark') {
+            p.document.cookie = 'arc_mode=' + mode + ';path=/;max-age=31536000;SameSite=Lax';
+          }
+        } catch (e) {
+          /* best effort */
+        }
       } finally {
         // MutationObserver callbacks are microtasks: keep the flag raised until
         // they have drained so our own writes never trigger a re-apply.
@@ -380,6 +392,43 @@
   }
 
   var tries = 0;
+  // DEF-45: hide the platform's save chrome on the host document.
+  //
+  // Evidence (platform asset `_arc/assets/116ea4c0….js`): the bar is
+  // `div.arc-save-bar[data-arc-save="bar"]` containing buttons
+  // `[data-arc-save="bookmark"]` ("Bookmark") and `[data-arc-save="library"]`
+  // ("My saves"), appended to `document.documentElement`; its `capability()`
+  // returns "off" when `window.__arcSave` is false/"off", and it re-evaluates on
+  // each sync, so both the flag and a sweep are needed (it can be mounted after
+  // this iframe boots).
+  function suppressSaveChrome(p) {
+    try {
+      p.__arcSave = false;
+    } catch (e) {
+      /* cross-origin host */
+    }
+    var remove = function () {
+      try {
+        var bars = p.document.querySelectorAll('[data-arc-save="bar"], .arc-save-bar');
+        for (var i = 0; i < bars.length; i++) {
+          if (bars[i] && bars[i].parentNode) bars[i].parentNode.removeChild(bars[i]);
+        }
+      } catch (e) {
+        /* best effort */
+      }
+    };
+    remove();
+    // The platform mounts the bar on the host <html> after the session resolves; a
+    // childList observer is enough (no attribute churn) and it is torn down when
+    // this iframe is replaced on navigation.
+    try {
+      var obs = new p.MutationObserver(remove);
+      obs.observe(p.document.documentElement, { childList: true });
+    } catch (e) {
+      /* no MutationObserver on the host: the one-shot sweep above still applies */
+    }
+  }
+
   function boot() {
     var p = host();
     if (!p) return; // opened standalone (no bridged parent): stay inert
@@ -387,6 +436,14 @@
     // no-op, but a fresh iframe (navigation recreates the frame) must take
     // over — the previous instance's document is gone.
     if (p.__arcblogThemeBridge === window) return;
+    // The platform's own save chrome (DEF-45): a `div.arc-save-bar` with two
+    // English buttons ("Bookmark" / "My saves") is appended to the host
+    // documentElement for signed-in readers. The repo has no blocklet-level
+    // switch for it (the platform reads `window.__arcSave` /
+    // `data-arc-save-capability`), and it is English-only on a zh-capable site,
+    // so the bridge — which already owns host-document chrome — turns it off
+    // and sweeps any bar mounted later.
+    suppressSaveChrome(p);
     // Land the host chrome stylesheet (incl. the overlay `color-scheme`
     // blank-page fix) BEFORE the first data-mode write: applyCached below can
     // flip the host light -> dark while afs is still unavailable, and the

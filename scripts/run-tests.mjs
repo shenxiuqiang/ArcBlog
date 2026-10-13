@@ -130,6 +130,19 @@ export const DEV_ENV_REASONS = {
  * Keep this next to FAST_TESTS: a suite with no entry here is always selected.
  */
 const GUARDS = {
+  // ENG-50 + 2026-10-13 A1–A3: generated artifacts, the platform's own two checkers, and the
+  // three-home share-card declaration. It stays selected for every source/config path it reads.
+  'arcblog-artifact-drift': [
+    /^\.aup\//,
+    /^agents\//,
+    /^blocklet\.yaml$/,
+    /^\.web\/site\.yaml$/,
+    /^\.web\/seo\//,
+    /^content\//,
+    /^schema\//,
+    /^pages\/[^/]+\/seo\//,
+    /^scripts\/arcblog-artifact-drift/,
+  ],
   'arcblog-agent-tools': [/^scripts\/lib\/agents\.mjs$/, /^scripts\/arcblog-agent\.mjs$/, /^scripts\/arcblog-agent-tools/],
   // PRD-OPS-01 / DEF-36: the decision library, its CLI, the dashboard that prints
   // it, and the recipe that is the stateNote print point.

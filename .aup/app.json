@@ -4,6 +4,9 @@
   "tone": "editorial",
   "palette": "natural",
   "mode": "light",
+  "branding": {
+    "title": "ArcBlog"
+  },
   "wrapper": "wrapper.json",
   "locales": [
     "en",

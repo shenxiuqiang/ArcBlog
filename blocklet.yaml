@@ -78,6 +78,37 @@ sites:
 # content under /instance/app/arcblog (same model as discuss-kit).
 scope: app
 
+# The web surface's public root is `content/` — mapped to the SITE MOUNT, not to `/`:
+# a file at `content/media/x.png` answers `/p/media/x.png` at the site root (probed 2026-10-13:
+# `/media/x.png` and `/content/media/x.png` return the AUP shell, `/p/media/x.png` returns image/png).
+# Because that makes `content/` a collection, `arc blocklet check` asks for this declaration;
+# `arc collections scan .` printed exactly this fragment. `type: local:media` also requires
+# `schema/media.yaml` (error `content_schema_missing_local_schema` otherwise). Faces are the
+# scan defaults: no `mcp` (opt-in only, epic #3657 W2).
+collections:
+  media:
+    type: local:media
+    # `arc collections scan .` prints this glob; today it matches NOTHING on purpose — the
+    # collection exists to publish the share card (`content/media/arcblog-og.png`). Keep it as the
+    # scan's output: when per-item media pages arrive, `content/media/<slug>/content.md` becomes
+    # indexable without touching this declaration.
+    indexable:
+      - "content/media/**/content.md"
+    faces:
+      web: true
+      sitemap: true
+      llms: [index, full]
+
+
+# Share-card declaration (2026-10-13). Three layers, all three needed, all three measured:
+#   1. `.web/seo/og-image`  — the *file*; the ONLY form `arc blocklet check` credits
+#      (`og_image_source_missing` clears). `.web/site.yaml`'s `seo.og-image` does NOT clear it
+#      (counter-example: the shipped `nimbus-demo` carries that key and still warns);
+#   2. `.web/site.yaml` `seo.*` — what the RUNTIME actually emits (probed build-only: it wins
+#      over the file, and `pages/<type>/seo/og-image` wins over both, per page type);
+#   3. `content/media/arcblog-og.png` — the asset that is really served, at the SITE MOUNT
+#      (`/p/media/…`), which is why `content/` above is declared as a collection.
+
 # Anonymous read access for the public feed: the index page renders an afs-list
 # over published records without a session. drafts/ (draft + archived + deleted)
 # is admin-only — the studio lists it, anonymous readers cannot.

@@ -39,6 +39,20 @@
       },
       "children": [
         {
+          "id": "post-record-avatar",
+          "type": "view",
+          "props": {
+            "style": {
+              "width": "32px",
+              "height": "32px",
+              "flexGrow": 0,
+              "flexBasis": "32px",
+              "borderRadius": "999px",
+              "background": "var(--color-border) url(/.well-known/service/user/avatar/${content.authorDid}?s=64) center / cover no-repeat"
+            }
+          }
+        },
+        {
           "id": "post-record-author",
           "type": "text",
           "props": {

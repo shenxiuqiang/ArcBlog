@@ -37,6 +37,7 @@
     "gate:docs": "node scripts/arcblog-doc-gates.mjs",
     "scrub:dist-secrets": "node scripts/arcblog-dist-secrets.mjs",
     "verify:artifacts": "node scripts/arcblog-dist-secrets.mjs --check && node scripts/arcblog-dist-secrets.mjs --check --pages",
+    "verify:visual": "node scripts/arcblog-visual-check.mjs",
     "build": "arc blocklet build && npm run scrub:dist-secrets"
   },
   "dependencies": {

@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { composeScript } from './arcblog-hero-carousel.mjs';
+import { composeRender, composeScript } from './arcblog-hero-carousel.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -14,6 +14,18 @@ test('script.js is in sync with the vendored widget and init.js', () => {
   // the concatenated file is what ships. Regenerate after editing either input.
   const committed = readFileSync(join(repoRoot, '.web/components/hero-carousel/script.js'), 'utf8');
   assert.equal(committed, composeScript(), 'run: node scripts/arcblog-hero-carousel.mjs');
+});
+
+test('render.js is in sync with the inlined shell (DEF-47)', () => {
+  // The platform stopped appending a component's script.js/style.css to the page (measured: the
+  // built `/p/en/hero-carousel/` carried zero `photo-story` bytes, and no blocklet path is
+  // reachable as a static asset), so `render.js` itself must carry the engine + CSS inline — and
+  // it must stay GENERATED, because a hand-written version that reads files at render time
+  // rendered an empty section silently (the site server's sandbox has no `node:fs`).
+  const committed = readFileSync(join(repoRoot, '.web/components/hero-carousel/render.js'), 'utf8');
+  assert.equal(committed, composeRender(), 'run: node scripts/arcblog-hero-carousel.mjs');
+  assert.match(committed, /photo-story/, 'the inlined engine must be in render.js');
+  assert.match(committed, /data-hero-carousel/, 'the container must be in render.js');
 });
 
 test('the vendored engine keeps its provenance header', () => {

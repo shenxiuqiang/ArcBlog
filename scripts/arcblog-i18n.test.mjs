@@ -211,6 +211,20 @@ test('the L8 detector can fail: it flags implementer references and ignores plai
   assert.doesNotMatch(i18nBlock(commented), /BUG-063/);
 });
 
+// The same L8 rule for the WEB surface: `pages/<name>/seo/*` is emitted verbatim as
+// `<meta name="description">` / `og:description`, so implementer wording there is just as public as
+// a page's `i18n {}` block — and the page-level meter cannot see those files (2026-10-13).
+test('web-surface SEO copy carries no implementer references', async () => {
+  const { measureSeoCopy } = await import('./arcblog-ui-copy.mjs');
+  const measured = measureSeoCopy();
+  const files = Object.keys(measured);
+  assert.ok(files.length >= 2, `seo files measured: ${files.length} — the meter found nothing`);
+  const dirty = Object.entries(measured)
+    .filter(([, v]) => v.total > 0)
+    .map(([k, v]) => `${k}: ${v.hits.join(', ')}`);
+  assert.deepEqual(dirty, [], `implementer references in published meta copy (L8):\n  ${dirty.join('\n  ')}`);
+});
+
 test('no page carries more implementer copy than its recorded L8 bound', async () => {
   const { measureAll, readBaseline } = await import('./arcblog-ui-copy.mjs');
   const baseline = readBaseline();

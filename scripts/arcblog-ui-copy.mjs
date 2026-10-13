@@ -101,6 +101,38 @@ export function measureAll(dir = pagesDir) {
   return out;
 }
 
+/**
+ * The WEB-surface copy (`pages/<name>/seo/{title,description,og-image}`), which the page-level meter
+ * above cannot see: it only reads `.aup/pages/**` `i18n {}` blocks, while `pages/**` files are
+ * emitted verbatim into `<meta name="description">` / `og:description` — i.e. they are just as
+ * "what a reader sees" as an operator string. Measured 2026-10-13: the theme-bridge page shipped
+ * "Internal bridge page … Not intended for direct visits." as its public description.
+ * Rendering here = the file's whole content (there is no i18n block to slice).
+ */
+export function measureSeoCopy(dir = join(repoRoot, 'pages')) {
+  const out = {};
+  if (!existsSync(dir)) return out;
+  for (const entry of readdirSync(dir).sort()) {
+    const seoDir = join(dir, entry, 'seo');
+    if (!statSync(join(dir, entry)).isDirectory() || !existsSync(seoDir)) continue;
+    for (const file of readdirSync(seoDir).sort()) {
+      const filePath = join(seoDir, file);
+      if (!statSync(filePath).isFile()) continue;
+      const text = readFileSync(filePath, 'utf8');
+      let total = 0;
+      const hits = [];
+      for (const pattern of COPY_PATTERNS) {
+        for (const match of text.matchAll(pattern)) {
+          total += 1;
+          hits.push(match[0]);
+        }
+      }
+      out[`pages/${entry}/seo/${file}`] = { total, hits };
+    }
+  }
+  return out;
+}
+
 /** Read the ratchet baseline (missing file = everything must be 0). */
 export function readBaseline(path = BASELINE_PATH) {
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : { pages: {}, exempt: {} };
