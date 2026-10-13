@@ -3148,3 +3148,19 @@ tool trash twitter undo unlock upload user users video volume wallet warning wat
 | **访客读不到** appearance 设置 | 无 cookie `POST /api/afs/rpc {type:read, path:/instance/settings/arcblog/tone.json}` → **403** `Forbidden at /arcblog/tone.json: sign in to read this setting`（对照 `posts/hello-arcblog.json` → 200）；⇒ 主题桥虽已运行（宿主出现 `#arcblog-chrome-style`），但 `readAll()` 三个读全被拒，`current.*` 全 null，宿主属性停在运行时编译值（`DEF-48`） |
 | **web 面缺 skip-link 的隐藏样式** | 平台给每个页面注入 `<a class="aup-skip-link" href="#main">Skip to main content</a>`，其"默认藏在视口外（`inset-block-start:-3.5rem`）、`:focus` 才滑入"的规则在 `_arc/assets/6b237032….css` 里；而 `/p/en/hero-carousel/` 链的是**另一张平台样式表**（`_arc/assets/bf76d0c0….css`），该表 **0 次** `aup-skip-link` ⇒ 链接以裸文本渲染在 hero 上方（人类截图所见）。修法 = 在组件壳里**逐字复用平台自己的规则**（不是 `display:none`，保留键盘可达） |
 | 平台的"书签/我的收藏"浮层有**客户端开关** | 平台资产 `_arc/assets/116ea4c0….js`：`capability()` 先读 `window.__arcSave`（`false`/`"off"` ⇒ off），否则读 `<html data-arc-save-capability>`；浮层是 `div.arc-save-bar[data-arc-save="bar"]` + `[data-arc-save="bookmark"|"library"]`，挂在 `document.documentElement`（`DEF-45` 的修法依据） |
+
+## 72. 平台浮层的两条实测：save 开关会被**服务端消息覆盖**；`/instance/settings/**` 对访客 **403**（2026-10-13 实测）
+
+基线：`778ec04` + 本轮改动 ｜ 实例 `arcblog.localhost:4939` ｜ arc `2.0.0-beta.66` ｜ 运行时 `/aup.c2e386d110cd0376.js`（954 710 B）
+
+**（1）`window.__arcSave` 不是"写一次就够"的开关。** 运行时 bundle 里 `fw(e)`（`case "aup":` 的处理函数，daemon 推来的消息）在每次消息到达时都会：
+
+```js
+if (e.save === "off" || e.save === "floating" || e.save === "buttons")
+  window.__arcSave = e.save,
+  document.documentElement.setAttribute("data-arc-save-capability", e.save)
+```
+
+而消费方 `capability()` 先读 `window.__arcSave`（`false` / `"off"` ⇒ off），再读该属性，缺省 `"floating"`。实测后果：早期写入 `false` 会被**后到的消息覆盖成 `"floating"`**，`onSession()` → `syncChrome()` 于是**挂上**书签浮层，只有我们的扫除把它删掉 —— 就是人类看到的"出现后隐藏"闪烁。修法（`theme-bridge/script.js::suppressSaveChrome`）：把这个属性**锁成 getter**（永远返回 `false`、吞掉赋值），再加一张宿主 `<style>[data-arc-save]{display:none!important}</style>` 与 childList 扫除。验证（匿名 `--fresh` 探针，宿主文档）：`arcSave = locked->false`、`saveCapability = null`（属性被反复移除）、`saveBar = 0`。
+
+**（2）`/instance/settings/<blocklet>/*.json` 是私有的。** 无 cookie 的 `POST /api/afs/rpc {type:"read"}` 得到 **403** `Forbidden at /arcblog/tone.json: sign in to read this setting`（同一会话读 `node/health.json` / `posts/hello-arcblog.json` → **200**，读 `config/roles.json` → 403 below readRole admin）。所以"主题桥按 instance 设置渲染"的原始设计**对匿名读者不成立**（`DEF-48`）。采用的降级 = **公开投影**：`node scripts/arcblog-settings.mjs sync-appearance` 把三个值 + `source`/`updatedAt` 写到 `/instance/app/arcblog/node/appearance.json`（guest 读 → **200**，内容为 `{"tone":"clean","palette":"natural","theme":"light",…}`），桥「私有优先、读不到用投影」。验证：匿名 `--fresh` 探针下宿主 `<html>` = `data-tone="clean" data-palette="natural" data-mode="light"`（此前为编译值 `editorial/natural/light`），`localStorage['arcblog:theme:v1']` = `{"tone":"clean","palette":"natural","mode":"light"}`。浏览器 AFS 客户端的方法表（同一 bundle）= `read / tryRead / getNodeTree / list / tryList / write / delete / rename / batchWrite`，`write(path, content)` 可用 —— 所以登录态页面浏览也能回写投影（桥里 best-effort，失败即忽略）。
