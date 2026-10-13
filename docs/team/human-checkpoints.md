@@ -2,9 +2,7 @@
 
 > 基线 `0f86cb5` ｜ 2026-10-12 ｜ 用途：本清单只列**必须由人做/批准**的动作与**可直接复制的命令**。
 
-> **当前阻塞（Lead 判定，2026-10-12；同一条件已持续数十轮）**：完成判据只剩两件事，**都只能由人做**——
-> ① **`E9`（回 A / B / C）** ⇒ 关掉台账里**最后一条 `开发中`**（`PRD-SET-02`）；
-> ② **`C` 段（批准一次链写）** ⇒ 跑 `P-3`/`U8` ⇒ **探针 10/10**。
+> **人类已裁决（2026-10-12）**：**`E9` = A**、**批准 `C1`+`C2`**、其余按 Lead 推荐执行（`E7` 放可见文案、`E8` 不回填、`E10` = B 正式接受、`E11` = 甲 加常驻说明、`E12` = 乙 登记覆盖边界、`E13` = 甲 保留主题；`A1`/`A2`/`D1` 已批准）。落地进度见本文件底部「裁决执行记录」。
 > 其余（`E7`/`E8`/`E10`/`E11`/`E12`/`E13`、`A1`/`A2`、`B` 登录、`D` 两项）**不阻塞完成判据**，但都会让产品更完整。
 > **非人类可推进的工作已归零**：三门全绿（`arc dsl validate` / `npm test` 快层 / `npm run gate:docs`）、live 25/25、开放问题 0 行、全仓无 `TODO/FIXME`、发布产物 229 文件且逐项判定过。> 用法：**按 A → B → C → D 顺序走一遍即可**；每段末尾写"做完能闭环什么"。E 段是不阻塞的待裁决项，F 段是备查。
 > 口径：`暂停并报人类` 的判定见 [`docs/07-团队与开发规范/04-交接·记录·提交.md` §6](../07-团队与开发规范/04-交接·记录·提交.md)。
@@ -13,7 +11,7 @@
 **当前部署**：**按命令取，不照抄本行**——`arc blocklet instance list` 的最近一条即当前 deployment id（写这份清单时的最近一条是 `deploy-1791834351365-16db7m`，产物按 `ENG-38` 已收窄为 **229 文件**；本行曾写死一个旧 id 与 236 文件，2026-10-12 改为"取法为主、值为辅"）。
 
 **验证用哪个 URL**：用本清单里的 **`http://arcblog.localhost:4939`**（本机 daemon 提供的站点面，部署脚本的三次存活检查打的就是它）。**不要**用 `http://arcblog.localhost/`（80 端口在本机**无监听**，实测 curl 退出码 000；部署脚本曾误打印该 URL，已修）。在 :4939 上控制台会出现 **2 条 “Refused to execute … (MIME text/html)”**——平台注入的 `aup-ssr`／`aup-inspect-bridge` 两资产在本模式下不由平台提供，**属平台侧噪音，不是本应用缺陷**（页面渲染与客户端 bundle 均正常）。**当前台账**（唯一出处 = [`docs/06-功能开发列表/01-功能台账.md`](../06-功能开发列表/01-功能台账.md)；下面四个数是**守卫核对过的**，见 `ENG-22`）：`已实现待验` **46** ｜ `未开工` **0** ｜ `开发中` **1**（`PRD-SET-02`，**等 E9 裁决**）｜ `平台边界` **9**；ENG 台账见 [`docs/06-功能开发列表/02`](../06-功能开发列表/02-工程与工具功能点.md)（**不在此处写死条数**——它按轮增长）。
-**探针**：**10 项中 8 项已有结论**（`P-1` `P-2` `P-4` `U18` `U19` ✅ 判定；`U20`/`U6` ❌ 判定 B；`U10` 决策型＝维持只读聚合 ⇒ 7 判定 + 1 决策 = 8），**仅剩 `P-3`+`U8`**（C2 一次链写批准即可收口）。
+**探针 10/10**（全部有结论）：`P-1`/`P-2`/`P-3`/`P-4` ✅ 判定；`U6`/`U8`/`U18`/`U19`/`U20` ✅ 判定；`U10` 决策型＝维持只读聚合。2026-10-13 由批准的链写批次收口：`P-3`+`U8` 真链跑通（tx `E956B85D…`，`ownerIsBuyer: true`）；`C1`（`describe`）**被链拒绝**（`Asset data value can only be updated in append only mode`）⇒ 见 `C` 段实测记录与新边界 `B24`。
 
 **还剩哪些动作（索引；细节见对应段落）**
 
@@ -22,7 +20,7 @@
 | **A1** | 删两篇"已发布且公开可见"的测试夹具（`posts/paid-test-*`、`posts/sign-test-*`） | 你确认后执行两条命令 | 首页 feed 只剩产品内容 |
 | **A2** | 清测试/探针残留（`arcblog-clean.mjs --confirm`；数字以命令的 `found` 为准） | 你批准 | dry-run 归零 |
 | **B** | **一次 DID 登录**，顺手看 6 项（草稿→发布、署名/hash 字段、5 个页面） | 你（本机无钱包，自动化不了） | `DEF-20`/`DEF-22`/`PRD-OPS-07`/`PRD-OPS-01` 的渲染验收 + `U6`/`CNT-02` 现状确认 |
-| **C** | **链写批准**：`describe` 与 `transfer --confirm`（`P-3`+`U8` 同一次执行收口） | 你批准 | 探针 8/10 → **10/10** |
+| **C** | **链写批准**：`describe` 与 `transfer --confirm`（`P-3`+`U8` 同一次执行收口） | ✅ **已批准（2026-10-12）** | 探针 8/10 → **10/10** |
 | **D** | **环境/运维拍板**：`arc space repair --index`（`DEF-30`）与 scope 目录是否加密 | 你决定（会动整个 ARC 安装） | 索引不再静默漏记录 |
 | **E7** | `DEF-27`：首页封面瓦片"空链接"如何修（两个候选都改交互/视觉） | 你选 | 首页无障碍项闭环 |
 | **E9** | `DEF-37`：`node/profile.json` 身份字段归谁写 → **回一句 A / B / C** | 你选 | **`PRD-SET-02` 从 `开发中` 落定 ⇒ 台账 0 开发中** |
@@ -118,6 +116,26 @@ node scripts/arcblog-node-nft.mjs transfer --role studio --adapter ocap \
 > 预期判定：转后 `owner` = 买家、买家可继续 `stake`/`describe`、记录 `gasUsed`/`fee`。
 
 > 注：`.env.local` 现由**所有**链 CLI 自动加载（`DEF-29`），无需再手工 `source`。
+
+**C 段执行记录（2026-10-13，人类已批准 C1+C2）**
+
+| 步 | 结果 | 证据 |
+| :-: | --- | --- |
+| **C1** `describe` | ❌ **被链拒绝** ⇒ 新边界 **`B24`** | `GraphQLError: Asset data value can only be updated in append only mode`；`UpdateAssetTx` 无 append 参数、`@ocap/client`/`@arcblock` 全量无 `appendOnly` ⇒ 本链型下 `asset.data` **不可更新**；降级 = 端点来源走 `endpointSource=stake.message`（已实现） |
+| **C2** `transfer` | ✅ **成功**（探针 `P-3`+`U8` 收口 ⇒ **10/10**） | tx `E956B85DA22DA78DBC2B6C9FA033EFE07E6C6D0A524097D5A2B3DD86826E6D8B`；`verifiedOwner` = 买家 `z1a6f8fb…`、`ownerIsBuyer: true`；`value:"0"` 与交易级 `data` 均被接受；**fee ≈ 0.0020473 TBA**（链原文） |
+| 顺带修的两个真缺陷 | ✅ 已修（`DEF-40`/`DEF-41`） | ① 三个链 CLI（含主命令 `arcblog-node-nft.mjs`）**未加载 `.env.local`** ⇒ 文档化命令报假的"缺 chainHost"；② ocap `updateAsset` **未按 SDK `Any` 编码** |
+
+⚠️ **唯一遗留的人类一步（C3）**：本次转让把本实例的 studio NFT 交给了**测试买家** `z1a6f8fbFfpBr4ADGwGia66GMsGh3HVZf5z`，而该地址**没有 TBA**，所以"转回原 owner"这笔交易付不出手续费（链报 `expected 0.0020473 TBA, got 0 TBA`）。
+复原只需两步（助记词已在 gitignored 的 `.arcblog/test-buyer-wallet.json`，**不打印**）：
+
+```bash
+# 1) 用 beta faucet 给买家地址充一点 TBA（约 0.01 够用）
+#    地址：z1a6f8fbFfpBr4ADGwGia66GMsGh3HVZf5z
+# 2) 以买家身份转回原 owner（Lead 可代跑；命令如下）
+ARCBLOG_CHAIN_MNEMONIC="$(python3 -c "import json;print(json.load(open('.arcblog/test-buyer-wallet.json'))['mnemonic'])")" \
+  node scripts/arcblog-node-nft.mjs transfer --role studio --adapter ocap --to z1WmC5oi8gp16gkN78qB37pzeUqVDCC398a --confirm
+```
+> 在此之前，`?page=factory` 会显示 owner = 测试买家（**如实状态**，不是缺陷）。
 
 ---
 

@@ -19,8 +19,9 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
-import { NODE_TX_FIELDS, decorateNodeFactorySummary } from './lib/chain.mjs';
+import { NODE_TX_FIELDS, decorateNodeFactorySummary, toAssetDataAny } from './lib/chain.mjs';
 
 test('an empty projection says so, in every branch', () => {
   const out = decorateNodeFactorySummary({});
@@ -98,4 +99,28 @@ test('a recorded asset whose card could not be built names the reason (known rol
   assert.match(out.nodes.studio.cardNote, /zASSET is recorded, but no card could be built: not queried/);
   assert.equal(out.droppedRoles, '', 'a clean projection drops nothing');
   assert.equal(out.droppedNote, '');
+});
+
+/**
+ * The asset-data encoding (2026-10-13, found by the approved real chain write): the SDK's
+ * `updateAsset` encodes `data` as an `Any` and canonical-cbor refuses a plain object —
+ * "Any value missing typeUrl/type" — while this repo's CLI read-merge-writes plain objects. The mock
+ * and the mint inputs keep their `{ type: 'json', value }` shape (the mint path accepts it), so the
+ * conversion lives in one helper used by the ocap adapter; these assertions pin both its behaviour
+ * and its use, because the bug is invisible until a real chain write.
+ */
+test('asset data is wrapped into the SDK Any shape the update path requires', () => {
+  assert.deepEqual(toAssetDataAny({ name: 'ArcBlog' }), { typeUrl: 'json', value: '{"name":"ArcBlog"}' });
+  assert.deepEqual(toAssetDataAny('{"a":1}'), { typeUrl: 'json', value: '{"a":1}' });
+  assert.deepEqual(toAssetDataAny(undefined), { typeUrl: 'json', value: '{}' });
+  // an already-typed value passes through untouched (idempotent)
+  const typed = { typeUrl: 'json', value: '{"x":1}' };
+  assert.equal(toAssetDataAny(typed), typed);
+
+  const source = readFileSync(new URL('./lib/chain.mjs', import.meta.url), 'utf8');
+  assert.match(
+    source,
+    /client\.updateAsset\(\{ address, moniker, data: toAssetDataAny\(data\), wallet \}\)/,
+    'the ocap updateAsset must wrap its data through toAssetDataAny (regression = canonical-cbor refuses it)',
+  );
 });

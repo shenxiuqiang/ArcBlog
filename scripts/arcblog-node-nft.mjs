@@ -28,6 +28,7 @@ import { readFileSync } from 'node:fs';
 
 import { ensure, fail, nowIso, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
+import { loadLocalEnv } from './lib/local-env.mjs';
 import {
   DEFAULT_REVOKE_WAITING_PERIOD_DAYS,
   FACTORY_REGISTRY_PATH,
@@ -899,6 +900,9 @@ Chain environment (switching chains = changing env, never code):
 
 const argv = process.argv.slice(2);
 const command = argv[0];
+// `.env.local` (gitignored) holds the chain credentials; the documented one-liner
+// must work without a manual `source` (same helper the network CLI and worker use).
+loadLocalEnv();
 const opts = parseCliArgs(argv.slice(1), import.meta.url);
 
 try {

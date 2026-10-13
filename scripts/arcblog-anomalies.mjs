@@ -40,6 +40,7 @@ import { fileURLToPath } from 'node:url';
 import { ensure, fail, list, nowIso, optString, readJson, remove, resolveInstance, writeJson } from './lib/arc.mjs';
 import { CHAIN_ADAPTERS } from './lib/chain.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
+import { loadLocalEnv } from './lib/local-env.mjs';
 import {
   ANOMALY_DIR,
   ANOMALY_KEYS,
@@ -191,6 +192,9 @@ show reads the summary back (read-only; exits 1 when the stored summary is inval
 }
 
 export async function main(argv = process.argv.slice(2)) {
+  // `.env.local` (gitignored) holds the chain credentials; the documented one-liner
+  // must work without a manual `source` (same helper the network CLI and worker use).
+  loadLocalEnv();
   const args = parseCliArgs(argv, import.meta.url);
   const [cmd] = args._;
   const instance = resolveInstance(args);

@@ -16,8 +16,8 @@ const CHECKLIST = join(REPO, 'docs/team/human-checkpoints.md');
 /** Pinned state per probe: 'concluded' (verdict reached) | 'decision' (closed by a product
  *  decision, mechanism still unverified) | 'open' (awaiting a human action). */
 const EXPECTED = {
-  'P-1': 'concluded', 'P-2': 'concluded', 'P-3': 'open', 'P-4': 'concluded',
-  U6: 'concluded', U8: 'open', U10: 'decision', U18: 'concluded', U19: 'concluded', U20: 'concluded',
+  'P-1': 'concluded', 'P-2': 'concluded', 'P-3': 'concluded', 'P-4': 'concluded',
+  U6: 'concluded', U8: 'concluded', U10: 'decision', U18: 'concluded', U19: 'concluded', U20: 'concluded',
 };
 const CONCLUDED = /✅|判定|结论/;
 const DECISION = /决策/;

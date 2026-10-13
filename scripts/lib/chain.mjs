@@ -96,6 +96,23 @@ export const NODE_ADAPTER_STATES = Object.freeze(['mock', 'ocap', 'unknown']);
  * `config/nft-factories.json` currently says; `adapterScope` marks its scope, and
  * it must never be used to decide a single node's provenance.
  */
+/**
+ * The SDK's `Any` shape for asset data (measured on the beta chain, 2026-10-13).
+ *
+ * `updateAsset` goes through `canonical-cbor` and REFUSES a plain object:
+ *   "canonical-cbor: Any value missing typeUrl/type"
+ * The SDK's own transfer paths build `{ typeUrl: 'json', value: <string> }`
+ * (@ocap/client/lib/extension.js:858), while this repo's mint inputs
+ * (`lib/nft-factory.mjs`) historically use `{ type: 'json', value }` — the mint
+ * path accepts that, the update path does not. So callers keep passing plain
+ * objects and this helper produces the shape the update call needs; an
+ * already-typed value is passed through untouched.
+ */
+export function toAssetDataAny(data) {
+  if (data && typeof data === 'object' && ('typeUrl' in data || 'type' in data)) return data;
+  return { typeUrl: 'json', value: typeof data === 'string' ? data : JSON.stringify(data ?? {}) };
+}
+
 export function nodeAdapterOf(record) {
   const raw = String(record?.adapter ?? '').trim();
   const adapter = raw === 'mock' || raw === 'ocap' ? raw : 'unknown';
@@ -1125,7 +1142,10 @@ export async function createOcapChain(config, instance) {
      * callers clearing node fields must read-merge-write to keep mint fields.
      */
     async updateAsset({ address, moniker, data }) {
-      const hash = await client.updateAsset({ address, moniker, data, wallet });
+      // The SDK encodes this field as an `Any` (canonical-cbor refuses a plain object —
+      // measured 2026-10-13 on beta: "Any value missing typeUrl/type"), so the plain
+      // object the CLI reads-merge-writes is wrapped here.
+      const hash = await client.updateAsset({ address, moniker, data: toAssetDataAny(data), wallet });
       return { hash: typeof hash === 'string' ? hash : (hash?.hash ?? ''), address };
     },
 
