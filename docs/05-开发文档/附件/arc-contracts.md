@@ -2904,3 +2904,30 @@ AssertionError: a paginated afs-list lost its explicit id — `<id>.page` is the
 **若要页面路径也带真署名**：只能由 worker/CLI **回填**（产品口径变更）——见 [`05/02 B18`](../02-平台能力与边界.md)。
 
 **方法论**：这一条**没有**用浏览器实测就定案——产物是静态可读的，而"某 HTML/行为是否可能"能被词表穷举回答；浏览器实测降级为**复核**（同样适用于 `DEF-24`/§59 那一类）。
+
+## 63. `surface` 的字面路径读取：`src=` 与 `url=` **等价**，且**冷启动即渲染**（实测 2026-10-13）
+
+**问题**：`?page=dashboard` 的 KPI 行走「记录 → recipe → 页面逐字打印」，而 §58 只证明了
+字面 `surface url=` 在 `?page=` 面上首访取数。那么 `src=` 与 `url=` 是否等价？**无子节点的 `surface`** 是否合法？
+这两条决定了"给任意页面加一条状态行"的成本。
+
+**做法**：临时页 `.aup/pages/probe-surface-src.aup`（两个字面 `surface`，各带一个 `p` 子节点）⇒
+`arc dsl generate --write` ⇒ `arc service restart -i default` + `arc blocklet run . -i default`（新页注册要重挂）⇒
+headless Chromium（Playwright / chromium_headless_shell-1243）以**访客**身份**冷加载**（新 context，无预热）
+`http://arcblog.localhost:4939/?page=probe-surface-src`。探针页测完即删（未提交；`?page=` 无该页 ⇒ 会回退到默认页，这也是"新页必须重挂"的旁证）。
+
+**结果**（同一页、同一次冷加载）：
+
+| 写法 | `arc dsl validate` | 首帧 DOM（`document.body.innerText` 前 300 字） |
+| --- | --- | --- |
+| `surface src="/instance/app/arcblog/node/anomalies.json" editable=false { p "A" }` | ✅ | ✅ `checkedAt / adapter / stateNote` 三行（`node/` recipe 产物，非原始 JSON） |
+| `surface url="…/node/anomalies.json" editable=false { p "B" }` | ✅ | ✅ 与 A 逐字一致 |
+| `surface url="…" editable=false`（**无子节点**） | ❌ `invalid_page_dsl: Surface must have src or non-empty children` | — |
+
+**结论**：① 字面路径的两种拼法**都是**冷启动通道，且都经「记录目录的 item recipe」渲染；
+② `surface` **至少一个子节点**才过校验，子节点渲染在记录内容之上（可当小标题/说明）；
+③ "给某页加一条 CLI 预算的状态行"的**最小成本** = 1 个 `surface`（含 1 个子节点）+ 目标目录的 recipe，
+**不必新增卡片**（放进既有卡内即可；recipe 根节点自带卡片样式时会嵌套 —— `seed/recipes/console/item.json` 是纯 `view`，不嵌套）；
+④ 同型写法据此确认 `?page=dashboard` 的 KPI 卡**首屏**即打印 `config/console/overview.json`（不走 §57 的 `propBind` "绑定后才出现"通道）。
+
+**未测**：空文本子节点（`p ""`）是否合法 —— 本轮的状态行都用既有 i18n 标题作子节点。

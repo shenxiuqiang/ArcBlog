@@ -79,6 +79,8 @@ export const SCRIPT_FLAGS = {
   "arcblog-summarize.mjs": ["from-registry", "help", "id", "instance", "json", "limit", "llm", "max-collect", "question", "timeout"],
   "arcblog-tags.mjs": ["action", "by", "from", "help", "id", "interval", "to"],
   "arcblog-ui-budget.mjs": ["card-bg", "includes", "json", "strict", "write-baseline"],
+  "arcblog-overview.mjs": ["json", "record"],
+  "arcblog-ui-copy.mjs": ["json", "write-baseline"],
   "arcblog-verify.mjs": ["did", "expect-did", "forget", "help", "instance", "public-key", "sign-key", "slug"],
 };
 

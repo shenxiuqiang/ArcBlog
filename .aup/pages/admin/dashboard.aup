@@ -1,24 +1,23 @@
 page dashboard {
   i18n {
+    overview { en "Overview" zh "概览" }
+    overview-desc { en "Counts measured by the operator CLI and printed here verbatim; the line under them states when — this page invents no number." zh "计数由运营侧 CLI 测得、本页逐字打印；下方一行写明测量时间——本页不臆造任何数字。" }
     anomalies { en "Anomaly zone" zh "异常区" }
-    anomalies-desc { en "The four node-anomaly classes — identity not initialized / read-only exit missing its artifact / chain registry does not list this node / test residue — one clickable entry per class. Every verdict is precomputed by the CLI and printed here verbatim; this page decides nothing. The standing line above the rows is the CLI's own sentence and says which checks passed, and when. No rows is not evidence by itself: read that line — it is either “all four passed at <time>” or “the CLI has not run yet”." zh "四类节点异常——身份未初始化 / 只读出口缺产物 / 注册表查不到本节点 / 数据残留——每类一个可点击入口。所有判定由 CLI 预计算、本页逐字打印：页面不做任何判定。行上方的常驻行就是 CLI 的原话，写明哪几项检查在什么时间通过。没有行本身不是证据：请看常驻行——它要么是「四类检查在 <时间> 均通过」，要么是「CLI 尚未运行」。" }
+    anomalies-desc { en "One entry per detected anomaly class. No row means the standing line below is the verdict — it is what the checker itself reported, and when." zh "每类异常一个入口。没有行时以下方常驻行为准——那是检查器的原话与时间。" }
     anomalies-open { en "Open" zh "去处理" }
     anomalies-severity { en "Severity" zh "级别" }
-    anomalies-state { en "Standing state" zh "常驻状态" }
+    anomalies-state { en "Last check, verbatim" zh "最近一次检查（原话）" }
     content { en "Recent published" zh "最近发布" }
+    content-desc { en "The five newest stories." zh "最新 5 篇已发布内容。" }
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
-    content-guide { en "Write and publish from Write; the newest five stories appear here." zh "在「写文章」页撰写并发布；最新五篇会显示在这里。" }
     drafts { en "Drafts to finish" zh "待处理草稿" }
     drafts-all { en "All drafts & published" zh "全部草稿与已发布" }
-    drafts-desc { en "The three most recently updated records in the private drafts area." zh "私有草稿区中最近更新的 3 条记录。" }
+    drafts-desc { en "The three most recently updated private drafts. Publishing happens in Studio." zh "私有草稿区里最近更新的 3 条。发布在「工作室」完成。" }
     drafts-empty { en "No drafts yet." zh "还没有草稿。" }
-    empty-cta { en "Start writing" zh "开始写第一篇" }
-    empty-guidance { en "Standing note, not a claim about the lists below — a brand-new node has nothing to show yet. Write a post: it stays in your private drafts until you publish it, and the newest three drafts and five published stories then appear here." zh "常驻说明，不是对下方列表的断言——新节点本来就没有内容可显示。写一篇文章：它会留在私有草稿区直到你发布，随后最近的 3 条草稿与 5 篇已发布文章就会出现在这里。" }
     gate-desc { en "Sign in with DID Wallet to see the drafts waiting for you and what is already live." zh "使用 DID Wallet 登录后查看待处理的草稿与已发布内容。" }
     gate-title { en "Dashboard" zh "仪表盘" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    pagesize-note { en "Pagination note (BUG-063): the per-page selector (“Show”) is stored by THIS browser as localStorage['aup-list-pagesize:<list id>'] and overrides the page default. Choosing a value ≥ the total makes the platform drop the whole paginator — including the selector itself — so no in-page control can bring it back. Recovery: clear this site's data, or delete that localStorage key, then reload." zh "分页说明（BUG-063）：每页条数选择器（Show）由**本浏览器**以 localStorage['aup-list-pagesize:<列表 id>'] 记住，并覆盖页面默认值。选到 ≥ 总数的值会让平台移除整个分页器——包括选择器本身——页面因此无法提供回退入口。恢复：清除本站点数据，或删除该 localStorage 键，然后刷新。" }
-    purpose { en "What needs you now: the drafts still to finish, and what is already live." zh "现在要你处理的：还没写完的草稿，以及已经发布的内容。" }
+    purpose { en "Drafts still to finish, anomalies to clear, and what is already live." zh "还没写完的草稿、要处理的异常，以及已经发布的内容。" }
     q-write { en "Write a post" zh "写文章" }
     title { en "Dashboard" zh "仪表盘" }
   }
@@ -102,11 +101,8 @@ page dashboard {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         // ---- 页头（standard §2.4）：标题 + 一句话用途 + 唯一主操作 --------------
@@ -127,6 +123,15 @@ page dashboard {
           }
           // ---- 内容区：唯一滚动容器（standard §2.5 单一滚动归属）----------------
           view gap=sm size={flex: 1} style={overflowY: auto} {
+            // ---- 概览（KPI）：数字全部由 CLI 预计算、经 config/console 的 item
+            // recipe 逐字打印（页面不能自算，见 scripts/arcblog-overview.mjs）。
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+              h3 :overview level=3
+              p :overview-desc scale=sm intent=muted
+              surface url="/instance/app/arcblog/config/console/overview.json" editable=false {
+                p :overview scale=caption intent=muted
+              }
+            }
             // ---- 异常区（PRD-OPS-01 / DEF-36）：四类异常每类一个可点击入口 -----
             // 判定全部由 `arcblog-anomalies.mjs refresh` 预计算（B13：页面不能
             // 条件化 `$state.*`——`${…}` 恒真、`!${…}` 恒隐、裸写法冻结在首屏）。
@@ -138,9 +143,6 @@ page dashboard {
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :anomalies level=3
               p :anomalies-desc scale=sm intent=muted
-              surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
-                h3 :anomalies-state level=3
-              }
               afs-list dashboard-anomalies-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
                 row gap=xs cross=center role=item {
                   view gap=xs size={flex: "1 1 0%"} {
@@ -156,25 +158,13 @@ page dashboard {
                   }
                 }
               }
-            }
-            // ---- UI-022：唯一的「下一步」不能只写在 emptyText 上（平台运行期不求值，
-            // docs/05-开发文档/附件/arc-contracts.md §20）。这里是**页面级常驻说明卡**：一句现状 + 一句
-            // 价值 + 一个动作（§4.4），措辞如实标明它是常驻说明、不声称下方列表为空
-            // （页面无法探测列表长度，§21）。本页 primary 仍是页头「写文章」，本卡用
-            // secondary（§4.3 每屏一个 primary）。
-            // 预算：3 处 h3 字号覆写减为 2 处（草稿 / 已发布标题改用平台默认档），换来
-            // 第 2 张卡的卡片样式与次按钮圆角 —— styles 仍为 8/8（§2.7.2），cards 2/3（P2）。
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-              row gap=md cross=center {
-                view gap=xs size={flex: 1} {
-                  p :empty-guidance scale=sm intent=muted
-                }
-                row cross=start {
-                  action -> page compose variant=secondary size=sm label=:empty-cta style={borderRadius: "var(--radius-md, 8px)"}
-                }
+              // 常驻证据行：CLI 预计算的 stateNote（真正的打印点是 node/ 目录的
+              // item recipe 里那句 ${content.stateNote}），放在末尾作为小字脚注。
+              surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
+                p :anomalies-state scale=caption intent=muted
               }
             }
-            // 待处理草稿与最近已发布同卡分区（A.4：多出来的卡片合并成区块，不并排堆）。
+            // ---- 待处理草稿（卡 2）------------------------------------------------
             view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :drafts level=3
               p :drafts-desc scale=sm intent=muted
@@ -200,13 +190,16 @@ page dashboard {
                 }
               }
               // 待处理草稿的去向：工作室（?page=posts）里才有发布 / 软删 / 行内编辑。
-              // 空态时它也是引导动作。
+              // 空态时它也是引导动作（平台运行期不求值 emptyText 里的 $t()，
+              // 见 docs/05-开发文档/附件/arc-contracts.md §20，所以「下一步」必须是常驻元素）。
               row cross=start {
                 action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-md, 8px)"}
               }
-              p :pagesize-note scale=caption intent=muted
+            }
+            // ---- 最近发布（卡 3）--------------------------------------------------
+            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
               h3 :content level=3
-              p :content-guide scale=sm intent=muted
+              p :content-desc scale=sm intent=muted
               // 最近已发布 5 条，同一套 mtime desc 排序。
               afs-list dashboard-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:content-empty pagination=manual pageSize=5 pageSizeOptions=[5] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/posts" {
                 row gap=xs cross=center role=item {

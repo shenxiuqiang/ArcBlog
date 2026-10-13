@@ -62,7 +62,9 @@ test('thresholds match UI standard §2.7.2 (cannot drift silently)', () => {
   assert.equal(limitsFor('compose').ctrl, 16, 'P3 exemption: interactive elements ≤16');
   assert.equal(limitsFor('compose').styles, 12, 'P3 exemption: inline styles ≤12');
   assert.equal(limitsFor('compose-edit').ctrl, 16);
-  assert.equal(limitsFor('dashboard').cards, 3, 'P2 exemption: overview may carry 3 cards');
+  // 3 -> 4 on 2026-10-13: the KPI row landed as its own card (CLI projection, B13).
+  // Registered in EXEMPTIONS' comment + docs/04's N8 row, never via a silent baseline bump.
+  assert.equal(limitsFor('dashboard').cards, 4, 'P2 exemption: overview may carry 4 cards (KPI row)');
   assert.equal(limitsFor('posts').ctrl, 12, 'no exemption for a plain list page');
 });
 

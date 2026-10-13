@@ -180,3 +180,65 @@ test('no locale key is dead', () => {
     'arc dsl lint reports dead locale keys — run: arc dsl lint --fix',
   );
 });
+
+// ---------------------------------------------------------------------------
+// `L8` (docs/04-UI设计规范/01 §1): rendered copy carries no implementer references.
+//
+// This lived as its own suite first, but `arcblog-run-tests.test.mjs` pins the
+// FAST_TESTS *count* against two documents, and a new suite file cannot be whitelisted
+// before it is committed (the same guard asserts every fast entry is tracked by git).
+// So the ratchet runs here, next to the other i18n guarantees, importing the meter and
+// the recorded bound from `scripts/arcblog-ui-copy.mjs` + `scripts/ui-copy-baseline.json`.
+//
+// The number can only go down: cleaning a page lowers its bound; raising one is a
+// deliberate act (`node scripts/arcblog-ui-copy.mjs --write-baseline`) that must be
+// disclosed in the baseline's `note`.
+// ---------------------------------------------------------------------------
+test('the L8 detector can fail: it flags implementer references and ignores plain copy', async () => {
+  const { countCopy, i18nBlock } = await import('./arcblog-ui-copy.mjs');
+  const dirty =
+    'page x {\n  i18n {\n    n { en "See BUG-063 and docs/05-开发文档/附件/arc-contracts.md §28.8; run node scripts/arcblog-tags.mjs watch" zh "见 BUG-063" }\n  }\n}';
+  assert.ok(countCopy(dirty).total >= 5, `expected ≥5 hits, got ${JSON.stringify(countCopy(dirty))}`);
+  const clean =
+    'page x {\n  i18n {\n    n { en "An empty tab means no record yet." zh "页签为空表示还没有记录。" }\n  }\n}';
+  assert.equal(countCopy(clean).total, 0);
+  // Comments and wiring are NOT rendered copy: a page may explain itself to the next
+  // developer in comments without tripping the ratchet.
+  const commented =
+    'page x {\n  // BUG-063: localStorage["aup-list-pagesize"] overrides the page default\n  i18n {\n    n { en "ok" zh "好" }\n  }\n}';
+  assert.equal(countCopy(commented).total, 0, 'comments must stay out of scope');
+  assert.match(i18nBlock(commented), /n \{ en "ok"/);
+  assert.doesNotMatch(i18nBlock(commented), /BUG-063/);
+});
+
+test('no page carries more implementer copy than its recorded L8 bound', async () => {
+  const { measureAll, readBaseline } = await import('./arcblog-ui-copy.mjs');
+  const baseline = readBaseline();
+  const exempt = baseline.exempt ?? {};
+  const recorded = baseline.pages ?? {};
+  const measured = measureAll();
+  assert.ok(Object.keys(measured).length >= 20, `pages measured: ${Object.keys(measured).length}`);
+
+  const over = [];
+  for (const [page, count] of Object.entries(measured)) {
+    if (exempt[page]) continue;
+    const limit = recorded[page] ?? 0;
+    if (count > limit) over.push(`${page}: ${count} > ${limit}`);
+  }
+  assert.deepEqual(
+    over,
+    [],
+    'rendered copy gained implementer references (L8) — move them to ?page=diagnostics or docs/**:\n  ' +
+      over.join('\n  '),
+  );
+
+  // The bound stays honest: every entry names a real page, and every exemption carries
+  // the clause it was granted under (an exemption without a reason is a silent waiver).
+  const missing = Object.keys(recorded).filter((page) => !(page in measured));
+  assert.deepEqual(missing, [], `baseline entries with no page file: ${missing.join(', ')}`);
+  assert.ok(baseline.note, 'the baseline must document what it bounds and how to re-record it');
+  for (const [page, reason] of Object.entries(exempt)) {
+    assert.ok(page in measured, `exempt entry ${page} has no page file`);
+    assert.match(String(reason), /L8/, `exempt entry ${page} must cite the L8 decision`);
+  }
+});

@@ -91,6 +91,12 @@ node scripts/arcblog-memory.mjs remember|recall|list --session <id>  # PRD-AGT-1
 node scripts/arcblog-verify.mjs content --slug x  # §65–§67: content hash + Ed25519 signature check
 node scripts/arcblog-verify.mjs keys         # registered content-signing public keys (never private)
 node scripts/arcblog-doctor.mjs              # contract check: resources, space, attribution
+node scripts/arcblog-overview.mjs refresh|show  # the dashboard's KPI projection: counts every
+                                             # collection from its DIRECTORY listing (never the query
+                                             # index, arc-contracts §44) into config/console/overview.json,
+                                             # printed through seed/recipes/console/item.json (the page
+                                             # cannot count anything — B13). `refresh` writes, `show` reads;
+                                             # install the recipe once per instance (deploy step 2b does).
 node scripts/arcblog-anomalies.mjs refresh|show  # PRD-OPS-01 anomaly zone: the four node-anomaly
                                              # classes (identity / read-only exit / chain registry /
                                              # test residue) precomputed into node/anomalies/<key>.json
@@ -103,6 +109,14 @@ node scripts/arcblog-bookmarks.mjs where --user <did>   # the CLI half of ?page=
                           # records live in the USER's space (/user/<did>/arcblog/bookmarks/…), never platform-side
 node scripts/arcblog-ui-budget.mjs [--strict] # the console content-column budget ratchet (UI standard §2.7.2);
                           # --write-baseline re-records it — a deliberate, disclosed act (never a silent bump)
+node scripts/arcblog-ui-copy.mjs [--json]  # the console-copy ratchet (UI standard `docs/04/01 §1 L8`): counts
+                          # implementer references (BUG- ids, localStorage keys, `arc-contracts §`, `arcblog-*.mjs`)
+                          # INSIDE page `i18n {}` blocks — i.e. what an operator reads; comments and wiring are out
+                          # of scope. Bound per page = scripts/ui-copy-baseline.json (`--write-baseline` re-records
+                          # it: deliberate + disclosed, never a silent raise). The gate itself runs inside
+                          # `arcblog-i18n.test.mjs` (a new FAST_TESTS file cannot be whitelisted before commit:
+                          # `arcblog-run-tests.test.mjs` pins the count and requires every fast entry to be tracked).
+                          # `?page=diagnostics` is exempt — it is the designated home for platform boundaries.
 node scripts/arcblog-open-questions.mjs    # the open-question lister (read-only): every living volume's
                           # 开放问题/未决 section, rows with no resolution marker; take the count
                           # from THIS command, never from prose (docs/08/01 U3 cites it)

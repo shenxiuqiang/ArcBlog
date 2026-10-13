@@ -86,15 +86,17 @@ page appearance {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          p :desc intent=muted
+          // 页头（§2.4）：标题 + 一句话用途。本页的主操作由平台 auto-surface 提供
+          // （记录级表单），因此页头本身没有按钮 —— 见 docs/04/01 L5 的 2026-10-13 澄清。
+          view gap=xs {
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+          }
           view size={flex: 1} style={overflowY: auto} {
             view style={flexShrink: 0} {
               auto-surface "$t(appearance.title)" from "/instance/settings/arcblog"

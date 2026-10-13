@@ -85,6 +85,24 @@
     // raises the target without moving the visual box. REVERT = delete these two rules.
     '.aup-app-header-brand-link{min-height:24px}',
     '.aup-breadcrumb-item a{display:inline-flex;align-items:center;min-height:24px}',
+    // BLANK-PAGE FIX (measured 2026-10-13): the platform header's `theme-toggle`
+    // rewrites `<html data-mode>`, which flips the host's used `color-scheme`
+    // light -> dark AFTER this overlay iframe has already been laid out.
+    // Chromium then keeps painting the overlay's canvas with its base background
+    // -- an opaque pure-white rectangle at z-index 99999 over the whole viewport
+    // (measured on /?page=index: a full-viewport screenshot of #ffffff = 4254 B
+    // while `#aup-display` still held 8756 B of live page DOM; `elementFromPoint`
+    // still returned the hero frame). Hiding `.aup-frame-overlay` restored the
+    // paint, so the page was never blank in the DOM -- only covered. The iframe
+    // document already declares `color-scheme: light` and
+    // `html,body{background:transparent!important}` (`.web/components/theme-bridge/render.js`),
+    // so pinning the overlay's *used* scheme to light keeps the frame transparent
+    // across the flip. Measured before/after: click the header toggle on
+    // /?page=index -> screenshot 4254 B (blank) before, 692218 B (visible) after;
+    // same fix also cures a cold load whose OS preference is dark (the compiled
+    // `mode light` is flipped to dark by this bridge after the frame exists).
+    // Revert = delete this one line.
+    '.aup-frame-overlay{color-scheme:light}',
     // V06 (long identifiers must not overflow): the surfaces that render identifiers wrap
     // correctly out of the box -- `key-value-list` values compute `overflow-wrap:anywhere`
     // (measured on /?page=author with a 190-char token: scrollWidth == clientWidth) and the
@@ -364,6 +382,11 @@
     // no-op, but a fresh iframe (navigation recreates the frame) must take
     // over — the previous instance's document is gone.
     if (p.__arcblogThemeBridge === window) return;
+    // Land the host chrome stylesheet (incl. the overlay `color-scheme`
+    // blank-page fix) BEFORE the first data-mode write: applyCached below can
+    // flip the host light -> dark while afs is still unavailable, and the
+    // overlay must already be pinned to light when that happens.
+    injectChromeStyles(p);
     // Fast path: restore the cached theme before waiting on afs. On in-app
     // navigation the runtime has just reset data-* to the compiled default;
     // applying the cache now (same task as the bridge script) avoids the dark

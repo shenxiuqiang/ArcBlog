@@ -1,8 +1,8 @@
 page categories {
   i18n {
-    add-note { en "A page write stores sort=0; adjust it afterwards with the CLI in the advanced section below. The CLI accepts only lowercase letters, digits and hyphens (slugify)." zh "页面写入的记录 sort=0；之后请用下方「高级」里的 CLI 排序。CLI 只接受小写字母、数字与连字符（slugify）。" }
+    add-note { en "Saves with sort=0 — set the order afterwards with the command in Advanced." zh "保存时 sort=0——之后可在「高级」里用命令调整排序。" }
     add-title { en "Add a category" zh "新增分类" }
-    adv-desc { en "These commands do the same work as the buttons above, plus what this page does not offer (sort, seed, usage counts). Kept for operators who prefer the shell." zh "以下命令能做与上方按钮相同的事，外加本页不提供的能力（排序、seed、引用计数）。保留给习惯命令行的运维人员。" }
+    adv-desc { en "The same work as the buttons, plus what this page does not offer (sort, seed, usage counts)." zh "与上方按钮相同的工作，外加本页不提供的能力（排序、seed、引用计数）。" }
     adv-hide { en "Hide advanced" zh "收起高级" }
     adv-show { en "Show advanced (CLI)" zh "展开高级（CLI）" }
     adv-title { en "Advanced: command line (optional)" zh "高级：命令行（可选）" }
@@ -12,7 +12,7 @@ page categories {
     cat-f-desc { en "Description" zh "描述" }
     cat-f-name { en "Name" zh "名称" }
     cat-f-slug { en "Slug" zh "标识（slug）" }
-    cat-remove-msg { en "A bare delete (no migration) stays a CLI-only action: it is only safe when nothing references the category, and this page cannot prove that. Use the buttons above — they always migrate first." zh "裸删除（不带迁移）仍只由 CLI 提供：只有在没有任何引用时才安全，而本页无法证明这一点。请用上方按钮——它们总是先迁移。" }
+    cat-remove-msg { en "A bare delete (no migration) is only safe when nothing references the category — use the row buttons, which always migrate first." zh "裸删除（不带迁移）只在没有任何引用时才安全——请用行内按钮，它们总是先迁移。" }
     cat-remove-title { en "Delete this category?" zh "删除该分类？" }
     cat-removed { en "Category removed." zh "分类已删除。" }
     cat-slug-hint { en "Lowercase letters, digits and hyphens, e.g. technology." zh "小写字母、数字与连字符，例如 technology。" }
@@ -22,13 +22,11 @@ page categories {
     cmd-remove-zero { en "Remove only when usage is 0" zh "仅当 usage 为 0 时删除" }
     cmd-sort { en "Change the sort value" zh "修改排序值" }
     cmd-usage { en "Count posts/drafts referencing this category" zh "统计引用该分类的文章/草稿" }
-    desc { en "Taxonomy used by the publish validator and the public feed. Every governance action is a button: it queues an intent, and this node's worker does the rewrite. No terminal needed." zh "发布校验器与公开信息流使用的分类法。每个治理动作都是一个按钮：它把意图入队，由本机 worker 执行改写。无需终端。" }
+    desc { en "The taxonomy the publish validator and the public feed use. Every action is a button: it queues an intent and this node's worker does the rewrite." zh "发布校验器与公开信息流使用的分类法。每个动作都是按钮：入队一条意图，由本机 worker 执行改写。" }
     enqueue-failed { en "Could not queue the intent — nothing was written. Sign in as the blocklet owner and try again." zh "意图入队失败 —— 没有写入任何记录。请以 Blocklet 属主身份登录后重试。" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
     gate-title { en "Categories" zh "分类" }
-    gov-desc { en "Merge a category into another, or delete it while migrating its posts. In the row you want to change, type the target slug into that row's target field, then press its button: the button only queues the action — this node's worker performs the rewrite, so the browser never touches your posts." zh "把某个分类合并到另一个，或删除它并迁移其文章。在要改的那一行里填上目标 slug，再点该行的按钮：按钮只负责入队——真正的改写由本机 worker 执行，浏览器不会直接改你的文章。" }
-    gov-title { en "Governance actions (buttons)" zh "治理动作（按钮）" }
-    list-desc { en "One row per record under /instance/app/arcblog/categories/ (live-subscribed), showing the stored sort value. Reference counts are deliberately NOT displayed: a page-side count could only come from the query index, which goes stale after an edit (arc-contracts §15), so the advanced section gives you the usage command instead — it scans the records directly." zh "来自 /instance/app/arcblog/categories/ 的每条记录一行（实时订阅），显示记录里的 sort 值。本页刻意不显示引用计数：页面侧计数只能来自查询索引，而索引在编辑后会陈旧（arc-contracts §15），因此「高级」区给出 usage 命令——它直接扫描记录。" }
+    list-desc { en "Type the target slug into a row's field, then press that row's button: it queues the action, and the worker rewrites every referencing post. Reference counts are not shown here — the advanced section's usage command answers that by scanning the records." zh "在某一行的目标字段里填目标 slug，再点该行的按钮：只入队，由本机 worker 改写所有引用该分类的文章。本页不显示引用计数——要计数用下方「高级」区的 usage 命令直接扫描记录。" }
     list-empty-hint { en "An empty list means no category record exists yet — the publish validator then falls back to the built-in technology / design / life." zh "列表为空说明还没有分类记录——发布校验器此时回退到内置的 technology / design / life。" }
     list-title { en "All categories" zh "全部分类" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
@@ -39,23 +37,20 @@ page categories {
     queue-clear { en "Clear" zh "清除" }
     queue-clear-msg { en "Removes the record from the queue. Posts it already rewrote are unaffected." zh "从队列移除该记录。已被它改写的文章不受影响。" }
     queue-clear-title { en "Clear this intent?" zh "清除这条意图？" }
-    queue-desc { en "The console cannot rewrite posts itself, so a button only queues an intent. The worker applies it with the same code path as the CLI merge — and writes the outcome (applied / rejected / noop + reason) back onto this record." zh "控制台本身不能改写文章，按钮只负责入队。worker 会用与 CLI merge 完全相同的实现执行，并把结果（applied / rejected / noop + 原因）写回这条记录。" }
+    queue-desc { en "Every click writes one record here; the worker applies it and writes the outcome (applied / rejected / noop + reason) back onto it." zh "每次点击都会在这里写入一条记录；worker 执行后把结果（applied / rejected / noop + 原因）写回该记录。" }
     queue-standing-note { en "Every queued intent record appears in the list above, newest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的意图记录都会出现在上方列表里（最新在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
     queue-legend { en "pending = waiting for the worker · applied = posts rewritten, source record removed · noop = nothing to do (already done) · rejected = refused, no data changed" zh "pending = 等待 worker · applied = 已改写文章并删除源记录 · noop = 无需执行（已经做过）· rejected = 被拒绝，未改动任何数据" }
     queue-title { en "Intent queue" zh "意图队列" }
     remove-btn { en "Delete and migrate to…" zh "删除并迁移到…" }
-    remove-confirm-msg { en "Every post or draft referencing this category is migrated to the target category, then the category record itself is deleted — by this node's worker, so the category is never left dangling (spec §15.4)." zh "所有引用该分类的文章/草稿都会先迁移到目标分类，然后删除该分类记录——由本机 worker 执行，因此绝不会留下悬空分类（spec §15.4）。" }
+    remove-confirm-msg { en "Every post or draft referencing this category is migrated to the target category, then the category record itself is deleted by this node's worker — the category is never left dangling." zh "所有引用该分类的文章/草稿都会先迁移到目标分类，然后由本机 worker 删除该分类记录——绝不会留下悬空分类。" }
     remove-confirm-title { en "Queue delete + migration?" zh "提交「删除并迁移」？" }
-    sort-desc { en "`sort` is a real record field and the CLI lists by (sort, slug): technology 10 / design 20 / life 30. This page never edits it — change it with the CLI command in the advanced section. Ordering is CLI-only: this page exposes no other reordering interface." zh "`sort` 是真实记录字段，CLI 按 (sort, slug) 列出：technology 10 / design 20 / life 30。本页不改它——用「高级」区的 CLI 命令修改。排序仅 CLI 可改：本页不提供任何其他重排界面。" }
+    sort-desc { en "This page never edits the sort value; the command above does, and the list is ordered by (sort, slug)." zh "本页不修改排序值，用上面的命令改；列表按 (sort, slug) 排序。" }
     sort-title { en "Sorting is CLI-only" zh "排序仅 CLI 可改" }
     sort-value { en "sort" zh "排序" }
     status-intent { en "Status" zh "状态" }
-    status-note { en "The status text is read verbatim from the record. This platform cannot pick a localized label per record (a dynamic $t() key renders literally), so the machine value is shown — docs/05-开发文档/附件/arc-contracts.md §28.8." zh "状态文字直接读取记录原文。本平台无法按记录取不同的本地化文案（动态 $t() key 会原样渲染），因此原样显示机器值——docs/05-开发文档/附件/arc-contracts.md §28.8。" }
-    target-hint { en "Every row has its own target field: type the slug of an existing category there (the list below shows every slug). An unknown or empty target is refused by the worker with a reason — nothing is changed." zh "每一行都有自己的目标字段：填一个已存在分类的 slug（下方列表列出了全部 slug）。目标不存在或为空会被 worker 拒绝并给出原因——不会改动任何数据。" }
     target-label { en "Target category (slug)" zh "目标分类（slug）" }
     title { en "Categories" zh "分类" }
-    worker-hint { en "Worker: node scripts/arcblog-category.mjs watch" zh "Worker：node scripts/arcblog-category.mjs watch" }
-    worker-note { en "Buttons only queue the action. The node's worker (node scripts/arcblog-category.mjs watch) performs it — the browser never rewrites a post. This platform cannot run server-side code from a button click." zh "按钮只负责入队。真正的执行者是本机 worker（node scripts/arcblog-category.mjs watch）——浏览器不会改写文章。本平台的按钮点击无法直接执行服务端代码。" }
+    worker-note { en "Buttons only queue the action; this node's worker performs it. The browser never rewrites a post." zh "按钮只负责入队，真正的执行者是本机 worker；浏览器不会改写文章。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
@@ -137,11 +132,8 @@ page categories {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
@@ -151,19 +143,63 @@ page categories {
               p :desc intent=muted
             }
             view gap=sm size={flex: 1} style={overflowY: auto} {
-              // 1) Governance — the page's MAIN path: two buttons per category.
-              //    A button only writes ONE intent record; the node's worker
-              //    performs the rewrite. The platform cannot run server-side
-              //    code from a click (arc-contracts §26), so the page says so
-              //    instead of pretending (L-R18-2: no fake buttons).
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :gov-title level=3 style={fontSize: "var(--type-body)"}
-                p :gov-desc scale=sm intent=muted
-                p :target-hint intent=muted scale=caption
-                p :worker-note intent=muted scale=sm
-              }
               // 2) The queue: one record per click, with the worker's outcome.
+              // 3) The taxonomy itself: every row carries the two buttons.
               view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :list-title level=3 style={fontSize: "var(--type-body)"}
+                // 状态行：计数由 CLI 预计算（config/console/categories.json），本页逐字打印、不自算。
+                surface url="/instance/app/arcblog/config/console/categories.json" editable=false {
+                  p " "
+                }
+                p :list-desc scale=sm intent=muted
+                afs-list categories-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/categories" {
+                  view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
+                    h3 "${entry.content.name}" style={fontSize: "var(--type-body)"}
+                    p "${entry.content.slug}" scale=sm intent=muted
+                    p "$t(categories.sort-value): ${entry.content.sort}" scale=sm
+                    p "${entry.content.description}" scale=sm intent=muted
+                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                      time mode=display value="${entry.content.createdAt}" timeMode=relative
+                    }
+                    row gap=sm cross=start {
+                      input type=text label=:target-label name=cTarget state={value: ""}
+                      action variant=secondary size=sm label=:merge-btn confirm={title: :merge-confirm-title, message: :merge-confirm-msg} onSuccessToast={intent: success, message: "$t(categories.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(categories.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/category-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: merge, from: "${args.cFrom}", to: "${args.cTarget}", rawFrom: "${args.cFrom}", rawTo: "${args.cTarget}", summary: "${args.cFrom} → ${args.cTarget}", status: pending, message: "", migrated: 0, changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                      action variant=destructive size=sm icon=trash label=:remove-btn confirm={title: :remove-confirm-title, message: :remove-confirm-msg} onSuccessToast={intent: success, message: "$t(categories.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(categories.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/category-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: remove, from: "${args.cFrom}", to: "${args.cTarget}", rawFrom: "${args.cFrom}", rawTo: "${args.cTarget}", summary: "${args.cFrom} → ${args.cTarget}", status: pending, message: "", migrated: 0, changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
+                      input type=hidden name=cFrom value="${entry.content.slug}"
+                    }
+                  }
+                }
+                p :list-empty-hint scale=caption intent=muted
+              }
+              // 4) Advanced: the CLI is a folded ALTERNATIVE, never the only
+              //    path (L-R18-5). The collapse is a `-> set … state {open: …}`
+              //    patch plus an expression `visible=$state.open`; the values are
+              //    strings because boolean literals trip the DSL formatter's
+              //    round-trip guard (ArcBlock/arc#2764) — same as factory.aup.
+              view cat-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+                h3 :add-title level=3 style={fontSize: "var(--type-body)"}
+                p :add-note scale=sm intent=muted
+                input type=text label=:cat-f-slug name=catSlug required=true state={value: ""}
+                p :cat-slug-hint intent=muted scale=caption
+                input type=text label=:cat-f-name name=catName required=true state={value: ""}
+                input type=text label=:cat-f-desc name=catDesc state={value: ""}
+                row cross=start {
+                  action variant=primary label=:cat-add onSuccessToast={intent: success, message: "$t(categories.cat-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/categories/${args.catSlug}.json", content: {slug: "${args.catSlug}", name: "${args.catName}", description: "${args.catDesc}", sort: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                }
+                h3 :adv-title level=3 style={fontSize: "var(--type-body)"}
+                p :adv-desc scale=sm intent=muted
+                row cross=start {
+                  action -> set cat-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
+                }
+                view gap=sm visible=$state.open {
+                  key-value-list cat-gov-cmds dense=true fields=[{label: "$t(categories.cmd-list)", value: "node scripts/arcblog-category.mjs list", monospace: true, copyable: true}, {label: "$t(categories.cmd-usage)", value: "node scripts/arcblog-category.mjs usage --slug <slug>", monospace: true, copyable: true}, {label: "$t(categories.cmd-merge)", value: "node scripts/arcblog-category.mjs merge --from <from> --to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-migrate)", value: "node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-zero)", value: "node scripts/arcblog-category.mjs remove --slug <slug>", monospace: true, copyable: true}, {label: "$t(categories.cmd-sort)", value: "node scripts/arcblog-category.mjs add --slug <slug> --update --sort <n>", monospace: true, copyable: true}]
+                  h3 :sort-title level=3 style={fontSize: "var(--type-body)"}
+                  p :sort-desc scale=sm intent=muted
+                  p :cat-remove-msg scale=sm intent=muted
+                  row cross=start {
+                    action -> set cat-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
+                  }
+                }
                 h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
                 p :queue-desc scale=sm intent=muted
                 p :queue-legend intent=muted scale=caption
@@ -191,63 +227,6 @@ page categories {
                 // empty-state claim — the platform cannot probe a list's length
                 // (arc-contracts §21). Do not turn this back into an empty state.
                 p :queue-standing-note scale=caption intent=muted
-                p :status-note intent=muted scale=sm
-                p :worker-hint intent=muted scale=sm
-              }
-              // 3) The taxonomy itself: every row carries the two buttons.
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :list-title level=3 style={fontSize: "var(--type-body)"}
-                p :list-desc scale=sm intent=muted
-                afs-list categories-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/categories" {
-                  view gap=xs role=item style={borderBottom: "1px solid var(--color-border)", padding: "8px 0"} {
-                    h3 "${entry.content.name}" style={fontSize: "var(--type-body)"}
-                    p "${entry.content.slug}" scale=sm intent=muted
-                    p "$t(categories.sort-value): ${entry.content.sort}" scale=sm
-                    p "${entry.content.description}" scale=sm intent=muted
-                    view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                      time mode=display value="${entry.content.createdAt}" timeMode=relative
-                    }
-                    row gap=sm cross=start {
-                      input type=text label=:target-label name=cTarget state={value: ""}
-                      action variant=secondary size=sm label=:merge-btn confirm={title: :merge-confirm-title, message: :merge-confirm-msg} onSuccessToast={intent: success, message: "$t(categories.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(categories.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/category-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: merge, from: "${args.cFrom}", to: "${args.cTarget}", rawFrom: "${args.cFrom}", rawTo: "${args.cTarget}", summary: "${args.cFrom} → ${args.cTarget}", status: pending, message: "", migrated: 0, changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
-                      action variant=destructive size=sm icon=trash label=:remove-btn confirm={title: :remove-confirm-title, message: :remove-confirm-msg} onSuccessToast={intent: success, message: "$t(categories.queued)", duration: 3000} onErrorToast={intent: error, message: "$t(categories.enqueue-failed)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/category-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: remove, from: "${args.cFrom}", to: "${args.cTarget}", rawFrom: "${args.cFrom}", rawTo: "${args.cTarget}", summary: "${args.cFrom} → ${args.cTarget}", status: pending, message: "", migrated: 0, changed: [], requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
-                      input type=hidden name=cFrom value="${entry.content.slug}"
-                    }
-                  }
-                }
-                p :list-empty-hint scale=caption intent=muted
-              }
-              // 4) Advanced: the CLI is a folded ALTERNATIVE, never the only
-              //    path (L-R18-5). The collapse is a `-> set … state {open: …}`
-              //    patch plus an expression `visible=$state.open`; the values are
-              //    strings because boolean literals trip the DSL formatter's
-              //    round-trip guard (ArcBlock/arc#2764) — same as factory.aup.
-              view cat-advanced gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :adv-title level=3 style={fontSize: "var(--type-body)"}
-                p :adv-desc scale=sm intent=muted
-                row cross=start {
-                  action -> set cat-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
-                }
-                view gap=sm visible=$state.open {
-                  key-value-list cat-gov-cmds dense=true fields=[{label: "$t(categories.cmd-list)", value: "node scripts/arcblog-category.mjs list", monospace: true, copyable: true}, {label: "$t(categories.cmd-usage)", value: "node scripts/arcblog-category.mjs usage --slug <slug>", monospace: true, copyable: true}, {label: "$t(categories.cmd-merge)", value: "node scripts/arcblog-category.mjs merge --from <from> --to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-migrate)", value: "node scripts/arcblog-category.mjs remove --slug <slug> --migrate-to <to>", monospace: true, copyable: true}, {label: "$t(categories.cmd-remove-zero)", value: "node scripts/arcblog-category.mjs remove --slug <slug>", monospace: true, copyable: true}, {label: "$t(categories.cmd-sort)", value: "node scripts/arcblog-category.mjs add --slug <slug> --update --sort <n>", monospace: true, copyable: true}]
-                  h3 :sort-title level=3 style={fontSize: "var(--type-body)"}
-                  p :sort-desc scale=sm intent=muted
-                  p :cat-remove-msg scale=sm intent=muted
-                  row cross=start {
-                    action -> set cat-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
-                  }
-                }
-              }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :add-title level=3 style={fontSize: "var(--type-body)"}
-                p :add-note scale=sm intent=muted
-                input type=text label=:cat-f-slug name=catSlug required=true state={value: ""}
-                p :cat-slug-hint intent=muted scale=caption
-                input type=text label=:cat-f-name name=catName required=true state={value: ""}
-                input type=text label=:cat-f-desc name=catDesc state={value: ""}
-                row cross=start {
-                  action variant=primary label=:cat-add onSuccessToast={intent: success, message: "$t(categories.cat-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/categories/${args.catSlug}.json", content: {slug: "${args.catSlug}", name: "${args.catName}", description: "${args.catDesc}", sort: "0", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
-                }
               }
             }
           }

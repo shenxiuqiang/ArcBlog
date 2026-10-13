@@ -1,9 +1,9 @@
 page operations {
   i18n {
     desc { en "Live state of this node: health, discovery, media and agent grants." zh "本节点实时状态：健康、发现、媒体与 Agent 授权。" }
-    render-timing { en "First-load note: the health and discovery projections are read through a surface pointed straight at their record files, so they are here on the first load — no reload needed (DEF-22 / arc-contracts §57; the older propBind channel only bound after the first render). A field rendered as — means the record does not carry that field, not that the node is unhealthy." zh "首屏提示：健康与发现投影由一个直接指向记录文件的 surface 读取，首次打开即已取到，无需刷新（DEF-22 / arc-contracts §57；旧的 propBind 通道要到首次渲染之后才绑定）。显示为「—」的字段表示该记录里没有这个字段，不代表节点异常。" }
+    render-timing { en "First-load note: the health and discovery projections are read straight from their record files, so they are here on the first load — no reload needed. A field rendered as — means the record does not carry that field, not that the node is unhealthy." zh "首屏提示：健康与发现投影直接读自记录文件，首次打开即已取到，无需刷新。显示为「—」的字段表示该记录里没有这个字段，不代表节点异常。" }
     discovery { en "Discovery document" zh "发现文档" }
-    discovery-empty { en "How to publish it: node scripts/arcblog-network.mjs discovery publish" zh "如何发布：node scripts/arcblog-network.mjs discovery publish" }
+    discovery-empty { en "How to publish it: run the command below (the page cannot publish it itself)." zh "如何发布它：运行下方命令（本页无法自行发布）。" }
     gate-desc { en "Sign in with DID Wallet to view node health and discovery." zh "使用 DID Wallet 登录后查看节点健康与发现。" }
     gate-title { en "Operations" zh "运维" }
     health { en "Node health" zh "节点健康" }
@@ -91,20 +91,15 @@ page operations {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
-              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-              p :desc intent=muted
-              p :render-timing intent=muted scale=sm
-            }
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
+            p :render-timing intent=muted scale=sm
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
                 // DEF-22 / B14: this console page is `/?page=operations` (pathname
@@ -123,10 +118,9 @@ page operations {
                     // fake timestamp on a record that has no checkedAt.
                     p "${content.checkedAt}" scale=sm intent=muted
                   }
-                }
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   h2 :discovery level=2 style={fontSize: "var(--type-body)"}
                   p :discovery-empty scale=sm intent=muted
+                  key-value-list operations-discovery-cmd dense=true fields=[{label: "discovery publish", value: "node scripts/arcblog-network.mjs discovery publish", monospace: true, copyable: true}]
                   surface url="/instance/app/arcblog/node/discovery.json" editable=false {
                     p "${content.generatedAt}" scale=sm intent=muted
                   }

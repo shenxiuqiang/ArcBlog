@@ -68,6 +68,41 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
 });
 
 /**
+ * The full-viewport overlay frame must stay transparent when the host flips
+ * `color-scheme` (measured 2026-10-13, Chromium 1243, live instance). The
+ * platform's header `theme-toggle` rewrites `<html data-mode>`, which turns the
+ * host's used color-scheme light -> dark AFTER this overlay iframe has already
+ * been laid out; Chromium then keeps painting that overlay with an opaque pure
+ * white canvas over the whole viewport. Measured on /?page=index: screenshot
+ * 4254 B of #ffffff while `#aup-display` still held 8756 B of live DOM and
+ * `elementFromPoint` still hit the hero frame — the page was COVERED, not blank;
+ * `.aup-frame-overlay{display:none}` restored a 692340 B paint, and pinning the
+ * overlay to `color-scheme:light` restored a 692218 B paint after the same
+ * click. The same cause blanks a cold load whose OS preference is dark (the
+ * compiled `mode light` is flipped by the bridge after the frame exists).
+ */
+test('the overlay frame is pinned to a light color-scheme (theme-toggle blank-page fix)', () => {
+  const src = readFileSync(bridgePath, 'utf8');
+  assert.match(
+    src,
+    /\.aup-frame-overlay\{color-scheme:light\}/,
+    'CHROME_CSS must pin .aup-frame-overlay to color-scheme:light: without it the platform theme toggle paints the full-viewport overlay opaque white and the page looks blank until reload',
+  );
+  // It must also land BEFORE the first data-mode write. applyCached() runs while
+  // afs is still unavailable and can flip the host light -> dark from the cache,
+  // so an injection deferred to start() would leave the frame opaque for the
+  // whole boot-retry window.
+  const boot = /function boot\(\)[\s\S]*?\n  \}/.exec(src);
+  assert.ok(boot, 'boot() not found in the theme bridge source');
+  const injectAt = boot[0].indexOf('injectChromeStyles(p)');
+  const cacheAt = boot[0].indexOf('applyCached(p)');
+  assert.ok(
+    injectAt !== -1 && cacheAt !== -1 && injectAt < cacheAt,
+    'boot() must inject the host chrome stylesheet before applyCached() writes data-mode, or a cached dark mode flips the host while the overlay is still unpinned',
+  );
+});
+
+/**
  * The appearance controls and the bridge must agree (2026-10-12, ENG-48). `?page=appearance` renders
  * the platform settings surface from `seed/settings/arcblog/{tone,palette,theme}.json`, and the
  * bridge carries its own accepted set in `RANGES`. An option the bridge does not know is a control

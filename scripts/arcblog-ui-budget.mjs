@@ -83,12 +83,15 @@ export const THRESHOLDS = {
 const EXEMPTIONS = {
   compose: { ctrl: 16, styles: 12 },
   'compose-edit': { ctrl: 16, styles: 12 },
-  // dashboard is the P2 exception page. cards 3 = three summary cards; styles 9 was granted
-  // 2026-10-12 when PRD-OPS-01's anomaly zone landed as its own card (the PRD asks for an
-  // anomaly ZONE, not two bare lists, so folding it into an existing card was rejected). The
-  // grant is deliberate and disclosed in docs/04's N8 row + the commit that recorded it —
+  // dashboard is the P2 exception page. styles 9 was granted 2026-10-12 when PRD-OPS-01's
+  // anomaly zone landed as its own card (the PRD asks for an anomaly ZONE, not two bare
+  // lists, so folding it into an existing card was rejected). cards 3 -> 4 was granted
+  // 2026-10-13 for the KPI row (`config/console/overview.json` + seed/recipes/console),
+  // i.e. the §2.7.2 anatomy's "KPI/状态概览" segment: the platform cannot count records on
+  // a page at all (B13), so the KPI block had to be its own card fed by a CLI projection.
+  // Both grants are deliberate and disclosed in docs/04's N8 row + the round report —
   // never let a threshold rise silently through --write-baseline.
-  dashboard: { cards: 3, styles: 9 },
+  dashboard: { cards: 4, styles: 9 },
 };
 
 const NODE_START = /^\s*(view|row|grid|stack|h1|h2|h3|p|text|action|input|afs-list|afs-dropzone|key-value-list|chip|breadcrumb|frame|time|tooltip|entity-overview|table|pagination|searchable-dropdown|image|hero-widget)\b/;

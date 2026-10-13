@@ -65,7 +65,9 @@ const schemaKind = (schema) =>
   (/^kind:\s*(\S+)/m.exec(readFileSync(join(repoRoot, 'world', `${schema}.yaml`), 'utf8')) ?? [])[1];
 
 test('every recipe is a one-root node tree whose ${content.*} fields are declared for its directory', () => {
-  assert.equal(RECIPES.length, 4, 'posts / drafts / pages / node each own an item recipe');
+  // 5 since 2026-10-13: the console overview projection (config/console) joined
+  // posts / drafts / pages / node — the dashboard's KPI row is printed through it.
+  assert.equal(RECIPES.length, 5, 'posts / drafts / pages / node / console-overview each own an item recipe');
   for (const recipe of RECIPES) {
     const label = `${recipe.source}/${RECIPE_FILE}`;
     const tree = readRecipeTree(recipe.source, repoRoot);
@@ -109,6 +111,65 @@ test('the node/ union is the one the gate enforces, and it covers every record k
   for (const field of REGISTRY_PROJECTION_FIELDS) {
     assert.ok(union.has(field), `node/registry.json carries "${field}" but the node/ union has it not`);
   }
+});
+
+test('the console overview projection is derived from its writer, and it validates before writing', async () => {
+  // The dashboard's KPI row and the four per-page status rows are printed through
+  // `seed/recipes/console/item.json`, and `${content.<field>}` must name a field the
+  // writer actually emits. Pinning the list to the live builder is what keeps a rename
+  // from leaving the recipe behind (same rule as the registry projection below).
+  const {
+    buildOverview,
+    validateOverview,
+    OVERVIEW_FIELDS,
+    OVERVIEW_COUNT_SOURCES,
+    OVERVIEW_PAGE_RECORDS,
+  } = await import('./lib/overview.mjs');
+
+  const allCounts = Object.fromEntries(Object.keys(OVERVIEW_COUNT_SOURCES).map((f) => [f, 0]));
+  const full = buildOverview({ generatedAt: 'x', counts: allCounts, note: 'x', source: 'x' });
+  assert.deepEqual(sorted(OVERVIEW_FIELDS), sorted(Object.keys(full)));
+  for (const field of Object.keys(OVERVIEW_COUNT_SOURCES)) {
+    assert.ok(OVERVIEW_FIELDS.includes(field), `the overview carries the count "${field}"`);
+  }
+
+  // ONE record per print point, and a field the caller did not measure is OMITTED —
+  // never zero-filled (a `0` is not `hideWhenEmpty`, so it would print a wrong number
+  // on a page that has no such count).
+  assert.deepEqual(sorted(Object.keys(OVERVIEW_PAGE_RECORDS)), [
+    'categories',
+    'media',
+    'overview',
+    'pages',
+    'posts',
+    'tags',
+  ]);
+  for (const [stem, fields] of Object.entries(OVERVIEW_PAGE_RECORDS)) {
+    for (const field of fields) {
+      assert.ok(field in OVERVIEW_COUNT_SOURCES, `${stem} names a real count: ${field}`);
+    }
+    const partial = buildOverview({
+      generatedAt: 'now',
+      counts: Object.fromEntries(fields.map((f) => [f, 1])),
+      note: 'n',
+      source: fields.join(','),
+    });
+    assert.deepEqual(sorted(Object.keys(partial)), sorted(['generatedAt', ...fields, 'note', 'source']));
+    assert.deepEqual(validateOverview(partial, { required: fields }), [], `${stem} must validate`);
+  }
+
+  // Validate-before-write: a page prints these verbatim, so a float/negative/missing
+  // count must fail closed instead of rendering a wrong KPI number.
+  const good = buildOverview({ generatedAt: 'now', counts: { publishedCount: 2, tagCount: 5 }, note: 'n', source: 's' });
+  assert.deepEqual(validateOverview(good), []);
+  assert.ok(validateOverview(good, { required: ['mediaCount'] }).some((i) => /mediaCount/.test(i)));
+  assert.ok(validateOverview({ ...good, publishedCount: 1.5 }).some((i) => /non-negative integer/.test(i)));
+  assert.ok(validateOverview({ ...good, tagCount: -1 }).some((i) => /non-negative integer/.test(i)));
+  assert.ok(validateOverview({ ...good, tagCount: undefined }).some((i) => /tagCount/.test(i)));
+  assert.ok(validateOverview({ ...good, generatedAt: '' }).some((i) => /generatedAt/.test(i)));
+  // A count builder coerces junk to 0 rather than emitting NaN into the record.
+  assert.equal(buildOverview({ generatedAt: 'n', counts: { publishedCount: 'x' }, note: '', source: '' }).publishedCount, 0);
+  assert.ok(!('tagCount' in buildOverview({ generatedAt: 'n', counts: { publishedCount: 1 }, note: '', source: '' })));
 });
 
 test('the registry projection field set is derived from its writer (and covers the QA-named fields)', () => {

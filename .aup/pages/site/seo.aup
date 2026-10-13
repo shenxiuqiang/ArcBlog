@@ -7,9 +7,9 @@ page seo {
     gate-desc { en "Sign in with DID Wallet to manage site-level SEO." zh "使用 DID Wallet 登录后管理站点级 SEO。" }
     gate-title { en "SEO" zh "SEO" }
     identity-card { en "Node identity (read-only)" zh "节点身份（只读）" }
-    identity-cli { en "Change it with: node scripts/arcblog-node.mjs set --name <n> --description <d> --ogImage <url> --endpoint <url>" zh "修改它用：node scripts/arcblog-node.mjs set --name <名称> --description <描述> --ogImage <地址> --endpoint <地址>" }
+    identity-cli { en "Change it with the copyable command below (this page cannot write the node profile)." zh "修改请用下方可复制命令（本页无法写节点档案）。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    profile-empty { en "If the fields below are empty, either no record exists yet (create one: node scripts/arcblog-node.mjs init) or this page has not bound it yet — records are bound after the first load, so reload once." zh "若下方字段为空：要么还没有对应记录（创建：node scripts/arcblog-node.mjs init），要么本页尚未完成绑定——记录在首次加载之后才绑定，刷新一次即可。" }
+    profile-empty { en "If the fields below are empty, either no record exists yet or this page has not bound it yet — records are bound after the first load, so reload once." zh "若下方字段为空：要么还没有对应记录，要么本页尚未完成绑定——记录在首次加载之后才绑定，刷新一次即可。" }
     save { en "Save" zh "保存" }
     title { en "SEO" zh "SEO" }
   }
@@ -93,11 +93,8 @@ page seo {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
@@ -127,6 +124,7 @@ page seo {
                 p "ogImage: ${state.profile.ogImage}" scale=sm
                 p "endpoint: ${state.profile.endpoint}" scale=sm
                 p :identity-cli scale=caption intent=info
+                key-value-list seo-identity-cmd dense=true fields=[{label: "$t(seo.identity-card)", value: "node scripts/arcblog-node.mjs set --name <n> --description <d> --ogImage <url> --endpoint <url>", monospace: true, copyable: true}]
                 // DEF-15: standing note (never an empty-state card — `visible="!${state.profile}"`
                 // does not render, arc-contracts §28.1). Merged into this card so the page still
                 // shows exactly two cards (UI budget ratchet, §2.7.2).

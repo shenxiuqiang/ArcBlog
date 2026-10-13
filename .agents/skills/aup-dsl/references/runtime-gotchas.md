@@ -108,6 +108,22 @@ All of these were reproduced on the live daemon; "symptom → cause → fix".
    `"$session.did"`. Write such fields from the CLI, or accept a server-side backfill; never
    promise "the page signs as you".
 
+### 7d. A literal `surface` renders cold too — and it must have ≥ 1 child (measured 2026-10-13)
+
+`surface url=$state.loc` is not the only cold-start channel: a **literal** path works the same way,
+in **both** spellings, and goes through the record directory's item recipe (`<dir>/.aup/item.json`):
+
+```
+surface src="/instance/app/arcblog/node/anomalies.json" editable=false { p "…" }   # ✅ renders cold
+surface url="/instance/app/arcblog/config/…/overview.json" editable=false { p "…" } # ✅ same output
+surface url="…" editable=false                                                      # ❌ invalid_page_dsl
+```
+
+The childless form fails `arc dsl validate` with `Surface must have src or non-empty children`, so a
+one-line status row costs one `surface` + one child node (the child renders above the record, so it is a
+useful caption slot). Put it **inside an existing card** — a recipe whose root carries card styling will
+otherwise nest a card inside a card. Full evidence: `docs/05-开发文档/附件/arc-contracts.md` §63.
+
 ## Layout / style
 
 10. **The `100vw` header is cropped / a full-bleed shell is clipped**

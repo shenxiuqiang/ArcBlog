@@ -1,0 +1,124 @@
+// The console's **overview projection** — the counts the dashboard and the list
+// pages print verbatim.
+//
+// WHY A PROJECTION AND NOT A PAGE COMPUTATION
+//   The AUP expression language has no arithmetic, no `length` and no comparisons,
+//   and `visible` cannot branch on async data at all (docs/05-开发文档/附件/arc-contracts.md
+//   §28.1 / `docs/05-开发文档/02` B13). So a page can never count its own records —
+//   every number it shows must be precomputed by a CLI and printed verbatim.
+//
+// WHERE THE RECORDS LAND
+//   `config/console/<name>.json` (admin-only: one of the counts is the draft count).
+//   ONE record per print point, each carrying only the fields that point needs, so a
+//   page never renders another page's numbers:
+//
+//     overview.json    the dashboard's KPI row (6 counts)
+//     posts.json       ?page=posts    (publishedCount, draftCount)
+//     media.json       ?page=media    (mediaCount)
+//     pages.json       ?page=pages    (pageOnlineCount, pageDraftCount)
+//     tags.json        ?page=tags     (tagCount)
+//     categories.json  ?page=categories (categoryCount)
+//
+//   All of them live in the SAME directory, so the runtime renders them with the same
+//   item recipe (`config/console/.aup/item.json` ← `seed/recipes/console/item.json`).
+//   That recipe hides a row whose field is absent (`hideWhenEmpty`), which is exactly
+//   why the partial records work — and why `buildOverview` must NOT zero-fill a count
+//   it was not given (a `0` is not "empty" and would print a wrong number).
+//
+// WHY THE FIELDS ARE DERIVED, NOT HAND-LISTED
+//   `scripts/arcblog-recipes.mjs` refuses a `${content.<field>}` the writer never emits,
+//   so `OVERVIEW_FIELDS` is derived from `buildOverview` itself (same discipline as
+//   `REGISTRY_PROJECTION_FIELDS`): a rename here cannot leave the recipe behind.
+
+/** Every count the console can print. Key = the record field, value = the source directory. */
+export const OVERVIEW_COUNT_SOURCES = Object.freeze({
+  publishedCount: '/instance/app/arcblog/posts',
+  draftCount: '/instance/app/arcblog/drafts',
+  pageOnlineCount: '/instance/app/arcblog/pages',
+  pageDraftCount: '/instance/app/arcblog/page-drafts',
+  mediaCount: '/instance/app/arcblog/media',
+  summaryCount: '/instance/app/arcblog/node/summaries',
+  categoryCount: '/instance/app/arcblog/categories',
+  tagCount: '/instance/app/arcblog/tags/items',
+});
+
+/**
+ * One record per print point: file stem → the counts it carries. The order here is
+ * also the order the CLI writes them, and `source` records which fields a record owns.
+ */
+export const OVERVIEW_PAGE_RECORDS = Object.freeze({
+  overview: ['publishedCount', 'draftCount', 'pageOnlineCount', 'pageDraftCount', 'mediaCount', 'summaryCount'],
+  posts: ['publishedCount', 'draftCount'],
+  media: ['mediaCount'],
+  pages: ['pageOnlineCount', 'pageDraftCount'],
+  tags: ['tagCount'],
+  categories: ['categoryCount'],
+});
+
+/** Coerce anything to a non-negative integer (a count is never a float or a string). */
+function count(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+}
+
+function str(value) {
+  return value === undefined || value === null ? '' : String(value);
+}
+
+/**
+ * Build one overview record. Pure: the caller supplies the counts it measured, and a
+ * field it does not pass is OMITTED (never zero-filled) so a partial record cannot
+ * print a wrong number on a page that has no such count.
+ */
+export function buildOverview({ generatedAt, counts = {}, note = '', source = '' } = {}) {
+  const record = { generatedAt: str(generatedAt) };
+  for (const field of Object.keys(OVERVIEW_COUNT_SOURCES)) {
+    if (counts[field] !== undefined) record[field] = count(counts[field]);
+  }
+  record.note = str(note);
+  record.source = str(source);
+  return record;
+}
+
+/** The full field set of the projection, derived from its writer (never hand-copied). */
+export const OVERVIEW_FIELDS = Object.freeze([
+  'generatedAt',
+  ...Object.keys(OVERVIEW_COUNT_SOURCES),
+  'note',
+  'source',
+]);
+
+/**
+ * Validate before writing: the page prints these strings verbatim, so a missing
+ * `generatedAt`, a non-integer count or a missing REQUIRED field would render a wrong
+ * KPI row. `required` names the fields this particular print point needs
+ * (`OVERVIEW_PAGE_RECORDS[stem]`). Returns an issue list; empty = ok.
+ */
+export function validateOverview(record, { required = [] } = {}) {
+  const issues = [];
+  if (!record || typeof record !== 'object') return ['overview must be an object'];
+  if (!str(record.generatedAt)) issues.push('generatedAt is required (the KPI row states when it was measured)');
+  for (const field of Object.keys(OVERVIEW_COUNT_SOURCES)) {
+    if (!(field in record)) continue;
+    const value = record[field];
+    if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
+      issues.push(`${field} must be a non-negative integer (got ${JSON.stringify(value)})`);
+    }
+  }
+  for (const field of required) {
+    if (!(field in record)) issues.push(`${field} is required`);
+  }
+  return issues;
+}
+
+/**
+ * The one-place sentence the page prints next to the numbers. Language-neutral on
+ * purpose: the record cannot pick a locale (a page-side `$t()` cannot translate a
+ * record value), so the sentence stays words-free and the localized heading comes
+ * from the page.
+ */
+export function overviewNote(generatedAt, counts = {}) {
+  const fields = Object.keys(counts).filter((field) => field in OVERVIEW_COUNT_SOURCES);
+  const total = fields.reduce((sum, field) => sum + count(counts[field]), 0);
+  return `${str(generatedAt)} · ${total} record(s) across ${fields.length} collection(s)`;
+}

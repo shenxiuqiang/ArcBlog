@@ -34,6 +34,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { REGISTRY_PROJECTION_FIELDS } from './network.mjs';
+import { OVERVIEW_FIELDS } from './overview.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -83,6 +84,17 @@ export const RECIPES = [
   //     they live in their OWN subdirectory, so the runtime looks for
   //     `<subdir>/.aup/item.json`; the registry rows are rendered from the
   //     `afs-list` `$entry.*` row template instead.
+  // The dashboard's KPI projection (`scripts/arcblog-overview.mjs`). It is the
+  // ONLY member of `config/console/`: a schema-less projection whose accepted field
+  // set is derived from its writer (`OVERVIEW_FIELDS`), never hand-copied here.
+  // `config/` is admin-only, which is why the record may carry the draft count.
+  {
+    collection: 'console',
+    dir: '/instance/app/arcblog/config/console',
+    source: 'console',
+    schemas: [],
+    extraFields: OVERVIEW_FIELDS,
+  },
   {
     collection: 'node',
     dir: '/instance/app/arcblog/node',

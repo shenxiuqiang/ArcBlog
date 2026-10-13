@@ -1,21 +1,21 @@
 {
   "dashboard": {
     "blocks": 2,
-    "cards": 3,
+    "cards": 4,
     "nested": 0,
-    "ctrl": 3,
+    "ctrl": 2,
     "styles": 9,
-    "i18n": 21,
+    "i18n": 20,
     "tech": 0
   },
   "posts": {
     "blocks": 1,
-    "cards": 2,
+    "cards": 1,
     "nested": 0,
     "ctrl": 7,
-    "styles": 6,
-    "i18n": 20,
-    "tech": 2
+    "styles": 5,
+    "i18n": 18,
+    "tech": 0
   },
   "pages": {
     "blocks": 2,
@@ -24,7 +24,7 @@
     "ctrl": 11,
     "styles": 23,
     "i18n": 38,
-    "tech": 5
+    "tech": 3
   },
   "compose": {
     "blocks": 3,
@@ -37,30 +37,30 @@
   },
   "heroes": {
     "blocks": 1,
-    "cards": 5,
+    "cards": 1,
     "nested": 0,
     "ctrl": 13,
-    "styles": 27,
-    "i18n": 27,
+    "styles": 23,
+    "i18n": 25,
     "tech": 0
   },
   "categories": {
     "blocks": 1,
-    "cards": 5,
+    "cards": 2,
     "nested": 0,
     "ctrl": 10,
-    "styles": 26,
-    "i18n": 56,
-    "tech": 12
+    "styles": 22,
+    "i18n": 51,
+    "tech": 6
   },
   "tags": {
     "blocks": 1,
-    "cards": 4,
+    "cards": 2,
     "nested": 0,
     "ctrl": 6,
-    "styles": 24,
-    "i18n": 37,
-    "tech": 6
+    "styles": 22,
+    "i18n": 33,
+    "tech": 0
   },
   "seo": {
     "blocks": 2,
@@ -69,7 +69,7 @@
     "ctrl": 4,
     "styles": 8,
     "i18n": 12,
-    "tech": 4
+    "tech": 1
   },
   "feeds": {
     "blocks": 2,
@@ -85,36 +85,36 @@
     "cards": 0,
     "nested": 0,
     "ctrl": 0,
-    "styles": 3,
+    "styles": 4,
     "i18n": 5,
     "tech": 0
   },
   "operations": {
     "blocks": 1,
-    "cards": 3,
+    "cards": 1,
     "nested": 0,
     "ctrl": 0,
-    "styles": 10,
+    "styles": 8,
     "i18n": 10,
-    "tech": 2
+    "tech": 1
   },
   "registry": {
     "blocks": 1,
-    "cards": 4,
+    "cards": 2,
     "nested": 0,
     "ctrl": 0,
-    "styles": 12,
+    "styles": 10,
     "i18n": 27,
     "tech": 2
   },
   "factory": {
-    "blocks": 3,
-    "cards": 6,
+    "blocks": 2,
+    "cards": 2,
     "nested": 0,
     "ctrl": 7,
-    "styles": 26,
+    "styles": 22,
     "i18n": 71,
-    "tech": 5
+    "tech": 2
   },
   "media": {
     "blocks": 1,
@@ -127,21 +127,21 @@
   },
   "agents": {
     "blocks": 1,
-    "cards": 6,
+    "cards": 2,
     "nested": 0,
     "ctrl": 0,
-    "styles": 21,
+    "styles": 17,
     "i18n": 40,
-    "tech": 11
+    "tech": 9
   },
   "general": {
     "blocks": 2,
-    "cards": 5,
+    "cards": 2,
     "nested": 0,
     "ctrl": 12,
-    "styles": 38,
-    "i18n": 90,
-    "tech": 17
+    "styles": 34,
+    "i18n": 88,
+    "tech": 5
   },
   "diagnostics": {
     "blocks": 2,
@@ -162,23 +162,23 @@
     "tech": 0
   },
   "_sources": {
-    "dashboard": "a9759b90ebe2cfd2",
-    "posts": "78fc1dadc4a133d4",
-    "pages": "a115ee9f18ac2a5d",
-    "compose": "373a644dcc2d78c6",
-    "heroes": "87bf9de9b0b52d12",
-    "categories": "f3b265ad42fb8b72",
-    "tags": "7a42ec7d8fd45225",
-    "seo": "f7a8c1760e32a2d8",
-    "feeds": "5d0a28e839a63375",
-    "appearance": "93b80c1873251269",
-    "operations": "4abd7287a5f36064",
-    "registry": "0d4b406d6640cde0",
-    "factory": "3ed67708d4c44f7c",
-    "media": "8165d257b5dff154",
-    "agents": "a175adc6af88b35e",
-    "general": "79e263cba85e3d9e",
-    "diagnostics": "39f4ed9684fe1c9b",
+    "dashboard": "d1e238d2e6adef17",
+    "posts": "0a0164fc6c990e6c",
+    "pages": "c2d27589af15cc92",
+    "compose": "672e3edbdaf438de",
+    "heroes": "e25de25221074d9d",
+    "categories": "0b38d8554d950f3f",
+    "tags": "d0553971bd39dd5a",
+    "seo": "82f71b4b248c1a8c",
+    "feeds": "3794706d97defd68",
+    "appearance": "ea1a6f8f588106d4",
+    "operations": "3e4c3c9e61558872",
+    "registry": "90a82a10e1b1119a",
+    "factory": "d503d0593c6c3550",
+    "media": "13548a79119aaa07",
+    "agents": "59d7763209b2b765",
+    "general": "7f6b380682dab06a",
+    "diagnostics": "de980459aadf8d9a",
     "compose-edit": "4098d82ef6772a1c"
   }
 }

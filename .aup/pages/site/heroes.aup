@@ -1,12 +1,11 @@
 page heroes {
   i18n {
     content-empty { en "Nothing here yet. Write your first post." zh "还没有内容。写下第一篇文章吧。" }
-    desc { en "Home carousel records: title, image URL, target link and sort order." zh "首页轮播记录：标题、图片 URL、跳转链接与排序。" }
+    desc { en "Home carousel records — title, image URL, target link and sort order (sort plays the slides ascending)." zh "首页轮播记录：标题、图片 URL、跳转链接与排序（sort 升序决定播放顺序）。" }
     gate-desc { en "Sign in with DID Wallet to manage the site." zh "使用 DID Wallet 登录后管理站点。" }
     gate-title { en "Hero management" zh "Hero 管理" }
     hero-add { en "Add hero" zh "添加 Hero" }
     hero-added { en "Hero added." zh "Hero 已添加。" }
-    hero-admin-desc { en "Heroes render as the homepage carousel. Each record needs a title, an image URL, and a target link; sort orders the slides ascending." zh "Hero 显示为首页轮播。每条记录需要标题、图片 URL 和跳转链接；sort 按升序决定播放顺序。" }
     hero-delete { en "Delete" zh "删除" }
     hero-delete-msg { en "This removes the hero record permanently." zh "将永久删除该 Hero 记录。" }
     hero-delete-title { en "Delete hero?" zh "删除 Hero？" }
@@ -24,7 +23,6 @@ page heroes {
     hero-quickadd { en "Add to hero" zh "加入 Hero" }
     hero-quickadd-hint { en "Click a post row to stage it below, then confirm. Title, summary, cover and /posts/<slug> link are copied automatically." zh "点击文章行将其暂存到下方，确认后加入。自动带标题、摘要、封面和 /posts/<slug> 链接。" }
     hero-quickadd-title { en "Quick add from a post" zh "从文章快速加入" }
-    hero-quickadded { en "Added to heroes." zh "已加入 Hero。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     title { en "Hero management" zh "Hero 管理" }
   }
@@ -108,24 +106,16 @@ page heroes {
             p " "
           }
           action "$t(wrapper.nav-diagnostics)" -> page diagnostics style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={marginTop: auto, background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0, gap: "0"} {
-            p "$t(wrapper.footer-brand)" scale=caption intent=muted style={padding: "10px 20px 2px 32px", flexShrink: 0}
-            action "$t(wrapper.footer-about)" href="/?page=about" style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            action "$t(wrapper.footer-rss)" href="/p/rss.xml" target=_blank style={border: none, borderRadius: "0", padding: "4px 20px 4px 32px", justifyContent: flex-start, flexShrink: 0}
-            p "$t(wrapper.footer-copyright)" scale=caption intent=muted style={padding: "2px 20px 10px 32px", flexShrink: 0}
+          view gap=xs style={padding: "10px 20px 10px 32px", background: "var(--color-bg)", borderTop: "1px solid var(--color-border)", flexShrink: 0} visible="!$session.isAdmin" {
+            p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px"} {
-              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-              p :desc intent=muted
-            }
+            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+            p :desc intent=muted
             view gap=sm size={flex: 1} style={overflowY: auto} {
               view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                  p :hero-admin-desc intent=muted
-                }
                 afs-list heroes-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-list-empty autoSelect=false clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} style={flexShrink: 0} pagination=manual pageSize=12 from "/instance/app/arcblog/heroes" {
                   row cross=start role=item style={background: transparent, padding: "0"} {
                     row gap=sm cross=start style={flex: 1, padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 10px)", minWidth: 0} {
@@ -156,13 +146,8 @@ page heroes {
                   row cross=start {
                     action variant=primary label=:hero-add onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.heroId}.json", content: {title: "${args.heroTitle}", description: "${args.heroDesc}", image: "${args.heroImage}", url: "${args.heroUrl}", sort: "${args.heroSort}", createdAt: "${generate.timeiso}"}}}}
                   }
-                }
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
                   p :hero-dropzone-desc intent=muted
-                  afs-dropzone
-                }
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                  h3 :hero-quickadd-title level=3 style={fontSize: "var(--type-body)"}
+                  afs-dropzone h3 content=:hero-quickadd-title level=3 style={fontSize: "var(--type-body)"}
                   p :hero-quickadd-hint intent=muted scale=caption
                   afs-list heroes-posts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true style={flexShrink: 0} pagination=manual pageSize=20 from "/instance/app/arcblog/posts" events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} {
                     row cross=center role=item style={padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
@@ -181,7 +166,7 @@ page heroes {
                     input qa-image type=hidden name=qaImage state={value: ""}
                     input qa-slug type=hidden name=qaSlug state={value: ""}
                     row cross=start {
-                      action variant=secondary size=sm label=:hero-quickadd onSuccessToast={intent: success, message: "$t(heroes.hero-quickadded)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}}}}
+                      action variant=secondary size=sm label=:hero-quickadd onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}}}}
                     }
                   }
                 }

@@ -20,7 +20,7 @@ page saved {
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
     slug-hint { en "Lowercase letters, digits and hyphens, exactly as it appears in /posts/<slug>. The CLI enforces the same rule." zh "小写字母、数字与连字符，与 /posts/<slug> 中的写法一致。CLI 强制同一规则。" }
     title { en "Reading list" zh "阅读清单" }
-    where-note { en "Storage: /user/arcblog/bookmarks/<slug>.json (this caller's DID Space user scope, AFS path /blocklets/arcblog/users/<your-did>/arcblog/bookmarks/). ArcBlog declares no blocklet.yaml permission for it: the user scope is authorized by the session, not by a replicated collection — measured (arc-contracts.md)." zh "存储位置：/user/arcblog/bookmarks/<slug>.json（本调用者的 DID Space 用户作用域，AFS 路径 /blocklets/arcblog/users/<你的 DID>/arcblog/bookmarks/）。ArcBlog 没有为它声明任何 blocklet.yaml 权限：用户作用域由会话授权，而不是由 replicated 集合授权——已实测（arc-contracts.md）。" }
+    where-note { en "Storage: this reading list lives in YOUR DID Space user scope, one copy per reader — the blocklet declares no permission for it, and nothing is kept platform-side." zh "存储位置：这份阅读清单存在你自己的 DID Space 用户空间里，每个读者一份——本 Blocklet 没有为它声明权限，平台侧不留副本。" }
   }
   view gap=lg {
     view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {

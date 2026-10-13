@@ -14,6 +14,13 @@ synopsis: >-
   one primary action, Write a post (?page=compose). Node, network and registry detail
   belongs to Operations; agent policy belongs to Agents. The landing page shows no
   technical identifier at all (level-3 content).
+  2026-10-13 版面（三卡；`docs/04-UI设计规范/01 §1 L7/L8`）：① 异常区 = 标题 + 一句说明 +
+  每类一行（级别 / 标题 / 详情 / 去处理）+ 末尾**小字常驻证据行**（`node/anomalies.json`
+  的 `stateNote`，经 `node/` 目录 item recipe 打印）；② 待处理草稿（3 条 + 「全部草稿与已发布」
+  次操作）；③ 最近发布（5 条）。**删掉的**：独立的「常驻说明」卡、分页 BUG-063 说明段、以及
+  原先把 `checkedAt/adapter/stateNote` 当正文展示的「常驻状态」小标题——面向实现的解释
+  （平台机制 / BUG 号 / localStorage 键 / CLI 文件名）**不进界面**（`L8`），只进
+  `?page=diagnostics` 与 `docs/**`。
 flows:
   - Read the node profile written by scripts/arcblog-node.mjs.
   - Read the externalized role configuration and whether chain verification is on

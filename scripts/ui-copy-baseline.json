@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-10-13",
+  "note": "Upper bound of implementer references inside page i18n blocks (UI standard docs/04-UI设计规范/01 §1 L8). The sweep is COMPLETE as of 2026-10-13: every page bound is 0 except the clause-designated home (admin/diagnostics, exempt). Measured before the sweep: 174 implementer strings on 13 pages; cleaned in six rounds — admin/dashboard 5, admin/posts 12, site/tags 16, site/categories 14, admin/general 46, ops/factory 22, ops/agents 12, admin/pages 10, ops/media 10, ops/operations 6, ops/registry 4, site/seo 4, saved 2. Where a page still shows operator commands (ui-budget `tech`), the residue is the C3/BD-* carve-out: a UI that cannot perform an action must show a copyable operator command instead of a fake button — those live in key-value-list `value=` props, not in i18n copy. Re-record with `node scripts/arcblog-ui-copy.mjs --write-baseline`; a raise must be disclosed in this note. The gate runs inside `arcblog-i18n.test.mjs` (a new FAST_TESTS file cannot be whitelisted before it is committed).",
+  "exempt": {
+    "admin/diagnostics": "L8's designated home: platform boundaries, FAQs and copyable operator commands live here by design (docs/04-UI设计规范/03 §2 BD-01…BD-09, 05-开发文档/06)."
+  },
+  "pages": {
+    "about": 0,
+    "admin/appearance": 0,
+    "admin/compose-edit": 0,
+    "admin/compose": 0,
+    "admin/dashboard": 0,
+    "admin/diagnostics": 16,
+    "admin/general": 0,
+    "admin/pages": 0,
+    "admin/posts": 0,
+    "author": 0,
+    "index": 0,
+    "ops/agents": 0,
+    "ops/factory": 0,
+    "ops/media": 0,
+    "ops/operations": 0,
+    "ops/registry": 0,
+    "page-view": 0,
+    "preview": 0,
+    "reader": 0,
+    "saved": 0,
+    "site/categories": 0,
+    "site/feeds": 0,
+    "site/heroes": 0,
+    "site/seo": 0,
+    "site/tags": 0
+  }
+}
