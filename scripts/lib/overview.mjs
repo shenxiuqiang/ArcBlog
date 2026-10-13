@@ -65,7 +65,7 @@ function str(value) {
  * field it does not pass is OMITTED (never zero-filled) so a partial record cannot
  * print a wrong number on a page that has no such count.
  */
-export function buildOverview({ generatedAt, counts = {}, note = '', source = '', divergences = '' } = {}) {
+export function buildOverview({ generatedAt, counts = {}, note = '', source = '', divergences = '', measuredAtLocal = '' } = {}) {
   const record = { generatedAt: str(generatedAt) };
   for (const field of Object.keys(OVERVIEW_COUNT_SOURCES)) {
     if (counts[field] !== undefined) record[field] = count(counts[field]);
@@ -75,6 +75,8 @@ export function buildOverview({ generatedAt, counts = {}, note = '', source = ''
   // Empty when the database count and the directory listing agreed (the normal case); a
   // sentence when they did not, because a silently wrong KPI is worse than a stated one.
   record.divergences = str(divergences);
+  // The human-facing local timestamp ("截至 2026-10-13 12:55"); a page cannot format a date.
+  record.measuredAtLocal = str(measuredAtLocal);
   return record;
 }
 
@@ -85,6 +87,7 @@ export const OVERVIEW_FIELDS = Object.freeze([
   'note',
   'source',
   'divergences',
+  'measuredAtLocal',
 ]);
 
 /**

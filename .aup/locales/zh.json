@@ -139,7 +139,7 @@
   "dashboard.content-empty": "还没有已发布的文章。",
   "dashboard.drafts": "待处理草稿",
   "dashboard.drafts-all": "全部草稿与已发布",
-  "dashboard.drafts-desc": "私有草稿区里最近更新的 3 条。发布在「工作室」完成。",
+  "dashboard.drafts-desc": "私有草稿区里最近更新的（未删除的）最多 3 条；发布在「工作室」完成。",
   "dashboard.drafts-empty": "还没有草稿。",
   "dashboard.gate-desc": "使用 DID Wallet 登录后查看待处理的草稿与已发布内容。",
   "dashboard.gate-title": "仪表盘",
@@ -608,7 +608,7 @@
   "author.about": "节点信息",
   "factory.dropped-label": "已丢弃的陈旧角色记录（由 CLI 计算）",
   "dashboard.anomalies": "异常区",
-  "dashboard.anomalies-desc": "每类异常一个入口。没有行时以下方常驻行为准——那是检查器的原话与时间。",
+  "dashboard.anomalies-desc": "四类检查各一行，每行都能点进「去处理」。",
   "dashboard.anomalies-open": "去处理",
   "dashboard.anomalies-severity": "级别",
   "seo.dist-card": "站点分发默认（本页自己的记录）",
@@ -624,5 +624,7 @@
   "dashboard.kpi-drafts": "草稿",
   "dashboard.kpi-pages": "已上线页面",
   "dashboard.kpi-media": "素材",
-  "dashboard.refresh": "刷新"
+  "dashboard.refresh": "刷新",
+  "dashboard.anomalies-evidence": "原始证据（英文原文与检查时间）",
+  "dashboard.anomalies-evidence-hide": "收起原始证据"
 }

@@ -25,6 +25,11 @@
       "path": ".aup/pages/ops/factory.aup",
       "text": "view gap=sm visible=$state.open {",
       "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
+    },
+    {
+      "path": ".aup/pages/admin/dashboard.aup",
+      "text": "view gap=sm visible=$state.open {",
+      "reason": "2026-10-13 (human: 异常区首屏不要英文原话): the raw-evidence block folds behind a page-internal `-> set`. This is the repo's accepted user-triggered fold idiom (same as ?page=pages' CLI block): the initial paint has no `open`, and the runtime follows later `set` events — it is NOT a condition on async record data."
     }
   ]
 }

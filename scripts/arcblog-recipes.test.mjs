@@ -132,7 +132,7 @@ test('the dashboard overview projection is derived from its writer, and it valid
   // ONE print point, and a field the caller did not measure is OMITTED — never zero-filled.
   assert.deepEqual(Object.keys(OVERVIEW_PAGE_RECORDS), ['overview']);
   const partial = buildOverview({ generatedAt: 'n', counts: { publishedCount: 1 }, note: '', source: '' });
-  assert.deepEqual(sorted(Object.keys(partial)), sorted(['generatedAt', 'publishedCount', 'note', 'source', 'divergences']));
+  assert.deepEqual(sorted(Object.keys(partial)), sorted(['generatedAt', 'publishedCount', 'note', 'source', 'divergences', 'measuredAtLocal']));
   // The cross-check field is always present (empty = database and listing agreed).
   assert.equal(partial.divergences, '');
   assert.ok(OVERVIEW_FIELDS.includes('divergences'), 'the record carries the database-vs-listing cross-check');

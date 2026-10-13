@@ -48,6 +48,53 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 /** The four anomaly classes, in the order the console prints them. */
 export const ANOMALY_KEYS = Object.freeze(['identity', 'readonly-exit', 'registry', 'residue']);
 
+/**
+ * 控制台首屏用的中文标题/说明（2026-10-13, human: 异常区不要英文原话）。
+ *
+ * A record cannot be localized — a recipe prints `$t(...)` literally (arc-contracts §65) and
+ * `$t()` in a printed record value is not evaluated — so the ONLY way a Chinese console shows
+ * Chinese for record-driven text is for the writer to write Chinese. The English `title`/`detail`
+ * stay untouched: the CLI, the audit trail, the agent tools and the folded "raw evidence" block
+ * all keep reading them. Keyed by the English title (unique per variant); the two variants whose
+ * title embeds a path/state fall back to their `key`.
+ */
+export const ANOMALY_ZH = Object.freeze({
+  'Node identity is not initialized': {
+    title: '节点身份尚未初始化',
+    detail: '缺少身份记录：节点不知道自己是谁、身份是怎么建立的，因此一切依赖身份的步骤都会 fail closed。',
+  },
+  'Node identity record carries no DID': {
+    title: '身份记录里没有 DID',
+    detail: '身份记录存在，但没有 `did` 字段，身份无法使用；请重新初始化身份记录。',
+  },
+  'registry': {
+    title: '链上注册表里没有本节点',
+    detail: '本节点不在当前质押列表里：要么从未质押，要么已被撤销（已完全撤销的行会被过滤掉，不会出现在列表里）。',
+  },
+  'identity': {
+    title: '身份异常',
+    detail: '身份相关检查未通过，请查看原始证据并重新初始化身份。',
+  },
+  'readonly-exit': {
+    title: '只读出口文件缺失',
+    detail: '页脚链接的只读出口文件不存在（构建会删掉它），访客会拿到 404 而站点看起来正常；按部署流水线重跑即可修复。',
+  },
+  'residue': {
+    title: '实例上存在测试残留',
+    detail: '有一批记录命中已知的测试 id 前缀：它们是测试跑出来的残留，不是已发布内容；清理器默认只预演，可以先核对数量再删。',
+  },
+});
+
+/** The Chinese sentence for a detected class (falls back to English when a variant is unlisted). */
+export function zhFor(item) {
+  const hit = ANOMALY_ZH[str(item?.title)] ?? ANOMALY_ZH[str(item?.key)] ?? null;
+  return {
+    titleZh: hit ? hit.title : str(item?.title),
+    detailZh: hit ? hit.detail : str(item?.detail),
+    severityZh: str(item?.severity) === 'blocking' ? '阻塞' : '警告',
+  };
+}
+
 /** The closed severity set (an anomaly is either a blocker or a warning). */
 export const ANOMALY_SEVERITIES = Object.freeze(['blocking', 'warning']);
 
@@ -254,7 +301,10 @@ export function detectAnomalies(ctx = {}) {
     blocking: items.filter((item) => item.severity === 'blocking').length,
     warning: items.filter((item) => item.severity === 'warning').length,
   };
-  return { checkedAt, items, counts, stateNote: standingNote({ checkedAt, items, counts }) };
+  // The console-facing Chinese is attached HERE (pure, deterministic) so the CLI keeps writing
+  // the same English evidence and the dashboard can print a Chinese first screen.
+  const localized = items.map((item) => ({ ...item, ...zhFor(item) }));
+  return { checkedAt, items: localized, counts, stateNote: standingNote({ checkedAt, items: localized, counts }) };
 }
 
 /** Non-empty regular file? (a zero-byte artifact is not an artifact). */

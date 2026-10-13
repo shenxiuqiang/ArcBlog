@@ -6,7 +6,9 @@ page dashboard {
     kpi-media { en "Media" zh "素材" }
     refresh { en "Reload" zh "刷新" }
     anomalies { en "Anomaly zone" zh "异常区" }
-    anomalies-desc { en "One entry per detected anomaly class. No row means the standing line below is the verdict — it is what the checker itself reported, and when." zh "每类异常一个入口。没有行时以下方常驻行为准——那是检查器的原话与时间。" }
+    anomalies-desc { en "One entry per class; every row links to where it is fixed." zh "四类检查各一行，每行都能点进「去处理」。" }
+    anomalies-evidence { en "Raw evidence (English source + check time)" zh "原始证据（英文原文与检查时间）" }
+    anomalies-evidence-hide { en "Hide raw evidence" zh "收起原始证据" }
     anomalies-open { en "Open" zh "去处理" }
     anomalies-severity { en "Severity" zh "级别" }
     anomalies-state { en "Last check, verbatim" zh "最近一次检查（原话）" }
@@ -15,7 +17,7 @@ page dashboard {
     content-empty { en "No published stories yet." zh "还没有已发布的文章。" }
     drafts { en "Drafts to finish" zh "待处理草稿" }
     drafts-all { en "All drafts & published" zh "全部草稿与已发布" }
-    drafts-desc { en "The three most recently updated private drafts. Publishing happens in Studio." zh "私有草稿区里最近更新的 3 条。发布在「工作室」完成。" }
+    drafts-desc { en "Up to three recently touched drafts; publishing happens in the studio." zh "私有草稿区里最近更新的（未删除的）最多 3 条；发布在「工作室」完成。" }
     drafts-empty { en "No drafts yet." zh "还没有草稿。" }
     gate-desc { en "Sign in with DID Wallet to see the drafts waiting for you and what is already live." zh "使用 DID Wallet 登录后查看待处理的草稿与已发布内容。" }
     gate-title { en "Dashboard" zh "仪表盘" }
@@ -134,25 +136,26 @@ page dashboard {
               // `-> navigate` 是整页跳转（runtime: `window.location.href = url`），
               // 图标用运行时自带的 `refresh`（arc-contracts §67）。
               row style={justifyContent: flex-end, alignItems: center, flexShrink: 0} {
+                p "${state.overview.measuredAtLocal}" scale=caption intent=muted
                 action -> navigate "/?page=dashboard" icon=refresh variant=secondary size=sm label=:refresh
               }
               p "${state.overview.divergences}" scale=caption intent=warning
               // 一行数字面板：上=数字（`scale=display` 实测 56px/600）、下=分类名。
               // 数字来自 `config/console/overview.json`（CLI 在数据库里 `count` 出来的记录）。
               row gap=lg cross=end {
-                view gap=xs {
+                view gap=xs size={width: "170px"} {
                   p "${state.overview.publishedCount}" scale=display
                   p "$t(dashboard.kpi-published)" scale=caption intent=muted
                 }
-                view gap=xs {
+                view gap=xs size={width: "170px"} {
                   p "${state.overview.draftCount}" scale=display
                   p "$t(dashboard.kpi-drafts)" scale=caption intent=muted
                 }
-                view gap=xs {
+                view gap=xs size={width: "170px"} {
                   p "${state.overview.pageOnlineCount}" scale=display
                   p "$t(dashboard.kpi-pages)" scale=caption intent=muted
                 }
-                view gap=xs {
+                view gap=xs size={width: "170px"} {
                   p "${state.overview.mediaCount}" scale=display
                   p "$t(dashboard.kpi-media)" scale=caption intent=muted
                 }
@@ -174,20 +177,39 @@ page dashboard {
                   view gap=xs size={flex: "1 1 0%"} {
                     row gap=xs cross=center {
                       p :anomalies-severity scale=sm intent=muted
-                      p "${entry.content.severity}" scale=sm
-                      p "${entry.content.title}"
+                      p "${entry.content.severityZh}" scale=sm
+                      p "${entry.content.titleZh}"
                     }
-                    p "${entry.content.detail}" scale=sm intent=muted
+                    p "${entry.content.detailZh}" scale=sm intent=muted
                   }
                   view layout=inline href="${entry.content.href}" {
                     p :anomalies-open
                   }
                 }
               }
-              // 常驻证据行：CLI 预计算的 stateNote（真正的打印点是 node/ 目录的
-              // item recipe 里那句 ${content.stateNote}），放在末尾作为小字脚注。
-              surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
-                p :anomalies-state scale=caption intent=muted
+              // 原始证据（英文原文 + 检查时间）默认折叠：首屏只留中文结论与「去处理」。
+              // 折叠是页内 `-> set`，零 AFS 写入；展开后读的是 CLI 写的原话与记录。
+              row cross=start {
+                action -> set dashboard-anomalies-evidence state {open: "true"} variant=secondary size=sm label=:anomalies-evidence
+              }
+              view gap=sm visible=$state.open {
+                afs-list dashboard-anomalies-raw-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
+                  row gap=xs cross=center role=item {
+                    view gap=xs size={flex: "1 1 0%"} {
+                      row gap=xs cross=center {
+                        p "${entry.content.severity}" scale=caption intent=muted
+                        p "${entry.content.title}" scale=caption
+                      }
+                      p "${entry.content.detail}" scale=caption intent=muted
+                    }
+                  }
+                }
+                surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
+                  p :anomalies-state scale=caption intent=muted
+                }
+                row cross=start {
+                  action -> set dashboard-anomalies-evidence state {open: ""} variant=secondary size=sm label=:anomalies-evidence-hide
+                }
               }
             }
             // ---- 待处理草稿（卡 2）------------------------------------------------
@@ -203,14 +225,14 @@ page dashboard {
               // 因此不放任何页面自算的数字。
               // pageSizeOptions=[3] 把「Show」固定成唯一取值：BUG-063 的 localStorage
               // 记忆一旦选到 ≥ 总数就会摘掉整个分页器，这里从结构上消除该路径。
-              afs-list dashboard-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:drafts-empty pagination=manual pageSize=3 pageSizeOptions=[3] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/drafts" {
+              afs-list dashboard-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:drafts-empty pagination=manual pageSize=3 pageSizeOptions=[3] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/config/console/recent-drafts" {
                 row gap=xs cross=center role=item {
                   // 记录绑定页 /edit/<slug>：standard §2.6 → 新标签页，不替换控制台。
                   view layout=inline href="/edit/${entry.content.slug}" target=_blank size={flex: 1} {
                     p "${entry.content.title}"
                     row gap=xs cross=center intent=muted {
                       p "${entry.content.status}"
-                      time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                      p "${entry.content.updatedLocal}" scale=sm intent=muted
                     }
                   }
                 }

@@ -143,7 +143,12 @@ test('a residue COUNT and a residue LIST agree on the verdict', () => {
 
 test('the summary and the per-class record field sets are derived from their writers', () => {
   assert.deepEqual([...ANOMALY_SUMMARY_FIELDS], ['checkedAt', 'origin', 'adapter', 'counts', 'stateNote', 'items']);
-  assert.deepEqual([...ANOMALY_ITEM_FIELDS], ['key', 'severity', 'title', 'detail', 'action', 'href']);
+  // titleZh/detailZh/severityZh landed 2026-10-13: a record cannot be localized (arc-contracts §65),
+  // so the console's Chinese first screen has to come from the writer.
+  assert.deepEqual(
+    [...ANOMALY_ITEM_FIELDS],
+    ['key', 'severity', 'title', 'detail', 'action', 'href', 'titleZh', 'detailZh', 'severityZh'],
+  );
 });
 
 test('the summary validator rejects the drift the page cannot see', () => {

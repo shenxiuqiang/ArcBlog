@@ -139,7 +139,7 @@
   "dashboard.content-empty": "No published stories yet.",
   "dashboard.drafts": "Drafts to finish",
   "dashboard.drafts-all": "All drafts & published",
-  "dashboard.drafts-desc": "The three most recently updated private drafts. Publishing happens in Studio.",
+  "dashboard.drafts-desc": "Up to three recently touched drafts; publishing happens in the studio.",
   "dashboard.drafts-empty": "No drafts yet.",
   "dashboard.gate-desc": "Sign in with DID Wallet to see the drafts waiting for you and what is already live.",
   "dashboard.gate-title": "Dashboard",
@@ -608,7 +608,7 @@
   "author.about": "Node",
   "factory.dropped-label": "Stale role records dropped (computed by the CLI)",
   "dashboard.anomalies": "Anomaly zone",
-  "dashboard.anomalies-desc": "One entry per detected anomaly class. No row means the standing line below is the verdict — it is what the checker itself reported, and when.",
+  "dashboard.anomalies-desc": "One entry per class; every row links to where it is fixed.",
   "dashboard.anomalies-open": "Open",
   "dashboard.anomalies-severity": "Severity",
   "seo.dist-card": "Site distribution (this page's records)",
@@ -624,5 +624,7 @@
   "dashboard.kpi-drafts": "Drafts",
   "dashboard.kpi-pages": "Pages online",
   "dashboard.kpi-media": "Media",
-  "dashboard.refresh": "Reload"
+  "dashboard.refresh": "Reload",
+  "dashboard.anomalies-evidence": "Raw evidence (English source + check time)",
+  "dashboard.anomalies-evidence-hide": "Hide raw evidence"
 }

@@ -25,7 +25,7 @@
 // stdout is PURE JSON; human-readable lines go to stderr. Unknown flags fail closed
 // (VALIDATION, exit 1) — see scripts/lib/cli-flags.mjs.
 
-import { exec, list, readJson, resolveInstance, writeJson, nowIso } from './lib/arc.mjs';
+import { exec, list, readJson, remove, resolveInstance, writeJson, nowIso } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   OVERVIEW_COUNT_SOURCES,
@@ -78,6 +78,64 @@ function measureCollection(field, path, instance) {
   return { field, count, source: database === null ? 'listing' : 'database', divergence };
 }
 
+/** `2026-10-13T04:55:22.844Z` -> `2026-10-13 12:55` in the operator's own timezone. */
+function localStamp(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/**
+ * `?page=dashboard`'s "待处理草稿" must not show soft-deleted test residue (2026-10-13: the card
+ * listed three `hub-idx-test-*` rows as `deleted 14 days ago`, in English). A page cannot filter
+ * (index-backed `filter=` is the DEF-42 trap) and cannot localize a platform relative date, so the
+ * CLI projects the three newest NON-deleted drafts into their own tiny directory, each carrying a
+ * preformatted local timestamp.
+ */
+function writeRecentDrafts(instance, depth = 3) {
+  const dir = `${CONSOLE_DIR}/recent-drafts`;
+  let entries = [];
+  try {
+    entries = list('/instance/app/arcblog/drafts', instance);
+  } catch {
+    entries = [];
+  }
+  const drafts = [];
+  for (const entry of entries) {
+    const id = String(entry?.id ?? '');
+    if (!id.endsWith('.json')) continue;
+    const record = readJson(`/instance/app/arcblog/drafts/${id}`, instance);
+    const content = record?.value ?? null;
+    if (!content) continue;
+    const status = String(content.status ?? '');
+    if (status === 'deleted') continue; // soft-deleted test residue is not "pending work"
+    drafts.push({ slug: String(content.slug ?? id.replace(/\.json$/, '')), content, status, mtime: String(entry?.mtime ?? '') });
+  }
+  drafts.sort((a, b) => String(b.mtime).localeCompare(String(a.mtime)));
+  const kept = drafts.slice(0, depth);
+  const keptIds = new Set(kept.map((d) => `${d.slug}.json`));
+  for (const stale of list(dir, instance).catch?.(() => []) ?? []) {
+    const id = String(stale?.id ?? '');
+    if (id.endsWith('.json') && !keptIds.has(id)) remove(`${dir}/${id}`, instance);
+  }
+  for (const d of kept) {
+    const updatedAt = String(d.content.updatedAt ?? '');
+    const record = {
+      slug: d.slug,
+      title: String(d.content.title ?? d.slug),
+      status: d.status,
+      updatedAt,
+      updatedLocal: localStamp(updatedAt),
+    };
+    const path = `${dir}/${d.slug}.json`;
+    const existing = readJson(path, instance);
+    writeJson(path, record, instance, existing?.ifMatch ?? undefined);
+  }
+  console.error(`recent drafts: ${kept.length} of ${drafts.length} non-deleted (${kept.map((d) => d.slug).join(', ')})`);
+  return kept.length;
+}
+
 function commandRefresh(opts, instance) {
   // Measure every collection ONCE (database + listing), then project the record.
   const measured = {};
@@ -102,6 +160,9 @@ function commandRefresh(opts, instance) {
       note: overviewNote(generatedAt, counts),
       source,
       divergences: divergences.join('; '),
+      // A human-facing local timestamp ("截至 04:46"): the record carries the ISO instant too,
+      // and the page prints this preformatted string because a page cannot compute or localize.
+      measuredAtLocal: localStamp(generatedAt),
     });
 
     const issues = validateOverview(record, { required: fields });
@@ -117,7 +178,8 @@ function commandRefresh(opts, instance) {
     written.push({ path, record });
   }
 
-  console.error(`overview: ${Object.keys(measured).length} collections measured`);
+  const recentDrafts = writeRecentDrafts(instance);
+  console.error(`overview: ${Object.keys(measured).length} collections measured, ${recentDrafts} recent draft(s) projected`);
   return { ok: true, action: 'overview-refresh', records: written };
 }
 
