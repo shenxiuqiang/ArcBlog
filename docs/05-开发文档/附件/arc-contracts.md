@@ -3164,3 +3164,17 @@ if (e.save === "off" || e.save === "floating" || e.save === "buttons")
 而消费方 `capability()` 先读 `window.__arcSave`（`false` / `"off"` ⇒ off），再读该属性，缺省 `"floating"`。实测后果：早期写入 `false` 会被**后到的消息覆盖成 `"floating"`**，`onSession()` → `syncChrome()` 于是**挂上**书签浮层，只有我们的扫除把它删掉 —— 就是人类看到的"出现后隐藏"闪烁。修法（`theme-bridge/script.js::suppressSaveChrome`）：把这个属性**锁成 getter**（永远返回 `false`、吞掉赋值），再加一张宿主 `<style>[data-arc-save]{display:none!important}</style>` 与 childList 扫除。验证（匿名 `--fresh` 探针，宿主文档）：`arcSave = locked->false`、`saveCapability = null`（属性被反复移除）、`saveBar = 0`。
 
 **（2）`/instance/settings/<blocklet>/*.json` 是私有的。** 无 cookie 的 `POST /api/afs/rpc {type:"read"}` 得到 **403** `Forbidden at /arcblog/tone.json: sign in to read this setting`（同一会话读 `node/health.json` / `posts/hello-arcblog.json` → **200**，读 `config/roles.json` → 403 below readRole admin）。所以"主题桥按 instance 设置渲染"的原始设计**对匿名读者不成立**（`DEF-48`）。采用的降级 = **公开投影**：`node scripts/arcblog-settings.mjs sync-appearance` 把三个值 + `source`/`updatedAt` 写到 `/instance/app/arcblog/node/appearance.json`（guest 读 → **200**，内容为 `{"tone":"clean","palette":"natural","theme":"light",…}`），桥「私有优先、读不到用投影」。验证：匿名 `--fresh` 探针下宿主 `<html>` = `data-tone="clean" data-palette="natural" data-mode="light"`（此前为编译值 `editorial/natural/light`），`localStorage['arcblog:theme:v1']` = `{"tone":"clean","palette":"natural","mode":"light"}`。浏览器 AFS 客户端的方法表（同一 bundle）= `read / tryRead / getNodeTree / list / tryList / write / delete / rename / batchWrite`，`write(path, content)` 可用 —— 所以登录态页面浏览也能回写投影（桥里 best-effort，失败即忽略）。
+
+## 73. overlay frame 不能一刀切隐藏；`template.stylesheets` 只到 `/p` 面（2026-10-13 实测，接 §72）
+
+**（1）`.aup-frame-overlay` 是平台**所有** overlay frame 的公共类，不是我们那一个。** 运行时 bundle 的 frame 渲染器（`if(r.overlay)` 分支）把容器写成：
+
+```js
+t.className = "aup-frame-overlay",
+t.style.cssText = "position:fixed;inset:0;z-index:99999;pointer-events:none;background:transparent;…",
+t.setAttribute("data-aup-overlay", e.id || "")   // ← 每个 overlay frame 都带自己的 id
+```
+
+所以 `aup-frame-overlay{visibility:hidden}` 会把**平台自己的交互式 overlay frame**（登录/退出登录流程用的那类）一起隐藏：元素不可见即不可点，人类报的"退出登录无效"与此吻合（2026-10-13，本仓那条规则从 949fec4 起就在，但**在此之前桥从未运行** ⇒ 副作用这一轮才第一次出现）。修法 = 收窄到我们自己的 frame：`[data-aup-overlay="theme-bridge-frame"]{visibility:hidden}`。验证：部署后 `npm run verify:visual` 三页仍 3/3（首页 mean 151.2、白占比 0.4% —— 没有白屏回来），探针 `overlayFrames: 1`。
+
+**（2）`template.stylesheets` 这条通道在本仓不可用（试过并回退）。** 参照 shipped blocklet（`aggregator/.web/site.yaml` 用 `template.stylesheets` 挂 Google Fonts），把 `content/media/arcblog-chrome.css` 声明进 `.web/site.yaml` 后实测：`GET /p/media/arcblog-chrome.css` → **404**（文件确实在 `dist/content/media/` 与部署副本里；同目录的 `arcblog-og.png` 是 **200 image/png**）——即 `local:media` 这个 collection 对外服务的是**图片**，不包含 `.css`；`/?page=index`（AUP 面）与 `/p/en/theme-bridge/` 的 HTML 里也都没有出现该 `<link>`。⚠️ 教训：早先"`/p` 面命中 1 次"是**假阳性** —— 命中的是我们自己桥里 `#arcblog-chrome-style` 这个 id 的子串，不是 `<link>`；这条声明从未真正生效过（该实验已回退，文件与本仓不再保留）。结论不变且更强：**AUP 面没有任何"随页面解析、由本仓控制"的样式表/脚本注入点**（`app.aup`/`wrapper.aup` 无 head 钩子；DSL 无 raw-HTML 原语；`p format=html` 渲染进 `sandbox` + `default-src 'none'` 的 iframe；`/aup-app.<hash>.css` 是平台自带 238 041 B 样式表，`grep -c arcblog` = 0）。所以平台浮层在 AUP 面上只能靠**组件 iframe 的 JS** 抑制，剩余窗口 = 该 iframe 文档的加载时间。
