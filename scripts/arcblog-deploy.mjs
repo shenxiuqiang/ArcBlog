@@ -158,6 +158,13 @@ run('npm', ['run', 'verify:artifacts']);
 // to raw JSON. `install` is idempotent, so every deploy asserts them cheaply.
 run('node', ['scripts/arcblog-recipes.mjs', 'install', '--json']);
 
+// ------------------- 2c. public appearance projection (DEF-48 / E14 = A) ---------------------
+// The three appearance settings are PRIVATE (403 "sign in to read this setting" for a signed-out
+// reader), while the theme bridge runs in the visitor's browser — so every anonymous reader kept
+// the runtime's compiled theme. This mirrors them into the guest-readable projection the bridge
+// reads. Idempotent, and an AFS write (not part of the deployed artifact).
+run('node', ['scripts/arcblog-settings.mjs', 'sync-appearance']);
+
 // ------------------------------------------------------- 3. deploy ----------
 run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);
 

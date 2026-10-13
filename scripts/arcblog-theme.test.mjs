@@ -225,3 +225,31 @@ test('the bridge shell (render.js) is generated and carries the script inline (D
   assert.match(committed, /__arcblogThemeBridge/, 'the bridge logic must be inlined in render.js');
   assert.match(committed, /suppressSaveChrome/, 'the save-chrome sweep must be inlined too');
 });
+
+test('the bridge reads and republishes the public appearance projection (DEF-48 / E14 = A)', async () => {
+  const src = readFileSync(join(repoRoot, '.web/components/theme-bridge/script.js'), 'utf8');
+  // A signed-out reader is refused the private settings tree (403 "sign in to read this setting"), so
+  // the bridge MUST fall back to the guest-readable projection, and MUST republish what it can read
+  // privately so the next visitor gets it without waiting for a deploy.
+  assert.match(src, /APPEARANCE_PATH = '\/instance\/app\/arcblog\/node\/appearance\.json'/);
+  assert.match(src, /extractRecord/, 'the projection record must be flattened (a JSON string under .content)');
+  assert.match(src, /afs\.write\(APPEARANCE_PATH/, 'a signed-in admin view must republish the projection');
+
+  const { APPEARANCE_PATH, composeAppearance } = await import('./arcblog-settings.mjs');
+  assert.equal(APPEARANCE_PATH, '/instance/app/arcblog/node/appearance.json');
+  const projection = composeAppearance({ tone: 'clean', palette: 'natural', theme: 'light' }, '2026-10-13T00:00:00.000Z');
+  assert.deepEqual(projection, {
+    tone: 'clean',
+    palette: 'natural',
+    theme: 'light',
+    source: '/instance/settings/arcblog',
+    updatedAt: '2026-10-13T00:00:00.000Z',
+  });
+  assert.equal(composeAppearance({}, '2026-10-13T00:00:00.000Z'), null, 'nothing to publish');
+  assert.equal(composeAppearance({ tone: '  ', theme: 'dark' }, 'x').tone, undefined, 'blank values are dropped');
+});
+
+test('the deploy pipeline refreshes that projection', () => {
+  const src = readFileSync(join(repoRoot, 'scripts/arcblog-deploy.mjs'), 'utf8');
+  assert.match(src, /'sync-appearance'/, 'a deploy must publish a fresh appearance projection');
+});

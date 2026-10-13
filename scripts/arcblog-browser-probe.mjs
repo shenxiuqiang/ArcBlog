@@ -243,6 +243,17 @@ async function probe(browserVersion) {
         auth: document.documentElement.hasAttribute('data-authenticated') ? 'yes' : 'no',
         saveCapability: document.documentElement.getAttribute('data-arc-save-capability'),
         saveBar: document.querySelectorAll('[data-arc-save="bar"], .arc-save-bar').length,
+        // The bridge locks the platform's switch (a getter answering false, so the daemon message
+        // that assigns "floating" cannot re-enable the bar): report which form is in place.
+        arcSave: (function () {
+          try {
+            var d = Object.getOwnPropertyDescriptor(window, '__arcSave');
+            if (d && typeof d.get === 'function') return 'locked->' + String(window.__arcSave);
+            return 'plain->' + String(window.__arcSave);
+          } catch (e) {
+            return 'error';
+          }
+        })(),
         // The theme bridge's own footprint on the HOST document: its injected stylesheet and its
         // localStorage cache are the two signals that it actually ran (its iframe is same-origin,
         // so the host sees none of the bridge's own globals).

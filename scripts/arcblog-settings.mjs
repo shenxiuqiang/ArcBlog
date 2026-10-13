@@ -3,6 +3,15 @@
 //
 //   node scripts/arcblog-settings.mjs show
 //   node scripts/arcblog-settings.mjs set --tone editorial [--palette natural] [--theme system]
+//   node scripts/arcblog-settings.mjs sync-appearance
+//
+// `sync-appearance` publishes a GUEST-READABLE projection of the three settings to
+// /instance/app/arcblog/node/appearance.json. Why: the private records above answer 403 to a
+// signed-out reader ("sign in to read this setting"), while the theme bridge runs in the VISITOR's
+// browser — so without the projection every anonymous reader kept the runtime's compiled theme
+// (DEF-48, human checkpoint `E14` = A, 2026-10-13). `scripts/arcblog-deploy.mjs` refreshes it at
+// every deploy; a signed-in admin's page view republishes it too (the bridge writes it when it can
+// read the private records).
 //
 // Instance-level General settings (spec §15.9 "通用"): site name / language /
 // timezone and the three Instance switches (comments / RSS / Agent Access).
@@ -44,11 +53,53 @@ import {
 } from './lib/general-settings.mjs';
 
 const SETTINGS_DIR = '/instance/settings/arcblog';
+/** Public projection the theme bridge reads for anonymous visitors (DEF-48 / `E14` = A). */
+export const APPEARANCE_PATH = '/instance/app/arcblog/node/appearance.json';
 const KEYS = {
   tone: 'tone.json',
   palette: 'palette.json',
   theme: 'theme.json',
 };
+
+/**
+ * Shape + validate the public projection. Pure (exported for the fast-tier test): an empty result
+ * means "nothing to publish", and an unknown value is rejected by the caller rather than silently
+ * published (a bad value in the projection looks exactly like "my change did nothing" — the same
+ * fail-closed rule the private `set` path follows).
+ */
+export function composeAppearance(values, updatedAt) {
+  const projection = {};
+  for (const key of Object.keys(KEYS)) {
+    const value = String(values?.[key] ?? '').trim();
+    if (value) projection[key] = value;
+  }
+  if (Object.keys(projection).length === 0) return null;
+  projection.source = SETTINGS_DIR;
+  projection.updatedAt = updatedAt;
+  return projection;
+}
+
+function commandSyncAppearance(opts) {
+  const instance = resolveInstance(opts);
+  const values = {};
+  for (const key of Object.keys(KEYS)) {
+    const { path, record } = readSetting(key, instance);
+    const options = optionsOf(record);
+    const value = String(record.value).trim();
+    if (options.length > 0 && !options.includes(value)) {
+      fail(
+        'VALIDATION',
+        `${key} holds "${value}" but its own options are: ${options.join(', ')} — fix ${path} before publishing it`,
+      );
+    }
+    values[key] = value;
+  }
+  const projection = composeAppearance(values, new Date().toISOString());
+  writeJson(APPEARANCE_PATH, projection, instance);
+  console.log(
+    JSON.stringify({ ok: true, action: 'appearance-sync', path: APPEARANCE_PATH, dir: SETTINGS_DIR, projection }, null, 2),
+  );
+}
 
 function readSetting(key, instance) {
   const path = `${SETTINGS_DIR}/${KEYS[key]}`;
@@ -204,13 +255,17 @@ function help() {
 Usage:
   node scripts/arcblog-settings.mjs show
   node scripts/arcblog-settings.mjs set --tone <value> [--palette <value>] [--theme <value>]
+  node scripts/arcblog-settings.mjs sync-appearance   # publish the guest-readable projection
   node scripts/arcblog-settings.mjs general install
   node scripts/arcblog-settings.mjs general show
   node scripts/arcblog-settings.mjs general set [--site-name <text>] [--language <en|zh>]
       [--timezone <IANA>] [--comments on|off] [--rss on|off] [--agent-access on|off]
 
 Appearance reads and writes /instance/settings/arcblog/{tone,palette,theme}.json —
-the same records the runtime settings surface and the theme bridge read.
+the same records the runtime settings surface and the theme bridge read. Those
+records are PRIVATE (403 to a signed-out reader), so \`sync-appearance\` mirrors them
+into ${APPEARANCE_PATH}, which the theme bridge reads for anonymous visitors
+(DEF-48). Refresh it after an appearance change, or just deploy.
 
 General reads and writes ${GENERAL_ROOT}/{general,switches}/<field>.json —
 the six Instance-level fields of spec §15.9 (site name, language, timezone and
@@ -248,6 +303,8 @@ try {
     commandShow(opts);
   } else if (command === 'set') {
     commandSet(opts);
+  } else if (command === 'sync-appearance') {
+    commandSyncAppearance(opts);
   } else if (command === 'general') {
     const sub = optString(opts._[0]);
     const instance = resolveInstance(opts);
@@ -256,7 +313,7 @@ try {
     else if (sub === 'set') generalSet(opts, instance);
     else fail('VALIDATION', `unknown general command: ${sub} (use install|show|set)`);
   } else {
-    fail('VALIDATION', `unknown command: ${command} (use show|set|general)`);
+    fail('VALIDATION', `unknown command: ${command} (use show|set|sync-appearance|general)`);
   }
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

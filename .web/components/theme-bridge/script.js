@@ -26,6 +26,12 @@
   }
 
   var SETTINGS_DIR = '/instance/settings/arcblog';
+  // Public projection of the three private settings (DEF-48, human checkpoint `E14` = A): an
+  // anonymous visitor is refused `/instance/settings/**` with 403 "sign in to read this setting", so
+  // this guest-readable record — written by `scripts/arcblog-settings.mjs sync-appearance`, refreshed
+  // at every deploy, and republished by any signed-in admin page view — is what themes the site for
+  // readers. Private values still win whenever the session can read them.
+  var APPEARANCE_PATH = '/instance/app/arcblog/node/appearance.json';
   var FILES = {
     tone: SETTINGS_DIR + '/tone.json',
     palette: SETTINGS_DIR + '/palette.json',
@@ -50,6 +56,7 @@
   // the right-hand link column reads as one row. Class names are the platform's
   // own, verified against the served aup-app.css.
   var CHROME_STYLE_ID = 'arcblog-chrome-style';
+  var SAVE_STYLE_ID = 'arcblog-save-style';
   var CHROME_CSS = [
     '.aup-app-footer{border-top:1px solid var(--color-border);padding-top:20px}',
     '.aup-footer-bottom-bar{border-top:0;padding-top:0}',
@@ -191,6 +198,24 @@
     return null;
   }
 
+  /** Flatten a projection record (`read` hands it back as a JSON string under `.content`). */
+  function extractRecord(res) {
+    if (res == null) return null;
+    if (typeof res === 'string') {
+      try {
+        return extractRecord(JSON.parse(res));
+      } catch (e) {
+        return null;
+      }
+    }
+    if (typeof res === 'object') {
+      if (typeof res.tone === 'string' || typeof res.palette === 'string' || typeof res.theme === 'string') return res;
+      if (typeof res.content === 'string') return extractRecord(res.content);
+      if (res.data) return extractRecord(res.data);
+    }
+    return null;
+  }
+
   function extractValue(res) {
     if (res == null) return null;
     if (typeof res === 'string') {
@@ -315,6 +340,46 @@
       }
     }
 
+    var published = null; // the projection as last read (null = absent or unreadable)
+    var publishTried = false;
+
+    function appearanceOf(source, keys) {
+      if (!source) return null;
+      var out = {};
+      for (var i = 0; i < keys.length; i++) {
+        var value = source[keys[i]];
+        out[keys[i]] = value && RANGES[keys[i]][value] ? value : null;
+      }
+      return out;
+    }
+
+    function sameAppearance(a, b) {
+      var keys = Object.keys(FILES);
+      for (var i = 0; i < keys.length; i++) if ((a && a[keys[i]]) !== (b && b[keys[i]])) return false;
+      return true;
+    }
+
+    /** Publish what we just read privately, so guests get it without waiting for a deploy. */
+    function publishAppearance() {
+      if (publishTried) return;
+      publishTried = true;
+      if (typeof afs.write !== 'function') return;
+      var payload = {
+        tone: current.tone,
+        palette: current.palette,
+        theme: current.theme,
+        source: SETTINGS_DIR,
+        updatedAt: new Date().toISOString(),
+      };
+      try {
+        Promise.resolve(afs.write(APPEARANCE_PATH, payload)).catch(function () {
+          /* read-only session: the deploy/CLI path still publishes it */
+        });
+      } catch (e) {
+        /* write unsupported */
+      }
+    }
+
     function readAll() {
       var keys = Object.keys(FILES);
       return Promise.all(
@@ -329,7 +394,32 @@
               current[key] = null;
             });
         })
-      );
+      ).then(function () {
+        var fromPrivate = keys.every(function (key) {
+          return current[key];
+        });
+        if (fromPrivate) {
+          if (published && !sameAppearance(published, current)) publishAppearance();
+          return null;
+        }
+        var read = typeof afs.tryRead === 'function' ? afs.tryRead(APPEARANCE_PATH) : afs.read(APPEARANCE_PATH);
+        return Promise.resolve(read)
+          .then(function (res) {
+            published = appearanceOf(extractRecord(res), keys);
+            if (!published) return;
+            var filled = false;
+            keys.forEach(function (key) {
+              if (!current[key] && published[key]) {
+                current[key] = published[key];
+                filled = true;
+              }
+            });
+            return filled ? true : null;
+          })
+          .catch(function () {
+            return null;
+          });
+      });
     }
 
     var refreshTimer = null;
@@ -388,42 +478,86 @@
       }
     }
 
+    // Learn the published projection first, so a signed-in admin's edit can be republished only
+    // when it actually differs (and a guest's readAll is a single extra round trip).
+    try {
+      var prime = typeof afs.tryRead === 'function' ? afs.tryRead(APPEARANCE_PATH) : afs.read(APPEARANCE_PATH);
+      Promise.resolve(prime)
+        .then(function (res) {
+          published = appearanceOf(extractRecord(res), Object.keys(FILES));
+        })
+        .catch(function () {});
+    } catch (e) {
+      /* projection unreadable: guests stay on the compiled theme */
+    }
+
     readAll().then(apply);
   }
 
   var tries = 0;
-  // DEF-45: hide the platform's save chrome on the host document.
+  // DEF-45: remove the platform's save chrome ("Bookmark" / "My saves") for good.
   //
-  // Evidence (platform asset `_arc/assets/116ea4c0….js`): the bar is
-  // `div.arc-save-bar[data-arc-save="bar"]` containing buttons
-  // `[data-arc-save="bookmark"]` ("Bookmark") and `[data-arc-save="library"]`
-  // ("My saves"), appended to `document.documentElement`; its `capability()`
-  // returns "off" when `window.__arcSave` is false/"off", and it re-evaluates on
-  // each sync, so both the flag and a sweep are needed (it can be mounted after
-  // this iframe boots).
+  // Evidence (arc 2.0.0-beta.66 runtime bundle `/aup.<hash>.js`, function `fw()` — the handler for
+  // the daemon's `case "aup":` message):
+  //     if (e.save === "off" || e.save === "floating" || e.save === "buttons")
+  //       window.__arcSave = e.save; document.documentElement.setAttribute("data-arc-save-capability", e.save)
+  // and the consumer `capability()` reads `window.__arcSave` FIRST (false / "off" ⇒ off), then the
+  // attribute, defaulting to "floating". So an early write alone is not enough: the daemon message
+  // lands AFTER the bridge boots and overwrites the flag, `onSession()` → `syncChrome()` mounts the
+  // bar, and only our sweep removed it — which is the "appears, then disappears" flash the human
+  // reported (2026-10-13). Locking the property with a getter that always answers false wins every
+  // re-assert; the stylesheet and the sweep are the belt to that suspenders.
   function suppressSaveChrome(p) {
+    var doc = p.document;
     try {
-      p.__arcSave = false;
+      Object.defineProperty(p, '__arcSave', {
+        get: function () {
+          return false;
+        },
+        set: function () {
+          /* the runtime re-asserts "floating" here on every aup message — ignore it */
+        },
+        configurable: true,
+      });
     } catch (e) {
-      /* cross-origin host */
+      try {
+        p.__arcSave = false;
+      } catch (e2) {
+        /* cross-origin host */
+      }
+    }
+    // The rule lands in the host head and therefore also governs any mount we never observe.
+    try {
+      if (doc && doc.head && !doc.getElementById(SAVE_STYLE_ID)) {
+        var el = doc.createElement('style');
+        el.id = SAVE_STYLE_ID;
+        el.textContent = '[data-arc-save],.arc-save-bar{display:none!important}';
+        doc.head.appendChild(el);
+      }
+    } catch (e) {
+      /* best effort */
     }
     var remove = function () {
       try {
-        var bars = p.document.querySelectorAll('[data-arc-save="bar"], .arc-save-bar');
+        var bars = doc.querySelectorAll('[data-arc-save="bar"], .arc-save-bar');
         for (var i = 0; i < bars.length; i++) {
           if (bars[i] && bars[i].parentNode) bars[i].parentNode.removeChild(bars[i]);
         }
+        // Cosmetic: the attribute the platform keeps re-adding (the flag already answers "off").
+        doc.documentElement.removeAttribute('data-arc-save-capability');
       } catch (e) {
         /* best effort */
       }
     };
     remove();
-    // The platform mounts the bar on the host <html> after the session resolves; a
-    // childList observer is enough (no attribute churn) and it is torn down when
-    // this iframe is replaced on navigation.
     try {
       var obs = new p.MutationObserver(remove);
-      obs.observe(p.document.documentElement, { childList: true });
+      obs.observe(doc.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['data-arc-save-capability'],
+      });
     } catch (e) {
       /* no MutationObserver on the host: the one-shot sweep above still applies */
     }
