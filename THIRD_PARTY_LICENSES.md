@@ -1,6 +1,6 @@
 # Third-party notices
 
-ArcBlog's own source is currently `UNLICENSED` (see `blocklet.yaml`; the licence decision is pending).
+ArcBlog's own source is licensed under the **Apache License 2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)).
 The components below are **not** written by this project and keep their own terms. Versions are the ones
 `package.json` / `package-lock.json` resolve.
 

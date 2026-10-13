@@ -71,6 +71,10 @@ export const NON_PRODUCT_FILES = new Set([
   // Community / packaging files (2026-10-13): written for the repository's readers and for CI, none of
   // them read at runtime. Shipping them would also duplicate the licence question inside the artifact
   // (blocklet.yaml carries the only licence field the platform reads).
+  // ⚠️ DELIBERATELY NOT LISTED: `LICENSE` and `NOTICE`. Apache-2.0 §4 requires a redistribution to
+  // carry the licence and the attribution file, and the built blocklet IS a redistribution — a few KB
+  // buys compliance, which "dist ships what runs" would otherwise quietly break.
+  'README.en.md',
   'CHANGELOG.md',
   'CONTRIBUTING.md',
   'SECURITY.md',

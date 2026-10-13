@@ -2,7 +2,7 @@
   "name": "arcblog",
   "version": "0.3.7",
   "description": "A DID-native, Markdown-first publishing Blocklet on the Arc/AUP stack — no bundler, no dev server, no runtime dependencies in the app itself.",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "author": {
     "name": "shenxiuqiang",
     "url": "https://github.com/shenxiuqiang"

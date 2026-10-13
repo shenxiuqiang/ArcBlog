@@ -77,7 +77,15 @@ such rows; they are the reason this project does not promise what the platform r
 
 ## Licence
 
-**Pending.** `blocklet.yaml` currently declares `UNLICENSED`, which means *all rights reserved*: until a
-licence is chosen, please do not submit code you expect to be redistributed. Opening an issue to
-discuss a change is welcome in the meantime; the decision is tracked in
-[`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md).
+ArcBlog is licensed under the **Apache License 2.0** ([`LICENSE`](LICENSE), with the attribution file
+[`NOTICE`](NOTICE)). By submitting a contribution you agree that it is licensed under the same terms —
+there is no CLA and no copyright assignment. Apache-2.0 §5 says this without any extra paperwork:
+contributions intentionally submitted for inclusion are under the project's licence unless you say
+otherwise in writing.
+
+Redistributions must keep the licence, the `NOTICE` file, and the third-party attribution in
+[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) (the Apache-2.0 ArcBlock/OCAP packages, ISC
+`bip39`, the vendored ARC web-device widget and the theme library).
+
+**One boundary worth knowing**: `LICENSE` covers this repository's own source. The platform this app
+runs on (the ARC daemon, AFS, AUP, the chain SDKs) belongs to ArcBlock and keeps its own terms.

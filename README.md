@@ -1,5 +1,11 @@
 # ArcBlog
 
+[![gates](https://github.com/shenxiuqiang/ArcBlog/actions/workflows/ci.yml/badge.svg)](https://github.com/shenxiuqiang/ArcBlog/actions/workflows/ci.yml)
+[![licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
+[![node](https://img.shields.io/badge/node-%3E%3D20-informational.svg)](package.json)
+
+> English readers: [`README.en.md`](README.en.md) is the short English entry point.
+
 > 版本：**v1.0** ｜ 2026-10-01 ｜ Lead
 
 
@@ -135,3 +141,12 @@ dist/           构建产物（由 npm run build 刷新；**裸 arc blocklet bui
 - **质量门的操作面**（分层 / 名单 / 判定式 / 真红假红）→ [测试分层与质量门](docs/05-开发文档/05-测试分层与质量门.md)。
 
 **必须人类批准的动作**（不可逆 / 对外）：`push`、真实资金与链上写、删数据与清理实例、入口文件最终重写、产品口径追认 —— 清单见 [人类检查点](docs/07-团队与开发规范/04-交接·记录·提交.md) §6。
+
+
+## 7. 许可与贡献
+
+- **许可**：[Apache License 2.0](LICENSE)（附 [NOTICE](NOTICE) 与第三方归属 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)）。上游平台（ARC daemon / AFS / AUP / 链 SDK）属 ArcBlock，按其自身条款。
+- **贡献**：先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)——四条门禁、**一处事实一个出处**、以及"加守卫必须能证明它会红"。没有 CLA，提交即按同一许可授权（Apache-2.0 §5）。
+- **路线图**：不在别处维护。**需求与状态** = [`docs/06-功能开发列表/`](docs/06-功能开发列表/00-台账总览与规范.md)（56 行，`未开工`/`开发中` 均为 0）；**待办** = [`docs/team/human-checkpoints.md`](docs/team/human-checkpoints.md)；**平台边界** = [`docs/05-开发文档/02`](docs/05-开发文档/02-平台能力与边界.md)（`B1`–`B24`）。
+- **安全**：见 [`SECURITY.md`](SECURITY.md)（私下报告，不要开公开 issue）；**行为准则**：见 [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)。
+- **变更**：见 [`CHANGELOG.md`](CHANGELOG.md)（版本号以 `blocklet.yaml` 为准，发布以 git tag 为准）。

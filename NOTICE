@@ -1,0 +1,9 @@
+ArcBlog
+Copyright 2026 shenxiuqiang
+
+This product includes software developed as part of the ArcBlog project
+(https://github.com/shenxiuqiang/ArcBlog).
+
+It also embeds or redistributes third-party components, whose terms and origins are
+listed in THIRD_PARTY_LICENSES.md — notably the Apache-2.0 ArcBlock/OCAP packages and
+the vendored ARC web-device widget `.web/components/hero-carousel/vendor/photo-story.js`.

@@ -312,8 +312,16 @@ test('blocklet.yaml keeps its identity and publishable metadata', () => {
   const missing = required.filter((k) => !new RegExp(`^${k}:`, 'm').test(manifest));
   assert.deepEqual(missing, [], `manifest keys missing (a publish would lose them): ${missing.join(', ')}`);
 
-  // the license is a deliberate project decision; changing it is an edit of this expectation
-  assert.match(manifest, /^license:\s*UNLICENSED$/m, 'license must stay UNLICENSED');
+  // The license is a deliberate project decision — changed to Apache-2.0 on 2026-10-13 by the owner —
+  // so changing it means editing this expectation AND shipping the licence text the SPDX id names.
+  // (The previous form pinned the string alone, which would have accepted a declared licence with no
+  // LICENSE file next to it.)
+  const declared = /^license:\s*(\S+)\s*$/m.exec(manifest)?.[1];
+  assert.equal(declared, 'Apache-2.0', 'manifest license must be the declared SPDX id');
+  assert.ok(existsSync(join(REPO_ROOT, 'LICENSE')), 'a declared license must ship as LICENSE');
+  assert.match(readFileSync(join(REPO_ROOT, 'LICENSE'), 'utf8'), /Apache License/, 'LICENSE must be the Apache-2.0 text');
+  const pkgLicense = JSON.parse(readFileSync(join(REPO_ROOT, 'package.json'), 'utf8')).license;
+  assert.equal(pkgLicense, declared, 'package.json and blocklet.yaml must declare the same license');
 
   // a referenced logo that does not exist publishes a broken image
   const logo = /^logo:\s*(\S+)\s*$/m.exec(manifest)?.[1];

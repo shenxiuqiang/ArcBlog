@@ -1,0 +1,22 @@
+# Dependency updates. The app has no runtime dependencies; what matters here is the chain toolchain
+# (@arcblock/*, @ocap/*, bip39), which is exercised only by the operator CLIs and the live tier.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      arcblock-ocap:
+        patterns:
+          - '@arcblock/*'
+          - '@ocap/*'
+    commit-message:
+      prefix: "chore(deps)"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"
