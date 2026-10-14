@@ -239,6 +239,8 @@ async function probe(browserVersion) {
       // BRANDING (S11-01): the platform's values must land on the chrome the repo used to hardcode —
       // the header wordmark, the footer wordmark and the footer (c) line — with the host splash as the
       // live name channel. Reported here so "did the brand follow the console?" is one command.
+      // ⚠️ Everything below is inside a TEMPLATE LITERAL (it is shipped to the page): never write a
+      // backtick in these comments — it truncates the expression and the rest parses as Node code.
       branding: (function () {
         function text(sel, limit) {
           try {
@@ -252,6 +254,16 @@ async function probe(browserVersion) {
         }
         return {
           headerWordmark: text('.aup-app-header-title') ?? text('.aup-app-header-brand'),
+          // 2026-10-14: the header renders brand.logo as <img class="aup-app-header-logo"> — report
+          // whether it is there and which URL it resolves to (the platform's own /blocklet/logo).
+          headerLogo: (function () {
+            try {
+              var img = document.querySelector('.aup-app-header-logo');
+              return img ? img.getAttribute('src') : null;
+            } catch (e) {
+              return null;
+            }
+          })(),
           footerWordmark: text('.aup-footer-brand-header') ?? text('.aup-footer-brand'),
           footerCopyright: text('.aup-footer-bottom-bar'),
           splashWordmark: text('#desktop-splash .splash-wordmark'),

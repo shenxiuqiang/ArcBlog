@@ -3571,3 +3571,37 @@ node scripts/arcblog-overview.mjs refresh   # 6 collections measured, 0 recent d
 node scripts/arcblog-anomalies.mjs refresh  # cleared: []
 ```
 **教训（写给下一个做清理的人）**：`.actions/list` 的 `recursive:true` **不递归**，只给直接子项；而 `.actions/delete` 对 `kind: fs:dir` 的条目**会删整棵子树** —— 两者组合起来只点了 10 次就清空了 536+ 条，但前提是你先按集合确认过计数（如上）。
+
+## 82. `app-header` 的 brand logo：契约与实测（2026-10-14）
+
+**起因**：人类「项目首页 header 没有显示 logo」——`wrapper.aup` 的 `app-header` 只传了 `brand={title, href}`，而运行时只有在 brand 里**显式给了 `logo`** 时才插 `<img>`。
+
+**（1）运行时源码（`aup.<hash>.js`，`Ny()` 的 tail）**：
+```js
+var m = r.showTitle !== false;
+if (r.logo) { var h = String(r.logo);
+  if (!h.toLowerCase().startsWith("javascript:"))
+    for (var g = Cf(h, "aup-app-header-logo", m ? "" : String(r.title||""), r.logoDark), y=0; y<g.length; y++) a.appendChild(g[y]) }
+if (r.title && m) { var w = document.createElement("div"); w.className="aup-app-header-title"; w.textContent=String(r.title); a.appendChild(w) }
+```
+⇒ brand 支持 `logo` / `logoDark`（→ `<img class="aup-app-header-logo" data-logo-theme="light|dark">`）、`showTitle`（默认 true；false = 只留 logo）、`href`（`<a>`）/`href:false`+`src`（`<button>` 发 `nav-click`）；**没有尺寸 prop**（尺寸由平台 CSS 的 `.aup-app-header-logo` 决定）。
+
+**（2）host context 自带平台 logo**：`GET /__blocklet__.js` →
+```json
+{"appName":"ArcBlog","appLogo":"/.well-known/service/blocklet/logo","appLogoDark":"/.well-known/service/blocklet/logo-dark",
+ "appLogoRect":"/.well-known/service/blocklet/logo-rect","appLogoRectDark":"/.well-known/service/blocklet/logo-rect-dark"}
+```
+四个端点实测全部 `200 image/svg+xml 1084B`，且 **md5 = 仓库 `logo.svg`**（`manifest` 只声明了 `logo`，其余三个由平台回落到它）。
+
+**（3）改动与验证**：`.aup/wrapper.aup` 的 `brand` 补 `logo`/`logoDark`（指向上面两个平台端点 ⇒ 控制台上传的 logo 也会跟着换，仓库不再出现品牌字面量）；`arc dsl generate --write` 重生成 `wrapper.json`。
+```bash
+chrome --headless=new --virtual-time-budget=4000 --dump-dom "http://arcblog.localhost:4939/?page=index" | grep aup-app-header
+# <a href="/?page=index" class="aup-app-header-brand-link">
+#   <img class="aup-app-header-logo" data-logo-theme="light" loading="lazy" decoding="async" alt="" src="/.well-known/service/blocklet/logo">
+#   <img class="aup-app-header-logo" data-logo-theme="dark"  loading="lazy" decoding="async" alt="" src="/.well-known/service/blocklet/logo-dark">
+#   <div class="aup-app-header-title">MyBlog</div></a>
+node scripts/arcblog-browser-probe.mjs "http://arcblog.localhost:4939/?page=index" --fresh --json
+# branding.headerWordmark = "MyBlog" ｜ branding.headerLogo = "/.well-known/service/blocklet/logo"
+```
+
+**（4）工具坑（值得记）**：`scripts/arcblog-browser-probe.mjs` 的页面观察代码整段是**模板字符串**（它被送到浏览器执行）⇒ 那些注释里**不能出现反引号**，否则模板串被提前截断，后半段会被 Node 当代码解析（症状：`ReferenceError: blocklet is not defined`，位置指向注释行）。已在文件里加了警告注释。

@@ -39,6 +39,8 @@
             "variant": "compact",
             "brand": {
               "title": "ArcBlog",
+              "logo": "/.well-known/service/blocklet/logo",
+              "logoDark": "/.well-known/service/blocklet/logo-dark",
               "href": "/?page=index"
             },
             "actions": [

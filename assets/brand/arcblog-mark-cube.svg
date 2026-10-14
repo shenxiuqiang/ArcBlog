@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="ArcBlog">
+  <title>ArcBlog</title>
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="15" y1="10" x2="81" y2="86" id="abGradB">
+      <stop offset="0" stop-color="#2BE0DC"/>
+      <stop offset="1" stop-color="#0E7C86"/>
+    </linearGradient>
+  </defs>
+  <!-- 等距立方体（ArcBlock 家族轮廓）：外六边形 + 三条内棱 -->
+  <g fill="none" stroke="url(#abGradB)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M48 10 81 29 81 67 48 86 15 67 15 29Z"/>
+    <path d="M48 48 15 29M48 48 81 29M48 48V86"/>
+  </g>
+  <!-- 文章：顶面（N-NE-C-NW 菱形）上的三行，沿面轴等距排布 -->
+  <g fill="none" stroke="url(#abGradB)" stroke-width="3.6" stroke-linecap="round">
+    <path d="M33 27.5 60 27.5"/>
+    <path d="M28 34.5 65 34.5"/>
+    <path d="M36 41.5 57 41.5"/>
+  </g>
+  <!-- 连接：三个交替外节点（网络语义，不抢主体） -->
+  <g fill="#1DC1C7">
+    <circle cx="48" cy="10" r="3.6"/>
+    <circle cx="15" cy="67" r="3.6"/>
+    <circle cx="81" cy="67" r="3.6"/>
+  </g>
+</svg>

@@ -133,7 +133,7 @@ Use it instead of `input` for long vocabularies (categories, tags, roles).
 
 | Primitive | Verified usage in ArcBlog |
 | --- | --- |
-| `app-header` | `variant=compact brand={title, src} actions=[{kind: theme-toggle…}, {kind: locale-switcher…}, {kind: user-menu…}]` + `events={user-menu-item:…, nav-click:…}` — **keep the `site-header` id**, the brand button fires `nav-click` at it |
+| `app-header` | `variant=compact brand={title, logo, logoDark, showTitle, href|src} actions=[{kind: theme-toggle…}, {kind: locale-switcher…}, {kind: user-menu…}]` + `events={user-menu-item:…, nav-click:…}` — **keep the `site-header` id**, the brand button fires `nav-click` at it |
 | `app-footer` | `brand={title, tagline, href} columns=[{links:[{label, href, external}]}] bottomBar={copyright}` |
 | `frame` | `frame <id> src="/p/<locale>/<name>/" bridge=true overlay=true loading=eager sandbox="allow-top-navigation"` |
 | `time` | `<time mode=display value="${state.x}" timeMode=relative>` |
