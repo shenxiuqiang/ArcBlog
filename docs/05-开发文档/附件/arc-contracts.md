@@ -3509,3 +3509,65 @@ console.log(Object.keys(api.mapPlatformPalette({})).length, api.TOKEN_ALIASES.le
 **实测发现（行为测试的价值）**：`mapPlatformPalette({})` 旧行为会写入 `--color-on-accent: #ffffff`（`contrastOn(null)` 的白色兜底），违反"源缺失即不写"；已修为仅在 `primary` 存在时才决定该 token。文本匹配型测试无法发现此类不一致。
 
 **契约保持**：DEF-47 未变 —— `render.js` → HTML 内联仍是唯一交付通道，渲染沙箱不读文件；生成器只多了"先拼 `theme-map.js`"这一步。
+
+## 81. 三个探针的确定结果 + legacy 实例记录清理（2026-10-14）
+
+人类「2 你帮我确定 3 清理」；以下为原样输出与结论边界。
+
+**（1）`P3` — 控制台设置（含 `app:languages`）是否按 blocklet 存：是。**
+```bash
+node -e "
+const {DatabaseSync}=require('node:sqlite');
+const db=new DatabaseSync(process.env.HOME+'/.afs-data/auth.db',{readOnly:true});
+for(const r of db.prepare('select instance_did,key,value from cs_settings order by instance_did,key').all())
+  console.log(r.instance_did,'|',r.key,'|',String(r.value).slice(0,40));
+"
+# _schema_ | primary_credential_backfill_v1 | 1
+# arcblog | app:branding  | {"name":"MyBlog","description":"",…
+# arcblog | app:languages | [{"code":"en","name":"English"},{"code":"zh",…
+# arcblog | app:name      | MyBlog
+# arcblog | app:theme     | {"concepts":[{"id":"default",…
+# arcblog | apple:appIds  | []
+# 表清单（sqlite_master）：cs_settings 是**唯一**设置表（其余 cs_* 都是账号/会话/审计）
+```
+⇒ 设置按 `instance_did` 分行，`my-app` 根本没有行（它从未被控制台配置过）⇒ **语言列表是 per-blocklet 存储**。
+**边界**：登录态下控制台那个语言开关的**可见范围**我没有观察过（未登录）；这是"存储层已确定、UI 层未观察"。
+
+**（2）`P2` — 平台 AFS 浏览器能否上传：它渲染的是同一个 `afs-dropzone` 原语。**
+```bash
+curl -s http://arcblog.localhost:4939/.well-known/admin | grep -oE '<script[^>]*src="[^"]+"|<title>[^<]*</title>'
+# <title>AFS</title>   <script src="/aup.c2e386d110cd0376.js">
+curl -s http://arcblog.localhost:4939/aup.c2e386d110cd0376.js -o /tmp/aupjs; wc -c < /tmp/aupjs; # 954710
+grep -oE 'dropzone|afs-dropzone|type="file"|Upload failed' /tmp/aupjs | sort | uniq -c
+#   9 Upload failed ｜ 1 afs-dropzone ｜ 9 dropzone ｜ 3 type="file"
+```
+⇒ 浏览器**有上传面**，用的就是 `B12` 里那个平台唯一上传原语；我们旧页面失败的原因是 `Upload failed: targetDir must be a non-empty string`（缺目标目录），而浏览器自己知道当前路径。
+**边界**：未登录点不动，所以"能传成功"仍是推断，不是实测。
+
+**（3）`U21` — 控制台上传 logo 落到哪个公开面：落点不在观察到的任何平台存储里。**
+```bash
+node -e "…select key,substr(value,1,80) from cs_kv_cache…"     # 1 行，且是 OAuth client 缓存（cimd:…/client.json）
+find ~/.afs-data -maxdepth 2 -type d                            # branding-assets / branding-assets/avatars
+find ~/.afs-data/branding-assets -maxdepth 3                    # avatars/<DID> + <DID>.meta  ⇒ 用户头像库，不是 blocklet logo
+for u in /blocklet/logo /blocklet/logo-favicon /favicon.ico; do curl -s … | md5; done
+# 三者全 = 3c6262ddf939…（472 B image/svg+xml），与仓库 logo.svg 的 md5 相同
+```
+⇒ 控制台的 logo **没有** DB 键、**没有** KV 行、**没有**磁盘 logo 库；三个公开端点目前逐字节来自仓库 `logo.svg`（即 manifest）。
+⇒ 要真正闭环只需你在控制台点一次"上传 logo"，然后复跑上面四条命令；**在此之前 U21 保持未测**（`docs/05/07` 保留 open 标记）。
+（`description` 的优先级同理不可判：控制台 `description` 为空而 splash 显示 manifest 文案，两种实现都会给出这个结果。）
+
+**（4）清理：economy 536 条 + hub 全部删除。**
+```bash
+# 干跑：递归 list 只返回**直接子项**（这点很关键）
+arc afs exec /blocklets/arcblog/.actions/list --args '{"path":"/instance/app/arcblog/economy"}'
+# 逐集合计数（删前）：policies 1 ｜ products 110 ｜ orders 134 ｜ settlements 71 ｜ ledger 162 ｜ access-grants 58  = 536
+# 删除：对 6 个集合目录 + .provenance + hub/index + hub/registrations 各发一次 .actions/delete（**目录删除是递归的**）
+# 复核（删后）：
+arc afs ls /blocklets/arcblog/instance/app/arcblog/economy   # ERROR: No data found for path …
+arc afs ls /blocklets/arcblog/instance/app/arcblog/hub       # ERROR: No data found for path …
+for d in policies products orders settlements ledger access-grants registrations; do arc afs ls …/$d | wc -l; done   # 全 0
+# 投影刷新
+node scripts/arcblog-overview.mjs refresh   # 6 collections measured, 0 recent draft(s)
+node scripts/arcblog-anomalies.mjs refresh  # cleared: []
+```
+**教训（写给下一个做清理的人）**：`.actions/list` 的 `recursive:true` **不递归**，只给直接子项；而 `.actions/delete` 对 `kind: fs:dir` 的条目**会删整棵子树** —— 两者组合起来只点了 10 次就清空了 536+ 条，但前提是你先按集合确认过计数（如上）。
