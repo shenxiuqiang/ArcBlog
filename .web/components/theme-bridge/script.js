@@ -5,14 +5,17 @@
 // evidence: `_research/S10-02-站点主题跟随平台主题-方案.md`.
 //
 // Sources, in the order resolve() uses them:
-//   1. signed-in — `GET /.well-known/service/api/theme`: the full MUI palette.
-//   2. snapshot  — `/instance/app/arcblog/node/appearance.json` (guest-readable,
-//      v2), (re)published by this bridge whenever (1) succeeded. Anonymous
-//      readers get the full palette from here.
-//   3. public    — `/.well-known/service/theme/init.js` (`var p = '<prefer>'`)
-//      and `/.well-known/service/theme/styles.css` (background + text, light and
-//      dark). The platform renders both PER REQUEST, so anonymous visitors track
-//      the console's mode/background/text without any cache of ours.
+//   1. snapshot  — the GUEST-READABLE snapshots the CLI publishes from the daemon's sqlite store
+//      (`node scripts/arcblog-settings.mjs platform sync`): `…/node/appearance.json` (v2 = the
+//      console's RAW `app:theme`, normalized here) supplies the full palette, and
+//      `…/node/branding.json` (v1) supplies name/description/url/passportColor/copyright.
+//      NO SESSION IS INVOLVED ANYWHERE: the HTTP twins (`/api/theme`, `/api/branding`) answer 401
+//      to a signed-out caller, the FILE does not — see S10-02 §10 / S11-01 §1.5.
+//   2. public    — `/.well-known/service/theme/init.js` (`var p = '<prefer>'`),
+//      `…/theme/styles.css` (background + text, light and dark) and the **host splash**
+//      (`#desktop-splash .splash-wordmark` / `.splash-sub`, server-rendered per request). These are
+//      live, so mode/background/text/name/description follow the console within its 60 s cache even
+//      before any CLI run.
 //   `window.blocklet.theme` is deliberately NOT a source: measured 2026-10-14 it
 //   is the platform's DEFAULT theme (byte-identical for `arcblog` and `my-app`)
 //   and does not follow the console.
@@ -52,7 +55,8 @@
   var SNAPSHOT_V = 2;
   var PLATFORM_INIT = '/.well-known/service/theme/init.js';
   var PLATFORM_CSS = '/.well-known/service/theme/styles.css';
-  var PLATFORM_API = '/.well-known/service/api/theme';
+  var SNAPSHOT_BRANDING = '/instance/app/arcblog/node/branding.json';
+  var BRANDING_V = 1;
   // Last resolved tokens, mirrored into the host's localStorage on every apply and re-applied
   // synchronously on boot (see applyCached). This closes the flash window on in-app navigation: the
   // AUP runtime resets <html data-*> (and with it the effective palette) when it re-renders, so the
@@ -64,143 +68,9 @@
   var BOOT_RETRIES = 100;
   var BOOT_DELAY = 30;
 
-  // >>> platform→AUP token map — guarded by scripts/arcblog-theme.test.mjs (18 written + 4 aliases)
-  // The 4 aliases are declared in `aup-core.css` as `:root,[data-palette]` rules
-  // (`--color-fg: var(--color-text)` etc.), so writing the 18 real ones moves them too.
-  var TOKEN_ALIASES = ['--color-fg', '--color-muted', '--color-text-muted', '--color-danger'];
-
-  /** `a.b.c` lookup that only answers with non-empty strings. */
-  function at(obj, path) {
-    var parts = path.split('.');
-    var cur = obj;
-    for (var i = 0; i < parts.length; i++) {
-      if (!cur || typeof cur !== 'object') return null;
-      cur = cur[parts[i]];
-    }
-    return typeof cur === 'string' && cur.trim() ? cur.trim() : null;
-  }
-
-  /** `#rgb` / `#rrggbb` -> `#111111` or `#ffffff` (only used when the platform sends no contrastText). */
-  function contrastOn(color) {
-    var hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color || '');
-    if (!hex) return '#ffffff';
-    var h = hex[1];
-    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
-    var chan = [0, 2, 4].map(function (i) {
-      var v = parseInt(h.substr(i, 2), 16) / 255;
-      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-    });
-    var luminance = 0.2126 * chan[0] + 0.7152 * chan[1] + 0.0722 * chan[2];
-    return luminance > 0.6 ? '#111111' : '#ffffff';
-  }
-
-  /** An `N%` tint of a colour — the runtime itself uses `color-mix()` this way (`--shadow-*`). */
-  function tint(color, percent) {
-    return color ? 'color-mix(in srgb, ' + color + ' ' + percent + '%, transparent)' : null;
-  }
-
-  /**
-   * Map one platform palette (the MUI `palette` object) onto AUP colour tokens.
-   * A token whose source is absent is LEFT OUT (the compiled AUP palette governs it).
-   */
-  function mapPlatformPalette(P) {
-    var out = {};
-    if (!P || typeof P !== 'object') return out;
-    function put(token, value) {
-      if (value) out[token] = value;
-    }
-    var bg = at(P, 'background.default');
-    var paper = at(P, 'background.paper') || bg;
-    var primary = at(P, 'primary.main');
-    var secondary = at(P, 'secondary.main');
-    var success = at(P, 'success.main');
-    var info = at(P, 'info.main');
-    put('--color-bg', bg);
-    put('--color-surface', paper);
-    put('--surface-muted', at(P, 'grey.100') || paper || bg);
-    put('--color-border', at(P, 'divider'));
-    put('--color-text', at(P, 'text.primary'));
-    put('--color-dim', at(P, 'text.secondary'));
-    put('--color-accent', primary);
-    put('--color-on-accent', at(P, 'primary.contrastText') || contrastOn(primary));
-    put('--color-accent-bg', tint(primary, 8));
-    put('--color-accent-secondary', secondary || primary);
-    put('--color-assistant', primary);
-    put('--color-assistant-bg', tint(primary, 6));
-    put('--color-success', success);
-    put('--color-success-bg', tint(success, 12));
-    put('--color-error', at(P, 'error.main'));
-    put('--color-warning', at(P, 'warning.main'));
-    put('--color-info', info);
-    put('--color-info-bg', tint(info, 10));
-    return out;
-  }
-
-  /**
-   * Accept both shapes the platform can hand back:
-   *   A — a resolved theme: `{ light:{palette}, dark:{palette}, prefer, name }`
-   *       (the shape `/__blocklet__.js` and the servic portal use)
-   *   B — the stored concept: `{ concepts:[{id,name,prefer,themeConfig:{light,dark}}], currentConceptId }`
-   *       (the shape `cs_settings.app:theme` uses)
-   * Returns `null` when neither carries a palette, so the caller degrades to the public channels.
-   */
-  function normalizePlatformTheme(payload) {
-    if (!payload || typeof payload !== 'object') return null;
-    function build(prefer, name, light, dark) {
-      var l = mapPlatformPalette(light && light.palette ? light.palette : light);
-      var d = mapPlatformPalette(dark && dark.palette ? dark.palette : dark);
-      if (!Object.keys(l).length && !Object.keys(d).length) return null;
-      return { prefer: prefer || null, name: name || null, light: l, dark: d };
-    }
-    if (payload.light && payload.light.palette) {
-      return build(payload.prefer, payload.name, payload.light, payload.dark);
-    }
-    if (payload.palette) return build(payload.prefer, payload.name, payload.palette, payload.palette);
-    var list = payload.concepts;
-    if (list && list.length) {
-      var concept = null;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i] && list[i].id === payload.currentConceptId) concept = list[i];
-      }
-      concept = concept || list[0];
-      if (concept && concept.themeConfig) {
-        var tc = concept.themeConfig;
-        return build(concept.prefer || tc.prefer, concept.name, tc.light, tc.dark);
-      }
-    }
-    return null;
-  }
-
-  /** The live public channels: `prefer` from init.js, light+dark background/text from styles.css. */
-  function parseServiceTheme(css) {
-    var out = { light: {}, dark: {} };
-    if (!css) return out;
-    var root = /:root\s*\{([^}]*)\}/.exec(css);
-    var dark = /\[data-theme=['"]?dark['"]?\]\s*\{([^}]*)\}/.exec(css);
-    function read(block, name) {
-      if (!block) return null;
-      var m = new RegExp(name.replace(/[-]/g, '\\-') + '\\s*:\\s*([^;]+)').exec(block[1]);
-      return m ? m[1].trim() : null;
-    }
-    var bgLight = read(root, '--blocklet-background-default-color');
-    var textLight = read(root, '--blocklet-text-primary-color');
-    var bgDark = read(dark, '--blocklet-background-default-color');
-    var textDark = read(dark, '--blocklet-text-primary-color');
-    if (bgLight) out.light['--color-bg'] = bgLight;
-    if (textLight) out.light['--color-text'] = textLight;
-    if (bgDark) out.dark['--color-bg'] = bgDark;
-    if (textDark) out.dark['--color-text'] = textDark;
-    return out;
-  }
-
-  /** `prefer` out of the platform's own pre-paint script (`var p = 'dark'`). */
-  function parseServicePrefer(js) {
-    var m = /var\s+p\s*=\s*['"]([a-z]+)['"]/.exec(js || '');
-    if (!m) return null;
-    if (m[1] === 'dark' || m[1] === 'light') return m[1];
-    if (m[1] === 'system' || m[1] === 'auto') return 'system';
-    return null;
-  }
+  // >>> platform→AUP token map + the service parsers LIVE IN `./theme-map.js` (single source).
+  // They are concatenated ahead of this file into `render.js` by scripts/arcblog-theme-bridge.mjs and
+  // asserted behaviourally by scripts/arcblog-theme.test.mjs — do NOT re-declare them here (S12-01).
   // <<< platform→AUP token map <<<
   // App-chrome layout that the platform's footer primitive cannot express
   // (arc-contracts §21.15): the divider belongs on the footer's top edge, and
@@ -365,9 +235,11 @@
       }
     }
     if (typeof res === 'object') {
-      if (res.v === SNAPSHOT_V || res.palette || res.prefer) return res;
+      // The AFS read wraps the record (`{data:{content:"<json>"}}`); unwrap before shape-checking,
+      // and let each READER validate its own `v` — the theme (v2) and branding (v1) records differ.
       if (typeof res.content === 'string') return recordOf(res.content);
       if (res.data) return recordOf(res.data);
+      return res;
     }
     return null;
   }
@@ -402,6 +274,110 @@
     }
   }
 
+  /** The host splash the platform server-renders per request: `name` (+ description) live. */
+  function readHostSplash(p, state) {
+    try {
+      var doc = p.document;
+      var mark = doc.querySelector('#desktop-splash .splash-wordmark');
+      var sub = doc.querySelector('#desktop-splash .splash-sub');
+      if (mark && mark.textContent && mark.textContent.trim()) state.publicName = mark.textContent.trim();
+      if (sub && sub.textContent && sub.textContent.trim()) state.publicDescription = sub.textContent.trim();
+    } catch (e) {
+      /* no splash (another runtime build): the branding snapshot still carries the values */
+    }
+  }
+
+  /** `\u00a9 <year> <owner>` from the console's `copyright` object (empty object ⇒ no line at all). */
+  function copyrightLine(copyright) {
+    if (!copyright || typeof copyright !== 'object') return null;
+    var owner = copyright.owner || copyright.name || copyright.holder || '';
+    var year = copyright.year || copyright.years || '';
+    if (!owner && !year) return null;
+    return '\u00a9 ' + (year ? year + ' ' : '') + owner;
+  }
+
+  /**
+   * The FIRST text leaf the platform renders the brand title into. The runtime builds
+   * `<div class="aup-app-header-brand">` (title-only for us, with the link wrapping it) and
+   * `<div class="aup-footer-brand"><div class="aup-footer-brand-header">…</div><tagline/></div>`, so the
+   * title is the first text leaf — taking the last would rename the TAGLINE instead.
+   */
+  function brandTitleLeaf(root) {
+    var leaves = root.querySelectorAll('*');
+    for (var i = 0; i < leaves.length; i++) {
+      var el = leaves[i];
+      if (el.children && el.children.length) continue;
+      var tag = (el.tagName || '').toUpperCase();
+      if (tag === 'IMG' || tag === 'SVG' || tag === 'PATH' || tag === 'BUTTON') continue;
+      if (el.textContent && el.textContent.trim()) return el;
+    }
+    return null;
+  }
+
+  /**
+   * Apply the console's BRANDING to the host chrome. The platform already puts the name into
+   * `<title>`, the splash and `og:site_name`, and `/favicon.ico` already derives from the blocklet
+   * logo — so this fixes exactly the two places our own markup used to HARDCODE: the header wordmark
+   * (`brand={title: ArcBlog}`) and the footer (c) line (`bottomBar={copyright: …}`, now removed).
+   */
+  function applyBranding(p, state) {
+    try {
+      var doc = p.document;
+      var name = state.publicName || (state.brand && state.brand.name) || null;
+      if (name) {
+        // The header wordmark (`brand={title: …}` in wrapper.aup) and the footer one (6 pages).
+        // Measured 2026-10-14 on the LIVE DOM: our `variant=compact` site header renders
+        // `<a class="aup-app-header-brand-link"><div class="aup-app-header-title">ArcBlog</div></a>`,
+        // while the runtime's other variant uses `.aup-app-header-brand` — target both.
+        var targets = [];
+        var headers = doc.querySelectorAll('.aup-app-header-title, .aup-app-header-brand');
+        for (var i = 0; i < headers.length; i++) targets.push(headers[i]);
+        var footers = doc.querySelectorAll('.aup-footer-brand');
+        for (var j = 0; j < footers.length; j++) {
+          targets.push(footers[j].querySelector('.aup-footer-brand-header') || footers[j]);
+        }
+        for (var k = 0; k < targets.length; k++) {
+          var target = targets[k];
+          // The compact header hands us the TEXT LEAF itself (`<div class="aup-app-header-title">`),
+          // whose `querySelectorAll('*')` is empty — writing it directly is the whole job there.
+          if (!target.children || target.children.length === 0) {
+            if (target.textContent.trim() && target.textContent.trim() !== name) target.textContent = name;
+            continue;
+          }
+          var leaf = brandTitleLeaf(target);
+          if (leaf) {
+            if (leaf.textContent.trim() !== name) leaf.textContent = name;
+          } else {
+            var span = doc.createElement('span');
+            span.setAttribute('data-arcblog-brand', '1');
+            span.textContent = name;
+            target.appendChild(span);
+          }
+        }
+      }
+      var footer = doc.querySelector('.aup-app-footer');
+      if (!footer) return; // console pages render no footer
+      var text = copyrightLine(state.brand && state.brand.copyright);
+      var bar = footer.querySelector('.aup-footer-bottom-bar');
+      if (!text) {
+        // The console's `copyright` is EMPTY right now ⇒ no (c) line at all; never fall back to the
+        // hardcoded one we deleted.
+        if (bar && bar.getAttribute('data-arcblog-copyright') === '1') bar.parentNode.removeChild(bar);
+        else if (bar) bar.textContent = '';
+        return;
+      }
+      if (!bar) {
+        bar = doc.createElement('div');
+        bar.className = 'aup-footer-bottom-bar';
+        bar.setAttribute('data-arcblog-copyright', '1');
+        footer.appendChild(bar);
+      }
+      if (bar.textContent.trim() !== text) bar.textContent = text;
+    } catch (e) {
+      /* best effort: the chrome keeps whatever the markup shipped */
+    }
+  }
+
   function start(p, afs) {
     var doc = p.document.documentElement;
     injectChromeStyles(p);
@@ -412,14 +388,16 @@
     // `public*` = the live anonymous channels (background + text only, rendered per request).
     var state = {
       prefer: null,
-      apiLight: null,
-      apiDark: null,
       snapLight: null,
       snapDark: null,
       publicLight: null,
       publicDark: null,
+      // Branding: the host splash is live, `branding.json` fills what the splash cannot carry
+      // (copyright / url / passportColor).
+      publicName: null,
+      publicDescription: null,
+      brand: null,
     };
-    var snapshotCore = null;
     var lastRead = 0;
     var refreshTimer = null;
 
@@ -431,6 +409,11 @@
     }
     function teardown() {
       observer.disconnect();
+      try {
+        if (brandObserver) brandObserver.disconnect();
+      } catch (e) {
+        /* never installed */
+      }
       for (var i = 0; i < unsubs.length; i++) {
         try {
           unsubs[i]();
@@ -481,7 +464,6 @@
       var layers = [
         mode === 'dark' ? state.snapDark : state.snapLight,
         mode === 'dark' ? state.publicDark : state.publicLight,
-        mode === 'dark' ? state.apiDark : state.apiLight,
       ];
       for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];
@@ -502,6 +484,7 @@
       applying = true;
       try {
         if (mode && doc.getAttribute('data-mode') !== mode) doc.setAttribute('data-mode', mode);
+        applyBranding(p, state);
         // A mode switch re-resolves a different token set: drop the ones this resolution lost.
         for (var i = 0; i < appliedTokens.length; i++) {
           if (!tokens[appliedTokens[i]]) doc.style.removeProperty(appliedTokens[i]);
@@ -554,31 +537,13 @@
       }
     }
 
-    function coreOf(rec) {
-      return rec
-        ? JSON.stringify({
-            prefer: rec.prefer || null,
-            themeName: rec.themeName || null,
-            palette: rec.palette || null,
-          })
-        : null;
-    }
-
-    /** The guest-readable snapshot this bridge republishes for anonymous readers. */
-    function readSnapshot() {
+    /** One AFS record read, never throwing. */
+    function readRecord(path) {
       try {
-        var read = typeof afs.tryRead === 'function' ? afs.tryRead(SNAPSHOT_PATH) : afs.read(SNAPSHOT_PATH);
+        var read = typeof afs.tryRead === 'function' ? afs.tryRead(path) : afs.read(path);
         return Promise.resolve(read)
           .then(function (res) {
-            var rec = recordOf(res);
-            snapshotCore = coreOf(rec);
-            // Anything that is not this version — including the retired `tone/palette/theme` record —
-            // counts as "no snapshot": the live public channels and the compiled palette cover it.
-            if (!rec || rec.v !== SNAPSHOT_V) return null;
-            state.snapLight = (rec.palette && rec.palette.light) || null;
-            state.snapDark = (rec.palette && rec.palette.dark) || null;
-            if (rec.prefer && !state.prefer) state.prefer = rec.prefer;
-            return true;
+            return recordOf(res);
           })
           .catch(function () {
             return null;
@@ -588,62 +553,47 @@
       }
     }
 
-    /** Live anonymous channels: `prefer` + background/text, both rendered per request. */
+    /**
+     * The two GUEST-READABLE snapshots `node scripts/arcblog-settings.mjs platform sync` publishes from
+     * the daemon's sqlite store. The theme record stays RAW on disk (v2 carries the console's
+     * `app:theme`) and is normalized HERE, so the platform→token map lives in exactly one place.
+     * Nothing here needs a session, and the bridge never writes them.
+     */
+    function readSnapshots() {
+      return Promise.all([readRecord(SNAPSHOT_PATH), readRecord(SNAPSHOT_BRANDING)]).then(function (res) {
+        var themeRec = res[0];
+        if (themeRec && themeRec.v === SNAPSHOT_V) {
+          if (themeRec.theme) {
+            var norm = normalizePlatformTheme(themeRec.theme);
+            if (norm) {
+              state.snapLight = norm.light || null;
+              state.snapDark = norm.dark || null;
+              // Fill only: `readPublic()` runs next and the LIVE `prefer` wins.
+              if (norm.prefer && !state.prefer) state.prefer = norm.prefer;
+            }
+          } else if (themeRec.palette) {
+            // Token-form snapshot written by an earlier build; still honoured, never written again.
+            state.snapLight = themeRec.palette.light || null;
+            state.snapDark = themeRec.palette.dark || null;
+            if (themeRec.prefer && !state.prefer) state.prefer = themeRec.prefer;
+          }
+        }
+        var brandRec = res[1];
+        if (brandRec && brandRec.v === BRANDING_V) state.brand = brandRec;
+        return true;
+      });
+    }
+
+    /** Live anonymous channels: `prefer`, background/text and the host splash (all rendered per request). */
     function readPublic() {
+      readHostSplash(p, state);
       return Promise.all([fetchText(PLATFORM_INIT), fetchText(PLATFORM_CSS)]).then(function (res) {
         var prefer = parseServicePrefer(res[0]);
-        // Fill only: a signed-in read (same source, authoritative) must not be overwritten by a
-        // 60s-cached init.js.
-        if (prefer && !state.prefer) state.prefer = prefer;
+        if (prefer) state.prefer = prefer; // live beats the snapshot (it is the same source, newer)
         var css = parseServiceTheme(res[1]);
         if (Object.keys(css.light).length) state.publicLight = css.light;
         if (Object.keys(css.dark).length) state.publicDark = css.dark;
         return !!prefer || Object.keys(css.light).length > 0;
-      });
-    }
-
-    /** Publish what a signed-in read just learned, so guests follow without a deploy. */
-    function publishSnapshot(theme) {
-      if (typeof afs.write !== 'function') return;
-      var payload = {
-        v: SNAPSHOT_V,
-        prefer: theme.prefer || null,
-        themeName: theme.name || null,
-        palette: { light: theme.light, dark: theme.dark },
-        source: PLATFORM_API,
-        updatedAt: new Date().toISOString(),
-      };
-      var core = coreOf(payload);
-      if (core === snapshotCore) return; // guests already read exactly this
-      try {
-        Promise.resolve(afs.write(SNAPSHOT_PATH, payload))
-          .then(function () {
-            snapshotCore = core;
-          })
-          .catch(function () {
-            /* read-only session: keep whatever the last admin visit published */
-          });
-      } catch (e) {
-        /* write unsupported */
-      }
-    }
-
-    /** The console's own theme — readable only with a session, and the only full palette. */
-    function readApi() {
-      return fetchText(PLATFORM_API).then(function (body) {
-        var payload = null;
-        try {
-          payload = body ? JSON.parse(body) : null;
-        } catch (e) {
-          payload = null;
-        }
-        var theme = normalizePlatformTheme(payload);
-        if (!theme) return null;
-        state.apiLight = theme.light;
-        state.apiDark = theme.dark;
-        if (theme.prefer) state.prefer = theme.prefer;
-        publishSnapshot(theme);
-        return true;
       });
     }
 
@@ -654,11 +604,26 @@
       refreshTimer = setTimeout(function () {
         refreshTimer = null;
         lastRead = Date.now();
-        readSnapshot()
+        readSnapshots()
           .then(readPublic)
-          .then(readApi)
           .then(apply);
       }, 50);
+    }
+
+    // The host header/footer are rendered by the runtime AFTER this iframe's first apply (measured
+    // 2026-10-14: the wordmark was still the compiled `ArcBlog` while the colours had already been
+    // applied). Sweep briefly for the chrome, then let a childList observer catch a late render;
+    // `applyBranding()` is idempotent, so repeats cost two querySelectorAll calls and no writes.
+    var brandObserver = null;
+    function brandSweep() {
+      if (alive()) applyBranding(p, state);
+    }
+    for (var bs = 0; bs < 12; bs++) p.setTimeout(brandSweep, 150 * (bs + 1));
+    try {
+      brandObserver = new p.MutationObserver(brandSweep);
+      brandObserver.observe(doc, { childList: true, subtree: true });
+    } catch (e) {
+      /* no observer on the host: the bounded sweep above still lands */
     }
 
     // Re-apply after the AUP runtime resets data-* on navigation renders. No re-read: the resolved
@@ -692,13 +657,15 @@
       /* matchMedia unavailable */
     }
 
-    // Live sync when another session republishes the snapshot (e.g. the admin's own tab).
+    // Live sync when a CLI run republishes a snapshot (e.g. right after a deploy).
     if (typeof afs.subscribe === 'function') {
       try {
-        var unsub = afs.subscribe({ path: SNAPSHOT_PATH }, function () {
-          refresh(false);
+        [SNAPSHOT_PATH, SNAPSHOT_BRANDING].forEach(function (path) {
+          var unsub = afs.subscribe({ path: path }, function () {
+            refresh(false);
+          });
+          if (typeof unsub === 'function') unsubs.push(unsub);
         });
-        if (typeof unsub === 'function') unsubs.push(unsub);
       } catch (e) {
         /* subscription unsupported */
       }

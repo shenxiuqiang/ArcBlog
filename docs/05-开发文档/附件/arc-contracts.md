@@ -3358,3 +3358,154 @@ node scripts/arcblog-browser-probe.mjs "$B/?page=index" --fresh --json
 
 截图（756×469，暗色、正文/卡片可读）与 `?page=index` 全页一致；`npm test`（快层 32 文件）与 `arc dsl validate --json`（issues `[]`）全绿。
 **边界登记**：`docs/05-开发文档/02-平台能力与边界.md` 的 `B28`（完整调色板只对登录态公开）+ `B10`（仓库不再有默认外观）；旧口径的 `B10`/`U19`/`V-Q4` 已随之退役/结案。
+
+## 77. 平台品牌/主题的**零登录**读取：daemon sqlite、两份 guest 快照、以及 DOM 落点实测（2026-10-14）
+
+**基线**：`arc` 2.0.0-beta.66 (54a9b40e) ｜ daemon `:4939`（instance `default`）｜ `arcblog`（对照 `my-app`）｜ 仓库基线 `227a435`（本轮改动**未提交**）。
+**背景**：人类追问"（品牌/主题）不应该与是否登录有关，是否可以直接从数据库查询加载" ⇒ 改走 **CLI 读 daemon sqlite → 写 guest 快照**。以下原样输出。
+
+**（1）HTTP 面确实要登录，文件面不要。**
+
+```bash
+B=http://arcblog.localhost:4939
+for p in /api/branding /api/theme; do printf '%-16s ' "$p"; curl -s -o /dev/null -w '%{http_code}\n' "$B/.well-known/service$p"; done
+# /api/branding    401
+# /api/theme       401
+```
+
+**（2）会话无关的读法：`arc service status --json` → `home` ⇒ `<home>/.afs-data/auth.db` → `node:sqlite` 只读。**
+
+```bash
+arc service status -i default --json | python3 -c "import json,sys;print(json.load(sys.stdin)['home'])"   # /Users/shenxiuqiang
+node -e "
+const {DatabaseSync}=require('node:sqlite');
+const db=new DatabaseSync(process.env.HOME+'/.afs-data/auth.db',{readOnly:true});
+for(const r of db.prepare(\"select key,value from cs_settings where instance_did='arcblog'\").all()) console.log(r.key,'→',String(r.value).slice(0,110));
+"
+# app:branding  → {"name":"MyBlog","description":"","url":"","passportColor":"#1DC1C7","copyright":{}}
+# app:languages → [{"code":"en","name":"English"},{"code":"zh","name":"简体中文"}]
+# app:name      → MyBlog
+# app:theme     → {"concepts":[{"id":"default","name":"Custom","prefer":"dark",…}]…}
+# apple:appIds  → []
+```
+
+要点：`cs_settings(instance_did='arcblog')` **只有 5 个键**（无独立 logo 键 ⇒ 上传 logo 的落点仍未验证）；`grep -rl "passportColor\|MyBlog" ~/.afs ~/.afs-config ~/.afs-data` **只命中 `auth.db`**（AFS 无镜像；`/.meta`、`/instance/.meta`、`/dev/web-sites-registry` 都取不到）；Node v24.14.0 的 **内置** `node:sqlite` 在 ESM 里经 `createRequire` 可用 ⇒ 零新依赖。
+
+**（3）本仓落地**：`scripts/lib/platform-settings.mjs`（fail-soft：缺文件/缺表/坏 JSON ⇒ `null` + 原因）＋`node scripts/arcblog-settings.mjs platform sync`（写两份 guest 可读快照；部署步骤 2c 恢复为它）＋桥改读快照。
+
+```bash
+node scripts/arcblog-settings.mjs platform sync
+arc afs read /blocklets/arcblog/instance/app/arcblog/node/branding.json  # {"v":1,"source":"auth.db:app:branding",…,"name":"MyBlog","copyright":{}}
+arc afs read /blocklets/arcblog/instance/app/arcblog/node/appearance.json # {"v":2,"source":"auth.db:app:theme","theme":{…raw app:theme…}}
+```
+
+**（4）品牌 DOM 落点（实测，决定桥改哪里）**：宿主页头的真实结构是
+
+```html
+<header class="aup-app-header" data-aup-id="site-header" data-variant="compact">
+  <div class="aup-app-header-bar"><a class="aup-app-header-brand-link"><div class="aup-app-header-title">ArcBlog</div></a>…
+```
+
+⇒ 词标类名 = **`.aup-app-header-title`**（`variant=compact`，我们的站点头）；运行时另一变体才是 `.aup-app-header-brand`。页脚词标由 `Wx()` 渲染：`.aup-footer-brand > .aup-footer-brand-header`（取**第一个**文本叶，取最后一个会改成 tagline）；© 行容器 = `.aup-footer-bottom-bar`。**时序**：宿主的页头/页脚在本 iframe 首帧 apply **之后**才渲染 ⇒ 桥必须补一段有界轮询（12×150 ms）+ 一个 `childList` observer，否则词标停在编译值。
+
+**（5）匿名探针实测（同一台机器、无 cookie，`--fresh`）**：`scripts/arcblog-browser-probe.mjs` 新 `branding` 字段
+
+```json
+{ "headerWordmark": "MyBlog", "footerWordmark": "MyBlog", "footerCopyright": null,
+  "splashWordmark": "MyBlog", "splashDescription": "A DID-native publishing space for readable Markdown posts and images." }
+```
+
+⇒ 页头/页脚词标 = 控制台 `app:branding.name`；© 行**不出现**（控制台 `copyright` 为空 ⇒ 不回落写死文案）；`<title>` = `MyBlog`（平台）；主题 `data-mode="dark"` = 平台 `prefer`。
+
+**（6）同轮去掉的写死/自研事实**：`?page=general` 的 **site-name** 字段与其记录（`RSS <title>` 改读平台，实测 `<title>MyBlog</title>`、`<description>` = 平台/清单描述）；`.web/site.yaml` 的 `og-site-name`/`title-template`（删后实测 `og:site_name` 仍 = `MyBlog`，由平台注入）；6 个页面的 `bottomBar={copyright: …}` 与 `wrapper.footer-copyright`；hero-carousel 的 3 处 `kicker:'ArcBlog'` 与 `|| 'ArcBlog'`（改读 `node/branding.json`）；`arcblog-og-image.mjs` 的站点名回落。
+
+## 78. 平台设置取代的三个控制台面：删除实测（2026-10-14）
+
+**背景**：人类「检查管理后台功能，有些功能使用平台设置后可以删除了」→「全部一起做」（审计 = `_research/S11-02`）。基线 `227a435` + 同年两轮未提交改动；以下为关键实测。
+
+**（1）分享卡：平台端点可用，但本仓守卫禁止**（决定了"删页但保留资产"）
+
+```bash
+# checker 接受平台端点作为 og-image 声明（把两处指向平台端点后）
+arc blocklet check . --profile basic --json    # ok: true，og 相关 issues: 无
+# 运行时也照搬（site.yaml 是运行时的源，.web/seo/og-image 是 checker 的源，两者必须一致）
+curl -s "http://arcblog.localhost:4939/p/en/theme-bridge/" | grep -o 'og:image" content="[^"]*"'
+# og:image" content="http://arcblog.localhost:4939/.well-known/service/blocklet/og.png?template=default&amp;title=ArcBlog&amp;locale=en"
+# 但本仓 `arcblog-artifact-drift.test.mjs` 要求该声明以 `/p/` 开头（web 面挂载点）：
+#   AssertionError: .web/seo/og-image: "…/.well-known/service/blocklet/og.png?…" must start with "/p/"
+```
+⇒ 结论：**烘死的 `content/media/arcblog-og.png` 与 `arcblog-og-image.mjs` 保留**；平台 `og.png` 可作为"若未来把 web 面搬到 `/p` 之外"的备选（改法 = `site.yaml seo.og-image` + `.web/seo/og-image` 两处同改）。
+
+**（2）删除的页面与随之消失的路由**
+
+```bash
+git rm -f .aup/pages/site/seo.aup .aup/pages/ops/media.aup .aup/man/{seo,media}.yaml
+# blocklet.yaml：删 `seo-admin` binding（id + path /manage/seo + afs + page + 注释）
+arc dsl validate --json                       # issues: []
+node -e "import('./scripts/console-nav.mjs').then(m=>console.log(m.CONSOLE_SECTIONS.length))"   # 14（原 16）
+ls .aup/pages/*/*.aup .aup/pages/*.aup | wc -l                                                  # 22（原 24）
+```
+两页的**跨页入口**（侧栏在每个控制台页里都是副本）共删 **28 行** + `wrapper.aup` 的 `nav-seo`/`nav-media` 声明；本地化随之删 38 键 × 2 语言（`seo.*`/`media.*`/`wrapper.nav-seo`/`wrapper.nav-media`/`general.language-*`）。
+
+**（3）CLI 侧跟随（`general.language` 删除后的 RSS）**
+
+```bash
+node scripts/arcblog-rss.mjs --feed-link http://arcblog.localhost:4939 | head -6
+# <title>MyBlog</title>                                    ← 平台 branding.name
+# <description>A DID-native publishing space …</description> ← 平台/清单描述
+# <language>en</language>                                  ← 平台 app:languages[0]（回落 en）
+```
+
+**（4）判据与边界**：三条判据（平台有等价面 / 我们那份不是平台缺口承载体 / 删除不破坏门·绑定·AUP 面）逐页见 `S11-02 §2`；**删除不等于平台万能** —— 页内 `afs-dropzone` 上传入口随 `?page=media` 消失（平台 AFS 浏览器是否可上传**未测**，`U21` 同批）；`?page=seo` 的分发描述编辑能力改由控制台 Branding 承担（记录 `config/seo/*` 保留为遗留，清理属人类批准）。
+
+## 79. 分享卡彻底移交平台 OG 生成器（2026-10-14）
+
+**背景**：人类「彻底不维护那张 PNG」。上一轮（§78）曾因本仓守卫要求 `/p/` 前缀而保留本地资产，本轮把守卫一并改成"接受平台形态"。
+
+**（1）生成器省略 `title=` 也返回真图**（决定卡片标题不再写死）
+
+```bash
+B=http://arcblog.localhost:4939
+for q in "template=default&locale=en" "template=default&title=ArcBlog&locale=en" "template=default"; do
+  printf '%-44s ' "$q"; curl -s -o /tmp/o.png -w '%{http_code} %{content_type} %{size_download}B' "$B/.well-known/service/blocklet/og.png?$q"; done
+# template=default&locale=en                 200 image/png 134870B   ← 采用（无写死标题）
+# template=default&title=ArcBlog&locale=en   200 image/png 134493B
+# template=default                           200 image/png 134870B
+```
+
+**（2）删除与声明**
+
+```bash
+git rm -f content/media/arcblog-og.png scripts/arcblog-og-image.mjs     # 153 593 B + 生成脚本
+cat .web/seo/og-image        # /.well-known/service/blocklet/og.png?template=default&locale=en
+grep 'og-image' .web/site.yaml   # 同值（运行时读它；文件形态供 checker）
+arc collections scan .       # 现打印 "no content/ collections found"（目录随 PNG 消失）
+arc blocklet check . --profile basic --json   # ok: true，issues []
+```
+
+**（3）守卫改写**（`scripts/arcblog-artifact-drift.test.mjs`）：`assetPathFor()` 先判平台形态 —— `PLATFORM_OG = /^\/\.well-known\/service\/blocklet\/og\.png\?/`，命中则要求**显式 `template=`**且**禁止 `title=`**（标题必须来自控制台品牌），否则退回原来的本地资产四检（`/p/` 前缀、文件存在、PNG magic、≥10 KB）；末尾的"必须是 arcblog-og.png"改为"平台形态 或 本地形态"。
+
+**（4）运行时**：`curl -s /p/en/theme-bridge/ | grep og:image` → 声明的平台 URL 原样输出（与 §78 的 `title=` 版一致，只是不再带标题参数）。
+
+## 80. 主题桥纯函数抽取（B5）：单一来源与行为断言（2026-10-14）
+
+**背景**：上一轮"可简化/调优"清单的 B5；方案与结论见 [`_research/S12-01`](../../../_research/S12-01-主题桥纯函数抽取-方案与证据.md)。
+
+```bash
+# 结构（单一来源）
+ls .web/components/theme-bridge/{theme-map.js,script.js,style.css,render.js}
+grep -c 'var TOKEN_ALIASES' .web/components/theme-bridge/{script.js,theme-map.js}   # 0 / 1
+grep -c 'mapPlatformPalette' .web/components/theme-bridge/render.js                # 1（内联）
+node scripts/arcblog-theme-bridge.mjs --check                                     # 同步（bytes 53000+）
+node --test scripts/arcblog-theme.test.mjs                                        # 12/12（原 10）
+# 行为断言直接跑片段（无 ESM 语法 ⇒ 可求值）
+node -e "
+const fs=require('fs');
+const api=new Function(fs.readFileSync('.web/components/theme-bridge/theme-map.js','utf8')+'; return {mapPlatformPalette,TOKEN_ALIASES};')();
+console.log(Object.keys(api.mapPlatformPalette({})).length, api.TOKEN_ALIASES.length);   // 0 4
+"
+```
+
+**实测发现（行为测试的价值）**：`mapPlatformPalette({})` 旧行为会写入 `--color-on-accent: #ffffff`（`contrastOn(null)` 的白色兜底），违反"源缺失即不写"；已修为仅在 `primary` 存在时才决定该 token。文本匹配型测试无法发现此类不一致。
+
+**契约保持**：DEF-47 未变 —— `render.js` → HTML 内联仍是唯一交付通道，渲染沙箱不读文件；生成器只多了"先拼 `theme-map.js`"这一步。

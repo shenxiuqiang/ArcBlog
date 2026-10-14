@@ -9,6 +9,7 @@
 import { INSTANCE_ROOT, ensure, fail, list, optString, parseList, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import { readBlockletMeta } from './lib/manifest.mjs';
+import { readPlatformSettings } from './lib/platform-settings.mjs';
 import {
   NODE_AUTH_METHODS,
   NODE_ROLES,
@@ -51,13 +52,19 @@ function commandInit(opts, instance) {
   }
 
   const meta = readBlockletMeta();
+  // The console's Branding tab wins over the package manifest (S11-01): the profile is a
+  // CONSUMED-BY-REMOTE projection, so it must carry the brand the operator actually set. The read is
+  // session-free (daemon sqlite) and fail-soft — with no local instance it falls back to blocklet.yaml.
+  const platform = readPlatformSettings({ instance });
+  const brandName = platform.name || meta.name;
+  const brandDescription = platform.branding?.description || meta.description;
   // `init` (re)derives the profile from blocklet.yaml + flags — it is the
   // "reset to a known-good profile" path. Only createdAt is carried over;
   // use `set` for incremental edits.
   const profile = buildNodeProfile(
     {
-      name: meta.name,
-      description: meta.description,
+      name: brandName,
+      description: brandDescription,
       did: meta.did,
       version: meta.version,
       ...collectOverrides(opts),

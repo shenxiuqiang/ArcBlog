@@ -17,7 +17,6 @@
     "index": 0,
     "ops/agents": 0,
     "ops/factory": 0,
-    "ops/media": 0,
     "ops/operations": 0,
     "ops/registry": 0,
     "page-view": 0,
@@ -27,7 +26,6 @@
     "site/categories": 0,
     "site/feeds": 0,
     "site/heroes": 0,
-    "site/seo": 0,
     "site/tags": 0
   }
 }

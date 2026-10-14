@@ -78,12 +78,11 @@ export const SCRIPT_FLAGS = {
   "arcblog-settings.mjs": ["agent-access", "comments", "help", "instance", "language", "rss", "site-name", "timezone"],
   "arcblog-summarize.mjs": ["from-registry", "help", "id", "instance", "json", "limit", "llm", "max-collect", "question", "timeout"],
   "arcblog-tags.mjs": ["action", "by", "from", "help", "id", "interval", "to"],
-  "arcblog-og-image.mjs": ["check", "help", "json", "origin", "out"],
   "arcblog-theme-bridge.mjs": ["check", "help", "json"],
   "arcblog-visual-check.mjs": ["help", "json", "keep", "origin", "settle", "url"],
   "arcblog-ui-budget.mjs": ["card-bg", "includes", "json", "strict", "write-baseline"],
   "arcblog-overview.mjs": ["json", "record"],
-  "arcblog-ui-copy.mjs": ["json", "write-baseline"],
+  "arcblog-ui-copy.mjs": ["json", "prune", "write-baseline"],
   "arcblog-verify.mjs": ["did", "expect-did", "forget", "help", "instance", "public-key", "sign-key", "slug"],
 };
 

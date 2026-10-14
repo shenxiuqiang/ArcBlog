@@ -28,6 +28,6 @@ page reader {
     surface url=$state.loc editable=false {
       p :runtime-note intent=muted scale=sm
     }
-    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "$t(wrapper.nav-saved)", href: "/?page=saved"}, {label: RSS, href: "/p/rss.xml", external: true}]}] bottomBar={copyright: "$t(wrapper.footer-copyright)"}
+    app-footer brand={title: ArcBlog, tagline: "$t(wrapper.tagline)", href: "/?page=index"} columns=[{links: [{label: "$t(wrapper.nav-about)", href: "/?page=about"}, {label: "$t(wrapper.nav-author)", href: "/?page=author"}, {label: "$t(wrapper.nav-saved)", href: "/?page=saved"}, {label: RSS, href: "/p/rss.xml", external: true}]}]
   }
 }

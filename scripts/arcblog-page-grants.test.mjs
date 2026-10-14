@@ -139,7 +139,8 @@ test('every site binding names an existing page and a granted AFS path', () => {
   const manifest = readFileSync(join(REPO, 'blocklet.yaml'), 'utf8');
   const bindings = [...manifest.matchAll(/^\s+- id: ([\w-]+)\n\s+path: "([^"]+)"\n\s+afs: "([^"]+)"\n\s+page: ([\w-]+)/gm)]
     .map((m) => ({ id: m[1], path: m[2], afs: m[3], page: m[4] }));
-  assert.ok(bindings.length >= 6, `bindings parsed: ${bindings.length}`);
+  // Floor = 5 since 2026-10-14: the `seo-admin` binding was deleted with its page (ENG-79).
+  assert.ok(bindings.length >= 5, `bindings parsed: ${bindings.length}`);
 
   const pagesRoot = join(REPO, '.aup', 'pages');
   const pages = new Set();

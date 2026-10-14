@@ -4,9 +4,7 @@ page wrapper {
     nav-console { en "Management" zh "管理后台" }
     nav-heroes { en "Heroes" zh "Hero" }
     nav-pages { en "Pages" zh "页面" }
-    nav-seo { en "SEO" zh "SEO" }
     nav-group-site { en "Site" zh "站点" }
-    nav-media { en "Media" zh "媒体" }
     nav-agents { en "Agents" zh "Agent" }
     nav-categories { en "Categories" zh "分类" }
     nav-tags { en "Tags" zh "标签" }

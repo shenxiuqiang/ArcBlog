@@ -67,10 +67,6 @@ page diagnostics {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
           action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
@@ -85,10 +81,6 @@ page diagnostics {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }

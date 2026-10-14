@@ -25,6 +25,7 @@ import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const componentDir = join(repoRoot, '.web', 'components', 'theme-bridge');
+const themeMapPath = join(componentDir, 'theme-map.js');
 const scriptPath = join(componentDir, 'script.js');
 const stylePath = join(componentDir, 'style.css');
 const outPath = join(componentDir, 'render.js');
@@ -36,13 +37,17 @@ const outPath = join(componentDir, 'render.js');
  */
 export function composeRender() {
   const css = readFileSync(stylePath, 'utf8').trimEnd();
-  const script = readFileSync(scriptPath, 'utf8').trimEnd();
+  // S12-01: the pure platform→AUP map lives in `theme-map.js` and is concatenated AHEAD of script.js,
+  // so the shipped inline <script> declares those functions once and the script.js IIFE closes over
+  // them. Both files stay hand-written; only this order is fixed.
+  const themeMap = readFileSync(themeMapPath, 'utf8').trimEnd();
+  const script = themeMap + '\n\n' + readFileSync(scriptPath, 'utf8').trimEnd();
   const safeScript = script.replace(/<\/script>/gi, '<\\/script>');
   const shellCss = 'html,body{background:transparent!important}body{visibility:hidden}';
   return `// GENERATED FILE — do not edit by hand.
 // render.js = invisible SSR shell + inlined style.css + inlined script.js (self-contained: the
 // site server's render sandbox has no node:fs, so nothing may be read at render time).
-// Source of truth for the bridge logic: ./script.js ｜ Regenerate: node scripts/arcblog-theme-bridge.mjs
+// Source of truth for the bridge logic: ./theme-map.js (pure map) + ./script.js ｜ Regenerate: node scripts/arcblog-theme-bridge.mjs
 const SHELL_CSS = ${JSON.stringify(shellCss)};
 const COMPONENT_CSS = ${JSON.stringify(css)};
 const SCRIPT = ${JSON.stringify(safeScript)};

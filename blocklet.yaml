@@ -93,14 +93,6 @@ sites:
         path: "/pages/{slug}"
         afs: "/instance/app/arcblog/pages/{slug}.json"
         page: page-view
-      - id: seo-admin
-        path: "/manage/seo"
-        afs: "/instance/app/arcblog/node/profile.json"
-        page: seo   # the console used to be one page per section; this route now
-                    # lands on the standalone `seo` page directly (no bridge).
-
-# The `store` binding and its page were removed (ENG-07, storefront off the
-# product surface).
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).
@@ -116,10 +108,12 @@ scope: app
 collections:
   media:
     type: local:media
-    # `arc collections scan .` prints this glob; today it matches NOTHING on purpose — the
-    # collection exists to publish the share card (`content/media/arcblog-og.png`). Keep it as the
+    # `arc collections scan .` prints NOTHING today (the directory is gone with the share card
+    # below: `content/media/` held only `arcblog-og.png`). Keep the declaration: the
+    # collection used to publish the share card (`content/media/arcblog-og.png`, deleted
+    # 2026-10-14 — the share card is the platform OG generator now). Keep the declaration as the
     # scan's output: when per-item media pages arrive, `content/media/<slug>/content.md` becomes
-    # indexable without touching this declaration.
+    # indexable without touching this file.
     indexable:
       - "content/media/**/content.md"
     faces:
@@ -134,8 +128,10 @@ collections:
 #      (counter-example: the shipped `nimbus-demo` carries that key and still warns);
 #   2. `.web/site.yaml` `seo.*` — what the RUNTIME actually emits (probed build-only: it wins
 #      over the file, and `pages/<type>/seo/og-image` wins over both, per page type);
-#   3. `content/media/arcblog-og.png` — the asset that is really served, at the SITE MOUNT
-#      (`/p/media/…`), which is why `content/` above is declared as a collection.
+#   3. **the platform's own OG generator** — `/.well-known/service/blocklet/og.png?template=default
+#      &title=…&locale=…`, coloured by the console's `passportColor`. 2026-10-14: the baked
+#      `content/media/arcblog-og.png` was deleted and BOTH declarations now carry this endpoint
+#      (measured: `arc blocklet check` accepts it, and the runtime emits it verbatim — §79).
 
 # Anonymous read access for the public feed: the index page renders an afs-list
 # over published records without a session. drafts/ (draft + archived + deleted)

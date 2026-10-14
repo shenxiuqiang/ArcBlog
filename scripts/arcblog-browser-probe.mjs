@@ -236,6 +236,28 @@ async function probe(browserVersion) {
       // The host html attributes are what the theme bridge and the runtime fight over:
       // data-palette is "neutral" (platform default) until the bridge applies the instance
       // setting (settings say "natural"), and data-mode is the compiled default until either wins.
+      // BRANDING (S11-01): the platform's values must land on the chrome the repo used to hardcode —
+      // the header wordmark, the footer wordmark and the footer (c) line — with the host splash as the
+      // live name channel. Reported here so "did the brand follow the console?" is one command.
+      branding: (function () {
+        function text(sel, limit) {
+          try {
+            var el = document.querySelector(sel);
+            if (!el) return null;
+            var t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+            return t ? t.slice(0, limit || 60) : null;
+          } catch (e) {
+            return null;
+          }
+        }
+        return {
+          headerWordmark: text('.aup-app-header-title') ?? text('.aup-app-header-brand'),
+          footerWordmark: text('.aup-footer-brand-header') ?? text('.aup-footer-brand'),
+          footerCopyright: text('.aup-footer-bottom-bar'),
+          splashWordmark: text('#desktop-splash .splash-wordmark'),
+          splashDescription: text('#desktop-splash .splash-sub', 80),
+        };
+      })(),
       htmlAttrs: {
         tone: document.documentElement.getAttribute('data-tone'),
         palette: document.documentElement.getAttribute('data-palette'),

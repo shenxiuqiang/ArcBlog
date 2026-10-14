@@ -64,9 +64,6 @@
     "heroes": {
       "tree": "pages/site/heroes.aup"
     },
-    "seo": {
-      "tree": "pages/site/seo.aup"
-    },
     "tags": {
       "tree": "pages/site/tags.aup"
     },
@@ -75,9 +72,6 @@
     },
     "factory": {
       "tree": "pages/ops/factory.aup"
-    },
-    "media": {
-      "tree": "pages/ops/media.aup"
     },
     "operations": {
       "tree": "pages/ops/operations.aup"

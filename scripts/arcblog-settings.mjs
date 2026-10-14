@@ -4,7 +4,15 @@
 //
 //   node scripts/arcblog-settings.mjs general install
 //   node scripts/arcblog-settings.mjs general show
-//   node scripts/arcblog-settings.mjs general set --site-name ArcBlog --rss off
+//   node scripts/arcblog-settings.mjs general set --language en --rss off
+//
+// PLATFORM settings (2026-10-14): the console's Branding/Appearance tabs are the only authority for
+// the site's brand and theme, and they are read **without any session** straight from the daemon's
+// sqlite store (`scripts/lib/platform-settings.mjs`; measured: the HTTP twins answer 401, the file
+// does not). `platform sync` republishes them as the guest-readable AFS snapshots the browser reads:
+//
+//   node scripts/arcblog-settings.mjs platform show
+//   node scripts/arcblog-settings.mjs platform sync
 //
 // `install` seeds the six records idempotently (the console page cannot create
 // them from the browser — measured: a page may only write a record that already
@@ -23,6 +31,14 @@
 // `_research/S10-02-站点主题跟随平台主题-方案.md`.
 
 import { fail, optString, resolveInstance, writeJson } from './lib/arc.mjs';
+import {
+  composeBrandingSnapshot,
+  composeThemeSnapshot,
+  readPlatformSettings,
+  snapshotPrefer,
+  writePlatformSnapshots,
+  SETTING_KEYS,
+} from './lib/platform-settings.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   GENERAL_DIR,
@@ -36,6 +52,58 @@ import {
   readGeneralSettingsDetailed,
   validateGeneralValue,
 } from './lib/general-settings.mjs';
+
+/** Guest-readable snapshots the browser reads (the bridge normalizes them; this CLI writes them). */
+export { APPEARANCE_PATH, BRANDING_PATH } from './lib/platform-settings.mjs';
+
+// --- Platform settings (console Branding/Appearance → guest-readable snapshots) ----------------
+
+function platformShow(instance) {
+  const settings = readPlatformSettings({ instance });
+  const theme = settings.theme ?? null;
+  const concept = Array.isArray(theme?.concepts)
+    ? theme.concepts.find((c) => c && c.id === theme.currentConceptId) ?? theme.concepts[0] ?? null
+    : null;
+  console.log(
+    JSON.stringify(
+      {
+        ok: settings.ok,
+        db: { path: settings.path, home: settings.home, error: settings.error, problems: settings.problems },
+        keys: SETTING_KEYS,
+        branding: settings.branding,
+        name: settings.name,
+        languages: settings.languages,
+        theme: theme
+          ? { prefer: snapshotPrefer(theme), conceptId: theme.currentConceptId ?? null, conceptName: concept?.name ?? null }
+          : null,
+        snapshots: {
+          branding: composeBrandingSnapshot(settings, null),
+          appearance: composeThemeSnapshot(settings, null),
+        },
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/**
+ * Publish `node/branding.json` (v1) and `node/appearance.json` (v2) for the browser.
+ *
+ * NOT fail-closed on purpose: on a machine without a local instance (remote deploy, CI) there is no DB
+ * to read, and blocking the deploy for a cosmetic refresh would be worse than warning. It prints a
+ * warning, exits 0, and leaves whatever the last CLI run published in place.
+ */
+function platformSync(instance) {
+  const result = writePlatformSnapshots({ instance });
+  if (!result.ok) {
+    console.error(
+      `arcblog-settings: WARN no platform snapshot published — ${result.db.error ?? 'nothing to publish'}` +
+        ' (the site keeps the platform public channels + the compiled fallback)',
+    );
+  }
+  console.log(JSON.stringify({ ...result, action: 'platform-sync' }, null, 2));
+}
 
 // --- General settings (spec §15.9) -----------------------------------------
 
@@ -137,10 +205,20 @@ function help() {
   console.log(`ArcBlog settings (spec §15.9 general)
 
 Usage:
+  node scripts/arcblog-settings.mjs platform show   # what the console stored (branding + theme)
+  node scripts/arcblog-settings.mjs platform sync   # publish the guest-readable snapshots
   node scripts/arcblog-settings.mjs general install
   node scripts/arcblog-settings.mjs general show
-  node scripts/arcblog-settings.mjs general set [--site-name <text>] [--language <en|zh>]
+  node scripts/arcblog-settings.mjs general set [--language <en|zh>]
       [--timezone <IANA>] [--comments on|off] [--rss on|off] [--agent-access on|off]
+
+Platform: the console's Branding/Appearance tabs are the site's only brand/theme authority. They are
+read WITHOUT a session from the daemon's sqlite store (<home>/.afs-data/auth.db → cs_settings), and
+\`sync\` republishes two GUEST-READABLE AFS snapshots the browser reads:
+  /instance/app/arcblog/node/branding.json    (v1: name/description/url/passportColor/copyright)
+  /instance/app/arcblog/node/appearance.json  (v2: the console's raw app:theme)
+It is intentionally NOT fail-closed: with no local instance it warns and exits 0 (the site then keeps
+the platform's public channels and the compiled fallback).
 
 General reads and writes ${GENERAL_ROOT}/{general,switches}/<field>.json —
 the six Instance-level fields of spec §15.9 (site name, language, timezone and
@@ -173,6 +251,12 @@ const opts = parseCliArgs(argv.slice(1), import.meta.url);
 try {
   if (!command || command === 'help' || command === '--help' || command === '-h') {
     help();
+  } else if (command === 'platform') {
+    const sub = optString(opts._[0]);
+    const instance = resolveInstance(opts);
+    if (sub === 'show' || sub === '') platformShow(instance);
+    else if (sub === 'sync') platformSync(instance);
+    else fail('VALIDATION', `unknown platform command: ${sub} (use show|sync)`);
   } else if (command === 'general') {
     const sub = optString(opts._[0]);
     const instance = resolveInstance(opts);
@@ -181,7 +265,7 @@ try {
     else if (sub === 'set') generalSet(opts, instance);
     else fail('VALIDATION', `unknown general command: ${sub} (use install|show|set)`);
   } else {
-    fail('VALIDATION', `unknown command: ${command} (appearance moved to the platform console; use general install|show|set)`);
+    fail('VALIDATION', `unknown command: ${command} (use platform show|sync or general install|show|set)`);
   }
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

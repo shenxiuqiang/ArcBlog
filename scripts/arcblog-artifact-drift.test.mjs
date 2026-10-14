@@ -37,6 +37,9 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/** The platform's own OG generator (the console's branding-coloured share card). */
+const PLATFORM_OG = /^\/\.well-known\/service\/blocklet\/og\.png\?/;
+
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 test('the generated artifacts match their DSL sources (no dry-run drift)', () => {
@@ -92,6 +95,18 @@ test('arc blocklet check passes the basic profile with zero issues', () => {
 
 /** A declared asset URL must be site-mount-relative and resolve to a real file under `content/`. */
 function assetPathFor(declared, label) {
+  // 2026-10-14: the share card is the PLATFORM's now — the console's OG generator
+  // (`/.well-known/service/blocklet/og.png?template=…&title=…&locale=…`, coloured by
+  // `passportColor`) is declared verbatim and the runtime emits it as-is (measured: `og:image` came
+  // back byte-equal to this string, `arc-contracts §79`). Nothing local to keep in sync, so the
+  // local-asset checks below apply only to the other form.
+  if (PLATFORM_OG.test(declared)) {
+    assert.match(declared, /[?&]template=/, `${label}: the platform OG endpoint needs an explicit template`);
+    // No `title=` on purpose (measured 2026-10-14): without it the generator renders the console's
+    // branding name itself, so the card cannot disagree with `?page=…`'s brand (`S11-01`/`S11-02`).
+    assert.doesNotMatch(declared, /[?&]title=/, `${label}: the card title must come from the console branding, never a literal`);
+    return declared;
+  }
   assert.ok(
     declared.startsWith('/p/'),
     `${label}: "${declared}" must start with "/p/" — the web surface is mounted at /p, and a root-relative path (e.g. /media/…) is swallowed by the AUP handler (measured 2026-10-13, arc-contracts §68)`,
@@ -125,7 +140,10 @@ test('the share-card declaration is consistent across its three homes and its as
     .map((e) => ({ page: e.name, declared: readFileSync(join(REPO, 'pages', e.name, 'seo', 'og-image'), 'utf8').trim() }));
   for (const { page, declared } of perType) assetPathFor(declared, `pages/${page}/seo/og-image`);
 
-  assert.ok(resolved.endsWith('arcblog-og.png'), `unexpected share card: ${resolved}`);
+  assert.ok(
+    PLATFORM_OG.test(resolved) || resolved.endsWith('arcblog-og.png'),
+    `unexpected share card: ${resolved}`,
+  );
 });
 
 test('every content/ collection declared in blocklet.yaml has a matching local schema', () => {

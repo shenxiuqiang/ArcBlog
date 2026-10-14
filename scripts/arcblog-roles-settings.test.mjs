@@ -89,5 +89,84 @@ test('the re-verify control is a queued intent + worker, never a second buy path
   // registry, and 2026-10-14 removed `appearance` (the site wears the PLATFORM's
   // appearance now — see `_research/S10-02`), so the count is 16 — same guard,
   // updated constant.
-  assert.equal(CONSOLE_SECTIONS.length, 16, 'the console page count moved — update this constant only with a ledger entry');
+  assert.equal(CONSOLE_SECTIONS.length, 14, 'the console page count moved — update this constant only with a ledger entry (2026-10-14: 16 -> 14, seo + media pages deleted, ENG-79)');
+});
+
+/**
+ * The platform-settings reader (S11-01 §1.5): the console's branding/theme live in the daemon's
+ * sqlite store and must be readable WITHOUT a session (the HTTP twins `/api/branding` and `/api/theme`
+ * answer 401 to a guest), while staying FAIL-SOFT — this is an undocumented platform-internal store,
+ * so a missing file, a renamed table or junk JSON has to degrade instead of taking a caller down.
+ * The fixtures are temp DBs, so this suite still never touches the instance.
+ */
+test('the platform settings reader is session-free and fail-soft', async () => {
+  const { mkdtempSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join: pjoin } = await import('node:path');
+  const { composeBrandingSnapshot, composeThemeSnapshot, readPlatformSettings, snapshotPrefer } = await import(
+    './lib/platform-settings.mjs'
+  );
+
+  let DatabaseSync = null;
+  try {
+    ({ DatabaseSync } = await import('node:sqlite'));
+  } catch {
+    DatabaseSync = null;
+  }
+  if (!DatabaseSync) {
+    // Node < 22 has no builtin sqlite: the reader must still answer (it is the documented degradation).
+    const degraded = readPlatformSettings({ dbPath: pjoin(tmpdir(), 'arcblog-definitely-missing.db') });
+    assert.equal(degraded.ok, false);
+    assert.ok(degraded.error, 'a missing DB must explain itself');
+    return;
+  }
+
+  const dir = mkdtempSync(pjoin(tmpdir(), 'arcblog-platform-'));
+  const dbPath = pjoin(dir, 'auth.db');
+  const db = new DatabaseSync(dbPath);
+  db.exec('create table cs_settings (instance_did text, key text, value text, primary key (instance_did, key))');
+  const insert = db.prepare('insert into cs_settings (instance_did, key, value) values (?, ?, ?)');
+  insert.run(
+    'arcblog',
+    'app:branding',
+    JSON.stringify({ name: 'Probe', description: 'D', url: 'U', passportColor: '#123456', copyright: { owner: 'O', year: '2026' } }),
+  );
+  insert.run('arcblog', 'app:name', 'Probe');
+  insert.run('arcblog', 'app:languages', JSON.stringify([{ code: 'en', name: 'English' }]));
+  insert.run('arcblog', 'app:theme', JSON.stringify({ concepts: [{ id: 'default', name: 'Custom', prefer: 'dark' }], currentConceptId: 'default' }));
+  db.close();
+
+  const read = readPlatformSettings({ dbPath });
+  assert.equal(read.ok, true, read.error);
+  assert.equal(read.name, 'Probe');
+  assert.equal(read.branding.passportColor, '#123456');
+  assert.deepEqual(read.languages, [{ code: 'en', name: 'English' }]);
+  assert.equal(snapshotPrefer(read.theme), 'dark');
+  assert.equal(composeBrandingSnapshot(read, 'T').v, 1);
+  assert.deepEqual(composeThemeSnapshot(read, 'T').theme, read.theme);
+
+  // Fail-soft #1: no file at all.
+  const missing = readPlatformSettings({ dbPath: pjoin(dir, 'nope.db') });
+  assert.equal(missing.ok, false);
+  assert.ok(missing.error, 'a missing DB must explain itself');
+
+  // Fail-soft #2: the platform renamed/removed the table.
+  const driftPath = pjoin(dir, 'drift.db');
+  const drift = new DatabaseSync(driftPath);
+  drift.exec('create table something_else (x text)');
+  drift.close();
+  const drifted = readPlatformSettings({ dbPath: driftPath });
+  assert.equal(drifted.ok, false);
+  assert.match(String(drifted.error), /cs_settings/, 'schema drift must be named');
+
+  // Fail-soft #3: a row that is not JSON (an out-of-band write) is reported, not thrown.
+  const junkPath = pjoin(dir, 'junk.db');
+  const junk = new DatabaseSync(junkPath);
+  junk.exec('create table cs_settings (instance_did text, key text, value text)');
+  junk.prepare('insert into cs_settings values (?, ?, ?)').run('arcblog', 'app:branding', '{not json');
+  junk.close();
+  const broken = readPlatformSettings({ dbPath: junkPath });
+  assert.equal(broken.ok, true);
+  assert.equal(broken.branding, null);
+  assert.ok(broken.problems.length >= 1, 'unparsable JSON must be reported as a problem');
 });

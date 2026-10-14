@@ -2,6 +2,8 @@
 import { execFileSync } from 'node:child_process';
 
 import { readGeneralSettingsDetailed } from './lib/general-settings.mjs';
+import { readBlockletMeta } from './lib/manifest.mjs';
+import { readPlatformSettings } from './lib/platform-settings.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 
 function optString(value) {
@@ -204,12 +206,20 @@ function main() {
   } catch {
     // settings are best-effort for a CLI that must also work on a bare instance
   }
-  const feedTitle = optString(opts['feed-title']) || general.siteName || 'ArcBlog';
+  // BRANDING (S11-01): the console's Branding tab is the site's only brand authority. It is read
+  // WITHOUT a session from the daemon's sqlite store; `blocklet.yaml` is the fallback for a machine
+  // with no local instance, and `--feed-title` still wins. The channel title never invents a name.
+  const platform = readPlatformSettings({ instance });
+  const manifest = readBlockletMeta();
+  const feedTitle = optString(opts['feed-title']) || platform.name || manifest.name || 'ArcBlog';
+  // The feed's <language> follows the PLATFORM's language list (S11-02 §3.2): the repo no longer keeps
+  // its own `language` record (deleted 2026-10-14). `en` is the documented fallback.
+  const platformLanguage = (platform.languages || []).map((l) => String(l && l.code || '')).find((c) => /^[a-z]{2}(-[A-Za-z]{2})?$/.test(c)) || 'en';
   const feedLink = optString(opts['feed-link']) || 'http://localhost';
   // Precedence (E9=A): explicit flag > the seo page's own record (config/seo/meta-description.json)
   // > the historical default. The seo record is the site's distribution copy; the node identity
   // (node/profile.json) never feeds the feed.
-  const feedDescription = optString(opts['feed-description']) || general.metaDescription || 'DID-native Markdown publishing';
+  const feedDescription = optString(opts['feed-description']) || platform.branding?.description || manifest.description || 'DID-native Markdown publishing';
   const shareImage = /^https?:\/\//.test(String(general.shareImage ?? '')) ? String(general.shareImage) : '';
 
   try {
@@ -220,7 +230,7 @@ function main() {
       feedDescription,
       shareImage,
       posts,
-      language: general.language || '',
+      language: platformLanguage,
       timezone: general.timezone || 'UTC',
       enabled: general.rss !== false,
     });

@@ -34,12 +34,8 @@ page general {
     switches-desc { en "Instance-level master switches. Every switch states its impact and whether anything actually consumes it." zh "Instance 级总开关。每个开关都写明影响范围，以及是否真有消费方。" }
     switches-title { en "Instance switches" zh "Instance 开关" }
     stored { en "Stored value" zh "已存取值" }
-    language-hint { en "Value of the RSS <language> element of the generated feed." zh "生成的 RSS 订阅中 <language> 元素的取值。" }
-    language-label { en "Language" zh "语言" }
     records-desc { en "What is actually stored. This list is the source of truth: if an edit above is refused, the value here does not change." zh "实际存放的内容。此列表才是真相来源：上面的编辑若被拒绝，这里的取值不会变化。" }
     records-title { en "Stored records" zh "已存记录" }
-    site-name-hint { en "Channel title of the generated RSS feed. It does not rename the blocklet or the console brand." zh "生成的 RSS 订阅的 channel 标题。不会重命名 Blocklet 或控制台品牌。" }
-    site-name-label { en "Site name" zh "站点名称" }
     timezone-hint { en "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated feed." zh "生成的订阅中 <pubDate>/<lastBuildDate> UTC 偏移所用的 IANA 时区。" }
     timezone-label { en "Timezone" zh "时区" }
     roles-title { en "Roles & capabilities" zh "角色与能力" }
@@ -130,10 +126,6 @@ page general {
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
-          action "$t(wrapper.nav-seo)" -> page seo style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
           action "$t(wrapper.nav-feeds)" -> page feeds style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
@@ -148,10 +140,6 @@ page general {
             p " "
           }
           action "$t(wrapper.nav-factory)" -> page factory style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
-          view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
-            p " "
-          }
-          action "$t(wrapper.nav-media)" -> page media style={border: none, borderRadius: "0", padding: "8px 20px 8px 32px", justifyContent: flex-start, flexShrink: 0}
           view style={height: "1px", background: "var(--color-border)", flexShrink: 0} {
             p " "
           }
@@ -176,27 +164,10 @@ page general {
           }
           view gap=sm size={flex: 1} style={overflowY: auto} {
             view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={siteName: "/instance/app/arcblog/config/general/site-name.json", language: "/instance/app/arcblog/config/general/language.json", timezone: "/instance/app/arcblog/config/general/timezone.json"} {
+              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={timezone: "/instance/app/arcblog/config/general/timezone.json"} {
                 h3 :basics-title level=3 style={fontSize: "var(--type-body)"}
                 p :basics-desc scale=sm intent=muted
                 p :basics-guard scale=sm intent=muted
-                view gap=xs {
-                  h3 :site-name-label level=3 style={fontSize: "var(--type-body)"}
-                  p :site-name-hint scale=sm intent=muted
-                  row gap=xs cross=center {
-                    input type=text name=eValue label=:basics-value value="${state.siteName.value}" required=true maxLength=120
-                    action variant=secondary size=sm label=:basics-save onSuccessToast={intent: success, message: "$t(general.basics-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/site-name.json", mode: tree-merge, content: {value: $args.eValue}}}}
-                  }
-                }
-                view gap=xs {
-                  h3 :language-label level=3 style={fontSize: "var(--type-body)"}
-                  p :language-hint scale=sm intent=muted
-                  p "$t(general.basics-options): en, zh" scale=sm intent=muted
-                  row gap=xs cross=center {
-                    input type=select name=eValue label=:basics-value options=[{label: :choose, value: ""}, {label: en, value: en}, {label: zh, value: zh}] value="${state.language.value}" required=true
-                    action variant=secondary size=sm label=:basics-save onSuccessToast={intent: success, message: "$t(general.basics-saved)", duration: 2500} onErrorToast={intent: error, message: "$t(general.basics-error)", duration: 4000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: tree-merge, content: {value: $args.eValue}}}}
-                  }
-                }
                 view gap=xs {
                   h3 :timezone-label level=3 style={fontSize: "var(--type-body)"}
                   p :timezone-hint scale=sm intent=muted
@@ -222,7 +193,7 @@ page general {
                 h3 :init-title level=3 style={fontSize: "var(--type-body)"}
                 p :init-desc scale=sm intent=muted
                 row gap=sm {
-                  action variant=secondary size=sm label=:init-basics confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/site-name.json", mode: create, content: {label: "Site name", description: "Channel title of the generated RSS feed. It does not rename the blocklet or the console brand.", scope: instance, type: text, maxLength: 120, value: ArcBlog}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: create, content: {label: Language, description: "Value of the RSS <language> element of the generated feed.", scope: instance, type: select, options: [en, zh], pattern: "en|zh", value: en}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/timezone.json", mode: create, content: {label: Timezone, description: "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated RSS feed.", scope: instance, type: select, options: [UTC, "Asia/Shanghai", "Asia/Tokyo", "Asia/Singapore", "Europe/London", "Europe/Berlin", "America/New_York", "America/Los_Angeles"], pattern: "UTC|Asia/Shanghai|Asia/Tokyo|Asia/Singapore|Europe/London|Europe/Berlin|America/New_York|America/Los_Angeles", value: UTC}}}]}}
+                  action variant=secondary size=sm label=:init-basics confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/language.json", mode: create, content: {label: Language, description: "Value of the RSS <language> element of the generated feed.", scope: instance, type: select, options: [en, zh], pattern: "en|zh"}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/general/timezone.json", mode: create, content: {label: Timezone, description: "IANA timezone used for the <pubDate>/<lastBuildDate> UTC offset of the generated RSS feed.", scope: instance, type: select, options: [UTC, "Asia/Shanghai", "Asia/Tokyo", "Asia/Singapore", "Europe/London", "Europe/Berlin", "America/New_York", "America/Los_Angeles"], pattern: "UTC|Asia/Shanghai|Asia/Tokyo|Asia/Singapore|Europe/London|Europe/Berlin|America/New_York|America/Los_Angeles", value: UTC}}}]}}
                   action variant=secondary size=sm label=:init-switches confirm={title: :init-confirm-title, message: :init-confirm-msg} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/comments.json", mode: create, content: {label: Comments, description: "No consumer yet: ArcBlog has no comment feature, so this switch is recorded only.", scope: instance, type: toggle, value: false}}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/rss.json", mode: create, content: {label: RSS, description: "When off, the generated RSS feed carries a channel with no items.", scope: instance, type: toggle, value: true}}}, {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/switches/agent-access.json", mode: create, content: {label: "Agent Access", description: "When off, the Agent Access CLI refuses to run tools (fail closed).", scope: instance, type: toggle, value: true}}}]}}
                 }
                 h3 :switches-title level=3 style={fontSize: "var(--type-body)"}

@@ -31,3 +31,5 @@ Newcomers can skip this directory entirely — it is listed in the "what not to 
 | 5 | 提交人 = **Lead**（本目录的作者只出草稿） | 仓库铁律 5 |
 
 **仍留在本目录的**：过程、失败记录、被推翻的假设、还没到"结论"的证据。
+
+| S11-02 | 控制台功能 vs 平台设置：可删除候选审计（含落地状态 §8） | 2026-10-14 | 已落地 |

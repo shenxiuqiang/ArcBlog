@@ -18,6 +18,8 @@ const CHECKLIST = join(REPO, 'docs/team/human-checkpoints.md');
 const EXPECTED = {
   'P-1': 'concluded', 'P-2': 'concluded', 'P-3': 'concluded', 'P-4': 'concluded',
   U6: 'concluded', U8: 'concluded', U10: 'decision', U18: 'concluded', U19: 'concluded', U20: 'concluded',
+  // 2026-10-14: the branding round's one OPEN probe — the console logo upload's public reach.
+  U21: 'open',
 };
 const CONCLUDED = /✅|判定|结论/;
 const DECISION = /决策/;

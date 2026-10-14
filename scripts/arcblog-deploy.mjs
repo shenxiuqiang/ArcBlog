@@ -158,12 +158,21 @@ run('npm', ['run', 'verify:artifacts']);
 // to raw JSON. `install` is idempotent, so every deploy asserts them cheaply.
 run('node', ['scripts/arcblog-recipes.mjs', 'install', '--json']);
 
-// Step 2c (public appearance projection) was DELETED on 2026-10-14. It existed because the three
-// appearance settings were private to the blocklet while the theme bridge runs in the visitor's
-// browser (DEF-48). Appearance now comes from the PLATFORM — the Blocklet Console's Appearance tab —
-// so there is nothing for the deploy to publish: the bridge reads the platform's own public channels
-// (`/theme/init.js` + `/theme/styles.css`) for every visitor and republishes the guest-readable
-// snapshot itself whenever a signed-in session can read `/api/theme`. Nothing to run here.
+// ------------------- 2c. platform snapshots (branding + theme) --------------------------------
+// The console's Branding/Appearance tabs are the site's only brand/theme authority, and their HTTP
+// twins (`/api/branding`, `/api/theme`) answer 401 to a signed-out caller — but the daemon's sqlite
+// store does not care who asks, so the CLI loads it WITHOUT a session and republishes two
+// guest-readable AFS snapshots the browser reads (`node/branding.json` v1, `node/appearance.json` v2).
+// Measured 2026-10-14: `S11-01 §1.5` / `S10-02 §10`. NOT fail-closed on purpose: on a machine with no
+// local instance there is nothing to read and blocking the deploy for a cosmetic refresh would be
+// worse than warning (the step prints a WARN and exits 0).
+{
+  // In-process (2026-10-14): the CLI's own module runs its parser on import, so the pipeline calls
+  // the shared writer instead — one less Node start, and "no local DB" stays a WARN, not a failure.
+  const { writePlatformSnapshots } = await import('./lib/platform-settings.mjs');
+  const snap = writePlatformSnapshots({ instance: INSTANCE });
+  console.log(`[2c] platform snapshots: ${snap.ok ? snap.written.map((w) => w.path).join(', ') : `WARN ${snap.db.error}`}`);
+}
 
 // ------------------------------------------------------- 3. deploy ----------
 run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);

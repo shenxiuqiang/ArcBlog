@@ -60,12 +60,8 @@ import { fail, readJson } from './arc.mjs';
 export const GENERAL_ROOT = '/instance/app/arcblog/config';
 export const GENERAL_DIR = `${GENERAL_ROOT}/general`;
 export const SWITCH_DIR = `${GENERAL_ROOT}/switches`;
-/** The seo page's OWN records (E9=A): site distribution defaults, not the node identity. */
-export const SEO_DIR = `${GENERAL_ROOT}/seo`;
-
 /**
  * The Instance-level settings fields: six under `config/general` + `config/switches`,
- * plus the two the **seo page owns** under `config/seo` (E9 = A, 2026-10-13).
  *
  * WHY A SEPARATE DIR: the same field must have exactly ONE page-level entry point,
  * so the seo-owned distribution fields live in their own collection — the General
@@ -77,50 +73,6 @@ export const SEO_DIR = `${GENERAL_ROOT}/seo`;
  * validate against (fail closed): a value outside it is rejected, never stored.
  */
 export const GENERAL_FIELDS = {
-  'site-name': {
-    dir: GENERAL_DIR,
-    flag: 'site-name',
-    field: 'siteName',
-    label: 'Site name',
-    description: 'Channel title of the generated RSS feed. It does not rename the blocklet or the console brand.',
-    scope: 'instance',
-    type: 'text',
-    maxLength: 120,
-    value: 'ArcBlog',
-  },
-  language: {
-    dir: GENERAL_DIR,
-    flag: 'language',
-    field: 'language',
-    label: 'Language',
-    description: 'Value of the RSS <language> element of the generated feed.',
-    scope: 'instance',
-    type: 'select',
-    options: ['en', 'zh'],
-    value: 'en',
-  },
-  'meta-description': {
-    dir: SEO_DIR,
-    flag: 'meta-description',
-    field: 'metaDescription',
-    label: 'Site description (SEO)',
-    description: 'Channel <description> of the generated RSS feed. Owned by the seo page; the node identity (name/description/ogImage/endpoint) stays CLI-only.',
-    scope: 'instance',
-    type: 'text',
-    maxLength: 300,
-    value: '',
-  },
-  'share-image': {
-    dir: SEO_DIR,
-    flag: 'share-image',
-    field: 'shareImage',
-    label: 'Default share image (SEO)',
-    description: 'RSS channel <image><url>. Must be http(s); the feed omits the element when it is unset.',
-    scope: 'instance',
-    type: 'text',
-    maxLength: 500,
-    value: '',
-  },
   timezone: {
     dir: GENERAL_DIR,
     flag: 'timezone',

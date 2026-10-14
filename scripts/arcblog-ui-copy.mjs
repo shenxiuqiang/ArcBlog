@@ -189,6 +189,27 @@ function main() {
     .filter(([page, count]) => !exempt[page] && count > (recorded[page] ?? 0))
     .map(([page, count]) => ({ page, count, limit: recorded[page] ?? 0 }));
 
+  if (args.prune) {
+    // 2026-10-14: a DELETED page must not keep a baseline entry forever (the i18n gate failed on
+    // exactly that after `seo`/`media` were removed). Pruning only drops entries whose page file is
+    // gone — it can never raise a surviving page's bound, and it never re-records a number
+    // (`--write-baseline` stays the deliberate act for that).
+    const alive = new Set(Object.keys(measured));
+    const dropped = Object.keys(recorded).filter((page) => !alive.has(page));
+    const droppedExempt = Object.keys(exempt).filter((page) => !alive.has(page));
+    if (dropped.length || droppedExempt.length) {
+      const next = {
+        ...baseline,
+        generatedAt: new Date().toISOString(),
+        pages: Object.fromEntries(Object.entries(recorded).filter(([page]) => alive.has(page))),
+        exempt: Object.fromEntries(Object.entries(exempt).filter(([page]) => alive.has(page))),
+      };
+      writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);
+    }
+    console.log(JSON.stringify({ ok: true, action: 'prune', path: relative(repoRoot, BASELINE_PATH), dropped, droppedExempt }, null, 2));
+    return;
+  }
+
   if (args['write-baseline']) {
     const { diff } = writeBaseline(measured, baseline);
     console.log(

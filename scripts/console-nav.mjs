@@ -10,7 +10,7 @@
 // Trade-off, measured in arc-contracts §21.12: a page switch rebuilds the page
 // subtree (no document reload, JS context survives) instead of switching a tab
 // panel in place. The compensation is that each page now carries only its own
-// `afs-list` subscriptions, instead of all 16 on every page load.
+// `afs-list` subscriptions, instead of all 14 on every page load.
 //
 // Labels are wrapper-namespace keys (`$t(wrapper.nav-*)`): pages may reference
 // them, so the copy lives in `.aup/wrapper.aup` + `.aup/locales/*.json` once.
@@ -35,7 +35,6 @@ export const CONSOLE_MENU = [
       // publish whitelist, tags are free-form words on posts. They are separate
       // pages, never one table.
       { label: 'nav-tags', page: 'tags' },
-      { label: 'nav-seo', page: 'seo' },
       { label: 'nav-feeds', page: 'feeds' },
       // `appearance` is GONE (2026-10-14): the site wears the PLATFORM's appearance — the Blocklet
       // Console's Appearance tab (`/.well-known/service/admin`) — and this repository keeps no theme
@@ -53,7 +52,6 @@ export const CONSOLE_MENU = [
       // The node-NFT factory console is node infrastructure, so it lives in
       // the ops group.
       { label: 'nav-factory', page: 'factory' },
-      { label: 'nav-media', page: 'media' },
       { label: 'nav-agents', page: 'agents' },
     ],
   },

@@ -30,6 +30,4 @@ seo:
   # (`…/blocklet/og.png?template=default&title=…&description=…&locale=en` → 200 image/png):
   #   node scripts/arcblog-og-image.mjs              # fetch + write content/media/arcblog-og.png
   #   node scripts/arcblog-og-image.mjs --check      # offline: declarations agree, asset is 1200x630
-  og-image: /p/media/arcblog-og.png
-  og-site-name: ArcBlog
-  title-template: '%s — ArcBlog'
+  og-image: /.well-known/service/blocklet/og.png?template=default&locale=en

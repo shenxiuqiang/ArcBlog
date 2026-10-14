@@ -756,10 +756,16 @@
 
   const LOCALE = hostLocale();
   const COPY = {
-    en: { read: 'Read the story', latest: 'Read the latest stories', kicker: 'ArcBlog' },
-    zh: { read: '阅读全文', latest: '阅读最新文章', kicker: 'ArcBlog' },
-    ja: { read: '記事を読む', latest: '最新の記事を読む', kicker: 'ArcBlog' },
-  }[LOCALE] || { read: 'Read the story', latest: 'Read the latest stories', kicker: 'ArcBlog' };
+    en: { read: 'Read the story', latest: 'Read the latest stories' },
+    zh: { read: '阅读全文', latest: '阅读最新文章' },
+    ja: { read: '記事を読む', latest: '最新の記事を読む' },
+  }[LOCALE] || { read: 'Read the story', latest: 'Read the latest stories' };
+
+  // The site's brand, from the PLATFORM (S11-01): the guest-readable `node/branding.json` snapshot
+  // the CLI publishes (`arcblog-settings.mjs platform sync`), else the node profile, else nothing —
+  // never a hardcoded name.
+  const BRANDING = '/instance/app/arcblog/node/branding.json';
+  let BRAND = '';
 
   const escapeHtml = (value) =>
     String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
@@ -800,7 +806,7 @@
     return `<div data-story-block="cover" data-layout="overlay" class="${variant.trim()}">
       ${media}
       <div class="hero-carousel__body">
-        <p class="author">${escapeHtml(COPY.kicker)}</p>
+        <p class="author">${escapeHtml(BRAND)}</p>
         <h1>${escapeHtml(title)}</h1>
         ${description ? `<p class="subtitle">${escapeHtml(description)}</p>` : ''}
         ${cta}
@@ -809,7 +815,7 @@
   }
 
   function defaultSlide(profile) {
-    const name = (profile && profile.name) || 'ArcBlog';
+    const name = (profile && profile.name) || BRAND || '';
     const description = (profile && profile.description) || '';
     return coverBlock({
       image: '',
@@ -831,6 +837,18 @@
   // `tryList` answers with metadata only — the record bodies need the documented
   // `includeContent` option (measured). When a runtime ignores it, fall back to
   // reading each entry so the carousel still fills in.
+  /** One record by path (`tryRead`), so the home page never enumerates the whole `node/` directory. */
+  async function readRecord(path) {
+    const afs = parentAfs();
+    if (!afs) return null;
+    try {
+      const res = await (afs.tryRead ? afs.tryRead(path) : afs.read(path));
+      return decodeContent(res) || decodeContent(res && res.data) || null;
+    } catch {
+      return null;
+    }
+  }
+
   async function readRecords(path) {
     const afs = parentAfs();
     if (!afs) return [];
@@ -880,6 +898,12 @@
 
   async function start() {
     syncHostTheme();
+    try {
+      const branding = await readRecord(BRANDING);
+      if (branding) BRAND = String(branding.name);
+    } catch {
+      /* no branding snapshot yet: BRAND stays empty and the kicker renders nothing */
+    }
     let heroes = [];
     try {
       heroes = sortHeroes(await readRecords(HEROES));
@@ -889,7 +913,7 @@
     let slides = heroes.map(coverBlock).join('');
     if (!slides) {
       try {
-        const profile = (await readRecords('/instance/app/arcblog/node'))[0];
+        const profile = await readRecord('/instance/app/arcblog/node/profile.json');
         slides = defaultSlide(profile);
       } catch {
         slides = defaultSlide(null);

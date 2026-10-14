@@ -19,6 +19,20 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const appPath = join(repoRoot, '.aup', 'app.aup');
 const bridgePath = join(repoRoot, '.web', 'components', 'theme-bridge', 'script.js');
+const themeMapPath = join(repoRoot, '.web', 'components', 'theme-bridge', 'theme-map.js');
+const renderPath = join(repoRoot, '.web', 'components', 'theme-bridge', 'render.js');
+
+/**
+ * Load the PURE platform→AUP fragment (`theme-map.js`, S12-01) into a callable namespace.
+ * The fragment is plain script (no ESM syntax, no DOM/AFS/fetch — that is its contract), so it can be
+ * evaluated here and its functions asserted BEHAVIOURALLY instead of by matching source text.
+ */
+function loadThemeMap() {
+  const src = readFileSync(themeMapPath, 'utf8');
+  return new Function(
+    `${src}\n;return { TOKEN_ALIASES, mapPlatformPalette, normalizePlatformTheme, parseServiceTheme, parseServicePrefer };`,
+  )();
+}
 /** The seed that used to drive the site's default theme — deleted with the move to the platform. */
 const seedThemePath = join(repoRoot, 'seed', 'settings', 'arcblog', 'theme.json');
 
@@ -55,23 +69,31 @@ test('the compiled mode stays an explicit pre-bridge fallback, and the retired s
 
 test('the theme bridge reads the platform, resolves mode, and keeps the host-chrome repairs', () => {
   const src = readFileSync(bridgePath, 'utf8');
+  // Comments stripped once, here: the file must be able to DOCUMENT the traps below without tripping
+  // its own guards.
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
   assert.match(src, /prefers-color-scheme: light/, 'the bridge must resolve `system` through prefers-color-scheme');
   assert.match(src, /web-mode/, 'the bridge must honour the manual mode override');
-  // The three platform sources, in the documented precedence. Dropping one is not a style choice:
-  // `/api/theme` is the only FULL palette (signed-in), the snapshot is what anonymous readers get,
-  // and the two `/theme/*` files are the only channels that track the console live for everyone.
-  assert.match(src, /PLATFORM_API = '\/\.well-known\/service\/api\/theme'/, 'the signed-in source must stay wired');
+  // NO SIGN-IN ANYWHERE (S10-02 §10 / S11-01 §1.5): the palette and the brand arrive through the
+  // guest-readable snapshots the CLI publishes from the daemon's sqlite store, plus the platform's
+  // per-request public files. Fetching the platform's AUTHENTICATED HTTP twins would silently
+  // reintroduce the dependency this round removed.
+  assert.doesNotMatch(code, /\.well-known\/service\/api\/(theme|branding)/, 'the bridge must not fetch the signed-in platform endpoints');
+  assert.match(src, /SNAPSHOT_BRANDING = '\/instance\/app\/arcblog\/node\/branding\.json'/, 'the branding snapshot must stay wired');
+  assert.match(src, /#desktop-splash \.splash-wordmark/, 'the live host splash is the anonymous name channel');
+  assert.match(src, /\.aup-app-header-title/, 'the header wordmark is one of the two hardcode sites (measured class)');
+  assert.match(src, /\.aup-app-header-brand/, 'the runtime\'s other header variant must stay covered');
+  assert.match(src, /\.aup-footer-bottom-bar/, 'the footer (c) line is the other one');
   assert.match(src, /PLATFORM_INIT = '\/\.well-known\/service\/theme\/init\.js'/, 'the live `prefer` source must stay wired');
   assert.match(src, /PLATFORM_CSS = '\/\.well-known\/service\/theme\/styles\.css'/, 'the live background/text source must stay wired');
   assert.match(src, /SNAPSHOT_PATH = '\/instance\/app\/arcblog\/node\/appearance\.json'/, 'the guest-readable snapshot path must stay');
-  assert.match(src, /normalizePlatformTheme/, 'both platform payload shapes must be normalized');
-  assert.match(src, /afs\.write\(SNAPSHOT_PATH/, 'a signed-in view must republish the snapshot for guests');
+  assert.match(readFileSync(renderPath, 'utf8'), /normalizePlatformTheme/, 'both platform payload shapes must be normalized (inlined from theme-map.js)');
+  assert.doesNotMatch(src, /afs\.write\(SNAPSHOT_PATH/, 'the bridge must NOT write the snapshots — the CLI owns them');
   // `window.blocklet.theme` is the platform DEFAULT (measured 2026-10-14: identical for arcblog and
-  // my-app, and it disagreed with the console's stored theme) — wiring it back in would silently
-  // theme the site with the wrong palette. Comments are stripped first: the file must be able to
-  // DOCUMENT that decision without tripping its own guard.
-  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  // my-app, and it disagreed with the console's stored theme) and `appName`/`appDescription` come from
+  // `blocklet.yaml` — neither is the console's branding (S11-01 §1.4).
   assert.doesNotMatch(code, /blocklet\.theme/, 'window.blocklet.theme is not a source (S10-02 §1.1)');
+  assert.doesNotMatch(code, /blocklet\.app(Name|Description)/, 'window.blocklet.appName is the MANIFEST name (S11-01 §1.4)');
   // DEF-45: the platform mounts English save chrome ("Bookmark"/"My saves") on the host document.
   // The PRIMARY fix is the manifest (`blocklet.yaml` `save: false` → `data-arc-save-capability="off"`
   // before the first paint; measured 2026-10-13: the bar painted at t≈24–35 ms, before this iframe
@@ -181,18 +203,86 @@ const PLATFORM_TOKENS = [
 ];
 const TOKEN_ALIASES = ['--color-danger', '--color-fg', '--color-muted', '--color-text-muted'];
 
-test('the platform→AUP token map writes every real colour token and none of the aliases', () => {
-  const bridge = readFileSync(bridgePath, 'utf8');
-  const body = /function mapPlatformPalette\(([\s\S]*?)\n  \}/.exec(bridge);
-  assert.ok(body, 'mapPlatformPalette() not found in the theme bridge');
-  const written = [...new Set([...body[1].matchAll(/'(--[a-z-]+)'/g)].map((m) => m[1]))].sort();
-  assert.deepEqual(written, [...PLATFORM_TOKENS].sort(), 'the map must write exactly the 18 real tokens');
+/** A complete MUI palette: every source field `mapPlatformPalette()` reads. */
+const FULL_PALETTE = {
+  background: { default: '#0b0b0b', paper: '#101010' },
+  grey: { 100: '#151515' },
+  divider: '#222222',
+  text: { primary: '#f5f5f5', secondary: '#9a9a9a' },
+  primary: { main: '#1dc1c7', contrastText: '#04222a' },
+  secondary: { main: '#ff7a45' },
+  success: { main: '#2f9e44' },
+  info: { main: '#1c7ed6' },
+  error: { main: '#e03131' },
+  warning: { main: '#f08c00' },
+};
 
-  const aliasBlock = /var TOKEN_ALIASES = \[([^\]]*)\]/.exec(bridge);
-  assert.ok(aliasBlock, 'TOKEN_ALIASES not found');
-  const aliases = [...aliasBlock[1].matchAll(/'(--[a-z-]+)'/g)].map((m) => m[1]).sort();
-  assert.deepEqual(aliases, [...TOKEN_ALIASES].sort(), 'the 4 alias tokens must be declared and NOT written');
-  assert.equal(written.length + aliases.length, 22, 'every token aup-core.css assigns in a palette block must be accounted for');
+test('the platform→AUP token map writes every real colour token and none of the aliases (behaviour)', () => {
+  const api = loadThemeMap();
+  const mapped = api.mapPlatformPalette(FULL_PALETTE);
+  const written = Object.keys(mapped).sort();
+  assert.deepEqual(written, [...PLATFORM_TOKENS].sort(), 'the map must write exactly the 18 real tokens');
+  assert.deepEqual([...api.TOKEN_ALIASES].sort(), [...TOKEN_ALIASES].sort(), 'the 4 alias tokens must be declared');
+  for (const alias of TOKEN_ALIASES) {
+    assert.ok(!(alias in mapped), `${alias} is an aup-core.css alias — writing it would pin a stale value`);
+  }
+  assert.equal(written.length + api.TOKEN_ALIASES.length, 22, 'every token aup-core.css assigns in a palette block must be accounted for');
+  // A missing source is LEFT OUT (the compiled AUP palette governs it) — never written as empty.
+  assert.deepEqual(api.mapPlatformPalette({}), {});
+  assert.deepEqual(api.mapPlatformPalette(null), {});
+  // Only the tokens whose SOURCE exists are written; `paper`/`surface-muted` fall back to `bg`.
+  assert.deepEqual(api.mapPlatformPalette({ background: { default: '#fff' } }), {
+    '--color-bg': '#fff',
+    '--color-surface': '#fff',
+    '--surface-muted': '#fff',
+  });
+  // contrastText falls back to a luminance decision when the platform omits it.
+  assert.equal(api.mapPlatformPalette({ primary: { main: '#ffffff' } })['--color-on-accent'], '#111111');
+});
+
+test('the pure fragment normalizes BOTH platform payload shapes and parses the live channels', () => {
+  const api = loadThemeMap();
+  // Shape B — the console's current `app:theme` (concepts[] + currentConceptId + themeConfig).
+  const shapeB = api.normalizePlatformTheme({
+    concepts: [{ id: 'default', name: 'Custom', prefer: 'dark', themeConfig: { light: { palette: FULL_PALETTE }, dark: { palette: FULL_PALETTE } } }],
+    currentConceptId: 'default',
+  });
+  assert.ok(shapeB, 'shape B must normalize');
+  assert.equal(shapeB.prefer, 'dark');
+  assert.equal(Object.keys(shapeB.light).length, 18);
+  assert.equal(Object.keys(shapeB.dark).length, 18);
+  // Shape A — the older MUI payload with explicit light/dark palettes.
+  const shapeA = api.normalizePlatformTheme({ light: { palette: FULL_PALETTE }, dark: { palette: FULL_PALETTE } });
+  assert.ok(shapeA, 'shape A must normalize');
+  assert.equal(Object.keys(shapeA.light).length, 18);
+  assert.equal(api.normalizePlatformTheme(null), null);
+  assert.equal(api.normalizePlatformTheme({}), null);
+  // The live per-request channels, on the REAL byte shapes (probed 2026-10-14).
+  assert.equal(api.parseServicePrefer("var p = 'dark';"), 'dark');
+  assert.equal(api.parseServicePrefer('var p = "system";'), 'system');
+  assert.equal(api.parseServicePrefer(''), null);
+  const css = api.parseServiceTheme(
+    ":root { --blocklet-background-default-color: #ffffff; --blocklet-text-primary-color: #212121; }\n" +
+      "[data-theme='dark'] { --blocklet-background-default-color: #000000; --blocklet-text-primary-color: #ffffff; }",
+  );
+  assert.deepEqual(css.light, { '--color-bg': '#ffffff', '--color-text': '#212121' });
+  assert.deepEqual(css.dark, { '--color-bg': '#000000', '--color-text': '#ffffff' });
+});
+
+test('the pure map has ONE source (fragment) and reaches the shipped shell', () => {
+  const script = readFileSync(bridgePath, 'utf8');
+  const fragment = readFileSync(themeMapPath, 'utf8');
+  const render = readFileSync(renderPath, 'utf8');
+  for (const name of ['mapPlatformPalette', 'normalizePlatformTheme', 'parseServiceTheme', 'parseServicePrefer']) {
+    assert.doesNotMatch(script, new RegExp(`function ${name}\\b`), `${name} must not be re-declared in script.js (S12-01)`);
+    assert.match(fragment, new RegExp(`function ${name}\\b`), `${name} must live in theme-map.js`);
+    assert.ok(render.includes(`${name}`), `render.js must carry the inlined ${name}`);
+  }
+  assert.doesNotMatch(script, /var TOKEN_ALIASES/, 'TOKEN_ALIASES must not be re-declared in script.js');
+  assert.match(script, /theme-map\.js/, 'script.js must point at the fragment (documentation of the split)');
+  // The fragment stays loadable as plain script: no ESM syntax, no DOM/AFS/fetch.
+  assert.doesNotMatch(fragment, /^\s*(import|export)\s/m, 'theme-map.js must stay ESM-free (it is concatenated into an inline <script>)');
+  assert.doesNotMatch(fragment, /document\.|afs\.|fetch\(/, 'theme-map.js must stay pure (no DOM/AFS/fetch)');
 });
 
 /**
@@ -296,24 +386,51 @@ test('the bridge repairs the host-only session cookie on an explicit Sign Out cl
   );
 });
 
-test('the snapshot a signed-in read publishes is v2, versioned, and ignores the retired shape', () => {
+test('the snapshots the CLI publishes are versioned, session-free and single-sourced', async () => {
   const src = readFileSync(bridgePath, 'utf8');
-  // A signed-out reader gets 401 from `/api/theme`, so the full palette reaches guests only through
-  // this guest-readable record (S10-02 §3). The publisher must stay recognisable from the outside:
-  // version, prefer, both palettes and the provenance.
-  assert.match(src, /var SNAPSHOT_V = 2;/, 'the snapshot schema version must be explicit');
-  assert.match(src, /v: SNAPSHOT_V,/, 'the published payload must carry that version');
-  assert.match(src, /prefer: theme\.prefer \|\| null/, 'the payload must carry prefer');
-  assert.match(src, /palette: \{ light: theme\.light, dark: theme\.dark \}/, 'the payload must carry both palettes');
-  assert.match(src, /source: PLATFORM_API/, 'the payload must record where it came from');
-  // The retired v1 shape (`{tone,palette,theme}`) must be treated as "no snapshot", not half-read:
-  // its `palette` was a STRING, so a trusting reader would silently apply nothing.
-  assert.match(src, /rec\.v !== SNAPSHOT_V/, 'a record that is not v2 must count as "no snapshot"');
-  assert.match(src, /recordOf/, 'the AFS record must be flattened (a JSON string under .content)');
+  // The theme snapshot carries the console's RAW `app:theme`: the platform→token map lives ONLY in
+  // the bridge, so the CLI needs no colour knowledge and the two sides cannot drift apart.
+  assert.match(src, /var SNAPSHOT_V = 2;/);
+  assert.match(src, /var BRANDING_V = 1;/);
+  assert.match(src, /themeRec\.theme/, 'the v2 theme snapshot carries the raw app:theme');
+  assert.match(src, /normalizePlatformTheme\(themeRec\.theme\)/, 'the bridge normalizes it at read time');
+  assert.match(src, /brandRec\.v === BRANDING_V/, 'the branding record is v1');
+  // The retired v1 theme shape (`{tone,palette,theme}`) must be ignored rather than half-read.
+  assert.match(src, /themeRec\.v === SNAPSHOT_V/, 'a record that is not v2 counts as "no snapshot"');
+  assert.match(src, /readRecord\(SNAPSHOT_PATH\), readRecord\(SNAPSHOT_BRANDING\)/, 'both records are read');
+
+  // The CLI side (pure composers — the fast tier never opens the DB).
+  const { composeBrandingSnapshot, composeThemeSnapshot, snapshotPrefer } = await import('./lib/platform-settings.mjs');
+  const { BRANDING_PATH, APPEARANCE_PATH } = await import('./arcblog-settings.mjs');
+  assert.equal(BRANDING_PATH, '/instance/app/arcblog/node/branding.json');
+  assert.equal(APPEARANCE_PATH, '/instance/app/arcblog/node/appearance.json');
+  const read = {
+    branding: { name: 'MyBlog', description: 'D', url: 'U', passportColor: '#1DC1C7', copyright: { owner: 'O', year: '2026' } },
+    name: 'MyBlog',
+    languages: [{ code: 'en', name: 'English' }],
+    theme: { concepts: [{ id: 'default', name: 'Custom', prefer: 'dark' }], currentConceptId: 'default' },
+  };
+  assert.deepEqual(composeBrandingSnapshot(read, 'T'), {
+    v: 1,
+    source: 'auth.db:app:branding',
+    updatedAt: 'T',
+    name: 'MyBlog',
+    description: 'D',
+    url: 'U',
+    passportColor: '#1DC1C7',
+    copyright: { owner: 'O', year: '2026' },
+    languages: [{ code: 'en', name: 'English' }],
+  });
+  assert.equal(composeBrandingSnapshot({}, 'T'), null, 'nothing to publish');
+  assert.deepEqual(composeThemeSnapshot(read, 'T'), { v: 2, source: 'auth.db:app:theme', updatedAt: 'T', theme: read.theme });
+  assert.equal(composeThemeSnapshot({}, 'T'), null, 'nothing to publish');
+  assert.equal(snapshotPrefer(read.theme), 'dark');
+  assert.equal(snapshotPrefer({ concepts: [{ id: 'a', prefer: 'nonsense' }], currentConceptId: 'a' }), null);
 });
 
-test('the deploy pipeline no longer touches appearance', () => {
+test('the deploy pipeline publishes both platform snapshots, session-free', () => {
   const src = readFileSync(join(repoRoot, 'scripts/arcblog-deploy.mjs'), 'utf8');
-  assert.doesNotMatch(src, /sync-appearance/, 'step 2c is gone: the platform owns the theme (S10-02 §4.2)');
-  assert.doesNotMatch(src, /arcblog-settings\.mjs/, 'the deploy must not call the retired appearance CLI');
+  // 2026-10-14: step 2c calls the shared writer in-process (the settings CLI runs its parser on import).
+  assert.match(src, /writePlatformSnapshots/, 'step 2c must publish the snapshots from the DB (S10-02 §10)');
+  assert.doesNotMatch(src, /sync-appearance/, 'the retired repo-owned projection must not come back');
 });
