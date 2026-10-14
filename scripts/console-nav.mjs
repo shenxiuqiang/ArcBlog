@@ -10,7 +10,7 @@
 // Trade-off, measured in arc-contracts §21.12: a page switch rebuilds the page
 // subtree (no document reload, JS context survives) instead of switching a tab
 // panel in place. The compensation is that each page now carries only its own
-// `afs-list` subscriptions, instead of all 17 on every page load.
+// `afs-list` subscriptions, instead of all 16 on every page load.
 //
 // Labels are wrapper-namespace keys (`$t(wrapper.nav-*)`): pages may reference
 // them, so the copy lives in `.aup/wrapper.aup` + `.aup/locales/*.json` once.
@@ -37,7 +37,10 @@ export const CONSOLE_MENU = [
       { label: 'nav-tags', page: 'tags' },
       { label: 'nav-seo', page: 'seo' },
       { label: 'nav-feeds', page: 'feeds' },
-      { label: 'nav-appearance', page: 'appearance' },
+      // `appearance` is GONE (2026-10-14): the site wears the PLATFORM's appearance — the Blocklet
+      // Console's Appearance tab (`/.well-known/service/admin`) — and this repository keeps no theme
+      // of its own. There is deliberately no console row for it any more; the theme bridge reads the
+      // platform, and the retired page must not come back (`arcblog-retired-surfaces.test.mjs`).
     ],
   },
   {

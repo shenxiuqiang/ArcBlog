@@ -1,18 +1,4 @@
 #!/usr/bin/env node
-// Appearance settings (spec §15.5): tone / palette / theme.
-//
-//   node scripts/arcblog-settings.mjs show
-//   node scripts/arcblog-settings.mjs set --tone editorial [--palette natural] [--theme system]
-//   node scripts/arcblog-settings.mjs sync-appearance
-//
-// `sync-appearance` publishes a GUEST-READABLE projection of the three settings to
-// /instance/app/arcblog/node/appearance.json. Why: the private records above answer 403 to a
-// signed-out reader ("sign in to read this setting"), while the theme bridge runs in the VISITOR's
-// browser — so without the projection every anonymous reader kept the runtime's compiled theme
-// (DEF-48, human checkpoint `E14` = A, 2026-10-13). `scripts/arcblog-deploy.mjs` refreshes it at
-// every deploy; a signed-in admin's page view republishes it too (the bridge writes it when it can
-// read the private records).
-//
 // Instance-level General settings (spec §15.9 "通用"): site name / language /
 // timezone and the three Instance switches (comments / RSS / Agent Access).
 //
@@ -25,19 +11,18 @@
 // exists). See `scripts/lib/general-settings.mjs` for why they live in the
 // blocklet's own `config` collection instead of `/instance/settings/arcblog/`.
 //
-// The records live in `/instance/settings/arcblog/{tone,palette,theme}.json` and
-// carry the surface metadata the runtime renders (`label`, `description`,
-// `scope`, `type`, `options`) plus the current `value`. The theme bridge
-// (`.web/components/theme-bridge/script.js`) reads the same three files and
-// applies them to `<html data-tone data-palette data-mode>`.
-//
-// Writes are validated **against the record's own `options`** and fail closed:
-// an unknown tone is rejected instead of being stored (a broken value would
-// silently fall back in the bridge, which looks like "my change did nothing").
-// Everything except `value` is preserved, so the console's auto-surface keeps
-// working after a CLI edit.
+// APPEARANCE IS NOT MANAGED HERE ANY MORE (2026-10-14). The site wears the
+// PLATFORM's appearance — the Blocklet Console's Appearance tab at
+// `/.well-known/service/admin` — and the repo-owned `?page=appearance` page, its
+// `tone/palette/theme` records and the `show` / `set` / `sync-appearance`
+// subcommands were deleted with it. The theme bridge
+// (`.web/components/theme-bridge/script.js`) reads the platform and republishes
+// the guest-readable snapshot at
+// `/instance/app/arcblog/node/appearance.json`; nothing in this repository can
+// set the theme any more. Design + evidence:
+// `_research/S10-02-站点主题跟随平台主题-方案.md`.
 
-import { fail, optString, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
+import { fail, optString, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';
 import {
   GENERAL_DIR,
@@ -51,106 +36,6 @@ import {
   readGeneralSettingsDetailed,
   validateGeneralValue,
 } from './lib/general-settings.mjs';
-
-const SETTINGS_DIR = '/instance/settings/arcblog';
-/** Public projection the theme bridge reads for anonymous visitors (DEF-48 / `E14` = A). */
-export const APPEARANCE_PATH = '/instance/app/arcblog/node/appearance.json';
-const KEYS = {
-  tone: 'tone.json',
-  palette: 'palette.json',
-  theme: 'theme.json',
-};
-
-/**
- * Shape + validate the public projection. Pure (exported for the fast-tier test): an empty result
- * means "nothing to publish", and an unknown value is rejected by the caller rather than silently
- * published (a bad value in the projection looks exactly like "my change did nothing" — the same
- * fail-closed rule the private `set` path follows).
- */
-export function composeAppearance(values, updatedAt) {
-  const projection = {};
-  for (const key of Object.keys(KEYS)) {
-    const value = String(values?.[key] ?? '').trim();
-    if (value) projection[key] = value;
-  }
-  if (Object.keys(projection).length === 0) return null;
-  projection.source = SETTINGS_DIR;
-  projection.updatedAt = updatedAt;
-  return projection;
-}
-
-function commandSyncAppearance(opts) {
-  const instance = resolveInstance(opts);
-  const values = {};
-  for (const key of Object.keys(KEYS)) {
-    const { path, record } = readSetting(key, instance);
-    const options = optionsOf(record);
-    const value = String(record.value).trim();
-    if (options.length > 0 && !options.includes(value)) {
-      fail(
-        'VALIDATION',
-        `${key} holds "${value}" but its own options are: ${options.join(', ')} — fix ${path} before publishing it`,
-      );
-    }
-    values[key] = value;
-  }
-  const projection = composeAppearance(values, new Date().toISOString());
-  writeJson(APPEARANCE_PATH, projection, instance);
-  console.log(
-    JSON.stringify({ ok: true, action: 'appearance-sync', path: APPEARANCE_PATH, dir: SETTINGS_DIR, projection }, null, 2),
-  );
-}
-
-function readSetting(key, instance) {
-  const path = `${SETTINGS_DIR}/${KEYS[key]}`;
-  const record = readJson(path, instance);
-  if (!record?.value) {
-    fail('NOT_FOUND', `setting ${key} is missing at ${path} (it is installed with the blocklet)`);
-  }
-  return { path, record: record.value, ifMatch: record.ifMatch };
-}
-
-function optionsOf(record) {
-  return Array.isArray(record?.options) ? record.options.map((v) => String(v)) : [];
-}
-
-function commandShow(opts) {
-  const instance = resolveInstance(opts);
-  const settings = {};
-  for (const key of Object.keys(KEYS)) {
-    const { path, record } = readSetting(key, instance);
-    settings[key] = {
-      path,
-      value: record.value,
-      options: optionsOf(record),
-      label: record.label ?? '',
-      scope: record.scope ?? '',
-      type: record.type ?? '',
-    };
-  }
-  console.log(JSON.stringify({ ok: true, dir: SETTINGS_DIR, settings }, null, 2));
-}
-
-function commandSet(opts) {
-  const instance = resolveInstance(opts);
-  const requested = Object.keys(KEYS).filter((key) => optString(opts[key]) !== '');
-  if (requested.length === 0) fail('VALIDATION', 'nothing to set (use --tone/--palette/--theme)');
-
-  const written = [];
-  for (const key of requested) {
-    const value = optString(opts[key]).trim();
-    const { path, record, ifMatch } = readSetting(key, instance);
-    const options = optionsOf(record);
-    // Fail closed: never store a value the surface would not offer.
-    if (!options.includes(value)) {
-      fail('VALIDATION', `${key} must be one of: ${options.join(', ')} (got "${value}")`);
-    }
-    const next = { ...record, value };
-    writeJson(path, next, instance, ifMatch ?? undefined);
-    written.push({ key, path, previous: record.value, value });
-  }
-  console.log(JSON.stringify({ ok: true, action: 'settings-set', dir: SETTINGS_DIR, written }, null, 2));
-}
 
 // --- General settings (spec §15.9) -----------------------------------------
 
@@ -247,25 +132,15 @@ function generalSet(opts, instance) {
   );
 }
 
-
 function help() {
   console.log(FLAG_SYNTAX_NOTE);
-  console.log(`ArcBlog settings (spec §15.5 appearance, §15.9 general)
+  console.log(`ArcBlog settings (spec §15.9 general)
 
 Usage:
-  node scripts/arcblog-settings.mjs show
-  node scripts/arcblog-settings.mjs set --tone <value> [--palette <value>] [--theme <value>]
-  node scripts/arcblog-settings.mjs sync-appearance   # publish the guest-readable projection
   node scripts/arcblog-settings.mjs general install
   node scripts/arcblog-settings.mjs general show
   node scripts/arcblog-settings.mjs general set [--site-name <text>] [--language <en|zh>]
       [--timezone <IANA>] [--comments on|off] [--rss on|off] [--agent-access on|off]
-
-Appearance reads and writes /instance/settings/arcblog/{tone,palette,theme}.json —
-the same records the runtime settings surface and the theme bridge read. Those
-records are PRIVATE (403 to a signed-out reader), so \`sync-appearance\` mirrors them
-into ${APPEARANCE_PATH}, which the theme bridge reads for anonymous visitors
-(DEF-48). Refresh it after an appearance change, or just deploy.
 
 General reads and writes ${GENERAL_ROOT}/{general,switches}/<field>.json —
 the six Instance-level fields of spec §15.9 (site name, language, timezone and
@@ -275,14 +150,13 @@ value); see scripts/lib/general-settings.mjs for why they do not live under
 /instance/settings/arcblog/. \`install\` creates the records idempotently — the
 console page can only edit records that already exist.
 
-Values are validated against each record's own \`options\` (fail closed); every
-other field is preserved.
+APPEARANCE lives in the platform now: the Blocklet Console's Appearance tab
+(/.well-known/service/admin) is the only place the theme is set, and the theme
+bridge republishes the guest-readable snapshot at
+/instance/app/arcblog/node/appearance.json. This CLI cannot set it.
 
 Options:
   --instance <name>   Arc instance name (optional)
-  --tone <value>      design tone       (see: show)
-  --palette <value>   color palette     (see: show)
-  --theme <value>     default theme mode (system | light | dark)
   --site-name <text>  RSS channel title (default: ArcBlog)
   --language <value>  RSS <language>    (see: general show)
   --timezone <value>  IANA timezone     (see: general show)
@@ -299,12 +173,6 @@ const opts = parseCliArgs(argv.slice(1), import.meta.url);
 try {
   if (!command || command === 'help' || command === '--help' || command === '-h') {
     help();
-  } else if (command === 'show') {
-    commandShow(opts);
-  } else if (command === 'set') {
-    commandSet(opts);
-  } else if (command === 'sync-appearance') {
-    commandSyncAppearance(opts);
   } else if (command === 'general') {
     const sub = optString(opts._[0]);
     const instance = resolveInstance(opts);
@@ -313,7 +181,7 @@ try {
     else if (sub === 'set') generalSet(opts, instance);
     else fail('VALIDATION', `unknown general command: ${sub} (use install|show|set)`);
   } else {
-    fail('VALIDATION', `unknown command: ${command} (use show|set|sync-appearance|general)`);
+    fail('VALIDATION', `unknown command: ${command} (appearance moved to the platform console; use general install|show|set)`);
   }
 } catch (err) {
   console.error(JSON.stringify({ ok: false, code: err.code || 'RUNTIME_ERROR', error: err.message }, null, 2));

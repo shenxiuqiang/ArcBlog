@@ -34,9 +34,6 @@
     "saved": {
       "tree": "pages/saved.aup"
     },
-    "appearance": {
-      "tree": "pages/admin/appearance.aup"
-    },
     "compose-edit": {
       "tree": "pages/admin/compose-edit.aup"
     },

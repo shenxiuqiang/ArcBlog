@@ -23,13 +23,13 @@
 //   as an editor). The recipes therefore live with the pages, in `seed/recipes/`.
 //
 // The records are created here (not by a page) because a browser page may only
-// write a record that already exists — the same reason `arcblog-settings.mjs`
-// installs the appearance records. `install` is idempotent (byte-equal ⇒ nothing
-// is written) and **overwrites a recipe that differs from the seed**: the seed is
-// the upstream source of the reader's markup, and a recipe that silently lags
-// behind the repo is how DEF-21's raw-JSON regression returns. `--keep-local`
-// keeps an instance recipe that differs, and `check` reports drift without
-// writing.
+// write a record that already exists — the same reason `arcblog-settings.mjs
+// general install` seeds the general-settings records. `install` is idempotent
+// (byte-equal ⇒ nothing is written) and **overwrites a recipe that differs from
+// the seed**: the seed is the upstream source of the reader's markup, and a
+// recipe that silently lags behind the repo is how DEF-21's raw-JSON regression
+// returns. `--keep-local` keeps an instance recipe that differs, and `check`
+// reports drift without writing.
 
 import { fail, readJson, resolveInstance, writeJson } from './lib/arc.mjs';
 import { FLAG_SYNTAX_NOTE, parseCliArgs } from './lib/cli-flags.mjs';

@@ -74,8 +74,7 @@ export const SEO_DIR = `${GENERAL_ROOT}/seo`;
  *
  * `dir` selects the collection, `flag` is the CLI flag (`--<flag>`), `field` the
  * camelCase name the readers expose. `options` is the allow-list the writers
- * validate against (fail closed): a value outside it is rejected, never stored —
- * the same rule `arcblog-settings.mjs set` applies to tone / palette / theme.
+ * validate against (fail closed): a value outside it is rejected, never stored.
  */
 export const GENERAL_FIELDS = {
   'site-name': {
@@ -187,10 +186,9 @@ export function parseToggle(raw, key) {
 }
 
 /**
- * Validate a raw value against the field's own metadata, mirroring
- * `arcblog-settings.mjs commandSet`: select values must be one of the record's
- * `options`, a text value must be non-empty and bounded, a toggle must be a
- * boolean.
+ * Validate a raw value against the field's own metadata: select values must be
+ * one of the record's `options`, a text value must be non-empty and bounded, a
+ * toggle must be a boolean.
  */
 export function validateGeneralValue(key, raw) {
   const def = GENERAL_FIELDS[key];

@@ -316,17 +316,20 @@ test('install overwrites a recipe that drifted from the seed (no silent stalenes
 
 /**
  * The FRESH-INSTALL path (2026-10-12): `seed/settings/arcblog/*.json` seeds the platform settings
- * mount that ?page=appearance edits (auto-surface from /instance/settings/arcblog) and the theme
- * bridge reads, and `seed/recipes/<source>/item.json` is what `arcblog-recipes.mjs install` copies
- * into each bound record directory. Nothing tested either, and a seed whose default is outside its
- * own `options` is the quiet failure mode: the readers coerce out-of-options values back to the
- * documented default, so a fresh instance would come up with a different appearance than the seed
- * says, with no error anywhere.
+ * mount the runtime renders, and `seed/recipes/<source>/item.json` is what `arcblog-recipes.mjs
+ * install` copies into each bound record directory. Nothing tested either, and a seed whose default
+ * is outside its own `options` is the quiet failure mode: the readers coerce out-of-options values
+ * back to the documented default, so a fresh instance would come up with different behaviour than
+ * the seed says, with no error anywhere.
+ *
+ * 2026-10-14: the three appearance seeds (tone/palette/theme) were deleted with the move to the
+ * platform's appearance, so `home.json` is the only repo-owned settings seed left. The guard asserts
+ * the EXACT set — a seed added or removed without this line going red would otherwise be silent.
  */
 test('the settings seeds are well formed and their defaults are inside their own options', () => {
   const dir = join(repoRoot, 'seed', 'settings', 'arcblog');
   const files = readdirSync(dir).filter((f) => f.endsWith('.json'));
-  assert.ok(files.length >= 4, `settings seeds: ${files.length}`);
+  assert.deepEqual(files.sort(), ['home.json'], 'the fresh-install settings seeds changed — update this guard together with the seed');
   const problems = [];
   for (const f of files) {
     const d = JSON.parse(readFileSync(join(dir, f), 'utf8'));

@@ -1,19 +1,41 @@
 // theme-bridge: runs inside the hidden SSR iframe (mounted via the AUP `frame`
-// primitive with bridge=true) and drives the host document's
-// data-tone / data-palette / data-mode attributes from
-// /instance/settings/arcblog/{tone,palette,theme}.json.
+// primitive with bridge=true) and makes the HOST document wear the PLATFORM's
+// appearance — the Blocklet Console's Appearance tab is the only appearance
+// authority; this repository offers no theme of its own any more. Design and
+// evidence: `_research/S10-02-站点主题跟随平台主题-方案.md`.
+//
+// Sources, in the order resolve() uses them:
+//   1. signed-in — `GET /.well-known/service/api/theme`: the full MUI palette.
+//   2. snapshot  — `/instance/app/arcblog/node/appearance.json` (guest-readable,
+//      v2), (re)published by this bridge whenever (1) succeeded. Anonymous
+//      readers get the full palette from here.
+//   3. public    — `/.well-known/service/theme/init.js` (`var p = '<prefer>'`)
+//      and `/.well-known/service/theme/styles.css` (background + text, light and
+//      dark). The platform renders both PER REQUEST, so anonymous visitors track
+//      the console's mode/background/text without any cache of ours.
+//   `window.blocklet.theme` is deliberately NOT a source: measured 2026-10-14 it
+//   is the platform's DEFAULT theme (byte-identical for `arcblog` and `my-app`)
+//   and does not follow the console.
 //
 // Semantics:
-// - tone / palette are always enforced from settings (validated against the
-//   known value ranges; invalid values are ignored for that dimension).
-// - mode follows settings theme, with `system` resolved through
-//   prefers-color-scheme. If the visitor has manually toggled the theme
-//   (localStorage `web-mode`), the manual choice wins for mode.
-// - A MutationObserver on the host <html> element re-applies settings after
-//   the AUP runtime resets attributes on every in-app navigation. Navigation
-//   also recreates this iframe, so the bridge token is the iframe's window:
-//   a fresh iframe takes over and stale instances self-clean.
-// - window.afs.subscribe keeps the page in sync when an admin edits settings.
+// - The platform supplies COLOURS and the light/dark mode. The AUP `tone`
+//   (typography / spacing / shadows) has no platform counterpart and stays at
+//   the compiled value — the bridge never touches `data-tone`.
+// - Only the colour tokens the platform can express are written, as inline
+//   custom properties on the host <html>. `aup-core.css` defines 22 of them in
+//   its `[data-palette=…]` blocks; 4 are pure aliases that follow the other 18
+//   and are therefore NOT written here (see TOKEN_ALIASES). A token the platform
+//   does not define is simply not written, so the compiled AUP palette stays in
+//   force for it — a missing colour can never make the site unreadable.
+// - mode: manual `web-mode` override > platform `prefer` (`system` resolved
+//   through prefers-color-scheme) > snapshot prefer. The resolved mode is
+//   mirrored into the platform's own `arc_mode` cookie so the next pre-paint
+//   agrees (arc-contracts §69/§70).
+// - A MutationObserver on the host <html> element re-applies after the AUP
+//   runtime resets attributes on every in-app navigation. Navigation also
+//   recreates this iframe, so the bridge token is the iframe's window: a fresh
+//   iframe takes over and stale instances self-clean.
+// - window.afs.subscribe keeps the page in sync when the snapshot is rewritten.
 (function () {
   // Recursion guard: the SSR render of this page includes the app wrapper,
   // whose frame node embeds this very page again. Remove any nested frame
@@ -25,32 +47,161 @@
     /* best effort */
   }
 
-  var SETTINGS_DIR = '/instance/settings/arcblog';
-  // Public projection of the three private settings (DEF-48, human checkpoint `E14` = A): an
-  // anonymous visitor is refused `/instance/settings/**` with 403 "sign in to read this setting", so
-  // this guest-readable record — written by `scripts/arcblog-settings.mjs sync-appearance`, refreshed
-  // at every deploy, and republished by any signed-in admin page view — is what themes the site for
-  // readers. Private values still win whenever the session can read them.
-  var APPEARANCE_PATH = '/instance/app/arcblog/node/appearance.json';
-  var FILES = {
-    tone: SETTINGS_DIR + '/tone.json',
-    palette: SETTINGS_DIR + '/palette.json',
-    theme: SETTINGS_DIR + '/theme.json',
-  };
-  // Last resolved theme, mirrored into the host's localStorage on every apply
-  // and re-applied synchronously on boot (see applyCached). This closes the
-  // flash window on in-app navigation: the AUP runtime resets <html data-*>
-  // to the compiled default (dark) when it re-renders, and without the cache
-  // the correct mode only came back after the async settings reads — a dark
-  // frame on every menu click for light-theme visitors.
+  // ---- platform appearance sources ------------------------------------------------------------
+  var SNAPSHOT_PATH = '/instance/app/arcblog/node/appearance.json';
+  var SNAPSHOT_V = 2;
+  var PLATFORM_INIT = '/.well-known/service/theme/init.js';
+  var PLATFORM_CSS = '/.well-known/service/theme/styles.css';
+  var PLATFORM_API = '/.well-known/service/api/theme';
+  // Last resolved tokens, mirrored into the host's localStorage on every apply and re-applied
+  // synchronously on boot (see applyCached). This closes the flash window on in-app navigation: the
+  // AUP runtime resets <html data-*> (and with it the effective palette) when it re-renders, so the
+  // correct colours only come back after the async reads — a wrong-colour frame on every menu click.
   var CACHE_KEY = 'arcblog:theme:v1';
-  var RANGES = {
-    tone: { editorial: 1, clean: 1, mono: 1, bold: 1 },
-    palette: { natural: 1, neutral: 1, electric: 1, vivid: 1, warm: 1 },
-    theme: { system: 1, light: 1, dark: 1 },
-  };
+  // How long a resolved platform theme is trusted before the sources are re-read. Matches the
+  // platform's own `cache-control: max-age=60` on `/theme/init.js` and `/theme/styles.css`.
+  var CACHE_TTL = 60000;
   var BOOT_RETRIES = 100;
   var BOOT_DELAY = 30;
+
+  // >>> platform→AUP token map — guarded by scripts/arcblog-theme.test.mjs (18 written + 4 aliases)
+  // The 4 aliases are declared in `aup-core.css` as `:root,[data-palette]` rules
+  // (`--color-fg: var(--color-text)` etc.), so writing the 18 real ones moves them too.
+  var TOKEN_ALIASES = ['--color-fg', '--color-muted', '--color-text-muted', '--color-danger'];
+
+  /** `a.b.c` lookup that only answers with non-empty strings. */
+  function at(obj, path) {
+    var parts = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < parts.length; i++) {
+      if (!cur || typeof cur !== 'object') return null;
+      cur = cur[parts[i]];
+    }
+    return typeof cur === 'string' && cur.trim() ? cur.trim() : null;
+  }
+
+  /** `#rgb` / `#rrggbb` -> `#111111` or `#ffffff` (only used when the platform sends no contrastText). */
+  function contrastOn(color) {
+    var hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color || '');
+    if (!hex) return '#ffffff';
+    var h = hex[1];
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var chan = [0, 2, 4].map(function (i) {
+      var v = parseInt(h.substr(i, 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    var luminance = 0.2126 * chan[0] + 0.7152 * chan[1] + 0.0722 * chan[2];
+    return luminance > 0.6 ? '#111111' : '#ffffff';
+  }
+
+  /** An `N%` tint of a colour — the runtime itself uses `color-mix()` this way (`--shadow-*`). */
+  function tint(color, percent) {
+    return color ? 'color-mix(in srgb, ' + color + ' ' + percent + '%, transparent)' : null;
+  }
+
+  /**
+   * Map one platform palette (the MUI `palette` object) onto AUP colour tokens.
+   * A token whose source is absent is LEFT OUT (the compiled AUP palette governs it).
+   */
+  function mapPlatformPalette(P) {
+    var out = {};
+    if (!P || typeof P !== 'object') return out;
+    function put(token, value) {
+      if (value) out[token] = value;
+    }
+    var bg = at(P, 'background.default');
+    var paper = at(P, 'background.paper') || bg;
+    var primary = at(P, 'primary.main');
+    var secondary = at(P, 'secondary.main');
+    var success = at(P, 'success.main');
+    var info = at(P, 'info.main');
+    put('--color-bg', bg);
+    put('--color-surface', paper);
+    put('--surface-muted', at(P, 'grey.100') || paper || bg);
+    put('--color-border', at(P, 'divider'));
+    put('--color-text', at(P, 'text.primary'));
+    put('--color-dim', at(P, 'text.secondary'));
+    put('--color-accent', primary);
+    put('--color-on-accent', at(P, 'primary.contrastText') || contrastOn(primary));
+    put('--color-accent-bg', tint(primary, 8));
+    put('--color-accent-secondary', secondary || primary);
+    put('--color-assistant', primary);
+    put('--color-assistant-bg', tint(primary, 6));
+    put('--color-success', success);
+    put('--color-success-bg', tint(success, 12));
+    put('--color-error', at(P, 'error.main'));
+    put('--color-warning', at(P, 'warning.main'));
+    put('--color-info', info);
+    put('--color-info-bg', tint(info, 10));
+    return out;
+  }
+
+  /**
+   * Accept both shapes the platform can hand back:
+   *   A — a resolved theme: `{ light:{palette}, dark:{palette}, prefer, name }`
+   *       (the shape `/__blocklet__.js` and the servic portal use)
+   *   B — the stored concept: `{ concepts:[{id,name,prefer,themeConfig:{light,dark}}], currentConceptId }`
+   *       (the shape `cs_settings.app:theme` uses)
+   * Returns `null` when neither carries a palette, so the caller degrades to the public channels.
+   */
+  function normalizePlatformTheme(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    function build(prefer, name, light, dark) {
+      var l = mapPlatformPalette(light && light.palette ? light.palette : light);
+      var d = mapPlatformPalette(dark && dark.palette ? dark.palette : dark);
+      if (!Object.keys(l).length && !Object.keys(d).length) return null;
+      return { prefer: prefer || null, name: name || null, light: l, dark: d };
+    }
+    if (payload.light && payload.light.palette) {
+      return build(payload.prefer, payload.name, payload.light, payload.dark);
+    }
+    if (payload.palette) return build(payload.prefer, payload.name, payload.palette, payload.palette);
+    var list = payload.concepts;
+    if (list && list.length) {
+      var concept = null;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i] && list[i].id === payload.currentConceptId) concept = list[i];
+      }
+      concept = concept || list[0];
+      if (concept && concept.themeConfig) {
+        var tc = concept.themeConfig;
+        return build(concept.prefer || tc.prefer, concept.name, tc.light, tc.dark);
+      }
+    }
+    return null;
+  }
+
+  /** The live public channels: `prefer` from init.js, light+dark background/text from styles.css. */
+  function parseServiceTheme(css) {
+    var out = { light: {}, dark: {} };
+    if (!css) return out;
+    var root = /:root\s*\{([^}]*)\}/.exec(css);
+    var dark = /\[data-theme=['"]?dark['"]?\]\s*\{([^}]*)\}/.exec(css);
+    function read(block, name) {
+      if (!block) return null;
+      var m = new RegExp(name.replace(/[-]/g, '\\-') + '\\s*:\\s*([^;]+)').exec(block[1]);
+      return m ? m[1].trim() : null;
+    }
+    var bgLight = read(root, '--blocklet-background-default-color');
+    var textLight = read(root, '--blocklet-text-primary-color');
+    var bgDark = read(dark, '--blocklet-background-default-color');
+    var textDark = read(dark, '--blocklet-text-primary-color');
+    if (bgLight) out.light['--color-bg'] = bgLight;
+    if (textLight) out.light['--color-text'] = textLight;
+    if (bgDark) out.dark['--color-bg'] = bgDark;
+    if (textDark) out.dark['--color-text'] = textDark;
+    return out;
+  }
+
+  /** `prefer` out of the platform's own pre-paint script (`var p = 'dark'`). */
+  function parseServicePrefer(js) {
+    var m = /var\s+p\s*=\s*['"]([a-z]+)['"]/.exec(js || '');
+    if (!m) return null;
+    if (m[1] === 'dark' || m[1] === 'light') return m[1];
+    if (m[1] === 'system' || m[1] === 'auto') return 'system';
+    return null;
+  }
+  // <<< platform→AUP token map <<<
   // App-chrome layout that the platform's footer primitive cannot express
   // (arc-contracts §21.15): the divider belongs on the footer's top edge, and
   // the right-hand link column reads as one row. Class names are the platform's
@@ -203,53 +354,49 @@
     return null;
   }
 
-  /** Flatten a projection record (`read` hands it back as a JSON string under `.content`). */
-  function extractRecord(res) {
+  /** Flatten an AFS record (`read` hands it back as a JSON string under `.content`). */
+  function recordOf(res) {
     if (res == null) return null;
     if (typeof res === 'string') {
       try {
-        return extractRecord(JSON.parse(res));
+        return recordOf(JSON.parse(res));
       } catch (e) {
         return null;
       }
     }
     if (typeof res === 'object') {
-      if (typeof res.tone === 'string' || typeof res.palette === 'string' || typeof res.theme === 'string') return res;
-      if (typeof res.content === 'string') return extractRecord(res.content);
-      if (res.data) return extractRecord(res.data);
+      if (res.v === SNAPSHOT_V || res.palette || res.prefer) return res;
+      if (typeof res.content === 'string') return recordOf(res.content);
+      if (res.data) return recordOf(res.data);
     }
     return null;
   }
 
-  function extractValue(res) {
-    if (res == null) return null;
-    if (typeof res === 'string') {
-      try {
-        return extractValue(JSON.parse(res));
-      } catch (e) {
-        return null;
-      }
-    }
-    if (typeof res === 'object') {
-      if (typeof res.value === 'string') return res.value;
-      if (typeof res.content === 'string') return extractValue(res.content);
-      if (res.data) return extractValue(res.data);
-    }
-    return null;
-  }
+  // Colour tokens currently written as inline custom properties on the host <html>. `apply()` clears
+  // any of them its next resolution no longer defines, so a light -> dark switch cannot leave a
+  // stale value behind.
+  var appliedTokens = [];
 
-  // Synchronously re-apply the last resolved theme from the host's localStorage.
-  // Runs on boot before afs is available, so the correct mode is restored within
-  // a frame of the bridge script executing instead of after the settings reads.
+  // Synchronously re-apply the last resolved tokens from the host's localStorage. Runs on boot before
+  // afs is available, so the correct colours return within a frame of this script executing instead
+  // of after the async reads.
   function applyCached(p) {
+    var doc = p.document.documentElement;
     try {
-      var raw = p.localStorage.getItem(CACHE_KEY);
-      if (!raw) return;
-      var c = JSON.parse(raw);
-      var doc = p.document.documentElement;
-      if (c && typeof c.tone === 'string' && RANGES.tone[c.tone]) doc.setAttribute('data-tone', c.tone);
-      if (c && typeof c.palette === 'string' && RANGES.palette[c.palette]) doc.setAttribute('data-palette', c.palette);
-      if (c && typeof c.mode === 'string' && RANGES.theme[c.mode]) doc.setAttribute('data-mode', c.mode);
+      var c = JSON.parse(p.localStorage.getItem(CACHE_KEY) || 'null');
+      if (!c) return;
+      if (c.v !== 2) {
+        // v1 cached the retired `tone/palette/theme` triple. Nothing can refresh those values any
+        // more, so drop the entry instead of re-applying a theme with no source.
+        p.localStorage.removeItem(CACHE_KEY);
+        return;
+      }
+      if (c.mode === 'light' || c.mode === 'dark') doc.setAttribute('data-mode', c.mode);
+      var tokens = c.tokens || {};
+      for (var name in tokens) {
+        doc.style.setProperty(name, tokens[name]);
+        appliedTokens.push(name);
+      }
     } catch (e) {
       /* best effort */
     }
@@ -259,8 +406,23 @@
     var doc = p.document.documentElement;
     injectChromeStyles(p);
     var applying = false;
-    var current = { tone: null, palette: null, theme: null };
     var unsubs = [];
+    // What the platform says, per mode. `api*` = a signed-in read (the only FULL palette),
+    // `snap*` = the guest-readable snapshot this bridge republishes for anonymous readers,
+    // `public*` = the live anonymous channels (background + text only, rendered per request).
+    var state = {
+      prefer: null,
+      apiLight: null,
+      apiDark: null,
+      snapLight: null,
+      snapDark: null,
+      publicLight: null,
+      publicDark: null,
+    };
+    var snapshotCore = null;
+    var lastRead = 0;
+    var refreshTimer = null;
+
     // Only the newest bridge instance may apply. Navigation recreates this
     // iframe; the stale instance's observer/subscriptions self-clean on the
     // next event instead of racing the live one.
@@ -279,10 +441,21 @@
       unsubs = [];
     }
 
+    function osMode() {
+      try {
+        return p.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /** The visitor's own toggle wins over the platform (the header writes `web-mode`). */
     function manualMode() {
       try {
         var v = p.localStorage.getItem('web-mode');
-        return v === 'light' || v === 'dark' ? v : null;
+        if (v === 'light' || v === 'dark') return v;
+        if (v === 'auto') return osMode();
+        return null;
       } catch (e) {
         return null;
       }
@@ -291,44 +464,65 @@
     function resolvedMode() {
       var manual = manualMode();
       if (manual) return manual;
-      if (current.theme === 'light' || current.theme === 'dark') return current.theme;
-      if (current.theme === 'system') {
-        try {
-          return p.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        } catch (e) {
-          return null;
+      // `prefer` is read live on every page load: the platform renders init.js per request.
+      if (state.prefer === 'light' || state.prefer === 'dark') return state.prefer;
+      if (state.prefer === 'system') return osMode();
+      return null;
+    }
+
+    /**
+     * Which colour tokens the host should wear, in precedence order:
+     *   api (full, signed-in) > snapshot (full, guest-readable) > public (live bg/text) > compiled.
+     * Later layers overwrite earlier ones, so the live public values always beat the snapshot's two,
+     * and a signed-in read always beats both.
+     */
+    function tokensFor(mode) {
+      var out = {};
+      var layers = [
+        mode === 'dark' ? state.snapDark : state.snapLight,
+        mode === 'dark' ? state.publicDark : state.publicLight,
+        mode === 'dark' ? state.apiDark : state.apiLight,
+      ];
+      for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        for (var name in layer) {
+          if (layer[name]) out[name] = layer[name];
         }
       }
-      return null;
+      return out;
     }
 
     function apply() {
       if (!alive()) return;
       // The runtime may replace the host head on a render; re-assert idempotently.
       injectChromeStyles(p);
-      var tone = current.tone;
-      var palette = current.palette;
       var mode = resolvedMode();
+      var effective = mode || doc.getAttribute('data-mode') || 'light';
+      var tokens = tokensFor(effective);
       applying = true;
       try {
-        if (tone && doc.getAttribute('data-tone') !== tone) doc.setAttribute('data-tone', tone);
-        if (palette && doc.getAttribute('data-palette') !== palette) doc.setAttribute('data-palette', palette);
         if (mode && doc.getAttribute('data-mode') !== mode) doc.setAttribute('data-mode', mode);
-        // Mirror the resolved theme so the next navigation's bridge instance
-        // can re-apply it synchronously (see applyCached).
+        // A mode switch re-resolves a different token set: drop the ones this resolution lost.
+        for (var i = 0; i < appliedTokens.length; i++) {
+          if (!tokens[appliedTokens[i]]) doc.style.removeProperty(appliedTokens[i]);
+        }
+        appliedTokens = [];
+        for (var name in tokens) {
+          doc.style.setProperty(name, tokens[name]);
+          appliedTokens.push(name);
+        }
+        // Mirror the resolved colours so the next navigation's bridge instance can re-apply them
+        // synchronously (see applyCached) instead of painting the compiled palette first.
         try {
-          p.localStorage.setItem(
-            CACHE_KEY,
-            JSON.stringify({ tone: tone || null, palette: palette || null, mode: mode || null })
-          );
+          if (appliedTokens.length) {
+            p.localStorage.setItem(CACHE_KEY, JSON.stringify({ v: 2, mode: mode || null, tokens: tokens }));
+          }
         } catch (e) {
           /* best effort */
         }
         // Mirror the mode into the PLATFORM's own cookie as well (arc-contracts §69/§70): the AUP
         // shell's pre-paint script reads `arc_mode` — the same cookie the platform's server-driven
         // theme-toggle writes — and paints `<html data-mode>` from it BEFORE this bridge can run.
-        // Without this, a user who ever toggled the theme elsewhere pre-paints a mode that
-        // disagrees with the site settings (wrong-theme flash; §70 covers the white-viewport case).
         try {
           if (mode === 'light' || mode === 'dark') {
             p.document.cookie = 'arc_mode=' + mode + ';path=/;max-age=31536000;SameSite=Lax';
@@ -345,98 +539,130 @@
       }
     }
 
-    var published = null; // the projection as last read (null = absent or unreadable)
-    var publishTried = false;
-
-    function appearanceOf(source, keys) {
-      if (!source) return null;
-      var out = {};
-      for (var i = 0; i < keys.length; i++) {
-        var value = source[keys[i]];
-        out[keys[i]] = value && RANGES[keys[i]][value] ? value : null;
+    function fetchText(url) {
+      try {
+        return p
+          .fetch(url, { credentials: 'same-origin' })
+          .then(function (res) {
+            return res && res.ok ? res.text() : null;
+          })
+          .catch(function () {
+            return null;
+          });
+      } catch (e) {
+        return Promise.resolve(null);
       }
-      return out;
     }
 
-    function sameAppearance(a, b) {
-      var keys = Object.keys(FILES);
-      for (var i = 0; i < keys.length; i++) if ((a && a[keys[i]]) !== (b && b[keys[i]])) return false;
-      return true;
+    function coreOf(rec) {
+      return rec
+        ? JSON.stringify({
+            prefer: rec.prefer || null,
+            themeName: rec.themeName || null,
+            palette: rec.palette || null,
+          })
+        : null;
     }
 
-    /** Publish what we just read privately, so guests get it without waiting for a deploy. */
-    function publishAppearance() {
-      if (publishTried) return;
-      publishTried = true;
+    /** The guest-readable snapshot this bridge republishes for anonymous readers. */
+    function readSnapshot() {
+      try {
+        var read = typeof afs.tryRead === 'function' ? afs.tryRead(SNAPSHOT_PATH) : afs.read(SNAPSHOT_PATH);
+        return Promise.resolve(read)
+          .then(function (res) {
+            var rec = recordOf(res);
+            snapshotCore = coreOf(rec);
+            // Anything that is not this version — including the retired `tone/palette/theme` record —
+            // counts as "no snapshot": the live public channels and the compiled palette cover it.
+            if (!rec || rec.v !== SNAPSHOT_V) return null;
+            state.snapLight = (rec.palette && rec.palette.light) || null;
+            state.snapDark = (rec.palette && rec.palette.dark) || null;
+            if (rec.prefer && !state.prefer) state.prefer = rec.prefer;
+            return true;
+          })
+          .catch(function () {
+            return null;
+          });
+      } catch (e) {
+        return Promise.resolve(null);
+      }
+    }
+
+    /** Live anonymous channels: `prefer` + background/text, both rendered per request. */
+    function readPublic() {
+      return Promise.all([fetchText(PLATFORM_INIT), fetchText(PLATFORM_CSS)]).then(function (res) {
+        var prefer = parseServicePrefer(res[0]);
+        // Fill only: a signed-in read (same source, authoritative) must not be overwritten by a
+        // 60s-cached init.js.
+        if (prefer && !state.prefer) state.prefer = prefer;
+        var css = parseServiceTheme(res[1]);
+        if (Object.keys(css.light).length) state.publicLight = css.light;
+        if (Object.keys(css.dark).length) state.publicDark = css.dark;
+        return !!prefer || Object.keys(css.light).length > 0;
+      });
+    }
+
+    /** Publish what a signed-in read just learned, so guests follow without a deploy. */
+    function publishSnapshot(theme) {
       if (typeof afs.write !== 'function') return;
       var payload = {
-        tone: current.tone,
-        palette: current.palette,
-        theme: current.theme,
-        source: SETTINGS_DIR,
+        v: SNAPSHOT_V,
+        prefer: theme.prefer || null,
+        themeName: theme.name || null,
+        palette: { light: theme.light, dark: theme.dark },
+        source: PLATFORM_API,
         updatedAt: new Date().toISOString(),
       };
+      var core = coreOf(payload);
+      if (core === snapshotCore) return; // guests already read exactly this
       try {
-        Promise.resolve(afs.write(APPEARANCE_PATH, payload)).catch(function () {
-          /* read-only session: the deploy/CLI path still publishes it */
-        });
+        Promise.resolve(afs.write(SNAPSHOT_PATH, payload))
+          .then(function () {
+            snapshotCore = core;
+          })
+          .catch(function () {
+            /* read-only session: keep whatever the last admin visit published */
+          });
       } catch (e) {
         /* write unsupported */
       }
     }
 
-    function readAll() {
-      var keys = Object.keys(FILES);
-      return Promise.all(
-        keys.map(function (key) {
-          var read = typeof afs.tryRead === 'function' ? afs.tryRead(FILES[key]) : afs.read(FILES[key]);
-          return Promise.resolve(read)
-            .then(function (res) {
-              var value = extractValue(res);
-              current[key] = value && RANGES[key][value] ? value : null;
-            })
-            .catch(function () {
-              current[key] = null;
-            });
-        })
-      ).then(function () {
-        var fromPrivate = keys.every(function (key) {
-          return current[key];
-        });
-        if (fromPrivate) {
-          if (published && !sameAppearance(published, current)) publishAppearance();
-          return null;
+    /** The console's own theme — readable only with a session, and the only full palette. */
+    function readApi() {
+      return fetchText(PLATFORM_API).then(function (body) {
+        var payload = null;
+        try {
+          payload = body ? JSON.parse(body) : null;
+        } catch (e) {
+          payload = null;
         }
-        var read = typeof afs.tryRead === 'function' ? afs.tryRead(APPEARANCE_PATH) : afs.read(APPEARANCE_PATH);
-        return Promise.resolve(read)
-          .then(function (res) {
-            published = appearanceOf(extractRecord(res), keys);
-            if (!published) return;
-            var filled = false;
-            keys.forEach(function (key) {
-              if (!current[key] && published[key]) {
-                current[key] = published[key];
-                filled = true;
-              }
-            });
-            return filled ? true : null;
-          })
-          .catch(function () {
-            return null;
-          });
+        var theme = normalizePlatformTheme(payload);
+        if (!theme) return null;
+        state.apiLight = theme.light;
+        state.apiDark = theme.dark;
+        if (theme.prefer) state.prefer = theme.prefer;
+        publishSnapshot(theme);
+        return true;
       });
     }
 
-    var refreshTimer = null;
-    function refresh() {
+    /** Re-read every source (throttled) and apply. `force` runs once per bridge instance. */
+    function refresh(force) {
       if (refreshTimer || !alive()) return;
+      if (!force && lastRead && Date.now() - lastRead < CACHE_TTL) return;
       refreshTimer = setTimeout(function () {
         refreshTimer = null;
-        readAll().then(apply);
+        lastRead = Date.now();
+        readSnapshot()
+          .then(readPublic)
+          .then(readApi)
+          .then(apply);
       }, 50);
     }
 
-    // Re-apply after the AUP runtime resets data-* on navigation renders.
+    // Re-apply after the AUP runtime resets data-* on navigation renders. No re-read: the resolved
+    // state is already in memory, and the runtime resets the attributes it owns, not our inline ones.
     var observer = new p.MutationObserver(function (mutations) {
       if (!alive()) {
         teardown();
@@ -453,11 +679,12 @@
     });
     observer.observe(doc, { attributes: true, attributeFilter: ['data-tone', 'data-palette', 'data-mode'] });
 
-    // Keep `system` mode live when the OS preference flips.
+    // Keep the mode live when the OS preference flips: only `web-mode=auto` and the platform's
+    // `system` prefer depend on it, and `apply()` re-resolves both.
     try {
       var mq = p.matchMedia('(prefers-color-scheme: light)');
       var onScheme = function () {
-        if (alive() && !manualMode() && current.theme === 'system') apply();
+        if (alive()) apply();
       };
       if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onScheme);
       else if (typeof mq.addListener === 'function') mq.addListener(onScheme);
@@ -465,40 +692,20 @@
       /* matchMedia unavailable */
     }
 
-    // Live sync when settings change (e.g. admin edits in the settings page).
+    // Live sync when another session republishes the snapshot (e.g. the admin's own tab).
     if (typeof afs.subscribe === 'function') {
-      Object.keys(FILES).forEach(function (key) {
-        try {
-          var unsub = afs.subscribe({ path: FILES[key] }, refresh);
-          if (typeof unsub === 'function') unsubs.push(unsub);
-        } catch (e) {
-          /* subscription unsupported */
-        }
-      });
       try {
-        var unsubDir = afs.subscribe({ path: SETTINGS_DIR }, refresh);
-        if (typeof unsubDir === 'function') unsubs.push(unsubDir);
+        var unsub = afs.subscribe({ path: SNAPSHOT_PATH }, function () {
+          refresh(false);
+        });
+        if (typeof unsub === 'function') unsubs.push(unsub);
       } catch (e) {
         /* subscription unsupported */
       }
     }
 
-    // Learn the published projection first, so a signed-in admin's edit can be republished only
-    // when it actually differs (and a guest's readAll is a single extra round trip).
-    try {
-      var prime = typeof afs.tryRead === 'function' ? afs.tryRead(APPEARANCE_PATH) : afs.read(APPEARANCE_PATH);
-      Promise.resolve(prime)
-        .then(function (res) {
-          published = appearanceOf(extractRecord(res), Object.keys(FILES));
-        })
-        .catch(function () {});
-    } catch (e) {
-      /* projection unreadable: guests stay on the compiled theme */
-    }
-
-    readAll().then(apply);
+    refresh(true);
   }
-
   var tries = 0;
   // DEF-45 belt: remove any platform save chrome ("Bookmark" / "My saves") that still mounts.
   //

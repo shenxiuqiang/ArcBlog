@@ -80,15 +80,6 @@
     "i18n": 9,
     "tech": 0
   },
-  "appearance": {
-    "blocks": 2,
-    "cards": 0,
-    "nested": 0,
-    "ctrl": 0,
-    "styles": 4,
-    "i18n": 5,
-    "tech": 0
-  },
   "operations": {
     "blocks": 1,
     "cards": 1,
@@ -162,23 +153,22 @@
     "tech": 0
   },
   "_sources": {
-    "dashboard": "4def279e029bed77",
-    "posts": "5b6634cb1b0ba1b2",
-    "pages": "1297310fa4f3aba5",
-    "compose": "f25e722e8b6b4b03",
-    "heroes": "857fbd64f92481c5",
-    "categories": "3bc3e101eb7f501e",
-    "tags": "4da4146134b708e3",
-    "seo": "11beb97b9e4126b3",
-    "feeds": "c229535bb6becc19",
-    "appearance": "629e5b0af9d300e5",
-    "operations": "0fbccf0d2ed32407",
-    "registry": "d4e15894e49591e4",
-    "factory": "e6c82dd51fa75738",
-    "media": "9fc9820163c34495",
-    "agents": "d2127894ef7d212c",
-    "general": "f4a24a019bacd25e",
-    "diagnostics": "52d6106bf7fd8ece",
+    "dashboard": "109f933c68af8c60",
+    "posts": "9a97a8b8b1e6393f",
+    "pages": "5032c1c2af855681",
+    "compose": "9c789c3ee46db696",
+    "heroes": "3a7ea3ce402e7430",
+    "categories": "44c8b221682b0ec2",
+    "tags": "c085e2ad4ddcf027",
+    "seo": "49e673c688416ca0",
+    "feeds": "b2a94fecaa85db8b",
+    "operations": "fb02e7f42118906b",
+    "registry": "75e0783ca07364df",
+    "factory": "5e808255c7165eb9",
+    "media": "8fbc23ac91b24f36",
+    "agents": "b38208dd8f5842b5",
+    "general": "0884cc690a77e75e",
+    "diagnostics": "f1432acfb6d411fc",
     "compose-edit": "398464e72ac8bf15"
   }
 }

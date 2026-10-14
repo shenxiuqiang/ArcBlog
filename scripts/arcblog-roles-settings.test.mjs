@@ -85,7 +85,9 @@ test('the re-verify control is a queued intent + worker, never a second buy path
   assert.equal((general.match(/chain-intents/g) || []).length, 0, 'the settings page must not queue chain intents');
   assert.match(general, /href="\/\?page=factory"/, 'the page must link to the Node NFT page');
   // the pages/addresses surface must not grow without a ledger entry: ENG-07
-  // removed 5 console pages (hub + economy orders/policy/access/ledger) and
-  // ENG-10 added registry, so the count is now 17 — same guard, updated constant.
-  assert.equal(CONSOLE_SECTIONS.length, 17, 'the console page count moved — update this constant only with a ledger entry');
+  // removed 5 console pages (hub + economy orders/policy/access/ledger), ENG-10 added
+  // registry, and 2026-10-14 removed `appearance` (the site wears the PLATFORM's
+  // appearance now — see `_research/S10-02`), so the count is 16 — same guard,
+  // updated constant.
+  assert.equal(CONSOLE_SECTIONS.length, 16, 'the console page count moved — update this constant only with a ledger entry');
 });

@@ -158,12 +158,12 @@ run('npm', ['run', 'verify:artifacts']);
 // to raw JSON. `install` is idempotent, so every deploy asserts them cheaply.
 run('node', ['scripts/arcblog-recipes.mjs', 'install', '--json']);
 
-// ------------------- 2c. public appearance projection (DEF-48 / E14 = A) ---------------------
-// The three appearance settings are PRIVATE (403 "sign in to read this setting" for a signed-out
-// reader), while the theme bridge runs in the visitor's browser — so every anonymous reader kept
-// the runtime's compiled theme. This mirrors them into the guest-readable projection the bridge
-// reads. Idempotent, and an AFS write (not part of the deployed artifact).
-run('node', ['scripts/arcblog-settings.mjs', 'sync-appearance']);
+// Step 2c (public appearance projection) was DELETED on 2026-10-14. It existed because the three
+// appearance settings were private to the blocklet while the theme bridge runs in the visitor's
+// browser (DEF-48). Appearance now comes from the PLATFORM — the Blocklet Console's Appearance tab —
+// so there is nothing for the deploy to publish: the bridge reads the platform's own public channels
+// (`/theme/init.js` + `/theme/styles.css`) for every visitor and republishes the guest-readable
+// snapshot itself whenever a signed-in session can read `/api/theme`. Nothing to run here.
 
 // ------------------------------------------------------- 3. deploy ----------
 run('arc', ['blocklet', 'instance', 'deploy', '.', '--domain', DOMAIN, '--json']);

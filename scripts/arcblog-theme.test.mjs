@@ -1,22 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// The compiled `mode` is what the AUP runtime writes onto `<html data-mode>` on
-// every render — including in-app navigation. The theme-bridge iframe then
-// re-resolves `system` and manual overrides, but it is recreated per navigation
-// and can only run once the main thread is free (measured: ~250-350ms later).
-// So when the compiled mode disagrees with the resolved appearance, every menu
-// click paints the wrong theme first and then flips — the "dark flash" bug.
+// The site wears the PLATFORM's appearance (Blocklet Console → Appearance) since 2026-10-14; the
+// bridge is the only adapter. Design + evidence: `_research/S10-02-站点主题跟随平台主题-方案.md`.
 //
-// These tests keep that default from drifting, and keep the bridge able to do
-// its job when the site default *is* adaptive.
+// What the compiled `mode` still does: the AUP runtime writes it onto `<html data-mode>` on every
+// render (including in-app navigation) and the bridge iframe only re-resolves it ~250–350 ms later,
+// so it must stay explicit or the runtime's own dark default flashes first. The RESOLVED mode now
+// comes from the platform (`prefer`), with a manual `web-mode` override.
+//
+// These tests keep (a) that compiled fallback explicit, (b) the retired repo-owned appearance source
+// from creeping back, (c) the platform→token map complete, and (d) the host-chrome repairs the same
+// iframe carries (save chrome, overlay paint, sign-out cookie) intact.
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const appPath = join(repoRoot, '.aup', 'app.aup');
 const bridgePath = join(repoRoot, '.web', 'components', 'theme-bridge', 'script.js');
+/** The seed that used to drive the site's default theme — deleted with the move to the platform. */
 const seedThemePath = join(repoRoot, 'seed', 'settings', 'arcblog', 'theme.json');
 
 function appMode() {
@@ -31,35 +34,44 @@ test('the app declares an explicit theme mode', () => {
   );
 });
 
-test('a fixed site default theme matches the compiled mode (adaptive default: boundary declared)', (t) => {
-  const seed = JSON.parse(readFileSync(seedThemePath, 'utf8'));
-  // U19 (probe close, 2026-10-12): an adaptive default (`system`) cannot be
-  // compared against one compiled mode by construction — the bridge resolves it
-  // per visitor, and the flash window is the documented cost (arc-contracts §17).
-  // The probe's judgement forbids a SILENT return, so this branch declares the
-  // boundary explicitly AND still asserts what is decidable under `system`.
-  if (seed.value === 'system') {
-    assert.equal(seed.value, 'system');
-    assert.ok(
-      appMode(),
-      'even under an adaptive site default the compiled fallback must be explicit (mode light|dark) — otherwise the runtime paints its dark default first on every navigation',
-    );
-    t.diagnostic(
-      'U19 boundary declared: seed theme is "system" (adaptive) — per-visitor mode consistency is resolved by the theme bridge and is NOT asserted here; the compiled fallback asserted above is what this test guards.',
-    );
-    return;
-  }
-  assert.equal(
+test('the compiled mode stays an explicit pre-bridge fallback, and the retired source cannot come back', () => {
+  // There is nothing left to compare the compiled mode against: the site's default appearance IS the
+  // platform's `prefer`, resolved live by the bridge. What must stay true is that the pre-bridge
+  // paint is defined (the runtime's own default is dark), and that the deleted repo-owned source is
+  // really gone — a silent return would look exactly like "the platform theme stopped working".
+  assert.ok(
     appMode(),
-    seed.value,
-    `seed theme is fixed "${seed.value}" but the compiled mode is "${appMode()}" — every navigation would paint the wrong appearance first`,
+    '.aup/app.aup must keep declaring `mode light` or `mode dark`: it is what the runtime paints before the bridge runs',
   );
+  const bridge = readFileSync(bridgePath, 'utf8');
+  assert.doesNotMatch(
+    bridge,
+    /\/instance\/settings\/arcblog/,
+    'the bridge must not read the retired appearance settings — the platform is the only source (S10-02)',
+  );
+  assert.doesNotMatch(bridge, /\bRANGES\b/, 'the retired tone/palette/theme value table must not come back');
+  assert.equal(existsSync(seedThemePath), false, `the retired appearance seed must stay deleted: ${seedThemePath}`);
 });
 
-test('the theme bridge still resolves system mode and manual overrides', () => {
+test('the theme bridge reads the platform, resolves mode, and keeps the host-chrome repairs', () => {
   const src = readFileSync(bridgePath, 'utf8');
   assert.match(src, /prefers-color-scheme: light/, 'the bridge must resolve `system` through prefers-color-scheme');
   assert.match(src, /web-mode/, 'the bridge must honour the manual mode override');
+  // The three platform sources, in the documented precedence. Dropping one is not a style choice:
+  // `/api/theme` is the only FULL palette (signed-in), the snapshot is what anonymous readers get,
+  // and the two `/theme/*` files are the only channels that track the console live for everyone.
+  assert.match(src, /PLATFORM_API = '\/\.well-known\/service\/api\/theme'/, 'the signed-in source must stay wired');
+  assert.match(src, /PLATFORM_INIT = '\/\.well-known\/service\/theme\/init\.js'/, 'the live `prefer` source must stay wired');
+  assert.match(src, /PLATFORM_CSS = '\/\.well-known\/service\/theme\/styles\.css'/, 'the live background/text source must stay wired');
+  assert.match(src, /SNAPSHOT_PATH = '\/instance\/app\/arcblog\/node\/appearance\.json'/, 'the guest-readable snapshot path must stay');
+  assert.match(src, /normalizePlatformTheme/, 'both platform payload shapes must be normalized');
+  assert.match(src, /afs\.write\(SNAPSHOT_PATH/, 'a signed-in view must republish the snapshot for guests');
+  // `window.blocklet.theme` is the platform DEFAULT (measured 2026-10-14: identical for arcblog and
+  // my-app, and it disagreed with the console's stored theme) — wiring it back in would silently
+  // theme the site with the wrong palette. Comments are stripped first: the file must be able to
+  // DOCUMENT that decision without tripping its own guard.
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.doesNotMatch(code, /blocklet\.theme/, 'window.blocklet.theme is not a source (S10-02 §1.1)');
   // DEF-45: the platform mounts English save chrome ("Bookmark"/"My saves") on the host document.
   // The PRIMARY fix is the manifest (`blocklet.yaml` `save: false` → `data-arc-save-capability="off"`
   // before the first paint; measured 2026-10-13: the bar painted at t≈24–35 ms, before this iframe
@@ -74,7 +86,7 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
   assert.match(src, /arc-save-bar|data-arc-save/, 'the bridge must sweep an already-mounted save bar');
   // The platform's pre-paint script reads BOTH `localStorage['web-mode']` and the `arc_mode` cookie
   // (the platform theme-toggle writes both). The bridge must mirror its resolved mode into that
-  // cookie too, or the next navigation pre-paints a mode the site settings disagree with
+  // cookie too, or the next navigation pre-paints a mode the platform theme disagrees with
   // (arc-contracts §69/§70; measured 2026-10-13).
   assert.match(
     src,
@@ -84,7 +96,7 @@ test('the theme bridge still resolves system mode and manual overrides', () => {
   assert.match(
     src,
     /arcblog:theme:v1/,
-    'the bridge must cache the resolved theme so a fresh iframe re-applies it the moment it runs instead of after the settings reads',
+    'the bridge must cache the resolved tokens so a fresh iframe re-applies them the moment it runs instead of after the platform reads',
   );
 });
 
@@ -136,37 +148,51 @@ test('the overlay frame is hidden, so it can never paint over the page (blank-pa
 });
 
 /**
- * The appearance controls and the bridge must agree (2026-10-12, ENG-48). `?page=appearance` renders
- * the platform settings surface from `seed/settings/arcblog/{tone,palette,theme}.json`, and the
- * bridge carries its own accepted set in `RANGES`. An option the bridge does not know is a control
- * that silently does nothing (the false-green class this repository keeps hunting); a bridge value
- * nobody can select is dead code. Measured first: both sides agree exactly — tone 4, palette 5,
- * theme 3.
+ * The platform→token map must be COMPLETE (2026-10-14). `aup-core.css` assigns 22 colour tokens
+ * inside its `[data-palette=…][data-mode=…]` blocks; 4 of them are pure aliases (`--color-fg`,
+ * `--color-muted`, `--color-text-muted`, `--color-danger` = `var(--color-text|--color-dim|…)`), so a
+ * complete map writes exactly the other 18. A token the bridge forgets is a colour that silently
+ * keeps the compiled AUP value while the rest of the page follows the platform — the false-green
+ * class this repository keeps hunting.
+ *
+ * Both sets are pinned here, measured 2026-10-14 against the served `aup-core.css`; the recompute
+ * script is `_research/S10-02-站点主题跟随平台主题-方案.md` §6. If the platform adds a token, this
+ * test goes red instead of the site going half-themed.
  */
-test('every selectable appearance value is one the bridge implements, and vice versa', () => {
-  const bridge = readFileSync(join(repoRoot, '.web', 'components', 'theme-bridge', 'script.js'), 'utf8');
-  const block = /var RANGES = \{([\s\S]*?)\n  \};/.exec(bridge);
-  assert.ok(block, 'RANGES table not found in the theme bridge');
+const PLATFORM_TOKENS = [
+  '--color-accent',
+  '--color-accent-bg',
+  '--color-accent-secondary',
+  '--color-assistant',
+  '--color-assistant-bg',
+  '--color-bg',
+  '--color-border',
+  '--color-dim',
+  '--color-error',
+  '--color-info',
+  '--color-info-bg',
+  '--color-on-accent',
+  '--color-success',
+  '--color-success-bg',
+  '--color-surface',
+  '--color-text',
+  '--color-warning',
+  '--surface-muted',
+];
+const TOKEN_ALIASES = ['--color-danger', '--color-fg', '--color-muted', '--color-text-muted'];
 
-  const ranges = {};
-  for (const axis of ['tone', 'palette', 'theme']) {
-    const row = new RegExp(`${axis}: \\{([^}]*)\\}`).exec(block[1]);
-    assert.ok(row, `RANGES.${axis} not found`);
-    ranges[axis] = [...row[1].matchAll(/([a-z]+): 1/g)].map((m) => m[1]).sort();
-    assert.ok(ranges[axis].length >= 3, `RANGES.${axis} parsed: ${ranges[axis].length}`);
-  }
+test('the platform→AUP token map writes every real colour token and none of the aliases', () => {
+  const bridge = readFileSync(bridgePath, 'utf8');
+  const body = /function mapPlatformPalette\(([\s\S]*?)\n  \}/.exec(bridge);
+  assert.ok(body, 'mapPlatformPalette() not found in the theme bridge');
+  const written = [...new Set([...body[1].matchAll(/'(--[a-z-]+)'/g)].map((m) => m[1]))].sort();
+  assert.deepEqual(written, [...PLATFORM_TOKENS].sort(), 'the map must write exactly the 18 real tokens');
 
-  const problems = [];
-  for (const axis of ['tone', 'palette', 'theme']) {
-    const seed = JSON.parse(readFileSync(join(repoRoot, 'seed', 'settings', 'arcblog', `${axis}.json`), 'utf8'));
-    const options = [...seed.options].sort();
-    const onlySeed = options.filter((o) => !ranges[axis].includes(o));
-    const onlyBridge = ranges[axis].filter((o) => !options.includes(o));
-    if (onlySeed.length) problems.push(`${axis}: selectable but not implemented by the bridge: ${onlySeed.join(', ')}`);
-    if (onlyBridge.length) problems.push(`${axis}: implemented but not selectable: ${onlyBridge.join(', ')}`);
-    if (!options.includes(seed.value)) problems.push(`${axis}: default '${seed.value}' is not selectable`);
-  }
-  assert.deepEqual(problems, [], `appearance controls and the bridge disagree:\n  ${problems.join('\n  ')}`);
+  const aliasBlock = /var TOKEN_ALIASES = \[([^\]]*)\]/.exec(bridge);
+  assert.ok(aliasBlock, 'TOKEN_ALIASES not found');
+  const aliases = [...aliasBlock[1].matchAll(/'(--[a-z-]+)'/g)].map((m) => m[1]).sort();
+  assert.deepEqual(aliases, [...TOKEN_ALIASES].sort(), 'the 4 alias tokens must be declared and NOT written');
+  assert.equal(written.length + aliases.length, 22, 'every token aup-core.css assigns in a palette block must be accounted for');
 });
 
 /**
@@ -270,30 +296,24 @@ test('the bridge repairs the host-only session cookie on an explicit Sign Out cl
   );
 });
 
-test('the bridge reads and republishes the public appearance projection (DEF-48 / E14 = A)', async () => {
-  const src = readFileSync(join(repoRoot, '.web/components/theme-bridge/script.js'), 'utf8');
-  // A signed-out reader is refused the private settings tree (403 "sign in to read this setting"), so
-  // the bridge MUST fall back to the guest-readable projection, and MUST republish what it can read
-  // privately so the next visitor gets it without waiting for a deploy.
-  assert.match(src, /APPEARANCE_PATH = '\/instance\/app\/arcblog\/node\/appearance\.json'/);
-  assert.match(src, /extractRecord/, 'the projection record must be flattened (a JSON string under .content)');
-  assert.match(src, /afs\.write\(APPEARANCE_PATH/, 'a signed-in admin view must republish the projection');
-
-  const { APPEARANCE_PATH, composeAppearance } = await import('./arcblog-settings.mjs');
-  assert.equal(APPEARANCE_PATH, '/instance/app/arcblog/node/appearance.json');
-  const projection = composeAppearance({ tone: 'clean', palette: 'natural', theme: 'light' }, '2026-10-13T00:00:00.000Z');
-  assert.deepEqual(projection, {
-    tone: 'clean',
-    palette: 'natural',
-    theme: 'light',
-    source: '/instance/settings/arcblog',
-    updatedAt: '2026-10-13T00:00:00.000Z',
-  });
-  assert.equal(composeAppearance({}, '2026-10-13T00:00:00.000Z'), null, 'nothing to publish');
-  assert.equal(composeAppearance({ tone: '  ', theme: 'dark' }, 'x').tone, undefined, 'blank values are dropped');
+test('the snapshot a signed-in read publishes is v2, versioned, and ignores the retired shape', () => {
+  const src = readFileSync(bridgePath, 'utf8');
+  // A signed-out reader gets 401 from `/api/theme`, so the full palette reaches guests only through
+  // this guest-readable record (S10-02 §3). The publisher must stay recognisable from the outside:
+  // version, prefer, both palettes and the provenance.
+  assert.match(src, /var SNAPSHOT_V = 2;/, 'the snapshot schema version must be explicit');
+  assert.match(src, /v: SNAPSHOT_V,/, 'the published payload must carry that version');
+  assert.match(src, /prefer: theme\.prefer \|\| null/, 'the payload must carry prefer');
+  assert.match(src, /palette: \{ light: theme\.light, dark: theme\.dark \}/, 'the payload must carry both palettes');
+  assert.match(src, /source: PLATFORM_API/, 'the payload must record where it came from');
+  // The retired v1 shape (`{tone,palette,theme}`) must be treated as "no snapshot", not half-read:
+  // its `palette` was a STRING, so a trusting reader would silently apply nothing.
+  assert.match(src, /rec\.v !== SNAPSHOT_V/, 'a record that is not v2 must count as "no snapshot"');
+  assert.match(src, /recordOf/, 'the AFS record must be flattened (a JSON string under .content)');
 });
 
-test('the deploy pipeline refreshes that projection', () => {
+test('the deploy pipeline no longer touches appearance', () => {
   const src = readFileSync(join(repoRoot, 'scripts/arcblog-deploy.mjs'), 'utf8');
-  assert.match(src, /'sync-appearance'/, 'a deploy must publish a fresh appearance projection');
+  assert.doesNotMatch(src, /sync-appearance/, 'step 2c is gone: the platform owns the theme (S10-02 §4.2)');
+  assert.doesNotMatch(src, /arcblog-settings\.mjs/, 'the deploy must not call the retired appearance CLI');
 });

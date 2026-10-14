@@ -3284,3 +3284,77 @@ after fresh load: {"menuState":"anonymous","loginBtn":1,"paintedSamples":0,"barN
 domain cookie 的对照同样登出成功（服务端删）⇒ **两种 scope 都收口**。守卫：`scripts/arcblog-theme.test.mjs`（断言函数、`login_token` 过期串、`data-danger` 结构匹配、"最后一项"约束、只允许出现在 click 钩子里）。
 
 **（4）为什么"根治"不在本仓。** `Set-Cookie` 由 daemon 的路由发出：AUP 面与 web 面都没有响应头控制权（`render.js` 只产出 HTML），而"每个请求都过期 `login_token`"会把所有人登出。正确处置 = **本仓兜底（用户点登出即生效）** + **平台侧修**（登出响应应同时过期 host-only scope，即再发一条不带 `Domain` 的 `login_token=; Max-Age=0`）。登记：边界 **`B27`**、缺陷 **`DEF-49`**。
+
+## 76. 站点外观改为**平台主题的下游**：三条公开通道、`/api/theme` 的登录门、`window.blocklet.theme` **不是**控制台外观（2026-10-14 实测）
+
+**基线**：`arc` 2.0.0-beta.66 (54a9b40e) ｜ daemon `127.0.0.1:4939`（instance `default`）｜ blocklet `arcblog`（对照 `my-app`）｜ 仓库基线 `4193de8`（本轮改动**未提交**）。
+**背景**：人类裁定「项目主题使用平台的主题，平台修改主题后项目主题跟着变化」。本仓因此删除自研外观设置（`?page=appearance` + `tone/palette/theme` 记录 + `sync-appearance` + 部署步骤 2c），theme-bridge 改为读平台。以下全部为原样输出。
+
+**（1）控制台把外观写进 daemon 的鉴权库，不在 AFS。**
+
+```bash
+sqlite3 -readonly ~/.afs-data/auth.db \
+  "select key,substr(value,1,90),updated_at from cs_settings where instance_did='arcblog';"
+# arcblog|app:theme|{"concepts":[{"id":"default","name":"Custom","prefer":"dark","themeConfig":{…}}]…|2026-10-14 05:22:20
+# arcblog|app:branding|{"name":"MyBlog","description":"","url":"","passportColor":"#1DC1C7","copyright":{}}|2026-10-14 03:12:57
+# arcblog|app:name|MyBlog|2026-10-14 03:12:57
+```
+
+`~/.afs/daemon.log` 同刻的写入方：`2026-10-14T03:12:57.364Z … "method":"PUT","path":"/.well-known/service/api/branding","status":200`（该端点匿名 **401**，所以这是登录态控制台）。
+
+**（2）三个**公开、匿名、随请求现渲染**的通道（`cache-control: public, max-age=60`），以及一个**登录态**通道。**
+
+```bash
+B=http://arcblog.localhost:4939
+curl -s "$B/.well-known/service/theme/init.js?cb=$RANDOM"   | grep -o "var p = '[a-z]*'"
+curl -s "$B/.well-known/service/theme/styles.css?cb=$RANDOM"
+curl -s "$B/.well-known/service/login"                      | grep -o '"appName":"[^"]*"\|"theme":"[^"]*"'
+curl -s -o /dev/null -w '%{http_code}\n' "$B/.well-known/service/api/theme"
+```
+
+| 通道 | arcblog（原样） | my-app（对照） |
+| --- | --- | --- |
+| `/theme/init.js` | `var p = 'dark'` | `var p = 'system'` |
+| `/theme/styles.css` | `:root{--blocklet-background-default-color:#ffffff;--blocklet-text-primary-color:#212121}` / `[data-theme='dark']{#000000…#ffffff}` | `#fff/#18181b` 与 `#121212/#ffffff`（MUI 默认） |
+| `/login`（服务端渲染） | `"appName":"MyBlog"` ｜ `"theme":"dark"` | `"appName":"my-app"`（无 `theme` 键 = 默认） |
+| `/api/theme` 匿名 | **401** `{"ok":false,"error":"Authentication required","code":"UNAUTHENTICATED"}`（对照日志里登录态 `GET /api/theme 200`） | 同 |
+
+**时效实测**：控制台 **05:22:20** 把 `prefer` 由 `system` 改成 `dark` ⇒ **05:27** 复跑 `init.js` 已是 `var p = 'dark'`（`my-app` 仍 `'system'`）。**无需重启 daemon**；客户端 60 s 缓存是唯一延迟。
+
+**（3）`window.blocklet.theme` **不是**控制台外观 —— 它是平台默认主题。**
+
+```bash
+for h in arcblog my-app; do curl -s "http://$h.localhost:4939/__blocklet__.js?cb=$RANDOM" | python3 -c "…print(name, prefer, light.palette.primary.main)…"; done
+# arcblog  name=Default prefer=system primary=#00bba7
+# my-app   name=Default prefer=system primary=#00bba7
+```
+
+两者**逐字段同款**，而 arcblog 存的主题是 `primary #1976d2` / `prefer dark` ⇒ 该通道不反映控制台，**不能当数据源**（本仓的桥因此不读它）。
+
+**（4）AUP 面的上色面封闭可枚举：22 个 token = 18 实值 + 4 别名。**
+
+```bash
+curl -s "$B/aup-core.b9a916791263e48f.css" -o /tmp/aup-core.css   # 文件名取自页面 <link>
+python3 - <<'PY'   # 全脚本 = _research/S10-02-站点主题跟随平台主题-方案.md §6
+# 扫 [^{}]+{[^{}]*} 块，收集在 [data-palette=…] 里被赋值的 --color-*/--surface-muted，
+# 再把值全是 var(--color-…) 的判为别名
+PY
+# tokens in palette blocks: 22
+# aliases: 4  ['--color-danger','--color-fg','--color-muted','--color-text-muted']
+# bridge must write: 18
+```
+
+`[data-tone=…]` 块实测**只含排版/阴影**（`--font-*`/`--type-*`/`--radius-*`/`--page-*`/`--space-*`/`--shadow-*`，其中唯一颜色引用是 `color-mix(… var(--color-text) …)`）⇒ **tone 与平台主题不相干**，桥不改写 `data-tone`。
+
+**（5）落地与验证**（本轮改动，未提交）。桥 = `.web/components/theme-bridge/script.js`：取 `匿名公开三件 → guest 快照（v2，guest 可读）→ 登录态 /api/theme`，映射 18 个 token 为宿主 `<html>` 的内联自定义属性；`mode = 手动 web-mode > 平台 prefer > 快照`；登录态读到 `/api/theme` 时回写快照。
+
+```bash
+node scripts/arcblog-browser-probe.mjs "$B/?page=index" --fresh --json
+# title = "MyBlog"
+# htmlAttrs: tone="editorial"（编译值，桥不再改写）｜palette="natural"｜mode="dark"（= 平台 prefer，
+#            此前为仓库记录的 light）｜arcSave="locked->false"｜saveBar=0｜overlayFrames=1
+# bridgeCache = {"v":2,"mode":"dark","tokens":{"--color-bg":"#000000","--color-text":"#ffffff"}}
+```
+
+截图（756×469，暗色、正文/卡片可读）与 `?page=index` 全页一致；`npm test`（快层 32 文件）与 `arc dsl validate --json`（issues `[]`）全绿。
+**边界登记**：`docs/05-开发文档/02-平台能力与边界.md` 的 `B28`（完整调色板只对登录态公开）+ `B10`（仓库不再有默认外观）；旧口径的 `B10`/`U19`/`V-Q4` 已随之退役/结案。

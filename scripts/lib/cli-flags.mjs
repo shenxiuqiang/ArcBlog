@@ -75,7 +75,7 @@ export const SCRIPT_FLAGS = {
   "arcblog-query-posts.mjs": ["args", "category", "instance", "json", "limit", "source", "tag"],
   "arcblog-roles.mjs": ["asset-id", "by", "chain-verification", "claimable-at", "help", "intent-id", "interval", "link-exit", "network", "reason", "role", "stake-id", "state", "studio-collection", "update"],
   "arcblog-rss.mjs": ["args", "feed-description", "feed-link", "feed-title", "instance", "json", "limit"],
-  "arcblog-settings.mjs": ["agent-access", "comments", "help", "instance", "language", "palette", "rss", "site-name", "theme", "timezone", "tone"],
+  "arcblog-settings.mjs": ["agent-access", "comments", "help", "instance", "language", "rss", "site-name", "timezone"],
   "arcblog-summarize.mjs": ["from-registry", "help", "id", "instance", "json", "limit", "llm", "max-collect", "question", "timeout"],
   "arcblog-tags.mjs": ["action", "by", "from", "help", "id", "interval", "to"],
   "arcblog-og-image.mjs": ["check", "help", "json", "origin", "out"],
