@@ -1,7 +1,7 @@
 page factory {
   i18n {
     title { en "Node NFT" zh "节点 NFT" }
-    desc { en "The on-chain identity of this node: the SVG card it renders, the factories that mint it, and one-click buy / stake / revoke / claim." zh "本节点的链上身份：它渲染的 SVG 卡片、铸造它的工厂，以及一键购买 / 质押 / 撤回 / 取回。" }
+    desc { en "Review this node’s NFT and queue lifecycle operations." zh "查看本节点 NFT，提交生命周期操作。" }
     gate-title { en "Node NFT" zh "节点 NFT" }
     gate-desc { en "Sign in with DID Wallet to view the node NFT and operate it." zh "使用 DID Wallet 登录后查看并操作节点 NFT。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
@@ -39,15 +39,15 @@ page factory {
     advanced { en "Advanced / technical details" zh "高级 / 技术详情" }
     advanced-show { en "Show advanced details" zh "展开高级详情" }
     advanced-hide { en "Hide advanced details" zh "收起高级详情" }
-    advanced-note { en "Addresses and transaction hashes read from node/factories.json; the public key is bound into the on-chain NFT template, and no key material is mirrored here. Whether a value is chain truth is decided PER NODE, never from the file header — see the attribution card." zh "地址与交易哈希读自 node/factories.json；公钥绑定在链上 NFT 模板内，本投影不含任何密钥材料。某个值是否为链上事实按**逐节点**判定，绝不按文件头 —— 见归属卡片。" }
+    advanced-note { en "Public addresses and transactions, with no private key material. Check the node’s fact type before treating them as chain evidence." zh "公开地址与交易记录，不含私钥。作为链上证据使用前，请核对节点事实类型。" }
     truth-title { en "Is it really on chain? (per node)" zh "是否真的在链上？（逐节点）" }
     truth-studio { en "Node studio" zh "节点 studio" }
     truth-studio-adapter { en "Node studio · adapter" zh "节点 studio · 适配器" }
     truth-studio-sim { en "Node studio · fact kind" zh "节点 studio · 事实类型" }
     truth-factories { en "Factories" zh "工厂" }
-    truth-note { en "Each node records the adapter that produced its facts, in three states — mock (simulation, never chain truth) · ocap (real chain, verifiable) · unknown (nothing was ever recorded). The header adapter describes the factory config only, so it must never decide whether a node is chain truth — judge per node." zh "每个节点各自记录产出其事实的 adapter，共三态 —— mock（模拟，绝非链上事实）· ocap（真链，可核验）· unknown（从未记录）。文件头的 adapter 只描述工厂配置，绝不能用它判定某个节点是否链上事实——请按节点判定。" }
+    truth-note { en "Read each node’s fact type: mock = simulation, ocap = real chain, unknown = unrecorded. The factory adapter alone is not proof." zh "按节点核对事实类型：mock＝模拟，ocap＝真链，unknown＝未记录。工厂适配器本身不构成证明。" }
     actions { en "Actions" zh "操作" }
-    actions-desc { en "One click queues the intent; the node's chain worker signs it (the key never reaches the browser) and the queue below updates live." zh "点击即入队；由节点上的链 worker 签名执行（私钥永不下发浏览器），下方队列实时更新。" }
+    actions-desc { en "Queues a request for the node’s chain worker to sign. The browser never holds a private key." zh "提交任务后由本机链 worker 签名执行，浏览器不持有私钥。" }
     act-acquire { en "Buy / mint" zh "购买 / 铸造" }
     act-stake { en "Stake" zh "质押" }
     act-revoke { en "Revoke (withdraw)" zh "撤回" }
@@ -62,14 +62,13 @@ page factory {
     confirm-claim-msg { en "The NFT returns to the owner wallet and the stake closes." zh "NFT 回到属主钱包，质押关闭。" }
     intent-queued { en "Intent queued — watch the queue below." zh "意图已入队 —— 留意下方队列。" }
     queue { en "Intent queue" zh "意图队列" }
-    queue-standing-note { en "Every queued chain intent appears in the list above, oldest first: a row is written the moment a button is clicked, so an empty list simply means nothing has been queued on this node yet." zh "凡是入队的链上意图都会出现在上方列表里（最早在前）：点击按钮的瞬间就会写入一行，因此列表为空只表示本机还没有任何入队记录。" }
-    queue-admin { en "The queue lives in config/ (admin-only): only the blocklet owner can queue or watch chain operations." zh "队列位于 config/（仅管理员）：只有 Blocklet 属主可以入队或查看链上操作。" }
+    queue-standing-note { en "Queued requests appear below, oldest first. Check each status and error before retrying." zh "已提交的任务按时间列出。重试前请核对每项状态与错误。" }
+    queue-admin { en "Only the blocklet owner can view or submit chain requests." zh "仅 Blocklet 属主可查看和提交链上任务。" }
     queue-clear { en "Clear" zh "清除" }
     queue-clear-title { en "Clear this intent record?" zh "清除这条意图记录？" }
     queue-clear-msg { en "Removes the record from the queue. The chain transaction is unaffected." zh "从队列移除该记录。链上交易不受影响。" }
     status-intent { en "Status" zh "状态" }
     status-note { en "pending = waiting for the worker · applied = signed on chain · rejected = refused, nothing changed" zh "pending = 等待 worker · applied = 已在链上签名 · rejected = 被拒绝，无改动" }
-    worker-hint { en "Queued actions are signed by this node's chain worker; the browser never holds the key." zh "入队的操作由本机链 worker 执行签名；浏览器不持有任何密钥。" }
     docs { en "Runbook and worker command: see the Diagnostics page." zh "运维手册与 worker 命令：见「诊断与维护」页。" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -146,8 +145,10 @@ page factory {
         }
         view gap=sm size={flex: 1} style={overflowY: auto} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
           view gap=xs {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+            view gap=xs style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
             p :projection intent=muted scale=sm
             p :render-timing intent=muted scale=sm
             key-value-list factory-cli dense=true fields=[{label: "$t(factory.cli-label)", value: "node scripts/arcblog-factory.mjs project"}]
@@ -165,37 +166,40 @@ page factory {
           }
           grid gap=md style={gridTemplateColumns: "minmax(0, 1fr)", alignItems: start} {
             view gap=sm {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :actions level=3 style={fontSize: "var(--type-body)"}
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                h3 :actions level=3
                 p :actions-desc intent=muted scale=sm
-                row gap=sm {
-                  action variant=primary label=:act-acquire confirm={title: :confirm-acquire-title, message: :confirm-acquire-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: acquire, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
-                  action variant=secondary label=:act-stake confirm={title: :confirm-stake-title, message: :confirm-stake-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: stake, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
-                  action variant=secondary label=:act-revoke confirm={title: :confirm-revoke-title, message: :confirm-revoke-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: revoke, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
-                  action variant=secondary label=:act-claim confirm={title: :confirm-claim-title, message: :confirm-claim-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: claim, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                row gap=sm size={width: hug} {
+                  action variant=primary label=:act-acquire confirm={title: :confirm-acquire-title, message: :confirm-acquire-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: acquire, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-stake confirm={title: :confirm-stake-title, message: :confirm-stake-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: stake, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-revoke confirm={title: :confirm-revoke-title, message: :confirm-revoke-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: revoke, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
+                  action variant=secondary label=:act-claim confirm={title: :confirm-claim-title, message: :confirm-claim-msg} onSuccessToast={intent: success, message: "$t(factory.intent-queued)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/chain-intents/pending.json", content: {id: pending, action: claim, role: studio, status: pending, requestedBy: $session.did, requestedAt: "${generate.timeiso}", requestedVia: console, args: {}, result: {assetId: "", stakeAddress: "", hash: "", lifecycle: ""}, error: ""}}}}
                 }
-                p :worker-hint intent=muted scale=sm
                 p :docs intent=muted scale=sm
-                h3 :queue level=3 style={fontSize: "var(--type-body)"}
+                h3 :queue level=3
                 p :queue-admin intent=muted scale=sm
                 afs-list factory-intents layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/chain-intents" {
                   row gap=sm cross=center role=item {
-                    view gap=xs style={flex: "1 1 0%"} {
-                      row gap=xs cross=center {
-                        p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
-                        p :status-intent scale=sm
-                        p "${entry.content.status}" scale=sm
-                        p "${entry.content.role}" scale=sm intent=muted
-                      }
-                      row gap=xs cross=center {
-                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                          time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                    row gap=sm cross=center size={width: fill} {
+                      view gap=xs size={flex: "1 1 0%"} {
+                        row gap=xs cross=center {
+                          p "●" scale=sm intent=muted title="${entry.content.action} · ${entry.content.status}"
+                          p :status-intent scale=sm
+                          p "${entry.content.status}" scale=sm
+                          p "${entry.content.role}" scale=sm intent=muted
                         }
+                        row gap=xs cross=center {
+                          view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
+                            time mode=display value="${entry.content.requestedAt}" timeMode=relative
+                          }
+                        }
+                        p "${entry.content.result.hash}" scale=sm intent=muted
+                        p "${entry.content.error}" scale=sm intent=warning
                       }
-                      p "${entry.content.result.hash}" scale=sm intent=muted
-                      p "${entry.content.error}" scale=sm intent=warning
+                      row gap=sm cross=center size={width: hug} {
+                        action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} path="${entry.path}"
+                      }
                     }
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:queue-clear confirm={title: :queue-clear-title, message: :queue-clear-msg} style={borderRadius: "var(--radius-md, 8px)", flexGrow: 0} path="${entry.path}"
                   }
                 }
                 // BUG-056 (BUG-052's shape, fixed in R21): a STANDING note, not
@@ -207,39 +211,39 @@ page factory {
                 p :queue-standing-note scale=sm intent=muted
                 p :status-note scale=sm intent=muted
               }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
-                h3 :factories level=3 style={fontSize: "var(--type-body)"}
+              view factory-advanced gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} propBind={summary: "/instance/app/arcblog/node/factories.json"} {
+                h3 :factories level=3
                 p "${state.summary.chainNote}" intent=info scale=sm
                 key-value-list factory-chain dense=true fields=[{label: "$t(factory.chain-adapter)", value: "${state.summary.adapter}"}, {label: "$t(factory.chain-network)", value: "${state.summary.network}"}]
                 p :factory-studio scale=sm intent=muted
                 key-value-list factory-studio-kv dense=true fields=[{label: "$t(factory.factory-moniker)", value: "${state.summary.factories.studio.moniker}"}, {label: "$t(factory.factory-stake)", value: "${state.summary.factories.studio.stakeAmount}"}]
-                h3 :truth-title level=3 style={fontSize: "var(--type-body)"}
+                h3 :truth-title level=3
                 p :truth-note scale=sm intent=muted
                 key-value-list factory-truth-nodes dense=true fields=[{label: "$t(factory.truth-studio)", value: "${state.summary.nodes.studio.attribution}"}, {label: "$t(factory.truth-studio-adapter)", value: "${state.summary.nodes.studio.adapter}"}, {label: "$t(factory.truth-studio-sim)", value: "${state.summary.nodes.studio.simulatedLabel}"}]
                 p :truth-factories scale=sm intent=muted
                 key-value-list factory-truth-factories dense=true fields=[{label: "$t(factory.factory-studio)", value: "${state.summary.factories.studio.attribution}"}]
-                h3 :node-svg level=3 style={fontSize: "var(--type-body)"}
+                h3 :node-svg level=3
                 // Standing copy: the CLI decided this in `cardNote` / `nodeNote`, so
                 // the card renders whenever it exists and the note is always true.
                 media factory-nft-svg src="${state.summary.nodes.studio.svg}" alt="$t(factory.node-svg)" style={borderRadius: "var(--radius-md, 8px)", width: "100%", maxWidth: "480px"}
                 p "${state.summary.nodes.studio.cardNote}" intent=muted scale=sm
                 key-value-list factory-node-kv dense=true fields=[{label: "$t(factory.node-moniker)", value: "${state.summary.nodes.studio.moniker}", hideWhenEmpty: true}, {label: "$t(factory.node-state)", value: "${state.summary.nodes.studio.state}", hideWhenEmpty: true}, {label: "$t(factory.node-endpoint)", value: "${state.summary.nodes.studio.endpoint}", monospace: true, hideWhenEmpty: true}, {label: "$t(factory.node-region)", value: "${state.summary.nodes.studio.region}", hideWhenEmpty: true}, {label: "$t(factory.node-claimable)", value: "${state.summary.nodes.studio.claimableAt}", hideWhenEmpty: true}]
                 p "${state.summary.nodes.studio.nodeNote}" intent=info scale=sm
-                h3 :advanced level=3 style={fontSize: "var(--type-body)"}
+                h3 :advanced level=3
                 p :advanced-note intent=muted scale=sm
-                row cross=start {
-                  action -> set factory-advanced state {open: "true"} variant=secondary size=sm label=:advanced-show style={borderRadius: "var(--radius-md, 8px)"}
+                row cross=start size={width: hug} {
+                  action -> set factory-advanced state {open: "true"} variant=secondary size=sm label=:advanced-show
                 }
                 view gap=sm visible=$state.open {
                   key-value-list factory-node-adv dense=true fields=[{label: "$t(factory.node-asset)", value: "${state.summary.nodes.studio.assetId}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-owner)", value: "${state.summary.nodes.studio.owner}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.node-stake)", value: "${state.summary.nodes.studio.stakeAddress}", monospace: true, copyable: true, hideWhenEmpty: true}]
                   p "${state.summary.nodes.studio.nodeNote}" intent=muted scale=sm
-                  h3 :tx level=3 style={fontSize: "var(--type-body)"}
+                  h3 :tx level=3
                   p "${state.summary.nodes.studio.txNote}" intent=muted scale=sm
                   key-value-list factory-node-tx dense=true fields=[{label: "$t(factory.tx-acquire)", value: "${state.summary.nodes.studio.acquireTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-stake)", value: "${state.summary.nodes.studio.stakeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-revoke)", value: "${state.summary.nodes.studio.revokeTx}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.tx-claim)", value: "${state.summary.nodes.studio.claimTx}", monospace: true, copyable: true, hideWhenEmpty: true}]
                   key-value-list factory-chain-adv dense=true fields=[{label: "$t(factory.chain-host)", value: "${state.summary.chainHost}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.chain-token)", value: "${state.summary.tokenId}", monospace: true, copyable: true, hideWhenEmpty: true}]
                   key-value-list factory-studio-adv dense=true fields=[{label: "$t(factory.factory-address)", value: "${state.summary.factories.studio.address}", monospace: true, copyable: true, hideWhenEmpty: true}, {label: "$t(factory.factory-issuer)", value: "${state.summary.factories.studio.issuer}", monospace: true, copyable: true, hideWhenEmpty: true}]
-                  row cross=start {
-                    action -> set factory-advanced state {open: ""} variant=secondary size=sm label=:advanced-hide style={borderRadius: "var(--radius-md, 8px)"}
+                  row cross=start size={width: hug} {
+                    action -> set factory-advanced state {open: ""} variant=secondary size=sm label=:advanced-hide
                   }
                 }
               }

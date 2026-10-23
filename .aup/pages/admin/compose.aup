@@ -98,9 +98,15 @@ page compose {
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=sm {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+          row gap=md cross=end style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+            view gap=xs size={flex: 1} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
+            row gap=sm cross=center size={width: hug} {
+              action variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: $session.did, authorName: $session.displayName, published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+              action variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: $session.did, authorName: $session.displayName, published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+            }
           }
           view gap=lg size={flex: 1} style={overflowY: auto} {
             // Two columns (2026-10-13, human request): the writing surface on the left —
@@ -108,13 +114,13 @@ page compose {
             // default 3: measured in the served bundle, recorded in arc-contracts §64) — and
             // every other setting on the right, so the body never competes with the fields.
             grid style={gridTemplateColumns: "minmax(0, 1fr) minmax(300px, 380px)", gap: "16px", alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
                 h3 :g-content level=3
                 input type=text label=:f-title name=title required=true state={value: ""}
                 input type=text label=:f-summary name=summary state={value: ""}
                 input type=textarea rows=18 label=:f-body name=body required=true state={value: ""}
               }
-              view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+              view gap=lg style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
                 view gap=sm {
                   h3 :g-taxonomy level=3
                   input type=text label=:f-slug name=slug required=true state={value: ""}
@@ -136,10 +142,6 @@ page compose {
                 }
               }
             }
-          }
-          row gap=sm style={justifyContent: flex-end, flexShrink: 0} {
-            action variant=secondary label=:save-draft style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: $session.did, authorName: $session.displayName, published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
-            action variant=primary label=:publish-now style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: $session.did, authorName: $session.displayName, published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
           }
         }
       }

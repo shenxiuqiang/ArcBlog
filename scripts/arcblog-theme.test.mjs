@@ -170,6 +170,34 @@ test('the overlay frame is hidden, so it can never paint over the page (blank-pa
 });
 
 /**
+ * The responsive console layer (2026-10-20) is scoped by ONE selector: the generated sidebar,
+ * which is the only element in the app carrying `width: clamp(200px, 15vw, 280px)`
+ * (`scripts/console-nav.mjs` → every console page). Two ways it can rot silently:
+ *   1. the generator changes the width ⇒ the media queries stop matching ⇒ the console goes back
+ *      to "200px sidebar + 113px content" on a phone while every gate stays green;
+ *   2. someone deletes the media query ⇒ narrow widths are unusable again.
+ * This test ties the CSS marker to the generator's literal, so (1) fails here instead.
+ */
+test('the responsive console layer is keyed to the sidebar the generator actually writes', () => {
+  const bridge = readFileSync(bridgePath, 'utf8');
+  const generator = readFileSync(join(repoRoot, 'scripts', 'console-nav.mjs'), 'utf8');
+  const width = /width: "(clamp\([^"]+\))"/.exec(generator);
+  assert.ok(width, 'scripts/console-nav.mjs must declare the sidebar width (the layer\'s only page-type test)');
+  const marker = /\[style\*="([^"]+)"\]/.exec(bridge);
+  assert.ok(marker, 'the bridge must scope the console by the sidebar\'s inline width');
+  assert.ok(
+    width[1].startsWith(marker[1]),
+    `the bridge scopes the console with [style*="${marker[1]}"] but the generator now writes "${width[1]}" — the media queries would never match again`,
+  );
+  assert.match(bridge, /@media\(max-width:860px\)/, 'the ≤860 block is the one that makes a phone usable (strip + full-width content)');
+  assert.match(
+    bridge,
+    /\.aup-view:has\(>\.aup-view\[style\*="clamp\(200px"\]\)>\.aup-view:last-child\{padding:0 16px 24px!important/,
+    'the content column must get a gutter once the shell becomes a column (the desktop gutter is the shell row\'s padding-right)',
+  );
+});
+
+/**
  * The platform→token map must be COMPLETE (2026-10-14). `aup-core.css` assigns 22 colour tokens
  * inside its `[data-palette=…][data-mode=…]` blocks; 4 of them are pure aliases (`--color-fg`,
  * `--color-muted`, `--color-text-muted`, `--color-danger` = `var(--color-text|--color-dim|…)`), so a

@@ -10,6 +10,10 @@
 //   visible=$state.x       -> frozen at first paint (either direction)
 //   visible="${entry.x}"   -> correct, but ONLY inside an afs-list row template
 //   visible=$session.x     -> correct (synchronous)
+//   visible=$state.slug    -> correct when `slug` comes from the ROUTE/QUERY (filled at first
+//                             paint by `Vi()`), NOT from `propBind` — measured 2026-10-19,
+//                             arc-contracts §84; such lines are registered in the allowlist
+//                             with that reason, not because they are broken spellings
 //
 // This is a RATCHET with an explicit allowlist (`visible-conditions-allowlist.json`):
 // every current occurrence of the broken spellings is registered there with its

@@ -3,50 +3,49 @@ page pages {
     act-delete { en "Delete" zh "删除" }
     act-delete-msg { en "Pages have no soft delete — this removes the record." zh "页面没有软删除——这将直接移除记录。" }
     act-delete-title { en "Delete this page?" zh "删除这个页面？" }
-    adv-hide { en "Hide advanced (CLI)" zh "收起高级（CLI）" }
-    adv-show { en "Show advanced (CLI)" zh "展开高级（CLI）" }
     act-offline { en "Take offline" zh "下线" }
-    act-offline-msg { en "Queues ONE \"Take offline\" intent under config/page-intents/ — this page writes nothing to your records. This node's worker performs the move (reads the page, merges it into the private drafts area, then removes the public copy). Read the intent record back — a toast is not evidence." zh "只入队一条「下线」意图（config/page-intents/）——本页不改动任何记录。真正的迁移由本节点 worker 执行（读取页面 → 合并进私有草稿区 → 移除公开副本）。请读回意图记录——toast 不是证据。" }
+    act-offline-msg { en "Takes this page off the public site. The content is kept, so you can edit it and bring it back online at any time." zh "把页面从公开站点撤下。内容完整保留，随时可以修改后再上线。" }
     act-offline-title { en "Take this page offline?" zh "下线这个页面？" }
     act-publish { en "Bring online" zh "上线" }
-    act-publish-msg { en "Queues ONE \"Bring online\" intent under config/page-intents/ — this page writes nothing to your records. This node's worker writes the public copy and removes the offline copy; an older public copy (written by the old CLI or by root authority) is replaced too, because the worker writes with this node's own authority — the very write the platform refuses when a page asks for it." zh "只向 config/page-intents/ 入队一条「上线」意图——本页不改动任何记录。由本节点 worker 写入公开副本并移除离线副本；旧 CLI / root 授权留下的公开副本也会被替换，因为 worker 用的是本节点自己的权限——而这正是平台拒绝页面发起的那种写入。" }
+    act-publish-msg { en "Publishes the current content to the public site at /pages/<slug>." zh "把当前内容发布到公开站点（/pages/<别名>）。" }
     act-publish-title { en "Bring this page online?" zh "上线这个页面？" }
-    act-remove-public { en "Remove public copy" zh "移除公开副本" }
-    create { en "New page" zh "新建页面" }
     create-offline { en "Create (offline)" zh "创建（离线）" }
+    create-title { en "New page" zh "新建页面" }
     created-ok { en "Page created offline. Bring it online when ready." zh "页面已创建（离线）。准备好后再上线。" }
-    desc { en "Standalone pages such as About. Two states only — online and offline; no post lifecycle, no RSS." zh "About 等独立页面。只有上线 / 下线两个状态——不复用文章生命周期，不进 RSS。" }
+    desc { en "Create and edit standalone pages; bring them online when ready. Pages are excluded from RSS." zh "创建和编辑独立页面，准备好后上线；页面不进入 RSS。" }
+    edit-hint { en "An online page saves straight to the public copy. An offline page can be saved, published (public copy, offline copy removed) or deleted." zh "上线页面「保存」直接写公开副本；离线页面可「保存」到离线区、可「上线」（写公开副本并移除离线副本）、也可删除。" }
+    edit-title { en "Edit page" zh "编辑页面" }
     f-body { en "Body (Markdown)" zh "正文（Markdown）" }
     f-slug { en "Slug" zh "别名" }
     f-summary { en "Summary" zh "摘要" }
     f-title { en "Title" zh "标题" }
     gate-desc { en "Sign in with DID Wallet to manage standalone pages." zh "使用 DID Wallet 登录后管理独立页面。" }
     gate-title { en "Pages" zh "页面" }
-    list-empty { en "No pages yet. Create your first page above." zh "还没有页面。在上方创建第一个页面。" }
     login { en "Sign in with DID Wallet" zh "使用 DID Wallet 登录" }
-    offline-hint { en "Offline pages are admin-only. \"Bring online\" only queues an intent; the local worker performs the move. The list below the two page lists is that queue, read straight from AFS: action · status · message." zh "离线页面仅后台可见。「上线」只入队一条意图，真正的迁移由本机 worker 执行。两个页面列表下方那个列表就是该队列，直接读 AFS：action · status · message。" }
-    offline-list { en "Offline" zh "已下线" }
-    offline-ok { en "Intent queued — read config/page-intents to confirm; the local worker takes the page offline." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行下线。" }
-    online-hint { en "Online pages are public at /pages/<slug>; they stay out of RSS. 「Take offline」 only queues an intent under config/page-intents/ — the local worker completes the move. 「Remove public copy」 is a different, immediate action: it hard-deletes the public record (pages have no soft delete)." zh "上线页面公开于 /pages/<别名>；不进 RSS。「下线」只向 config/page-intents/ 入队一条意图——真正的迁移由本机 worker 完成。「移除公开副本」是另一条立即生效的动作：硬删除公开记录（页面没有软删除）。" }
-    online-list { en "Online" zh "已上线" }
-    queue-legend { en "pending = queued, not run yet · applied = the worker ran it · rejected = refused, zero change · noop = already in that state" zh "pending = 已排队、尚未执行 · applied = worker 已执行 · rejected = 被拒绝、零改动 · noop = 已是该状态" }
-    queue-empty-note { en "Empty state: when a list has no records this platform prints its own hard-coded English empty-list text, so this page cannot localize it. This note is standing and does not claim that any list is empty; the authority for the queue is the CLI command above." zh "空态说明：列表没有记录时，平台会打印它自带的英文空列表文案，本页无法本地化。本说明常驻，不代表任何列表为空；队列的权威入口是上方的 CLI 命令。" }
-    queue-title { en "Intent queue" zh "意图队列" }
-    published-ok { en "Intent queued — read config/page-intents to confirm; the local worker brings the page online." zh "意图已入队——请读 config/page-intents 确认；由本机 worker 执行上线。" }
-    removed-ok { en "Removed." zh "已移除。" }
+    offline-ok { en "Taken offline." zh "已下线。" }
+    list-hint { en "Choose a page to edit, or create a new one using the form." zh "选择页面进行编辑，或使用表单新建页面。" }
     status-offline { en "Offline" zh "已下线" }
     status-online { en "Online" zh "已上线" }
+    published-ok { en "Brought online." zh "已上线。" }
+    removed-ok { en "Removed." zh "已删除。" }
+    runtime-note { en "The editor loads the record after the first render — if the form is still empty, reload once." zh "编辑器在首次渲染之后才载入记录——若表单仍为空，刷新一次即可。" }
+    save { en "Save" zh "保存" }
+    saved-ok { en "Saved." zh "已保存。" }
     title { en "Pages" zh "页面" }
-    view-page { en "View" zh "查看" }
   }
-  // UI-018 D5 (§7.5 ①②): the intent-queue area gets a title and a status legend,
-  // and the three CLI rows move into the level-3 "advanced" collapse. The legend
-  // is byte-aligned with scripts/lib/intents.mjs and deliberately omits `running`:
-  // arcblog-pages.mjs never writes that in-flight state (pending → applied|rejected|
-  // noop), and §4.10③ forbids a page from claiming an unreachable state.
-  // §4.8 / §7.5⑤: `emptyText` is not evaluated at runtime (arc-contracts §20), so the
-  // platform prints its own English empty string. This standing note is status-neutral
-  // (it never claims the queue is empty) and points at the CLI authority.
+  // ?page=pages — a master/detail console: the list on the left, the create/edit form on
+  // the right. Two measured platform constraints shape it, and both are why the old
+  // "intent queue" is gone (human ruling 2026-10-19):
+  //   1. A page CANNOT rewrite an EXISTING record it did not write (arc-contracts §29.2),
+  //      but it CAN write a path that does not exist yet — exactly what a state move does.
+  //      So each row's switch writes the destination copy and only then deletes the source
+  //      (`afterSuccess` chain, §29.3), instead of queueing an intent for a CLI worker.
+  //   2. The edit form needs the record BEFORE it renders; that channel is `propBind` +
+  //      a route that carries `{slug}` (§57). Its state lands after the first render, so
+  //      the form prints a standing "reload once" note instead of pretending to be empty
+  //      (the same shape `?page=compose-edit` uses).
+  // The online/offline lists stay TWO `afs-list`s on purpose: truth lives in the directory
+  // boundary (pages/ vs page-drafts/), never in a status field the page cannot branch on.
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
     view style={gap: "0"} {
       view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", padding: "20px"} visible="!$session.authenticated" {
@@ -120,97 +119,120 @@ page pages {
           }
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=xs {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
+          view gap=xs style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+            h2 :title level=2
             p :desc intent=muted
           }
-          view gap=sm size={flex: 1} style={overflowY: auto} {
-            // 两列（2026-10-13，人类："右侧看着很乱"）：左侧窄栏只放「新建页面」；右侧一张卡里
-            // 三段——已上线 / 已下线 / 意图队列——取代原先四个 auto-fit 松散单元格。
-            grid style={gridTemplateColumns: "minmax(300px, 380px) minmax(0, 1fr)", gap: "16px", alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :create level=3 style={fontSize: "var(--type-body)"}
-                input type=text label=:f-slug name=slug required=true state={value: ""}
-                input type=text label=:f-title name=title required=true state={value: ""}
-                input type=text label=:f-summary name=summary state={value: ""}
-                input type=textarea rows=10 label=:f-body name=body required=true state={value: ""}
-                row cross=start {
-                  action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages.created-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}", version: 1}}}}
+          // Left = the two state lists (truth by directory), right = the form (wider).
+          // One content scroller holds the list and editor. The shared bridge stacks the
+          // desktop columns on narrow screens. The sidebar above is generated.
+          view gap=lg size={flex: 1} style={overflowY: auto, minHeight: 0} {
+            grid style={gridTemplateColumns: "minmax(240px, 300px) minmax(0, 1fr)", gap: "24px", alignItems: start, flexShrink: 0} {
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                // ONE list, two states (human 2026-10-19): the rows of both directories share
+                // one card and one row layout — only the status text (and the one switch
+                // label) differs. Truth still lives in the directory boundary, never in a
+                // status field the page cannot branch on.
+                afs-list pages-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=" " autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/pages" {
+                  row gap=sm cross=center role=item {
+                    row gap=sm cross=center size={width: fill} {
+                      // The move carries the record over verbatim: the platform cannot read a
+                      // record inside an `exec` payload (§29.1), so every field rides along in
+                      // a hidden input, exactly like `posts.aup`'s publish/archive copies.
+                      view gap=xs size={flex: "1 1 0%"} {
+                        view href="/pages-edit/pages/${entry.content.slug}?online=1" style={cursor: pointer, color: "var(--color-text)", flexGrow: 0, flexBasis: auto} {
+                          view {
+                            p "${entry.content.title}" scale=lg
+                          }
+                        }
+                        row gap=xs cross=center {
+                          p :status-online scale=sm intent=success
+                          p "/pages/${entry.content.slug}" scale=sm intent=muted
+                        }
+                      }
+                      row gap=sm cross=center size={width: hug} {
+                        input type=hidden name=eSlug value="${entry.content.slug}"
+                        input type=hidden name=eTitle value="${entry.content.title}"
+                        input type=hidden name=eSummary value="${entry.content.summary}"
+                        input type=hidden name=eBody value="${entry.content.body}"
+                        input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
+                        input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
+                        action variant=secondary size=sm label=:act-offline confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages.offline-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", summary: "${args.eSummary}", body: "${args.eBody}", status: offline, authorDid: "${args.eAuthorDid}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}"}}, afterSuccess: [{exec: "/.actions/delete", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json"}}]}}
+                      }
+                    }
+                  }
                 }
+                afs-list pages-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=" " autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/page-drafts" {
+                  row gap=sm cross=center role=item {
+                    row gap=sm cross=center size={width: fill} {
+                      view gap=xs size={flex: "1 1 0%"} {
+                        view href="/pages-edit/page-drafts/${entry.content.slug}?draft=1" style={cursor: pointer, color: "var(--color-text)", flexGrow: 0, flexBasis: auto} {
+                          view {
+                            p "${entry.content.title}" scale=lg
+                          }
+                        }
+                        row gap=xs cross=center {
+                          p :status-offline scale=sm intent=muted
+                          p "${entry.content.slug}" scale=sm intent=muted
+                        }
+                      }
+                      row gap=sm cross=center size={width: hug} {
+                        input type=hidden name=eSlug value="${entry.content.slug}"
+                        input type=hidden name=eTitle value="${entry.content.title}"
+                        input type=hidden name=eSummary value="${entry.content.summary}"
+                        input type=hidden name=eBody value="${entry.content.body}"
+                        input type=hidden name=eAuthorDid value="${entry.content.authorDid}"
+                        input type=hidden name=eCreatedAt value="${entry.content.createdAt}"
+                        action variant=secondary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages.published-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.eTitle}", summary: "${args.eSummary}", body: "${args.eBody}", status: online, authorDid: "${args.eAuthorDid}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}"}}, afterSuccess: [{exec: "/.actions/delete", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json"}}]}}
+                      }
+                    }
+                  }
+                }
+                p :list-hint scale=caption intent=muted
               }
-              view gap=lg style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :online-list level=3 style={fontSize: "var(--type-body)"}
-                afs-list pages-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/pages" {
-                  row gap=sm cross=center role=item {
-                    view gap=xs style={flex: "1 1 0%"} {
-                      p "${entry.content.title}" scale=lg
-                      row gap=xs cross=center {
-                        p "●" scale=sm intent=success
-                        p :status-online scale=sm intent=muted
-                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
-                        }
-                      }
-                      p "/pages/${entry.content.slug}" scale=sm intent=muted
-                    }
-                    view layout=inline href="/pages/${entry.content.slug}" target=_blank style={cursor: pointer, color: "var(--color-dim)", flexGrow: 0, flexBasis: auto} {
-                      p :view-page scale=sm
-                    }
-                    action variant=secondary size=sm label=:act-offline confirm={title: :act-offline-title, message: :act-offline-msg} onSuccessToast={intent: success, message: "$t(pages.offline-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/page-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: offline, slug: "${args.eSlug}", status: pending, message: "", changed: [], fromStatus: "", toStatus: "", requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-remove-public path="/instance/app/arcblog/pages/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
-                    input type=hidden name=eSlug value="${entry.content.slug}"
+              // Right = the form. `propBind` rides the `/pages-edit/{dir}/{slug}` route and binds
+              // into THIS node's subtree (measured 2026-10-19, arc-contracts §84: a warm
+              // session gets the record at first paint, a cold one needs one reload).
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} propBind={page: "/instance/app/arcblog/$params.dir/$params.slug.json"} {
+                // Header + actions share one row: the buttons must stay reachable while the
+                // body textarea grows (it is `field-sizing: content`, capped at 28rem), so they
+                // sit on top and the body fills whatever is left to the bottom.
+                row gap=sm cross=center style={justifyContent: space-between, flexShrink: 0} {
+                  view gap=xs visible="!$state.slug" {
+                    h3 :create-title level=3
+                  }
+                  view gap=xs visible=$state.slug {
+                    h3 :edit-title level=3
+                    p "/pages/${state.page.slug}" scale=sm intent=muted
+                    p :runtime-note scale=caption intent=muted
+                    p :edit-hint scale=caption intent=muted
+                  }
+                  // Mode is the URL, never bound data: `$state.slug` says "editing", and the
+                  // row's own marker (`?online=1` / `?draft=1`) says which directory the record
+                  // came from. `$state.page` is NOT usable as a gate — an unresolved `propBind`
+                  // still leaves it truthy (measured 2026-10-19). `required` on title/body is
+                  // the second line of defence, and every write path below is a FIXED literal.
+                  row gap=sm cross=start size={width: hug} visible="!$state.slug" {
+                    action variant=primary label=:create-offline onSuccessToast={intent: success, message: "$t(pages.created-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.slug}.json", content: {slug: "${args.slug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: $session.did, createdAt: "${generate.timeiso}", updatedAt: "${generate.timeiso}"}}}}
+                  }
+                  row gap=sm cross=start size={width: hug} visible=$state.online {
+                    action variant=secondary label=:save onSuccessToast={intent: success, message: "$t(pages.saved-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: online, authorDid: "${state.page.authorDid}", createdAt: "${state.page.createdAt}", updatedAt: "${generate.timeiso}"}}}}
+                  }
+                  row gap=sm cross=start size={width: hug} visible=$state.draft {
+                    action variant=primary label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages.published-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: online, authorDid: "${state.page.authorDid}", createdAt: "${state.page.createdAt}", updatedAt: "${generate.timeiso}"}}, afterSuccess: [{exec: "/.actions/delete", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json"}}]}}
+                    action variant=secondary label=:save onSuccessToast={intent: success, message: "$t(pages.saved-ok)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json", content: {slug: "${args.eSlug}", title: "${args.title}", summary: "${args.summary}", body: "${args.body}", status: offline, authorDid: "${state.page.authorDid}", createdAt: "${state.page.createdAt}", updatedAt: "${generate.timeiso}"}}}}
+                    action variant=destructive size=sm icon=trash label=:act-delete confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages.removed-ok)", duration: 2500} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json"}}}
                   }
                 }
-                p :online-hint scale=sm intent=muted
-                h3 :offline-list level=3 style={fontSize: "var(--type-body)"}
-                afs-list pages-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/page-drafts" {
-                  row gap=sm cross=center role=item {
-                    view gap=xs style={flex: "1 1 0%"} {
-                      p "${entry.content.title}" scale=lg
-                      row gap=xs cross=center {
-                        p "●" scale=sm intent=muted
-                        p :status-offline scale=sm intent=muted
-                        view style={fontSize: "var(--type-small)", color: "var(--color-dim)"} {
-                          time mode=display value="${entry.content.updatedAt}" timeMode=relative
-                        }
-                      }
-                      p "${entry.content.slug}" scale=sm intent=muted
-                    }
-                    action variant=secondary size=sm label=:act-publish confirm={title: :act-publish-title, message: :act-publish-msg} onSuccessToast={intent: success, message: "$t(pages.published-ok)", duration: 3000} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/config/page-intents/${generate.timeiso}.json", content: {id: "${generate.timeiso}", action: online, slug: "${args.eSlug}", status: pending, message: "", changed: [], fromStatus: "", toStatus: "", requestedVia: console, requestedAt: "${generate.timeiso}"}}}}
-                    action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:act-delete path="/instance/app/arcblog/page-drafts/${entry.content.slug}.json" confirm={title: :act-delete-title, message: :act-delete-msg} onSuccessToast={intent: success, message: "$t(pages.removed-ok)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
-                    input type=hidden name=eSlug value="${entry.content.slug}"
-                  }
+                view gap=xs visible="!$state.slug" {
+                  input type=text label=:f-slug name=slug required=true
                 }
-                p :offline-hint scale=sm intent=muted
-                view pages-advanced gap=sm {
-                  h3 :queue-title level=3 style={fontSize: "var(--type-body)"}
-                  p :queue-legend scale=caption intent=muted
-                  p :queue-empty-note scale=caption intent=muted
-                  afs-list pages-intent-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:list-empty autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/config/page-intents" {
-                    row gap=sm cross=start role=item {
-                      view gap=xs {
-                        p "${entry.content.slug} · ${entry.content.action} · ${entry.content.status}" scale=lg
-                        p "${entry.content.message}" scale=sm intent=muted
-                      }
-                    }
-                  }
-                  row cross=start {
-                    action -> set pages-advanced state {open: "true"} variant=secondary size=sm label=:adv-show style={borderRadius: "var(--radius-md, 8px)"}
-                  }
-                  view gap=sm visible=$state.open {
-                    key-value-list pages-intent-cmds dense=true fields=[{label: queue, value: "node scripts/arcblog-pages.mjs queue", monospace: true, copyable: true}, {label: apply, value: "node scripts/arcblog-pages.mjs apply", monospace: true, copyable: true}, {label: watch, value: "node scripts/arcblog-pages.mjs watch", monospace: true, copyable: true}]
-                    row cross=start {
-                      action -> set pages-advanced state {open: ""} variant=secondary size=sm label=:adv-hide style={borderRadius: "var(--radius-md, 8px)"}
-                    }
-                  }
-                }
+                input type=hidden name=eSlug value="${state.page.slug}"
+                input type=text label=:f-title name=title required=true value="${state.page.title}"
+                input type=text label=:f-summary name=summary value="${state.page.summary}"
+                input type=textarea rows=15 label=:f-body name=body required=true value="${state.page.body}"
               }
             }
-            // 待执行意图队列（REQ-019 第四批）：两个页面列表下方的这个列表就是本页按钮写入的队列，
-            // 直接读 AFS（config/page-intents，admin-only），逐行显示 action · slug · status · message。
-            // 稳定 id 是 URL 契约（`pages-intent-list.page=<n>`，arc-contracts §38）。
-            // UI-018 D5（§7.5 ①②④）：标题 + 状态图例（不含 `running`，见 i18n 注释），
-            // CLI 三行折进「高级」——折叠本身是页内 `-> set`，零 AFS 写入。
           }
         }
       }

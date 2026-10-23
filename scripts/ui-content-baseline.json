@@ -1,0 +1,100 @@
+{
+  "categories": {
+    "lists": 2,
+    "items": 3,
+    "inputs": 9,
+    "actions": 21,
+    "texts": 47
+  },
+  "dashboard": {
+    "lists": 4,
+    "items": 3,
+    "inputs": 0,
+    "actions": 18,
+    "texts": 42
+  },
+  "posts": {
+    "lists": 3,
+    "items": 4,
+    "inputs": 72,
+    "actions": 23,
+    "texts": 43
+  },
+  "tags": {
+    "lists": 3,
+    "items": 21,
+    "inputs": 2,
+    "actions": 17,
+    "texts": 113
+  },
+  "pages": {
+    "lists": 2,
+    "items": 4,
+    "inputs": 28,
+    "actions": 19,
+    "texts": 33
+  },
+  "heroes": {
+    "lists": 2,
+    "items": 3,
+    "inputs": 10,
+    "actions": 18,
+    "texts": 35
+  },
+  "general": {
+    "lists": 2,
+    "items": 4,
+    "inputs": 3,
+    "actions": 25,
+    "texts": 61
+  },
+  "agents": {
+    "lists": 2,
+    "items": 1,
+    "inputs": 0,
+    "actions": 14,
+    "texts": 40
+  },
+  "factory": {
+    "lists": 1,
+    "items": 6,
+    "inputs": 0,
+    "actions": 25,
+    "texts": 75
+  },
+  "registry": {
+    "lists": 1,
+    "items": 0,
+    "inputs": 0,
+    "actions": 14,
+    "texts": 26
+  },
+  "operations": {
+    "lists": 0,
+    "items": 0,
+    "inputs": 0,
+    "actions": 14,
+    "texts": 28
+  },
+  "diagnostics": {
+    "lists": 3,
+    "items": 16,
+    "inputs": 0,
+    "actions": 14,
+    "texts": 65
+  },
+  "feeds": {
+    "lists": 0,
+    "items": 0,
+    "inputs": 0,
+    "actions": 14,
+    "texts": 23
+  },
+  "compose": {
+    "lists": 0,
+    "items": 0,
+    "inputs": 10,
+    "actions": 16,
+    "texts": 23
+  }
+}

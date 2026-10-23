@@ -10,6 +10,7 @@
  * the DevTools protocol with a zero-dependency WebSocket (Node's built-in one).
  *
  *   node scripts/arcblog-browser-probe.mjs 'http://arcblog.localhost:4939/?page=feeds'
+ *   node scripts/arcblog-browser-probe.mjs <url> --reload  # explicit warm-editor check
  *   node scripts/arcblog-browser-probe.mjs <url> --json
  *   node scripts/arcblog-browser-probe.mjs <url> --screenshot /tmp/feeds.png
  *   node scripts/arcblog-browser-probe.mjs <url> --port 9334 --settle 1500 --timeout 20000
@@ -48,7 +49,7 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
@@ -168,6 +169,20 @@ async function probe(browserVersion) {
   await send('Page.enable');
   await send('Runtime.enable');
 
+  // --width / --height / --scale / --full. Headless Chrome's default window is ~800x600: a screenshot
+  // of a 1440-wide console layout is silently CROPPED instead of scaled, and a long page is cut at the
+  // fold (measured 2026-10-20: a 1200px design specimen rendered only its left 756px, which reads as a
+  // broken layout). The console's design width is 1440, so a visual pass pins it here.
+  const vpWidth = Number(flag('width', 0));
+  if (vpWidth) {
+    await send('Emulation.setDeviceMetricsOverride', {
+      width: vpWidth,
+      height: Number(flag('height', 900)),
+      deviceScaleFactor: Number(flag('scale', 1)),
+      mobile: false,
+    });
+  }
+
   // Injected credentials (the only way to see `$session.authenticated` pages headlessly).
   const injected = [];
   if (cookieSpecs.length) {
@@ -218,6 +233,12 @@ async function probe(browserVersion) {
   // Never fail silently: report the mismatch in the verdict instead of printing nothing.
   const navigationWarning = committed ? null : `wanted ${url}, page reported ${seenHref || '(unknown)'} after ${timeout} ms`;
   await sleep(settle);
+  // Bound editors document a one-reload cold-start limitation (B14 / DEF-18).
+  // Keep the default cold; opt in explicitly when verifying the existing warm form.
+  if (has('reload')) {
+    await send('Page.reload', { ignoreCache: true });
+    await sleep(settle);
+  }
 
   const probeJs = `(() => {
     const html = document.documentElement.outerHTML;
@@ -358,9 +379,37 @@ async function probe(browserVersion) {
   const evaluated = await send('Runtime.evaluate', { expression: probeJs, returnByValue: true });
   const verdict = JSON.parse(evaluated.result.result.value);
 
+  // --eval <expression>: read-only DOM measurement. Screenshots show the symptom but not its cause
+  // (three "add width:100%" attempts in a row failed because the box that shrinks is not the one the
+  // page can style). This returns the expression's value in the verdict so a layout question is
+  // ANSWERED instead of guessed. Read-only by contract: it must not write to the instance.
+  let evalResult = null;
+  if (flag('eval', '')) {
+    const r = await send('Runtime.evaluate', { expression: String(flag('eval', '')), returnByValue: true, awaitPromise: true });
+    evalResult = r?.result?.result?.value ?? r?.result?.exceptionDetails?.text ?? null;
+  }
   let screenshot = null;
   if (has('screenshot')) {
-    const shot = await send('Page.captureScreenshot', { format: 'png' });
+    // Fonts can arrive after the DOM: avoid recording temporarily blank glyphs.
+    await send('Runtime.evaluate', {
+      expression: 'Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,2000))]).then(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))))',
+      awaitPromise: true,
+    });
+    // `--full` captures the whole document (captureBeyondViewport + an explicit clip of the css content
+    // size). Without it a page taller than the viewport is cut at the fold — a "missing section" that
+    // looks exactly like a render failure.
+    let shot;
+    if (has('full')) {
+      const m = await send('Page.getLayoutMetrics');
+      const size = m?.result?.cssContentSize ?? m?.result?.contentSize ?? { width: 1440, height: 900 };
+      shot = await send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+        clip: { x: 0, y: 0, width: Math.ceil(size.width), height: Math.ceil(size.height), scale: 1 },
+      });
+    } else {
+      shot = await send('Page.captureScreenshot', { format: 'png' });
+    }
     const path = flag('screenshot', '/tmp/arcblog-probe.png');
     writeFileSync(path, Buffer.from(shot.result.data, 'base64'));
     screenshot = path;
@@ -377,6 +426,7 @@ async function probe(browserVersion) {
     browserVersion,
     port,
     freshProfile: wantFresh,
+    reloaded: has('reload'),
     profileDir,
     navigationWarning,
     loadFired: seen.includes('Page.loadEventFired'),
@@ -385,12 +435,46 @@ async function probe(browserVersion) {
     ...verdict,
     cookieWarning,
     screenshot,
+    evalResult,
   };
+}
+
+/**
+ * `--fresh` exists so a verdict cannot be polluted by a stale profile (arc-contracts §70), which
+ * means its private profile + browser are useless the moment the verdict is printed. Leaving them
+ * behind leaked ~7 Chrome processes and ~130 MB per fresh run: measured 2026-10-19, 41 profiles /
+ * 292 helper processes had piled up from one review round. Close only THIS run's browser (its
+ * debugging port is unique to the run, so the developer's own Chrome cannot match) and delete only
+ * this run's profile directory. The default (shared) path is untouched — it is meant to be reused.
+ */
+function closeFreshBrowser() {
+  if (!wantFresh) return;
+  const alive = () =>
+    spawnSync('pgrep', ['-f', `remote-debugging-port=${port}`], { encoding: 'utf8' }).stdout.trim().length > 0;
+  try {
+    spawnSync('pkill', ['-f', `remote-debugging-port=${port}`], { stdio: 'ignore' });
+  } catch {
+    /* best effort */
+  }
+  // Chrome writes into the profile while it shuts down, so deleting it before the process is
+  // really gone leaves (or recreates) a directory. Wait (bounded) for the port's owner to exit.
+  for (let i = 0; i < 20 && alive(); i += 1) spawnSync('sleep', ['0.1']);
+  for (let i = 0; i < 3; i += 1) {
+    try {
+      rmSync(profileDir, { recursive: true, force: true });
+    } catch {
+      /* best effort */
+    }
+    if (!existsSync(profileDir) || alive()) break;
+    spawnSync('sleep', ['0.2']);
+  }
 }
 
 const browserVersion = await ensureBrowser();
 const result = await probe(browserVersion);
 console.log(JSON.stringify(result, null, 2));
+
+closeFreshBrowser();
 
 const failed = result.sessionInitFailed || result.aupNodes === 0;
 if (failed) {

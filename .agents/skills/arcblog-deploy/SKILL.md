@@ -64,7 +64,7 @@ node scripts/arcblog-deploy.mjs --domain blog.example.com --project arcblog
 
 ## 边界（不要做）
 
-- 不重启 daemon、不改 `default` 实例配置、不跑 `npm run test:live`
+- ~~不重启 daemon~~ → **人类裁定 2026-10-20：以后自动重启**。`.aup` 改动在运行中的 daemon 上不生效（§4 的 `arc-contracts §35(5)`），所以部署/改页面后**直接跑** `arc service restart -i default && arc blocklet run . -i default`，不必再问；仍不改 `default` 实例配置、不跑 `npm run test:live`
 - 不删除仓库根的 `node.key` / `.env.local`（只清 Pages 里的**副本**）
 - 不 `git add -A`、不提交（提交由 Lead 决定）；部署产物永远是 `dist/`，不是仓库根
 - 不把 `--domain` 指到别人的域名上

@@ -198,6 +198,69 @@
     // 20px is the §3.3 `block` step / the runtime's default `view` gap (also used by
     // index.aup as `var(--space-block, 20px)`), not a new number. Revert = delete this line.
     '#aup-display:has(.aup-app-footer:not(.aup-build-info-footer)) .aup-view > [data-mode="shell"]+*{padding-top:var(--space-block,20px);margin-bottom:calc(-1*var(--space-block,20px))}',
+    // ---- CONSOLE TYPE LAYER (2026-10-20, S13-01 §7 item 3) ---------------------------
+    // The masthead/section type scale is the SAME on every console page, so it belongs in one
+    // place instead of being re-inlined 14 times: `docs/04 §2.7.2` caps a page at 8 `style={}`
+    // slots, and the old inline copies (`fontSize/fontWeight/letterSpacing/lineHeight` on every
+    // h2 and h3) spent one slot each for no page-specific value. Values are the runtime's own
+    // `--type-*` step plus the design system's decision (§3: 600 titles, −0.012em masthead).
+    // A page that DOES need a different size keeps its inline style — inline wins, nothing here
+    // overrides it (the gate card's `fontSize: var(--type-body)` h2 is the standing example).
+    // Scope = the same generated-sidebar marker as the responsive layer.
+    '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) h2.aup-text{font-size:var(--type-heading);font-weight:600;letter-spacing:-.012em;line-height:1.15}' +
+    '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) h3.aup-text{font-size:var(--type-subheading);font-weight:600;letter-spacing:-.006em;line-height:1.25}' +
+    '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) .aup-list h3.aup-text{font-size:var(--type-body);letter-spacing:normal}' +
+    // ---- RESPONSIVE CONSOLE LAYER (2026-10-20, handoff §5.4) --------------------------
+    // WHY HERE AND NOT IN THE PAGES: an inline `style={…}` cannot express a media query, and
+    // `docs/04 §2.7.2` caps a page at 8 `style={}` slots — a per-page breakpoint would spend
+    // that budget on layout the whole console shares. So the console gets ONE layer, injected
+    // with the rest of the host chrome.
+    //
+    // CONSOLE SCOPE = THE GENERATED SIDEBAR. `scripts/arcblog-console-nav.mjs` writes it into
+    // every console page as the only element carrying `width: clamp(200px, 15vw, 280px)`;
+    // public pages never match, so none of this can touch them (verified: /, /about,
+    // /posts/<slug> at 375/768/1024 keep their measured geometry — the 15-page sweep is in
+    // docs/team/ui-升级交接-2026-10-20.md §7.3). If the generator's width ever changes,
+    // `scripts/arcblog-theme.test.mjs` fails on the marker instead of silently disabling this
+    // whole layer (same failure mode the ui-budget tool refuses to have).
+    //
+    // MEASURED BEFORE (2026-10-20, 375x900, `?page=dashboard`): sidebar 200 + content 113 px,
+    // every line of the page title wrapped per character — "can see" was false. AFTER:
+    // sidebar = a horizontal strip (full width, its own scrollbar), content = 375, no page
+    // horizontal overflow on any of the 14 console pages at 1024 / 768 / 375.
+    // Revert = delete this whole entry.
+    '@media(max-width:860px){' +
+      // (1) the shell row (sidebar + content) becomes a column
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"]){flex-direction:column!important;height:auto!important;min-height:calc(100vh - 48px);padding:0!important;margin-bottom:0!important}' +
+      // (2) the sidebar becomes a horizontal, self-scrolling strip under the header — the same
+      //     shape the platform itself uses for its settings sidebar at ≤768 (measured in the
+      //     served aup-core.css), so the console stops looking like a different product
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view[style*="clamp(200px"]{width:100%!important;height:auto!important;flex:0 0 auto!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center;gap:2px!important;padding:6px 10px!important;overflow-x:auto!important;overflow-y:hidden!important;border-right:0!important;border-bottom:1px solid var(--color-border);scrollbar-width:none}' +
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view[style*="clamp(200px"]>*{flex:0 0 auto!important}' +
+      // the per-row 1px dividers and the group labels have no meaning in a one-line strip
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view[style*="clamp(200px"]>.aup-view[style*="height: 1px"]{display:none!important}' +
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view[style*="clamp(200px"]>.aup-text{padding:2px 6px!important;background:transparent!important}' +
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view[style*="clamp(200px"]>.aup-action{border-radius:999px!important;padding:6px 12px!important;white-space:nowrap}' +
+      // (3) the content column owns the page scroll and keeps a gutter (the desktop gutter is
+      //     the shell row's `padding-right`, which is gone once the row is a column)
+      '#aup-display .aup-view:has(>.aup-view[style*="clamp(200px"])>.aup-view:last-child{padding:0 16px 24px!important;height:auto!important;min-height:0!important}' +
+      // (4) list rows stack instead of squeezing. The recipe every console list follows
+      //     (`docs/... .interface-design/system.md` §6) is ONE child row per item, with the
+      //     action group marked `size={width:"hug"}` → `data-width="hug"`. On a phone the text
+      //     keeps its own line and the group drops under it, right-aligned, wrapping if needed.
+      //     Measured before/after on `?page=posts`@375: the title column collapsed to 63px
+      //     ("t/e/c/h/…" one letter per line) while the action group held 240px.
+      '#aup-display .aup-list-row>[data-layout="row"]{flex-wrap:wrap!important}' +
+      '#aup-display .aup-list-row>[data-layout="row"]:has(>[data-width="hug"])>*{flex:1 1 100%!important;min-width:0!important}' +
+      '#aup-display .aup-list-row>[data-layout="row"]:has(>[data-width="hug"])>[data-width="hug"]{flex:1 1 100%!important;flex-wrap:wrap;justify-content:flex-end;margin-left:0}' +
+      // Mastheads give the title/description a full line before the action group on narrow screens.
+      '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) [data-layout="row"]>.aup-view:has(>h2.aup-text){flex:1 1 100%!important;min-width:0}' +
+      // Fixed desktop column widths must not clip the editor behind the list rail.
+      '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) [data-layout="grid"],#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) .aup-view[style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important;min-width:0!important}' +
+      '#aup-display:not(:has(.aup-app-footer:not(.aup-build-info-footer))) [data-layout="row"]{flex-wrap:wrap;min-width:0}' +
+      // (5) the platform empty state is a 32px-padded 80px box — a desktop proportion
+      '#aup-display .aup-list-empty{padding:16px!important;min-height:64px!important}' +
+      '}',
   ].join('');
 
   function injectChromeStyles(p) {

@@ -85,11 +85,13 @@ page operations {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+            view gap=xs style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
             p :render-timing intent=muted scale=sm
             view gap=sm size={flex: 1} style={overflowY: auto} {
-              view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view style={display: grid, gridTemplateColumns: "minmax(0, 1fr)", gap: "14px", flexShrink: 0, alignItems: start} {
                 // DEF-22 / B14: this console page is `/?page=operations` (pathname
                 // `/`), which matches no `afs:` binding — `$state.loc` does not exist
                 // here, so the two node projections are read through LITERAL
@@ -97,8 +99,8 @@ page operations {
                 // (cold visit = empty card). The markup is `node/.aup/item.json`;
                 // the projection's own precomputed strings are printed, never
                 // re-derived on the page.
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                  h2 :health level=2 style={fontSize: "var(--type-body)"}
+                view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                  h2 :health level=2
                   p :health-checked scale=sm intent=muted
                   surface url="/instance/app/arcblog/node/health.json" editable=false {
                     // A record value is printed VERBATIM: `time mode=display` falls
@@ -106,7 +108,7 @@ page operations {
                     // fake timestamp on a record that has no checkedAt.
                     p "${content.checkedAt}" scale=sm intent=muted
                   }
-                  h2 :discovery level=2 style={fontSize: "var(--type-body)"}
+                  h2 :discovery level=2
                   p :discovery-empty scale=sm intent=muted
                   key-value-list operations-discovery-cmd dense=true fields=[{label: "discovery publish", value: "node scripts/arcblog-network.mjs discovery publish", monospace: true, copyable: true}]
                   surface url="/instance/app/arcblog/node/discovery.json" editable=false {

@@ -80,6 +80,29 @@ export function declaredGrants(manifest = join(REPO, 'blocklet.yaml')) {
   return [...grants];
 }
 
+/**
+ * A binding/path may carry a `{…}` / `$params.dir` SEGMENT instead of a literal directory
+ * (2026-10-19: `/pages-edit/{dir}/{slug}` serves both the online and the offline copy, because
+ * `propBind` can only interpolate route params and a page lives in `pages/` while online and in
+ * `page-drafts/` while offline). The allowlist of possible values is not guesswork: it is the set
+ * of directories the pages actually link to, read from their `href="/pages-edit/<dir>/…"` links.
+ * A template with no concrete link behind it fails the non-vacuity assertion instead of passing.
+ */
+export function editorDirs(pagesRoot = join(REPO, '.aup', 'pages')) {
+  const dirs = new Set();
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.aup')) {
+        for (const m of readFileSync(full, 'utf8').matchAll(/href="\/pages-edit\/([a-z][a-z-]*)\//g)) dirs.add(m[1]);
+      }
+    }
+  };
+  walk(pagesRoot);
+  return dirs;
+}
+
 function isCovered(path, grants) {
   return grants.some((grant) => path === grant || path.startsWith(grant.replace(/\/$/, '') + '/'));
 }
@@ -90,8 +113,18 @@ test('every AFS path a page reads is covered by a declared grant or the platform
   const refs = pageReferences();
   assert.ok(refs.size >= 20, `expected many page references, found ${refs.size}`);
 
+  const dirs = editorDirs();
+  assert.ok(dirs.size >= 2, `directories behind the page-editor route: ${[...dirs].join(', ')} — the link scan is broken`);
   const uncovered = [];
   for (const [path, files] of refs) {
+    if (path.includes('$params.dir')) {
+      // every concrete expansion has to be granted (see editorDirs)
+      for (const dir of dirs) {
+        const concrete = path.replace('$params.dir', dir);
+        if (!isCovered(concrete, grants)) uncovered.push(`${concrete} (${[...files].join(', ')})`);
+      }
+      continue;
+    }
     if (isCovered(path, grants) || isCovered(path, PLATFORM_SCOPE_PREFIXES)) continue;
     uncovered.push(`${path} (${[...files].join(', ')})`);
   }
@@ -161,6 +194,15 @@ test('every site binding names an existing page and a granted AFS path', () => {
     // (`…/posts/{slug}.json`): strip a trailing segment only in the second case, otherwise
     // the directory check would compare its parent and report a false denial.
     const dir = /\.json$|\{[^}]*\}/.test(b.afs) ? b.afs.replace(/\/[^/]*$/, '') : b.afs;
+    if (dir.includes('{dir}')) {
+      const dirs = editorDirs();
+      for (const concrete of dirs) {
+        const value = b.afs.replace('{dir}', concrete);
+        const target = /\.json$/.test(value) ? value.replace(/\/[^/]*$/, '') : value;
+        if (!isCovered(target, grants)) problems.push(`binding ${b.id}: afs '${value}' is not covered by a declared grant`);
+      }
+      continue;
+    }
     if (!isCovered(dir, grants)) problems.push(`binding ${b.id}: afs '${b.afs}' is not covered by a declared grant`);
   }
   assert.deepEqual(problems, [], `site bindings that would 404 or deny:\n  ${problems.join('\n  ')}`);

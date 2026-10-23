@@ -8,7 +8,7 @@
 //   every number it shows must be precomputed by a CLI and printed verbatim.
 //
 // WHERE THE RECORDS LAND
-//   `config/console/<name>.json` (admin-only: one of the counts is the draft count).
+//   `config/console/kpi/<name>.json` (admin-only: one of the counts is the draft count).
 //   ONE record per print point, each carrying only the fields that point needs, so a
 //   page never renders another page's numbers:
 //
@@ -19,11 +19,18 @@
 //     tags.json        ?page=tags     (tagCount)
 //     categories.json  ?page=categories (categoryCount)
 //
-//   All of them live in the SAME directory, so the runtime renders them with the same
-//   item recipe (`config/console/.aup/item.json` ← `seed/recipes/console/item.json`).
-//   That recipe hides a row whose field is absent (`hideWhenEmpty`), which is exactly
-//   why the partial records work — and why `buildOverview` must NOT zero-fill a count
-//   it was not given (a `0` is not "empty" and would print a wrong number).
+//   WHY `kpi/` AND NOT `config/console/` DIRECTLY (2026-10-19)
+//   `?page=dashboard` reads this record through an `afs-list` row template
+//   (`from "/instance/app/arcblog/config/console/kpi"` + `${entry.content.*}`), the
+//   only channel that has the data on the FIRST paint (B14 / arc-contracts §57: a
+//   `propBind` record lands in session state only after the first render, so the KPI
+//   band used to paint four empty cells). A directory listing is rendered verbatim,
+//   so the record needs a directory of its OWN: `config/console/` also holds
+//   `recent-drafts/`, whose rows would otherwise mix into the KPI band. Hence the
+//   dedicated `kpi/` directory — exactly one record, no children.
+//
+//   The page prints the fields verbatim; `buildOverview` must NOT zero-fill a count it
+//   was not given (a `0` is not "empty" and would print a wrong number).
 //
 // WHY THE FIELDS ARE DERIVED, NOT HAND-LISTED
 //   `scripts/arcblog-recipes.mjs` refuses a `${content.<field>}` the writer never emits,
@@ -41,10 +48,34 @@ export const OVERVIEW_COUNT_SOURCES = Object.freeze({
 });
 
 /**
- * The projection's single print point: `config/console/overview.json`, read with `propBind` by
- * `?page=dashboard`. (There used to be one record per list page, printed through an item recipe —
- * removed 2026-10-13: a recipe CANNOT localize a label, measured (`$t(...)` renders literally,
- * arc-contracts §65), so every such row read as machine output on a zh console.)
+ * The projection's OWN directory. `?page=dashboard` lists it with an `afs-list`
+ * (`role=item` + `${entry.content.*}`) — the cold-start channel — so the directory must
+ * hold the KPI record and nothing else: a sibling record (or a child directory) would be
+ * rendered as another KPI row. The parent `config/console/` holds `recent-drafts/`.
+ */
+export const OVERVIEW_RECORD_DIR = '/instance/app/arcblog/config/console/kpi';
+
+/** Where the same record lived before 2026-10-19 — read-only fallback for `show`. */
+export const OVERVIEW_LEGACY_DIR = '/instance/app/arcblog/config/console';
+
+/** `<dir>/<stem>.json` — the write path of one print point. */
+export function overviewRecordPath(stem = 'overview') {
+  return `${OVERVIEW_RECORD_DIR}/${stem}.json`;
+}
+
+/**
+ * Every path `show` may read, in priority order: the current location first, then the
+ * legacy one. An instance refreshed before 2026-10-19 still has ONLY the legacy record,
+ * and `show` must answer it rather than report "not written yet".
+ */
+export function overviewReadCandidates(stem = 'overview') {
+  return [overviewRecordPath(stem), `${OVERVIEW_LEGACY_DIR}/${stem}.json`];
+}
+
+/**
+ * The projection's single print point: `config/console/kpi/overview.json`, read by
+ * `?page=dashboard` through an `afs-list` row template (`${entry.content.*}`) because that
+ * is the only channel that carries the record on the FIRST render (B14 / arc-contracts §57).
  */
 export const OVERVIEW_PAGE_RECORDS = Object.freeze({
   overview: ['publishedCount', 'draftCount', 'pageOnlineCount', 'pageDraftCount', 'mediaCount', 'summaryCount'],

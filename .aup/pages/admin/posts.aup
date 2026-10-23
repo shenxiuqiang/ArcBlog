@@ -123,36 +123,50 @@ page posts {
             p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
-        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            row gap=md cross=center {
-              view gap=xs size={flex: 1} {
-                h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-                p :desc intent=muted
+        view gap=0 size={flex: 1} style={paddingTop: "18px", paddingBottom: "18px", minHeight: 0} {
+          view gap=0 style={height: "100%", minHeight: 0} visible=$session.authenticated {
+            // 刊头（masthead）：标题 / 一句话用途 / 唯一主操作压在同一基线，下沿一条 1px
+            // 细线 —— 整页唯一的分隔手段；卡片表面色退场（system §3）。
+            view style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+              row gap=md cross=end {
+                view gap=0 size={flex: 1} {
+                  h2 :title level=2
+                  p :desc intent=muted
+                }
+                row cross=start size={width: hug} {
+                  action -> page compose variant=primary label=:new-post style={borderRadius: "var(--radius-md, 8px)", padding: "9px 14px", fontSize: "var(--type-caption)", fontWeight: "500"}
+                }
               }
-              action -> page compose variant=primary label=:new-post
             }
-            view gap=sm size={flex: 1} style={overflowY: auto} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            view gap=0 size={flex: 1} style={overflowY: auto, paddingTop: "18px"} {
+              view gap=sm style={flexShrink: 0} {
                 view mode=tabs {
                   view label=:tab-published {
                     afs-list posts-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=20 from "/instance/app/arcblog/posts" {
+                      // `role=item` 渲染成 `aup-list-row`（display:flex; align-items:center），子节点默认
+                      // fit-content ⇒ item 只留一个子节点并给它 width:fill，行内再分「左：标题/状态元信息」
+                      // 与「右：编辑 + 状态操作」。`use recordFields()` 必须与两个 action 同一个父节点，
+                      // 否则 `args.e*` 收不到值（写记录会用空字段）。
                       row gap=sm cross=start role=item {
-                        view gap=xs size={flex: 1} href="/posts/${entry.content.slug}" target=_blank {
-                          h3 "${entry.content.title}"
-                          row gap=xs cross=center {
-                            p "●" scale=sm intent=success
-                            p :tab-published scale=sm intent=muted
-                            p "${entry.content.category}" scale=sm intent=muted
-                            time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                        row gap=sm cross=center size={width: fill} {
+                          view gap=xs size={flex: 1} href="/posts/${entry.content.slug}" target=_blank {
+                            h3 "${entry.content.title}"
+                            row gap=xs cross=center {
+                              p "●" scale=sm intent=success
+                              p :tab-published scale=sm intent=muted
+                              p "${entry.content.category}" scale=sm intent=muted
+                              time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                            }
+                          }
+                          row gap=sm cross=center size={width: hug} {
+                            use recordFields()
+                            view href="/edit/${entry.content.slug}" target=_blank {
+                              p :edit scale=sm
+                            }
+                            action label=:admin-archive confirm={title: :admin-archive, message: :admin-archive-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: archived, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                            action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish, message: :admin-unpublish-msg}
                           }
                         }
-                        use recordFields()
-                        view href="/edit/${entry.content.slug}" target=_blank {
-                          p :edit scale=sm
-                        }
-                        action label=:admin-archive confirm={title: :admin-archive, message: :admin-archive-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: archived, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${generate.timeiso}", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                        action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:admin-unpublish path="/instance/app/arcblog/posts/${entry.content.slug}.json" confirm={title: :admin-unpublish, message: :admin-unpublish-msg}
                       }
                     }
                   }
@@ -166,22 +180,26 @@ page posts {
                       // is kept: it is what makes drafts/ and archived/ two real views. The blanket "no
                       // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
                       row gap=sm cross=start role=item visible="!${entry.content.archivedAt}" {
-                        view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
-                          h3 "${entry.content.title}"
-                          row gap=xs cross=center {
-                            p "●" scale=sm intent=muted title="${entry.content.status}"
-                            p :tab-drafts scale=sm intent=muted
-                            p "${entry.content.status}" scale=sm
-                            p "${entry.content.category}" scale=sm intent=muted
-                            time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        row gap=sm cross=center size={width: fill} {
+                          view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
+                            h3 "${entry.content.title}"
+                            row gap=xs cross=center {
+                              p "●" scale=sm intent=muted title="${entry.content.status}"
+                              p :tab-drafts scale=sm intent=muted
+                              p "${entry.content.status}" scale=sm
+                              p "${entry.content.category}" scale=sm intent=muted
+                              time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                            }
+                          }
+                          row gap=sm cross=center size={width: hug} {
+                            use recordFields()
+                            view href="/edit/${entry.content.slug}" target=_blank {
+                              p :edit scale=sm
+                            }
+                            action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                            action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
                           }
                         }
-                        use recordFields()
-                        view href="/edit/${entry.content.slug}" target=_blank {
-                          p :edit scale=sm
-                        }
-                        action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                        action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
                       }
                     }
                   }
@@ -195,22 +213,26 @@ page posts {
                       // is kept: it is what makes drafts/ and archived/ two real views. The blanket "no
                       // data-state condition" rule is narrowed to `$state.*` (arc-contracts §28.1).
                       row gap=sm cross=start role=item visible="${entry.content.archivedAt}" {
-                        view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
-                          h3 "${entry.content.title}"
-                          row gap=xs cross=center {
-                            p "●" scale=sm intent=muted title="${entry.content.status}"
-                            p :tab-archived scale=sm intent=muted
-                            p "${entry.content.status}" scale=sm
-                            p "${entry.content.category}" scale=sm intent=muted
-                            time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                        row gap=sm cross=center size={width: fill} {
+                          view gap=xs size={flex: 1} href="/preview/${entry.content.slug}" target=_blank {
+                            h3 "${entry.content.title}"
+                            row gap=xs cross=center {
+                              p "●" scale=sm intent=muted title="${entry.content.status}"
+                              p :tab-archived scale=sm intent=muted
+                              p "${entry.content.status}" scale=sm
+                              p "${entry.content.category}" scale=sm intent=muted
+                              time mode=display value="${entry.content.updatedAt}" timeMode=relative
+                            }
+                          }
+                          row gap=sm cross=center size={width: hug} {
+                            use recordFields()
+                            view href="/edit/${entry.content.slug}" target=_blank {
+                              p :edit scale=sm
+                            }
+                            action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
+                            action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
                           }
                         }
-                        use recordFields()
-                        view href="/edit/${entry.content.slug}" target=_blank {
-                          p :edit scale=sm
-                        }
-                        action label=:admin-publish confirm={title: :admin-publish, message: :admin-publish-msg} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: published, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}}
-                        action variant=destructive size=sm icon=trash label=:admin-delete confirm={title: :admin-delete, message: :admin-delete-msg} events={click: {exec: "/.actions/delete", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json"}, afterSuccess: [{exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.eSlug}.json", content: {title: "${args.eTitle}", slug: "${args.eSlug}", summary: "${args.eSummary}", body: "${args.eBody}", coverImage: "${args.eCoverImage}", images: [], tags: "${args.eTags}", category: "${args.eCategory}", seoTitle: "${args.eSeoTitle}", seoDescription: "${args.eSeoDescription}", ogTitle: "${args.eOgTitle}", ogDescription: "${args.eOgDescription}", ogImage: "${args.eOgImage}", status: deleted, authorDid: "${args.eAuthorDid}", authorName: "${args.eAuthorName}", published: false, publishedAt: "${args.ePublishedAt}", archivedAt: "${args.eArchivedAt}", deletedAt: "${generate.timeiso}", createdAt: "${args.eCreatedAt}", updatedAt: "${generate.timeiso}", version: 1}}}]}}
                       }
                     }
                   }

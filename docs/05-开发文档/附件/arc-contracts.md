@@ -3605,3 +3605,318 @@ node scripts/arcblog-browser-probe.mjs "http://arcblog.localhost:4939/?page=inde
 ```
 
 **（4）工具坑（值得记）**：`scripts/arcblog-browser-probe.mjs` 的页面观察代码整段是**模板字符串**（它被送到浏览器执行）⇒ 那些注释里**不能出现反引号**，否则模板串被提前截断，后半段会被 Node 当代码解析（症状：`ReferenceError: blocklet is not defined`，位置指向注释行）。已在文件里加了警告注释。
+
+## 83. `arc` 单文件二进制里嵌的是**完整 UTF-16 源码**；User Center 菜单是硬编码、2.0 的平台菜单通道是 `app:navigation`（2026-10-14 实测）
+
+**基线**：`arc 2.0.0-beta.66 (54a9b40e)` ｜ `lsof -nP -iTCP:4939 -sTCP:LISTEN` → `arc-darwin-arm64`（**133.6 MB**，Bun `1.4.3` 编译单文件）
+**工具**：`node scripts/arcblog-arc-source-extract.mjs`（本轮新增，只读、不碰实例；默认输出 `tmp/arc-src`，`--find <regex>` 检索）
+**结论层**：`../02-平台能力与边界.md` 的 **B30**（本小节只留证据）
+
+### (1) 推翻旧结论：不是"JSC 字节码、`grep` 不到、无法离线取证"
+
+旧记录（`_research/S10-01-删外观设置的影响面清点.md:46`）说控制台 SPA 的 bundle 在二进制里、**JS 为 JSC 字节码、`grep` 不到字符串、因此无法离线取证**。**实测：字符串是 UTF-16LE，ASCII 一次都不命中**，而正文是**未压缩、未混淆的源码文本**——`grep` 找不到只是编码问题。
+
+```bash
+python3 - <<'PY'
+B='/Users/shenxiuqiang/.arc/current/arc-darwin-arm64'
+d=open(B,'rb').read()
+for t in ["UNAUTHENTICATED","well-known/service/user","userCenter","navigation","parse-manifest","blocklet.yaml"]:
+    print(f'{t:26} ascii={d.count(t.encode()):6} utf16le={d.count(t.encode("utf-16-le")):6}')
+PY
+# UNAUTHENTICATED            ascii=     0 utf16le=    20
+# well-known/service/user    ascii=     0 utf16le=    31
+# userCenter                 ascii=     0 utf16le=    18
+# navigation                 ascii=    12 utf16le=   200
+# parse-manifest             ascii=     0 utf16le=     1
+# blocklet.yaml              ascii=     0 utf16le=    168
+```
+
+整段 UTF-16 区（约 offset 70.1M–134.2M）逐字解出即**模块树**：每个模块前有 bundler 的 banner `// ../../<pkg>/<file>.mjs`。
+
+```bash
+node scripts/arcblog-arc-source-extract.mjs --out /tmp/arc-src
+# binary     /Users/…/.arc/current/arc-darwin-arm64 (133.6 MB)
+# extracted  3879 module(s), 33.8 MB → /tmp/arc-src
+node scripts/arcblog-arc-source-extract.mjs --out /tmp/arc-src --find "app:navigation"
+# …/dist/handlers/blocklet-js-handler.js:92: const navigation = parse("app:navigation", []);
+# …/dist/handlers/branding-handler.js:440: const raw = await this.options.store.getSetting(instanceDid, "app:navigation");
+# …/dist/handlers/branding-handler.js:450: await this.options.store.setSetting(instanceDid, "app:navigation", JSON.stringify(navigation), "system");
+# -- 3 hit(s) for /app:navigation/ in 3854 file(s)
+```
+
+⇒ **ARC 2.0 的平台服务源码在本机可离线通读**；`_research` 里所有"二进制里读不到，只能靠探针"的措辞应改引本小节。（本文件 `§1` 的"平台服务在二进制内"仍然对，只是"读不到"这半句已被推翻。）
+
+### (2) `blocklet.yaml` 的读取源码 = `packages/core/dist/blocklet/parse-manifest.mjs`
+
+```bash
+grep -c navigation /tmp/arc-src/packages/core/dist/blocklet/parse-manifest.mjs   # 0
+sed -n '980,990p' /tmp/arc-src/packages/core/dist/blocklet/parse-manifest.mjs
+# specVersion: literal(2).optional().default(2),
+# entrypoint: EntrypointSchema.optional(), blocklets: array(string2().min(1)).optional(),
+# system: …, sites: array(SiteDeclarationSchema).optional(), surfaces: …, cron: …,
+# io: IODeclarationSchema.optional(), collections: CollectionsDeclarationSchema,
+grep -rn "\.navigation\b" --include=*.mjs /tmp/arc-src/packages/ | wc -l   # 0
+```
+
+⇒ 2.0 的 manifest **没有** `navigation` / `capabilities` 字段，`packages/**` 里**没有**任何读取点 —— 与官方 [Manifest and capabilities](https://www.arcblock.io/en/docs/blocklets/manifest-and-capabilities/)（基线 `2.0.0-beta.28`）一致。
+
+### (3) User Center 源码 = `@arcblock/did-connect-service@4.1.49`（`/user` 与 `/admin` 同一个页面）
+
+```bash
+sed -n '9,14p;131,139p' /tmp/arc-src/node_modules/.pnpm/@arcblock+did-connect-service@4.1.49_*/node_modules/@arcblock/did-connect-service/dist/pages/admin/index.js
+#   const isUserPage = !!data2.isUserPage;
+#   const isAdmin = !isUserPage && (role === "admin" || role === "owner");
+#   const defaultTab = isUserPage ? "profile" : isAdmin ? "members" : isInstance ? "members" : "profile";
+#   <button data-tab="profile" …>  (总是)     <button data-tab="access-keys" …> (总是)
+#   members/invitations/audit-logs (isAdmin)  access/branding/appearance (isOwner)  settings (isAdmin)
+grep -rn "isUserPage" /tmp/arc-src/…/did-connect-service/dist/handlers/team-handler.js
+# team-handler.js:139  serveAdminPage(request, instanceDid, { isUserPage: false })   ← /admin
+# team-handler.js:142  serveAdminPage(request, instanceDid, { isUserPage: true  })   ← /user
+```
+
+⇒ 人类看到的 `profile` / `access keys` 就是这两条**写死的** `<button>`；**没有任何动态菜单读取** ⇒ blocklet 无法往 User Center 加 tab。
+
+### (4) 2.0 的菜单通道 = 平台设置 `app:navigation`（不是 manifest）
+
+```bash
+sed -n '438,452p' /tmp/arc-src/…/did-connect-service/dist/handlers/branding-handler.js
+#   if (pathname === "/.well-known/service/api/navigation") {
+#     if (request.method === "GET") return this.getNavigation(request);
+#     if (request.method === "PUT") return this.updateNavigation(request); }
+#   async getNavigation(request)  { … getSetting(instanceDid, "app:navigation") → {navigation: raw?JSON.parse(raw):[]} }
+#   async updateNavigation(request) { if (!Array.isArray(navigation)) return jsonResponse11({error: handlerError("navigationMustBeArray", …)}, 400); … setSetting(…, "app:navigation", JSON.stringify(navigation), "system") }
+grep -n "app:navigation" /tmp/arc-src/…/did-connect-service/dist/handlers/blocklet-js-handler.js
+# 92:    const navigation = parse("app:navigation", []);
+# 170:      navigation,                     ← window.blocklet.navigation 的真源
+grep -n "api/branding\|api/navigation" /tmp/arc-src/…/did-connect-service/dist/handlers/auth-handler.js
+# 631: … url.pathname === "/.well-known/service/api/navigation";   ← 与 branding/theme 同列 admin 端点
+```
+
+控制台 UI 也在源码里（owner 可见的 **Appearance → Navigation** 卡片，条目形状 `{title, link}`）：
+
+```bash
+grep -n "saveNavigation\|addNavItem\|ap-nav-list" /tmp/arc-src/…/did-connect-service/dist/pages/admin/tab-appearance.js \
+  /tmp/arc-src/…/did-connect-service/dist/_generated/asset-bytes.js | head
+# tab-appearance.js:60/62/64  → Add Item / #ap-nav-list / Save
+# asset-bytes.js:7532  async function saveNavigation() { var res = await appearanceApi("PUT", "/navigation", { navigation: __navItems }); … }
+```
+
+⇒ 本机 `window.blocklet.navigation` 实测 `[]` 的**原因确定**：`app:navigation` 从未被写过，**与 `blocklet.yaml` 无关**。加了条目它也不进 `/user` 的 tab —— tab 是 (3) 的硬编码。
+
+### (5) `X-External-Tabs`：User Center 页里唯一的"动态菜单"通道，但没有公开写入口
+
+```bash
+grep -rn "externalTabs\|X-External-Tabs" /tmp/arc-src/…/did-connect-service/dist/ | head
+# pages/admin/index.js:13   const externalTabs = data2.externalTabs || [];
+# pages/admin/index.js:79   ${externalTabs.map((tab) => `<div class="dropdown-item" onclick="location.href='${…tab.url}'; …">`}  ← 用户下拉，不是 tab 条
+# handlers/team-handler.js:1544  const externalTabsHeader = request.headers.get("X-External-Tabs");  if (…) externalTabs = JSON.parse(…)
+grep -n "x-external-tabs" /tmp/arc-src/services/shared/dist/connect-headers.mjs
+# CONNECT_UNTRUSTED_CLIENT_HEADERS = ["x-instance-did","x-path-prefix","x-group-path-prefix","x-page-group","x-external-tabs","x-arc-domain","x-arc-pkg-branding"]
+```
+
+⇒ 该头被列为**不可信客户端头**（会被剥离），全 JS 层**没有**设置它的地方 ⇒ 属 daemon 内部/未公开通道，**不是给 blocklet 的扩展点**【未找到公开写入口】。
+
+### (6) 同一方法可复跑的其它事实（本轮顺带）
+
+```bash
+grep -oE "/\.well-known/service/[A-Za-z0-9/_.:-]*" /tmp/ustrings.txt | sort -u | head
+# /.well-known/service/api/navigation ｜ /api/access-keys ｜ /api/team/profile ｜ /api/user-session ｜ /api/did/session …
+```
+
+⇒ 这就是匿名探针里 `/api/navigation` **401**（存在但要会话）而 `/api/navigation/xyz` **404**（非前缀路由）的源码解释：**精确路由**，与 `branding`/`theme` 同组。
+
+---
+
+## 84. 控制台「主从」编辑面：路由参数可作 `visible` 条件；`propBind` 的作用域是**子树**、暖会话**首帧即取数**（2026-10-19 实测，beta.66）
+
+**动机**：把 `?page=pages` 从"意图队列"改成主从两列（左列表 / 右表单），必须回答三件此前只有笼统结论的事。
+**基线**：`arc 2.0.0-beta.66 (54a9b40e)`；实例 `default`（`http://arcblog.localhost:4939`，`arcblog` 挂载）；
+探针 = `scripts/arcblog-browser-probe.mjs --fresh --json` + `/tmp/reload-probe.mjs`（CDP `Page.navigate` / `Page.reload` / `Runtime.evaluate document.body.innerText`）。
+**方法**：页面内临时打印 `DBG-SLUG[...]` / `DBG-BOUND[...]` 等标记，测完即删（本仓库不留 debug 节点）。
+
+### (1) 路由绑定参数进 `$state`，**首访即可用于 `visible`**
+
+`blocklet.yaml` 新绑定 `id: page-editor / path: "/pages-edit/{slug}" / afs: …/page-drafts/{slug}.json / page: pages`。
+新增的临时标记（放在 `visible=$session.authenticated` 之外，访客可见）：
+
+```aup
+p "DBG-SLUG[${state.slug}]"
+view visible=$state.slug { p "DBG-EDITMODE" }
+view visible="!$state.slug" { p "DBG-CREATEMODE" }
+```
+
+```text
+GET /?page=pages            → DBG-SLUG[]        + DBG-CREATEMODE      （无 DBG-EDITMODE）
+GET /pages-edit/about       → DBG-SLUG[about]   + DBG-EDITMODE        （无 DBG-CREATEMODE）
+GET /pages-edit/probe-edit  → DBG-SLUG[probe-edit] + DBG-EDITMODE
+```
+
+⇒ ① 绑定路径的参数（与 `?query`）都进 `$state`，**首帧就有值**（`Vi()` 先从 `location.search` 读，再补 `routeContext.params`）；
+② 因此 `visible=$state.<路由参数>` / `visible="!$state.<路由参数>"` 的**首屏冻结恰好落在正确值上**，是 B13 "裸 visible 不可用"的**例外**（B13 的范围是 `propBind` 的异步数据）。
+③ 三个探测都在**全新 profile**（`--fresh`）下执行，与会话缓存无关。
+
+### (2) `propBind` 把记录挂到**该节点的子树**；子树外的 `${state.<key>}` 是空串
+
+同一页放两个节点：子树外 `p "DBG-PAGE[${state.page.title}]"`，子树内 `view propBind={page: …} { p "DBG-BOUND[${state.page.title}]" }`。
+
+```text
+/pages-edit/probe-edit（暖会话）→ DBG-PAGE[]        DBG-BOUND[Probe edit]
+```
+
+⇒ `propBind` 解析出的 `state` 只在**声明它的那棵子树**里可插值；把它当"页面级全局状态"在兄弟节点读，永远空。这也解释了 §57.1 的树里 `state` 字段长在**该节点**上（`{"id":"…","propBind":{…},"state":["post"]}`）。
+
+### (3) 冷会话首访不取数（§57.1 复现），**暖会话导航到从未访问过的记录也在 300ms 内取到**
+
+| 场景 | 标记 | 结论 |
+| --- | --- | --- |
+| **全新 profile**（冷会话）首访 `/pages-edit/probe-edit` | `DBG-BOUND[]` | §57.1 仍成立：首访没有记录（页面须给常驻"刷新一次"说明） |
+| 同 profile（暖会话，已有 `sid`）`Page.navigate` 到 `/pages-edit/probe-edit` | 250/500/1000/2000ms 全部 `DBG-BOUND[Probe edit]` | 暖会话首帧即取数 |
+| 暖会话再 `Page.navigate` 到**从未访问过**的 `/pages-edit/probe-edit-two` | 300ms 起 `DBG-BOUND[Probe edit two]` | 不是旧 URL 的缓存；新记录同样首帧取数 |
+
+⇒ 控制台管理员点「编辑」属于暖会话 ⇒ 表单不会先空一下；"刷新一次"只在**冷启动**（新浏览器/清过 storage）时才需要。
+
+### (4) 绑定变更要「`arc service restart` + `arc blocklet run .`」，且 `blocklet run` **必须是最后一步**
+
+```bash
+arc blocklet run . --json   # { name: arcblog, port: 4939, subdomain: http://arcblog.localhost:4939/ }
+arc service restart
+curl -s -o /dev/null -w '%{http_code}\n' http://arcblog.localhost:4939/pages-edit/about   # 200 —— 但页面仍是 index
+node scripts/arcblog-browser-probe.mjs http://arcblog.localhost:4939/pages-edit/about --fresh --json
+#   重启后仅 blocklet run 之前注册的 mount：text = 首页（最新发布 …），即新绑定未生效
+arc blocklet run . ; sleep 2 ; 再探针
+#   text = 「页面 / 使用 DID Wallet 登录后管理独立页面。」 ⇒ 绑定生效
+```
+
+⇒ **只 `restart` 不 `run`**，或 **`run` 之后才 `restart`**，新 `sites[].bindings` 都**不生效**（未匹配的路径回落到 `app.aup` 的 default 页 = `index`）。可判信号：访客探针的 `text` 首行是"最新发布"还是"页面"。
+
+### (5) 清场与守卫
+
+- 临时标记 + 两个探针页面（`probe-edit` / `probe-edit-two`）测后删除；`arc afs …/pages` 只剩 `.aup`，`page-drafts` 不存在（`LIST_ERROR … Path not found`）。
+- 页面上保留 4 处 `$state` 条件（2 处路由参数 + 1 处 `propBind` 写面 fail-closed + 1 处创建按钮），已按文本登记进 `scripts/visible-conditions-allowlist.json`（含理由），守卫 `scripts/arcblog-visible-conditions.test.mjs` 绿。
+
+### (6) 同一轮又钉死的三件小事（2026-10-19，同一基线）
+
+1. **`chip` 的文案不吃 `:key` i18n 语法**：`chip :status-online color=success` 被 `arc dsl format` 改写成
+   `chip content=:status-online color=success`（chip 只读 `label`，不读 `content`），DOM 为
+   `<span class="aup-chip" data-color="success">…<span class="aup-chip-label"></span></span>` —— **空标签**。
+   要用本地化状态，只能走**文本节点**（`p :status-online` 正常翻译）或 `label="…"` 字面量。
+2. **未解析的 `propBind` 仍会留下**一个**真值** `state.<key>`：`visible=$state.page` 在**没有**记录的
+   `?page=pages` 上依旧显形（截图实测：新建表单下方同时出现「Bring online / Save / Delete」）。
+   ⇒ **模式判断只能用 URL 派生量**（`$state.slug`），数据安全靠 `required`（空标题/空正文提交被拦）
+   —— 页面里已经改成这样，并把这条写进 `.aup/pages/admin/pages.aup` 的注释与 `visible-conditions-allowlist.json` 的例外理由。
+3. **`<a>` 里只有一个文本子节点会被平台画成"返回链接"**：`aup-core.css` 的
+   `:is(a,.aup-view[href])>.aup-text:only-child:before{content:"\2190"}` 会加 **←** 并把字号压到 12.4px。
+   行标题要当链接时，必须**再包一层 `view`**（直接子节点就不是文本节点了），否则标题会变成灰色小号带箭头。
+
+### (7) 编辑路由必须带**目录**：`/pages-edit/{dir}/{slug}`（2026-10-19，同一基线）
+
+现象（人类验收）：点左侧在线页面 → 表单空白。原因两条：① 在线行的标题链到了**公开页**（`/pages/<slug>`，新开页）；
+② 编辑路由的绑定只指向 `page-drafts/`，而该页在 `pages/`。
+`propBind` 只能插值 `$params.*`（§57.2），一个节点只有一条绑定路径 ⇒ **目录必须进路由**：
+
+```yaml
+- id: page-editor
+  path: "/pages-edit/{dir}/{slug}"
+  afs: "/instance/app/arcblog/{dir}/{slug}.json"
+  page: pages
+```
+
+```aup
+view propBind={page: "/instance/app/arcblog/$params.dir/$params.slug.json"} { … }
+```
+
+- 两行链接分别带标记：`/pages-edit/pages/<slug>?online=1`、`/pages-edit/page-drafts/<slug>?draft=1`；
+  DSL **没有字符串比较**，所以每个模式用自己的**单值真值标记**（`visible=$state.online` / `visible=$state.draft`），
+  不做 `&&` 复合（避免表达式方言差异）。
+- **写路径一律固定字面量**（`pages/…` 或 `page-drafts/…`），绝不从 `state.dir`/`state.loc` 派生 ——
+  路由只决定"读哪条"，不决定"写哪里"，手工拼 URL 也就改不了写入目标。
+- 实测（guest 探针 + 2058×793 截图，`?online=1`）：表单读到 `title=About`、`summary=…`、正文全文；
+  `guards`：`page-grants` 允许"模板段 = 页面实际链接出现的目录集合"（`editorDirs()`，扫 `href="/pages-edit/<dir>/…"`，
+  找不到就判失败，避免空集合假通过）。
+
+## 85. 控制台 UI 升级轮的平台事实：`dist/` 会顶掉死键检测、页面重写的五步、以及 `:has()` 作为页面类型开关（2026-10-20 实测，beta.66）
+
+> 基线：`arc 2.0.0-beta.66 (54a9b40e)`；实例 `default`（`arcblog.localhost:4939`）；登录态由本机 `~/.afs-data/auth.db` 的
+> ticket 换取（**仅本机验证通道**，见 `docs/team/ui-升级交接-2026-10-20.md` §7）；下列输出均为逐字粘贴。
+
+### 85.1 `arc dsl lint` 的 `dead_locale_keys` 被**陈旧的 `dist/`** 顶掉（本轮最贵的假绿）
+
+重写 `?page=categories` 后，`.aup/locales/{en,zh}.json` 里仍有 **19 条**已无人引用的 `categories.*` 键
+（`adv-*`/`cmd-*`/`sort-*`/`cat-empty`/`worker-note` …），而 lint **一条都不报**：
+
+```bash
+$ python3 -c "import json;d=json.load(open('.aup/locales/en.json'));print([k for k in d if k.startswith('categories.')][:5])"
+['categories.add-note', 'categories.add-title', 'categories.adv-desc', 'categories.adv-hide', ...]   # 54 条，其中 19 条已死
+$ arc dsl lint --json | python3 -c "import json,sys,collections;print(collections.Counter(i['code'] for i in json.load(sys.stdin)['issues']))"
+Counter({'unreferenced_explicit_id': 68, 'format_changed': 1})     # ← 没有 dead_locale_keys
+```
+
+**根因**（平台自己的源码，`arcblog-arc-source-extract.mjs` 取出的 `providers/platform/cf-pages/dist/index.mjs`）：
+
+```js
+const files = new Set([...listAupSourceFiles(join(root, ".aup")), ...listAupSourceFiles(root)]);
+```
+
+`listAupSourceFiles(root)` 递归**整个仓库**收集 `*.aup` —— 包括 gitignore 的构建产物 `dist/.aup/**`。
+于是上一次构建留下的旧页面把这些键"引用"着，死键检测永远看不见它们。
+
+```bash
+$ find . -name '*.aup' -not -path './.aup/*' | head -3
+./dist/.aup
+./dist/.aup/wrapper.aup
+./dist/.aup/pages/about.aup
+# npm run build 之后（dist 由当前源码重建）：
+$ arc dsl lint --json | python3 -c "…"
+Counter({'unreferenced_explicit_id': 68, 'dead_locale_keys': 2, 'format_changed': 1})
+# .aup locale file has 19 key(s) not referenced by AUP DSL: categories.adv-desc, …
+```
+
+**结论 / 纪律**：① 死键检查**只在 `npm run build` 之后才有意义**（或 `dist/` 不存在时）；② 剪枝用
+`json.loads → del → json.dump`（或 `arc dsl lint --fix` 只让它动 locales，**不要**整仓 `--fix` ——
+它会连 `unreferenced_explicit_id` 一起删）；③ 快层里 `arcblog-i18n.test.mjs` 的"无死键"断言因此
+**不能**单独证明 locale 账本干净，本轮实测就是它绿着而 19 条死键在文件里。
+
+### 85.2 改 `.aup` 页面的**五步**：`validate` + `npm test` 全绿也可能是旧页面
+
+`:4939` 服务的是**构建产物**，不是源码目录。本轮重写 `?page=categories` 后：
+
+```bash
+$ arc dsl validate --json          # ok: true（新页面）
+$ npm test                         # 快层绿（新页面）
+$ node scripts/arcblog-page-content.mjs categories      # ← 仍然是旧页面
+categories     lists=2 items=3 inputs=9 actions=22 texts=49  OK
+$ npm run build && arc service restart -i default
+$ node scripts/arcblog-page-content.mjs categories
+categories     lists=2 items=3 inputs=9 actions=21 texts=47  DROPPED actions 22->21   # ← 新页面（少了两个折叠按钮）
+```
+
+即：`arc dsl generate --write`（改 i18n 后必须）→ `arc dsl format <file> --write`（否则 lint 退出码 5）→
+`npm run build` → `arc service restart -i default` → 内容门/探针。**少任何一步，"门全绿"说的都可能是旧页面。**
+
+### 85.3 `arc dsl format` 不干净会让 **i18n 测试**报一个假错误
+
+```bash
+$ arc dsl lint --json   # exit=5，stderr: ERROR: { … "ok": false, "changed": [".aup/pages/site/categories.aup"] }
+$ node --test scripts/arcblog-i18n.test.mjs
+✖ no locale key is dead
+  AssertionError: arc dsl lint produced no JSON payload:
+```
+
+真因是**格式化**（本轮是 `alignItems: "end"` 该写成 `alignItems: end`），不是死键。`arc dsl format <file> --write`
+改一行即恢复（注释不掉）。
+
+### 85.4 主题桥的 CSS 层：`:has()` + 属性钩子足以做页面类型/布局判断（实测可用）
+
+响应式层与字阶层写在 `.web/components/theme-bridge/script.js` 的 `CHROME_CSS`（宿主文档注入，`#arcblog-chrome-style`）。
+用到的实测钩子：
+
+| 钩子 | 实测来源 |
+| --- | --- |
+| 控制台作用域 `:has(.aup-view[style*="clamp(200px"])` | 生成器给每页写的侧栏宽度（`scripts/console-nav.mjs` 的唯一字面量） |
+| `row`/`grid`/`view` 的 `[data-layout="row"]`、`[data-gap]`、`[data-width="fill\|hug"]` | `size={width: "hug"}` → `data-width="hug"`；`size={width: fill}` → `data-width="fill"` |
+| `h2.aup-text[data-level="2"]` / `h3.aup-text` | 标题渲染成真 `<h2>/<h3>`（不是 `<div>`；aup-dsl skill 的"→ DIV.aup-text"一行只对 `p` 成立） |
+| `.aup-list-row`（`data-role=item`） | 列表项；子节点默认 `flex: 0 1 auto`（fit-content 并居中） |
+
+实测（15 个控制台页 × 1516/768/375，水平溢出 `scrollWidth - clientWidth` 全部 **0**；375 宽时侧栏 375、
+内容 375，改前是"侧栏 200 + 内容 113、标题逐字换行"）。反向失效模式由
+`scripts/arcblog-theme.test.mjs` 锁：桥里的 marker 必须与 `scripts/console-nav.mjs` 的宽度字面量同源。

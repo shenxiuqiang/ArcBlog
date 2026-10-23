@@ -280,37 +280,86 @@ test('D38: a queue entry without the .json extension is diagnosed, not consumed'
 
 // --- static page contract (no daemon) --------------------------------------
 
-test('?page=pages: every row action has a real consumption path, and the queue is admin-only', () => {
+test('?page=pages: rows move the record themselves, and the form rides the edit route', () => {
   const src = readFileSync(pageSource, 'utf8');
 
-  // ONE intent per click, into the admin-only config/ tree (never under pages/).
-  const queueWrites = src.match(/path: "\/instance\/app\/arcblog\/config\/page-intents\/\$\{generate\.timeiso\}\.json"/g) ?? [];
-  assert.equal(queueWrites.length, 2, 'both row buttons must queue an intent under config/page-intents');
-  assert.match(src, /action: offline, slug: "\$\{args\.eSlug\}"/);
-  assert.match(src, /action: online, slug: "\$\{args\.eSlug\}"/);
-  assert.match(src, /events=\{click: \{exec: "\/\.actions\/write"/);
+  // Human ruling 2026-10-19: the console no longer queues intents. A row writes the
+  // destination copy and only then deletes the source — a page MAY write a path that
+  // does not exist, while rewriting an existing record is conditionally refused
+  // (arc-contracts §29.2 / §29.3), which is exactly what a state move does.
+  assert.equal(src.includes('config/page-intents'), false, 'the page must not queue intents any more');
+  assert.equal(src.includes('pages-intent-list'), false, 'the intent-queue list must be gone');
 
-  // BUG-003 / arc-contracts §28.7: no $session.* inside the QUEUE payload, no requestedBy.
-  // (The create button's payload is deliberately excluded here: it still carries the
-  // known `authorDid: $session.did` literal — REQ-008's open platform limitation.)
-  const queuePayloads = src.match(/content: \{id: "\$\{generate\.timeiso\}"[^\n]*/g) ?? [];
-  assert.equal(queuePayloads.length, 2, 'exactly the two row buttons write a queue payload');
-  for (const payload of queuePayloads) {
-    assert.equal(payload.includes('$session.'), false, `queue payload leaks $session.: ${payload.slice(0, 120)}`);
-    assert.equal(payload.includes('requestedBy'), false, 'the page must not write requestedBy');
-    assert.equal(payload.includes('requestedVia: console'), true, 'the page must declare requestedVia: console');
-    assert.equal(payload.includes('status: pending'), true, 'a queued intent starts as pending');
+  const moves = [
+    // online row: write the offline copy, then remove the public one
+    {
+      write: 'path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json"',
+      after: 'afterSuccess: [{exec: "/.actions/delete", args: {path: "/instance/app/arcblog/pages/${args.eSlug}.json"}}]',
+      status: 'status: offline',
+    },
+    // offline row: write the public copy, then remove the offline one
+    {
+      write: 'path: "/instance/app/arcblog/pages/${args.eSlug}.json"',
+      after: 'afterSuccess: [{exec: "/.actions/delete", args: {path: "/instance/app/arcblog/page-drafts/${args.eSlug}.json"}}]',
+      status: 'status: online',
+    },
+  ];
+  for (const move of moves) {
+    assert.ok(src.includes(move.write), `missing destination write: ${move.write}`);
+    assert.ok(src.includes(move.after), `missing chained delete: ${move.after}`);
+    assert.ok(src.includes(move.status), `missing destination status: ${move.status}`);
   }
 
-  // REQ-019: the worker has to exist and the page has to disclose it.
-  assert.match(src, /arcblog-pages\.mjs watch/);
-  assert.match(src, /arcblog-pages\.mjs apply/);
+  // §29.1: a record cannot be read inside an `exec` payload, so every field the move
+  // carries must ride along in a row-level hidden input (slug + content + provenance).
+  for (const field of ['eSlug', 'eTitle', 'eSummary', 'eBody', 'eAuthorDid', 'eCreatedAt']) {
+    // The row-level input is the entry-bound one; the form has one `eSlug` of its own
+    // (bound to `${state.page.slug}`), which must NOT be counted here.
+    const hits = src.split('\n').filter((l) => l.includes(`input type=hidden name=${field} value="\${entry.content.`));
+    assert.equal(hits.length, 2, `field ${field} must ride along on BOTH row actions`);
+  }
+  assert.match(src, /events=\{click: \{exec: "\/\.actions\/write"/);
 
-  // REQ-030 / arc-contracts §38: R23 pagination contract stays in place.
-  for (const id of ['pages-published-list', 'pages-drafts-list', 'pages-intent-list']) {
+  // Clicking EITHER row must load that page into the form (2026-10-19): the route carries
+  // `{dir}` as well as `{slug}`, because a page lives in `pages/` while online and in
+  // `page-drafts/` while offline, and `propBind` can only interpolate route params (§57.2).
+  // Every mode is gated on URL-derived state (`$state.slug` + the row's `?online=1`/`?draft=1`
+  // marker, all present at first paint — arc-contracts §84), never on the bound record:
+  // `$state.page` was measured to stay truthy when propBind does NOT resolve. `required` on
+  // title/body is the second line of defence for a cold edit visit.
+  assert.match(src, /propBind=\{page: "\/instance\/app\/arcblog\/\$params\.dir\/\$params\.slug\.json"\}/);
+  assert.match(src, /visible="!\$state\.slug"/);
+  assert.match(src, /row\b[^\n]*\bvisible=\$state\.online \{/);
+  assert.match(src, /row\b[^\n]*\bvisible=\$state\.draft \{/);
+  assert.doesNotMatch(src, /visible=\$state\.page/, 'the edit actions must not be gated on bound data');
+  assert.match(src, /input type=text label=:f-title name=title required=true/);
+  assert.match(src, /input type=textarea rows=15 label=:f-body name=body required=true/);
+  assert.match(src, /\$\{state\.page\.authorDid\}/, "an edit must keep the record's authorship");
+
+  // The two row links must point at the directory the record really lives in.
+  assert.match(src, /href="\/pages-edit\/pages\/\$\{entry\.content\.slug\}\?online=1"/);
+  assert.match(src, /href="\/pages-edit\/page-drafts\/\$\{entry\.content\.slug\}\?draft=1"/);
+
+  // …and every write path stays a FIXED literal: the URL only decides what is READ.
+  for (const writePath of ['pages/${args.eSlug}.json', 'page-drafts/${args.eSlug}.json']) {
+    assert.ok(src.includes(writePath), `missing fixed write path: ${writePath}`);
+  }
+  assert.doesNotMatch(src, /path: "\/instance\/app\/arcblog\/\$\{state\./, 'write paths must never be URL-derived');
+
+  // The route itself is a site binding — without it the form has no {dir}/{slug} to bind.
+  const manifest = readFileSync(join(repoRoot, 'blocklet.yaml'), 'utf8');
+  assert.match(
+    manifest,
+    /- id: page-editor\n\s+path: "\/pages-edit\/\{dir\}\/\{slug\}"\n\s+afs: "\/instance\/app\/arcblog\/\{dir\}\/\{slug\}\.json"\n\s+page: pages/,
+    'the page editor route must exist and cover both directories',
+  );
+
+  // REQ-030 / arc-contracts §38: the pagination URL contract stays in place.
+  for (const id of ['pages-published-list', 'pages-drafts-list']) {
     const line = src.split('\n').find((l) => l.includes(`afs-list ${id} `));
     assert.ok(line, `missing afs-list ${id}`);
     assert.match(line, /pagination=manual/);
   }
-  assert.match(src, /from "\/instance\/app\/arcblog\/config\/page-intents"/);
+  assert.match(src, /from "\/instance\/app\/arcblog\/pages"/);
+  assert.match(src, /from "\/instance\/app\/arcblog\/page-drafts"/);
 });

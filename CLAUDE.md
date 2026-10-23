@@ -133,6 +133,15 @@ node scripts/arcblog-bookmarks.mjs where --user <did>   # the CLI half of ?page=
                           # records live in the USER's space (/user/<did>/arcblog/bookmarks/…), never platform-side
 node scripts/arcblog-ui-budget.mjs [--strict] # the console content-column budget ratchet (UI standard §2.7.2);
                           # --write-baseline re-records it — a deliberate, disclosed act (never a silent bump)
+ARCBLOG_COOKIE="login_token=…" node scripts/arcblog-page-content.mjs [--ok] <page>…
+                          # CONTENT-presence gate (2026-10-20): counts lists / items / inputs /
+                          # actions / texts per console page IN THE LIVE DOM and compares against
+                          # scripts/ui-content-baseline.json (--write-baseline re-records it). Exists
+                          # because `arc dsl validate` + `npm test` + `npm run build` were ALL GREEN
+                          # while a scripted structural edit rendered two cards at zero height — the
+                          # DSL gates prove "legal", not "the content is still there". The cookie comes
+                          # from the environment only (never a file, never the repo); without it the
+                          # script exits 2 rather than judging the sign-in gate.
 node scripts/arcblog-ui-copy.mjs [--json]  # the console-copy ratchet (UI standard `docs/04/01 §1 L8`): counts
                           # implementer references (BUG- ids, localStorage keys, `arc-contracts §`, `arcblog-*.mjs`)
                           # INSIDE page `i18n {}` blocks — i.e. what an operator reads; comments and wiring are out
@@ -147,6 +156,13 @@ node scripts/arcblog-open-questions.mjs    # the open-question lister (read-only
 node scripts/arcblog-doc-arc-commands.mjs    # A7 of docs/05's volume gate (run by `npm run gate:docs`):
                           # every `arc <group> <sub>` the living docs tell you to run must appear in
                           # that group's own `--help` subcommand table (~2 s; a typo fails)
+node scripts/arcblog-arc-source-extract.mjs  # RESEARCH tool (read-only, no instance): carve the
+                          # platform's own JS source out of the Bun single-file `arc` binary. The
+                          # daemon ships that source as **UTF-16** text (`grep -a` cannot see it),
+                          # so User Center / `/api/navigation` / the blocklet.yaml parser ARE
+                          # inspectable offline. Default out = `tmp/arc-src` (gitignored, ~34 MB);
+                          # `--find <regex>` searches the carves; `--bin`/`--out`/`--json` exist.
+                          # Evidence + conclusions = docs/05-开发文档/附件/arc-contracts.md §83
 node scripts/arcblog-dist-secrets.mjs --check # dist/ secret + junk gate (part of `npm run build`'s scrub step)
 node scripts/arcblog-deploy.mjs [--dry-run]   # THE deploy pipeline: build → verify:artifacts → recipes install
                           # (there is NO --origin: the origin is derived from the instance; an unknown

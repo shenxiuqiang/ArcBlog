@@ -31,6 +31,12 @@
       "skillPath": "plugins/arc/skills/index/SKILL.md",
       "computedHash": "e91de6e48ee8b0db854abcfe2943e9ee123e7aa4fd9b334fde7aa4ed30debcc9"
     },
+    "interface-design": {
+      "source": "Dammyjay93/interface-design",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/interface-design/SKILL.md",
+      "computedHash": "340cc79a1558f09371aa3eb689952a8b777c1d7362c24226e99693606a80828e"
+    },
     "mcp": {
       "source": "ArcBlock/agent-skills",
       "sourceType": "github",

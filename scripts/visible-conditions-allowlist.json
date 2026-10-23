@@ -12,16 +12,6 @@
       "reason": "DEF-18 measured exception: keep the write surface gated — cold-load rendering would expose an empty-state save control"
     },
     {
-      "path": ".aup/pages/admin/pages.aup",
-      "text": "view gap=sm visible=$state.open {",
-      "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
-    },
-    {
-      "path": ".aup/pages/site/categories.aup",
-      "text": "view gap=sm visible=$state.open {",
-      "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
-    },
-    {
       "path": ".aup/pages/ops/factory.aup",
       "text": "view gap=sm visible=$state.open {",
       "reason": "page-local UI state set by an action (NOT bound data); behaviour under a signed-in session is unverified (DEF-15 observation)"
@@ -30,6 +20,36 @@
       "path": ".aup/pages/admin/dashboard.aup",
       "text": "view gap=sm visible=$state.open {",
       "reason": "2026-10-13 (human: 异常区首屏不要英文原话): the raw-evidence block folds behind a page-internal `-> set`. This is the repo's accepted user-triggered fold idiom (same as ?page=pages' CLI block): the initial paint has no `open`, and the runtime follows later `set` events — it is NOT a condition on async record data."
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "view gap=xs visible=\"!$state.slug\" {",
+      "reason": "URL-derived mode switch, NOT bound data: `$state.slug` is the `/pages-edit/{slug}` route parameter and is present at first paint (arc-contracts §57.3), so the frozen first-paint evaluation is the intended one. The create side is the absence of that parameter on `?page=pages`."
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "view gap=xs visible=$state.slug {",
+      "reason": "URL-derived mode switch, NOT bound data: `$state.slug` is the `/pages-edit/{slug}` route parameter and is present at first paint (arc-contracts §57.3), so the frozen first-paint evaluation is the intended one. The create side is the absence of that parameter on `?page=pages`."
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "row gap=sm cross=start size={width: hug} visible=\"!$state.slug\" {",
+      "reason": "URL-derived mode switch, NOT bound data: `$state.slug` is the `/pages-edit/{dir}/{slug}` route parameter and is present at first paint (arc-contracts §84), so the frozen first-paint evaluation is the intended one. The create side is the absence of that parameter on `?page=pages`."
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "row gap=sm cross=start size={width: hug} visible=$state.online {",
+      "reason": "URL-derived state marker (`?online=1` / `?draft=1` carried by the row link), present at first paint — NOT bound data. A string comparison is impossible in this DSL, so each edit mode has its own single-reference truthy marker; every write path it guards is a fixed literal."
+    },
+    {
+      "path": ".aup/pages/admin/pages.aup",
+      "text": "row gap=sm cross=start size={width: hug} visible=$state.draft {",
+      "reason": "URL-derived state marker (`?online=1` / `?draft=1` carried by the row link), present at first paint — NOT bound data. A string comparison is impossible in this DSL, so each edit mode has its own single-reference truthy marker; every write path it guards is a fixed literal."
+    },
+    {
+      "path": ".aup/pages/admin/compose-edit.aup",
+      "text": "row gap=sm cross=center size={width: hug} visible=$state.post {",
+      "reason": "2026-10-23 UI masthead: the existing DEF-18 write-surface gate also guards its relocated save/publish action group. This duplicates the same first-paint safety condition, exposes no new write path and preserves the cold-start restriction; the field body retains its original gate."
     }
   ]
 }

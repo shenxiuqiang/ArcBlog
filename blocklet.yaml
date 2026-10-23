@@ -93,6 +93,17 @@ sites:
         path: "/pages/{slug}"
         afs: "/instance/app/arcblog/pages/{slug}.json"
         page: page-view
+      # Console page editor (2026-10-19): the SAME `pages` console page, reached at a
+      # route that carries BOTH `{dir}` and `{slug}`. `propBind` values only interpolate
+      # `$params.*` (arc-contracts §57.2), so without a route the edit form has no way to
+      # load a record before it paints — and one literal directory is not enough: a page
+      # lives in `pages/` while online and in `page-drafts/` while offline, and clicking
+      # either row must load it. `{dir}` is therefore part of the route; the form's WRITE
+      # paths stay fixed literals (see `.aup/pages/admin/pages.aup`), never URL-derived.
+      - id: page-editor
+        path: "/pages-edit/{dir}/{slug}"
+        afs: "/instance/app/arcblog/{dir}/{slug}.json"
+        page: pages
 
 # `scope: app` — per-session /instance overlay so the blocklet can write shared
 # content under /instance/app/arcblog (same model as discuss-kit).

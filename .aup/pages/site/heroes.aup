@@ -100,15 +100,17 @@ page heroes {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+            view gap=xs style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
             view gap=sm size={flex: 1} style={overflowY: auto} {
-              view style={display: grid, gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))", gap: "14px", flexShrink: 0, alignItems: start} {
+              view style={display: grid, gridTemplateColumns: "minmax(0, 1fr)", gap: "14px", flexShrink: 0, alignItems: start} {
                 afs-list heroes-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:hero-list-empty autoSelect=false clickMode=none sort={preset: heroOrder, presets: {heroOrder: {field: "content.sort", desc: false}}} transform={label: "content.title", description: "content.description", image: "content.image"} style={flexShrink: 0} pagination=manual pageSize=12 from "/instance/app/arcblog/heroes" {
                   row cross=start role=item style={background: transparent, padding: "0"} {
-                    row gap=sm cross=start style={flex: 1, padding: "14px", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg, 10px)", minWidth: 0} {
+                    row gap=sm cross=center size={width: fill} {
                       view gap=xs size={flex: 1} style={minWidth: 0} {
-                        h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                        h3 "${entry.content.title}"
                         p "${entry.content.description}" scale=sm intent=muted
                         row gap=xs cross=center {
                           p "${entry.content.url}" scale=sm intent=muted
@@ -118,12 +120,14 @@ page heroes {
                           }
                         }
                       }
-                      action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:hero-delete path="${entry.path}" confirm={title: :hero-delete-title, message: :hero-delete-msg} onSuccessToast={intent: success, message: "$t(heroes.hero-deleted)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"}
+                      row gap=sm cross=center size={width: hug} {
+                        action -> exec "/.actions/delete" variant=destructive size=sm icon=trash label=:hero-delete path="${entry.path}" confirm={title: :hero-delete-title, message: :hero-delete-msg} onSuccessToast={intent: success, message: "$t(heroes.hero-deleted)", duration: 2500}
+                      }
                     }
                   }
                 }
-                view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                  h3 :hero-form level=3 style={fontSize: "var(--type-body)"}
+                view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                  h3 :hero-form level=3
                   input type=text label=:hero-id name=heroId required=true state={value: ""}
                   p :hero-id-hint intent=muted scale=caption
                   input type=text label=:hero-f-title name=heroTitle required=true state={value: ""}
@@ -131,16 +135,17 @@ page heroes {
                   input type=text label=:hero-f-image name=heroImage required=true state={value: ""}
                   input type=text label=:hero-f-url name=heroUrl required=true state={value: ""}
                   input type=text label=:hero-f-sort name=heroSort state={value: "0"}
-                  row cross=start {
-                    action variant=primary label=:hero-add onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.heroId}.json", content: {title: "${args.heroTitle}", description: "${args.heroDesc}", image: "${args.heroImage}", url: "${args.heroUrl}", sort: "${args.heroSort}", createdAt: "${generate.timeiso}"}}}}
+                  row cross=start size={width: hug} {
+                    action variant=primary label=:hero-add onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.heroId}.json", content: {title: "${args.heroTitle}", description: "${args.heroDesc}", image: "${args.heroImage}", url: "${args.heroUrl}", sort: "${args.heroSort}", createdAt: "${generate.timeiso}"}}}}
                   }
                   p :hero-dropzone-desc intent=muted
-                  afs-dropzone h3 content=:hero-quickadd-title level=3 style={fontSize: "var(--type-body)"}
+                  afs-dropzone heroes-upload
+                  h3 :hero-quickadd-title level=3
                   p :hero-quickadd-hint intent=muted scale=caption
                   afs-list heroes-posts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false emptyText=:content-empty clickMode=select autoSelect=false selectAlwaysFires=true style={flexShrink: 0} pagination=manual pageSize=20 from "/instance/app/arcblog/posts" events={select: [{target: qa-title, set: {state: {value: $args.item.title}}}, {target: qa-desc, set: {state: {value: $args.item.summary}}}, {target: qa-image, set: {state: {value: $args.item.coverImage}}}, {target: qa-slug, set: {state: {value: $args.item.slug}}}]} {
                     row cross=center role=item style={padding: "8px 0", borderBottom: "1px solid var(--color-border)"} {
-                      view gap=xs size={flex: 1} style={minWidth: 0} {
-                        h3 "${entry.content.title}" style={fontSize: "var(--type-body)"}
+                      view gap=xs size={width: fill, flex: 1} style={minWidth: 0} {
+                        h3 "${entry.content.title}"
                         row gap=xs cross=center {
                           p "${entry.content.category}" scale=sm intent=muted style={textTransform: capitalize}
                           p "${entry.content.coverImage}" scale=sm intent=muted
@@ -153,8 +158,8 @@ page heroes {
                     input qa-desc type=hidden name=qaDesc state={value: ""}
                     input qa-image type=hidden name=qaImage state={value: ""}
                     input qa-slug type=hidden name=qaSlug state={value: ""}
-                    row cross=start {
-                      action variant=secondary size=sm label=:hero-quickadd onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} style={borderRadius: "var(--radius-md, 8px)"} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}}}}
+                    row cross=start size={width: hug} {
+                      action variant=secondary size=sm label=:hero-quickadd onSuccessToast={intent: success, message: "$t(heroes.hero-added)", duration: 2500} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/heroes/${args.qaSlug}.json", content: {title: "${args.qaTitle}", description: "${args.qaDesc}", image: "${args.qaImage}", url: "/posts/${args.qaSlug}", sort: "0", createdAt: "${generate.timeiso}"}}}}
                     }
                   }
                 }

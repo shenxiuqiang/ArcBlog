@@ -1,11 +1,10 @@
 page registry {
   i18n {
     check-chain-label { en "On-chain stakes" zh "链上质押" }
-    check-chain-value { en "Chain explorer / general SDK: list stakes where receiver = the factory address (the public projection is on ?page=factory, record node/factories.json)" zh "链上浏览器 / 通用 SDK：查询 receiver = 工厂地址的质押列表（公开投影见 ?page=factory，记录 node/factories.json）" }
+    check-chain-value { en "Use a chain explorer or SDK to list stakes whose receiver is the factory address." zh "在链上浏览器或 SDK 中查询接收方为工厂地址的质押记录。" }
     check-cli-label { en "Registry projection (CLI)" zh "注册表投影（CLI）" }
-    check-desc { en "This page renders the projection node/registry.json; verify it against the chain itself — list stakes where receiver = the factory address with a chain explorer or a general SDK, and never trust a number this page cannot source." zh "本页渲染的是投影 node/registry.json；请与链上核对——用链上浏览器或通用 SDK 查询 receiver = 工厂地址的质押列表，不要信任何本页无法给出出处的数字。" }
     check-title { en "How to verify" zh "核对入口" }
-    desc { en "Which nodes are staked to this node's studio factory — the on-chain registry view. The page reads the public projection node/registry.json, which the CLI writes from the chain query (listStakes, probes P-1/P-2 verified 2026-10-01); it carries public fields only, never key material." zh "质押到本节点 studio 工厂的节点列表——链上注册表面。本页读取公开投影 node/registry.json；投影由 CLI 查询链上注册表（listStakes，探针 P-1/P-2 已于 2026-10-01 验证）写入，只含公开字段，绝无密钥材料。" }
+    desc { en "Discover nodes staked to this studio factory and review their reachability." zh "查看质押到本 studio 工厂的节点及其可达状态。" }
     gate-desc { en "Sign in with DID Wallet to view the registry status." zh "使用 DID Wallet 登录后查看注册表状态。" }
     gate-title { en "Node registry" zh "节点注册表" }
     list-title { en "Staked nodes" zh "质押节点" }
@@ -18,14 +17,13 @@ page registry {
     node-reach-note { en "Basis" zh "依据" }
     node-stake { en "Stake address" zh "质押地址" }
     pending-cli-label { en "Generate the projection (CLI)" zh "生成投影（CLI）" }
-    pending-note { en "This page renders only what the projection node/registry.json says. The state line below is computed by the CLI (the AUP expression layer cannot compare or concatenate, so the page only prints the string): it distinguishes not-yet-generated / a sourced empty state / the node list, and it states the remedy for the first and second. A projection with no live node is NOT an assertion about the whole chain — it means this factory has no live stake row (dead rows, `assets` empty next to a non-empty `revokedAssets`, are excluded), so the count is live nodes, not raw stake rows." zh "本页只渲染投影 node/registry.json 说的内容。下方状态行由 CLI 计算（AUP 表达式层不能比较、不能拼接，本页只打印字符串）：区分 未生成 / 有出处的空态 / 节点列表，并对前两者给出恢复路径。投影里没有存活节点不等于断言整条链上没有节点——它只表示本工厂名下没有存活质押行（失活行 = assets 为空且 revokedAssets 非空，不计入），因此计数是存活节点，不是原始质押行数。" }
+    pending-note { en "The snapshot below reports this factory’s live stakes. An unavailable or empty snapshot does not prove the whole network is empty; generate or verify it using the commands above." zh "下方快照展示本工厂的存活质押。快照未生成或为空，不代表全网没有节点；请用上方命令生成或核对。" }
     probe-p1-label { en "Probe P-1 (mock-chain enumeration)" zh "探针 P-1（mock 链枚举）" }
     probe-p1-value { en "Verified (2026-10-01, mock adapter): returned count = staked count, unstaked nodes absent, cursor pagination continues." zh "已验证通过（2026-10-01，mock 适配器）：返回条数 = 质押数、未质押的不出现、分页游标可续。" }
     probe-p2-label { en "Probe P-2 (beta real-chain enumeration)" zh "探针 P-2（beta 真链枚举）" }
     probe-p2-value { en "Verified (2026-10-01, ocap adapter on beta): the minimal query shape addressFilter.receiver + paging.{size,cursor} is accepted and the cursor paginates." zh "已验证通过（2026-10-01，ocap 适配器，beta 真链）：最小查询形参 addressFilter.receiver + paging.{size,cursor} 被接受、游标可分页。" }
-    reach-labels { en "Four reachability states (PRD-NET-03): reachable / stale / never / offline — fixed names, never renamed." zh "可达性四态（PRD-NET-03）：可达 / 陈旧 / 从未可达 / 离线——固定命名，不得新造词。" }
+    reach-labels { en "Reachability: reachable / stale / never / offline." zh "可达状态：可达 / 陈旧 / 从未可达 / 离线。" }
     status-title { en "Connection status" zh "接入状态" }
-    status-wired { en "Wired end to end: the adapters enumerate the chain registry (listStakes — P-1 mock / P-2 ocap, both verified 2026-10-01), the CLI's registry refresh writes the projection, and this page renders it. The chain remains the source of truth — a refresh re-reads it." zh "已端到端接通：适配器层枚举链上注册表（listStakes——P-1 mock / P-2 ocap，均于 2026-10-01 验证），CLI 的 registry refresh 写入投影，本页渲染投影。链上仍是事实来源——刷新即重新读取。" }
     title { en "Node registry" zh "节点注册表" }
   }
   view gap=lg style={height: "calc(100vh - 48px)", overflow: visible} {
@@ -102,20 +100,20 @@ page registry {
         }
         view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
           view gap=lg style={height: "100%", minHeight: 0} visible=$session.authenticated {
-            h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-            p :desc intent=muted
+            view gap=xs style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
             view gap=sm size={flex: 1} style={overflowY: auto} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :status-title level=3 style={fontSize: "var(--type-body)"}
-                p :status-wired intent=muted
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                h3 :status-title level=3
                 p :reach-labels intent=muted scale=sm
                 key-value-list dense=true fields=[{label: "$t(registry.probe-p1-label)", value: "$t(registry.probe-p1-value)"}, {label: "$t(registry.probe-p2-label)", value: "$t(registry.probe-p2-value)"}]
-                h3 :check-title level=3 style={fontSize: "var(--type-body)"}
-                p :check-desc intent=muted
+                h3 :check-title level=3
                 key-value-list dense=true fields=[{label: "$t(registry.check-cli-label)", value: "node scripts/arcblog-network.mjs registry show", monospace: true, copyable: true}, {label: "$t(registry.check-chain-label)", value: "$t(registry.check-chain-value)"}]
               }
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
-                h3 :list-title level=3 style={fontSize: "var(--type-body)"}
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
+                h3 :list-title level=3
                 p :pending-note intent=info scale=sm
                 key-value-list dense=true fields=[{label: "$t(registry.pending-cli-label)", value: "node scripts/arcblog-network.mjs registry refresh", monospace: true, copyable: true}]
                 // DEF-22 / B14: this console page lives at `/?page=registry`
@@ -130,7 +128,7 @@ page registry {
                 view gap=sm {
                   afs-list registry-nodes layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/registry" {
                     row gap=sm cross=center role=item {
-                      view gap=xs style={flex: "1 1 0%"} {
+                      view gap=xs style={flex: "1 1 0%"} size={width: fill} {
                         row gap=xs cross=center {
                           p :node-reach-label scale=sm intent=muted
                           p "${entry.content.reachabilityLabel}" scale=sm

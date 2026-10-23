@@ -98,166 +98,160 @@ page dashboard {
             p "$t(wrapper.admin-notice)" scale=caption intent=muted
           }
         }
-        // ---- 页头（standard §2.4）：标题 + 一句话用途 + 唯一主操作 --------------
-        // 原型 = P2 概览（standard §2.7.1），声明在 .aup/man/dashboard.yaml 的 synopsis 里。
-        // 「写文章」是本页唯一的 variant=primary；未登录态的门禁卡里那个登录按钮
-        // 是另一态的唯一主操作（两态互斥，standard §4.3「每屏一个 primary」）。
-        view gap=md size={flex: 1} style={paddingTop: "14px", paddingBottom: "14px", minHeight: 0} {
-          row gap=md cross=center {
-            view gap=xs size={flex: 1} {
-              h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-              p :purpose intent=muted
-            }
-            // §4.3：平台在 tone=editorial 下把所有 action 抹成 2rem 药丸，
-            // 圆角必须内联覆盖回 var(--radius-md, 8px)。
-            row cross=start {
-              action -> page compose variant=primary label=:q-write style={borderRadius: "var(--radius-md, 8px)"}
+        // ---- 内容列：唯一滚动容器在本列内部（standard §2.5 单一滚动归属）------
+        view gap=0 size={flex: 1} style={paddingTop: "18px", paddingBottom: "18px", minHeight: 0} {
+          // ---- 刊头（masthead）：标题 / 一句话用途 / 唯一主操作 -------------------
+          // 三者压在同一基线上，下沿一条 1px 细线把「刊头」与「正文」分开 —— 本条是整页
+          // 唯一的分隔手段。字号一律取运行时的 --type-* 阶梯，颜色一律 --color-*：
+          // 页面不新造字号、不写颜色（UI 规范 V01）。
+          view style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+            row gap=md cross=end {
+              view gap=0 size={flex: 1} {
+                h2 :title level=2
+                p :purpose intent=muted
+              }
+              // §4.3：平台在 tone=editorial 下把所有 action 抹成 2rem 药丸，圆角必须内联
+              // 覆盖回 var(--radius-md, 8px)。
+              row cross=start size={width: hug} {
+                action -> page compose variant=primary label=:q-write style={borderRadius: "var(--radius-md, 8px)", padding: "9px 14px", fontSize: "var(--type-caption)", fontWeight: "500"}
+              }
             }
           }
-          // ---- 内容区：唯一滚动容器（standard §2.5 单一滚动归属）----------------
-          view gap=sm size={flex: 1} style={overflowY: auto} {
-            // ---- 概览（KPI）：数字由 CLI 预计算成一条记录（config/console/overview.json），
-            // 页面用 propBind 绑定、逐字打印；标签是页面自己的 i18n（recipe 无法本地化，
-            // 见 arc-contracts §65，因此这里不走向 recipe 打印的路子）。
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} propBind={overview: "/instance/app/arcblog/config/console/overview.json"} {
-              // 右上角刷新：`propBind` 只在渲染后解析，重载/重进本页即出数；
-              // `-> navigate` 是整页跳转（runtime: `window.location.href = url`），
-              // 图标用运行时自带的 `refresh`（arc-contracts §67）。
-              row style={justifyContent: flex-end, alignItems: center, flexShrink: 0} {
-                p "${state.overview.measuredAtLocal}" scale=caption intent=muted
-                action -> navigate "/?page=dashboard" icon=refresh variant=secondary size=sm label=:refresh
-              }
-              p "${state.overview.divergences}" scale=caption intent=warning
-              // 一行数字面板：上=数字（`scale=display` 实测 56px/600）、下=分类名。
-              // 数字来自 `config/console/overview.json`（CLI 在数据库里 `count` 出来的记录）。
-              row gap=lg cross=end {
-                view gap=xs size={width: "170px"} {
-                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
-                  view layout=inline href="/?page=posts" {
-                    p "${state.overview.publishedCount}" scale=display
-                    p "$t(dashboard.kpi-published)" scale=caption intent=muted
+          view gap=0 size={flex: 1} style={overflowY: auto, paddingTop: "18px"} {
+            // ---- 计数带（KPI）：数字成带，没有卡片边框 -----------------------------
+            // 数字由 CLI 预计算成一条记录（config/console/kpi/overview.json），页面用
+            // `afs-list` 的行内模板 `${entry.content.*}` 逐字打印 —— 这是**首次渲染就出数**
+            // 的唯一通道；`propBind` 要等第二次渲染才把记录挂进 session state，冷启动首帧
+            // 四个格子只有标签（B14 / arc-contracts §57）。页面不自算任何数字（B13）。
+            // 记录独占 `kpi/` 目录：列表会把该目录下的每条记录都渲染成一行，而
+            // `config/console/` 里还有 `recent-drafts/`。
+            // item 的全部内容收在一个 role=item 的 view 里 —— item 容器按栅格排布，
+            // 直接子节点会被摊成并列的列。四列等分（size={flex: 1}），上沿一条细线，
+            // 下沿交给下一节的分节线 —— 中间不留空行，避免"两条横线夹一行字"。
+            view gap=0 style={borderTop: "1px solid var(--color-border)", paddingTop: "14px", flexShrink: 0} {
+              afs-list dashboard-kpi-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=" " pagination=manual pageSize=1 from "/instance/app/arcblog/config/console/kpi" {
+                view gap=0 role=item {
+                  row gap=lg size={width: fill} {
+                    view gap=xs size={flex: 1} {
+                      view layout=inline href="/?page=posts" {
+                        p "${entry.content.publishedCount}" style={fontSize: "var(--type-display, 32px)", fontWeight: "600", lineHeight: "1.1"}
+                      }
+                      p "$t(dashboard.kpi-published)" style={fontSize: "var(--type-small)", letterSpacing: "0.07em", textTransform: uppercase, color: "var(--color-dim)"}
+                    }
+                    view gap=xs size={flex: 1} {
+                      view layout=inline href="/?page=posts" {
+                        p "${entry.content.draftCount}" style={fontSize: "var(--type-display, 32px)", fontWeight: "600", lineHeight: "1.1"}
+                      }
+                      p "$t(dashboard.kpi-drafts)" style={fontSize: "var(--type-small)", letterSpacing: "0.07em", textTransform: uppercase, color: "var(--color-dim)"}
+                    }
+                    view gap=xs size={flex: 1} {
+                      view layout=inline href="/?page=pages" {
+                        p "${entry.content.pageOnlineCount}" style={fontSize: "var(--type-display, 32px)", fontWeight: "600", lineHeight: "1.1"}
+                      }
+                      p "$t(dashboard.kpi-pages)" style={fontSize: "var(--type-small)", letterSpacing: "0.07em", textTransform: uppercase, color: "var(--color-dim)"}
+                    }
+                    // 素材数不再有独立页（`?page=media` 随 S11-02 删除），所以这一格不给链接：
+                    // 指到别处比不给链接更糟——点进去找不到"素材"这件事本身就是缺陷。
+                    view gap=xs size={flex: 1} {
+                      view gap=0 {
+                        p "${entry.content.mediaCount}" style={fontSize: "var(--type-display, 32px)", fontWeight: "600", lineHeight: "1.1"}
+                      }
+                      p "$t(dashboard.kpi-media)" style={fontSize: "var(--type-small)", letterSpacing: "0.07em", textTransform: uppercase, color: "var(--color-dim)"}
+                    }
                   }
-                }
-                view gap=xs size={width: "170px"} {
-                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
-                  view layout=inline href="/?page=posts" {
-                    p "${state.overview.draftCount}" scale=display
-                    p "$t(dashboard.kpi-drafts)" scale=caption intent=muted
-                  }
-                }
-                view gap=xs size={width: "170px"} {
-                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
-                  view layout=inline href="/?page=pages" {
-                    p "${state.overview.pageOnlineCount}" scale=display
-                    p "$t(dashboard.kpi-pages)" scale=caption intent=muted
-                  }
-                }
-                view gap=xs size={width: "170px"} {
-                  // 数字可下钻到对应列表（`layout=inline href=` 渲染成 <a>，零样式/零文案成本）。
-                  view layout=inline href="/?page=media" {
-                    p "${state.overview.mediaCount}" scale=display
-                    p "$t(dashboard.kpi-media)" scale=caption intent=muted
+                  // 分账不一致时才是可见的：`divergences` 是预计算文本，空字符串 = 数据库计数与
+                  // 目录清单一致（正常情况），此时什么都不显示。
+                  p "${entry.content.divergences}" scale=caption intent=warning
+                  row cross=center style={justifyContent: space-between, paddingTop: "10px"} {
+                    p "${entry.content.measuredAtLocal}" scale=sm intent=muted
+                    action -> navigate "/?page=dashboard" icon=refresh variant=secondary size={width: hug} label=:refresh style={borderRadius: "var(--radius-sm, 4px)", fontSize: "var(--type-small)"}
                   }
                 }
               }
             }
-            // ---- 异常区（PRD-OPS-01 / DEF-36）：四类异常每类一个可点击入口 -----
-            // 判定全部由 `arcblog-anomalies.mjs refresh` 预计算（B13：页面不能
-            // 条件化 `$state.*`——`${…}` 恒真、`!${…}` 恒隐、裸写法冻结在首屏）。
-            // 本卡只做两件事：常驻打印预计算的 `stateNote`（经 node/ 目录的 item
-            // recipe，recipe 里的 `${content.stateNote}` 才是真正的打印点），以及用
-            // `afs-list` 的 `$entry.*` 行内模板渲染每类一行——行内的 `view href=` 是
-            // 唯一可靠的数据分支。空列表 ≠ 无异常：没有行时以常驻 stateNote 为准
-            // （`emptyText` 不求值 `$t()`，见 arc-contracts §20）。
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            // ---- 异常区：整页唯一的告警面（也是唯一的卡片）---------------------------
+            // 判定全部由 `arcblog-anomalies.mjs refresh` 预计算（B13：页面不能条件化
+            // `$state.*`）。左侧 2px --color-warning 竖线是「颜色只用来传话」的那一处：
+            // 其余全部是墨色 + 细线。行内 `view href=` 是唯一可靠的数据分支。
+            view gap=0 style={borderTop: "1px solid var(--color-border)", marginTop: "20px", paddingTop: "18px", flexShrink: 0} {
               h3 :anomalies level=3
               p :anomalies-desc scale=sm intent=muted
-              afs-list dashboard-anomalies-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
-                row gap=xs cross=center role=item {
-                  view gap=xs size={flex: "1 1 0%"} {
-                    row gap=xs cross=center {
-                      p :anomalies-severity scale=sm intent=muted
-                      p "${entry.content.severityZh}" scale=sm
+              view gap=xs style={marginTop: "10px", padding: "2px 14px", background: "var(--card-bg)", border: "var(--card-border)", borderLeft: "2px solid var(--color-warning)", borderRadius: "0 var(--radius-md, 8px) var(--radius-md, 8px) 0"} {
+                // 列头：整块只有这一处「级别」标签（每行不再重复），行内只剩值本身。
+                row cross=center {
+                  p :anomalies-severity scale=caption intent=muted
+                }
+                afs-list dashboard-anomalies-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
+                  row gap=md cross=start role=item {
+                    p "${entry.content.severityZh}" size={width: hug} intent=warning style={minWidth: "34px"}
+                    view gap=0 size={flex: 1} {
                       p "${entry.content.titleZh}"
+                      p "${entry.content.detailZh}" scale=sm intent=muted
                     }
-                    p "${entry.content.detailZh}" scale=sm intent=muted
-                  }
-                  view layout=inline href="${entry.content.href}" {
-                    p :anomalies-open
+                    view layout=inline href="${entry.content.href}" size={width: hug} {
+                      p :anomalies-open scale=sm
+                    }
                   }
                 }
-              }
-              // 原始证据（英文原文 + 检查时间）默认折叠：首屏只留中文结论与「去处理」。
-              // 折叠是页内 `-> set`，零 AFS 写入；展开后读的是 CLI 写的原话与记录。
-              row cross=start {
-                action -> set dashboard-anomalies-evidence state {open: "true"} variant=secondary size=sm label=:anomalies-evidence
-              }
-              view gap=sm visible=$state.open {
-                afs-list dashboard-anomalies-raw-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
-                  row gap=xs cross=center role=item {
-                    view gap=xs size={flex: "1 1 0%"} {
-                      row gap=xs cross=center {
-                        p "${entry.content.severity}" scale=caption intent=muted
-                        p "${entry.content.title}" scale=caption
+                // 原始证据（英文原文 + 检查时间）默认折叠：首屏只留中文结论与「去处理」。
+                row cross=start style={padding: "6px 0 8px"} {
+                  action -> set dashboard-anomalies-evidence state {open: "true"} variant=secondary size=sm label=:anomalies-evidence style={borderRadius: "var(--radius-sm, 4px)", fontSize: "var(--type-small)"}
+                }
+                view gap=sm visible=$state.open {
+                  afs-list dashboard-anomalies-raw-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none pagination=manual pageSize=10 from "/instance/app/arcblog/node/anomalies" {
+                    row gap=xs cross=center role=item {
+                      view gap=xs size={flex: 1} {
+                        row gap=xs cross=center {
+                          p "${entry.content.severity}" scale=caption intent=muted
+                          p "${entry.content.title}" scale=caption
+                        }
+                        p "${entry.content.detail}" scale=caption intent=muted
                       }
-                      p "${entry.content.detail}" scale=caption intent=muted
                     }
                   }
-                }
-                surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
-                  p :anomalies-state scale=caption intent=muted
-                }
-                row cross=start {
-                  action -> set dashboard-anomalies-evidence state {open: ""} variant=secondary size=sm label=:anomalies-evidence-hide
+                  surface url="/instance/app/arcblog/node/anomalies.json" editable=false {
+                    p :anomalies-state scale=caption intent=muted
+                  }
+                  row cross=start {
+                    action -> set dashboard-anomalies-evidence state {open: ""} variant=secondary size=sm label=:anomalies-evidence-hide style={borderRadius: "var(--radius-sm, 4px)", fontSize: "var(--type-small)"}
+                  }
                 }
               }
             }
-            // ---- 待处理草稿（卡 2）------------------------------------------------
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            // ---- 待处理草稿 -------------------------------------------------------
+            view gap=0 style={borderTop: "1px solid var(--color-border)", marginTop: "18px", paddingTop: "18px", flexShrink: 0} {
               row cross=center {
-                view size={flex: "1 1 0%"} {
+                view gap=0 size={flex: 1} {
                   h3 :drafts level=3
+                  p :drafts-desc scale=sm intent=muted
                 }
-                action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-md, 8px)"}
+                row cross=start size={width: hug} {
+                  action -> page posts variant=secondary size=sm label=:drafts-all style={borderRadius: "var(--radius-sm, 4px)", fontSize: "var(--type-small)"}
+                }
               }
-              p :drafts-desc scale=sm intent=muted
-              // 最新 3 条。sort 走平台自己的 `/.actions/query`：实测 2026-09-29
-              // `orderBy [["mtime","desc"]]` 返回 drafts total=46（与目录一致）且按
-              // updatedAt 倒序；`mtime` 是运行期 `Le` 白名单里的 entry column，
-              // content.* 字段不在其中（读 arc 2.0.0-beta.50 的 aup.* bundle 得到）。
-              // 计数由平台分页器给出（pagerStyle=compact → "N total"）：本平台没有
-              // length / 比较原语，页面侧数不出来（docs/05-开发文档/附件/arc-contracts.md §21），
-              // 因此不放任何页面自算的数字。
-              // pageSizeOptions=[3] 把「Show」固定成唯一取值：BUG-063 的 localStorage
-              // 记忆一旦选到 ≥ 总数就会摘掉整个分页器，这里从结构上消除该路径。
               afs-list dashboard-drafts-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:drafts-empty pagination=manual pageSize=3 pageSizeOptions=[3] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/config/console/recent-drafts" {
-                row gap=xs cross=center role=item {
-                  // 记录绑定页 /edit/<slug>：standard §2.6 → 新标签页，不替换控制台。
+                row gap=md cross=center role=item {
                   view layout=inline href="/edit/${entry.content.slug}" target=_blank size={flex: 1} {
-                    p "${entry.content.title}"
-                    row gap=xs cross=center intent=muted {
-                      p "${entry.content.status}"
+                    row gap=xs cross=baseline {
+                      p "${entry.content.title}"
+                      p "${entry.content.status}" scale=sm intent=muted
                       p "${entry.content.updatedLocal}" scale=sm intent=muted
                     }
                   }
                 }
               }
-              // 待处理草稿的去向：工作室（?page=posts）里才有发布 / 软删 / 行内编辑。
-              // 空态时它也是引导动作（平台运行期不求值 emptyText 里的 $t()，
-              // 见 docs/05-开发文档/附件/arc-contracts.md §20，所以「下一步」必须是常驻元素）。
             }
-            // ---- 最近发布（卡 3）--------------------------------------------------
-            view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "14px", flexShrink: 0} {
+            // ---- 最近发布 ---------------------------------------------------------
+            view gap=0 style={borderTop: "1px solid var(--color-border)", marginTop: "18px", paddingTop: "18px", flexShrink: 0} {
               h3 :content level=3
               p :content-desc scale=sm intent=muted
-              // 最近已发布 5 条，同一套 mtime desc 排序。
               afs-list dashboard-published-list layout=list itemStyle=row subscribe=true showBreadcrumb=false showParent=false autoSelect=false clickMode=none emptyText=:content-empty pagination=manual pageSize=5 pageSizeOptions=[5] pagerStyle=compact sort={field: mtime, desc: true} from "/instance/app/arcblog/posts" {
-                row gap=xs cross=center role=item {
+                row gap=md cross=center role=item {
                   view layout=inline href="/posts/${entry.content.slug}" target=_blank size={flex: 1} {
-                    p "${entry.content.title}"
-                    row gap=xs cross=center intent=muted {
-                      p "${entry.content.category}"
-                      time mode=display value="${entry.content.publishedAt}" timeMode=relative
+                    row gap=xs cross=baseline {
+                      p "${entry.content.title}"
+                      p "${entry.content.category}" scale=sm intent=muted
+                      time mode=display value="${entry.content.publishedAt}" timeMode=relative scale=sm intent=muted
                     }
                   }
                 }

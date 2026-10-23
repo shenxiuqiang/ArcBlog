@@ -112,8 +112,8 @@ test('the node/ union is the one the gate enforces, and it covers every record k
 });
 
 test('the dashboard overview projection is derived from its writer, and it validates before writing', async () => {
-  // `?page=dashboard` reads this record with `propBind` (not a recipe: measured 2026-10-13, a
-  // recipe label cannot be localized — `$t(...)` renders literally, arc-contracts §65), and the
+  // `?page=dashboard` reads this record through an `afs-list` row template (the cold-start
+  // channel, B14 — `propBind` only lands in session state after the first render), and the
   // page prints the values verbatim, so a wrong number here is a wrong number on screen.
   const {
     buildOverview,
@@ -121,7 +121,20 @@ test('the dashboard overview projection is derived from its writer, and it valid
     OVERVIEW_FIELDS,
     OVERVIEW_COUNT_SOURCES,
     OVERVIEW_PAGE_RECORDS,
+    OVERVIEW_RECORD_DIR,
+    overviewRecordPath,
+    overviewReadCandidates,
   } = await import('./lib/overview.mjs');
+
+  // The record has a directory of its OWN: the `afs-list` renders every entry of the
+  // directory it points at, and `config/console/` also holds `recent-drafts/`.
+  assert.match(OVERVIEW_RECORD_DIR, /\/config\/console\/kpi$/);
+  assert.equal(overviewRecordPath('overview'), `${OVERVIEW_RECORD_DIR}/overview.json`);
+  // `show` still answers an instance that only has the pre-2026-10-19 record.
+  assert.deepEqual(overviewReadCandidates('overview'), [
+    '/instance/app/arcblog/config/console/kpi/overview.json',
+    '/instance/app/arcblog/config/console/overview.json',
+  ]);
 
   const allCounts = Object.fromEntries(Object.keys(OVERVIEW_COUNT_SOURCES).map((f) => [f, 0]));
   const full = buildOverview({ generatedAt: 'x', counts: allCounts, note: 'x', source: 'x' });
@@ -146,6 +159,34 @@ test('the dashboard overview projection is derived from its writer, and it valid
   assert.ok(validateOverview({ ...good, summaryCount: undefined }).some((i) => /summaryCount/.test(i)));
   assert.ok(validateOverview({ ...good, generatedAt: '' }).some((i) => /generatedAt/.test(i)));
   assert.equal(buildOverview({ generatedAt: 'n', counts: { publishedCount: 'x' }, note: '', source: '' }).publishedCount, 0);
+});
+
+test('the dashboard KPI band is fed by an afs-list over the kpi/ directory, not propBind', async () => {
+  // THE DEFECT THIS PINS (2026-10-19, measured by the human): `?page=dashboard` painted its
+  // four KPI columns EMPTY on a session's first visit — `propBind` lands in session state only
+  // after the first render (B14 / arc-contracts §57), so `${state.overview.*}` had nothing to
+  // print until the second render. The channel that carries a record on the FIRST paint is an
+  // `afs-list` row template (`${entry.content.*}`), and it renders EVERY entry of the directory
+  // it points at — hence the record's own `kpi/` directory (a `config/console` list would also
+  // pick up `recent-drafts/`).
+  const { OVERVIEW_FIELDS, OVERVIEW_RECORD_DIR } = await import('./lib/overview.mjs');
+  const dashboard = page('admin/dashboard.aup');
+
+  assert.doesNotMatch(dashboard, /propBind=/, 'dashboard.aup must not read the KPI record through propBind (B14)');
+  assert.doesNotMatch(dashboard, /\$\{state\.overview\./, 'the KPI band must not print ${state.overview.*} (empty on a cold load)');
+  const list = dashboard.match(/afs-list\s+dashboard-kpi-list\b[^\n]*from\s+"([^"]+)"/);
+  assert.ok(list, 'dashboard.aup must read its KPI record with `afs-list dashboard-kpi-list … from "…"`');
+  assert.equal(list[1], OVERVIEW_RECORD_DIR, 'the KPI list must point at the record\'s OWN directory');
+  // The record's fields are the page's contract: every `${entry.content.<field>}` the KPI list
+  // prints must be a field `buildOverview` writes (a rename cannot leave the page behind).
+  for (const field of ['publishedCount', 'draftCount', 'pageOnlineCount', 'mediaCount', 'measuredAtLocal', 'divergences']) {
+    assert.ok(OVERVIEW_FIELDS.includes(field), `the KPI record carries "${field}"`);
+    assert.ok(dashboard.includes(`\${entry.content.${field}}`), `the KPI band prints ${field}`);
+  }
+  // EVERYTHING the item renders lives in ONE child view: the item container lays its direct
+  // children out on a grid, so sibling nodes would be spread across columns. `divergences` is
+  // precomputed text — an empty string must print nothing, so it stays a plain `p` (no card).
+  assert.match(dashboard, /view gap=0 role=item[^\n]*\{\n\s+\S/, 'the KPI item content must be collected in one role=item view (the item opens and immediately holds a child, so a grid parent cannot spread its children into columns)');
 });
 
 test('the registry projection field set is derived from its writer (and covers the QA-named fields)', () => {

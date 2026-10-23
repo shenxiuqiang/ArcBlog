@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // The console's **overview projection** — the numbers `?page=dashboard` prints.
 //
-//   refresh [--json]   measure the instance and write config/console/overview.json
-//   show               read that record back (read-only)
+//   refresh [--json]   measure the instance and write config/console/kpi/overview.json
+//   show               read that record back (read-only; falls back to the pre-2026-10-19 path)
 //
 // WHY (2026-10-13): the dashboard is the console's landing page and had no KPI row,
 // because an AUP page cannot count anything: the DSL has no arithmetic, no `length`
@@ -18,9 +18,16 @@
 // written into the record (`divergences`), because a stale index is a real failure mode
 // here (DEF-42) and a silently wrong KPI is worse than a stated one.
 //
-// The record lives under `config/` (admin-only) because one count is the draft count.
-// `?page=dashboard` reads it with `propBind` (a recipe cannot localize a label —
-// arc-contracts §65) and prints the numbers verbatim.
+// The record lives under `config/console/kpi/` (admin-only, because one count is the draft
+// count) — a directory of its OWN, because `?page=dashboard` reads it through an `afs-list`
+// row template (`${entry.content.*}`), which renders every entry of the directory it is
+// pointed at. `config/console/` itself holds `recent-drafts/`, so the record was moved to
+// `kpi/` on 2026-10-19: one directory ⇒ exactly one KPI row.
+//
+// WHY `afs-list` AND NOT `propBind` (2026-10-19): `propBind` lands in session state only
+// after the first render (B14 / arc-contracts §57), so a cold entry painted the four KPI
+// cells EMPTY — the numbers appeared only on the second render. An `afs-list` row template
+// is the channel that has the data on the first paint.
 //
 // stdout is PURE JSON; human-readable lines go to stderr. Unknown flags fail closed
 // (VALIDATION, exit 1) — see scripts/lib/cli-flags.mjs.
@@ -32,14 +39,24 @@ import {
   OVERVIEW_PAGE_RECORDS,
   buildOverview,
   overviewNote,
+  overviewReadCandidates,
+  overviewRecordPath,
   validateOverview,
 } from './lib/overview.mjs';
 
 const CONSOLE_DIR = '/instance/app/arcblog/config/console';
 
-/** The record path of one print point (`config/console/<stem>.json`). */
+/**
+ * The record path of one print point: `config/console/kpi/<stem>.json` — its OWN
+ * directory, so the `afs-list` the dashboard points at renders exactly one row.
+ */
 function recordPath(stem) {
-  return `${CONSOLE_DIR}/${stem}.json`;
+  return overviewRecordPath(stem);
+}
+
+/** The pre-2026-10-19 location of the same record — read only by `show` (fallback). */
+function legacyRecordPath(stem) {
+  return overviewReadCandidates(stem)[1];
 }
 
 /**
@@ -175,6 +192,13 @@ function commandRefresh(opts, instance) {
     const existing = readJson(path, instance);
     writeJson(path, record, instance, existing?.ifMatch ?? undefined);
     console.error(`wrote ${path} (${fields.join(', ')}; source ${source})`);
+    // The record MOVED to `kpi/` on 2026-10-19. A record left behind at the old path is not
+    // an error — nothing reads it any more (`show` falls back to it only when the new one is
+    // missing) — but it is stale data nobody will ever refresh, so say so instead of hiding it.
+    const legacy = legacyRecordPath(stem);
+    if (readJson(legacy, instance)) {
+      console.error(`note: the pre-2026-10-19 record ${legacy} still exists and is no longer read or refreshed (safe to remove)`);
+    }
     written.push({ path, record });
   }
 
@@ -184,13 +208,18 @@ function commandRefresh(opts, instance) {
 }
 
 function commandShow(instance, stem = 'overview') {
-  const path = recordPath(stem);
+  const [path, legacy] = overviewReadCandidates(stem);
+  // Current location first; an instance refreshed before 2026-10-19 has ONLY the legacy
+  // record, and `show` must read it rather than report "the CLI has not run yet".
   const existing = readJson(path, instance);
-  if (!existing) {
-    // Not a crash: the page has a standing note for "the CLI has not run yet".
-    return { ok: true, action: 'overview-show', path, record: null };
+  if (existing) return { ok: true, action: 'overview-show', path, record: existing.value };
+  const old = readJson(legacy, instance);
+  if (old) {
+    console.error(`note: ${path} is missing; showing the pre-2026-10-19 record ${legacy} (run \`refresh\` to move it)`);
+    return { ok: true, action: 'overview-show', path: legacy, legacy: true, record: old.value };
   }
-  return { ok: true, action: 'overview-show', path, record: existing.value };
+  // Not a crash: nothing has measured the instance yet (the dashboard's KPI band stays empty).
+  return { ok: true, action: 'overview-show', path, record: null };
 }
 
 function help() {
@@ -201,13 +230,18 @@ Usage:
   node scripts/arcblog-overview.mjs refresh [--json]            # measure + write every record
   node scripts/arcblog-overview.mjs show [--record <stem>] [--json]  # read one record back
 
-Records (one per print point, all in config/console/): ${Object.keys(OVERVIEW_PAGE_RECORDS).join(', ')}.
-The dashboard reads \`overview\`; ?page=media / pages / tags / categories each read their own.
+Records (one per print point, all in config/console/kpi/): ${Object.keys(OVERVIEW_PAGE_RECORDS).join(', ')}.
+The dashboard reads \`overview\` through an \`afs-list\` row template — the only channel that has
+the record on the page's FIRST render (B14: a \`propBind\` record lands in session state only
+after the first render). That is why the record has a directory of its own: the list renders
+every entry of the directory it points at, and \`config/console/\` also holds \`recent-drafts/\`.
 
-Counts come from each collection's DIRECTORY listing (never the query index, whose
-coverage is limited to small records). The records are rendered by
-seed/recipes/console/item.json — install it once per instance with
-\`node scripts/arcblog-recipes.mjs install\` (the deploy pipeline does this).
+\`show\` also reads the pre-2026-10-19 path (config/console/<stem>.json) when the new one is
+absent, so an instance refreshed before the move still answers.
+
+Counts come from the DATABASE (the query standard action with count:true, rows-free) and are
+cross-checked against each collection's directory listing; a disagreement is written into the
+record's \`divergences\`.
 
 Exit codes: 0 = written / read; 1 = an invalid measurement (fail closed).`);
 }

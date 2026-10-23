@@ -37,11 +37,19 @@ page compose-edit {
       }
       view gap=lg size={flex: 1} visible=$session.authenticated {
         view gap=sm {
-          row cross=start {
+          row cross=start size={width: hug} {
             action -> page posts variant=ghost size=sm label=:back style={borderRadius: "var(--radius-md, 8px)", padding: "5px 12px"}
           }
-          h2 :title level=2 style={fontSize: "var(--type-subheading)"}
-          p :desc intent=muted
+          row gap=md cross=end style={padding: "4px 0 16px", borderBottom: "1px solid var(--color-border)", flexShrink: 0} {
+            view gap=xs size={flex: 1} {
+              h2 :title level=2
+              p :desc intent=muted
+            }
+            row gap=sm cross=center size={width: hug} visible=$state.post {
+              action variant=secondary label=:save-draft onSuccessToast={intent: success, message: "$t(compose-edit.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
+              action variant=primary label=:publish-now onSuccessToast={intent: success, message: "$t(compose-edit.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
+            }
+          }
         }
         // DEF-15/DEF-18: the old card used `visible="!$state.post"`, evaluated once
         // before `propBind` resolved and then frozen (arc-contracts §28.1). Standing
@@ -55,7 +63,7 @@ page compose-edit {
             // 左右两列（2026-10-13，与 `?page=compose` 同形）：左列只放写作面（标题 / 摘要 / 正文 rows=18），
             // 右列是其余设置（slug / 分类 / 标签 / 封面 + 上传 / SEO·OG）；页签取消后 `tab-basic` 键随之删除。
             grid style={gridTemplateColumns: "minmax(0, 1fr) minmax(320px, 400px)", gap: "16px", alignItems: start} {
-              view gap=sm style={background: "var(--card-bg)", border: "var(--card-border)", borderRadius: "var(--radius-lg, 10px)", boxShadow: none, padding: "16px", flexShrink: 0} {
+              view gap=sm style={borderTop: "1px solid var(--color-border)", paddingTop: "18px", flexShrink: 0} {
                 view gap=sm {
                   h3 :g-content level=3
                   input type=text label=:f-title name=title required=true value="${state.post.title}"
@@ -84,10 +92,6 @@ page compose-edit {
                 }
               }
             }
-          }
-          row gap=sm style={justifyContent: flex-end, flexShrink: 0} {
-            action variant=secondary label=:save-draft style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose-edit.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/drafts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: draft, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: false, publishedAt: "", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
-            action variant=primary label=:publish-now style={borderRadius: "var(--radius-md, 8px)"} onSuccessToast={intent: success, message: "$t(compose-edit.saved)", duration: 3000} events={click: {exec: "/.actions/write", args: {path: "/instance/app/arcblog/posts/${args.slug}.json", content: {title: "${args.title}", slug: "${args.slug}", summary: "${args.summary}", body: "${args.body}", coverImage: "${args.coverImage}", images: [], tags: "${args.tags}", category: "${args.category}", seoTitle: "${args.seoTitle}", seoDescription: "${args.seoDescription}", ogTitle: "${args.ogTitle}", ogDescription: "${args.ogDescription}", ogImage: "${args.ogImage}", status: published, authorDid: "${state.post.authorDid}", authorName: "${state.post.authorName}", published: true, publishedAt: "${generate.timeiso}", archivedAt: "", deletedAt: "", createdAt: "${state.post.createdAt}", updatedAt: "${generate.timeiso}", version: "${state.post.version}"}}}}
           }
         }
       }

@@ -1,0 +1,2436 @@
+{
+  "date": "2026-10-23",
+  "baseline": "77b6fea + pre-existing uncommitted UI changes + this round (Lead workspace, uncommitted)",
+  "browserSweep": [
+    {
+      "title": [
+        "仪表盘"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "异常区",
+          "size": "17px"
+        },
+        {
+          "text": "待处理草稿",
+          "size": "17px"
+        },
+        {
+          "text": "最近发布",
+          "size": "17px"
+        }
+      ],
+      "lists": 4,
+      "items": 3,
+      "inputs": 0,
+      "actions": 18,
+      "texts": 42,
+      "zeroLists": 0,
+      "page": "dashboard",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "仪表盘"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1124,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "异常区",
+          "size": "17px"
+        },
+        {
+          "text": "待处理草稿",
+          "size": "17px"
+        },
+        {
+          "text": "最近发布",
+          "size": "17px"
+        }
+      ],
+      "lists": 4,
+      "items": 3,
+      "inputs": 0,
+      "actions": 18,
+      "texts": 42,
+      "zeroLists": 0,
+      "page": "dashboard",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "仪表盘"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1189,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "异常区",
+          "size": "17px"
+        },
+        {
+          "text": "待处理草稿",
+          "size": "17px"
+        },
+        {
+          "text": "最近发布",
+          "size": "17px"
+        }
+      ],
+      "lists": 4,
+      "items": 3,
+      "inputs": 0,
+      "actions": 18,
+      "texts": 42,
+      "zeroLists": 0,
+      "page": "dashboard",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "你的工作室"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 4,
+      "inputs": 72,
+      "actions": 23,
+      "texts": 43,
+      "zeroLists": 2,
+      "page": "posts",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "你的工作室"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 777,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 4,
+      "inputs": 72,
+      "actions": 23,
+      "texts": 43,
+      "zeroLists": 2,
+      "page": "posts",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "你的工作室"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 773,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 4,
+      "inputs": 72,
+      "actions": 23,
+      "texts": 43,
+      "zeroLists": 2,
+      "page": "posts",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "页面"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "新建页面",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 28,
+      "actions": 19,
+      "texts": 33,
+      "zeroLists": 0,
+      "page": "pages",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "页面"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1247,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "新建页面",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 28,
+      "actions": 19,
+      "texts": 33,
+      "zeroLists": 0,
+      "page": "pages",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "页面"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1289,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "新建页面",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 28,
+      "actions": 19,
+      "texts": 33,
+      "zeroLists": 0,
+      "page": "pages",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "写文章"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "内容",
+          "size": "17px"
+        },
+        {
+          "text": "分类与标签",
+          "size": "17px"
+        },
+        {
+          "text": "发布",
+          "size": "17px"
+        },
+        {
+          "text": "高级",
+          "size": "17px"
+        }
+      ],
+      "lists": 0,
+      "items": 0,
+      "inputs": 10,
+      "actions": 16,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "compose",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "写文章"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1641,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "内容",
+          "size": "17px"
+        },
+        {
+          "text": "分类与标签",
+          "size": "17px"
+        },
+        {
+          "text": "发布",
+          "size": "17px"
+        },
+        {
+          "text": "高级",
+          "size": "17px"
+        }
+      ],
+      "lists": 0,
+      "items": 0,
+      "inputs": 10,
+      "actions": 16,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "compose",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "写文章"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1641,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "内容",
+          "size": "17px"
+        },
+        {
+          "text": "分类与标签",
+          "size": "17px"
+        },
+        {
+          "text": "发布",
+          "size": "17px"
+        },
+        {
+          "text": "高级",
+          "size": "17px"
+        }
+      ],
+      "lists": 0,
+      "items": 0,
+      "inputs": 10,
+      "actions": 16,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "compose",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Hero 管理"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "Welcome to ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "添加 Hero",
+          "size": "17px"
+        },
+        {
+          "text": "从文章快速加入",
+          "size": "17px"
+        },
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 10,
+      "actions": 18,
+      "texts": 35,
+      "zeroLists": 0,
+      "page": "heroes",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Hero 管理"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1229,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "Welcome to ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "添加 Hero",
+          "size": "17px"
+        },
+        {
+          "text": "从文章快速加入",
+          "size": "17px"
+        },
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 10,
+      "actions": 18,
+      "texts": 35,
+      "zeroLists": 0,
+      "page": "heroes",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Hero 管理"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1390,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "Welcome to ArcBlog",
+          "size": "15px"
+        },
+        {
+          "text": "添加 Hero",
+          "size": "17px"
+        },
+        {
+          "text": "从文章快速加入",
+          "size": "17px"
+        },
+        {
+          "text": "Hello ArcBlog",
+          "size": "15px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 10,
+      "actions": 18,
+      "texts": 35,
+      "zeroLists": 0,
+      "page": "heroes",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分类"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "全部分类",
+          "size": "17px"
+        },
+        {
+          "text": "Design",
+          "size": "15px"
+        },
+        {
+          "text": "Life",
+          "size": "15px"
+        },
+        {
+          "text": "Technology",
+          "size": "15px"
+        },
+        {
+          "text": "新增分类",
+          "size": "17px"
+        },
+        {
+          "text": "命令行（可选）",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 9,
+      "actions": 21,
+      "texts": 47,
+      "zeroLists": 0,
+      "page": "categories",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分类"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1628,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "全部分类",
+          "size": "17px"
+        },
+        {
+          "text": "Design",
+          "size": "15px"
+        },
+        {
+          "text": "Life",
+          "size": "15px"
+        },
+        {
+          "text": "Technology",
+          "size": "15px"
+        },
+        {
+          "text": "新增分类",
+          "size": "17px"
+        },
+        {
+          "text": "命令行（可选）",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 9,
+      "actions": 21,
+      "texts": 47,
+      "zeroLists": 0,
+      "page": "categories",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分类"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1703,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "全部分类",
+          "size": "17px"
+        },
+        {
+          "text": "Design",
+          "size": "15px"
+        },
+        {
+          "text": "Life",
+          "size": "15px"
+        },
+        {
+          "text": "Technology",
+          "size": "15px"
+        },
+        {
+          "text": "新增分类",
+          "size": "17px"
+        },
+        {
+          "text": "命令行（可选）",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 3,
+      "inputs": 9,
+      "actions": 21,
+      "texts": 47,
+      "zeroLists": 0,
+      "page": "categories",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "标签"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "使用中的标签",
+          "size": "17px"
+        },
+        {
+          "text": "guide",
+          "size": "15px"
+        },
+        {
+          "text": "identity",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791822427320",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791826551715",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_d_1791822427320",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 21,
+      "inputs": 2,
+      "actions": 17,
+      "texts": 113,
+      "zeroLists": 0,
+      "page": "tags",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "标签"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 2969,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "使用中的标签",
+          "size": "17px"
+        },
+        {
+          "text": "guide",
+          "size": "15px"
+        },
+        {
+          "text": "identity",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791822427320",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791826551715",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_d_1791822427320",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 21,
+      "inputs": 2,
+      "actions": 17,
+      "texts": 113,
+      "zeroLists": 0,
+      "page": "tags",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "标签"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 3185,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "使用中的标签",
+          "size": "17px"
+        },
+        {
+          "text": "guide",
+          "size": "15px"
+        },
+        {
+          "text": "identity",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791822427320",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_c_1791826551715",
+          "size": "15px"
+        },
+        {
+          "text": "multislot_d_1791822427320",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 21,
+      "inputs": 2,
+      "actions": 17,
+      "texts": 113,
+      "zeroLists": 0,
+      "page": "tags",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分发"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "feeds",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分发"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 777,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "feeds",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "分发"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 773,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 23,
+      "zeroLists": 0,
+      "page": "feeds",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "运维",
+        "节点健康",
+        "发现文档"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 28,
+      "zeroLists": 0,
+      "page": "operations",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "运维",
+        "节点健康",
+        "发现文档"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1165,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 28,
+      "zeroLists": 0,
+      "page": "operations",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "运维",
+        "节点健康",
+        "发现文档"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1490,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 28,
+      "zeroLists": 0,
+      "page": "operations",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点注册表"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "接入状态",
+          "size": "17px"
+        },
+        {
+          "text": "核对入口",
+          "size": "17px"
+        },
+        {
+          "text": "质押节点",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 26,
+      "zeroLists": 0,
+      "page": "registry",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点注册表"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1263,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "接入状态",
+          "size": "17px"
+        },
+        {
+          "text": "核对入口",
+          "size": "17px"
+        },
+        {
+          "text": "质押节点",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 26,
+      "zeroLists": 0,
+      "page": "registry",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点注册表"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1741,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "接入状态",
+          "size": "17px"
+        },
+        {
+          "text": "核对入口",
+          "size": "17px"
+        },
+        {
+          "text": "质押节点",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 0,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 26,
+      "zeroLists": 0,
+      "page": "registry",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点 NFT"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "操作",
+          "size": "17px"
+        },
+        {
+          "text": "意图队列",
+          "size": "17px"
+        },
+        {
+          "text": "工厂",
+          "size": "17px"
+        },
+        {
+          "text": "是否真的在链上？（逐节点）",
+          "size": "17px"
+        },
+        {
+          "text": "NFT 卡片",
+          "size": "17px"
+        },
+        {
+          "text": "高级 / 技术详情",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 6,
+      "inputs": 0,
+      "actions": 25,
+      "texts": 75,
+      "zeroLists": 0,
+      "page": "factory",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点 NFT"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 2372,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "操作",
+          "size": "17px"
+        },
+        {
+          "text": "意图队列",
+          "size": "17px"
+        },
+        {
+          "text": "工厂",
+          "size": "17px"
+        },
+        {
+          "text": "是否真的在链上？（逐节点）",
+          "size": "17px"
+        },
+        {
+          "text": "NFT 卡片",
+          "size": "17px"
+        },
+        {
+          "text": "高级 / 技术详情",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 6,
+      "inputs": 0,
+      "actions": 25,
+      "texts": 75,
+      "zeroLists": 0,
+      "page": "factory",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "节点 NFT"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 3017,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "操作",
+          "size": "17px"
+        },
+        {
+          "text": "意图队列",
+          "size": "17px"
+        },
+        {
+          "text": "工厂",
+          "size": "17px"
+        },
+        {
+          "text": "是否真的在链上？（逐节点）",
+          "size": "17px"
+        },
+        {
+          "text": "NFT 卡片",
+          "size": "17px"
+        },
+        {
+          "text": "高级 / 技术详情",
+          "size": "17px"
+        }
+      ],
+      "lists": 1,
+      "items": 6,
+      "inputs": 0,
+      "actions": 25,
+      "texts": 75,
+      "zeroLists": 0,
+      "page": "factory",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Agent 能力与工具"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "当前授权",
+          "size": "17px"
+        },
+        {
+          "text": "运营者 CLI（授权与汇总）",
+          "size": "17px"
+        },
+        {
+          "text": "策略与声明（只读）",
+          "size": "17px"
+        },
+        {
+          "text": "已声明工具",
+          "size": "17px"
+        },
+        {
+          "text": "只读工具（8）",
+          "size": "17px"
+        },
+        {
+          "text": "写工具（3）——需要限时授权",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 1,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 40,
+      "zeroLists": 0,
+      "page": "agents",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Agent 能力与工具"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 2242,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "当前授权",
+          "size": "17px"
+        },
+        {
+          "text": "运营者 CLI（授权与汇总）",
+          "size": "17px"
+        },
+        {
+          "text": "策略与声明（只读）",
+          "size": "17px"
+        },
+        {
+          "text": "已声明工具",
+          "size": "17px"
+        },
+        {
+          "text": "只读工具（8）",
+          "size": "17px"
+        },
+        {
+          "text": "写工具（3）——需要限时授权",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 1,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 40,
+      "zeroLists": 0,
+      "page": "agents",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "Agent 能力与工具"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 3095,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "当前授权",
+          "size": "17px"
+        },
+        {
+          "text": "运营者 CLI（授权与汇总）",
+          "size": "17px"
+        },
+        {
+          "text": "策略与声明（只读）",
+          "size": "17px"
+        },
+        {
+          "text": "已声明工具",
+          "size": "17px"
+        },
+        {
+          "text": "只读工具（8）",
+          "size": "17px"
+        },
+        {
+          "text": "写工具（3）——需要限时授权",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 1,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 40,
+      "zeroLists": 0,
+      "page": "agents",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "设置"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "基础信息",
+          "size": "17px"
+        },
+        {
+          "text": "时区",
+          "size": "17px"
+        },
+        {
+          "text": "已存记录",
+          "size": "17px"
+        },
+        {
+          "text": "Timezone",
+          "size": "15px"
+        },
+        {
+          "text": "初始化记录",
+          "size": "17px"
+        },
+        {
+          "text": "Instance 开关",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 3,
+      "actions": 25,
+      "texts": 61,
+      "zeroLists": 0,
+      "page": "general",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "设置"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 2534,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "基础信息",
+          "size": "17px"
+        },
+        {
+          "text": "时区",
+          "size": "17px"
+        },
+        {
+          "text": "已存记录",
+          "size": "17px"
+        },
+        {
+          "text": "Timezone",
+          "size": "15px"
+        },
+        {
+          "text": "初始化记录",
+          "size": "17px"
+        },
+        {
+          "text": "Instance 开关",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 3,
+      "actions": 25,
+      "texts": 61,
+      "zeroLists": 0,
+      "page": "general",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "设置"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 3236,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "基础信息",
+          "size": "17px"
+        },
+        {
+          "text": "时区",
+          "size": "17px"
+        },
+        {
+          "text": "已存记录",
+          "size": "17px"
+        },
+        {
+          "text": "Timezone",
+          "size": "15px"
+        },
+        {
+          "text": "初始化记录",
+          "size": "17px"
+        },
+        {
+          "text": "Instance 开关",
+          "size": "17px"
+        }
+      ],
+      "lists": 2,
+      "items": 4,
+      "inputs": 3,
+      "actions": 25,
+      "texts": 61,
+      "zeroLists": 0,
+      "page": "general",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "诊断"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 227,
+        "h": 852,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 1227,
+        "h": 852,
+        "x": 257,
+        "y": 48
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "最近一次自检（已记录）",
+          "size": "17px"
+        },
+        {
+          "text": "全部检查项，逐条一行",
+          "size": "17px"
+        },
+        {
+          "text": "authorship",
+          "size": "15px"
+        },
+        {
+          "text": "categories",
+          "size": "15px"
+        },
+        {
+          "text": "de-identification",
+          "size": "15px"
+        },
+        {
+          "text": "node-identity",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 16,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 65,
+      "zeroLists": 1,
+      "page": "diagnostics",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "诊断"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 768,
+        "h": 45,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 768,
+        "h": 1284,
+        "x": 0,
+        "y": 123
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "最近一次自检（已记录）",
+          "size": "17px"
+        },
+        {
+          "text": "全部检查项，逐条一行",
+          "size": "17px"
+        },
+        {
+          "text": "authorship",
+          "size": "15px"
+        },
+        {
+          "text": "categories",
+          "size": "15px"
+        },
+        {
+          "text": "de-identification",
+          "size": "15px"
+        },
+        {
+          "text": "node-identity",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 16,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 65,
+      "zeroLists": 1,
+      "page": "diagnostics",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "诊断"
+      ],
+      "overflow": 0,
+      "sidebar": {
+        "w": 375,
+        "h": 49,
+        "x": 0,
+        "y": 48
+      },
+      "content": {
+        "w": 375,
+        "h": 1493,
+        "x": 0,
+        "y": 127
+      },
+      "overflowElements": [],
+      "h3": [
+        {
+          "text": "最近一次自检（已记录）",
+          "size": "17px"
+        },
+        {
+          "text": "全部检查项，逐条一行",
+          "size": "17px"
+        },
+        {
+          "text": "authorship",
+          "size": "15px"
+        },
+        {
+          "text": "categories",
+          "size": "15px"
+        },
+        {
+          "text": "de-identification",
+          "size": "15px"
+        },
+        {
+          "text": "node-identity",
+          "size": "15px"
+        }
+      ],
+      "lists": 3,
+      "items": 16,
+      "inputs": 0,
+      "actions": 14,
+      "texts": 65,
+      "zeroLists": 1,
+      "page": "diagnostics",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "编辑文章"
+      ],
+      "overflow": 0,
+      "sidebar": null,
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 1,
+      "texts": 3,
+      "zeroLists": 0,
+      "page": "compose-edit",
+      "width": 1516,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "编辑文章"
+      ],
+      "overflow": 0,
+      "sidebar": null,
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 1,
+      "texts": 3,
+      "zeroLists": 0,
+      "page": "compose-edit",
+      "width": 768,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    },
+    {
+      "title": [
+        "编辑文章"
+      ],
+      "overflow": 0,
+      "sidebar": null,
+      "overflowElements": [],
+      "h3": [],
+      "lists": 0,
+      "items": 0,
+      "inputs": 0,
+      "actions": 1,
+      "texts": 3,
+      "zeroLists": 0,
+      "page": "compose-edit",
+      "width": 375,
+      "probeExit": 0,
+      "sessionInitFailed": false
+    }
+  ],
+  "warmEditor": {
+    "1516": {
+      "fields": [
+        {
+          "name": "title",
+          "valuePresent": true
+        },
+        {
+          "name": "summary",
+          "valuePresent": false
+        },
+        {
+          "name": "body",
+          "valuePresent": true
+        },
+        {
+          "name": "slug",
+          "valuePresent": true
+        },
+        {
+          "name": "category",
+          "valuePresent": true
+        },
+        {
+          "name": "tags",
+          "valuePresent": false
+        },
+        {
+          "name": "coverImage",
+          "valuePresent": false
+        },
+        {
+          "name": "seoTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "seoDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "ogDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogImage",
+          "valuePresent": false
+        }
+      ],
+      "overflow": 0
+    },
+    "768": {
+      "fields": [
+        {
+          "name": "title",
+          "valuePresent": true
+        },
+        {
+          "name": "summary",
+          "valuePresent": false
+        },
+        {
+          "name": "body",
+          "valuePresent": true
+        },
+        {
+          "name": "slug",
+          "valuePresent": true
+        },
+        {
+          "name": "category",
+          "valuePresent": true
+        },
+        {
+          "name": "tags",
+          "valuePresent": false
+        },
+        {
+          "name": "coverImage",
+          "valuePresent": false
+        },
+        {
+          "name": "seoTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "seoDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "ogDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogImage",
+          "valuePresent": false
+        }
+      ],
+      "overflow": 0
+    },
+    "375": {
+      "fields": [
+        {
+          "name": "title",
+          "valuePresent": true
+        },
+        {
+          "name": "summary",
+          "valuePresent": false
+        },
+        {
+          "name": "body",
+          "valuePresent": true
+        },
+        {
+          "name": "slug",
+          "valuePresent": true
+        },
+        {
+          "name": "category",
+          "valuePresent": true
+        },
+        {
+          "name": "tags",
+          "valuePresent": false
+        },
+        {
+          "name": "coverImage",
+          "valuePresent": false
+        },
+        {
+          "name": "seoTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "seoDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogTitle",
+          "valuePresent": false
+        },
+        {
+          "name": "ogDescription",
+          "valuePresent": false
+        },
+        {
+          "name": "ogImage",
+          "valuePresent": false
+        }
+      ],
+      "overflow": 0
+    }
+  },
+  "fieldScopes": [
+    {
+      "page": "pages",
+      "checks": [
+        {
+          "label": "下线",
+          "fields": [
+            "eSlug",
+            "eTitle",
+            "eSummary",
+            "eBody",
+            "eAuthorDid",
+            "eCreatedAt"
+          ],
+          "ok": true
+        },
+        {
+          "label": "上线",
+          "fields": [
+            "eSlug",
+            "eTitle",
+            "eSummary",
+            "eBody",
+            "eAuthorDid",
+            "eCreatedAt"
+          ],
+          "ok": true
+        },
+        {
+          "label": "上线",
+          "fields": [
+            "eSlug",
+            "eTitle",
+            "eSummary",
+            "eBody",
+            "eAuthorDid",
+            "eCreatedAt"
+          ],
+          "ok": true
+        },
+        {
+          "label": "上线",
+          "fields": [
+            "eSlug",
+            "eTitle",
+            "eSummary",
+            "eBody",
+            "eAuthorDid",
+            "eCreatedAt"
+          ],
+          "ok": true
+        },
+        {
+          "label": "创建（离线）",
+          "fields": [
+            "slug",
+            "eSlug",
+            "title",
+            "summary",
+            "body"
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "page": "heroes",
+      "checks": [
+        {
+          "label": "添加 Hero",
+          "fields": [
+            "heroId",
+            "heroTitle",
+            "heroDesc",
+            "heroImage",
+            "heroUrl",
+            "heroSort",
+            "qaTitle",
+            "qaDesc",
+            "qaImage",
+            "qaSlug"
+          ],
+          "ok": true
+        },
+        {
+          "label": "加入 Hero",
+          "fields": [
+            "qaTitle",
+            "qaDesc",
+            "qaImage",
+            "qaSlug"
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "page": "tags",
+      "checks": [
+        {
+          "label": "提交重命名 / 合并",
+          "fields": [
+            "tagFrom",
+            "tagTo"
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "page": "general",
+      "checks": [
+        {
+          "label": "保存",
+          "fields": [
+            "eValue"
+          ],
+          "ok": true
+        },
+        {
+          "label": "开启",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        },
+        {
+          "label": "关闭",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        },
+        {
+          "label": "开启",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        },
+        {
+          "label": "关闭",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        },
+        {
+          "label": "开启",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        },
+        {
+          "label": "关闭",
+          "fields": [
+            "sPath"
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "page": "compose",
+      "checks": [
+        {
+          "label": "存草稿",
+          "fields": [
+            "title",
+            "summary",
+            "body",
+            "slug",
+            "category",
+            "tags",
+            "coverImage",
+            "seoTitle",
+            "seoDescription",
+            "ogTitle",
+            "ogDescription",
+            "ogImage"
+          ],
+          "ok": true
+        },
+        {
+          "label": "发布",
+          "fields": [
+            "title",
+            "summary",
+            "body",
+            "slug",
+            "category",
+            "tags",
+            "coverImage",
+            "seoTitle",
+            "seoDescription",
+            "ogTitle",
+            "ogDescription",
+            "ogImage"
+          ],
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "factoryFold": {
+    "targetExists": true,
+    "opened": true,
+    "closed": true
+  },
+  "readonlyAgentBottom": {
+    "text": "asknode scripts/arcblog-summarize.mjs ask --id s1 --question \"为什么这条入选\" --json",
+    "reachable": true
+  },
+  "copyChanges": {
+    "admin/general": {
+      "removedTextNodes": 13,
+      "removedKeys": [
+        "basics-guard",
+        "records-desc",
+        "roles-states-note",
+        "roles-config-desc",
+        "roles-no-input",
+        "roles-status-desc",
+        "roles-verify-kind",
+        "roles-verify-queue",
+        "roles-source-note",
+        "sw-comments-impact",
+        "sw-rss-impact",
+        "sw-agent-impact"
+      ]
+    },
+    "ops/agents": {
+      "removedTextNodes": 2,
+      "removedKeys": [
+        "mutations",
+        "tools-source"
+      ]
+    },
+    "ops/factory": {
+      "removedTextNodes": 1,
+      "removedKeys": [
+        "worker-hint"
+      ]
+    },
+    "ops/registry": {
+      "removedTextNodes": 2,
+      "removedKeys": [
+        "status-wired",
+        "check-desc"
+      ]
+    },
+    "site/tags": {
+      "removedTextNodes": 2,
+      "removedKeys": [
+        "empty-title",
+        "f-unknown-hint"
+      ]
+    },
+    "admin/pages": {
+      "removedTextNodes": 0,
+      "removedKeys": []
+    }
+  },
+  "verification": {
+    "dslIssues": [],
+    "fastFiles": 32,
+    "docVolumes": 6,
+    "menuContentPages": 14,
+    "safeBuildExit": 0,
+    "budgetRegressions": 0,
+    "strictOverBudgetPages": 8,
+    "backendWritesPerformed": false
+  }
+}
