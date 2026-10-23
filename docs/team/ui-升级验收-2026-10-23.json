@@ -1,6 +1,6 @@
 {
   "date": "2026-10-23",
-  "baseline": "77b6fea + pre-existing uncommitted UI changes + this round (Lead workspace, uncommitted)",
+  "baseline": "4a79f3e9b6110ecacf9a94e00ed7bfba59022df6",
   "browserSweep": [
     {
       "title": [
@@ -2432,5 +2432,13 @@
     "budgetRegressions": 0,
     "strictOverBudgetPages": 8,
     "backendWritesPerformed": false
+  },
+  "implementationCommit": "4a79f3e9b6110ecacf9a94e00ed7bfba59022df6",
+  "prePushTargetedTest": {
+    "command": "npm run test:file -- scripts/arcblog-pages.test.mjs",
+    "pass": 10,
+    "fail": 0,
+    "isolatedFixtures": true,
+    "gateLockReleased": true
   }
 }
