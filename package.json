@@ -41,9 +41,9 @@
     "build": "arc blocklet build && npm run scrub:dist-secrets"
   },
   "dependencies": {
-    "@arcblock/did-ext": "^1.30.24",
-    "@arcblock/did-util": "1.30.24",
-    "@ocap/client": "^1.30.24",
+    "@arcblock/did-ext": "^1.30.26",
+    "@arcblock/did-util": "1.30.26",
+    "@ocap/client": "^1.30.26",
     "@ocap/wallet": "^1.30.24",
     "bip39": "^3.1.0"
   },
